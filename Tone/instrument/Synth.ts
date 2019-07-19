@@ -1,16 +1,15 @@
 import { AmplitudeEnvelope } from "../component/envelope/AmplitudeEnvelope";
 import { Envelope, EnvelopeOptions } from "../component/envelope/Envelope";
-import { ToneAudioNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
-import { omitFromObject, optionsFromArguments } from "../core/util/Defaults";
+import { optionsFromArguments } from "../core/util/Defaults";
 import { readOnly } from "../core/util/Interface";
 import { RecursivePartial } from "../core/util/Interface";
-import { OmniOscillator, OmniOscillatorOptions } from "../source/oscillator/OmniOscillator";
-import { Source, SourceOptions } from "../source/Source";
+import { OmniOscillator } from "../source/oscillator/OmniOscillator";
+import { OmniOscillatorConstructorOptions } from "../source/oscillator/OscillatorInterface";
 import { Monophonic, MonophonicOptions } from "./Monophonic";
 
 export interface SynthOptions extends MonophonicOptions {
-	oscillator: Omit<OmniOscillatorOptions, keyof SourceOptions>;
-	envelope: Omit<EnvelopeOptions, keyof ToneAudioNodeOptions>;
+	oscillator: OmniOscillatorConstructorOptions;
+	envelope: EnvelopeOptions;
 }
 
 /**
@@ -55,7 +54,7 @@ export class Synth extends Monophonic<SynthOptions> {
 	 */
 	input: undefined;
 
-	protected _internalChannels = [this.oscillator as unknown as ToneAudioNode, this.envelope, this.output];
+	protected _internalChannels = [this.oscillator, this.envelope, this.output];
 
 	constructor(options?: RecursivePartial<SynthOptions>);
 	constructor() {
@@ -73,9 +72,7 @@ export class Synth extends Monophonic<SynthOptions> {
 	static getDefaults(): SynthOptions {
 		return Object.assign(Monophonic.getDefaults(), {
 			envelope: Object.assign(
-				omitFromObject(
-					Envelope.getDefaults(), ToneAudioNode.getDefaults(),
-				),
+				Envelope.getDefaults(),
 				{
 					attack : 0.005,
 					decay : 0.1,
@@ -84,9 +81,7 @@ export class Synth extends Monophonic<SynthOptions> {
 				},
 			),
 			oscillator: Object.assign(
-				omitFromObject(
-					OmniOscillator.getDefaults(), Source.getDefaults(),
-				),
+				OmniOscillator.getDefaults(),
 				{
 					type: "triangle",
 				},

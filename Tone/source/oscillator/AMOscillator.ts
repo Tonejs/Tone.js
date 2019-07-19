@@ -5,12 +5,10 @@ import { AudioToGain } from "../../signal/AudioToGain";
 import { Multiply } from "../../signal/Multiply";
 import { Signal } from "../../signal/Signal";
 import { Source } from "../Source";
-import { Oscillator, OscillatorInterface, ToneOscillatorOptions, ToneOscillatorType } from "./Oscillator";
-
-export interface AMOscillatorOptions extends ToneOscillatorOptions {
-	harmonicity: Positive;
-	modulationType: ToneOscillatorType;
-}
+import { Oscillator } from "./Oscillator";
+import { AMConstructorOptions, AMOscillatorOptions,
+	NonCustomOscillatorType, ToneOscillatorInterface,
+	ToneOscillatorType } from "./OscillatorInterface";
 
 /**
  * An amplitude modulated oscillator node. It is implemented with
@@ -33,7 +31,7 @@ export interface AMOscillatorOptions extends ToneOscillatorOptions {
  * //a sine oscillator frequency-modulated by a square wave
  * var fmOsc = new AMOscillator("Ab3", "sine", "square").toMaster().start();
  */
-export class AMOscillator extends Source<AMOscillatorOptions> implements OscillatorInterface {
+export class AMOscillator extends Source<AMOscillatorOptions> implements ToneOscillatorInterface {
 
 	name = "AMOscillator";
 
@@ -82,7 +80,7 @@ export class AMOscillator extends Source<AMOscillatorOptions> implements Oscilla
 		context: this.context,
 	});
 
-	constructor(options?: Partial<AMOscillatorOptions>);
+	constructor(options?: Partial<AMConstructorOptions>);
 	constructor(frequency?: Frequency, type?: ToneOscillatorType, modulationType?: ToneOscillatorType);
 	constructor() {
 
@@ -108,7 +106,7 @@ export class AMOscillator extends Source<AMOscillatorOptions> implements Oscilla
 	static getDefaults(): AMOscillatorOptions {
 		return Object.assign(Oscillator.getDefaults(), {
 			harmonicity: 1,
-			modulationType: "square",
+			modulationType: "square" as NonCustomOscillatorType,
 		});
 	}
 

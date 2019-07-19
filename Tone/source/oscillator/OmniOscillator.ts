@@ -3,14 +3,17 @@ import { readOnly } from "../../core/util/Interface";
 import { isNumber, isString } from "../../core/util/TypeCheck";
 import { Signal } from "../../signal/Signal";
 import { Source } from "../Source";
-import { AMOscillator, AMOscillatorOptions } from "./AMOscillator";
-import { FatOscillator, FatOscillatorOptions } from "./FatOscillator";
-import { FMOscillator, FMOscillatorOptions } from "./FMOscillator";
-import { Oscillator, OscillatorInterface,
-	ToneOscillatorBaseType, ToneOscillatorOptions,
-	ToneOscillatorType } from "./Oscillator";
-import { PulseOscillator, PulseOscillatorOptions } from "./PulseOscillator";
-import { PWMOscillator, PWMOscillatorOptions } from "./PWMOscillator";
+import { AMOscillator } from "./AMOscillator";
+import { FatOscillator } from "./FatOscillator";
+import { FMOscillator } from "./FMOscillator";
+import { Oscillator } from "./Oscillator";
+import { AMOscillatorOptions, FatOscillatorOptions,
+	FMOscillatorOptions, OmniOscillatorConstructorOptions,
+	OmniOscillatorOptions, OmniOscillatorType,
+	PulseOscillatorOptions, PWMOscillatorOptions,
+	ToneOscillatorInterface, ToneOscillatorOptions, ToneOscillatorType } from "./OscillatorInterface";
+import { PulseOscillator } from "./PulseOscillator";
+import { PWMOscillator } from "./PWMOscillator";
 
 /**
  * All of the oscillator types that OmniOscillator can take on
@@ -23,15 +26,6 @@ type AnyOscillator = Oscillator | PWMOscillator | PulseOscillator | FatOscillato
 type TypeofAnyOscillator = typeof Oscillator | typeof PWMOscillator |
 	typeof PulseOscillator | typeof FatOscillator |
 	typeof AMOscillator | typeof FMOscillator;
-
-/**
- * The type of the oscillator. Can be any of the basic types: sine, square, triangle, sawtooth. Or
- * prefix the basic types with "fm", "am", or "fat" to use the FMOscillator, AMOscillator or FatOscillator
- * types. The oscillator could also be set to "pwm" or "pulse". All of the parameters of the
- * oscillator's class are accessible when the oscillator is set to that type, but throws an error
- * when it's not.
- */
-type OmniOscillatorType = string;
 
 /**
  * Select the Oscillator's Options depending on the generic type.
@@ -48,7 +42,7 @@ type ConditionalOptions<Osc extends AnyOscillator> =
 /**
  * The aggregate options of all of the oscillators
  */
-export type OmniOscillatorOptions = ConditionalOptions<AnyOscillator>;
+// export type OmniOscillatorOptions = ConditionalOptions<AnyOscillator>;
 
 /**
  * All of the Oscillator constructor types mapped to their name.
@@ -102,7 +96,8 @@ const OmniOscillatorSourceMap: {
  * var omniOsc = new OmniOscillator("C#4", "pwm");
  */
 export class OmniOscillator<OscType extends AnyOscillator>
-extends Source<OmniOscillatorOptions> implements OscillatorInterface {
+extends Source<OmniOscillatorConstructorOptions>
+implements Omit<ToneOscillatorInterface, "type"> {
 
 	name = "OmniOscillator";
 
@@ -132,7 +127,7 @@ extends Source<OmniOscillatorOptions> implements OscillatorInterface {
 	 */
 	private _sourceType!: OmniOscSourceType;
 
-	constructor(options?: Partial<ConditionalOptions<OscType>>);
+	constructor(options?: Partial<OmniOscillatorConstructorOptions>);
 	constructor(frequency?: Frequency, type?: OmniOscillatorType);
 	constructor() {
 
@@ -143,14 +138,20 @@ extends Source<OmniOscillatorOptions> implements OscillatorInterface {
 		this.detune.setValueAtTime(options.detune, 0);
 		readOnly(this, ["frequency", "detune"]);
 
-		// // set the oscillator
-		// this.type = options.type;
 		// set the options
-		this.set<Oscillator>(options);
+		this.set(options);
 	}
 
 	static getDefaults(): OmniOscillatorOptions {
-		return Oscillator.getDefaults();
+		return Object.assign(
+			Oscillator.getDefaults(),
+			FMOscillator.getDefaults(),
+			AMOscillator.getDefaults(),
+			FatOscillator.getDefaults(),
+			PulseOscillator.getDefaults(),
+			PWMOscillator.getDefaults(),
+		);
+		// return Oscillator.getDefaults() as OmniOscillatorConstructorOptions;
 	}
 
 	/**
@@ -193,21 +194,21 @@ extends Source<OmniOscillatorOptions> implements OscillatorInterface {
 		if (["am", "fm", "fat"].some(p => this._sourceType === p)) {
 			prefix = this._sourceType;
 		}
-		return prefix + this._oscillator.type;
+		return prefix + this._oscillator.type as OmniOscillatorType;
 	}
 	set type(type) {
 		if (type.substr(0, 2) === "fm") {
 			this._createNewOscillator("fm");
 			this._oscillator = this._oscillator as FMOscillator;
-			this._oscillator.type = type.substr(2);
+			this._oscillator.type = type.substr(2) as ToneOscillatorType;
 		} else if (type.substr(0, 2) === "am") {
 			this._createNewOscillator("am");
 			this._oscillator = this._oscillator as AMOscillator;
-			this._oscillator.type = type.substr(2);
+			this._oscillator.type = type.substr(2)  as ToneOscillatorType;
 		} else if (type.substr(0, 3) === "fat") {
 			this._createNewOscillator("fat");
 			this._oscillator = this._oscillator as FatOscillator;
-			this._oscillator.type = type.substr(3);
+			this._oscillator.type = type.substr(3)  as ToneOscillatorType;
 		} else if (type === "pwm") {
 			this._createNewOscillator("pwm");
 			this._oscillator = this._oscillator as PWMOscillator;
@@ -216,7 +217,7 @@ extends Source<OmniOscillatorOptions> implements OscillatorInterface {
 		} else {
 			this._createNewOscillator("oscillator");
 			this._oscillator = this._oscillator as Oscillator;
-			this._oscillator.type = type;
+			this._oscillator.type = (type as ToneOscillatorType);
 		}
 	}
 
@@ -270,7 +271,7 @@ extends Source<OmniOscillatorOptions> implements OscillatorInterface {
 	 * 	"type" : "highpass"
 	 * });
 	 */
-	set<Osc extends AnyOscillator = OscType>(props: Partial<ConditionalOptions<Osc>>): this {
+	set(props: Partial<OmniOscillatorConstructorOptions>): this {
 		// make sure the type is set first
 		if (Reflect.has(props, "type") && props.type) {
 			this.type = props.type;
@@ -281,17 +282,11 @@ extends Source<OmniOscillatorOptions> implements OscillatorInterface {
 		return this;
 	}
 
-	/**
-	 *  Get the object's attributes. Given no arguments get
-	 *  will return all available object properties and their corresponding
-	 *  values. Pass in a single attribute to retrieve or an array
-	 *  of attributes. The attribute strings can also include a "."
-	 *  to access deeper properties.
-	 */
-	get<Osc extends AnyOscillator = OscType>(): ConditionalOptions<Osc> {
+	get(): OmniOscillatorConstructorOptions {
 		const options = this._oscillator.get();
+		// @ts-ignore
 		options.type = this.type;
-		return options as ConditionalOptions<Osc>;
+		return options as OmniOscillatorOptions;
 	}
 
 	/**
@@ -309,8 +304,8 @@ extends Source<OmniOscillatorOptions> implements OscillatorInterface {
 				// dispose the old one
 				this.context.setTimeout(() => oldOsc.dispose(), this.blockTime);
 			}
+			// @ts-ignore
 			this._oscillator = new oscConstructor({
-				// @ts-ignore
 				context : this.context,
 			});
 			this.frequency.connect(this._oscillator.frequency);
@@ -350,13 +345,13 @@ extends Source<OmniOscillatorOptions> implements OscillatorInterface {
 
 		// set the type
 		if (sType === "fm") {
-			this.type = "fm" + baseType;
+			this.type = "fm" + baseType as OmniOscillatorType;
 		} else if (sType === "am") {
-			this.type = "am" + baseType;
+			this.type = "am" + baseType as OmniOscillatorType;
 		} else if (sType === "fat") {
-			this.type = "fat" + baseType;
+			this.type = "fat" + baseType as OmniOscillatorType;
 		} else if (sType === "oscillator") {
-			this.type = baseType;
+			this.type = baseType as OmniOscillatorType;
 		} else if (sType === "pulse") {
 			this.type = "pulse";
 		} else if (sType === "pwm") {
@@ -379,7 +374,7 @@ extends Source<OmniOscillatorOptions> implements OscillatorInterface {
 	 * omniOsc.baseType //'square'
 	 * omniOsc.partialCount //4
 	 */
-	get baseType(): ToneOscillatorBaseType {
+	get baseType(): OscillatorType | "pwm" | "pulse" {
 		return this._oscillator.baseType;
 	}
 	set baseType(baseType) {
@@ -504,9 +499,6 @@ extends Source<OmniOscillatorOptions> implements OscillatorInterface {
 		}
 	}
 
-	/**
-	 *  Clean up.
-	 */
 	dispose(): this {
 		super.dispose();
 		this.detune.dispose();

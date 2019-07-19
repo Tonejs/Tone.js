@@ -4,13 +4,9 @@ import { readOnly } from "../../core/util/Interface";
 import { Multiply } from "../../signal/Multiply";
 import { Signal } from "../../signal/Signal";
 import { Source } from "../Source";
-import { Oscillator, OscillatorInterface, ToneOscillatorOptions, ToneOscillatorType } from "./Oscillator";
-
-export interface FMOscillatorOptions extends ToneOscillatorOptions {
-	harmonicity: Positive;
-	modulationIndex: Positive;
-	modulationType: ToneOscillatorType;
-}
+import { Oscillator } from "./Oscillator";
+import { FMConstructorOptions, FMOscillatorOptions,
+	NonCustomOscillatorType, ToneOscillatorInterface, ToneOscillatorType } from "./OscillatorInterface";
 
 /**
  * FMOscillator implements a frequency modulation synthesis
@@ -33,7 +29,7 @@ export interface FMOscillatorOptions extends ToneOscillatorOptions {
  * //a sine oscillator frequency-modulated by a square wave
  * var fmOsc = new FMOscillator("Ab3", "sine", "square").toMaster().start();
  */
-export class FMOscillator extends Source<FMOscillatorOptions> implements OscillatorInterface {
+export class FMOscillator extends Source<FMOscillatorOptions> implements ToneOscillatorInterface {
 
 	name = "FMOscillator";
 
@@ -94,7 +90,7 @@ export class FMOscillator extends Source<FMOscillatorOptions> implements Oscilla
 		gain: 0,
 	});
 
-	constructor(options?: Partial<FMOscillatorOptions>);
+	constructor(options?: Partial<FMConstructorOptions>);
 	constructor(frequency?: Frequency, type?: ToneOscillatorType, modulationType?: ToneOscillatorType);
 	constructor() {
 
@@ -126,7 +122,7 @@ export class FMOscillator extends Source<FMOscillatorOptions> implements Oscilla
 		return Object.assign(Oscillator.getDefaults(), {
 			harmonicity: 1,
 			modulationIndex: 2,
-			modulationType: "square",
+			modulationType: "square" as NonCustomOscillatorType,
 		});
 	}
 

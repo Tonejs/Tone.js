@@ -6,6 +6,7 @@ import { OscillatorTests } from "test/helper/OscillatorTests";
 import { OutputAudio } from "test/helper/OutputAudio";
 import { SourceTests } from "test/helper/SourceTests";
 import { Oscillator } from "./Oscillator";
+import { ToneOscillatorType } from "./OscillatorInterface";
 
 describe("Oscillator", () => {
 
@@ -26,11 +27,11 @@ describe("Oscillator", () => {
 
 		it("can be set with an options object", () => {
 			const osc = new Oscillator();
-			osc.set({
-				detune: -21,
-				frequency: 231,
-				type: "square",
-			});
+			// osc.set({
+			// 	detune: -21,
+			// 	frequency: 231,
+			// 	type: "square",
+			// });
 			expect(osc.frequency.value).to.equal(231);
 			expect(osc.detune.value).to.equal(-21);
 			expect(osc.type).to.equal("square");
@@ -108,7 +109,7 @@ describe("Oscillator", () => {
 
 		it("handles 4 basic types", () => {
 			const osc = new Oscillator();
-			const types = ["triangle", "sawtooth", "sine", "square"];
+			const types: ToneOscillatorType[] = ["triangle", "sawtooth", "sine", "square"];
 			for (const type of types) {
 				osc.type = type;
 				expect(osc.type).to.equal(type);
@@ -119,6 +120,7 @@ describe("Oscillator", () => {
 		it("throws an error if invalid type is set", () => {
 			const osc = new Oscillator();
 			expect(() => {
+				// @ts-ignore
 				osc.type = "invalid";
 			}).to.throw(Error);
 			osc.dispose();

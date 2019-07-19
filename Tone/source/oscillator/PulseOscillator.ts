@@ -4,13 +4,8 @@ import { readOnly } from "../../core/util/Interface";
 import { Signal } from "../../signal/Signal";
 import { WaveShaper } from "../../signal/WaveShaper";
 import { Source } from "../Source";
-import { Oscillator, OscillatorInterface, ToneOscillatorOptions, ToneOscillatorType } from "./Oscillator";
-
-type PulseOscillatorType = "pulse";
-
-export interface PulseOscillatorOptions extends ToneOscillatorOptions {
-	width: NormalRange;
-}
+import { Oscillator } from "./Oscillator";
+import { PulseOscillatorOptions, ToneOscillatorInterface } from "./OscillatorInterface";
 
 /**
  * PulseOscillator is an oscillator with control over pulse width,
@@ -46,7 +41,7 @@ export interface PulseOscillatorOptions extends ToneOscillatorOptions {
  * @example
  * var pulse = new PulseOscillator("E5", 0.4).toMaster().start();
  */
-export class PulseOscillator extends Source<PulseOscillatorOptions> implements OscillatorInterface {
+export class PulseOscillator extends Source<PulseOscillatorOptions> implements ToneOscillatorInterface {
 
 	name = "PulseOscillator";
 
@@ -93,7 +88,7 @@ export class PulseOscillator extends Source<PulseOscillatorOptions> implements O
 	});
 
 	constructor(options?: Partial<PulseOscillatorOptions>);
-	constructor(frequency?: Frequency, type?: ToneOscillatorType, modulationType?: ToneOscillatorType);
+	constructor(frequency?: Frequency, width?: AudioRange);
 	constructor() {
 
 		super(optionsFromArguments(PulseOscillator.getDefaults(), arguments, ["frequency", "width"]));
@@ -111,7 +106,11 @@ export class PulseOscillator extends Source<PulseOscillatorOptions> implements O
 	}
 
 	static getDefaults(): PulseOscillatorOptions {
-		return Object.assign(Oscillator.getDefaults(), {
+		return Object.assign(Source.getDefaults(), {
+			detune: 0,
+			frequency: 440,
+			phase: 0,
+			type: "pulse" as "pulse",
 			width: 0.2,
 		});
 	}
@@ -160,14 +159,14 @@ export class PulseOscillator extends Source<PulseOscillatorOptions> implements O
 	/**
 	 * The type of the oscillator. Always returns "pulse".
 	 */
-	get type(): PulseOscillatorType {
+	get type(): "pulse" {
 		return "pulse";
 	}
 
 	/**
 	 * The baseType of the oscillator. Always returns "pulse".
 	 */
-	get baseType(): PulseOscillatorType {
+	get baseType(): "pulse" {
 		return "pulse";
 	}
 

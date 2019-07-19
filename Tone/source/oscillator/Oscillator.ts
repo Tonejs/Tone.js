@@ -1,36 +1,10 @@
 import { optionsFromArguments } from "../../core/util/Defaults";
 import { readOnly } from "../../core/util/Interface";
 import { Signal } from "../../signal/Signal";
-import { Source, SourceOptions } from "../Source";
+import { Source } from "../Source";
+import { ToneOscillatorConstructorOptions, ToneOscillatorInterface,
+	ToneOscillatorOptions, ToneOscillatorType } from "./OscillatorInterface";
 import { ToneOscillatorNode } from "./OscillatorNode";
-// type OmniOscillatorSourceType = import("./OmniOscillator").OmniOscillatorSourceType;
-
-export type ToneOscillatorBaseType = OscillatorType | "pulse" | "pwm";
-
-export type ToneOscillatorType = ToneOscillatorBaseType | string;
-
-export interface ToneOscillatorOptions extends SourceOptions {
-	type: ToneOscillatorType;
-	frequency: Frequency;
-	detune: Cents;
-	phase: Degrees;
-	partials: number[];
-	partialCount: number;
-}
-
-/**
- * All Oscillators share this interface
- */
-export interface OscillatorInterface {
-	partials: number[];
-	partialCount: number;
-	phase: Degrees;
-	readonly frequency: Signal<Frequency>;
-	readonly detune: Signal<Cents>;
-	type: ToneOscillatorType;
-	baseType: ToneOscillatorBaseType;
-	// sourceType: OmniOscillatorSourceType;
-}
 
 /**
  *  Oscillator supports a number of features including
@@ -43,7 +17,7 @@ export interface OscillatorInterface {
  * //make and start a 440hz sine tone
  * var osc = new Oscillator(440, "sine").toMaster().start();
  */
-export class Oscillator extends Source<ToneOscillatorOptions> implements OscillatorInterface {
+export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOscillatorInterface {
 
 	name = "Oscillator";
 
@@ -89,7 +63,7 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements Oscilla
 	 */
 	private _type;
 
-	constructor(options?: Partial<ToneOscillatorOptions>)
+	constructor(options?: Partial<ToneOscillatorConstructorOptions>)
 	constructor(frequency?: Frequency, type?: ToneOscillatorType);
 	constructor() {
 
@@ -129,7 +103,7 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements Oscilla
 			partials: [],
 			phase: 0,
 			type: "sine",
-		});
+		}) as ToneOscillatorOptions;
 	}
 
 	/**
@@ -272,7 +246,7 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements Oscilla
 	}
 	set baseType(baseType: OscillatorType) {
 		if (this.partialCount && this._type !== "custom" && baseType !== "custom") {
-			this.type = baseType + this.partialCount;
+			this.type = baseType + this.partialCount as ToneOscillatorType;
 		} else {
 			this.type = baseType;
 		}
@@ -302,7 +276,7 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements Oscilla
 			if (p === 0) {
 				this.type = type;
 			} else {
-				this.type = type + p.toString();
+				this.type = type + p.toString() as ToneOscillatorType;
 			}
 		}
 	}
@@ -343,7 +317,7 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements Oscilla
 			if (partial) {
 				partialCount = parseInt(partial[2], 10) + 1;
 				this._partialCount = parseInt(partial[2], 10);
-				type = partial[1];
+				type = partial[1] as ToneOscillatorType;
 				partialCount = Math.max(partialCount, 2);
 				periodicWaveSize = partialCount;
 			} else {

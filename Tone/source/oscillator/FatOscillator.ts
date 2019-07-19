@@ -5,13 +5,9 @@ import { AudioToGain } from "../../signal/AudioToGain";
 import { Multiply } from "../../signal/Multiply";
 import { Signal } from "../../signal/Signal";
 import { Source } from "../Source";
-import { Oscillator, OscillatorInterface, ToneOscillatorOptions, ToneOscillatorType } from "./Oscillator";
-
-export interface FatOscillatorOptions extends ToneOscillatorOptions {
-	spread: Cents;
-	count: Positive;
-	type: ToneOscillatorType;
-}
+import { Oscillator } from "./Oscillator";
+import { FatConstructorOptions, FatOscillatorOptions,
+	ToneOscillatorInterface, ToneOscillatorType } from "./OscillatorInterface";
 
 /**
  *  FatOscillator is an array of oscillators with detune spread between the oscillators
@@ -21,7 +17,7 @@ export interface FatOscillatorOptions extends ToneOscillatorOptions {
  *  @example
  * var fatOsc = new FatOscillator("Ab3", "sine", 40).toMaster().start();
  */
-export class FatOscillator extends Source<FatOscillatorOptions> implements OscillatorInterface {
+export class FatOscillator extends Source<FatOscillatorOptions> implements ToneOscillatorInterface {
 
 	name = "FatOscillator";
 
@@ -71,7 +67,7 @@ export class FatOscillator extends Source<FatOscillatorOptions> implements Oscil
 	 */
 	private _partialCount: number;
 
-	constructor(options?: Partial<FatOscillatorOptions>);
+	constructor(options?: Partial<FatConstructorOptions>);
 	constructor(frequency?: Frequency, type?: ToneOscillatorType, modulationType?: ToneOscillatorType);
 	constructor() {
 

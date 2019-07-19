@@ -4,29 +4,22 @@ import { readOnly } from "../../core/util/Interface";
 import { Multiply } from "../../signal/Multiply";
 import { Signal } from "../../signal/Signal";
 import { Source } from "../Source";
-import { Oscillator, OscillatorInterface, ToneOscillatorOptions, ToneOscillatorType } from "./Oscillator";
+import { Oscillator } from "./Oscillator";
+import { PWMOscillatorOptions, ToneOscillatorInterface } from "./OscillatorInterface";
 import { PulseOscillator } from "./PulseOscillator";
 
-export interface PWMOscillatorOptions extends ToneOscillatorOptions {
-	modulationFrequency: Frequency;
-}
-
-type PWMOscillatorType = "pwm";
-
 /**
- *  @class PWMOscillator modulates the width of a Tone.PulseOscillator
- *         at the modulationFrequency. This has the effect of continuously
- *         changing the timbre of the oscillator by altering the harmonics
- *         generated.
+ * PWMOscillator modulates the width of a Tone.PulseOscillator
+ * at the modulationFrequency. This has the effect of continuously
+ * changing the timbre of the oscillator by altering the harmonics
+ * generated.
  *
- *  @extends {Tone.Source}
- *  @constructor
- *  @param {Frequency} frequency The starting frequency of the oscillator.
- *  @param {Frequency} modulationFrequency The modulation frequency of the width of the pulse.
- *  @example
+ * @param {Frequency} frequency The starting frequency of the oscillator.
+ * @param {Frequency} modulationFrequency The modulation frequency of the width of the pulse.
+ * @example
  *  var pwm = new PWMOscillator("Ab3", 0.3).toMaster().start();
  */
-export class PWMOscillator extends Source<PWMOscillatorOptions> implements OscillatorInterface {
+export class PWMOscillator extends Source<PWMOscillatorOptions> implements ToneOscillatorInterface {
 
 	name = "PWMOscillator";
 
@@ -89,8 +82,12 @@ export class PWMOscillator extends Source<PWMOscillatorOptions> implements Oscil
 	}
 
 	static getDefaults(): PWMOscillatorOptions {
-		return Object.assign(Oscillator.getDefaults(), {
+		return Object.assign(Source.getDefaults(), {
+			detune: 0,
+			frequency: 440,
 			modulationFrequency: 0.4,
+			phase: 0,
+			type: "pwm" as "pwm",
 		});
 	}
 	/**
@@ -123,14 +120,14 @@ export class PWMOscillator extends Source<PWMOscillatorOptions> implements Oscil
 	/**
 	 * The type of the oscillator. Always returns "pwm".
 	 */
-	get type(): PWMOscillatorType {
+	get type(): "pwm" {
 		return "pwm";
 	}
 
 	/**
 	 * The baseType of the oscillator. Always returns "pwm".
 	 */
-	get baseType(): PWMOscillatorType {
+	get baseType(): "pwm" {
 		return "pwm";
 	}
 

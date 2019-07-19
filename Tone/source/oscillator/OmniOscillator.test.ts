@@ -6,6 +6,7 @@ import { OutputAudio } from "test/helper/OutputAudio";
 import { SourceTests } from "test/helper/SourceTests";
 import { FMOscillator } from "./FMOscillator";
 import { OmniOscillator } from "./OmniOscillator";
+import { OmniOscillatorType } from "./OscillatorInterface";
 import { PulseOscillator } from "./PulseOscillator";
 import { PWMOscillator } from "./PWMOscillator";
 
@@ -104,7 +105,7 @@ describe("OmniOscillator", () => {
 
 		it("handles various types", () => {
 			const osc = new OmniOscillator();
-			const types = ["triangle3", "sine", "pulse", "pwm", "amsine4", "fatsquare2", "fmsawtooth"];
+			const types: OmniOscillatorType[] = ["triangle3", "sine", "pulse", "pwm", "amsine4", "fatsquare2", "fmsawtooth"];
 			types.forEach(type => {
 				osc.type = type;
 				expect(osc.type).to.equal(type);
@@ -115,6 +116,7 @@ describe("OmniOscillator", () => {
 		it("throws an error if invalid type is set", () => {
 			const osc = new OmniOscillator();
 			expect(() => {
+				// @ts-ignore
 				osc.type = "invalid";
 			}).to.throw(Error);
 			osc.dispose();
