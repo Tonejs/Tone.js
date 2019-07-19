@@ -111,8 +111,8 @@ export function InstrumentTest(Constr, note, constrArg?, optionsIndex?): void {
 						} else {
 							instance.triggerAttack(secondTrigger);
 						}
-					}, bufferDuration + secondTrigger * 2).then((buffer) => {
-						expect(buffer.getTimeOfLastSound()).to.be.gt(bufferDuration);
+					}, bufferDuration + secondTrigger * 2).then((resultingBuffer) => {
+						expect(resultingBuffer.getTimeOfLastSound()).to.be.gt(bufferDuration);
 					});
 				});
 			});
