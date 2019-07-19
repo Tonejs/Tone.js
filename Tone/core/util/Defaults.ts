@@ -71,12 +71,11 @@ export function defaultArg<T>(given: T, fallback: T): T {
 /**
  * Remove all of the properties belonging to omit from obj.
  */
-export function omitFromObject<T extends object, O extends object>(obj: T, omit: O): Omit<T, keyof O> {
-	for (const prop in omit) {
+export function omitFromObject<T extends object, O extends string[]>(obj: T, omit: O): Omit<T, keyof O> {
+	omit.forEach(prop => {
 		if (Reflect.has(obj, prop)) {
-			// @ts-ignore
 			delete obj[prop];
 		}
-	}
+	});
 	return obj;
 }
