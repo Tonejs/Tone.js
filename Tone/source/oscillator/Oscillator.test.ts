@@ -27,11 +27,11 @@ describe("Oscillator", () => {
 
 		it("can be set with an options object", () => {
 			const osc = new Oscillator();
-			// osc.set({
-			// 	detune: -21,
-			// 	frequency: 231,
-			// 	type: "square",
-			// });
+			osc.set({
+				detune: -21,
+				frequency: 231,
+				type: "square",
+			});
 			expect(osc.frequency.value).to.equal(231);
 			expect(osc.detune.value).to.equal(-21);
 			expect(osc.type).to.equal("square");
