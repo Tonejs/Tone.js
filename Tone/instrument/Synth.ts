@@ -1,4 +1,3 @@
-import { Source } from "Tone/source/Source";
 import { AmplitudeEnvelope } from "../component/envelope/AmplitudeEnvelope";
 import { Envelope, EnvelopeOptions } from "../component/envelope/Envelope";
 import { omitFromObject, optionsFromArguments } from "../core/util/Defaults";
@@ -6,6 +5,7 @@ import { readOnly } from "../core/util/Interface";
 import { RecursivePartial } from "../core/util/Interface";
 import { OmniOscillator } from "../source/oscillator/OmniOscillator";
 import { OmniOscillatorConstructorOptions } from "../source/oscillator/OscillatorInterface";
+import { Source } from "../source/Source";
 import { Monophonic, MonophonicOptions } from "./Monophonic";
 
 export interface SynthOptions extends MonophonicOptions {
