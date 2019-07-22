@@ -5,7 +5,8 @@ import { isString } from "../util/TypeCheck";
 import { ToneAudioBuffer } from "./ToneAudioBuffer";
 
 interface ToneAudioBuffersUrlMap {
-	[key: string]: string | AudioBuffer | ToneAudioBuffer;
+	[name: string]: string | AudioBuffer | ToneAudioBuffer;
+	[name: number]: string | AudioBuffer | ToneAudioBuffer;
 }
 
 interface ToneAudioBuffersOptions {
@@ -67,26 +68,16 @@ export class ToneAudioBuffers extends Tone {
 	constructor() {
 
 		super();
-
-		let urls: ToneAudioBuffersUrlMap | undefined;
-		let options: ToneAudioBuffersOptions | undefined;
-		if (arguments.length === 1 && arguments[0].hasOwnProperty("urls")) {
-			options = optionsFromArguments(ToneAudioBuffers.getDefaults(), arguments, ["urls", "onload", "baseUrl"]);
-			urls = options.urls;
-		} else {
-			urls = arguments[0];
-			const args = Array.from(arguments);
-			args.shift();
-			options = optionsFromArguments(ToneAudioBuffers.getDefaults(), args as unknown as IArguments, ["onload", "baseUrl"]);
-		}
+		const options = optionsFromArguments(
+			ToneAudioBuffers.getDefaults(), arguments, ["urls", "onload", "baseUrl"], "urls",
+		);
 
 		this.baseUrl = options.baseUrl;
-
-		const urlMap: ToneAudioBuffersUrlMap = urls || {};
+		const urlMap: ToneAudioBuffersUrlMap = {};
 		// add each one
-		Object.keys(urlMap).forEach(name => {
+		Object.keys(options.urls).forEach(name => {
 			this._loadingCount++;
-			const url = urlMap[name];
+			const url = options.urls[name];
 			this.add(name, url, this._bufferLoaded.bind(this, (options as ToneAudioBuffersOptions).onload));
 		});
 
@@ -105,8 +96,8 @@ export class ToneAudioBuffers extends Tone {
 	 *  True if the buffers object has a buffer by that name.
 	 *  @param  name  The key or index of the buffer.
 	 */
-	has(name: string): boolean {
-		return this._buffers.has(name);
+	has(name: string | number): boolean {
+		return this._buffers.has(name.toString());
 	}
 
 	/**
@@ -114,9 +105,9 @@ export class ToneAudioBuffers extends Tone {
 	 *  then use the array index.
 	 *  @param  name  The key or index of the buffer.
 	 */
-	get(name: string): ToneAudioBuffer {
+	get(name: string | number): ToneAudioBuffer {
 		this.assert(this.has(name), `ToneAudioBuffers has no buffer named: ${name}`);
-		return this._buffers.get(name) as ToneAudioBuffer;
+		return this._buffers.get(name.toString()) as ToneAudioBuffer;
 	}
 
 	/**
@@ -143,18 +134,18 @@ export class ToneAudioBuffers extends Tone {
 	 *  @param  callback  The callback to invoke when the url is loaded.
 	 */
 	add(
-		name: string,
+		name: string | number,
 		url: string | AudioBuffer | ToneAudioBuffer,
 		callback: () => void = noOp,
 	): this {
 		if (url instanceof ToneAudioBuffer) {
-			this._buffers.set(name, url);
+			this._buffers.set(name.toString(), url);
 			callback();
 		} else if (url instanceof AudioBuffer) {
-			this._buffers.set(name, new ToneAudioBuffer(url));
+			this._buffers.set(name.toString(), new ToneAudioBuffer(url));
 			callback();
 		} else if (isString(url)) {
-			this._buffers.set(name, new ToneAudioBuffer(this.baseUrl + url, callback));
+			this._buffers.set(name.toString(), new ToneAudioBuffer(this.baseUrl + url, callback));
 		}
 		return this;
 	}
@@ -163,8 +154,8 @@ export class ToneAudioBuffers extends Tone {
 	 *  Clean up.
 	 */
 	dispose(): this {
-		// this._buffers.forEach(buffer => buffer.dispose());
-		// this._buffers.clear();
+		this._buffers.forEach(buffer => buffer.dispose());
+		this._buffers.clear();
 		return this;
 	}
 }

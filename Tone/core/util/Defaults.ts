@@ -29,9 +29,27 @@ export function deepMerge<T>(target: T, ...sources: T[]): T {
 /**
  * Convert an args array into an object.
  */
-export function optionsFromArguments<T>(defaults: T, argsArray: IArguments, keys: string[] = []): T {
+export function optionsFromArguments<T extends object>(
+	defaults: T,
+	argsArray: IArguments,
+	keys: string[] = [],
+	objKey?: string,
+): T {
 	const opts: any = {};
 	const args = Array.from(argsArray);
+	// if the first argument is an object and has an object key
+	if (isObject(args[0]) && objKey && !Reflect.has(args[0], objKey)) {
+		// if it's not part of the defaults
+		const partOfDefaults = Object.keys(args[0]).some(key => Reflect.has(defaults, key));
+		if (!partOfDefaults) {
+			// merge that key
+			deepMerge(opts, {[objKey] : args[0]});
+			// remove the obj key from the keys
+			keys.splice(keys.indexOf(objKey), 1);
+			// shift the first argument off
+			args.shift();
+		}
+	}
 	if (args.length === 1 && isObject(args[0])) {
 		deepMerge(opts, args[0]);
 	} else {
