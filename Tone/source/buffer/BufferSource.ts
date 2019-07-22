@@ -4,10 +4,13 @@ import { ToneAudioBuffer } from "../../core/context/ToneAudioBuffer";
 import { defaultArg, optionsFromArguments } from "../../core/util/Defaults";
 import { noOp } from "../../core/util/Interface";
 import { isDefined } from "../../core/util/TypeCheck";
-import { OneShotSource, OneShotSourceOptions } from "../OneShotSource";
+import { OneShotSource, OneShotSourceCurve, OneShotSourceOptions } from "../OneShotSource";
+
+export type ToneBufferSourceCurve = OneShotSourceCurve;
 
 interface ToneBufferSourceOptions extends OneShotSourceOptions {
 	buffer: ToneAudioBuffer;
+	curve: ToneBufferSourceCurve;
 	playbackRate: Positive;
 	fadeIn: Time;
 	fadeOut: Time;
@@ -49,8 +52,8 @@ export class ToneBufferSource extends OneShotSource<ToneBufferSourceOptions> {
 	private _sourceStarted: boolean = false;
 	private _sourceStopped: boolean = false;
 
-	constructor(options?: Partial<ToneBufferSourceOptions>);
 	constructor(buffer?: ToneAudioBuffer | AudioBuffer | string, onload?: () => void);
+	constructor(options?: Partial<ToneBufferSourceOptions>);
 	constructor() {
 
 		super(optionsFromArguments(ToneBufferSource.getDefaults(), arguments, ["buffer", "onload"]));
@@ -79,9 +82,6 @@ export class ToneBufferSource extends OneShotSource<ToneBufferSourceOptions> {
 	static getDefaults(): ToneBufferSourceOptions {
 		return Object.assign(OneShotSource.getDefaults(), {
 			buffer: new ToneAudioBuffer(),
-			curve: "linear",
-			fadeIn: 0,
-			fadeOut: 0,
 			loop: false,
 			loopEnd : 0,
 			loopStart : 0,
@@ -113,10 +113,10 @@ export class ToneBufferSource extends OneShotSource<ToneBufferSourceOptions> {
 	/**
 	 * The curve applied to the fades, either "linear" or "exponential"
 	 */
-	get curve(): "linear" | "exponential" {
+	get curve(): ToneBufferSourceCurve {
 		return this._curve;
 	}
-	set curve(t: "linear" | "exponential") {
+	set curve(t) {
 		this._curve = t;
 	}
 
