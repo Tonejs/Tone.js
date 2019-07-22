@@ -106,7 +106,7 @@ export class Noise extends Source<NoiseOptions> {
 	/**
 	 *  internal start method
 	 */
-	protected _start(time: Time): void {
+	protected _start(time?: Time): void {
 		const buffer = _noiseBuffers[this._type];
 		this._source = new ToneBufferSource(buffer).connect(this.output);
 		this._source.loop = true;
