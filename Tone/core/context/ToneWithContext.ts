@@ -78,7 +78,7 @@ export abstract class ToneWithContext<Options extends ToneWithContextOptions> ex
 	/**
 	 * Convert the incoming time to seconds
 	 */
-	toSeconds(time: Time): Seconds {
+	toSeconds(time?: Time): Seconds {
 		return new TimeClass(this.context, time).toSeconds();
 	}
 
