@@ -1,10 +1,16 @@
 import { Gain } from "../core/context/Gain";
 import { ToneAudioNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
+import { optionsFromArguments } from "../core/util/Defaults";
 import { noOp } from "../core/util/Interface";
 import { PlaybackState } from "../core/util/StateTimeline";
 
+export type OneShotSourceCurve = "linear" | "exponential";
+
 export interface OneShotSourceOptions extends ToneAudioNodeOptions {
 	onended: () => void;
+	fadeIn: Time;
+	fadeOut: Time;
+	curve: OneShotSourceCurve;
 }
 
 export abstract class OneShotSource<Options extends ToneAudioNodeOptions> extends ToneAudioNode<Options> {
@@ -51,20 +57,31 @@ export abstract class OneShotSource<Options extends ToneAudioNodeOptions> extend
 	/**
 	 *  The fadeIn time of the amplitude envelope.
 	 */
-	protected _fadeIn: Time = 0;
+	protected _fadeIn: Time;
 
 	/**
 	 *  The fadeOut time of the amplitude envelope.
 	 */
-	protected _fadeOut: Time = 0;
+	protected _fadeOut: Time;
 
 	/**
 	 * The curve applied to the fades, either "linear" or "exponential"
 	 */
-	protected _curve: "linear" | "exponential" = "linear";
+	protected _curve: OneShotSourceCurve;
+
+	constructor(options: OneShotSourceOptions) {
+		super(options);
+
+		this._fadeIn = options.fadeIn;
+		this._fadeOut = options.fadeOut;
+		this._curve = options.curve;
+	}
 
 	static getDefaults(): OneShotSourceOptions {
 		return Object.assign(ToneAudioNode.getDefaults(), {
+			curve: "linear" as OneShotSourceCurve,
+			fadeIn : 0,
+			fadeOut: 0,
 			onended : noOp,
 		});
 	}
