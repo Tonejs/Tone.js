@@ -20,6 +20,11 @@ export abstract class Instrument<Options extends InstrumentOptions> extends Tone
 	output: OutputNode;
 
 	/**
+	 * The instrument only has an output
+	 */
+	input: undefined;
+
+	/**
 	 * The volume of the output in decibels.
 	 * @example
 	 * source.volume.value = -6;
@@ -86,9 +91,8 @@ export abstract class Instrument<Options extends InstrumentOptions> extends Tone
 	 * Wrap the given method so that it can be synchronized
 	 * @param method Which method to wrap and sync
 	 * @param  timePosition What position the time argument appears in
-	 * @private
 	 */
-	private _syncMethod(method: string, timePosition: number): void {
+	protected _syncMethod(method: string, timePosition: number): void {
 		const originalMethod = this["_original_" + method] = this[method];
 		this[method] = (...args: any[]) => {
 			const time = args[timePosition];
@@ -147,7 +151,7 @@ export abstract class Instrument<Options extends InstrumentOptions> extends Tone
 	 * Trigger the release phase of the current note.
 	 *  @param time when to trigger the release
 	 */
-	abstract triggerRelease(time?: Time): this;
+	abstract triggerRelease(...args: any[]): this;
 	// tslint:disable-next-line: variable-name
 	private _original_triggerRelease = this.triggerRelease;
 

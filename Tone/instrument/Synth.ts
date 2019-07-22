@@ -50,11 +50,6 @@ export class Synth extends Monophonic<SynthOptions> {
 	 */
 	readonly envelope: AmplitudeEnvelope = new AmplitudeEnvelope({ context: this.context });
 
-	/**
-	 * The instrument only has an output
-	 */
-	input: undefined;
-
 	protected _internalChannels = [this.oscillator, this.envelope, this.output];
 
 	constructor(options?: RecursivePartial<SynthOptions>);
