@@ -140,9 +140,10 @@ export class PulseOscillator extends Source<PulseOscillatorOptions> implements T
 	 *  Restart the oscillator
 	 */
 	restart(time?: Time): this {
-		this._sawtooth.restart(time);
-		this._widthGate.gain.cancelScheduledValues(time);
-		this._widthGate.gain.setValueAtTime(1, time);
+		const computedTime = this.toSeconds(time);
+		this._sawtooth.restart(computedTime);
+		this._widthGate.gain.cancelScheduledValues(computedTime);
+		this._widthGate.gain.setValueAtTime(1, computedTime);
 		return this;
 	}
 
