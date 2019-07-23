@@ -1,6 +1,6 @@
 /**
  * The global audio context which is getable and assignable through
- * getContext and setContext
+ * getAudioContext and setAudioContext
  */
 let globalContext: BaseAudioContext;
 
