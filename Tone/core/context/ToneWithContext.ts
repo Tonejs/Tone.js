@@ -6,7 +6,7 @@ import { TransportTimeClass } from "../type/TransportTime";
 import "../type/Units";
 import { getDefaultsFromInstance, omitFromObject, optionsFromArguments } from "../util/Defaults";
 import { RecursivePartial } from "../util/Interface";
-import { isArray, isDefined, isNumber, isString, isUndef } from "../util/TypeCheck";
+import { isArray, isBoolean, isDefined, isNumber, isString, isUndef } from "../util/TypeCheck";
 import { Context } from "./Context";
 
 /**
@@ -116,7 +116,7 @@ export abstract class ToneWithContext<Options extends ToneWithContextOptions> ex
 				} else if (member instanceof ToneWithContext) {
 					defaults[attribute] = member.get();
 				// otherwise make sure it's a serializable type
-				} else if (isArray(member) || isNumber(member) || isString(member)) {
+				} else if (isArray(member) || isNumber(member) || isString(member) || isBoolean(member)) {
 					defaults[attribute] = member;
 				} else {
 					// remove all undefined and unserializable attributes
