@@ -7,6 +7,11 @@ export interface StateTimelineEvent extends TimelineEvent {
 	state: PlaybackState;
 	duration?: Seconds;
 	offset?: Seconds;
+	/**
+	 * Either the buffer is explicitly scheduled to end using the stop method,
+	 * or it's implicitly ended when the buffer is over.
+	 */
+	implicitEnd?: boolean;
 }
 
 /**
