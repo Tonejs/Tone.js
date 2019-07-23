@@ -14,6 +14,14 @@ export function BasicTests(Constr, ...args: any[]): void {
 		it("can be created and disposed", () => {
 			const instance = new Constr(...args);
 			instance.dispose();
+			// check that all of the attributes were disposed
+			expect(instance.disposed).to.equal(true);
+			// also check all of it's attributes to see if they also have the right context
+			for (const member in instance) {
+				if (instance[member] instanceof Tone && member !== "context") {
+					expect(instance[member].disposed, `member ${member}`).to.equal(true);
+				}
+			}
 		});
 
 		it("extends Tone", () => {
