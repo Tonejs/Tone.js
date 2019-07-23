@@ -191,7 +191,8 @@ implements AbstractParam<Type> {
 			value: numericValue,
 		});
 		this.log("setValue", value, time);
-		this.assert(isNumber(numericValue), `Invalid argument to setValueAtTime: ${numericValue}, ${time}`);
+		this.assert(isNumber(numericValue) && isNumber(time),
+			`Invalid argument to setValueAtTime: ${numericValue}, ${time}`);
 		this._param.setValueAtTime(numericValue, time);
 		return this;
 	}
@@ -258,7 +259,8 @@ implements AbstractParam<Type> {
 			value : numericValue,
 		});
 		this.log("linear", value, endTime);
-		this.assert(isNumber(numericValue), `Invalid argument to linearRampToValueAtTime: ${numericValue}, ${endTime}`);
+		this.assert(isNumber(numericValue) && isNumber(endTime),
+			`Invalid argument(s) to linearRampToValueAtTime: ${numericValue}, ${endTime}`);
 		this._param.linearRampToValueAtTime(numericValue, endTime);
 		return this;
 	}
@@ -274,7 +276,8 @@ implements AbstractParam<Type> {
 			value : numericValue,
 		});
 		this.log("exponential", value, endTime);
-		this.assert(isNumber(numericValue), `Invalid argument to exponentialRampToValueAtTime: ${numericValue}, ${endTime}`);
+		this.assert(isNumber(numericValue) && isNumber(endTime),
+			`Invalid argument(s) to exponentialRampToValueAtTime: ${numericValue}, ${endTime}`);
 		this._param.exponentialRampToValueAtTime(numericValue, endTime);
 		return this;
 	}
@@ -318,7 +321,8 @@ implements AbstractParam<Type> {
 			value: numericValue,
 		});
 		this.log("setTarget", value, startTime, timeConstant);
-		this.assert(isNumber(numericValue), `Invalid argument to setTargetAtTime: ${numericValue}, ${startTime}`);
+		this.assert(isNumber(numericValue) && isNumber(startTime),
+			`Invalid argument(s) to setTargetAtTime: ${numericValue}, ${startTime}`);
 		this._param.setTargetAtTime(numericValue, startTime, timeConstant);
 		return this;
 	}
