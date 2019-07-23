@@ -2,7 +2,7 @@ import { Volume } from "../component/channel/Volume";
 import { ToneAudioNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
 import { defaultArg, optionsFromArguments } from "../core/util/Defaults";
 import { noOp, readOnly } from "../core/util/Interface";
-import { PlaybackState, StateTimeline, StateTimelineEvent } from "../core/util/StateTimeline";
+import { BasicPlaybackState, StateTimeline } from "../core/util/StateTimeline";
 import { isUndef } from "../core/util/TypeCheck";
 
 export interface SourceOptions extends ToneAudioNodeOptions {
@@ -66,7 +66,15 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 	 *  @type {Tone.StateTimeline}
 	 *  @private
 	 */
-	protected _state: StateTimeline = new StateTimeline("stopped");
+	protected _state: StateTimeline<{
+		duration?: Seconds;
+		offset?: Seconds;
+		/**
+		 * Either the buffer is explicitly scheduled to end using the stop method,
+		 * or it's implicitly ended when the buffer is over.
+		 */
+		implicitEnd?: boolean;
+	}> = new StateTimeline("stopped");
 
 	/**
 	 *  The synced `start` callback function from the transport
@@ -111,15 +119,15 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 	/**
 	 *  Returns the playback state of the source, either "started" or "stopped".
 	 */
-	get state(): PlaybackState {
+	get state(): BasicPlaybackState {
 		if (this._synced) {
 			if (this.context.transport.state === "started") {
-				return this._state.getValueAtTime(this.context.transport.seconds);
+				return this._state.getValueAtTime(this.context.transport.seconds) as BasicPlaybackState;
 			} else {
 				return "stopped";
 			}
 		} else {
-			return this._state.getValueAtTime(this.now());
+			return this._state.getValueAtTime(this.now()) as BasicPlaybackState;
 		}
 	}
 

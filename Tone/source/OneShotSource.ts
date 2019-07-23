@@ -1,8 +1,7 @@
 import { Gain } from "../core/context/Gain";
 import { ToneAudioNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
-import { optionsFromArguments } from "../core/util/Defaults";
 import { noOp } from "../core/util/Interface";
-import { PlaybackState } from "../core/util/StateTimeline";
+import { BasicPlaybackState } from "../core/util/StateTimeline";
 
 export type OneShotSourceCurve = "linear" | "exponential";
 
@@ -185,7 +184,7 @@ export abstract class OneShotSource<Options extends ToneAudioNodeOptions> extend
 	/**
 	 *  Get the playback state at the given time
 	 */
-	getStateAtTime = function(time: Time): PlaybackState {
+	getStateAtTime = function(time: Time): BasicPlaybackState {
 		const computedTime = this.toSeconds(time);
 		if (this._startTime !== -1 && computedTime >= this._startTime &&
 			(this._stopTime === -1 || computedTime <= this._stopTime)) {
@@ -198,7 +197,7 @@ export abstract class OneShotSource<Options extends ToneAudioNodeOptions> extend
 	/**
 	 * Get the playback state at the current time
 	 */
-	get state(): PlaybackState {
+	get state(): BasicPlaybackState {
 		return this.getStateAtTime(this.now());
 	}
 
