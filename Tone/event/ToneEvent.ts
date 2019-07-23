@@ -3,7 +3,7 @@ import { ToneWithContext, ToneWithContextOptions } from "../core/context/ToneWit
 import { TicksClass } from "../core/type/Ticks";
 import { defaultArg, optionsFromArguments } from "../core/util/Defaults";
 import { noOp } from "../core/util/Interface";
-import { PlaybackState, StateTimeline } from "../core/util/StateTimeline";
+import { BasicPlaybackState, StateTimeline } from "../core/util/StateTimeline";
 import { isBoolean, isDefined, isNumber } from "../core/util/TypeCheck";
 
 type ToneEventCallback = (time: Seconds, value: any) => void;
@@ -71,7 +71,7 @@ export class ToneEvent extends ToneWithContext<ToneEventOptions> {
 	/**
 	 *  Tracks the scheduled events
 	 */
-	private _state: StateTimeline = new StateTimeline("stopped");
+	private _state: StateTimeline<{id: number}> = new StateTimeline("stopped");
 
 	/**
 	 *  The playback speed of the note. A speed of 1
@@ -143,7 +143,7 @@ export class ToneEvent extends ToneWithContext<ToneEventOptions> {
 		this._state.forEachFrom(after, event => {
 			let duration;
 			if (event.state === "started") {
-				if (isDefined(event.id)) {
+				if (event.id !== -1) {
 					this.context.transport.clear(event.id);
 				}
 				const startTick = event.time + Math.round(this.startOffset / this._playbackRate);
@@ -158,7 +158,7 @@ export class ToneEvent extends ToneWithContext<ToneEventOptions> {
 					}
 					if (duration !== Infinity) {
 						// schedule a stop since it's finite duration
-						this._state.setStateAtTime("stopped", startTick + duration + 1);
+						this._state.setStateAtTime("stopped", startTick + duration + 1, { id : -1 });
 						duration = new TicksClass(this.context, duration);
 					}
 					const interval = new TicksClass(this.context, this._getLoopDuration());
@@ -174,8 +174,8 @@ export class ToneEvent extends ToneWithContext<ToneEventOptions> {
 	/**
 	 *  Returns the playback state of the note, either "started" or "stopped".
 	 */
-	get state(): PlaybackState {
-		return this._state.getValueAtTime(this.context.transport.ticks);
+	get state(): BasicPlaybackState {
+		return this._state.getValueAtTime(this.context.transport.ticks) as BasicPlaybackState;
 	}
 
 	/**
@@ -221,7 +221,7 @@ export class ToneEvent extends ToneWithContext<ToneEventOptions> {
 		time = this.toTicks(time);
 		if (this._state.getValueAtTime(time) === "stopped") {
 			this._state.add({
-				id : undefined,
+				id : -1,
 				state : "started",
 				time,
 			});
@@ -238,7 +238,7 @@ export class ToneEvent extends ToneWithContext<ToneEventOptions> {
 		this.cancel(time);
 		time = this.toTicks(time);
 		if (this._state.getValueAtTime(time) === "started") {
-			this._state.setStateAtTime("stopped", time);
+			this._state.setStateAtTime("stopped", time, { id: -1 });
 			const previousEvent = this._state.getBefore(time);
 			let reschedulTime = time;
 			if (previousEvent !== null) {
@@ -257,7 +257,7 @@ export class ToneEvent extends ToneWithContext<ToneEventOptions> {
 		time = defaultArg(time, -Infinity);
 		time = this.toTicks(time);
 		this._state.forEachFrom(time, event => {
-			this.context.transport.clear(event.id as number);
+			this.context.transport.clear(event.id);
 		});
 		this._state.cancel(time);
 		return this;

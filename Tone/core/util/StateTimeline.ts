@@ -1,24 +1,18 @@
 // import "../type/Type";
 import { Timeline, TimelineEvent } from "./Timeline";
 
-export type PlaybackState = "started" | "stopped" | "paused";
+export type BasicPlaybackState = "started" | "stopped";
+export type PlaybackState = BasicPlaybackState | "paused";
 
 export interface StateTimelineEvent extends TimelineEvent {
 	state: PlaybackState;
-	duration?: Seconds;
-	offset?: Seconds;
-	/**
-	 * Either the buffer is explicitly scheduled to end using the stop method,
-	 * or it's implicitly ended when the buffer is over.
-	 */
-	implicitEnd?: boolean;
 }
 
 /**
  *  A Timeline State. Provides the methods: `setStateAtTime("state", time)` and `getValueAtTime(time)`
  *  @param initial The initial state of the StateTimeline.  Defaults to `undefined`
  */
-export class StateTimeline extends Timeline<StateTimelineEvent> {
+export class StateTimeline<AdditionalOptions extends {} = {}> extends Timeline<StateTimelineEvent & AdditionalOptions> {
 
 	/**
 	 *  The initial state
@@ -47,16 +41,17 @@ export class StateTimeline extends Timeline<StateTimelineEvent> {
 
 	/**
 	 *  Add a state to the timeline.
-	 *  @param  state The name of the state to set.
-	 *  @param  time  The time to query.
+	 * @param  state The name of the state to set.
+	 * @param  time  The time to query.
+	 * @param options Any additional options that are needed in the timeline.
 	 */
-	setStateAtTime(state: PlaybackState, time: Seconds): this {
+	setStateAtTime(state: PlaybackState, time: Seconds, options?: AdditionalOptions): this {
 		// all state changes need to be >= the previous state time
 		// TODO throw error if time < the previous event time
-		this.add({
+		this.add(Object.assign({}, options, {
 			state,
 			time,
-		});
+		}));
 		return this;
 	}
 
@@ -66,7 +61,7 @@ export class StateTimeline extends Timeline<StateTimelineEvent> {
 	 *  @param  time  When to check before
 	 *  @return  The event with the given state before the time
 	 */
-	getLastState(state: PlaybackState, time: number): StateTimelineEvent | undefined {
+	getLastState(state: PlaybackState, time: number): StateTimelineEvent & AdditionalOptions | undefined {
 		// time = this.toSeconds(time);
 		const index = this._search(time);
 		for (let i = index; i >= 0; i--) {
@@ -83,7 +78,7 @@ export class StateTimeline extends Timeline<StateTimelineEvent> {
 	 *  @param  time  When to check from
 	 *  @return  The event with the given state after the time
 	 */
-	getNextState(state: PlaybackState, time: number): StateTimelineEvent | undefined {
+	getNextState(state: PlaybackState, time: number): StateTimelineEvent & AdditionalOptions | undefined {
 		// time = this.toSeconds(time);
 		const index = this._search(time);
 		if (index !== -1) {

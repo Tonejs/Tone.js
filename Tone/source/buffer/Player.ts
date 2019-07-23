@@ -1,4 +1,3 @@
-import { StateTimelineEvent } from "Tone/core/util/StateTimeline";
 import { ToneAudioBuffer } from "../../core/context/ToneAudioBuffer";
 import { defaultArg, optionsFromArguments } from "../../core/util/Defaults";
 import { noOp } from "../../core/util/Interface";
@@ -220,9 +219,9 @@ export class Player extends Source<PlayerOptions> {
 		// set the looping properties
 		if (!this._loop && !this._synced) {
 			// if it's not looping, set the state change at the end of the sample
-			this._state.setStateAtTime("stopped", startTime + computedDuration);
-			// mark that ending as an implicit ending
-			(this._state.get(startTime + computedDuration) as StateTimelineEvent).implicitEnd = true;
+			this._state.setStateAtTime("stopped", startTime + computedDuration, {
+				implicitEnd: true,
+			});
 		}
 
 		// add it to the array of active sources
