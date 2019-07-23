@@ -1,5 +1,6 @@
 import { expect } from "chai";
 import "Tone/core/clock/Transport";
+import "Tone/core/context/Destination";
 import { OfflineContext } from "Tone/core/context/OfflineContext";
 import { ToneWithContext } from "Tone/core/context/ToneWithContext";
 import { Tone } from "Tone/core/Tone";
