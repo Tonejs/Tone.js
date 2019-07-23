@@ -146,7 +146,7 @@ export abstract class ToneWithContext<Options extends ToneWithContextOptions> ex
 	set(props: RecursivePartial<Options>): this {
 		Object.keys(props).forEach(attribute => {
 			if (Reflect.has(this, attribute) && isDefined(this[attribute])) {
-				if (isDefined(this[attribute].value) && isDefined(this[attribute].setValueAtTime)) {
+				if (this[attribute] && isDefined(this[attribute].value) && isDefined(this[attribute].setValueAtTime)) {
 					this[attribute].value = props[attribute];
 				} else if (this[attribute] instanceof ToneWithContext) {
 					this[attribute].set(props[attribute]);
