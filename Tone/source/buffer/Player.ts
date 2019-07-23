@@ -73,7 +73,7 @@ export class Player extends Source<PlayerOptions> {
 	/**
 	 *  All of the active buffer source nodes
 	 */
-	private _activeSources: ToneBufferSource[] = [];
+	private _activeSources: Set<ToneBufferSource> = new Set();
 
 	/**
 	 *  The fadeIn time of the amplitude envelope.
@@ -102,7 +102,6 @@ export class Player extends Source<PlayerOptions> {
 		this._loopStart = options.loopStart;
 		this._loopEnd = options.loopEnd;
 		this._playbackRate = options.playbackRate;
-		this._activeSources = [];
 		this.fadeIn = options.fadeIn;
 		this.fadeOut = options.fadeOut;
 	}
@@ -150,9 +149,8 @@ export class Player extends Source<PlayerOptions> {
 	 * Internal callback when the buffer is done playing.
 	 */
 	private _onSourceEnd(source: ToneBufferSource): void {
-		const index = this._activeSources.indexOf(source);
-		this._activeSources.splice(index, 1);
-		if (this._activeSources.length === 0 && !this._synced) {
+		this._activeSources.delete(source);
+		if (this._activeSources.size === 0 && !this._synced) {
 			this._state.setStateAtTime("stopped", this.now());
 		}
 	}
@@ -225,7 +223,7 @@ export class Player extends Source<PlayerOptions> {
 		}
 
 		// add it to the array of active sources
-		this._activeSources.push(source);
+		this._activeSources.add(source);
 
 		// start it
 		if (this._loop && isUndef(duration)) {
@@ -402,6 +400,7 @@ export class Player extends Source<PlayerOptions> {
 		super.dispose();
 		// disconnect all of the players
 		this._activeSources.forEach(source => source.dispose());
+		this._activeSources.clear();
 		this._buffer.dispose();
 		return this;
 	}
