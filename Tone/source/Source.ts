@@ -73,7 +73,7 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 	 *  @type {Function}
 	 *  @private
 	 */
-	private _synced = false;
+	protected _synced = false;
 
 	/**
 	 *  Keep track of all of the scheduled event ids
@@ -144,17 +144,16 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 	/**
 	 *  Start the source at the specified time. If no time is given,
 	 *  start the source now.
-	 *  @param  {Time} [time=now] When the source should be started.
+	 *  @param  time When the source should be started.
 	 *  @returns {Source} this
 	 *  @example
 	 * source.start("+0.5"); //starts the source 0.5 seconds from now
 	 */
-	start(time?: Time, offset?: Time, duration?: Time): this {
+	start(time?: Time, offset?: Time, duration: Time = 0): this {
 		if (isUndef(time) && this._synced) {
 			time = this.context.transport.seconds;
 		} else {
 			time = this.toSeconds(time);
-			time = Math.max(time, this.context.currentTime);
 		}
 		// if it's started, stop it and restart it
 		if (this._state.getValueAtTime(time) === "started") {
@@ -199,7 +198,6 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 			time = this.context.transport.seconds;
 		} else {
 			time = this.toSeconds(time);
-			time = Math.max(time, this.context.currentTime);
 		}
 		if (!this._synced) {
 			this._stop.apply(this, arguments);
