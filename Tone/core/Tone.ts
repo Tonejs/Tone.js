@@ -50,7 +50,7 @@ export abstract class Tone {
 	/**
 	 * Set this debug flag to log all events that happen in this class.
 	 */
-	protected debug: boolean = false;
+	debug: boolean = false;
 
 	/**
 	 * Prints the outputs to the console log for debugging purposes.
@@ -65,11 +65,12 @@ export abstract class Tone {
 	protected log(...args): void {
 		// if the object is either set to debug = true
 		// or if there is a string on the Tone.global.with the class name
-		// if (this.debug || this.toString() === global.TONE_DEBUG_CLASS) {
-		// 	args.unshift(this.toString() + ":");
-		// 	// eslint-disable-next-line no-console
-		// 	console.log(...args);
-		// }
+		// @ts-ignore
+		if (this.debug || this.toString() === global.TONE_DEBUG_CLASS) {
+			args.unshift(this.toString() + ":");
+			// tslint:disable-next-line: no-console
+			console.log(...args);
+		}
 	}
 
 	/**
