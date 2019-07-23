@@ -285,6 +285,7 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 	 * Clean up.
 	 */
 	dispose(): this {
+		super.dispose();
 		this.unsync();
 		this._volume.dispose();
 		this._state.dispose();

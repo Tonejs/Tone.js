@@ -323,11 +323,4 @@ export abstract class TimeBaseClass<Type extends number, Unit extends string> ex
 	toMilliseconds(): Milliseconds {
 		return this.toSeconds() * 1000;
 	}
-
-	/**
-	 * clean up
-	 */
-	dispose(): this {
-		return this;
-	}
 }

@@ -379,6 +379,7 @@ export class Context extends Emitter<"statechange" | "tick"> implements BaseAudi
 	 *  Clean up. Also closes the audio context.
 	 */
 	dispose(): this {
+		super.dispose();
 		this._ticker.dispose();
 		this._timeouts.dispose();
 		Object.keys(this._constants).map(val => this._constants[val].disconnect());

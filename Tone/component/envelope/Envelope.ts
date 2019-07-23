@@ -384,11 +384,8 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 		return this;
 	}
 
-	/**
-	 *  Disconnect and dispose.
-	 *  @returns {Envelope} this
-	 */
 	dispose(): this {
+		super.dispose();
 		this._sig.dispose();
 		return this;
 	}

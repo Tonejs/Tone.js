@@ -160,6 +160,7 @@ export abstract class Instrument<Options extends InstrumentOptions> extends Tone
 	 *  @returns {Instrument} this
 	 */
 	dispose(): this {
+		super.dispose();
 		this._volume.dispose();
 		this.unsync();
 		this._scheduledEvents = [];

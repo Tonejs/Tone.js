@@ -142,7 +142,10 @@ export class TickSource<Type extends BPM | Hertz> extends ToneWithContext<TickSo
 	 */
 	getTicksAtTime(time: Time): Ticks {
 		const computedTime = this.toSeconds(time);
-		const stopEvent = this._state.getLastState("stopped", computedTime) as StateTimelineEvent;
+		const stopEvent = this._state.getLastState("stopped", computedTime);
+		if (!stopEvent) {
+			return 0;
+		}
 		// this event allows forEachBetween to iterate until the current time
 		const tmpEvent: StateTimelineEvent = { state: "paused", time: computedTime};
 		this._state.add(tmpEvent);
@@ -206,7 +209,10 @@ export class TickSource<Type extends BPM | Hertz> extends ToneWithContext<TickSo
 	 */
 	getSecondsAtTime(time: Time): Seconds {
 		time = this.toSeconds(time);
-		const stopEvent = this._state.getLastState("stopped", time) as StateTimelineEvent;
+		const stopEvent = this._state.getLastState("stopped", time);
+		if (!stopEvent) {
+			return 0;
+		}
 		// this event allows forEachBetween to iterate until the current time
 		const tmpEvent: StateTimelineEvent = { state : "paused", time };
 		this._state.add(tmpEvent);
@@ -337,6 +343,7 @@ export class TickSource<Type extends BPM | Hertz> extends ToneWithContext<TickSo
 	 *  Clean up
 	 */
 	dispose(): this {
+		super.dispose();
 		this._state.dispose();
 		this._tickOffset.dispose();
 		this.frequency.dispose();

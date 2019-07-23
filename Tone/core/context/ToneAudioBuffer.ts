@@ -154,6 +154,7 @@ export class ToneAudioBuffer extends Tone {
 	 *  clean up
 	 */
 	dispose(): this {
+		super.dispose();
 		this._buffer = undefined;
 		return this;
 	}

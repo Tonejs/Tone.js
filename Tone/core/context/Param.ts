@@ -389,6 +389,7 @@ implements AbstractParam<Type> {
 	}
 
 	dispose(): this {
+		super.dispose();
 		this._events.dispose();
 		return this;
 	}

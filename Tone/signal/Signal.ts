@@ -77,6 +77,12 @@ implements AbstractParam<Type> {
 		return this;
 	}
 
+	dispose(): this {
+		super.dispose();
+		this._param.dispose();
+		return this;
+	}
+
 	///////////////////////////////////////////////////////////////////////////
 	// ABSTRACT PARAM INTERFACE
 	// just a proxy for the ConstantSourceNode's offset AudioParam

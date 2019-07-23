@@ -213,4 +213,10 @@ export abstract class OneShotSource<Options extends ToneAudioNodeOptions> extend
 		this._stopTime = -1;
 		return this;
 	}
+
+	dispose(): this {
+		super.dispose();
+		this._gainNode.disconnect();
+		return this;
+	}
 }

@@ -248,6 +248,7 @@ extends ToneWithContext<Options> {
 	 * Dispose and disconnect
 	 */
 	dispose(): this {
+		super.dispose();
 		if (isDefined(this.input)) {
 			if (isArray(this.input)) {
 				this.input.forEach(input => {
@@ -257,10 +258,10 @@ extends ToneWithContext<Options> {
 						input.disconnect();
 					}
 				});
-			} else {
-				if (this.input instanceof AudioNode) {
-					this.input.disconnect();
-				}
+			} else if (this.input instanceof ToneAudioNode) {
+				this.input.dispose();
+			} else if (this.input instanceof AudioNode) {
+				this.input.disconnect();
 			}
 		}
 		if (isDefined(this.output)) {
@@ -272,7 +273,9 @@ extends ToneWithContext<Options> {
 						output.disconnect();
 					}
 				});
-			} else {
+			} else if (this.output instanceof ToneAudioNode) {
+				this.output.dispose();
+			} else if (this.output instanceof AudioNode) {
 				this.output.disconnect();
 			}
 		}

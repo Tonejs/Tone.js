@@ -32,11 +32,6 @@ export abstract class Tone {
 	protected abstract name: string;
 
 	/**
-	 *  disconnect and dispose.
-	 */
-	abstract dispose(): this;
-
-	/**
 	 * Takes a partial options an returns the completed options by filling in the defaults
 	 */
 	static getDefaults(): BaseToneOptions {
@@ -83,6 +78,32 @@ export abstract class Tone {
 		if (!statement) {
 			throw new Error(error);
 		}
+	}
+
+	///////////////////////////////////////////////////////////////////////////
+	// 	DISPOSING
+	///////////////////////////////////////////////////////////////////////////
+
+	/**
+	 * Indicates if the instance was disposed
+	 */
+	private _wasDisposed: boolean = false;
+
+	/**
+	 *  disconnect and dispose.
+	 */
+	dispose(): this {
+		this._wasDisposed = true;
+		return this;
+	}
+
+	/**
+	 * Indicates if the instance was disposed. 'Disposing' an
+	 * instance means that all of the Web Audio nodes that were
+	 * created for the instance are disconnected and freed for garbage collection.
+	 */
+	get disposed(): boolean {
+		return this._wasDisposed;
 	}
 
 	///////////////////////////////////////////////////////////////////////////
