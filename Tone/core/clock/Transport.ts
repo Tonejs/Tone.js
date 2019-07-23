@@ -258,7 +258,7 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 	 */
 	scheduleRepeat(
 		callback: TransportCallback,
-		interval: Time,
+		interval: Time | TimeClass,
 		startTime?: TransportTime | TransportTimeClass,
 		duration: Time = Infinity,
 	): number {
