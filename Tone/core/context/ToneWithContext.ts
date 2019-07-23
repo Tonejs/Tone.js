@@ -92,7 +92,7 @@ export abstract class ToneWithContext<Options extends ToneWithContextOptions> ex
 	/**
 	 * Convert the input time into ticks
 	 */
-	toTicks(time: Time): Ticks {
+	toTicks(time: Time | TimeClass): Ticks {
 		return new TransportTimeClass(this.context, time).toTicks();
 	}
 
