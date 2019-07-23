@@ -14,7 +14,11 @@ export function deepMerge<T>(target: T, ...sources: T[]): T {
 
 	if (isObject(target) && isObject(source)) {
 		for (const key in source) {
-			if (isObject(source[key])) {
+			// values with the key 'value' are an exception
+			// they don't get deep merged
+			if (key === "value") {
+				target[key] = source[key];
+			} else if (isObject(source[key])) {
 				if (!target[key]) { Object.assign(target, { [key]: {} }); }
 				deepMerge(target[key], source[key] as any);
 			} else {
