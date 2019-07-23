@@ -60,7 +60,7 @@ export class ToneBufferSource extends OneShotSource<ToneBufferSourceOptions> {
 		const options = optionsFromArguments(ToneBufferSource.getDefaults(), arguments, ["buffer", "onload"]);
 
 		connect(this._source, this._gainNode);
-		this._source.onended = this._stopSource.bind(this);
+		this._source.onended = () => this._stopSource();
 
 		/**
 		 *  The playbackRate of the buffer
@@ -178,27 +178,11 @@ export class ToneBufferSource extends OneShotSource<ToneBufferSourceOptions> {
 		return this;
 	}
 
-	protected _stopSource(): void {
+	protected _stopSource(time?: Seconds): void {
 		if (!this._sourceStopped) {
 			this._sourceStopped = true;
-			// allow additional time for the exponential curve to fully decay
-			const additionalTail = this._curve === "exponential" ? this.toSeconds(this._fadeOut) * 2 : 0;
-			if (this._sourceStarted && this._stopTime !== -1) {
-				this._source.stop(this._stopTime + additionalTail);
-			}
-
-			this.onended();
-			// remove the onended callback
-			this.onended = noOp;
-
-			// dispose the source after it's come to a stop
-			setTimeout(() => {
-				// if it hasn't already been disposed
-				if (this._source) {
-					this._source.disconnect();
-					this._gainNode.disconnect();
-				}
-			}, additionalTail * 1000 + 100);
+			this._source.stop(this.toSeconds(time));
+			this._onended();
 		}
 	}
 

@@ -161,12 +161,25 @@ export abstract class OneShotSource<Options extends ToneAudioNodeOptions> extend
 		}
 		this.context.clearTimeout(this._timeout);
 		this._timeout = this.context.setTimeout(() => {
-			this._stopSource(this.now());
-			this.onended();
-			// disconnect when it's ended, to free up for garbage collection
-			setTimeout(() => this._gainNode.disconnect(), 100);
+			// allow additional time for the exponential curve to fully decay
+			const additionalTail = this._curve === "exponential" ? this.toSeconds(this._fadeOut) * 2 : 0;
+			this._stopSource(this.now() + additionalTail);
+			this._onended();
 		}, this._stopTime - this.context.currentTime);
 		return this;
+	}
+
+	/**
+	 * Invoke the onended callback
+	 */
+	protected _onended(): void {
+		if (this.onended !== noOp) {
+			this.onended();
+			// overwrite onended to make sure it only is called once
+			this.onended = noOp;
+			// dispose when it's ended to free up for garbage collection
+			setTimeout(() => this.dispose(), 1000);
+		}
 	}
 
 	/**
