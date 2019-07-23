@@ -1,4 +1,5 @@
 import { expect } from "chai";
+import "Tone/core/clock/Transport";
 import { OfflineContext } from "Tone/core/context/OfflineContext";
 import { ToneWithContext } from "Tone/core/context/ToneWithContext";
 import { Tone } from "Tone/core/Tone";
@@ -45,7 +46,5 @@ export function BasicTests(Constr, ...args: any[]): void {
 			}
 			instance.dispose();
 		});
-
 	});
-
 }
