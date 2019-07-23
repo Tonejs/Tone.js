@@ -1,3 +1,4 @@
+import { TransportTimeClass } from "Tone/core/type/TransportTime";
 import "../core/clock/Transport";
 import { ToneWithContext, ToneWithContextOptions } from "../core/context/ToneWithContext";
 import { TicksClass } from "../core/type/Ticks";
@@ -6,15 +7,15 @@ import { noOp } from "../core/util/Interface";
 import { BasicPlaybackState, StateTimeline } from "../core/util/StateTimeline";
 import { isBoolean, isDefined, isNumber } from "../core/util/TypeCheck";
 
-type ToneEventCallback = (time: Seconds, value: any) => void;
+export type ToneEventCallback = (time: Seconds, value: any) => void;
 
-interface ToneEventOptions extends ToneWithContextOptions {
+export interface ToneEventOptions extends ToneWithContextOptions {
 	callback: ToneEventCallback;
 	loop: boolean | number;
 	loopEnd: Time;
 	loopStart: Time;
 	playbackRate: Positive;
-	value: any;
+	value?: any;
 	probability: NormalRange;
 	mute: boolean;
 	humanize: boolean | Time;
@@ -45,7 +46,7 @@ export class ToneEvent extends ToneWithContext<ToneEventOptions> {
 	/**
 	 *  Loop value
 	 */
-	private _loop: boolean | number;
+	protected _loop: boolean | number;
 
 	/**
 	 *  The callback to invoke.
@@ -61,38 +62,40 @@ export class ToneEvent extends ToneWithContext<ToneEventOptions> {
 	/**
 	 *  When the note is scheduled to start.
 	 */
-	private _loopStart: Ticks;
+	protected _loopStart: Ticks;
 
 	/**
 	 *  When the note is scheduled to start.
 	 */
-	private _loopEnd: Ticks;
+	protected _loopEnd: Ticks;
 
 	/**
 	 *  Tracks the scheduled events
 	 */
-	private _state: StateTimeline<{id: number}> = new StateTimeline("stopped");
+	protected _state: StateTimeline<{
+		id: number,
+	}> = new StateTimeline("stopped");
 
 	/**
 	 *  The playback speed of the note. A speed of 1
 	 *  is no change.
 	 */
-	private _playbackRate: Positive;
+	protected _playbackRate: Positive;
 
 	/**
 	 *  A delay time from when the event is scheduled to start
 	 */
-	private _startOffset: Ticks = 0;
+	protected _startOffset: Ticks = 0;
 
 	/**
 	 *  private holder of probability value
 	 */
-	private _probability: NormalRange;
+	protected _probability: NormalRange;
 
 	/**
 	 *  the amount of variation from the given time.
 	 */
-	private _humanize: boolean | Time;
+	protected _humanize: boolean | Time;
 
 	/**
 	 *  If mute is true, the callback won't be invoked.
@@ -179,12 +182,12 @@ export class ToneEvent extends ToneWithContext<ToneEventOptions> {
 	}
 
 	/**
-	 *  The start from the scheduled start time
+	 * The start from the scheduled start time.
 	 */
-	protected get startOffset(): Ticks {
+	get startOffset(): Ticks {
 		return this._startOffset;
 	}
-	protected set startOffset(offset) {
+	set startOffset(offset) {
 		this._startOffset = offset;
 	}
 
@@ -217,7 +220,7 @@ export class ToneEvent extends ToneWithContext<ToneEventOptions> {
 	 *  Start the note at the given time.
 	 *  @param  time  When the event should start.
 	 */
-	start(time?: TransportTime): this {
+	start(time?: TransportTime | TransportTimeClass): this {
 		time = this.toTicks(time);
 		if (this._state.getValueAtTime(time) === "stopped") {
 			this._state.add({
@@ -234,7 +237,7 @@ export class ToneEvent extends ToneWithContext<ToneEventOptions> {
 	 *  Stop the Event at the given time.
 	 *  @param  time  When the event should stop.
 	 */
-	stop(time?: TransportTime): this {
+	stop(time?: TransportTime | TransportTimeClass): this {
 		this.cancel(time);
 		time = this.toTicks(time);
 		if (this._state.getValueAtTime(time) === "started") {
@@ -253,7 +256,7 @@ export class ToneEvent extends ToneWithContext<ToneEventOptions> {
 	 *  Cancel all scheduled events greater than or equal to the given time
 	 *  @param  time  The time after which events will be cancel.
 	 */
-	cancel(time?: TransportTime): this {
+	cancel(time?: TransportTime | TransportTimeClass): this {
 		time = defaultArg(time, -Infinity);
 		time = this.toTicks(time);
 		this._state.forEachFrom(time, event => {
@@ -267,9 +270,8 @@ export class ToneEvent extends ToneWithContext<ToneEventOptions> {
 	 *  The callback function invoker. Also
 	 *  checks if the Event is done playing
 	 *  @param  time  The time of the event in seconds
-	 *  @private
 	 */
-	private _tick(time: Seconds): void {
+	protected _tick(time: Seconds): void {
 		const ticks = this.context.transport.getTicksAtTime(time);
 		if (!this.mute && this._state.getValueAtTime(ticks) === "started") {
 			if (this.probability < 1 && Math.random() > this.probability) {
@@ -289,7 +291,7 @@ export class ToneEvent extends ToneWithContext<ToneEventOptions> {
 	/**
 	 *  Get the duration of the loop.
 	 */
-	private _getLoopDuration(): Ticks {
+	protected _getLoopDuration(): Ticks {
 		return Math.round((this._loopEnd - this._loopStart) / this._playbackRate);
 	}
 
