@@ -21,8 +21,7 @@ interface ToneBufferSourceOptions extends OneShotSourceOptions {
 }
 
 /**
- *  @class Wrapper around the native BufferSourceNode.
- *  @extends {Tone.AudioNode}
+ *  Wrapper around the native BufferSourceNode.
  *  @param  buffer   The buffer to play
  *  @param  onended  The callback to invoke when the buffer is done playing.
  */
@@ -208,9 +207,6 @@ export class ToneBufferSource extends OneShotSource<ToneBufferSourceOptions> {
 
 	/**
 	 * The audio buffer belonging to the player.
-	 * @memberOf ToneBufferSource#
-	 * @type {Tone.Buffer}
-	 * @name buffer
 	 */
 	get buffer(): ToneAudioBuffer {
 		return this._buffer;
