@@ -191,6 +191,31 @@ describe("Param", () => {
 
 	context("Units", () => {
 
+		it("throws an error with invalid values", () => {
+			const osc = audioContext.createOscillator();
+			const param = new Param<Frequency>({
+				context: audioContext,
+				param : osc.frequency,
+				units : "frequency",
+			});
+			expect(() => {
+				expect(param.setValueAtTime("bad", "bad"));
+			}).to.throw(Error);
+			expect(() => {
+				expect(param.linearRampToValueAtTime("bad", "bad"));
+			}).to.throw(Error);
+			expect(() => {
+				expect(param.exponentialRampToValueAtTime("bad", "bad"));
+			}).to.throw(Error);
+			expect(() => {
+				expect(param.setTargetAtTime("bad", "bad", 0.1));
+			}).to.throw(Error);
+			expect(() => {
+				expect(param.cancelScheduledValues("bad"));
+			}).to.throw(Error);
+			param.dispose();
+		});
+
 		it("can be created with specific units", () => {
 			const gain = audioContext.createGain();
 			const param = new Param<BPM>({

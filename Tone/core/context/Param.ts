@@ -3,7 +3,7 @@ import { dbToGain, gainToDb } from "../type/Conversions";
 import "../type/Units";
 import { optionsFromArguments } from "../util/Defaults";
 import { Timeline } from "../util/Timeline";
-import { isDefined } from "../util/TypeCheck";
+import { isDefined, isNumber } from "../util/TypeCheck";
 import { ToneWithContext, ToneWithContextOptions } from "./ToneWithContext";
 
 export interface ParamOptions extends ToneWithContextOptions {
@@ -191,6 +191,7 @@ implements AbstractParam<Type> {
 			value: numericValue,
 		});
 		this.log("setValue", value, time);
+		this.assert(isNumber(numericValue), `Invalid argument to setValueAtTime: ${numericValue}, ${time}`);
 		this._param.setValueAtTime(numericValue, time);
 		return this;
 	}
@@ -257,6 +258,7 @@ implements AbstractParam<Type> {
 			value : numericValue,
 		});
 		this.log("linear", value, endTime);
+		this.assert(isNumber(numericValue), `Invalid argument to linearRampToValueAtTime: ${numericValue}, ${endTime}`);
 		this._param.linearRampToValueAtTime(numericValue, endTime);
 		return this;
 	}
@@ -272,6 +274,7 @@ implements AbstractParam<Type> {
 			value : numericValue,
 		});
 		this.log("exponential", value, endTime);
+		this.assert(isNumber(numericValue), `Invalid argument to exponentialRampToValueAtTime: ${numericValue}, ${endTime}`);
 		this._param.exponentialRampToValueAtTime(numericValue, endTime);
 		return this;
 	}
@@ -315,6 +318,7 @@ implements AbstractParam<Type> {
 			value: numericValue,
 		});
 		this.log("setTarget", value, startTime, timeConstant);
+		this.assert(isNumber(numericValue), `Invalid argument to setTargetAtTime: ${numericValue}, ${startTime}`);
 		this._param.setTargetAtTime(numericValue, startTime, timeConstant);
 		return this;
 	}
@@ -335,6 +339,7 @@ implements AbstractParam<Type> {
 	cancelScheduledValues(time: Time): this {
 		time = this.toSeconds(time);
 		this._events.cancel(time);
+		this.assert(isNumber(time), `Invalid argument to cancelScheduledValues: ${time}`);
 		this._param.cancelScheduledValues(time);
 		this.log("cancel", time);
 		return this;
