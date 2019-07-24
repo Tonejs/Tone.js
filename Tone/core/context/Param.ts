@@ -342,13 +342,10 @@ implements AbstractParam<Type> {
 
 	cancelScheduledValues(time: Time): this {
 		const computedTime = this.toSeconds(time);
+		this._events.cancel(computedTime);
 		this.assert(isFinite(computedTime), `Invalid argument to cancelScheduledValues: ${JSON.stringify(time)}`);
-		// remove the events only if there is another event after
-		if (this._events.getFrom(computedTime)) {
-			this._events.cancel(computedTime);
-			this._param.cancelScheduledValues(computedTime);
-			this.log("cancel", computedTime);
-		}
+		this._param.cancelScheduledValues(computedTime);
+		this.log("cancel", computedTime);
 		return this;
 	}
 
@@ -359,7 +356,7 @@ implements AbstractParam<Type> {
 
 		// remove the schedule events
 		this.assert(isFinite(computedTime), `Invalid argument to cancelAndHoldAtTime: ${JSON.stringify(time)}`);
-		this.cancelScheduledValues(computedTime);
+		this._param.cancelScheduledValues(computedTime);
 
 		// if there is an event at the given computedTime
 		// and that even is not a "set"
