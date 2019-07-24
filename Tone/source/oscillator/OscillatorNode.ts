@@ -112,10 +112,10 @@ export class ToneOscillatorNode extends OneShotSource<ToneOscillatorNodeOptions>
 
 	/**
 	 *  Clean up.
-	 *  @return  {OscillatorNode}  this
 	 */
 	dispose(): this {
 		super.dispose();
+		this._oscillator.disconnect();
 		this.frequency.dispose();
 		this.detune.dispose();
 		return this;
