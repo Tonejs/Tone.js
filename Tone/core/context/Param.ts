@@ -183,17 +183,17 @@ implements AbstractParam<Type> {
 	///////////////////////////////////////////////////////////////////////////
 
 	setValueAtTime(value: Type, time: Time): this {
-		time = this.toSeconds(time);
+		const computedTime = this.toSeconds(time);
 		const numericValue = this._fromType(value);
 		this._events.add({
-			time,
+			time: computedTime,
 			type: "setValue",
 			value: numericValue,
 		});
-		this.log("setValue", value, time);
-		this.assert(isNumber(numericValue) && isNumber(time),
-			`Invalid argument to setValueAtTime: ${numericValue}, ${time}`);
-		this._param.setValueAtTime(numericValue, time);
+		this.log("setValue", value, computedTime);
+		this.assert(isFinite(numericValue) && isFinite(computedTime),
+			`Invalid argument(s) to setValueAtTime: ${JSON.stringify(value)}, ${JSON.stringify(time)}`);
+		this._param.setValueAtTime(numericValue, computedTime);
 		return this;
 	}
 
@@ -252,33 +252,33 @@ implements AbstractParam<Type> {
 
 	linearRampToValueAtTime(value: Type, endTime: Time): this {
 		const numericValue = this._fromType(value);
-		endTime = this.toSeconds(endTime);
+		const computedTime = this.toSeconds(endTime);
 		this._events.add({
-			time: endTime,
+			time: computedTime,
 			type: "linear",
 			value : numericValue,
 		});
-		this.log("linear", value, endTime);
-		this.assert(isNumber(numericValue) && isNumber(endTime),
-			`Invalid argument(s) to linearRampToValueAtTime: ${numericValue}, ${endTime}`);
-		this._param.linearRampToValueAtTime(numericValue, endTime);
+		this.log("linear", value, computedTime);
+		this.assert(isFinite(numericValue) && isFinite(computedTime),
+			`Invalid argument(s) to linearRampToValueAtTime: ${JSON.stringify(value)}, ${JSON.stringify(endTime)}`);
+		this._param.linearRampToValueAtTime(numericValue, computedTime);
 		return this;
 	}
 
 	exponentialRampToValueAtTime(value: Type, endTime: Time): this {
 		let numericValue = this._fromType(value);
 		numericValue = Math.max(this._minOutput, numericValue);
-		endTime = this.toSeconds(endTime);
+		const computedTime = this.toSeconds(endTime);
 		// store the event
 		this._events.add({
-			time: endTime,
+			time: computedTime,
 			type: "exponential",
 			value : numericValue,
 		});
-		this.log("exponential", value, endTime);
-		this.assert(isNumber(numericValue) && isNumber(endTime),
-			`Invalid argument(s) to exponentialRampToValueAtTime: ${numericValue}, ${endTime}`);
-		this._param.exponentialRampToValueAtTime(numericValue, endTime);
+		this.log("exponential", value, computedTime);
+		this.assert(isFinite(numericValue) && isFinite(computedTime),
+			`Invalid argument(s) to exponentialRampToValueAtTime: ${JSON.stringify(value)}, ${JSON.stringify(endTime)}`);
+		this._param.exponentialRampToValueAtTime(numericValue, computedTime);
 		return this;
 	}
 
@@ -312,18 +312,18 @@ implements AbstractParam<Type> {
 	setTargetAtTime(value: Type, startTime: Time, timeConstant: Positive): this {
 		const numericValue = this._fromType(value);
 		// The value will never be able to approach without timeConstant > 0.
-		this.assert(timeConstant > 0, "timeConstant must be greater than 0");
-		startTime = this.toSeconds(startTime);
+		this.assert(isFinite(timeConstant) && timeConstant > 0, "timeConstant must be a number greater than 0");
+		const computedTime = this.toSeconds(startTime);
 		this._events.add({
 			constant: timeConstant,
-			time: startTime,
+			time: computedTime,
 			type: "setTarget",
 			value: numericValue,
 		});
-		this.log("setTarget", value, startTime, timeConstant);
-		this.assert(isNumber(numericValue) && isNumber(startTime),
-			`Invalid argument(s) to setTargetAtTime: ${numericValue}, ${startTime}`);
-		this._param.setTargetAtTime(numericValue, startTime, timeConstant);
+		this.log("setTarget", value, computedTime, timeConstant);
+		this.assert(isFinite(numericValue) && isFinite(computedTime),
+			`Invalid argument(s) to setTargetAtTime: ${JSON.stringify(value)}, ${JSON.stringify(startTime)}`);
+		this._param.setTargetAtTime(numericValue, computedTime, timeConstant);
 		return this;
 	}
 
@@ -341,50 +341,51 @@ implements AbstractParam<Type> {
 	}
 
 	cancelScheduledValues(time: Time): this {
-		time = this.toSeconds(time);
-		this._events.cancel(time);
-		this.assert(isNumber(time), `Invalid argument to cancelScheduledValues: ${time}`);
-		this._param.cancelScheduledValues(time);
-		this.log("cancel", time);
+		const computedTime = this.toSeconds(time);
+		this._events.cancel(computedTime);
+		this.assert(isFinite(computedTime), `Invalid argument to cancelScheduledValues: ${JSON.stringify(time)}`);
+		this._param.cancelScheduledValues(computedTime);
+		this.log("cancel", computedTime);
 		return this;
 	}
 
 	cancelAndHoldAtTime(time: Time): this {
-		time = this.toSeconds(time);
-		const valueAtTime = this._fromType(this.getValueAtTime(time));
-		this.log("cancelAndHoldAtTime", time, "value=" + valueAtTime);
+		const computedTime = this.toSeconds(time);
+		const valueAtTime = this._fromType(this.getValueAtTime(computedTime));
+		this.log("cancelAndHoldAtTime", computedTime, "value=" + valueAtTime);
 
 		// remove the schedule events
-		this._param.cancelScheduledValues(time);
+		this.assert(isFinite(computedTime), `Invalid argument to cancelAndHoldAtTime: ${JSON.stringify(time)}`);
+		this._param.cancelScheduledValues(computedTime);
 
-		// if there is an event at the given time
+		// if there is an event at the given computedTime
 		// and that even is not a "set"
-		const before = this._events.get(time);
-		const after = this._events.getAfter(time);
-		if (before && before.time === time) {
+		const before = this._events.get(computedTime);
+		const after = this._events.getAfter(computedTime);
+		if (before && before.time === computedTime) {
 			// remove everything after
 			if (after) {
 				this._events.cancel(after.time);
 			} else {
-				this._events.cancel(time + this.sampleTime);
+				this._events.cancel(computedTime + this.sampleTime);
 			}
 		} else if (after) {
 			// cancel the next event(s)
 			this._events.cancel(after.time);
 			if (after.type === "linear") {
-				this.linearRampToValueAtTime(this._toType(valueAtTime), time);
+				this.linearRampToValueAtTime(this._toType(valueAtTime), computedTime);
 			} else if (after.type === "exponential") {
-				this.exponentialRampToValueAtTime(this._toType(valueAtTime), time);
+				this.exponentialRampToValueAtTime(this._toType(valueAtTime), computedTime);
 			}
 		}
 
 		// set the value at the given time
 		this._events.add({
-			time,
+			time: computedTime,
 			type: "setValue",
 			value: valueAtTime,
 		});
-		this._param.setValueAtTime(valueAtTime, time);
+		this._param.setValueAtTime(valueAtTime, computedTime);
 		return this;
 	}
 
