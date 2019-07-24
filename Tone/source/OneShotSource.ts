@@ -161,7 +161,7 @@ export abstract class OneShotSource<Options extends ToneAudioNodeOptions> extend
 		this.context.clearTimeout(this._timeout);
 		this._timeout = this.context.setTimeout(() => {
 			// allow additional time for the exponential curve to fully decay
-			const additionalTail = this._curve === "exponential" ? this.toSeconds(this._fadeOut) * 2 : 0;
+			const additionalTail = this._curve === "exponential" ? fadeOutTime * 2 : 0;
 			this._stopSource(this.now() + additionalTail);
 			this._onended();
 		}, this._stopTime - this.context.currentTime);
