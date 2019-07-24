@@ -126,15 +126,6 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 		this.frequency.connect(this._oscillator.frequency);
 		this.detune.connect(this._oscillator.detune);
 
-		// disconnect onended
-		oscillator.onended = () => {
-			// defer the callback for the offline context rendering
-			setTimeout(() => {
-				this.frequency.disconnect(oscillator.frequency);
-				this.detune.disconnect(oscillator.detune);
-			}, 100);
-		};
-
 		// start the oscillator
 		time = this.toSeconds(time);
 		this._oscillator.start(time);
