@@ -215,33 +215,6 @@ describe("Timeline", () => {
 		sched.dispose();
 	});
 
-	it("can the next event from the given time", () => {
-		const sched = new Timeline<StateTimelineEvent>();
-		expect(sched.getFrom(0)).is.null;
-		sched.add({
-			state: "A",
-			time: 0.1,
-		});
-		sched.add({
-			state: "B",
-			time: 1.1,
-		});
-		sched.add({
-			state: "C",
-			time: 2.1,
-		});
-		const firstEvent = sched.getFrom(0.1);
-		const secondEvent = sched.getFrom(1);
-		if (firstEvent && secondEvent) {
-			expect(firstEvent.state).is.equal("A");
-			expect(secondEvent.state).is.equal("B");
-		} else {
-			throw new Error("should have 2 events");
-		}
-		expect(sched.getFrom(3)).is.null;
-		sched.dispose();
-	});
-
 	it("can the event before the event before the given time", () => {
 		const sched = new Timeline<StateTimelineEvent>();
 		expect(sched.getBefore(0)).is.null;
