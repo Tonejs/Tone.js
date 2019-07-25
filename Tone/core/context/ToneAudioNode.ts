@@ -35,13 +35,13 @@ extends ToneWithContext<Options> {
 	 * The input node or nodes. If the object is a source,
 	 * it does not have any input and this.input is undefined.
 	 */
-	abstract input: InputNode | InputNode[] | undefined;
+	abstract input: InputNode | InputNode | undefined;
 
 	/**
 	 * The output nodes. If the object is a sink,
 	 * it does not have any output and this.output is undefined.
 	 */
-	abstract output: OutputNode | OutputNode[] | undefined;
+	abstract output: OutputNode | OutputNode | undefined;
 
 	/**
 	 *  The number of inputs feeding into the AudioNode.
@@ -76,23 +76,23 @@ extends ToneWithContext<Options> {
 	}
 
 	protected createInsOuts(numberOfInputs: number = 0, numberOfOutputs: number = 0): void {
-		if (numberOfInputs === 1) {
-			this.input = this.context.createGain();
-		} else if (numberOfInputs > 1) {
-			this.input = [];
-			for (let i = 0; i < numberOfInputs; i++) {
-				this.input[i] = this.context.createGain();
-			}
-		}
+		// if (numberOfInputs === 1) {
+		// 	this.input = this.context.createGain();
+		// } else if (numberOfInputs > 1) {
+		// 	this.input = [];
+		// 	for (let i = 0; i < numberOfInputs; i++) {
+		// 		this.input[i] = this.context.createGain();
+		// 	}
+		// }
 
-		if (numberOfOutputs === 1) {
-			this.output = this.context.createGain();
-		} else if (numberOfOutputs > 1) {
-			this.output = [];
-			for (let o = 0; o < numberOfOutputs; o++) {
-				this.output[o] = this.context.createGain();
-			}
-		}
+		// if (numberOfOutputs === 1) {
+		// 	this.output = this.context.createGain();
+		// } else if (numberOfOutputs > 1) {
+		// 	this.output = [];
+		// 	for (let o = 0; o < numberOfOutputs; o++) {
+		// 		this.output[o] = this.context.createGain();
+		// 	}
+		// }
 	}
 
 	///////////////////////////////////////////////////////////////////////////
@@ -312,23 +312,15 @@ export function connect(srcNode: OutputNode, dstNode: InputNode, outputNumber = 
 
 	// resolve the input of the dstNode
 	while (!(dstNode instanceof AudioNode || dstNode instanceof AudioParam)) {
-		if (isArray(dstNode.input)) {
-			this.assert(dstNode.input.length < inputNumber, "the output number is greater than the number of outputs");
-			dstNode = dstNode.input[inputNumber];
-		} else if (isDefined(dstNode.input)) {
+		if (isDefined(dstNode.input)) {
 			dstNode = dstNode.input;
 		}
-		inputNumber = 0;
 	}
 
-	if (srcNode instanceof ToneAudioNode) {
-		if (isArray(srcNode.output)) {
-			this.assert(srcNode.output.length < outputNumber, "the output number is greater than the number of outputs");
-			srcNode = srcNode.output[outputNumber];
-		} else if (isDefined(srcNode.output)) {
+	while (srcNode instanceof ToneAudioNode) {
+		if (isDefined(srcNode.output)) {
 			srcNode = srcNode.output;
 		}
-		outputNumber = 0;
 	}
 
 	// make the connection
@@ -356,23 +348,7 @@ export function disconnect(
 	// resolve the destination node
 	if (isDefined(dstNode)) {
 		while (dstNode instanceof ToneAudioNode) {
-			if (isArray(dstNode.input)) {
-				if (isNumber(inputNumber)) {
-					this.assert(dstNode.input.length < inputNumber, "the input number is greater than the number of inputs");
-					dstNode = dstNode.input[inputNumber];
-				} else {
-					// disconnect from all of the nodes
-					// since we don't know which one was connected
-					dstNode.input.forEach(dst => {
-						try {
-							// catch errors from disconnecting from nodes that are not connected
-							disconnect(srcNode, dst, outputNumber);
-							// tslint:disable-next-line: no-empty
-						} catch (e) { }
-					});
-				}
-				inputNumber = 0;
-			} else if (dstNode.input) {
+			if (dstNode.input) {
 				dstNode = dstNode.input;
 			}
 		}
@@ -380,13 +356,9 @@ export function disconnect(
 
 	// resolve the src node
 	while (!(srcNode instanceof AudioNode)) {
-		if (isArray(srcNode.output)) {
-			this.assert(srcNode.output.length < outputNumber, "the output number is greater than the number of outputs");
-			srcNode = srcNode.output[outputNumber];
-		} else if (isDefined(srcNode.output)) {
+		if (isDefined(srcNode.output)) {
 			srcNode = srcNode.output;
 		}
-		outputNumber = 0;
 	}
 
 	if (dstNode instanceof AudioParam) {

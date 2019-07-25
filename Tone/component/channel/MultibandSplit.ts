@@ -14,6 +14,19 @@ interface MultibandSplitOptions extends ToneAudioNodeOptions {
 /**
  *  Split the incoming signal into three bands (low, mid, high)
  *  with two crossover frequency controls.
+ * ```
+ *            +----------------------+
+ *          +-> input < lowFrequency +>------------------> low
+ *          | +----------------------+
+ *          |
+ *          | +--------------------------------------+
+ * input +>-+-> lowFrequency < input < highFrequency +>--> mid
+ *          | +--------------------------------------+
+ *          |
+ *          | +-----------------------+
+ *          +-> highFrequency < input +>-----------------> high
+ *            +-----------------------+
+ * ```
  *
  *  @param lowFrequency the low/mid crossover frequency
  *  @param highFrequency the mid/high crossover frequency
@@ -28,7 +41,7 @@ export class MultibandSplit extends ToneAudioNode<MultibandSplitOptions> {
 	readonly input = new Gain({ context: this.context });
 
 	/**
-	 *  The low band. Alias for <code>output[0]</code>
+	 *  The low band.
 	 */
 	readonly low = new Filter({
 		context: this.context,
@@ -46,7 +59,7 @@ export class MultibandSplit extends ToneAudioNode<MultibandSplitOptions> {
 	});
 
 	/**
-	 *  The mid band output. Alias for <code>output[1]</code>
+	 *  The mid band output.
 	 */
 	readonly mid = new Filter({
 		context: this.context,
@@ -55,7 +68,7 @@ export class MultibandSplit extends ToneAudioNode<MultibandSplitOptions> {
 	});
 
 	/**
-	 *  The high band output. Alias for <code>output[2]</code>
+	 *  The high band output.
 	 */
 	readonly high = new Filter({
 		context: this.context,
@@ -63,7 +76,10 @@ export class MultibandSplit extends ToneAudioNode<MultibandSplitOptions> {
 		type: "highpass",
 	});
 
-	readonly output = [this.low, this.mid, this.high];
+	/**
+	 * No output node. use either low/mid/high
+	 */
+	output = undefined;
 
 	/**
 	 *  The low/mid crossover frequency.
@@ -75,7 +91,7 @@ export class MultibandSplit extends ToneAudioNode<MultibandSplitOptions> {
 	 */
 	readonly highFrequency: Signal<Frequency>;
 
-	protected _internalChannels = [this.input, ...this.output];
+	protected _internalChannels = [this.input, this.low, this.mid, this.high];
 
 	/**
 	 *  The Q or Quality of the filter
