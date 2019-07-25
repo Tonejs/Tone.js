@@ -1,20 +1,26 @@
 import { version } from "../version";
+import { hasAudioContext, theWindow } from "./context/AudioContext";
 import { Context } from "./context/Context";
+
+/**
+ * This dummy context is used to avoid throwing immediate errors when importing in Node.js
+ */
+const dummyContext: Context = {
+	destination: {},
+	transport: {},
+} as Context;
 
 /**
  * The global audio context which is getable and assignable through
  * getContext and setContext
  */
-let globalContext: Context;
-
-// @ts-ignore
-globalContext = window.TONE_CONTEXT;
+let globalContext: Context = dummyContext;
 
 /**
  * Returns the default system-wide AudioContext
  */
 export function getContext(): Context {
-	if (!globalContext) {
+	if (!globalContext && hasAudioContext) {
 		setContext(new Context());
 	}
 	return globalContext;
@@ -26,8 +32,6 @@ export function getContext(): Context {
 export function setContext(context: Context): void {
 	globalContext = context;
 	context.initialize();
-	// @ts-ignore
-	window.TONE_CONTEXT = context;
 }
 
 /**
@@ -46,9 +50,8 @@ export function start(): Promise <void> {
 /**
  * Log Tone.js + version in the console.
  */
-if (!this.TONE_SILENCE_LOGGING) {
+if (theWindow && !theWindow.TONE_SILENCE_LOGGING) {
 	let prefix = "v";
-	// @ts-ignore
 	if (version === "dev") {
 		prefix = "";
 	}
