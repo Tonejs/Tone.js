@@ -29,7 +29,7 @@ describe("ToneEvent", () => {
 			});
 		});
 
-		it.skip("can pass in arguments in options object", () => {
+		it("can pass in arguments in options object", () => {
 			return Offline(() => {
 				const callback = noOp;
 				const value = { a : 1 };
