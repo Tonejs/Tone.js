@@ -1,11 +1,11 @@
-import { TransportTimeClass } from "Tone/core/type/TransportTime";
 import "../core/clock/Transport";
 import { ToneWithContext, ToneWithContextOptions } from "../core/context/ToneWithContext";
 import { TicksClass } from "../core/type/Ticks";
+import { TransportTimeClass } from "../core/type/TransportTime";
 import { defaultArg, optionsFromArguments } from "../core/util/Defaults";
 import { noOp } from "../core/util/Interface";
 import { BasicPlaybackState, StateTimeline } from "../core/util/StateTimeline";
-import { isBoolean, isDefined, isNumber } from "../core/util/TypeCheck";
+import { isBoolean, isNumber } from "../core/util/TypeCheck";
 
 export type ToneEventCallback = (time: Seconds, value: any) => void;
 

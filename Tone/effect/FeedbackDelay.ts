@@ -1,7 +1,7 @@
-import { Delay } from "Tone/core";
-import { Param } from "Tone/core/context/Param";
-import { optionsFromArguments } from "Tone/core/util/Defaults";
-import { readOnly } from "Tone/core/util/Interface";
+import { Delay } from "../core/context/Delay";
+import { Param } from "../core/context/Param";
+import { optionsFromArguments } from "../core/util/Defaults";
+import { readOnly } from "../core/util/Interface";
 import { FeedbackEffect,  FeedbackEffectOptions } from "./FeedbackEffect";
 
 interface FeedbackDelayOptions extends FeedbackEffectOptions {

@@ -1,5 +1,5 @@
-import { ToneAudioNode, ToneAudioNodeOptions } from "Tone/core/context/ToneAudioNode";
-import { optionsFromArguments } from "Tone/core/util/Defaults";
+import { ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
+import { optionsFromArguments } from "../../core/util/Defaults";
 
 interface MergeOptions extends ToneAudioNodeOptions {
 	channels: Positive;

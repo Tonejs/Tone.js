@@ -1,4 +1,4 @@
-import { InputNode, OutputNode } from "Tone/core/context/ToneAudioNode";
+import { InputNode, OutputNode } from "../../core/context/ToneAudioNode";
 import { ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
 import { optionsFromArguments } from "../../core/util/Defaults";
 import { isArray, isObject, isString } from "../../core/util/TypeCheck";
