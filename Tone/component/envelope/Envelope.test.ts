@@ -48,7 +48,7 @@ describe("Envelope", () => {
 
 		it("passes no signal before being triggered", () => {
 			return Offline(() => {
-				new Envelope().toMaster();
+				new Envelope().toDestination();
 			}).then((buffer) => {
 				expect(buffer.isSilent()).to.equal(true);
 			});
@@ -56,7 +56,7 @@ describe("Envelope", () => {
 
 		it("passes signal once triggered", () => {
 			return Offline(() => {
-				const env = new Envelope().toMaster();
+				const env = new Envelope().toDestination();
 				env.triggerAttack(0.05);
 			}, 0.1).then((buffer) => {
 				expect(buffer.getTimeOfFirstSound()).to.be.closeTo(0.05, 0.001);
@@ -147,7 +147,7 @@ describe("Envelope", () => {
 			return Offline(() => {
 				const env = new Envelope(e.attack, e.decay, e.sustain, e.release);
 				env.attackCurve = "exponential";
-				env.toMaster();
+				env.toDestination();
 				env.triggerAttack(0);
 			}, 0.7).then((buffer) => {
 				buffer.forEachBetween((sample) => {
@@ -172,7 +172,7 @@ describe("Envelope", () => {
 			return Offline(() => {
 				const env = new Envelope(e.attack, e.decay, e.sustain, e.release);
 				env.attackCurve = "exponential";
-				env.toMaster();
+				env.toDestination();
 				env.triggerAttack(0);
 			}, 0.7).then((buffer) => {
 				buffer.forEachBetween((sample, time) => {
@@ -192,7 +192,7 @@ describe("Envelope", () => {
 			return Offline(() => {
 				const env = new Envelope(e.attack, e.decay, e.sustain, e.release);
 				env.decayCurve = "linear";
-				env.toMaster();
+				env.toDestination();
 				env.triggerAttack(0);
 			}, 0.7).then((buffer) => {
 				expect(buffer.getValueAtTime(0.05)).to.be.closeTo(0.5, 0.01);
@@ -215,7 +215,7 @@ describe("Envelope", () => {
 			return Offline(() => {
 				const env = new Envelope(e.attack, e.decay, e.sustain, e.release);
 				env.decayCurve = "exponential";
-				env.toMaster();
+				env.toDestination();
 				env.triggerAttack(0);
 			}, 0.7).then((buffer) => {
 				expect(buffer.getValueAtTime(0.1)).to.be.closeTo(1, 0.01);
@@ -237,7 +237,7 @@ describe("Envelope", () => {
 			return Offline(() => {
 				const env = new Envelope(e.attack, e.decay, e.sustain, e.release);
 				env.attackCurve = "exponential";
-				env.toMaster();
+				env.toDestination();
 				env.triggerAttack(0);
 			}, 0.2).then((buffer) => {
 				buffer.forEachBetween((sample) => {
@@ -255,7 +255,7 @@ describe("Envelope", () => {
 		it("can schedule an attack of time 0", () => {
 			return Offline(() => {
 				const env = new Envelope(0, 0.1);
-				env.toMaster();
+				env.toDestination();
 				env.triggerAttack(0.1);
 			}, 0.2).then((buffer) => {
 				expect(buffer.getValueAtTime(0)).to.be.closeTo(0, 0.001);
@@ -275,7 +275,7 @@ describe("Envelope", () => {
 			return Offline(() => {
 				const env = new Envelope(e.attack, e.decay, e.sustain, e.release);
 				env.attackCurve = "exponential";
-				env.toMaster();
+				env.toDestination();
 				env.triggerAttackRelease(releaseTime);
 			}, 0.6).then((buffer) => {
 				const sustainStart = e.attack + e.decay;
@@ -301,7 +301,7 @@ describe("Envelope", () => {
 			return Offline(() => {
 				const env = new Envelope(e.attack, e.decay, e.sustain, e.release);
 				env.attackCurve = "exponential";
-				env.toMaster();
+				env.toDestination();
 				env.triggerAttack(attackTime);
 				env.triggerRelease(releaseTime);
 			}, 0.6).then((buffer) => {
@@ -319,7 +319,7 @@ describe("Envelope", () => {
 			const attackTime = 0.1;
 			return Offline(() => {
 				const env = new Envelope(e.attack, e.decay, e.sustain);
-				env.toMaster();
+				env.toDestination();
 				env.triggerAttack(attackTime);
 			}, 0.4).then((buffer) => {
 				buffer.forEach((sample, time) => {
@@ -339,7 +339,7 @@ describe("Envelope", () => {
 			const releaseTime = 0.4;
 			return Offline(() => {
 				const env = new Envelope(e.attack, e.decay, e.sustain, e.release);
-				env.toMaster();
+				env.toDestination();
 				env.triggerAttack(0);
 				env.triggerRelease(releaseTime);
 			}).then((buffer) => {
@@ -370,7 +370,7 @@ describe("Envelope", () => {
 			const duration = 0.4;
 			return Offline(() => {
 				const env = new Envelope(e.attack, e.decay, e.sustain, e.release);
-				env.toMaster();
+				env.toDestination();
 				env.triggerAttack(0);
 				env.triggerRelease(releaseTime);
 			}, 0.7).then((buffer) => {
@@ -402,7 +402,7 @@ describe("Envelope", () => {
 			const velocity = 0.4;
 			return Offline(() => {
 				const env = new Envelope(e.attack, e.decay, e.sustain, e.release);
-				env.toMaster();
+				env.toDestination();
 				env.triggerAttack(0, velocity);
 				env.triggerRelease(releaseTime);
 			}, 0.7).then((buffer) => {
@@ -431,7 +431,7 @@ describe("Envelope", () => {
 			};
 			return Offline(() => {
 				const env = new Envelope(e.attack, e.decay, e.sustain, e.release);
-				env.toMaster();
+				env.toDestination();
 				env.triggerAttack(0);
 				env.triggerAttack(0.5);
 			}, 0.85).then((buffer) => {
@@ -448,7 +448,7 @@ describe("Envelope", () => {
 
 		it("can schedule multiple attack/releases with no discontinuities", () => {
 			return Offline(() => {
-				const env = new Envelope(0.1, 0.2, 0.2, 0.4).toMaster();
+				const env = new Envelope(0.1, 0.2, 0.2, 0.4).toDestination();
 				env.triggerAttackRelease(0, 0.4);
 				env.triggerAttackRelease(0.4, 0.11);
 				env.triggerAttackRelease(0.45, 0.1);
@@ -469,7 +469,7 @@ describe("Envelope", () => {
 
 		it("can schedule multiple 'linear' attack/releases with no discontinuities", () => {
 			return Offline(() => {
-				const env = new Envelope(0.1, 0.2, 0.2, 0.4).toMaster();
+				const env = new Envelope(0.1, 0.2, 0.2, 0.4).toDestination();
 				env.attackCurve = "linear";
 				env.releaseCurve = "linear";
 				env.triggerAttackRelease(0, 0.4);
@@ -492,7 +492,7 @@ describe("Envelope", () => {
 
 		it("can schedule multiple 'exponential' attack/releases with no discontinuities", () => {
 			return Offline(() => {
-				const env = new Envelope(0.1, 0.2, 0.2, 0.4).toMaster();
+				const env = new Envelope(0.1, 0.2, 0.2, 0.4).toDestination();
 				env.attackCurve = "exponential";
 				env.releaseCurve = "exponential";
 				env.triggerAttackRelease(0, 0.4);
@@ -515,7 +515,7 @@ describe("Envelope", () => {
 
 		it("can schedule multiple 'sine' attack/releases with no discontinuities", () => {
 			return Offline(() => {
-				const env = new Envelope(0.1, 0.2, 0.2, 0.4).toMaster();
+				const env = new Envelope(0.1, 0.2, 0.2, 0.4).toDestination();
 				env.attackCurve = "sine";
 				env.releaseCurve = "sine";
 				env.triggerAttackRelease(0, 0.4);
@@ -538,7 +538,7 @@ describe("Envelope", () => {
 
 		it("can schedule multiple 'cosine' attack/releases with no discontinuities", () => {
 			return Offline(() => {
-				const env = new Envelope(0.1, 0.2, 0.2, 0.4).toMaster();
+				const env = new Envelope(0.1, 0.2, 0.2, 0.4).toDestination();
 				env.attackCurve = "cosine";
 				env.releaseCurve = "cosine";
 				env.triggerAttackRelease(0, 0.4);
@@ -561,7 +561,7 @@ describe("Envelope", () => {
 
 		it("reports its current envelope value (.value)", () => {
 			return Offline(() => {
-				const env = new Envelope(1, 0.2, 1).toMaster();
+				const env = new Envelope(1, 0.2, 1).toDestination();
 				expect(env.value).to.be.closeTo(0, 0.01);
 				env.triggerAttack();
 				return (time) => {
@@ -572,7 +572,7 @@ describe("Envelope", () => {
 
 		it("can cancel a schedule envelope", () => {
 			return Offline(() => {
-				const env = new Envelope(0.1, 0.2, 1).toMaster();
+				const env = new Envelope(0.1, 0.2, 1).toDestination();
 				env.triggerAttack(0.2);
 				env.cancel(0.2);
 			}, 0.3).then((buffer) => {
@@ -613,7 +613,7 @@ describe("Envelope", () => {
 					release : 0.3,
 					releaseCurve : "bounce",
 					sustain : 1,
-				}).toMaster();
+				}).toDestination();
 				env.triggerAttackRelease(0.3, 0.1);
 			}, 0.8).then((buffer) => {
 				buffer.forEachBetween((sample) => {
@@ -631,7 +631,7 @@ describe("Envelope", () => {
 					release : 0.3,
 					releaseCurve : "ripple",
 					sustain : 1,
-				}).toMaster();
+				}).toDestination();
 				env.triggerAttackRelease(0.3, 0.1);
 			}, 0.8).then((buffer) => {
 				buffer.forEachBetween((sample) => {
@@ -649,7 +649,7 @@ describe("Envelope", () => {
 					release : 0.3,
 					releaseCurve : "sine",
 					sustain : 1,
-				}).toMaster();
+				}).toDestination();
 				env.triggerAttackRelease(0.3, 0.1);
 			}, 0.8).then((buffer) => {
 				buffer.forEachBetween((sample) => {
@@ -667,7 +667,7 @@ describe("Envelope", () => {
 					release : 0.3,
 					releaseCurve : "cosine",
 					sustain : 1,
-				}).toMaster();
+				}).toDestination();
 				env.triggerAttackRelease(0.3, 0.1);
 			}, 0.8).then((buffer) => {
 				buffer.forEachBetween((sample) => {
@@ -685,7 +685,7 @@ describe("Envelope", () => {
 					release : 0.3,
 					releaseCurve : "step",
 					sustain : 1,
-				}).toMaster();
+				}).toDestination();
 				env.triggerAttackRelease(0.3, 0.1);
 			}, 0.8).then((buffer) => {
 				buffer.forEach((sample, time) => {
@@ -707,7 +707,7 @@ describe("Envelope", () => {
 					release : 0.3,
 					releaseCurve : [1, 0, 1, 0],
 					sustain : 1,
-				}).toMaster();
+				}).toDestination();
 				env.triggerAttackRelease(0.3, 0.1);
 			}, 0.8).then((buffer) => {
 				buffer.forEach((sample, time) => {
@@ -729,7 +729,7 @@ describe("Envelope", () => {
 					release : 0.3,
 					releaseCurve : [1, 0, 1, 0],
 					sustain : 1,
-				}).toMaster();
+				}).toDestination();
 				env.triggerAttackRelease(0.4, 0.1, 0.5);
 			}, 0.8).then((buffer) => {
 				buffer.forEach((sample) => {
@@ -747,7 +747,7 @@ describe("Envelope", () => {
 					release : 0.5,
 					releaseCurve : "sine",
 					sustain : 1,
-				}).toMaster();
+				}).toDestination();
 				env.triggerAttack(0);
 				env.triggerRelease(0.2);
 				env.triggerAttack(0.5);

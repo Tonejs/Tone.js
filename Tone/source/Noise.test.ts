@@ -13,7 +13,7 @@ describe("Noise", () => {
 
 	it("matches a file",  () => {
 		return CompareToFile(() => {
-			const noise = new Noise().toMaster();
+			const noise = new Noise().toDestination();
 			noise.start(0.1).stop(0.2);
 		}, "noise.wav", 9);
 	});
@@ -38,7 +38,7 @@ describe("Noise", () => {
 
 		it("can set the playbackRate after the noise is started", () => {
 			return OutputAudio(() => {
-				const noise = new Noise().toMaster();
+				const noise = new Noise().toDestination();
 				noise.start();
 				noise.playbackRate = 3;
 				expect(noise.playbackRate).to.equal(3);
@@ -72,7 +72,7 @@ describe("Noise", () => {
 		it("outputs white noise", () => {
 			return OutputAudio(() => {
 				const noise = new Noise("white");
-				noise.toMaster();
+				noise.toDestination();
 				noise.start();
 			});
 		});
@@ -80,7 +80,7 @@ describe("Noise", () => {
 		it("outputs pink noise", () => {
 			return OutputAudio(() => {
 				const noise = new Noise("pink");
-				noise.toMaster();
+				noise.toDestination();
 				noise.start();
 			});
 		});
@@ -88,7 +88,7 @@ describe("Noise", () => {
 		it("outputs brown noise", () => {
 			return OutputAudio(() => {
 				const noise = new Noise("brown");
-				noise.toMaster();
+				noise.toDestination();
 				noise.start();
 			});
 		});
@@ -96,7 +96,7 @@ describe("Noise", () => {
 		it("can set the type after the noise is started", () => {
 			return OutputAudio(() => {
 				const noise = new Noise();
-				noise.toMaster();
+				noise.toDestination();
 				noise.start();
 				noise.type = "brown";
 			});

@@ -15,7 +15,7 @@ import { ToneOscillatorNode } from "./OscillatorNode";
  *  @param type The oscillator type. Read more about type below.
  *  @example
  * //make and start a 440hz sine tone
- * var osc = new Oscillator(440, "sine").toMaster().start();
+ * var osc = new Oscillator(440, "sine").toDestination().start();
  */
 export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOscillatorInterface {
 

@@ -64,21 +64,21 @@ describe("Volume", () => {
 
 		it("passes the incoming signal through", () => {
 			return PassAudio(input => {
-				const vol = new Volume().toMaster();
+				const vol = new Volume().toDestination();
 				input.connect(vol);
 			});
 		});
 
 		it.skip("passes the incoming stereo signal through", () => {
 			// return PassAudioStereo(function(input) {
-			// 	const vol = new Volume().toMaster();
+			// 	const vol = new Volume().toDestination();
 			// 	input.connect(vol);
 			// });
 		});
 
 		it("can lower the volume", () => {
 			return Offline(() => {
-				const vol = new Volume(-10).toMaster();
+				const vol = new Volume(-10).toDestination();
 				new Signal(1).connect(vol);
 			}).then((buffer) => {
 				expect(buffer.value()).to.be.closeTo(0.315, 0.01);
@@ -87,7 +87,7 @@ describe("Volume", () => {
 
 		it("can mute the volume", () => {
 			return Offline(() => {
-				const vol = new Volume(0).toMaster();
+				const vol = new Volume(0).toDestination();
 				new Signal(1).connect(vol);
 				vol.mute = true;
 			}).then((buffer) => {
@@ -97,7 +97,7 @@ describe("Volume", () => {
 
 		it("muted when volume is set to -Infinity", () => {
 			return Offline(() => {
-				const vol = new Volume(-Infinity).toMaster();
+				const vol = new Volume(-Infinity).toDestination();
 				new Signal(1).connect(vol);
 				expect(vol.mute).to.equal(true);
 			}).then(buffer => {
@@ -106,7 +106,7 @@ describe("Volume", () => {
 		});
 
 		it("setting the volume unmutes it and reports itself as unmuted", () => {
-			const vol = new Volume(0).toMaster();
+			const vol = new Volume(0).toDestination();
 			vol.mute = true;
 			expect(vol.mute).to.equal(true);
 			vol.volume.value = 0;

@@ -102,9 +102,9 @@ describe("ToneAudioNode", () => {
 	});
 
 	context("methods", () => {
-		it("toMaster()", () => {
+		it("toDestination()", () => {
 			const node = new Gain();
-			node.toMaster();
+			node.toDestination();
 			node.dispose();
 		});
 

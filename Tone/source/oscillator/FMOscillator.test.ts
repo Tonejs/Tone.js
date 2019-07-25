@@ -15,7 +15,7 @@ describe("FMOscillator", () => {
 
 	it("matches a file", () => {
 		return CompareToFile(() => {
-			const osc = new FMOscillator().toMaster();
+			const osc = new FMOscillator().toDestination();
 			osc.start(0);
 		}, "fmOscillator.wav", 0.01);
 	});

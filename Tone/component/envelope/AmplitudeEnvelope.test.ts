@@ -21,7 +21,7 @@ describe("AmplitudeEnvelope", () => {
 					decay : 0.2,
 					release : 0.2,
 					sustain : 0.1,
-				}).toMaster();
+				}).toDestination();
 				const osc = new Oscillator().start(0).connect(ampEnv);
 				ampEnv.triggerAttack(0);
 				ampEnv.triggerRelease(0.3);
@@ -35,7 +35,7 @@ describe("AmplitudeEnvelope", () => {
 					decay : 0.2,
 					release : 0.2,
 					sustain : 0.1,
-				}).toMaster();
+				}).toDestination();
 				const osc = new Oscillator().start(0).connect(ampEnv);
 				ampEnv.triggerAttack(0);
 				ampEnv.triggerAttack(0.3);
@@ -51,7 +51,7 @@ describe("AmplitudeEnvelope", () => {
 					release : 0.3,
 					releaseCurve : "ripple",
 					sustain : 0.1,
-				}).toMaster();
+				}).toDestination();
 				const osc = new Oscillator().start(0).connect(ampEnv);
 				ampEnv.triggerAttack(0);
 				ampEnv.triggerRelease(0.7);
@@ -79,7 +79,7 @@ describe("AmplitudeEnvelope", () => {
 
 		it("passes no signal before being triggered", () => {
 			return Offline(() => {
-				const ampEnv = new AmplitudeEnvelope().toMaster();
+				const ampEnv = new AmplitudeEnvelope().toDestination();
 				new Signal(1).connect(ampEnv);
 			}).then((buffer) => {
 				expect(buffer.isSilent()).to.be.true;
@@ -88,7 +88,7 @@ describe("AmplitudeEnvelope", () => {
 
 		it("passes signal once triggered", () => {
 			return Offline(() => {
-				const ampEnv = new AmplitudeEnvelope().toMaster();
+				const ampEnv = new AmplitudeEnvelope().toDestination();
 				new Signal(1).connect(ampEnv);
 				ampEnv.triggerAttack(0.1);
 			}, 0.2).then((buffer) => {

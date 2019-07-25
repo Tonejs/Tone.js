@@ -48,7 +48,7 @@ describe("EQ3", () => {
 				const eq3 = new EQ3({
 					high : 12,
 					low : -20,
-				}).toMaster();
+				}).toDestination();
 				input.connect(eq3);
 			});
 		});
@@ -58,7 +58,7 @@ describe("EQ3", () => {
 			// 	var eq3 = new EQ3({
 			// 		"mid" : -2,
 			// 		"high" : 2
-			// 	}).toMaster();
+			// 	}).toDestination();
 			// 	input.connect(eq3);
 			// });
 		});

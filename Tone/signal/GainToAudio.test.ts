@@ -23,7 +23,7 @@ describe("GainToAudio", () => {
 				const sig = new Signal(0.5);
 				const g2a = new GainToAudio();
 				sig.connect(g2a);
-				g2a.toMaster();
+				g2a.toDestination();
 			}, 0);
 		});
 
@@ -32,7 +32,7 @@ describe("GainToAudio", () => {
 				const sig = new Signal(1);
 				const g2a = new GainToAudio();
 				sig.connect(g2a);
-				g2a.toMaster();
+				g2a.toDestination();
 			}, 1);
 		});
 
@@ -41,7 +41,7 @@ describe("GainToAudio", () => {
 				const sig = new Zero();
 				const g2a = new GainToAudio();
 				sig.connect(g2a);
-				g2a.toMaster();
+				g2a.toDestination();
 			}, -1);
 		});
 	});

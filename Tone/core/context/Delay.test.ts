@@ -84,7 +84,7 @@ describe("Delay", () => {
 
 	it("passes audio through", () => {
 		return PassAudio(input => {
-			const delay = new Delay().toMaster();
+			const delay = new Delay().toDestination();
 			connect(input, delay);
 		});
 	});

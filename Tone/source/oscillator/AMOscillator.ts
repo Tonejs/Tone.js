@@ -29,7 +29,7 @@ import { AMConstructorOptions, AMOscillatorOptions,
  * @param modulationType The type of the modulator oscillator.
  * @example
  * //a sine oscillator frequency-modulated by a square wave
- * var fmOsc = new AMOscillator("Ab3", "sine", "square").toMaster().start();
+ * var fmOsc = new AMOscillator("Ab3", "sine", "square").toDestination().start();
  */
 export class AMOscillator extends Source<AMOscillatorOptions> implements ToneOscillatorInterface {
 

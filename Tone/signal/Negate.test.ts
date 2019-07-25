@@ -22,7 +22,7 @@ describe("Negate", () => {
 				const signal = new Signal(1);
 				const negate = new Negate();
 				signal.connect(negate);
-				negate.toMaster();
+				negate.toDestination();
 			}, -1);
 		});
 
@@ -31,7 +31,7 @@ describe("Negate", () => {
 				const signal = new Signal(-10);
 				const negate = new Negate();
 				signal.connect(negate);
-				negate.toMaster();
+				negate.toDestination();
 			}, 10);
 		});
 	});

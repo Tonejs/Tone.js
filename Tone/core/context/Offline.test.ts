@@ -32,7 +32,7 @@ describe("Offline", () => {
 
 	it("records the master output", () => {
 		return Offline(() => {
-			new ToneOscillatorNode().toMaster().start();
+			new ToneOscillatorNode().toDestination().start();
 		}, 0.01).then((buffer) => {
 			const testBuff = new TestAudioBuffer(buffer.get() as AudioBuffer);
 			expect(testBuff.isSilent()).is.equal(false);
@@ -42,7 +42,7 @@ describe("Offline", () => {
 	it("returning a promise defers the rendering till the promise resolves", () => {
 		let wasInvoked = false;
 		return Offline(() => {
-			new ToneOscillatorNode().toMaster().start();
+			new ToneOscillatorNode().toDestination().start();
 			return new Promise((done) => {
 				setTimeout(done, 100);
 			}).then(() => {
@@ -57,7 +57,7 @@ describe("Offline", () => {
 
 	it("can schedule specific timing outputs", () => {
 		return Offline(() => {
-			new ToneOscillatorNode().toMaster().start(0.05);
+			new ToneOscillatorNode().toDestination().start(0.05);
 		}, 0.1).then((buffer) => {
 			const testBuff = new TestAudioBuffer(buffer.get() as AudioBuffer);
 			expect(testBuff.getTimeOfFirstSound()).to.be.closeTo(0.05, 0.0001);
@@ -66,7 +66,7 @@ describe("Offline", () => {
 
 	// it("can schedule Transport events", () => {
 	// 	return Offline(function (Transport) {
-	// 		var osc = new Oscillator().toMaster();
+	// 		var osc = new Oscillator().toDestination();
 	// 		Transport.schedule(function (time) {
 	// 			osc.start(time);
 	// 		}, 0.05);

@@ -23,7 +23,7 @@ describe("Subtract", () => {
 				const signal = new Signal(0);
 				const sub = new Subtract(3);
 				signal.connect(sub);
-				sub.toMaster();
+				sub.toDestination();
 			}, -3);
 		});
 
@@ -33,7 +33,7 @@ describe("Subtract", () => {
 				const sub = new Subtract(0);
 				sub.value = 4;
 				signal.connect(sub);
-				sub.toMaster();
+				sub.toDestination();
 			}, -6);
 		});
 
@@ -42,7 +42,7 @@ describe("Subtract", () => {
 				const signal = new Signal(4);
 				const sub = new Subtract(-2);
 				signal.connect(sub);
-				sub.toMaster();
+				sub.toDestination();
 			}, 6);
 		});
 
@@ -53,7 +53,7 @@ describe("Subtract", () => {
 				const sub = new Subtract();
 				sigA.connect(sub);
 				sigB.connect(sub.subtrahend);
-				sub.toMaster();
+				sub.toDestination();
 			}, -3);
 		});
 	});

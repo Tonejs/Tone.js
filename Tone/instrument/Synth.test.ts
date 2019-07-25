@@ -13,14 +13,14 @@ describe("Synth", () => {
 
 	it("matches a file basic", () => {
 		return CompareToFile(() => {
-			const synth = new Synth().toMaster();
+			const synth = new Synth().toDestination();
 			synth.triggerAttackRelease("C4", 0.1, 0.05);
 		}, "synth_basic.wav", 0.3);
 	});
 
 	it("matches a file melody", () => {
 		return CompareToFile(() => {
-			const synth = new Synth().toMaster();
+			const synth = new Synth().toDestination();
 			synth.triggerAttack("C4", 0);
 			synth.triggerAttack("E4", 0.1, 0.5);
 			synth.triggerAttackRelease("G4", 0.5, 0.3);
@@ -73,7 +73,7 @@ describe("Synth", () => {
 
 		it("can be trigged with a Tone.Frequency", () => {
 			return Offline(() => {
-				const synth = new Synth().toMaster();
+				const synth = new Synth().toDestination();
 				synth.triggerAttack(Frequency("C4"), 0);
 			}).then((buffer) => {
 				expect(buffer.isSilent()).to.be.false;
@@ -88,7 +88,7 @@ describe("Synth", () => {
 						decay : 0.1,
 						sustain : 0,
 					},
-				}).toMaster();
+				}).toDestination();
 				synth.triggerAttack("C4", 0);
 			}, 0.5).then((buffer) => {
 				expect(buffer.getTimeOfLastSound()).to.be.closeTo(0.2, 0.01);
@@ -103,7 +103,7 @@ describe("Synth", () => {
 					portamento : 0.1,
 				});
 				expect(synth.portamento).to.equal(0.1);
-				synth.frequency.toMaster();
+				synth.frequency.toDestination();
 				synth.triggerAttack(440, 0);
 				synth.triggerAttack(880, 0.1);
 			}, 0.2).then((buffer) => {

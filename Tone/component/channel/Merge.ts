@@ -10,7 +10,7 @@ interface MergeOptions extends ToneAudioNodeOptions {
  *
  * @param channels The number of channels to merge.
  * @example
- * var merge = new Merge().toMaster();
+ * var merge = new Merge().toDestination();
  * //routing a sine tone in the left channel
  * //and noise in the right channel
  * var osc = new Tone.Oscillator().connect(merge.left);

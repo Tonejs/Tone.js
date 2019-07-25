@@ -27,7 +27,7 @@ import { FMConstructorOptions, FMOscillatorOptions,
  * @param modulationType The type of the modulator oscillator.
  * @example
  * //a sine oscillator frequency-modulated by a square wave
- * var fmOsc = new FMOscillator("Ab3", "sine", "square").toMaster().start();
+ * var fmOsc = new FMOscillator("Ab3", "sine", "square").toDestination().start();
  */
 export class FMOscillator extends Source<FMOscillatorOptions> implements ToneOscillatorInterface {
 

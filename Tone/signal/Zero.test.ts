@@ -17,7 +17,7 @@ describe("Zero", () => {
 
 		it("always outputs 0", () => {
 			return ConstantOutput(() => {
-				new Zero().toMaster();
+				new Zero().toDestination();
 			}, 0, 0);
 		});
 	});

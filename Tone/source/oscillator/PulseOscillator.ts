@@ -39,7 +39,7 @@ import { PulseOscillatorOptions, ToneOscillatorInterface } from "./OscillatorInt
  * @param frequency The frequency of the oscillator
  * @param width The width of the pulse
  * @example
- * var pulse = new PulseOscillator("E5", 0.4).toMaster().start();
+ * var pulse = new PulseOscillator("E5", 0.4).toDestination().start();
  */
 export class PulseOscillator extends Source<PulseOscillatorOptions> implements ToneOscillatorInterface {
 

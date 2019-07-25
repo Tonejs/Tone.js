@@ -44,13 +44,13 @@ describe("Signal", () => {
 
 		it("outputs a constant signal", () => {
 			return ConstantOutput((context) => {
-				const sig = new Signal<number>(2.5).toMaster();
+				const sig = new Signal<number>(2.5).toDestination();
 			}, 2.5);
 		});
 
 		it("takes on another signal's value when connected", () => {
 			return ConstantOutput((context) => {
-				const sigA = new Signal<number>(1).toMaster();
+				const sigA = new Signal<number>(1).toDestination();
 				const sigB = new Signal<number>(3);
 				sigB.connect(sigA);
 			}, 3);
@@ -58,7 +58,7 @@ describe("Signal", () => {
 
 		it("takes the first signals value when many values are chained", () => {
 			return ConstantOutput((context) => {
-				const sigA = new Signal<number>(3).toMaster();
+				const sigA = new Signal<number>(3).toDestination();
 				const sigB = new Signal<number>(1).connect(sigA);
 				const sigC = new Signal<number>(2).connect(sigB);
 			}, 2);
@@ -73,7 +73,7 @@ describe("Signal", () => {
 
 		it("can be scheduled to set a value in the future", async () => {
 			const buffer = await Offline((context) => {
-					const sig = new Signal<number>(0).toMaster();
+					const sig = new Signal<number>(0).toDestination();
 					sig.setValueAtTime(2, 0.2);
 			}, 0.25);
 			expect(buffer.getValueAtTime(0)).to.be.closeTo(0, 0.001);
@@ -84,7 +84,7 @@ describe("Signal", () => {
 
 		it("can linear ramp from the current value to another value in the future", async () => {
 			const buffer = await Offline(context => {
-				const sig = new Signal<number>(0).toMaster();
+				const sig = new Signal<number>(0).toDestination();
 				sig.setValueAtTime(0, 0);
 				sig.linearRampToValueAtTime(1, 0.1);
 			}, 0.1);
@@ -95,7 +95,7 @@ describe("Signal", () => {
 
 		it("can schedule multiple automations", async () => {
 			const buffer = await Offline(context => {
-				const sig = new Signal<number>(0).toMaster();
+				const sig = new Signal<number>(0).toDestination();
 				sig.setValueAtTime(0, 0);
 				sig.linearRampToValueAtTime(0.5, 0.5);
 				sig.linearRampToValueAtTime(0, 1);
@@ -109,7 +109,7 @@ describe("Signal", () => {
 
 		it("can schedule multiple automations from a connected signal", async () => {
 			const buffer = await Offline((context) => {
-				const output = new Signal<number>(1).toMaster();
+				const output = new Signal<number>(1).toDestination();
 				const sig = new Signal<number>(0).connect(output);
 				sig.setValueAtTime(0, 0);
 				sig.linearRampToValueAtTime(0.5, 0.5);
@@ -124,8 +124,8 @@ describe("Signal", () => {
 
 		it("can disconnect from all the connected notes", () => {
 			return ConstantOutput((context) => {
-				const output0 = new Signal<number>(1).toMaster();
-				const output1 = new Signal<number>(1).toMaster();
+				const output0 = new Signal<number>(1).toDestination();
+				const output1 = new Signal<number>(1).toDestination();
 				const sig = new Signal<number>(0).connect(output0);
 				sig.connect(output1);
 				sig.disconnect();
@@ -137,7 +137,7 @@ describe("Signal", () => {
 
 		it("can disconnect from a specific node", () => {
 			return ConstantOutput((context) => {
-				const output = new Signal<number>(1).toMaster();
+				const output = new Signal<number>(1).toDestination();
 				const sig = new Signal<number>(0).connect(output);
 				sig.disconnect(output);
 				sig.setValueAtTime(0, 0);
@@ -147,7 +147,7 @@ describe("Signal", () => {
 		});
 		it("can schedule multiple automations from a connected signal through a multiple nodes", async () => {
 			const buffer = await Offline(() => {
-				const output = new Signal<number>(0).toMaster();
+				const output = new Signal<number>(0).toDestination();
 				const proxy = new Signal<number>(0).connect(output);
 				const gain = new Gain(1).connect(proxy);
 				const sig = new Signal<number>(0).connect(gain);
@@ -165,7 +165,7 @@ describe("Signal", () => {
 
 		it("can cancel an automation", () => {
 			return ConstantOutput(() => {
-				const sig = new Signal<number>(1).toMaster();
+				const sig = new Signal<number>(1).toDestination();
 				sig.setValueAtTime(4, 0.1);
 				sig.exponentialRampToValueAtTime(3, 0.2);
 				sig.cancelScheduledValues(0);
@@ -173,7 +173,7 @@ describe("Signal", () => {
 		});
 		it("can cancel and hold a linear automation curve", async () => {
 			const buffer = await  Offline(() => {
-				const sig = new Signal<number>(0).toMaster();
+				const sig = new Signal<number>(0).toDestination();
 				sig.linearRampTo(2, 1);
 				sig.cancelAndHoldAtTime(0.5);
 			}, 1);
@@ -185,7 +185,7 @@ describe("Signal", () => {
 
 		it("can cancel and hold an exponential automation curve", () => {
 			return Offline(() => {
-				const sig = new Signal<number>(1).toMaster();
+				const sig = new Signal<number>(1).toDestination();
 				sig.exponentialRampTo(2, 1);
 				sig.cancelAndHoldAtTime(0.5);
 			}, 1).then(buffer => {
@@ -198,7 +198,7 @@ describe("Signal", () => {
 
 		it("can set a linear ramp from the current time", () => {
 			return Offline(() => {
-				const sig = new Signal<number>(0).toMaster();
+				const sig = new Signal<number>(0).toDestination();
 				sig.linearRampTo(2, 0.3);
 			}, 0.5).then((buffer) => {
 				buffer.forEach((sample, time) => {
@@ -211,7 +211,7 @@ describe("Signal", () => {
 
 		it("can set an linear ramp in the future", () => {
 			return Offline(() => {
-				const sig = new Signal<number>(1).toMaster();
+				const sig = new Signal<number>(1).toDestination();
 				sig.linearRampTo(50, 0.3, 0.2);
 			}, 0.7).then((buffer) => {
 				buffer.forEach((sample, time)  => {
@@ -226,7 +226,7 @@ describe("Signal", () => {
 
 		it("can set a exponential approach ramp from the current time", () => {
 			return Offline(() => {
-				const sig = new Signal<number>(0).toMaster();
+				const sig = new Signal<number>(0).toDestination();
 				sig.targetRampTo(1, 0.3);
 			}, 0.5).then((buffer) => {
 				expect(buffer.getValueAtTime(0)).to.be.below(0.0001);
@@ -236,7 +236,7 @@ describe("Signal", () => {
 
 		it("can set an exponential approach ramp in the future", () => {
 			return Offline(() => {
-				const sig = new Signal<number>(1).toMaster();
+				const sig = new Signal<number>(1).toDestination();
 				sig.targetRampTo(50, 0.3, 0.2);
 			}, 0.7).then((buffer) => {
 				expect(buffer.getValueAtTime(0)).to.be.closeTo(1, 0.0001);
@@ -246,7 +246,7 @@ describe("Signal", () => {
 		});
 		it("can set an exponential ramp from the current time", () => {
 			return Offline(() => {
-				const sig = new Signal<number>(1).toMaster();
+				const sig = new Signal<number>(1).toDestination();
 				sig.exponentialRampTo(50, 0.4);
 			}, 0.6).then((buffer) => {
 				buffer.forEach((sample, time)  => {
@@ -261,7 +261,7 @@ describe("Signal", () => {
 
 		it("can set an exponential ramp in the future", () => {
 			return Offline(() => {
-				const sig = new Signal<number>(1).toMaster();
+				const sig = new Signal<number>(1).toDestination();
 				sig.exponentialRampTo(50, 0.3, 0.2);
 			}, 0.8).then((buffer) => {
 				buffer.forEach((sample, time)  => {
@@ -276,7 +276,7 @@ describe("Signal", () => {
 
 		it("rampTo ramps from the current value", () => {
 			return Offline(() => {
-				const sig = new Signal<number>(3).toMaster();
+				const sig = new Signal<number>(3).toDestination();
 				sig.rampTo(0.2, 0.1);
 			}, 0.4).then((buffer) => {
 				buffer.forEach((sample, time)  => {
@@ -291,7 +291,7 @@ describe("Signal", () => {
 
 		it("rampTo ramps from the current value at a specific time", () => {
 			return Offline(() => {
-				const sig = new Signal<number>(0).toMaster();
+				const sig = new Signal<number>(0).toDestination();
 				sig.rampTo(2, 0.1, 0.4);
 			}, 0.6).then((buffer) => {
 				buffer.forEach((sample, time)  => {
@@ -306,7 +306,7 @@ describe("Signal", () => {
 
 		it("can set a value curve", () => {
 			return Offline(() => {
-				const sig = new Signal<number>(0).toMaster();
+				const sig = new Signal<number>(0).toDestination();
 				sig.setValueCurveAtTime([0, 1, 0.5, 0.2], 0, 1);
 			}, 1).then((buffer) => {
 				expect(buffer.getValueAtTime(0)).to.be.closeTo(0, 0.01);
@@ -319,7 +319,7 @@ describe("Signal", () => {
 
 		it("can set a value curve in the future", () => {
 			return Offline(() => {
-				const sig = new Signal<number>(0).toMaster();
+				const sig = new Signal<number>(0).toDestination();
 				sig.setValueCurveAtTime([0, 1, 0.5, 0.2], 0.5, 1);
 			}, 1.5).then((buffer) => {
 				expect(buffer.getValueAtTime(0 + 0.5)).to.be.closeTo(0, 0.01);
@@ -332,7 +332,7 @@ describe("Signal", () => {
 
 		it("can set an exponential approach", () => {
 			return Offline(() => {
-				const sig = new Signal<number>(0).toMaster();
+				const sig = new Signal<number>(0).toDestination();
 				sig.exponentialApproachValueAtTime(2, 0.1, 0.5);
 			}, 1).then((buffer) => {
 				expect(buffer.getValueAtTime(0)).to.be.closeTo(0, 0.01);
@@ -363,7 +363,7 @@ describe("Signal", () => {
 				const signal = new Signal<Decibels>({
 					units: "decibels",
 					value: -10,
-				}).toMaster();
+				}).toDestination();
 			}, 0.315);
 		});
 
@@ -373,7 +373,7 @@ describe("Signal", () => {
 					convert: false,
 					units: "decibels",
 					value: -10,
-				}).toMaster();
+				}).toDestination();
 			}, -10);
 		});
 
@@ -413,7 +413,7 @@ describe("Signal", () => {
 
 	// 	it("maintains its original value after being synced to the transport", () => {
 	// 		return ConstantOutput(function(Transport) {
-	// 			const sig = new Signal<number>(3).toMaster();
+	// 			const sig = new Signal<number>(3).toDestination();
 	// 			Transport.syncSignal(sig);
 	// 		}, 3);
 	// 	});
@@ -421,7 +421,7 @@ describe("Signal", () => {
 	// 	it("keeps the ratio when the bpm changes", () => {
 	// 		return ConstantOutput(function(Transport) {
 	// 			Transport.bpm.value = 120;
-	// 			const sig = new Signal<number>(5).toMaster();
+	// 			const sig = new Signal<number>(5).toDestination();
 	// 			Transport.syncSignal(sig);
 	// 			Transport.bpm.value = 240;
 	// 		}, 10);
@@ -430,7 +430,7 @@ describe("Signal", () => {
 	// 	it("can ramp along with the bpm", () => {
 	// 		return Offline(function(Transport) {
 	// 			Transport.bpm.value = 120;
-	// 			const sig = new Signal<number>(2).toMaster();
+	// 			const sig = new Signal<number>(2).toDestination();
 	// 			Transport.syncSignal(sig);
 	// 			Transport.bpm.rampTo(240, 0.5);
 	// 		}).then((buffer) => {
@@ -447,7 +447,7 @@ describe("Signal", () => {
 	// 	it("returns to the original value when unsynced", () => {
 	// 		return ConstantOutput(function(Transport) {
 	// 			Transport.bpm.value = 120;
-	// 			const sig = new Signal<number>(5).toMaster();
+	// 			const sig = new Signal<number>(5).toDestination();
 	// 			Transport.syncSignal(sig);
 	// 			Transport.bpm.value = 240;
 	// 			Transport.unsyncSignal(sig);

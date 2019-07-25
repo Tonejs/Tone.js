@@ -22,7 +22,7 @@ describe("Abs", () => {
 				const signal = new Signal(0.4);
 				const abs = new Abs();
 				signal.connect(abs);
-				abs.toMaster();
+				abs.toDestination();
 			}, 0.4);
 		});
 
@@ -31,7 +31,7 @@ describe("Abs", () => {
 				const signal = new Signal(0);
 				const abs = new Abs();
 				signal.connect(abs);
-				abs.toMaster();
+				abs.toDestination();
 			}, 0);
 		});
 
@@ -40,7 +40,7 @@ describe("Abs", () => {
 				const signal = new Signal(-0.3);
 				const abs = new Abs();
 				signal.connect(abs);
-				abs.toMaster();
+				abs.toDestination();
 			}, 0.3);
 		});
 

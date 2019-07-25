@@ -25,7 +25,7 @@ interface PlayerOptions extends SourceOptions {
  * @param onload The function to invoke when the buffer is loaded.
  *                            Recommended to use Tone.Buffer.on('load') instead.
  * @example
- * var player = new Player("./path/to/sample.mp3").toMaster();
+ * var player = new Player("./path/to/sample.mp3").toDestination();
  * //play as soon as the buffer is loaded
  * player.autostart = true;
  */
@@ -41,7 +41,7 @@ export class Player extends Source<PlayerOptions> {
 	 * var player = new Player({
 	 * 	"url" : "./path/to/sample.mp3",
 	 * 	"autostart" : true,
-	 * }).toMaster();
+	 * }).toDestination();
 	 */
 	autostart: boolean;
 

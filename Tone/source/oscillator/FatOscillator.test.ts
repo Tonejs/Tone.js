@@ -15,7 +15,7 @@ describe("FatOscillator", () => {
 
 	it("matches a file", () => {
 		return CompareToFile(() => {
-			const osc = new FatOscillator().toMaster();
+			const osc = new FatOscillator().toDestination();
 			osc.start(0);
 		}, "fatOscillator.wav", 0.2);
 	});

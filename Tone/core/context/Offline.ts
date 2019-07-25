@@ -17,7 +17,7 @@ import { ToneAudioBuffer } from "./ToneAudioBuffer";
  * //render 2 seconds of the oscillator
  * Tone.Offline(function(){
  * 	//only nodes created in this callback will be recorded
- * 	var oscillator = new Tone.Oscillator().toMaster().start(0)
+ * 	var oscillator = new Tone.Oscillator().toDestination().start(0)
  * 	//schedule their events
  * }, 2).then(function(buffer){
  * 	//do something with the output buffer
@@ -26,7 +26,7 @@ import { ToneAudioBuffer } from "./ToneAudioBuffer";
  * //can also schedule events along the Transport
  * //using the passed in Offline Transport
  * Tone.Offline(function(Transport){
- * 	var osc = new Tone.Oscillator().toMaster()
+ * 	var osc = new Tone.Oscillator().toDestination()
  * 	Transport.schedule(function(time){
  * 		osc.start(time).stop(time + 0.1)
  * 	}, 1)

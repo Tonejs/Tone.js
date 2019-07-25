@@ -15,7 +15,7 @@ describe("AMOscillator", () => {
 
 	it("matches a file", () => {
 		return CompareToFile(() => {
-			const osc = new AMOscillator().toMaster();
+			const osc = new AMOscillator().toDestination();
 			osc.start(0.1).stop(0.4);
 		}, "amOscillator.wav", 0.03);
 	});

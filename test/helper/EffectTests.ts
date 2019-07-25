@@ -57,7 +57,7 @@ export function EffectTests(Constr, args?, before?): void {
 					before(instance);
 				}
 				input.connect(instance);
-				instance.toMaster();
+				instance.toDestination();
 			});
 		});
 
@@ -68,13 +68,13 @@ export function EffectTests(Constr, args?, before?): void {
 		// 			before(instance);
 		// 		}
 		// 		input.connect(instance);
-		// 		instance.toMaster();
+		// 		instance.toDestination();
 		// 	});
 		// });
 
 		it("can pass 100% dry signal", () => {
 			return Offline(() => {
-				const instance = new Constr(args).toMaster();
+				const instance = new Constr(args).toDestination();
 				if (before) {
 					before(instance);
 				}
@@ -101,7 +101,7 @@ export function EffectTests(Constr, args?, before?): void {
 
 		it("effects the incoming signal", () => {
 			return Offline(() => {
-				const instance = new Constr(args).toMaster();
+				const instance = new Constr(args).toDestination();
 				if (before) {
 					before(instance);
 				}

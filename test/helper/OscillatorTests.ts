@@ -56,7 +56,7 @@ export function OscillatorTests(Constr, args?): void {
 
 		it("does not clip in volume", () => {
 			return Offline(() => {
-				new Constr(args).toMaster().start(0);
+				new Constr(args).toDestination().start(0);
 			}).then((buffer) => {
 				expect(buffer.max()).to.be.at.most(1);
 			});

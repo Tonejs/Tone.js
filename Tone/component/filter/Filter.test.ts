@@ -67,14 +67,14 @@ describe("Filter", () => {
 
 		it("passes the incoming signal through", () => {
 			return PassAudio(input => {
-				const filter = new Filter().toMaster();
+				const filter = new Filter().toDestination();
 				input.connect(filter);
 			});
 		});
 
 		it.skip("passes the incoming stereo signal through", () => {
 			// return PassAudioStereo(function(input){
-			// 	var filter = new Filter().toMaster();
+			// 	var filter = new Filter().toDestination();
 			// 	input.connect(filter);
 			// });
 		});
@@ -113,7 +113,7 @@ describe("Filter", () => {
 
 		it("attenuates the incoming signal", () => {
 			return Offline(() => {
-				const filter = new Filter(700, "lowpass").toMaster();
+				const filter = new Filter(700, "lowpass").toDestination();
 				filter.Q.value = 0;
 				const osc = new Oscillator(880).connect(filter);
 				osc.start(0);

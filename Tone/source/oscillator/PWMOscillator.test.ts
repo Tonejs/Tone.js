@@ -15,7 +15,7 @@ describe("PWMOscillator", () => {
 
 	it("matches a file", () => {
 		return CompareToFile(() => {
-			const osc = new PWMOscillator().toMaster();
+			const osc = new PWMOscillator().toDestination();
 			osc.start(0.1);
 		}, "pwmOscillator.wav", 0.01);
 	});

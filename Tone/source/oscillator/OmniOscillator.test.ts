@@ -19,7 +19,7 @@ describe("OmniOscillator", () => {
 
 	it("matches a file", () => {
 		return CompareToFile(() => {
-			const osc = new OmniOscillator(220, "fmsquare").toMaster();
+			const osc = new OmniOscillator(220, "fmsquare").toDestination();
 			osc.start(0.1).stop(0.2);
 		}, "omniOscillator.wav", 1.6);
 	});
@@ -29,7 +29,7 @@ describe("OmniOscillator", () => {
 		it("makes a sound", () => {
 			return OutputAudio(() => {
 				const osc = new OmniOscillator();
-				osc.toMaster();
+				osc.toDestination();
 				osc.start(0);
 			});
 		});
@@ -37,7 +37,7 @@ describe("OmniOscillator", () => {
 		it("makes a sound when set to square", () => {
 			return OutputAudio(() => {
 				const osc = new OmniOscillator(440, "square");
-				osc.toMaster();
+				osc.toDestination();
 				osc.start();
 			});
 		});
@@ -45,7 +45,7 @@ describe("OmniOscillator", () => {
 		it("makes a sound when set to pulse", () => {
 			return OutputAudio(() => {
 				const osc = new OmniOscillator(440, "pulse");
-				osc.toMaster();
+				osc.toDestination();
 				osc.start();
 			});
 		});
@@ -53,7 +53,7 @@ describe("OmniOscillator", () => {
 		it("makes a sound when set to pwm", () => {
 			return OutputAudio(() => {
 				const osc = new OmniOscillator(440, "pwm");
-				osc.toMaster();
+				osc.toDestination();
 				osc.start();
 			});
 		});
@@ -61,7 +61,7 @@ describe("OmniOscillator", () => {
 		it("makes a sound when set to fm", () => {
 			return OutputAudio(() => {
 				const osc = new OmniOscillator(440, "fmsquare");
-				osc.toMaster();
+				osc.toDestination();
 				osc.start();
 			});
 		});
@@ -69,7 +69,7 @@ describe("OmniOscillator", () => {
 		it("makes a sound when set to am", () => {
 			return OutputAudio(() => {
 				const osc = new OmniOscillator(440, "amsine");
-				osc.toMaster();
+				osc.toDestination();
 				osc.start();
 			});
 		});
@@ -77,7 +77,7 @@ describe("OmniOscillator", () => {
 		it("makes a sound when set to fat", () => {
 			return OutputAudio(() => {
 				const osc = new OmniOscillator(440, "fatsawtooth");
-				osc.toMaster();
+				osc.toDestination();
 				osc.start();
 			});
 		});
@@ -85,7 +85,7 @@ describe("OmniOscillator", () => {
 		it("can switch type after playing", () => {
 			return OutputAudio(() => {
 				const osc = new OmniOscillator(440, "amsine");
-				osc.toMaster();
+				osc.toDestination();
 				osc.start();
 				osc.type = "fmsine";
 			});

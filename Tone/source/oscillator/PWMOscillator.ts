@@ -17,7 +17,7 @@ import { PulseOscillator } from "./PulseOscillator";
  * @param {Frequency} frequency The starting frequency of the oscillator.
  * @param {Frequency} modulationFrequency The modulation frequency of the width of the pulse.
  * @example
- *  var pwm = new PWMOscillator("Ab3", 0.3).toMaster().start();
+ *  var pwm = new PWMOscillator("Ab3", 0.3).toDestination().start();
  */
 export class PWMOscillator extends Source<PWMOscillatorOptions> implements ToneOscillatorInterface {
 

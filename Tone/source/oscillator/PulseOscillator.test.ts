@@ -17,7 +17,7 @@ describe("PulseOscillator", () => {
 		return CompareToFile(() => {
 			const osc = new PulseOscillator({
 				width: 0.2,
-			}).toMaster();
+			}).toDestination();
 			osc.start(0);
 		}, "pulseOscillator.wav", 0.03);
 	});
@@ -30,7 +30,7 @@ describe("PulseOscillator", () => {
 					phase : 90,
 					width: 0,
 				});
-				osc.toMaster();
+				osc.toDestination();
 				osc.start(0);
 			}, 1).then(async (buffer) => {
 				buffer.forEach((sample, time) => {
@@ -50,7 +50,7 @@ describe("PulseOscillator", () => {
 					phase : 270,
 					width: 0,
 				});
-				osc.toMaster();
+				osc.toDestination();
 				osc.start(0);
 			}, 1).then((buffer) => {
 				buffer.forEach((sample, time) => {
@@ -81,7 +81,7 @@ describe("PulseOscillator", () => {
 					frequency : 1,
 					width : 0,
 				});
-				osc.toMaster();
+				osc.toDestination();
 				osc.start(0);
 			}, 0.9).then((buffer) => {
 				buffer.forEach((sample, time) => {
@@ -98,7 +98,7 @@ describe("PulseOscillator", () => {
 					frequency : 1,
 					width : 0.5,
 				});
-				osc.toMaster();
+				osc.toDestination();
 				osc.start(0);
 			}, 1).then((buffer) => {
 				buffer.forEach((sample, time) => {

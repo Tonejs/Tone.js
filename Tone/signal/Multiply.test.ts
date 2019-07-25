@@ -28,7 +28,7 @@ describe("Multiply", () => {
 				const mult = new Multiply(10);
 				expect(mult.value).to.equal(10);
 				signal.connect(mult);
-				mult.toMaster();
+				mult.toDestination();
 			}, 20);
 		});
 
@@ -39,7 +39,7 @@ describe("Multiply", () => {
 				const mult = new Multiply();
 				sigA.connect(mult);
 				sigB.connect(mult.factor);
-				mult.toMaster();
+				mult.toDestination();
 			}, 15);
 		});
 	});

@@ -51,7 +51,7 @@ export function SourceTests(Constr, args?): void {
 		it("makes a sound", () => {
 			return OutputAudio(() => {
 				const instance = new Constr(args);
-				instance.toMaster();
+				instance.toDestination();
 				instance.start();
 			});
 		});
@@ -59,14 +59,14 @@ export function SourceTests(Constr, args?): void {
 		// it("produces sound in both channels", () => {
 		// 	return OutputAudioStereo(() => {
 		// 		const instance = new Constr(args);
-		// 		instance.toMaster();
+		// 		instance.toDestination();
 		// 		instance.start();
 		// 	});
 		// });
 
 		it("be scheduled to start in the future", () => {
 			return Offline(() => {
-				const instance = new Constr(args).toMaster();
+				const instance = new Constr(args).toDestination();
 				instance.start(0.1);
 			}, 0.3).then((buffer) => {
 				buffer.forEach((sample, time) => {
@@ -79,7 +79,7 @@ export function SourceTests(Constr, args?): void {
 
 		it("makes no sound if it is started and then stopped with a time at or before the start time", () => {
 			return Offline(() => {
-				const instance = new Constr(args).toMaster();
+				const instance = new Constr(args).toDestination();
 				instance.start(0.1).stop(0.05);
 			}, 0.3).then((buffer) => {
 				expect(buffer.isSilent()).to.equal(true);
@@ -88,7 +88,7 @@ export function SourceTests(Constr, args?): void {
 
 		it("can be muted", () => {
 			return Offline(() => {
-				const instance = new Constr(args).toMaster();
+				const instance = new Constr(args).toDestination();
 				instance.start(0);
 				instance.mute = true;
 			}, 0.3).then((buffer) => {
@@ -98,7 +98,7 @@ export function SourceTests(Constr, args?): void {
 
 		it("be scheduled to stop in the future", () => {
 			return Offline(() => {
-				const instance = new Constr(args).toMaster();
+				const instance = new Constr(args).toDestination();
 				instance.start(0).stop(0.2);
 			}, 0.3).then((buffer) => {
 				buffer.forEach((sample, time) => {
@@ -111,7 +111,7 @@ export function SourceTests(Constr, args?): void {
 
 		it("can be restarted", () => {
 			return Offline(() => {
-				const instance = new Constr(args).toMaster();
+				const instance = new Constr(args).toDestination();
 				instance.start(0).stop(0.2);
 				instance.restart(0.1);
 				instance.stop(0.25);

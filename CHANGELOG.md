@@ -3,6 +3,8 @@
 * **Converted to typescript!!! (WIP)**
 * Input/Outputs are no longer arrays. 
 	* simplifies connect/disconnect logic greatly. Simplifies API to just have clearly named inputs/outputs instead of overloading input/output connect numbers
+* Using "Destination" instead of "Master" for output
+	* More consistent with Web Audio API
 
 ### 13.8.19
 

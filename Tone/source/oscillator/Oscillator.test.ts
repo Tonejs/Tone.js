@@ -17,7 +17,7 @@ describe("Oscillator", () => {
 
 	it("matches a file", () => {
 		return CompareToFile(() => {
-			const osc = new Oscillator().toMaster();
+			const osc = new Oscillator().toDestination();
 			osc.type = "square";
 			osc.start(0).stop(0.2);
 		}, "oscillator.wav", 0.1);
@@ -63,7 +63,7 @@ describe("Oscillator", () => {
 					frequency: 1,
 					phase: 90,
 				});
-				instance.toMaster();
+				instance.toDestination();
 				instance.start(0);
 			}, 1).then((buffer) => {
 				buffer.forEach((sample, time) => {
@@ -82,7 +82,7 @@ describe("Oscillator", () => {
 					frequency: 1,
 					phase: 270,
 				});
-				instance.toMaster();
+				instance.toDestination();
 				instance.start(0);
 			}, 1).then((buffer) => {
 				buffer.forEach((sample, time) => {
@@ -176,7 +176,7 @@ describe("Oscillator", () => {
 
 		it("makes a sound with custom partials", () => {
 			return OutputAudio(() => {
-				const osc = new Oscillator().toMaster().start();
+				const osc = new Oscillator().toDestination().start();
 				osc.partials = [1, 0.2, 0.2, 0.2];
 			});
 		});
@@ -220,7 +220,7 @@ describe("Oscillator", () => {
 			return Offline(({transport}) => {
 				transport.bpm.value = 120;
 				const osc = new Oscillator(2);
-				osc.frequency.toMaster();
+				osc.frequency.toDestination();
 				osc.syncFrequency();
 				transport.bpm.value = 240;
 			}).then((buffer) => {
@@ -232,7 +232,7 @@ describe("Oscillator", () => {
 			return Offline(({transport}) => {
 				transport.bpm.value = 120;
 				const osc = new Oscillator(2);
-				osc.frequency.toMaster();
+				osc.frequency.toDestination();
 				osc.syncFrequency();
 				transport.bpm.value = 240;
 				osc.unsyncFrequency();

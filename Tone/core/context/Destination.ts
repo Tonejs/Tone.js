@@ -22,7 +22,7 @@ interface DestinationOptions extends ToneAudioNodeOptions {
  * //the audio will go from the oscillator to the speakers
  * oscillator.connect(Destination);
  * //a convenience for connecting to the master output is also provided:
- * oscillator.toMaster();
+ * oscillator.toDestination();
  * //the above two examples are equivalent.
  */
 export class Destination extends ToneAudioNode<DestinationOptions> {

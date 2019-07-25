@@ -32,7 +32,7 @@ describe("ToneBufferSource", () => {
 
 	it("matches a file", () => {
 		return CompareToFile(() => {
-			const source = new ToneBufferSource(buffer).toMaster();
+			const source = new ToneBufferSource(buffer).toDestination();
 			source.start(0).stop(0.2);
 		}, "bufferSource.wav");
 	});
@@ -116,7 +116,7 @@ describe("ToneBufferSource", () => {
 			return Offline(() => {
 				const player = new ToneBufferSource(buffer);
 				player.loop = true;
-				player.toMaster();
+				player.toDestination();
 				player.start(0);
 			}, buffer.duration * 2).then((buff) => {
 				expect(buff.getRmsAtTime(0)).to.be.above(0);
@@ -131,7 +131,7 @@ describe("ToneBufferSource", () => {
 				const player = new ToneBufferSource(buffer);
 				player.start(0);
 				player.loop = true;
-				player.toMaster();
+				player.toDestination();
 			}, buffer.duration * 2).then((buff) => {
 				expect(buff.getRmsAtTime(0)).to.be.above(0);
 				expect(buff.getRmsAtTime(buffer.duration * 0.5)).to.be.above(0);
@@ -146,7 +146,7 @@ describe("ToneBufferSource", () => {
 				player.loop = true;
 				player.start(0);
 				player.loop = false;
-				player.toMaster();
+				player.toDestination();
 			}, buffer.duration * 2).then((buff) => {
 				expect(buff.getRmsAtTime(0)).to.be.above(0);
 				expect(buff.getRmsAtTime(buffer.duration * 0.5)).to.be.above(0);
@@ -160,7 +160,7 @@ describe("ToneBufferSource", () => {
 			return Offline(() => {
 				const player = new ToneBufferSource(buffer);
 				player.loop = true;
-				player.toMaster();
+				player.toDestination();
 				player.start(0, 0, playDur);
 			}, buffer.duration * 2).then((buff) => {
 				expect(buff.getRmsAtTime(0)).to.be.above(0);
@@ -174,7 +174,7 @@ describe("ToneBufferSource", () => {
 			const offsetTime = 0.05;
 			const offsetSample = buffer.toArray()[Math.floor(offsetTime * sampleRate)];
 			return Offline(() => {
-				const player = new ToneBufferSource(buffer).toMaster();
+				const player = new ToneBufferSource(buffer).toDestination();
 				player.loop = true;
 				player.loopStart = offsetTime;
 				player.start(0);
@@ -186,7 +186,7 @@ describe("ToneBufferSource", () => {
 		it("the offset is modulo the loopDuration", () => {
 			const testSample = buffer.toArray()[Math.floor(0.051 * sampleRate)] as number;
 			return Offline(() => {
-				const player = new ToneBufferSource(buffer).toMaster();
+				const player = new ToneBufferSource(buffer).toDestination();
 				player.loop = true;
 				player.loopStart = 0;
 				player.loopEnd = 0.1;
@@ -244,7 +244,7 @@ describe("ToneBufferSource", () => {
 		it("schedules the onended callback when offline", (done) => {
 
 			return Offline(() => {
-				const player = new ToneBufferSource(buffer).toMaster();
+				const player = new ToneBufferSource(buffer).toDestination();
 				player.start(0.2).stop(0.4);
 				player.onended = () => {
 					done();
@@ -255,7 +255,7 @@ describe("ToneBufferSource", () => {
 		it("invokes the onended callback when a looped buffer is scheduled to stop", () => {
 			let wasInvoked = false;
 			return Offline(() => {
-				const player = new ToneBufferSource(buffer).toMaster();
+				const player = new ToneBufferSource(buffer).toDestination();
 				player.loop = true;
 				player.start().stop(0.4);
 				player.onended = () => {
@@ -270,7 +270,7 @@ describe("ToneBufferSource", () => {
 
 			let wasInvoked = false;
 			return Offline(() => {
-				const player = new ToneBufferSource(buffer).toMaster();
+				const player = new ToneBufferSource(buffer).toDestination();
 				player.start(0);
 				player.onended = () => {
 					wasInvoked = true;
@@ -290,7 +290,7 @@ describe("ToneBufferSource", () => {
 
 		it("reports the right state when scheduled to stop", () => {
 			return Offline(() => {
-				const player = new ToneBufferSource(buffer).toMaster();
+				const player = new ToneBufferSource(buffer).toDestination();
 				player.start(0.2).stop(0.4);
 
 				return (time) => {
@@ -305,7 +305,7 @@ describe("ToneBufferSource", () => {
 
 		it("reports the right state when duration is passed into start method", () => {
 			return Offline(() => {
-				const player = new ToneBufferSource(buffer).toMaster();
+				const player = new ToneBufferSource(buffer).toDestination();
 				player.start(0, 0, 0.1);
 
 				return (time) => {
@@ -327,7 +327,7 @@ describe("ToneBufferSource", () => {
 
 		it("can play for a specific duration", () => {
 			return Offline(() => {
-				const player = new ToneBufferSource(buffer).toMaster();
+				const player = new ToneBufferSource(buffer).toDestination();
 				player.start(0).stop(0.1);
 
 				return time => {
@@ -346,7 +346,7 @@ describe("ToneBufferSource", () => {
 
 		it("can be scheduled to stop", () => {
 			return Offline(() => {
-				const player = new ToneBufferSource(buffer).toMaster();
+				const player = new ToneBufferSource(buffer).toDestination();
 				player.start(0).stop(0.1);
 			}, 0.6).then((rms) => {
 				expect(rms.getRmsAtTime(0.01)).to.be.gt(0);
@@ -357,7 +357,7 @@ describe("ToneBufferSource", () => {
 
 		it("plays correctly when playbackRate is < 1", () => {
 			return Offline(() => {
-				const player = new ToneBufferSource(buffer).toMaster();
+				const player = new ToneBufferSource(buffer).toDestination();
 				player.start(0);
 				player.playbackRate.value = 0.75;
 			}, buffer.duration * 1.3).then((rms) => {
@@ -370,7 +370,7 @@ describe("ToneBufferSource", () => {
 
 		it("plays correctly when playbackRate is > 1", () => {
 			return Offline(() => {
-				const player = new ToneBufferSource(buffer).toMaster();
+				const player = new ToneBufferSource(buffer).toDestination();
 				player.start(0);
 				player.playbackRate.value = 2;
 			}, buffer.duration).then((rms) => {
@@ -383,7 +383,7 @@ describe("ToneBufferSource", () => {
 
 		it("can play for a specific duration passed in the 'start' method", () => {
 			return Offline(() => {
-				const player = new ToneBufferSource(buffer).toMaster();
+				const player = new ToneBufferSource(buffer).toDestination();
 				player.start(0, 0, 0.1);
 
 				return (time) => {
@@ -404,7 +404,7 @@ describe("ToneBufferSource", () => {
 			const offsetTime = 0.1;
 			const offsetSample = buffer.toArray()[Math.floor(offsetTime * sampleRate)];
 			return Offline(() => {
-				const player = new ToneBufferSource(buffer).toMaster();
+				const player = new ToneBufferSource(buffer).toDestination();
 				player.start(0, offsetTime);
 			}, 0.05).then((buff) => {
 				expect(buff.getValueAtTime(0)).to.equal(offsetSample);
@@ -415,7 +415,7 @@ describe("ToneBufferSource", () => {
 			return Offline(() => {
 				const player = new ToneBufferSource(buffer);
 				player.fadeIn = 0.2;
-				player.toMaster();
+				player.toDestination();
 				player.start(0).stop(0.1);
 			}, 0.2).then((rms) => {
 				expect(rms.getRmsAtTime(0.0)).to.be.gt(0);
@@ -432,7 +432,7 @@ describe("ToneBufferSource", () => {
 				player.fadeIn = 0.2;
 				player.fadeOut = 0.1;
 				player.loop = true;
-				player.toMaster();
+				player.toDestination();
 				player.start(0).stop(0.1);
 			}, 0.3).then((buff) => {
 				// fade in
@@ -449,7 +449,7 @@ describe("ToneBufferSource", () => {
 
 		it("can be scheduled to stop with a ramp", () => {
 			return Offline(() => {
-				const player = new ToneBufferSource(buffer).toMaster();
+				const player = new ToneBufferSource(buffer).toDestination();
 				player.fadeOut = 0.05;
 				player.start(0).stop(0.1);
 			}, 0.6).then((rms) => {
@@ -468,7 +468,7 @@ describe("ToneBufferSource", () => {
 
 		it("fade is applied after the stop time", () => {
 			return Offline(() => {
-				const player = new ToneBufferSource(onesBuffer).toMaster();
+				const player = new ToneBufferSource(onesBuffer).toDestination();
 				player.fadeOut = 0.1;
 				player.start(0).stop(0.2);
 			}, 0.32).then(buff => {
@@ -483,7 +483,7 @@ describe("ToneBufferSource", () => {
 		});
 
 		it("can fade with an exponential curve", () => {
-			const player = new ToneBufferSource(onesBuffer).toMaster();
+			const player = new ToneBufferSource(onesBuffer).toDestination();
 			player.curve = "exponential";
 			expect(player.curve).to.equal("exponential");
 			player.dispose();
@@ -491,7 +491,7 @@ describe("ToneBufferSource", () => {
 
 		it("fades in and out exponentially", () => {
 			return Offline(() => {
-				const player = new ToneBufferSource(onesBuffer).toMaster();
+				const player = new ToneBufferSource(onesBuffer).toDestination();
 				player.curve = "exponential";
 				player.fadeIn = 0.1;
 				player.fadeOut = 0.1;
@@ -508,7 +508,7 @@ describe("ToneBufferSource", () => {
 
 		it("can be scheduled to start at a lower gain", () => {
 			return Offline(() => {
-				const player = new ToneBufferSource(buffer).toMaster();
+				const player = new ToneBufferSource(buffer).toDestination();
 				player.start(0, 0, undefined, 0.5);
 			}, 0.5).then((buff) => {
 				expect(buff.getValueAtTime(0)).to.be.lte(0.5);
@@ -531,7 +531,7 @@ describe("ToneBufferSource", () => {
 		it("stops playing if invoked with 'stop' at a sooner time", () => {
 			return Offline(() => {
 				const player = new ToneBufferSource(buffer);
-				player.toMaster();
+				player.toDestination();
 				player.start(0).stop(0.1).stop(0.05);
 			}, 0.3).then((buff) => {
 				expect(buff.getTimeOfLastSound()).to.be.closeTo(0.05, 0.02);
@@ -541,7 +541,7 @@ describe("ToneBufferSource", () => {
 		it("does not play if the stop time is at the start time", () => {
 			return Offline(() => {
 				const player = new ToneBufferSource(buffer);
-				player.toMaster();
+				player.toDestination();
 				player.start(0).stop(0);
 			}, 0.3).then((buff) => {
 				expect(buff.isSilent()).is.equal(true);
@@ -551,7 +551,7 @@ describe("ToneBufferSource", () => {
 		it("does not play if the stop time is at before start time", () => {
 			return Offline(() => {
 				const player = new ToneBufferSource(buffer);
-				player.toMaster();
+				player.toDestination();
 				player.start(0.1).stop(0);
 			}, 0.3).then((buff) => {
 				expect(buff.isSilent()).is.equal(true);
@@ -561,7 +561,7 @@ describe("ToneBufferSource", () => {
 		it("stops playing at the last scheduled stop time", () => {
 			return Offline(() => {
 				const player = new ToneBufferSource(buffer);
-				player.toMaster();
+				player.toDestination();
 				player.start(0).stop(0.1).stop(0.2);
 			}, 0.3).then((buff) => {
 				expect(buff.getTimeOfLastSound()).to.be.closeTo(0.2, 0.02);

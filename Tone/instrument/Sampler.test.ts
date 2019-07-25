@@ -27,7 +27,7 @@ describe("Sampler", () => {
 				69 : A4_buffer,
 			}, {
 				release : 0.4,
-			}).toMaster();
+			}).toDestination();
 			sampler.triggerAttackRelease("C4", 0.1, 0, 0.2);
 			sampler.triggerAttackRelease("E4", 0.1, 0.2, 0.4);
 			sampler.triggerAttackRelease("G4", 0.1, 0.4, 0.6);
@@ -67,7 +67,7 @@ describe("Sampler", () => {
 			return Offline(() => {
 				const sampler = new Sampler({
 					A4 : A4_buffer,
-				}).toMaster();
+				}).toDestination();
 				sampler.triggerAttack("A4");
 			}).then((buffer) => {
 				expect(buffer.isSilent()).to.be.false;
@@ -124,7 +124,7 @@ describe("Sampler", () => {
 					A4 : A4_buffer,
 				}, {
 					release : 0,
-				}).toMaster();
+				}).toDestination();
 				sampler.triggerAttack("A4", 0);
 				sampler.triggerRelease("A4", 0.2);
 				sampler.dispose();
@@ -139,7 +139,7 @@ describe("Sampler", () => {
 			return Offline(() => {
 				const sampler = new Sampler({
 					A4 : A4_buffer,
-				}).toMaster();
+				}).toDestination();
 				sampler.triggerAttack("G4");
 			}).then((buffer) => {
 				expect(buffer.isSilent()).to.be.false;
@@ -152,7 +152,7 @@ describe("Sampler", () => {
 					A4 : A4_buffer,
 				}, {
 					release : 0,
-				}).toMaster();
+				}).toDestination();
 				sampler.triggerAttack("A4", 0);
 				sampler.triggerRelease("A4", 0.2);
 			}, 0.3).then((buffer) => {
@@ -166,7 +166,7 @@ describe("Sampler", () => {
 					A4 : A4_buffer,
 				}, {
 					release : 0,
-				}).toMaster();
+				}).toDestination();
 				sampler.triggerAttack("A4", 0);
 				return atTime(A4_buffer.duration + 0.01, () => {
 					sampler.triggerRelease("A4");
@@ -182,7 +182,7 @@ describe("Sampler", () => {
 					A4 : A4_buffer,
 				}, {
 					release : 0,
-				}).toMaster();
+				}).toDestination();
 				sampler.triggerAttack("A4", 0);
 				sampler.triggerAttack("C4", 0);
 				sampler.triggerAttack("A4", 0.1);
@@ -199,7 +199,7 @@ describe("Sampler", () => {
 					A4 : A4_buffer,
 				}, {
 					release : 0,
-				}).toMaster();
+				}).toDestination();
 				sampler.triggerAttackRelease("A4", 0.2, 0.1);
 			}, 0.4).then((buffer) => {
 				expect(buffer.getTimeOfFirstSound()).to.be.closeTo(0.1, 0.01);
@@ -213,7 +213,7 @@ describe("Sampler", () => {
 					A4 : A4_buffer,
 				}, {
 					release : 0,
-				}).toMaster();
+				}).toDestination();
 				sampler.triggerAttackRelease(["A4", "C4"], [0.2, 0.3], 0.1);
 			}, 0.5).then((buffer) => {
 				expect(buffer.getTimeOfFirstSound()).to.be.closeTo(0.1, 0.01);
@@ -226,7 +226,7 @@ describe("Sampler", () => {
 
 		it("can add a note with it's midi value", () => {
 			return Offline(() => {
-				const sampler = new Sampler().toMaster();
+				const sampler = new Sampler().toDestination();
 				sampler.add("69", A4_buffer);
 				sampler.triggerAttack("B4");
 			}).then((buffer) => {
@@ -236,7 +236,7 @@ describe("Sampler", () => {
 
 		it("can add a note with it's note name", () => {
 			return Offline(() => {
-				const sampler = new Sampler().toMaster();
+				const sampler = new Sampler().toDestination();
 				sampler.add("A4", A4_buffer);
 				sampler.triggerAttack("G4");
 			}).then((buffer) => {
@@ -253,7 +253,7 @@ describe("Sampler", () => {
 
 		it("throws an error if added note key is not midi or note name", () => {
 			expect(() => {
-				const sampler = new Sampler().toMaster();
+				const sampler = new Sampler().toDestination();
 				sampler.add("nope", A4_buffer);
 			}).throws(Error);
 		});

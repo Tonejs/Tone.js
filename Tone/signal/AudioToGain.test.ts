@@ -24,7 +24,7 @@ describe("AudioToGain", () => {
 			const osc = new Oscillator(1000).start();
 			const a2g = new AudioToGain();
 			osc.connect(a2g);
-			a2g.toMaster();
+			a2g.toDestination();
 		}).then(buffer => {
 			expect(buffer.min()).to.be.closeTo(0, 0.01);
 			expect(buffer.max()).to.be.closeTo(1, 0.01);
@@ -36,7 +36,7 @@ describe("AudioToGain", () => {
 			const sig = new Zero();
 			const a2g = new AudioToGain();
 			sig.connect(a2g);
-			a2g.toMaster();
+			a2g.toDestination();
 		}, 0.5);
 	});
 
@@ -45,7 +45,7 @@ describe("AudioToGain", () => {
 			const sig = new Signal(1);
 			const a2g = new AudioToGain();
 			sig.connect(a2g);
-			a2g.toMaster();
+			a2g.toDestination();
 		}, 1);
 	});
 
@@ -54,7 +54,7 @@ describe("AudioToGain", () => {
 			const sig = new Signal(-1);
 			const a2g = new AudioToGain();
 			sig.connect(a2g);
-			a2g.toMaster();
+			a2g.toDestination();
 		}, 0);
 	});
 });

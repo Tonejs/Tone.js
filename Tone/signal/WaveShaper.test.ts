@@ -52,7 +52,7 @@ describe("WaveShaper", () => {
 				const signal = new Signal(1);
 				const waveshaper = new WaveShaper([-10, -10, -10]);
 				signal.connect(waveshaper);
-				waveshaper.toMaster();
+				waveshaper.toDestination();
 			}, -10);
 		});
 
@@ -61,7 +61,7 @@ describe("WaveShaper", () => {
 				const signal = new Signal(10);
 				const waveshaper = new WaveShaper([-20, 20]);
 				signal.connect(waveshaper);
-				waveshaper.toMaster();
+				waveshaper.toDestination();
 			}, 20);
 		});
 
@@ -70,7 +70,7 @@ describe("WaveShaper", () => {
 				const signal = new Signal(-1);
 				const waveshaper = new WaveShaper([-20, 20]);
 				signal.connect(waveshaper);
-				waveshaper.toMaster();
+				waveshaper.toDestination();
 			}, -20);
 		});
 
@@ -81,7 +81,7 @@ describe("WaveShaper", () => {
 					return input * 2;
 				});
 				signal.connect(waveshaper);
-				waveshaper.toMaster();
+				waveshaper.toDestination();
 				signal.setValueAtTime(-1, 0);
 				signal.linearRampToValueAtTime(1, 1);
 			}, 1).then((buffer) => {

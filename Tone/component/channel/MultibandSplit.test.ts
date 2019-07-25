@@ -42,14 +42,14 @@ describe("MultibandSplit", () => {
 
 	it("passes the incoming signal through low", () => {
 		return PassAudio(input => {
-			const split = new MultibandSplit().low.toMaster();
+			const split = new MultibandSplit().low.toDestination();
 			input.connect(split);
 		});
 	});
 
 	it("passes the incoming signal through mid", () => {
 		return PassAudio(input => {
-			const split = new MultibandSplit().mid.toMaster();
+			const split = new MultibandSplit().mid.toDestination();
 			input.connect(split);
 		});
 	});
@@ -59,7 +59,7 @@ describe("MultibandSplit", () => {
 			const split = new MultibandSplit({
 				highFrequency: 10,
 				lowFrequency: 5,
-			}).high.toMaster();
+			}).high.toDestination();
 			input.connect(split);
 		});
 	});

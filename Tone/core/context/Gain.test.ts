@@ -68,7 +68,7 @@ describe("Gain", () => {
 
 	it("passes audio through", () => {
 		return PassAudio((input) => {
-			const gainNode = new Gain().toMaster();
+			const gainNode = new Gain().toDestination();
 			input.connect(gainNode);
 		});
 	});

@@ -23,7 +23,7 @@ export interface SynthOptions extends MonophonicOptions {
  *  @constructor
  *  @param options the options available for the synth.
  *  @example
- * var synth = new Synth().toMaster();
+ * var synth = new Synth().toDestination();
  * synth.triggerAttackRelease("C4", "8n");
  */
 export class Synth extends Monophonic<SynthOptions> {

@@ -22,7 +22,7 @@ import { Envelope, EnvelopeOptions } from "./Envelope";
  * 	"decay": 0.2,
  * 	"sustain": 1.0,
  * 	"release": 0.8
- * }).toMaster();
+ * }).toDestination();
  * //create an oscillator and connect it
  * var osc = new Tone.Oscillator().connect(ampEnv).start();
  * //trigger the envelopes attack and release "8t" apart

@@ -12,7 +12,7 @@ describe("ToneOscillatorNode", () => {
 
 	it("matches a file", () => {
 		return CompareToFile(() => {
-			const osc = new ToneOscillatorNode().toMaster();
+			const osc = new ToneOscillatorNode().toDestination();
 			osc.start(0.5);
 		}, "oscillatorNode.wav");
 	});
@@ -163,7 +163,7 @@ describe("ToneOscillatorNode", () => {
 
 		it("can call stop multiple times and takes the last value", () => {
 			return Offline(() => {
-				const osc = new ToneOscillatorNode().toMaster();
+				const osc = new ToneOscillatorNode().toDestination();
 				osc.start(0).stop(0.1).stop(0.2);
 			}, 0.4).then((buffer) => {
 				expect(buffer.getRmsAtTime(0)).to.be.above(0);
