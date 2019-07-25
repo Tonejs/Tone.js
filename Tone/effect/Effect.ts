@@ -53,7 +53,7 @@ extends ToneAudioNode<Options> {
 	 */
 	output = this._dryWet;
 
-	protected _internalChannels = [this.input, this.output, this.effectReturn, this.effectSend];
+	protected _internalChannels: ToneAudioNode[] = [this.input, this.output, this.effectReturn, this.effectSend];
 
 	constructor(options: EffectOptions) {
 		super(options);
