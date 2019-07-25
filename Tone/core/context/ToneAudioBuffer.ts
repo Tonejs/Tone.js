@@ -259,7 +259,7 @@ export class ToneAudioBuffer extends Tone {
 	private _reverse(): this {
 		if (this.loaded) {
 			for (let i = 0; i < this.numberOfChannels; i++) {
-				Array.prototype.reverse.call(this.getChannelData(i));
+				this.getChannelData(i).reverse();
 			}
 		}
 		return this;
