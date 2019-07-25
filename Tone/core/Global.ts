@@ -20,7 +20,7 @@ let globalContext: Context = dummyContext;
  * Returns the default system-wide AudioContext
  */
 export function getContext(): Context {
-	if (!globalContext && hasAudioContext) {
+	if (globalContext === dummyContext && hasAudioContext) {
 		setContext(new Context());
 	}
 	return globalContext;
