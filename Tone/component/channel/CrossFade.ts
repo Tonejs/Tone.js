@@ -12,6 +12,20 @@ interface CrossFadeOptions extends ToneAudioNodeOptions {
 /**
  * Tone.Crossfade provides equal power fading between two inputs.
  * More on crossfading technique [here](https://en.wikipedia.org/wiki/Fade_(audio_engineering)#Crossfading).
+ * ```
+ *                                             +---------+
+ *                                            +> input a +>--+
+ * +-----------+   +---------------------+     |         |   |
+ * | 1s signal +>--> stereoPannerNode  L +>----> gain    |   |
+ * +-----------+   |                     |     +---------+   |
+ *               +-> pan               R +>-+                |   +--------+
+ *               | +---------------------+  |                +---> output +>
+ *  +------+     |                          |  +---------+   |   +--------+
+ *  | fade +>----+                          | +> input b +>--+
+ *  +------+                                |  |         |
+ *                                          +--> gain    |
+ *                                             +---------+
+ * ```
  * @example
  * var crossFade = new CrossFade(0.5);
  * //connect effect A to crossfade from
