@@ -187,7 +187,7 @@ describe("Part", () => {
 			});
 		});
 
-		it.skip("can remove an event by time and value", () => {
+		it("can remove an event by time and value", () => {
 			return Offline(() => {
 				const secondEvent = {
 					note : "C4",
@@ -245,7 +245,7 @@ describe("Part", () => {
 			return Offline(() => {
 				const part = new Part(noOp, [0, 1, 2, 3, 4, 5]);
 				expect(part.length).to.equal(6);
-				part.removeAll();
+				part.clear();
 				expect(part.length).to.equal(0);
 				part.dispose();
 			});

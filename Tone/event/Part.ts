@@ -1,5 +1,5 @@
-import { TransportTimeClass } from "Tone/core/type/TransportTime";
 import { TicksClass } from "../core/type/Ticks";
+import { TransportTimeClass } from "../core/type/TransportTime";
 import { defaultArg, optionsFromArguments } from "../core/util/Defaults";
 import { StateTimeline } from "../core/util/StateTimeline";
 import { isArray, isDefined, isObject, isUndef } from "../core/util/TypeCheck";
@@ -77,12 +77,10 @@ export class Part extends ToneEvent {
 
 	/**
 	 *  Start the part at the given time.
-	 *  @param  {TransportTime}  time    When to start the part.
-	 *  @param  {Time=}  offset  The offset from the start of the part
-	 *                           to begin playing at.
-	 *  @return  {Part}  this
+	 *  @param  time    When to start the part.
+	 *  @param  offset  The offset from the start of the part to begin playing at.
 	 */
-	start(time?: Time, offset?: Time): this {
+	start(time?: TransportTime, offset?: Time): this {
 		const ticks = this.toTicks(time);
 		if (this._state.getValueAtTime(ticks) !== "started") {
 			offset = defaultArg(offset, this._loop ? this._loopStart : 0);
@@ -168,14 +166,14 @@ export class Part extends ToneEvent {
 	 * @param value If a value is passed in, the value of the event at the given time will be set to it.
 	 */
 	at(time: Time, value?: any): ToneEvent | null {
-		const timeClass = new TransportTimeClass(this.context, time);
+		const timeInTicks = new TransportTimeClass(this.context, time).toTicks();
 		const tickTime = new TicksClass(this.context, 1).toSeconds();
 
 		const iterator = this._events.values();
 		let result = iterator.next();
 		while (!result.done) {
 			const event = result.value;
-			if (Math.abs(timeClass.toTicks() - event.startOffset) < tickTime) {
+			if (Math.abs(timeInTicks - event.startOffset) < tickTime) {
 				if (isDefined(value)) {
 					event.value = value;
 				}
@@ -218,7 +216,7 @@ export class Part extends ToneEvent {
 			time = value.time;
 		}
 		time = this.toTicks(time);
-		let event;
+		let event: ToneEvent;
 		if (value instanceof ToneEvent) {
 			event = value;
 			event.callback = this._tick.bind(this);
@@ -295,7 +293,7 @@ export class Part extends ToneEvent {
 	/**
 	 *  Remove all of the notes from the group.
 	 */
-	removeAll(): this {
+	clear(): this {
 		this._forEach(event => event.dispose());
 		this._events.clear();
 		return this;
@@ -471,7 +469,7 @@ export class Part extends ToneEvent {
 
 	dispose(): this {
 		super.dispose();
-		this.removeAll();
+		this.clear();
 		return this;
 	}
 }
