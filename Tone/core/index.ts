@@ -1,6 +1,7 @@
 export { Gain } from "./context/Gain";
 export { Context } from "./context/Context";
 export { OfflineContext } from "./context/OfflineContext";
+export { Offline } from "./context/Offline";
 export { ToneAudioBuffer } from "./context/ToneAudioBuffer";
 export { Delay } from "./context/Delay";
 export { Clock } from "./clock/Clock";
