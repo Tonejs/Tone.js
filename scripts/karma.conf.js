@@ -39,12 +39,7 @@ module.exports = function(config) {
 		// Karma Typescript compiler options
 		karmaTypescriptConfig: {
 			compilerOptions : {
-				// baseUrl: ".",
-				// module: "commonjs",
-				// paths : {
-				// 	"../Tone" : ["./Tone"],
-				// 	// "@tonejs/plot": ["./node_modules/@tonejs/plot/dist/index.d.ts"],
-				// },
+				module: "commonjs",
 			},
 			bundlerOptions: {
 				resolve: {
