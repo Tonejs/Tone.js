@@ -3,13 +3,11 @@ import { SignalOperator } from "./SignalOperator";
 import { WaveShaper } from "./WaveShaper";
 
 /**
- *  @class AudioToGain converts an input in AudioRange [-1,1] to NormalRange [0,1].
- *         See Tone.GainToAudio.
+ * AudioToGain converts an input in AudioRange [-1,1] to NormalRange [0,1].
+ * See {@link GainToAudio}.
  *
- *  @extends {Tone.SignalBase}
- *  @constructor
- *  @example
- *  var a2g = new AudioToGain();
+ * @example
+ * var a2g = new AudioToGain();
  */
 export class AudioToGain extends SignalOperator<ToneAudioNodeOptions> {
 
