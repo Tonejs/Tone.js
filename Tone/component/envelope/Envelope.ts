@@ -23,6 +23,17 @@ export interface EnvelopeOptions extends ToneAudioNodeOptions {
  *  envelope generator. Envelope outputs a signal which
  *  can be connected to an AudioParam or Tone.Signal.
  *  <img src="https://upload.wikimedia.org/wikipedia/commons/e/ea/ADSR_parameter.svg">
+ * ```
+ *           /\
+ *          /  \
+ *         /    \
+ *        /      \
+ *       /        \___________
+ *      /                     \
+ *     /                       \
+ *    /                         \
+ *   /                           \
+ * ```
  *
  *  @param attack The amount of time it takes for the envelope to go from
  *                         0 to it's maximum value.
@@ -48,14 +59,36 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	name = "Envelope";
 
 	/**
-	 *  When triggerAttack is called, the attack time is the amount of
-	 *  time it takes for the envelope to reach it's maximum value.
+	 * When triggerAttack is called, the attack time is the amount of
+	 * time it takes for the envelope to reach it's maximum value.
+	 * ```
+	 *           /\
+	 *          /X \
+	 *         /XX  \
+	 *        /XXX   \
+	 *       /XXXX    \___________
+	 *      /XXXXX                \
+	 *     /XXXXXX                 \
+	 *    /XXXXXXX                  \
+	 *   /XXXXXXXX                   \
+	 * ```
 	 */
 	attack: Time;
 
 	/**
-	 *  After the attack portion of the envelope, the value will fall
-	 *  over the duration of the decay time to it's sustain value.
+	 * After the attack portion of the envelope, the value will fall
+	 * over the duration of the decay time to it's sustain value.
+	 * ```
+	 *           /\
+	 *          / X\
+	 *         /  XX\
+	 *        /   XXX\
+	 *       /    XXXX\___________
+	 *      /     XXXXX           \
+	 *     /      XXXXX            \
+	 *    /       XXXXX             \
+	 *   /        XXXXX              \
+	 * ```
 	 */
 	decay: Time;
 
@@ -63,6 +96,17 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	 * 	The sustain value is the value
 	 * 	which the envelope rests at after triggerAttack is
 	 * 	called, but before triggerRelease is invoked.
+	 * ```
+	 *           /\
+	 *          /  \
+	 *         /    \
+	 *        /      \
+	 *       /        \___________
+	 *      /          XXXXXXXXXXX\
+	 *     /           XXXXXXXXXXX \
+	 *    /            XXXXXXXXXXX  \
+	 *   /             XXXXXXXXXXX   \
+	 * ```
 	 */
 	sustain: NormalRange;
 
@@ -70,6 +114,17 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	 *  After triggerRelease is called, the envelope's
 	 *  value will fall to it's miminum value over the
 	 *  duration of the release time.
+	 * ```
+	 *           /\
+	 *          /  \
+	 *         /    \
+	 *        /      \
+	 *       /        \___________
+	 *      /                    X\
+	 *     /                     XX\
+	 *    /                      XXX\
+	 *   /                       XXXX\
+	 * ```
 	 */
 	release: Time;
 
