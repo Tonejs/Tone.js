@@ -94,15 +94,11 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 	private _syncedStart: (time: Seconds, offset: Seconds) => void = noOp;
 	private _syncedStop: (time: Seconds) => void = noOp;
 
-	constructor(options: Partial<SourceOptions>);
-	constructor() {
-
-		super(optionsFromArguments(Volume.getDefaults(), arguments, ["volume"]));
-		const options = optionsFromArguments(Volume.getDefaults(), arguments, ["volume"]);
-
+	constructor(options: SourceOptions) {
+		super(options);
 		readOnly(this, "volume");
 		this._state.memory = 100;
-		this.volume.value = options.volume;
+		this.volume.setValueAtTime(options.volume, 0);
 		// set mute initially
 		this.mute = options.mute;
 

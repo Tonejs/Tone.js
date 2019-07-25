@@ -69,12 +69,8 @@ extends ToneWithContext<Options> {
 		});
 	}
 
-	constructor(options: Partial<ToneAudioNodeOptions>);
-	constructor() {
-		super(optionsFromArguments(ToneAudioNode.getDefaults(), arguments, ["context"]));
-
-		const options = optionsFromArguments(ToneAudioNode.getDefaults(), arguments, ["context"]);
-
+	constructor(options: ToneAudioNodeOptions) {
+		super(options);
 		this.numberOfInputs = options.numberOfInputs;
 		this.numberOfOutputs = options.numberOfOutputs;
 	}
