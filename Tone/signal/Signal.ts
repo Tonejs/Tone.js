@@ -35,7 +35,7 @@ implements AbstractParam<Type> {
 	/**
 	 * The constant source node which generates the signal
 	 */
-	private _constantSource: ConstantSourceNode = this.context.createConstantSource();
+	protected _constantSource: ConstantSourceNode = this.context.createConstantSource();
 	readonly output: OutputNode = this._constantSource;
 	protected _param: Param<Type>;
 	readonly input: InputNode;
