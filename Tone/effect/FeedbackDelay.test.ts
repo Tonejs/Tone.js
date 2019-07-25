@@ -17,7 +17,7 @@ describe("FeedbackDelay", () => {
 			const osc = new Oscillator().connect(delay);
 			osc.type = "square";
 			osc.start(0).stop(0.01);
-		}, "feedbackDelay.wav", 0.01);
+		}, "feedbackDelay.wav", 0.05);
 	});
 
 	context("API", () => {

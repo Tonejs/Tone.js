@@ -61,40 +61,20 @@ export function EffectTests(Constr, args?, before?): void {
 			});
 		});
 
-		// it("passes audio in both channels", () => {
-		// 	return PassAudioStereo((input) => {
-		// 		const instance = new Constr(args);
-		// 		if (before) {
-		// 			before(instance);
-		// 		}
-		// 		input.connect(instance);
-		// 		instance.toDestination();
-		// 	});
-		// });
-
 		it("can pass 100% dry signal", () => {
 			return Offline(() => {
 				const instance = new Constr(args).toDestination();
 				if (before) {
 					before(instance);
 				}
-				const merge = new Merge().connect(instance);
-				const signalL = new Signal<number>(-1).connect(merge, 0, 0);
-				const signalR = new Signal<number>(1).connect(merge, 0, 1);
+				const signal = new Signal<number>(-1).connect(instance);
 				// make the signals ramp
-				signalL.linearRampTo(1, 1);
-				signalR.linearRampTo(-1, 1);
+				signal.linearRampTo(1, 1);
 				instance.wet.value = 0;
-			}, 0.5, 2).then((buffer) => {
-				buffer.toArray()[0].forEach((sample, index) => {
-					const time = index / buffer.sampleRate;
-					const leftValue = (time * 2) - 1;
-					expect(sample).to.be.closeTo(leftValue, 0.01);
-				});
-				buffer.toArray()[1].forEach((sample, index) => {
-					const time = index / buffer.sampleRate;
-					const rightValue = ((1 - time) * 2) - 1;
-					expect(sample).to.be.closeTo(rightValue, 0.01);
+			}, 0.5, 1).then((buffer) => {
+				buffer.forEach((sample, time) => {
+					const value = (time * 2) - 1;
+					expect(sample).to.be.closeTo(value, 0.01);
 				});
 			});
 		});
@@ -105,34 +85,19 @@ export function EffectTests(Constr, args?, before?): void {
 				if (before) {
 					before(instance);
 				}
-				const merge = new Merge().connect(instance);
-				const signalL = new Signal<number>(-1).connect(merge, 0, 0);
-				const signalR = new Signal<number>(1).connect(merge, 0, 1);
+				const signal = new Signal<number>(-1).connect(instance);
 				// make the signals ramp
-				signalL.linearRampTo(1, 1);
-				signalR.linearRampTo(-1, 1);
-				if (instance.start) {
-					instance.start();
-				}
-			}, 0.5, 2).then((buffer) => {
-				let leftEffected = false;
-				let rightEffected = false;
-				buffer.toArray()[0].forEach((sample, index) => {
-					const time = index / buffer.sampleRate;
-					const leftValue = (time * 2) - 1;
-					if (Math.abs(sample - leftValue) > 0.01) {
-						leftEffected = true;
+				signal.linearRampTo(1, 1);
+				instance.wet.value = 1;
+			}, 0.5, 1).then((buffer) => {
+				let affected = false;
+				buffer.forEach((sample, time) => {
+					const value = (time * 2) - 1;
+					if (Math.abs(value - sample) > 0.01) {
+						affected = true;
 					}
 				});
-				buffer.toArray()[1].forEach((sample, index) => {
-					const time = index / buffer.sampleRate;
-					const rightValue = ((1 - time) * 2) - 1;
-					if (Math.abs(sample - rightValue) > 0.01) {
-						rightEffected = true;
-					}
-				});
-				expect(leftEffected).to.be.true;
-				expect(rightEffected).to.be.true;
+				expect(affected).to.be.true;
 			});
 		});
 	});
