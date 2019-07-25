@@ -30,9 +30,9 @@ export class FeedbackDelay extends FeedbackEffect<FeedbackDelayOptions> {
 	private _delayNode: Delay;
 
 	/**
-	 *  The delayTime of the DelayNode.
+	 *  The delayTime of the FeedbackDelay.
 	 */
-	delayTime: Param<Time>;
+	readonly delayTime: Param<Time>;
 
 	constructor(delayTime?: Time, feedback?: NormalRange);
 	constructor(options?: Partial<FeedbackDelayOptions>);
@@ -46,14 +46,8 @@ export class FeedbackDelay extends FeedbackEffect<FeedbackDelayOptions> {
 			delayTime: options.delayTime,
 			maxDelay: options.maxDelay,
 		});
-		this._internalChannels.push(this._delayNode);
-
-		/**
-		 *  The delayTime of the DelayNode.
-		 *  @type {Time}
-		 *  @signal
-		 */
 		this.delayTime = this._delayNode.delayTime;
+		this._internalChannels.push(this._delayNode);
 
 		// connect it up
 		this.connectEffect(this._delayNode);
