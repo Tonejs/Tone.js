@@ -206,6 +206,7 @@ extends ToneWithContext<Options> {
 	 * alias for {@link toDestination}
 	 */
 	toMaster(): this {
+		console.warn("toMaster() has been renamed toDestination()");
 		return this.toDestination();
 	}
 
