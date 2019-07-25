@@ -244,12 +244,13 @@ export class ToneAudioBuffer extends Tone {
 	slice(start: Seconds, end: Seconds = this.duration): ToneAudioBuffer {
 		const startSamples = Math.floor(start * this.sampleRate);
 		const endSamples = Math.floor(end * this.sampleRate);
-		const replacementArray: Float32Array[] = [];
-		for (let i = 0; i < this.numberOfChannels; i++) {
-			replacementArray[i] = this.toArray(i).slice(startSamples, endSamples) as Float32Array;
+		this.assert(startSamples < endSamples, "The start time must be less than the end time");
+		const length = endSamples - startSamples;
+		const retBuffer = getContext().createBuffer(this.numberOfChannels, length, this.sampleRate);
+		for (let channel = 0; channel < this.numberOfChannels; channel++) {
+			retBuffer.copyFromChannel(this.getChannelData(channel).subarray(startSamples, endSamples), channel);
 		}
-		const retBuffer = new ToneAudioBuffer().fromArray(replacementArray);
-		return retBuffer;
+		return new ToneAudioBuffer(retBuffer);
 	}
 
 	/**
