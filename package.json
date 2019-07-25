@@ -3,16 +3,16 @@
   "version": "14.1.0",
   "description": "A Web Audio framework for making interactive music in the browser.",
   "main": "build/Tone.js",
+  "module": "build/esm/index.js",
+  "types": "build/esm/index.d.ts",
   "files": [
     "README.md",
     "LICENSE.md",
-    "build/Tone.js.map",
-    "build/Tone.js",
-    "tone.d.ts",
+	"build",
     "Tone"
   ],
   "scripts": {
-    "build": "npm run increment-ts && npm run ts:build && npm run webpack:build",
+    "build": "npm run increment-ts && rm -rf build && npm run ts:build && npm run webpack:build",
     "codecov": "codecov",
     "collect": "npm run collect:deps",
     "collect:deps": "node scripts/collect_deps.js",
@@ -31,10 +31,10 @@
     "test:node": "node ./test/html/node_test.js",
     "tsd": "node ./scripts/generate_docs.js",
     "lint": "tslint --project tsconfig.json",
-    "ts:build": "rm -rf dist && tsc --project tsconfig.build.json",
+    "ts:build": "tsc --project tsconfig.build.json",
     "watch:old": "webpack -w --env.production --mode=development",
     "watch": "tsc --watch",
-    "webpack:build": "rm -rf build && webpack -p --env.production"
+    "webpack:build": "webpack -p --env.production"
   },
   "repository": {
     "type": "git",
