@@ -1,5 +1,12 @@
+### 14.1.0
+
+* **Converted to typescript!!! (WIP)**
+* Input/Outputs are no longer arrays. 
+	* simplifies connect/disconnect logic greatly. Simplifies API to just have clearly named inputs/outputs instead of overloading input/output connect numbers
+
+### 13.8.19
+
 * Moving to common.js-style code
-* Including tone.d.ts in builds (still WIP)
 
 **Breaking Changes**
 
