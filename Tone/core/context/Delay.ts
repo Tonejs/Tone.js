@@ -4,8 +4,8 @@ import { readOnly } from "../util/Interface";
 import { ToneAudioNode, ToneAudioNodeOptions } from "./ToneAudioNode";
 
 export interface DelayOptions extends ToneAudioNodeOptions {
-	delayTime: number;
-	maxDelay: number;
+	delayTime: Time;
+	maxDelay: Time;
 }
 
 /**
@@ -47,9 +47,10 @@ export class Delay extends ToneAudioNode<DelayOptions> {
 
 		const options = optionsFromArguments(Delay.getDefaults(), arguments, ["delayTime", "maxDelay"]);
 
-		this.maxDelay = Math.max(this.toSeconds(options.maxDelay), this.toSeconds(options.delayTime));
+		const maxDelayInSeconds = this.toSeconds(options.maxDelay);
+		this.maxDelay = Math.max(maxDelayInSeconds, this.toSeconds(options.delayTime));
 
-		this._delayNode = this.input = this.output = this.context.createDelay(options.maxDelay);
+		this._delayNode = this.input = this.output = this.context.createDelay(maxDelayInSeconds);
 		this._internalChannels = [this._delayNode];
 
 		this.delayTime = new Param({
