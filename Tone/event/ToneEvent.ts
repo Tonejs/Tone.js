@@ -25,7 +25,6 @@ export interface ToneEventOptions<T> extends ToneWithContextOptions {
  * ToneEvent abstracts away this.context.transport.schedule and provides a schedulable
  * callback for a single or repeatable events along the timeline.
  *
- * @extends {Tone}
  * @param callback The callback to invoke at the time.
  * @param value The value or values which should be passed to the callback function on invocation.
  * @example

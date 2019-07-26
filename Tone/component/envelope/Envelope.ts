@@ -253,19 +253,17 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	/**
 	 * The shape of the attack.
 	 * Can be any of these strings:
-	 * * linear
-	 * * exponential
-	 * * sine
-	 * * cosine
-	 * * bounce
-	 * * ripple
-	 * * step
+	 * * "linear"
+	 * * "exponential"
+	 * * "sine"
+	 * * "cosine"
+	 * * "bounce"
+	 * * "ripple"
+	 * * "step"
+	 *
 	 * Can also be an array which describes the curve. Values
 	 * in the array are evenly subdivided and linearly
 	 * interpolated over the duration of the attack.
-	 * @memberOf Envelope#
-	 * @type {String|Array}
-	 * @name attackCurve
 	 * @example
 	 * env.attackCurve = "linear";
 	 * @example
@@ -281,9 +279,6 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 
 	/**
 	 * The shape of the release. See the attack curve types.
-	 * @memberOf Envelope#
-	 * @type {String|Array}
-	 * @name releaseCurve
 	 * @example
 	 * env.releaseCurve = "linear";
 	 */
@@ -296,9 +291,6 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 
 	/**
 	 * The shape of the decay either "linear" or "exponential"
-	 * @memberOf Envelope#
-	 * @type {String}
-	 * @name decayCurve
 	 * @example
 	 * env.decayCurve = "linear";
 	 */
