@@ -51,10 +51,13 @@ export async function Offline(
 	await callback(context);
 
 	// then render the audio
-	const buffer = await context.render();
+	const bufferPromise = context.render();
 
 	// return the original AudioContext
 	setContext(originalContext);
+
+	// await the rendering
+	const buffer = await bufferPromise;
 
 	// return the audio
 	return new ToneAudioBuffer(buffer);
