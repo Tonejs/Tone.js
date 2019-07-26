@@ -7,15 +7,15 @@ import { noOp } from "../core/util/Interface";
 import { BasicPlaybackState, StateTimeline } from "../core/util/StateTimeline";
 import { isBoolean, isNumber } from "../core/util/TypeCheck";
 
-export type ToneEventCallback = (time: Seconds, value: any) => void;
+export type ToneEventCallback<T> = (time: Seconds, value: T) => void;
 
-export interface ToneEventOptions extends ToneWithContextOptions {
-	callback: ToneEventCallback;
+export interface ToneEventOptions<T> extends ToneWithContextOptions {
+	callback: ToneEventCallback<T>;
 	loop: boolean | number;
 	loopEnd: Time;
 	loopStart: Time;
 	playbackRate: Positive;
-	value?: any;
+	value?: T;
 	probability: NormalRange;
 	mute: boolean;
 	humanize: boolean | Time;
@@ -39,7 +39,7 @@ export interface ToneEventOptions extends ToneWithContextOptions {
  * chord.loop = 8;
  * chord.loopEnd = "1m";
  */
-export class ToneEvent extends ToneWithContext<ToneEventOptions> {
+export class ToneEvent<ValueType = any> extends ToneWithContext<ToneEventOptions<ValueType>> {
 
 	name = "ToneEvent";
 
@@ -51,13 +51,13 @@ export class ToneEvent extends ToneWithContext<ToneEventOptions> {
 	/**
 	 *  The callback to invoke.
 	 */
-	callback: ToneEventCallback;
+	callback: ToneEventCallback<ValueType>;
 
 	/**
 	 *  The value which is passed to the
 	 *  callback function.
 	 */
-	value: any;
+	value: ValueType;
 
 	/**
 	 *  When the note is scheduled to start.
@@ -102,8 +102,8 @@ export class ToneEvent extends ToneWithContext<ToneEventOptions> {
 	 */
 	mute: boolean;
 
-	constructor(options?: Partial<ToneEventOptions>);
-	constructor(callback?: ToneEventCallback, value?: any);
+	constructor(callback?: ToneEventCallback<ValueType>, value?: ValueType);
+	constructor(options?: Partial<ToneEventOptions<ValueType>>);
 	constructor() {
 
 		super(optionsFromArguments(ToneEvent.getDefaults(), arguments, ["callback", "value"]));
@@ -121,7 +121,7 @@ export class ToneEvent extends ToneWithContext<ToneEventOptions> {
 		this.playbackRate = options.playbackRate;
 	}
 
-	static getDefaults(): ToneEventOptions {
+	static getDefaults(): ToneEventOptions<any> {
 		return Object.assign(ToneWithContext.getDefaults(), {
 			callback : noOp,
 			humanize : false,
@@ -380,7 +380,6 @@ export class ToneEvent extends ToneWithContext<ToneEventOptions> {
 		super.dispose();
 		this.cancel();
 		this._state.dispose();
-		this.value = null;
 		return this;
 	}
 }

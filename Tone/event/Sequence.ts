@@ -4,13 +4,13 @@ import { isArray, isString } from "../core/util/TypeCheck";
 import { Part } from "./Part";
 import { ToneEvent, ToneEventCallback, ToneEventOptions } from "./ToneEvent";
 
-type SequenceEventDescription = Array<any | any[]>;
+type SequenceEventDescription<T> = Array<T | T[]>;
 
-interface SequenceOptions extends Omit<ToneEventOptions, "value"> {
+interface SequenceOptions<T> extends Omit<ToneEventOptions<T>, "value"> {
 	loopStart: number;
 	loopEnd: number;
 	subdivision: Time;
-	events: SequenceEventDescription;
+	events: SequenceEventDescription<T>;
 }
 
 /**
@@ -34,7 +34,7 @@ interface SequenceOptions extends Omit<ToneEventOptions, "value"> {
  * //subdivisions are given as subarrays
  * }, ["C4", ["E4", "D4", "E4"], "G4", ["A4", "G4"]]);
  */
-export class Sequence extends ToneEvent {
+export class Sequence<ValueType = any> extends ToneEvent<ValueType> {
 
 	name = "Sequence";
 
@@ -54,19 +54,19 @@ export class Sequence extends ToneEvent {
 	/**
 	 * private reference to all of the sequence proxies
 	 */
-	private _events: any[] = [];
+	private _events: ValueType[] = [];
 
 	/**
 	 * The proxied array
 	 */
-	private _eventsArray: any[] = [];
+	private _eventsArray: ValueType[] = [];
 
 	constructor(
-		callback?: ToneEventCallback,
-		events?: SequenceEventDescription,
+		callback?: ToneEventCallback<ValueType>,
+		events?: SequenceEventDescription<ValueType>,
 		subdivision?: Time,
 	);
-	constructor(options?: Partial<SequenceOptions>);
+	constructor(options?: Partial<SequenceOptions<ValueType>>);
 	constructor() {
 
 		super(optionsFromArguments(Sequence.getDefaults(), arguments, ["callback", "events", "subdivision"]));
@@ -87,7 +87,7 @@ export class Sequence extends ToneEvent {
 		this.playbackRate = options.playbackRate;
 	}
 
-	static getDefaults(): SequenceOptions {
+	static getDefaults(): SequenceOptions<any> {
 		return Object.assign( omitFromObject(ToneEvent.getDefaults(), ["value"]), {
 			events: [],
 			loop: true,

@@ -1,3 +1,4 @@
+import { noOp } from "Tone/core/util/Interface";
 import { TicksClass } from "../core/type/Ticks";
 import { TransportTimeClass } from "../core/type/TransportTime";
 import { defaultArg, optionsFromArguments } from "../core/util/Defaults";
@@ -5,13 +6,16 @@ import { StateTimeline } from "../core/util/StateTimeline";
 import { isArray, isDefined, isObject, isUndef } from "../core/util/TypeCheck";
 import { ToneEvent, ToneEventCallback, ToneEventOptions } from "./ToneEvent";
 
-type PartEventDescription = Time | [Time, any] | {
-	time: Time,
-	[key: string]: any;
-};
+type CallbackType<T> =
+	T extends {
+		time: Time;
+		[key: string]: any,
+	} ? T :
+	T extends ArrayLike<any> ? T[1] :
+	T extends Time ? null : never;
 
-interface PartOptions extends ToneEventOptions {
-	events: PartEventDescription[];
+interface PartOptions<T> extends Omit<ToneEventOptions<CallbackType<T>>, "value"> {
+	events: T[];
 }
 
 /**
@@ -34,7 +38,7 @@ interface PartOptions extends ToneEventOptions {
  * 	   {"time" : "0:2", "note" : "C4", "velocity": 0.5}
  * ]).start(0);
  */
-export class Part extends ToneEvent {
+export class Part<ValueType = any> extends ToneEvent<ValueType> {
 
 	name = "Part";
 
@@ -51,8 +55,8 @@ export class Part extends ToneEvent {
 	 */
 	private _events: Set<ToneEvent> = new Set();
 
-	constructor(callback?: ToneEventCallback, value?: any);
-	constructor(options?: Partial<PartOptions>);
+	constructor(options?: Partial<PartOptions<ValueType>>);
+	constructor(callback?: ToneEventCallback<CallbackType<ValueType>>, value?: ValueType[]);
 	constructor() {
 
 		super(optionsFromArguments(Part.getDefaults(), arguments, ["callback", "events"]));
@@ -63,13 +67,12 @@ export class Part extends ToneEvent {
 			if (isArray(event)) {
 				this.add(event[0], event[1]);
 			} else {
-				// @ts-ignore
 				this.add(event);
 			}
 		});
 	}
 
-	static getDefaults(): PartOptions {
+	static getDefaults(): PartOptions<any> {
 		return Object.assign(ToneEvent.getDefaults(), {
 			events: [],
 		});
