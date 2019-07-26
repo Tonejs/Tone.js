@@ -63,7 +63,7 @@ export class Ticker {
 			// call tick initially
 			tick();`,
 		]);
-		const blobUrl = window.URL.createObjectURL(blob);
+		const blobUrl = URL.createObjectURL(blob);
 		const worker = new Worker(blobUrl);
 
 		worker.onmessage = this._callback.bind(this);
@@ -75,7 +75,7 @@ export class Ticker {
 	 * Create a timeout loop
 	 */
 	private _createTimeout(): void {
-		this._timeout = window.setTimeout(()  => {
+		this._timeout = setTimeout(()  => {
 			this._createTimeout();
 			this._callback();
 		}, this._updateInterval * 1000);
