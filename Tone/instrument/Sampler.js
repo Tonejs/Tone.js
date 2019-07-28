@@ -176,9 +176,10 @@ Tone.Sampler.prototype.triggerRelease = function(notes, time){
 		var midi = Tone.Frequency(notes[i]).toMidi();
 		// find the note
 		if (this._activeSources[midi] && this._activeSources[midi].length){
-			var source = this._activeSources[midi].shift();
-			time = this.toSeconds(time);
-			source.stop(time);
+			this._activeSources[midi].forEach((source) => {
+				time = this.toSeconds(time);
+				source.stop(time);
+			})
 		}
 	}
 
