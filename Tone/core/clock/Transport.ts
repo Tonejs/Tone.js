@@ -559,7 +559,7 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 	 * @param  time  When to get the tick value
 	 * @return The tick value at the given time.
 	 */
-	getTicksAtTime(time: Time): Ticks {
+	getTicksAtTime(time?: Time): Ticks {
 		return Math.round(this._clock.getTicksAtTime(time));
 	}
 

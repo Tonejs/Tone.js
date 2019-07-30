@@ -140,7 +140,7 @@ export class TickSource<Type extends BPM | Hertz> extends ToneWithContext<TickSo
 	 * @param  time  When to get the tick value
 	 * @return The number of ticks
 	 */
-	getTicksAtTime(time: Time): Ticks {
+	getTicksAtTime(time?: Time): Ticks {
 		const computedTime = this.toSeconds(time);
 		const stopEvent = this._state.getLastState("stopped", computedTime);
 		if (!stopEvent) {

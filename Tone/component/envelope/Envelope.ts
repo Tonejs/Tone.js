@@ -22,7 +22,6 @@ export interface EnvelopeOptions extends ToneAudioNodeOptions {
  *  Envelope is an [ADSR](https://en.wikipedia.org/wiki/Synthesizer#ADSR_envelope)
  *  envelope generator. Envelope outputs a signal which
  *  can be connected to an AudioParam or Tone.Signal.
- *  <img src="https://upload.wikimedia.org/wikipedia/commons/e/ea/ADSR_parameter.svg">
  * ```
  *           /\
  *          /  \
@@ -419,7 +418,7 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	 *  Cancels all scheduled envelope changes after the given time.
 	 */
 	cancel(after?: Time): this {
-		this._sig.cancelScheduledValues(after);
+		this._sig.cancelScheduledValues(this.toSeconds(after));
 		return this;
 	}
 

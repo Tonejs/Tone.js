@@ -131,11 +131,10 @@ extends ToneWithContext<ClockOptions> implements Emitter<ClockEvent> {
 	/**
 	 *  Stop the clock. Stopping the clock resets the tick counter to 0.
 	 *  @param time The time when the clock should stop.
-	 *  @returns {Clock} this
 	 *  @example
 	 * clock.stop();
 	 */
-	stop(time: Time): this {
+	stop(time?: Time): this {
 		const computedTime = this.toSeconds(time);
 		this._state.cancel(computedTime);
 		this._state.setStateAtTime("stopped", computedTime);
@@ -150,7 +149,7 @@ extends ToneWithContext<ClockOptions> implements Emitter<ClockEvent> {
 	 *  Pause the clock. Pausing does not reset the tick counter.
 	 *  @param time The time when the clock should stop.
 	 */
-	pause(time: Time): this {
+	pause(time?: Time): this {
 		const computedTime = this.toSeconds(time);
 		if (this._state.getValueAtTime(computedTime) === "started") {
 			this._state.setStateAtTime("paused", computedTime);
@@ -207,7 +206,7 @@ extends ToneWithContext<ClockOptions> implements Emitter<ClockEvent> {
 	 * @param  time  When to get the tick value
 	 * @return The tick value at the given time.
 	 */
-	getTicksAtTime(time: Time): Ticks {
+	getTicksAtTime(time?: Time): Ticks {
 		return this._tickSource.getTicksAtTime(time);
 	}
 
