@@ -17,3 +17,4 @@ export { Emitter } from "./util/Emitter";
 export { Tone } from "./Tone";
 export { Destination } from "./context/Destination";
 export { Transport } from "./clock/Transport";
+export * from "./Connect";
