@@ -168,7 +168,7 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 				const event = this._state.get(computedTime);
 				if (event) {
 					event.offset = this.toSeconds(defaultArg(offset, 0));
-					event.duration = this.toSeconds(duration);
+					event.duration = duration ? this.toSeconds(duration) : undefined;
 				}
 				const sched = this.context.transport.schedule(t => {
 					this._start(t, offset, duration);
