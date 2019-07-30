@@ -1,4 +1,5 @@
 import { ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
+import { NormalRange, PowerOfTwo } from "../../core/type/Units";
 import { optionsFromArguments } from "../../core/util/Defaults";
 
 type AnalyserType = "fft" | "waveform";

@@ -1,5 +1,6 @@
 import { Gain } from "../../core/context/Gain";
 import { connect, ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
+import { NormalRange } from "../../core/type/Units";
 import { optionsFromArguments } from "../../core/util/Defaults";
 import { readOnly } from "../../core/util/Interface";
 import { GainToAudio } from "../../signal/GainToAudio";

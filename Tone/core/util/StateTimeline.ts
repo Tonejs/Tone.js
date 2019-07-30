@@ -1,4 +1,4 @@
-// import "../type/Type";
+import { Seconds } from "../type/Units";
 import { Timeline, TimelineEvent } from "./Timeline";
 
 export type BasicPlaybackState = "started" | "stopped";

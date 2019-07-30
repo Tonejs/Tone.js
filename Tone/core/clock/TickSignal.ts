@@ -1,6 +1,7 @@
 import { connect } from "../Connect";
 import { AutomationEvent, Param, ParamOptions } from "../context/Param";
 import { getContext } from "../Global";
+import { BPM, Hertz, Seconds, Ticks, Time } from "../type/Units";
 import { optionsFromArguments } from "../util/Defaults";
 import { Timeline } from "../util/Timeline";
 import { isUndef } from "../util/TypeCheck";

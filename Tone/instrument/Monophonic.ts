@@ -1,4 +1,5 @@
 import { FrequencyClass } from "../core/type/Frequency";
+import { Cents, Frequency, NormalRange, Seconds, Time } from "../core/type/Units";
 import { optionsFromArguments } from "../core/util/Defaults";
 import { Instrument, InstrumentOptions } from "../instrument/Instrument";
 import { Signal } from "../signal/Signal";
@@ -64,9 +65,9 @@ export abstract class Monophonic<Options extends MonophonicOptions> extends Inst
 	 */
 	triggerAttack(note: Frequency | FrequencyClass, time?: Time, velocity: NormalRange = 1): this {
 		this.log("triggerAttack", note, time, velocity);
-		time = this.toSeconds(time);
-		this._triggerEnvelopeAttack(time, velocity);
-		this.setNote(note, time);
+		const seconds = this.toSeconds(time);
+		this._triggerEnvelopeAttack(seconds, velocity);
+		this.setNote(note, seconds);
 		return this;
 	}
 
@@ -79,8 +80,8 @@ export abstract class Monophonic<Options extends MonophonicOptions> extends Inst
 	 */
 	triggerRelease(time?: Time): this {
 		this.log("triggerRelease", time);
-		time = this.toSeconds(time);
-		this._triggerEnvelopeRelease(time);
+		const seconds = this.toSeconds(time);
+		this._triggerEnvelopeRelease(seconds);
 		return this;
 	}
 
@@ -118,13 +119,13 @@ export abstract class Monophonic<Options extends MonophonicOptions> extends Inst
 	 * synth.setNote("Bb4");
 	 */
 	setNote(note: Frequency | FrequencyClass, time?: Time): this {
-		time = this.toSeconds(time);
+		const computedTime = this.toSeconds(time);
 		const computedFrequency = note instanceof FrequencyClass ? note.toFrequency() : note;
-		if (this.portamento > 0 && this.getLevelAtTime(time) > 0.05) {
+		if (this.portamento > 0 && this.getLevelAtTime(computedTime) > 0.05) {
 			const portTime = this.toSeconds(this.portamento);
-			this.frequency.exponentialRampTo(computedFrequency, portTime, time);
+			this.frequency.exponentialRampTo(computedFrequency, portTime, computedTime);
 		} else {
-			this.frequency.setValueAtTime(computedFrequency, time);
+			this.frequency.setValueAtTime(computedFrequency, computedTime);
 		}
 		return this;
 	}

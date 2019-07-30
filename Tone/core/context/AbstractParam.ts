@@ -1,4 +1,4 @@
-import "../type/Units";
+import { Time, Unit, UnitName } from "../type/Units";
 
 export abstract class AbstractParam<Type extends Unit> {
 

@@ -1,4 +1,4 @@
-import "./Units";
+import { Decibels, GainFactor, Hertz, Interval, MidiNote, NormalRange } from "./Units";
 
 /**
  *  Equal power gain scale. Good for cross-fading.
@@ -56,7 +56,7 @@ export function setA4(freq: Hertz): void {
  * ftom(440); // returns 69
  */
 export function ftom(frequency: Hertz): MidiNote {
-	return 69 + Math.round(12 * Math.log2(frequency / A4));
+	return 69 + Math.round(12 * Math.log2(frequency / A4)) as MidiNote;
 }
 
 /**

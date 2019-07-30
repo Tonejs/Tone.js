@@ -3,6 +3,7 @@ import { expect } from "chai";
 import { BasicTests, testAudioContext } from "test/helper/Basic";
 import { Offline } from "test/helper/Offline";
 import { SCHEDULE_RAMP_AFTER_SET_TARGET } from "test/helper/Supports";
+import { BPM, Decibels, Frequency, Positive, Seconds, Time, Unit, UnitName } from "Tone/core/type/Units";
 import { getContext } from "../Global";
 import { Param } from "./Param";
 
@@ -199,18 +200,23 @@ describe("Param", () => {
 				units : "frequency",
 			});
 			expect(() => {
+				// @ts-ignore
 				expect(param.setValueAtTime("bad", "bad"));
 			}).to.throw(Error);
 			expect(() => {
+				// @ts-ignore
 				expect(param.linearRampToValueAtTime("bad", "bad"));
 			}).to.throw(Error);
 			expect(() => {
+				// @ts-ignore
 				expect(param.exponentialRampToValueAtTime("bad", "bad"));
 			}).to.throw(Error);
 			expect(() => {
+				// @ts-ignore
 				expect(param.setTargetAtTime("bad", "bad", 0.1));
 			}).to.throw(Error);
 			expect(() => {
+				// @ts-ignore
 				expect(param.cancelScheduledValues("bad"));
 			}).to.throw(Error);
 			param.dispose();

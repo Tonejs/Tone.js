@@ -2,6 +2,7 @@ import { getContext } from "../Global";
 import { ftom, mtof } from "./Conversions";
 import { FrequencyClass, FrequencyUnit } from "./Frequency";
 import { TimeValue } from "./TimeBase";
+import { Hertz, Interval, MidiNote, Seconds, Ticks } from "./Units";
 
 /**
  *  @class Midi is a primitive type for encoding Time values.

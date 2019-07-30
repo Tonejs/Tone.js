@@ -1,4 +1,5 @@
 import { TicksClass } from "../core/type/Ticks";
+import { NormalRange, Positive, Seconds, Ticks, Time, TransportTime } from "../core/type/Units";
 import { omitFromObject, optionsFromArguments } from "../core/util/Defaults";
 import { isArray, isString } from "../core/util/TypeCheck";
 import { Part } from "./Part";

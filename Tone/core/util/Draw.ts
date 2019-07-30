@@ -1,4 +1,5 @@
 import { ToneWithContext, ToneWithContextOptions } from "../context/ToneWithContext";
+import { Seconds, Time } from "../type/Units";
 import { Timeline, TimelineEvent } from "./Timeline";
 
 interface DrawEvent extends TimelineEvent {

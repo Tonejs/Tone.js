@@ -1,6 +1,7 @@
 import { connect } from "../../core/Connect";
 import { Param } from "../../core/context/Param";
 import { ToneAudioBuffer } from "../../core/context/ToneAudioBuffer";
+import { GainFactor, Positive, Seconds, Time } from "../../core/type/Units";
 import { defaultArg, optionsFromArguments } from "../../core/util/Defaults";
 import { noOp } from "../../core/util/Interface";
 import { isDefined } from "../../core/util/TypeCheck";
@@ -130,10 +131,10 @@ export class ToneBufferSource extends OneShotSource<ToneBufferSourceOptions> {
 	 */
 	start(time?: Time, offset?: Time, duration?: Time, gain: GainFactor = 1): this {
 		this.assert(this.buffer.loaded, "buffer is either not set or not loaded");
-		time = this.toSeconds(time);
+		const computedTime = this.toSeconds(time);
 
 		// apply the gain envelope
-		this._startGain(time, gain);
+		this._startGain(computedTime, gain);
 
 		// if it's a loop the default offset is the loopstart point
 		if (this.loop) {
@@ -142,9 +143,8 @@ export class ToneBufferSource extends OneShotSource<ToneBufferSourceOptions> {
 			// otherwise the default offset is 0
 			offset = defaultArg(offset, 0);
 		}
-		offset = this.toSeconds(offset);
 		// make sure the offset is not less than 0
-		offset = Math.max(offset, 0);
+		let computedOffset = Math.max(this.toSeconds(offset), 0);
 
 		// start the buffer source
 		if (this.loop) {
@@ -153,17 +153,17 @@ export class ToneBufferSource extends OneShotSource<ToneBufferSourceOptions> {
 			const loopStart = this.toSeconds(this.loopStart);
 			const loopDuration = loopEnd - loopStart;
 			// move the offset back
-			if (offset >= loopEnd) {
-				offset = ((offset - loopStart) % loopDuration) + loopStart;
+			if (computedOffset >= loopEnd) {
+				computedOffset = ((computedOffset - loopStart) % loopDuration) + loopStart;
 			}
 		}
 
 		// this.buffer.loaded would have return false if the AudioBuffer was undefined
 		this._source.buffer = this.buffer.get() as AudioBuffer;
 		this._source.loopEnd = this.toSeconds(this.loopEnd) || this.buffer.duration;
-		if (offset < this.buffer.duration) {
+		if (computedOffset < this.buffer.duration) {
 			this._sourceStarted = true;
-			this._source.start(time, offset);
+			this._source.start(computedTime, computedOffset);
 		}
 
 		// if a duration is given, schedule a stop
@@ -171,7 +171,7 @@ export class ToneBufferSource extends OneShotSource<ToneBufferSourceOptions> {
 			let computedDur = this.toSeconds(duration);
 			// make sure it's never negative
 			computedDur = Math.max(computedDur, 0);
-			this.stop(time + computedDur);
+			this.stop(computedTime + computedDur);
 		}
 
 		return this;

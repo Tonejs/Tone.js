@@ -1,5 +1,6 @@
 import { Delay } from "../core/context/Delay";
 import { Param } from "../core/context/Param";
+import { NormalRange, Time } from "../core/type/Units";
 import { optionsFromArguments } from "../core/util/Defaults";
 import { readOnly } from "../core/util/Interface";
 import { FeedbackEffect,  FeedbackEffectOptions } from "./FeedbackEffect";

@@ -1,5 +1,6 @@
 import { Gain } from "../../core/context/Gain";
 import { connectSeries, ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
+import { Cents, Decibels, Frequency, GainFactor, Positive } from "../../core/type/Units";
 import { optionsFromArguments } from "../../core/util/Defaults";
 import { readOnly, writable } from "../../core/util/Interface";
 import { isNumber } from "../../core/util/TypeCheck";

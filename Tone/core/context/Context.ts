@@ -1,4 +1,5 @@
 import { Ticker, TickerClockSource } from "../clock/Ticker";
+import { Seconds } from "../type/Units";
 import { optionsFromArguments } from "../util/Defaults";
 import { Emitter } from "../util/Emitter";
 import { Omit } from "../util/Interface";

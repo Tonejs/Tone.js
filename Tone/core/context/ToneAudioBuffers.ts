@@ -63,7 +63,7 @@ export class ToneAudioBuffers extends Tone {
 		urls?: ToneAudioBuffersUrlMap,
 		onload?: () => void,
 		baseUrl?: string,
-		);
+	);
 	constructor(options?: Partial<ToneAudioBuffersOptions>);
 	constructor() {
 
@@ -78,7 +78,7 @@ export class ToneAudioBuffers extends Tone {
 		Object.keys(options.urls).forEach(name => {
 			this._loadingCount++;
 			const url = options.urls[name];
-			this.add(name, url, this._bufferLoaded.bind(this, (options as ToneAudioBuffersOptions).onload));
+			this.add(name, url, this._bufferLoaded.bind(this, options.onload));
 		});
 
 	}

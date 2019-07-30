@@ -1,5 +1,6 @@
 import { Gain } from "../core/context/Gain";
 import { Param } from "../core/context/Param";
+import { NormalRange } from "../core/type/Units";
 import { readOnly } from "../core/util/Interface";
 import { Effect, EffectOptions } from "./Effect";
 

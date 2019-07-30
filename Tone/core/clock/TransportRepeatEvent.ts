@@ -1,5 +1,6 @@
 import { Context } from "../context/Context";
-import { Ticks, TicksClass } from "../type/Ticks";
+import { TicksClass } from "../type/Ticks";
+import { Seconds, Ticks, Time } from "../type/Units";
 import { TransportEvent, TransportEventOptions } from "./TransportEvent";
 
 type Transport = import("../clock/Transport").Transport;
@@ -56,8 +57,8 @@ export class TransportRepeatEvent extends TransportEvent {
 
 		const options = Object.assign(TransportRepeatEvent.getDefaults(), opts);
 
-		this.duration = Ticks(options.duration).valueOf();
-		this._interval = Ticks(options.interval).valueOf();
+		this.duration =  new TicksClass(transport.context, options.duration).valueOf();
+		this._interval = new  TicksClass(transport.context, options.interval).valueOf();
 		this._nextTick = options.time;
 		this.transport.on("start", this._boundRestart);
 		this.transport.on("loopStart", this._boundRestart);

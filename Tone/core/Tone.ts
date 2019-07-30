@@ -5,8 +5,6 @@
  *  @copyright 2014-2019 Yotam Mann
  */
 import { version } from "../version";
-// import { getContext } from "./Global";
-import "./type/Units";
 
 ///////////////////////////////////////////////////////////////////////////
 // 	TONE

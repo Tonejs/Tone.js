@@ -1,6 +1,7 @@
 import { getContext } from "../Global";
 import { ftom } from "./Conversions";
 import { TimeBaseClass, TimeBaseUnit, TimeExpression, TimeValue } from "./TimeBase";
+import { BarsBeatsSixteenths, MidiNote, Seconds, Subdivision, Ticks, Time } from "./Units";
 
 /**
  * TimeClass is a primitive type for encoding and decoding Time values.
@@ -43,7 +44,7 @@ extends TimeBaseClass<Type, Unit> {
 	 * Time(21).quantize(2) //returns 22
 	 * Time(0.6).quantize("4n", 0.5) //returns 0.55
 	 */
-	quantize(subdiv: number | Subdivision | TimeObject, percent = 1): Type {
+	quantize(subdiv: Time, percent = 1): Type {
 		const subdivision = new (this.constructor as typeof TimeClass)(this.context, subdiv).valueOf();
 		const value = this.valueOf();
 		const multiple = Math.round(value / subdivision);

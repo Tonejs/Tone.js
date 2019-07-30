@@ -3,7 +3,7 @@ import { Tone } from "../Tone";
 import { FrequencyClass } from "../type/Frequency";
 import { TimeClass } from "../type/Time";
 import { TransportTimeClass } from "../type/TransportTime";
-import "../type/Units";
+import { Frequency, Hertz, Seconds, Ticks, Time } from "../type/Units";
 import { getDefaultsFromInstance, omitFromObject, optionsFromArguments } from "../util/Defaults";
 import { RecursivePartial } from "../util/Interface";
 import { isArray, isBoolean, isDefined, isNumber, isString, isUndef } from "../util/TypeCheck";

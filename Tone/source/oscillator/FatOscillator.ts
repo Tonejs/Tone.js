@@ -1,4 +1,4 @@
-import { Gain } from "../../core/context/Gain";
+import { AudioRange, Cents, Degrees, Frequency, Positive, Time } from "../../core/type/Units";
 import { optionsFromArguments } from "../../core/util/Defaults";
 import { readOnly } from "../../core/util/Interface";
 import { AudioToGain } from "../../signal/AudioToGain";
@@ -24,7 +24,7 @@ export class FatOscillator extends Source<FatOscillatorOptions> implements ToneO
 	/**
 	 *  The oscillator's frequency
 	 */
-	readonly frequency: Signal<Frequency> = new Signal({
+	readonly frequency: Signal<Frequency> = new Signal<Cents>({
 		context: this.context,
 		units: "frequency",
 	});
@@ -32,7 +32,7 @@ export class FatOscillator extends Source<FatOscillatorOptions> implements ToneO
 	/**
 	 *  The detune control signal.
 	 */
-	readonly detune: Signal<Cents> = new Signal({
+	readonly detune: Signal<Cents> = new Signal<Cents>({
 		context: this.context,
 		units: "cents",
 	});

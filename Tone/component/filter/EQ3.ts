@@ -1,6 +1,7 @@
 import { Gain } from "../../core/context/Gain";
 import { Param } from "../../core/context/Param";
 import { ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
+import { Cents, Decibels, Frequency, GainFactor, Positive } from "../../core/type/Units";
 import { optionsFromArguments } from "../../core/util/Defaults";
 import { readOnly, writable } from "../../core/util/Interface";
 import { Signal } from "../../signal/Signal";

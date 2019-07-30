@@ -1,6 +1,7 @@
 import { TestAudioBuffer } from "@tonejs/plot";
 import { OfflineContext } from "Tone/core/context/OfflineContext";
 import { getContext, setContext } from "Tone/core/Global";
+import { Seconds } from "Tone/core/type/Units";
 import { isFunction } from "Tone/core/util/TypeCheck";
 
 type ReturnFunction = (time: Seconds) => void;

@@ -1,3 +1,4 @@
+import { Seconds } from "../type/Units";
 
 export type TickerClockSource = "worker" | "timeout" | "offline";
 

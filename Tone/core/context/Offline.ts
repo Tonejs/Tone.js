@@ -1,4 +1,5 @@
 import { getContext, setContext } from "../Global";
+import { Seconds } from "../type/Units";
 import { OfflineContext } from "./OfflineContext";
 import { ToneAudioBuffer } from "./ToneAudioBuffer";
 

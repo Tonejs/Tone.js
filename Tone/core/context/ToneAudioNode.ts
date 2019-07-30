@@ -1,4 +1,4 @@
-import { optionsFromArguments } from "../util/Defaults";
+import { Unit } from "../type/Units";
 import { isArray, isDefined, isNumber } from "../util/TypeCheck";
 import { Param } from "./Param";
 import { ToneWithContext, ToneWithContextOptions } from "./ToneWithContext";

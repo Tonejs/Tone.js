@@ -1,4 +1,5 @@
 import { ToneAudioBuffer } from "../../core/context/ToneAudioBuffer";
+import { Positive, Time } from "../../core/type/Units";
 import { defaultArg, optionsFromArguments } from "../../core/util/Defaults";
 import { noOp } from "../../core/util/Interface";
 import { isUndef } from "../../core/util/TypeCheck";
@@ -184,16 +185,17 @@ export class Player extends Source<PlayerOptions> {
 		}
 
 		// compute the values in seconds
-		offset = this.toSeconds(offset);
+		let comptuedOffset = this.toSeconds(offset);
 
 		// if it's synced, it should factor in the playback rate for computing the offset
 		if (this._synced) {
-			offset *= this._playbackRate;
+			comptuedOffset *= this._playbackRate;
 		}
 
 		// compute the duration which is either the passed in duration of the buffer.duration - offset
-		let computedDuration = defaultArg(duration, Math.max(this._buffer.duration - offset, 0));
-		computedDuration = this.toSeconds(computedDuration);
+		const origDuration = duration;
+		duration = defaultArg(duration, Math.max(this._buffer.duration - comptuedOffset, 0));
+		let computedDuration = this.toSeconds(duration);
 
 		// scale it by the playback rate
 		computedDuration = computedDuration / this._playbackRate;
@@ -226,11 +228,11 @@ export class Player extends Source<PlayerOptions> {
 		this._activeSources.add(source);
 
 		// start it
-		if (this._loop && isUndef(duration)) {
-			source.start(startTime, offset);
+		if (this._loop && isUndef(origDuration)) {
+			source.start(startTime, comptuedOffset);
 		} else {
 			// subtract the fade out time
-			source.start(startTime, offset, computedDuration - this.toSeconds(this.fadeOut));
+			source.start(startTime, comptuedOffset, computedDuration - this.toSeconds(this.fadeOut));
 		}
 	}
 

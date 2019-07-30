@@ -227,7 +227,7 @@ describe("Sampler", () => {
 		it("can add a note with it's midi value", () => {
 			return Offline(() => {
 				const sampler = new Sampler().toDestination();
-				sampler.add("69", A4_buffer);
+				sampler.add(69, A4_buffer);
 				sampler.triggerAttack("B4");
 			}).then((buffer) => {
 				expect(buffer.isSilent()).to.be.false;
@@ -254,6 +254,7 @@ describe("Sampler", () => {
 		it("throws an error if added note key is not midi or note name", () => {
 			expect(() => {
 				const sampler = new Sampler().toDestination();
+				// @ts-ignore
 				sampler.add("nope", A4_buffer);
 			}).throws(Error);
 		});

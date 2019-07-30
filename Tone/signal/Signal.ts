@@ -2,6 +2,7 @@ import { AbstractParam } from "../core/context/AbstractParam";
 import { Param } from "../core/context/Param";
 import { InputNode, OutputNode, ToneAudioNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
 import { connect } from "../core/context/ToneAudioNode";
+import { Time, Unit, UnitName } from "../core/type/Units";
 import { optionsFromArguments } from "../core/util/Defaults";
 
 export interface SignalOptions<Type> extends ToneAudioNodeOptions {

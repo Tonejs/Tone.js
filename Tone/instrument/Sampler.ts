@@ -2,9 +2,10 @@ import { ToneAudioBuffer } from "../core/context/ToneAudioBuffer";
 import { ToneAudioBuffers } from "../core/context/ToneAudioBuffers";
 import { intervalToFrequencyRatio } from "../core/type/Conversions";
 import { FrequencyClass } from "../core/type/Frequency";
+import { Frequency, Interval, MidiNote, NormalRange, Note, Time } from "../core/type/Units";
 import { optionsFromArguments } from "../core/util/Defaults";
 import { noOp } from "../core/util/Interface";
-import { isArray, isNote } from "../core/util/TypeCheck";
+import { isArray, isNote, isNumber } from "../core/util/TypeCheck";
 import { Instrument, InstrumentOptions } from "../instrument/Instrument";
 import { ToneBufferSource, ToneBufferSourceCurve } from "../source/buffer/BufferSource";
 
@@ -90,12 +91,12 @@ export class Sampler extends Instrument<SamplerOptions> {
 
 		const urlMap = {};
 		Object.keys(options.urls).forEach((note) => {
-			this.assert(isNote(note) || isFinite(note), `url key is neither a note or midi pitch: ${note}`);
+			this.assert(isNote(note) || (isNumber(note) && isFinite(note)), `url key is neither a note or midi pitch: ${note}`);
 			if (isNote(note)) {
 				// convert the note name to MIDI
 				const mid = new FrequencyClass(this.context, note).toMidi();
 				urlMap[mid] = options.urls[note];
-			} else if (isFinite(note)) {
+			} else if (isNumber(note) && isFinite(note)) {
 				// otherwise if it's numbers assume it's midi
 				urlMap[parseInt(note, 10)] = options.urls[note];
 			}

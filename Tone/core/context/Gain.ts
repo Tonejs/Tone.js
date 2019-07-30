@@ -1,5 +1,5 @@
 import { Param } from "../context/Param";
-import "../type/Units";
+import { GainFactor, Unit, UnitName } from "../type/Units";
 import { optionsFromArguments } from "../util/Defaults";
 import { readOnly } from "../util/Interface";
 import { ToneAudioNode, ToneAudioNodeOptions } from "./ToneAudioNode";

@@ -1,3 +1,4 @@
+import { Seconds, Ticks } from "../type/Units";
 import { noOp } from "../util/Interface";
 
 type Transport = import("../clock/Transport").Transport;

@@ -1,4 +1,4 @@
-import { Time, TimeClass } from "../../core/type/Time";
+import { TimeClass } from "../../core/type/Time";
 import { PlaybackState } from "../../core/util/StateTimeline";
 import { Signal } from "../../signal/Signal";
 import { onContextClose, onContextInit } from "../context/ContextInitialization";
@@ -7,6 +7,8 @@ import { Param } from "../context/Param";
 import { ToneWithContext, ToneWithContextOptions } from "../context/ToneWithContext";
 import { TicksClass } from "../type/Ticks";
 import { TransportTimeClass } from "../type/TransportTime";
+import { BarsBeatsSixteenths, BPM, NormalRange, Seconds,
+	Subdivision, Ticks, Time, TimeSignature, TransportTime } from "../type/Units";
 import { optionsFromArguments } from "../util/Defaults";
 import { Emitter } from "../util/Emitter";
 import { readOnly, writable } from "../util/Interface";
@@ -439,7 +441,7 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 	 * When the Transport.loop = true, this is the starting position of the loop.
 	 */
 	get loopStart(): Time {
-		return Time(this._loopStart, "i").toSeconds();
+		return new TimeClass(this.context, this._loopStart, "i").toSeconds();
 	}
 	set loopStart(startPosition: Time) {
 		this._loopStart = this.toTicks(startPosition);
@@ -449,7 +451,7 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 	 * When the Transport.loop = true, this is the ending position of the loop.
 	 */
 	get loopEnd(): Time {
-		return Time(this._loopEnd, "i").toSeconds();
+		return new TimeClass(this.context, this._loopEnd, "i").toSeconds();
 	}
 	set loopEnd(endPosition: Time) {
 		this._loopEnd = this.toTicks(endPosition);

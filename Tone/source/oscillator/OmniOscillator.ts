@@ -1,3 +1,4 @@
+import { AudioRange, Cents, Degrees, Frequency, Positive, Time } from "../../core/type/Units";
 import { optionsFromArguments } from "../../core/util/Defaults";
 import { readOnly } from "../../core/util/Interface";
 import { isNumber, isString } from "../../core/util/TypeCheck";
@@ -112,7 +113,7 @@ implements Omit<ToneOscillatorInterface, "type"> {
 	/**
 	 *  The detune control.
 	 */
-	readonly detune: Signal<Cents> = new Signal({
+	readonly detune: Signal<Cents> = new Signal<Cents>({
 		context: this.context,
 		units: "cents",
 	});

@@ -1,4 +1,5 @@
 import { Context } from "../context/Context";
+import { Seconds } from "../type/Units";
 
 /**
  *  Wrapper around the OfflineAudioContext

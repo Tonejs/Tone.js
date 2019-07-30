@@ -1,5 +1,6 @@
 import { AmplitudeEnvelope } from "../component/envelope/AmplitudeEnvelope";
 import { Envelope, EnvelopeOptions } from "../component/envelope/Envelope";
+import { Time } from "../core/type/Units";
 import { omitFromObject, optionsFromArguments } from "../core/util/Defaults";
 import { readOnly } from "../core/util/Interface";
 import { RecursivePartial } from "../core/util/Interface";
@@ -14,15 +15,14 @@ export interface SynthOptions extends MonophonicOptions {
 }
 
 /**
- *  Synth is composed simply of a Tone.OmniOscillator routed through a Tone.AmplitudeEnvelope.
+ * Synth is composed simply of a {@link OmniOscillator} routed through an {@link AmplitudeEnvelope}.
  * ```
- * +----------------+     +-------------------+
- * | OmniOscillator +>----> AmplitudeEnvelope +>-->Output
- * +----------------+     +-------------------+
+ * +----------------+   +-------------------+
+ * | OmniOscillator +>--> AmplitudeEnvelope +>--> Output
+ * +----------------+   +-------------------+
  * ```
- *  @constructor
- *  @param options the options available for the synth.
- *  @example
+ * @param options the options available for the synth.
+ * @example
  * var synth = new Synth().toDestination();
  * synth.triggerAttackRelease("C4", "8n");
  */

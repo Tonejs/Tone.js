@@ -1,4 +1,5 @@
 import { getContext } from "../Global";
+import { Seconds, Ticks } from "../type/Units";
 import { TimeClass } from "./Time";
 import { TimeBaseUnit, TimeValue } from "./TimeBase";
 

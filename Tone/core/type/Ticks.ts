@@ -1,6 +1,7 @@
 import { getContext } from "../Global";
 import { TimeBaseUnit, TimeValue } from "./TimeBase";
 import { TransportTimeClass } from "./TransportTime";
+import { Seconds, Ticks } from "./Units";
 
 /**
  * Ticks is a primitive type for encoding Time values.

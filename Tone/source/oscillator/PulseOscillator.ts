@@ -1,4 +1,5 @@
 import { Gain } from "../../core/context/Gain";
+import { AudioRange, Cents, Degrees, Frequency, Time } from "../../core/type/Units";
 import { optionsFromArguments } from "../../core/util/Defaults";
 import { readOnly } from "../../core/util/Interface";
 import { Signal } from "../../signal/Signal";
@@ -48,7 +49,7 @@ export class PulseOscillator extends Source<PulseOscillatorOptions> implements T
 	/**
 	 *  The width of the pulse.
 	 */
-	width: Signal<AudioRange> = new Signal({
+	width: Signal<AudioRange> = new Signal<AudioRange>({
 		context: this.context,
 		units: "audioRange",
 	});

@@ -2,6 +2,7 @@ import "../core/clock/Transport";
 import { ToneWithContext, ToneWithContextOptions } from "../core/context/ToneWithContext";
 import { TicksClass } from "../core/type/Ticks";
 import { TransportTimeClass } from "../core/type/TransportTime";
+import { NormalRange, Positive, Seconds, Ticks, Time, TransportTime } from "../core/type/Units";
 import { defaultArg, optionsFromArguments } from "../core/util/Defaults";
 import { noOp } from "../core/util/Interface";
 import { BasicPlaybackState, StateTimeline } from "../core/util/StateTimeline";
@@ -220,14 +221,14 @@ export class ToneEvent<ValueType = any> extends ToneWithContext<ToneEventOptions
 	 *  @param  time  When the event should start.
 	 */
 	start(time?: TransportTime | TransportTimeClass): this {
-		time = this.toTicks(time);
-		if (this._state.getValueAtTime(time) === "stopped") {
+		const ticks = this.toTicks(time);
+		if (this._state.getValueAtTime(ticks) === "stopped") {
 			this._state.add({
 				id : -1,
 				state : "started",
-				time,
+				time: ticks,
 			});
-			this._rescheduleEvents(time);
+			this._rescheduleEvents(ticks);
 		}
 		return this;
 	}
@@ -238,11 +239,11 @@ export class ToneEvent<ValueType = any> extends ToneWithContext<ToneEventOptions
 	 */
 	stop(time?: TransportTime | TransportTimeClass): this {
 		this.cancel(time);
-		time = this.toTicks(time);
-		if (this._state.getValueAtTime(time) === "started") {
-			this._state.setStateAtTime("stopped", time, { id: -1 });
-			const previousEvent = this._state.getBefore(time);
-			let reschedulTime = time;
+		const ticks = this.toTicks(time);
+		if (this._state.getValueAtTime(ticks) === "started") {
+			this._state.setStateAtTime("stopped", ticks, { id: -1 });
+			const previousEvent = this._state.getBefore(ticks);
+			let reschedulTime = ticks;
 			if (previousEvent !== null) {
 				reschedulTime = previousEvent.time;
 			}
@@ -257,11 +258,11 @@ export class ToneEvent<ValueType = any> extends ToneWithContext<ToneEventOptions
 	 */
 	cancel(time?: TransportTime | TransportTimeClass): this {
 		time = defaultArg(time, -Infinity);
-		time = this.toTicks(time);
-		this._state.forEachFrom(time, event => {
+		const ticks = this.toTicks(time);
+		this._state.forEachFrom(ticks, event => {
 			this.context.transport.clear(event.id);
 		});
-		this._state.cancel(time);
+		this._state.cancel(ticks);
 		return this;
 	}
 

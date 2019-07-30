@@ -1,6 +1,7 @@
 import { noOp } from "Tone/core/util/Interface";
 import { TicksClass } from "../core/type/Ticks";
 import { TransportTimeClass } from "../core/type/TransportTime";
+import { NormalRange, Positive, Seconds, Ticks, Time, TransportTime } from "../core/type/Units";
 import { defaultArg, optionsFromArguments } from "../core/util/Defaults";
 import { StateTimeline } from "../core/util/StateTimeline";
 import { isArray, isDefined, isObject, isUndef } from "../core/util/TypeCheck";
@@ -218,7 +219,7 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 			value = time;
 			time = value.time;
 		}
-		time = this.toTicks(time);
+		const ticks = this.toTicks(time);
 		let event: ToneEvent;
 		if (value instanceof ToneEvent) {
 			event = value;
@@ -231,7 +232,7 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 			});
 		}
 		// the start offset
-		event.startOffset = time;
+		event.startOffset = ticks;
 
 		// initialize the values
 		event.set({

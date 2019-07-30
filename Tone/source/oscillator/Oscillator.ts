@@ -1,3 +1,4 @@
+import { AudioRange, Cents, Degrees, Frequency, Radians, Time } from "../../core/type/Units";
 import { optionsFromArguments } from "../../core/util/Defaults";
 import { readOnly } from "../../core/util/Interface";
 import { Signal } from "../../signal/Signal";

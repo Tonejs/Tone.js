@@ -1,4 +1,5 @@
 import { Gain } from "../../core/context/Gain";
+import { NormalRange, Time } from "../../core/type/Units";
 import { optionsFromArguments } from "../../core/util/Defaults";
 import { Envelope, EnvelopeOptions } from "./Envelope";
 

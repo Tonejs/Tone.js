@@ -1,5 +1,6 @@
 import { Gain } from "../core/context/Gain";
 import { ToneAudioNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
+import { GainFactor, Seconds, Time } from "../core/type/Units";
 import { noOp } from "../core/util/Interface";
 import { BasicPlaybackState } from "../core/util/StateTimeline";
 

@@ -1,4 +1,5 @@
 import { ToneWithContext, ToneWithContextOptions } from "../context/ToneWithContext";
+import { BPM, Frequency, Hertz, Seconds, Ticks, Time } from "../type/Units";
 import { optionsFromArguments } from "../util/Defaults";
 import { readOnly } from "../util/Interface";
 import { PlaybackState, StateTimeline, StateTimelineEvent } from "../util/StateTimeline";

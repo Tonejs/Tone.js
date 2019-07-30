@@ -5,6 +5,7 @@ export * from "./instrument/index";
 export * from "./event/index";
 export * from "./effect/index";
 export * from "./component/index";
+import { Seconds } from "./core/type/Units"
 
 import { getContext } from "./core/Global";
 export { start } from "./core/Global";

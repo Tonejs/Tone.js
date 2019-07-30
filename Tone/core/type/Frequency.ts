@@ -3,6 +3,7 @@ import { intervalToFrequencyRatio, mtof } from "./Conversions";
 import { ftom, getA4, setA4 } from "./Conversions";
 import { TimeClass } from "./Time";
 import { TimeBaseClass, TimeBaseUnit, TimeExpression, TimeValue } from "./TimeBase";
+import { Frequency, Hertz, Interval, MidiNote, Note, Seconds, Ticks } from "./Units";
 
 export type FrequencyUnit = TimeBaseUnit | "midi";
 
@@ -134,7 +135,7 @@ export class FrequencyClass<Type extends number = Hertz> extends TimeClass<Type,
 			noteNumber += -12 * octave;
 		}
 		const noteName = scaleIndexToNote[noteNumber % 12];
-		return noteName + octave.toString();
+		return noteName + octave.toString() as Note;
 	}
 
 	/**

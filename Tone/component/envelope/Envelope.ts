@@ -1,5 +1,6 @@
 import { InputNode, OutputNode } from "../../core/context/ToneAudioNode";
 import { ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
+import { NormalRange, Time } from "../../core/type/Units";
 import { optionsFromArguments } from "../../core/util/Defaults";
 import { isArray, isObject, isString } from "../../core/util/TypeCheck";
 import { connectSignal, Signal } from "../../signal/Signal";

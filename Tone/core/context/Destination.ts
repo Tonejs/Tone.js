@@ -1,5 +1,6 @@
 import { Volume } from "../../component/channel/Volume";
 import { connectSeries } from "../Connect";
+import { Decibels } from "../type/Units";
 import { optionsFromArguments } from "../util/Defaults";
 import { onContextClose, onContextInit } from "./ContextInitialization";
 import { Gain } from "./Gain";
