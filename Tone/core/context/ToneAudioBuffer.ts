@@ -248,7 +248,7 @@ export class ToneAudioBuffer extends Tone {
 		const length = endSamples - startSamples;
 		const retBuffer = getContext().createBuffer(this.numberOfChannels, length, this.sampleRate);
 		for (let channel = 0; channel < this.numberOfChannels; channel++) {
-			retBuffer.copyFromChannel(this.getChannelData(channel).subarray(startSamples, endSamples), channel);
+			retBuffer.copyToChannel(this.getChannelData(channel).subarray(startSamples, endSamples), channel);
 		}
 		return new ToneAudioBuffer(retBuffer);
 	}

@@ -294,14 +294,20 @@ describe("ToneAudioBuffer", () => {
 			// original duration
 			expect(buffer.duration).to.be.closeTo(3, 0.01);
 			const sliced1 = buffer.slice(0, 1);
+			// confirm they have the same values
+			const offset = Math.floor(buffer.sampleRate * 0.9);
 			// does not modify the original
 			expect(buffer.duration).to.be.closeTo(3, 0.01);
 			expect(sliced1.duration).to.be.closeTo(1, 0.01);
 			const sliced2 = sliced1.slice(0.5);
 			expect(sliced2.duration).to.be.closeTo(0.5, 0.01);
+			const sliced3 = buffer.slice(2);
+			expect(sliced3.toArray(0)[Math.floor(0.5 * buffer.sampleRate) + 1])
+				.to.equal(buffer.toArray(0)[Math.floor(2.5 * buffer.sampleRate) + 1]);
 			buffer.dispose();
 			sliced1.dispose();
 			sliced2.dispose();
+			sliced3.dispose();
 		});
 
 		it("can convert a buffer to mono", () => {
