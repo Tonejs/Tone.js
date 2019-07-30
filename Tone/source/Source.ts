@@ -1,5 +1,6 @@
 import { Volume } from "../component/channel/Volume";
 import { ToneAudioNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
+import { Decibels, Seconds, Time } from "../core/type/Units";
 import { defaultArg, optionsFromArguments } from "../core/util/Defaults";
 import { noOp, readOnly } from "../core/util/Interface";
 import { BasicPlaybackState, StateTimeline } from "../core/util/StateTimeline";
@@ -153,29 +154,25 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 	 *  @example
 	 * source.start("+0.5"); //starts the source 0.5 seconds from now
 	 */
-	start(time?: Time, offset?: Time, duration: Time = 0): this {
-		if (isUndef(time) && this._synced) {
-			time = this.context.transport.seconds;
-		} else {
-			time = this.toSeconds(time);
-		}
+	start(time?: Time, offset?: Time, duration?: Time): this {
+		const computedTime = isUndef(time) && this._synced ? this.context.transport.seconds : this.toSeconds(time);
 		// if it's started, stop it and restart it
-		if (this._state.getValueAtTime(time) === "started") {
-			this._state.cancel(time);
-			this._state.setStateAtTime("started", time);
-			this.restart(time, offset, duration);
+		if (this._state.getValueAtTime(computedTime) === "started") {
+			this._state.cancel(computedTime);
+			this._state.setStateAtTime("started", computedTime);
+			this.restart(computedTime, offset, duration);
 		} else {
-			this._state.setStateAtTime("started", time);
+			this._state.setStateAtTime("started", computedTime);
 			if (this._synced) {
 				// add the offset time to the event
-				const event = this._state.get(time);
+				const event = this._state.get(computedTime);
 				if (event) {
 					event.offset = this.toSeconds(defaultArg(offset, 0));
 					event.duration = this.toSeconds(duration);
 				}
 				const sched = this.context.transport.schedule(t => {
 					this._start(t, offset, duration);
-				}, time);
+				}, computedTime);
 				this._scheduled.push(sched);
 
 				// if it's already started
@@ -198,19 +195,15 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 	 * source.stop(); // stops the source immediately
 	 */
 	stop(time?: Time): this {
-		if (isUndef(time) && this._synced) {
-			time = this.context.transport.seconds;
-		} else {
-			time = this.toSeconds(time);
-		}
+		const computedTime = isUndef(time) && this._synced ? this.context.transport.seconds : this.toSeconds(time);
 		if (!this._synced) {
 			this._stop.apply(this, arguments);
 		} else {
-			const sched = this.context.transport.schedule(this._stop.bind(this), time);
+			const sched = this.context.transport.schedule(this._stop.bind(this), computedTime);
 			this._scheduled.push(sched);
 		}
-		this._state.cancel(time);
-		this._state.setStateAtTime("stopped", time);
+		this._state.cancel(computedTime);
+		this._state.setStateAtTime("stopped", computedTime);
 		return this;
 	}
 

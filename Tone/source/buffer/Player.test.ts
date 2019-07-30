@@ -460,6 +460,15 @@ describe("Player", () => {
 			}, buffer.duration * 1.1);
 		});
 
+		it("plays synced to the Transport", () => {
+			return Offline(({transport}) => {
+				const player = new Player(buffer).sync().start(0).toDestination();
+				transport.start(0);
+			}, 0.05).then((buff) => {
+				expect(buff.isSilent()).to.be.false;
+			});
+		});
+
 		it("offsets correctly when started by the Transport", () => {
 			const testSample = buffer.toArray(0)[Math.floor(0.13125 * getContext().sampleRate)];
 			return Offline(({transport}) => {
