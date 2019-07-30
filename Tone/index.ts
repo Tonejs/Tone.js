@@ -7,6 +7,7 @@ export * from "./effect/index";
 export * from "./component/index";
 
 import { getContext } from "./core/Global";
+export { start } from "./core/Global";
 /**
  *  The current audio context time
  */
