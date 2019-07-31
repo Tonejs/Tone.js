@@ -115,6 +115,10 @@ Tone.extend(Tone.PhaseShiftAllpass, Tone.AudioNode);
  *  @return  {Tone.PhaseShiftAllpass}  this
  */
 Tone.PhaseShiftAllpass.prototype.dispose = function(){
+	this.output[0].dispose();
+	this.output[0] = null;
+	this.output[1].dispose();
+	this.output[1] = null;
 	Tone.AudioNode.prototype.dispose.call(this);
 	this._firstBankAP0.disconnect();
 	this._firstBankAP0 = null;
@@ -134,10 +138,6 @@ Tone.PhaseShiftAllpass.prototype.dispose = function(){
 	this._secondBankAP3 = null;
 	this._oneSampleDelay.disconnect();
 	this._oneSampleDelay = null;
-	this.output[0].dispose();
-	this.output[0] = null;
-	this.output[1].dispose();
-	this.output[1] = null;
 	return this;
 };
 
