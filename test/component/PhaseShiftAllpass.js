@@ -2,13 +2,10 @@ import PhaseShiftAllpass from "Tone/component/PhaseShiftAllpass";
 import Basic from "helper/Basic";
 import Offline from "helper/Offline";
 import Test from "helper/Test";
-import Signal from "Tone/signal/Signal";
 import PassAudio from "helper/PassAudio";
 import PassAudioStereo from "helper/PassAudioStereo";
 import Subtract from "Tone/signal/Subtract";
 import Tone from "Tone/core/Tone";
-import AudioNode from "Tone/core/AudioNode";
-import Supports from "helper/Supports";
 
 describe("PhaseShiftAllpass", function(){
 

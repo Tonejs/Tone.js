@@ -8,23 +8,31 @@ import "../signal/Add";
 import "../effect/Effect";
 
 /**
- *  @class Tone.FrequencyShifter shifts frequencys.
+ *  @class Tone.FrequencyShifter can be used to shift all frequencies of a signal by a fixed amount.
+ *         The amount can be changed at audio rate and the effect is applied in real time.
+ *         The frequency shifting is implemented with a technique called single side band modulation using a ring modulator.
+ *         Note: Contrary to pitch shifting, all frequencies are shifted by the same amount,
+ *         destroying the harmonic relationship between them. This leads to the classic ring modulator timbre distortion.
+ *         You can find a very detailed description of the algorithm here: https://larzeitlin.github.io/RMFS/
  *
  *  @extends {Tone.Effect}
- *  @param {Interval=} pitch The interval to transpose the incoming signal by.
+ *  @param {Number=} frequencyShift The incoming signal is shifted by this frequency value.
+ *  @example
+ *  let input = new Tone.Oscillator(230, "sawtooth").start();
+ *  let shift = new Tone.FrequencyShifter(42).toMaster();
+ *  input.connect(shift).
  */
 Tone.FrequencyShifter = function(){
 
-	var options = Tone.defaults(arguments, ["pitch"], Tone.FrequencyShifter);
+	var options = Tone.defaults(arguments, ["frequencyShift"], Tone.FrequencyShifter);
 	Tone.Effect.call(this, options);
 
-	//this.createInsOuts(1, 1);
-
 	/**
-	 *  The ring modulators carrier frequency
+	 *  The ring modulators carrier frequency. This frequency determines
+	 *  by how many Hertz the input signal will be shifted up or down. Default is 0.
 	 *  @type  {Tone.Signal}
 	 */
-	this.carrierFrequency = new Tone.Signal(options.pitch);
+	this.carrierFrequency = new Tone.Signal(options.frequencyShift);
 
 	/**
 	 *  The ring modulators sine carrier
@@ -105,7 +113,7 @@ Tone.FrequencyShifter = function(){
 	this._add.connect(this.output);
 
 	// start the oscillators at the same time
-	var now = this.now();
+	const now = this.now();
 	this._sine.start(now);
 	this._cosine.start(now);
 };
@@ -119,27 +127,8 @@ Tone.extend(Tone.FrequencyShifter, Tone.Effect);
  *  @const
  */
 Tone.FrequencyShifter.defaults = {
-	"pitch" : 0
+	"frequencyShift" : 0
 };
-
-/**
- * Repitch the incoming signal by some interval (measured
- * in semi-tones).
- * @memberOf Tone.FrequencyShifter#
- * @type {Interval}
- * @name pitch
- * @example
- * frequencyShifter.pitch = -12; //down one octave
- * frequencyShifter.pitch = 7; //up a fifth
- */
-Object.defineProperty(Tone.FrequencyShifter.prototype, "pitch", {
-	get : function(){
-		return this.carrierFrequency.value;
-	},
-	set : function(interval){
-		this.carrierFrequency.value = Tone.intervalToFrequencyRatio(interval);
-	}
-});
 
 /**
  *  Clean up.

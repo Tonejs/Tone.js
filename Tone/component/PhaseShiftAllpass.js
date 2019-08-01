@@ -2,8 +2,9 @@ import Tone from "../core/Tone";
 import "../core/AudioNode";
 
 /**
- *  @class Tone.PhaseShiftAllpass is an implementation of a Hilbert Transform using
- *         two Allpass filter banks whose outputs have a phase difference of 90°.
+ *  @class Tone.PhaseShiftAllpass is an very efficient implementation of a Hilbert Transform
+ *         using two Allpass filter banks whose outputs have a phase difference of 90°.
+ *         Here the `output[1]` phase is offset by +90° in relation to `output[0]`.
  *         Coefficients and structure was developed by Olli Niemitalo.
  *         For more details see: http://yehar.com/blog/?p=368
  *
