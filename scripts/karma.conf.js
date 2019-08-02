@@ -47,7 +47,7 @@ module.exports = function(config) {
 				},
 			},
 			coverageOptions : {
-				exclude: /.*\.test\.ts$/i,
+				exclude: /(.*\.test\.ts|test\/.*\.ts)$/i,
 			},
 			reports: {
 				html: path.resolve(__dirname, "../coverage"),
