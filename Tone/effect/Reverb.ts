@@ -75,7 +75,7 @@ export class Reverb extends Effect<ReverbOptions> {
 			const merge = new Merge({ context });
 			noiseL.connect(merge, 0, 0);
 			noiseR.connect(merge, 0, 1);
-			const gainNode = new Gain({ context }).toMaster();
+			const gainNode = new Gain({ context }).toDestination();
 			merge.connect(gainNode);
 			noiseL.start(0);
 			noiseR.start(0);
