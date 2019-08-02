@@ -304,9 +304,14 @@ implements AbstractParam<Type> {
 	}
 
 	exponentialApproachValueAtTime(value: Type, time: Time, rampTime: Time): this {
-		const timeConstant = Math.log(this.toSeconds(rampTime) + 1) / Math.log(200);
 		time = this.toSeconds(time);
-		return this.setTargetAtTime(value, time, timeConstant);
+		rampTime = this.toSeconds(rampTime);
+		const timeConstant = Math.log(rampTime + 1) / Math.log(200);
+		this.setTargetAtTime(value, time, timeConstant);
+		// at 90% start a linear ramp to the final value
+		this.cancelAndHoldAtTime(time + rampTime * 0.9);
+		this.linearRampToValueAtTime(value, time + rampTime);
+		return this;
 	}
 
 	setTargetAtTime(value: Type, startTime: Time, timeConstant: Positive): this {

@@ -200,9 +200,12 @@ export class Sampler extends Instrument<SamplerOptions> {
 			const midi = new FrequencyClass(this.context, note).toMidi();
 			// find the note
 			if (this._activeSources.has(midi) && (this._activeSources.get(midi) as ToneBufferSource[]).length) {
-				const source = (this._activeSources.get(midi) as ToneBufferSource[]).shift() as ToneBufferSource;
+				const sources = this._activeSources.get(midi) as ToneBufferSource[];
 				time = this.toSeconds(time);
-				source.stop(time);
+				sources.forEach(source => {
+					source.stop(time);
+				});
+				this._activeSources.set(midi, []);
 			}
 		});
 		return this;

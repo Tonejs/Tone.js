@@ -8,23 +8,6 @@ describe("Envelope", () => {
 
 	BasicTests(Envelope);
 
-	// context("API", function(){
-
-	// 	APITest.constructor(Envelope, {
-	// 		"attack" : "Time=",
-	// 		"decay" : "Time=",
-	// 		release : "Time=",
-	// 		"sustain" : "NormalRange=",
-	// 		"attackCurve" : ["linear", "exponential"],
-	// 		"releaseCurve" : ["linear", "exponential"],
-	// 		"decayCurve" : ["linear", "exponential"]
-	// 	});
-	// 	APITest.constructor(Envelope, ["Time=", "Time=", "NormalRange=", "Time="]);
-
-	// 	APITest.method(Envelope, "triggerAttack", ["Time=", "NormalRange="]);
-	// 	APITest.method(Envelope, "triggerRelease", ["Time="]);
-	// });
-
 	context("Envelope", () => {
 
 		it("has an output connections", () => {
@@ -286,6 +269,21 @@ describe("Envelope", () => {
 				buffer.forEachBetween((sample) => {
 					expect(sample).to.be.closeTo(0, 0.01);
 				}, releaseTime + e.release);
+			});
+		});
+
+		it("can retrigger a short attack at the same time as previous release", () => {
+			return Offline(() => {
+				const env = new Envelope(0.001, 0.1, 0.5);
+				env.attackCurve = "linear";
+				env.toMaster();
+				env.triggerAttack(0);
+				env.triggerRelease(0.4);
+				env.triggerAttack(0.4);
+			}, 0.6).then(buffer => {
+				expect(buffer.getValueAtTime(0.4)).be.closeTo(0.5, 0.01);
+				expect(buffer.getValueAtTime(0.40025)).be.closeTo(0.75, 0.01);
+				expect(buffer.getValueAtTime(0.4005)).be.closeTo(1, 0.01);
 			});
 		});
 
