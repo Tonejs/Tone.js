@@ -32,8 +32,9 @@ packageObj.version = version;
 //only if it's travis, update the package.json
 if (process.env.TRAVIS){
 	fs.writeFileSync(packageFile, JSON.stringify(packageObj, undefined, "  "));
+	
+	//write a version file
+	var versionFile = `export default ${JSON.stringify(version)};\n`;
+	fs.writeFileSync(resolve(__dirname, "../Tone/version.js"), versionFile);
 }
 
-//write a version file
-var versionFile = `export default ${JSON.stringify(version)};\n`;
-fs.writeFileSync(resolve(__dirname, "../Tone/version.js"), versionFile);
