@@ -397,7 +397,11 @@ Tone.Param.prototype.targetRampTo = function(value, rampTime, startTime){
 Tone.Param.prototype.exponentialApproachValueAtTime = function(value, time, rampTime){
 	var timeConstant = Math.log(this.toSeconds(rampTime)+1)/Math.log(200);
 	time = this.toSeconds(time);
-	return this.setTargetAtTime(value, time, timeConstant);
+	this.setTargetAtTime(value, time, timeConstant);
+	//at 90% start a linear ramp to the final value
+	this.cancelAndHoldAtTime(time + rampTime * 0.9);
+	this.linearRampToValueAtTime(value, time + rampTime);
+	return this;
 };
 
 /**
@@ -470,6 +474,7 @@ Tone.Param.prototype.cancelScheduledValues = function(time){
  *  @returns {Tone.Param} this
  */
 Tone.Param.prototype.cancelAndHoldAtTime = function(time){
+	time = this.toSeconds(time);
 	var valueAtTime = this.getValueAtTime(time);
 	this.log("cancelAndHoldAtTime", time, "value="+valueAtTime);
 

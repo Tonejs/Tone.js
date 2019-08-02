@@ -37,7 +37,7 @@ describe("AmplitudeEnvelope", function(){
 				var osc = new Oscillator().start(0).connect(ampEnv);
 				ampEnv.triggerAttack(0);
 				ampEnv.triggerAttack(0.3);
-			}, "ampEnvelope2.wav");
+			}, "ampEnvelope2.wav", 0.004);
 		});
 
 		it("matches a file with ripple attack/release", function(){
@@ -55,7 +55,7 @@ describe("AmplitudeEnvelope", function(){
 				ampEnv.triggerRelease(0.7);
 				ampEnv.triggerAttack(1);
 				ampEnv.triggerRelease(1.6);
-			}, "ampEnvelope3.wav");
+			}, "ampEnvelope3.wav", 0.002);
 		});
 
 	});
