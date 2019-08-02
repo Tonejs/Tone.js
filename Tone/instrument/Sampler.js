@@ -176,9 +176,12 @@ Tone.Sampler.prototype.triggerRelease = function(notes, time){
 		var midi = Tone.Frequency(notes[i]).toMidi();
 		// find the note
 		if (this._activeSources[midi] && this._activeSources[midi].length){
-			var source = this._activeSources[midi].shift();
 			time = this.toSeconds(time);
-			source.stop(time);
+			//stop all the sources on that midi note
+			this._activeSources[midi].forEach(function(source){
+				source.stop(time);
+			});
+			this._activeSources[midi] = [];
 		}
 	}
 
@@ -297,4 +300,3 @@ Tone.Sampler.prototype.dispose = function(){
 };
 
 export default Tone.Sampler;
-
