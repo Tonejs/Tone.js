@@ -16,8 +16,6 @@ export interface ChannelProperties {
  * The possible options for this node
  */
 export interface ToneAudioNodeOptions extends ToneWithContextOptions {
-	numberOfInputs: number;
-	numberOfOutputs: number;
 	channelCount: number;
 	channelCountMode: ChannelCountMode;
 	channelInterpretation: ChannelInterpretation;
@@ -47,17 +45,37 @@ extends ToneWithContext<Options> {
 	 *  The number of inputs feeding into the AudioNode.
 	 *  For source nodes, this will be 0.
 	 */
-	readonly numberOfInputs: number;
+	get numberOfInputs(): number {
+		if (isDefined(this.input)) {
+			if (this.input instanceof AudioParam || this.input instanceof Param) {
+				return 1;
+			} else {
+				return this.input.numberOfInputs;
+			}
+		} else {
+			return 0;
+		}
+	}
 
 	/**
 	 *  The number of outputs of the AudioNode.
 	 */
-	readonly numberOfOutputs: number;
+	get numberOfOutputs(): number {
+		if (isDefined(this.output)) {
+			if (this.output instanceof AudioParam || this.output instanceof Param) {
+				return 1;
+			} else {
+				return this.output.numberOfOutputs;
+			}
+		} else {
+			return 0;
+		}
+	}
 
 	/**
 	 * List all of the node that must be set to match the ChannelProperties
 	 */
-	protected abstract _internalChannels: OutputNode[];
+	protected _internalChannels: OutputNode[] = [];
 
 	static getDefaults(): ToneAudioNodeOptions {
 		return Object.assign(ToneWithContext.getDefaults(), {
@@ -71,8 +89,6 @@ extends ToneWithContext<Options> {
 
 	constructor(options: ToneAudioNodeOptions) {
 		super(options);
-		this.numberOfInputs = options.numberOfInputs;
-		this.numberOfOutputs = options.numberOfOutputs;
 	}
 
 	protected createInsOuts(numberOfInputs: number = 0, numberOfOutputs: number = 0): void {
