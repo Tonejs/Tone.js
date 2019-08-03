@@ -52,8 +52,6 @@ export class Analyser extends ToneAudioNode<AnalyserOptions> {
 
 	static getDefaults(): AnalyserOptions {
 		return Object.assign(ToneAudioNode.getDefaults(), {
-			numberOfInputs: 1,
-			numberOfOutputs: 1,
 			size: 1024,
 			smoothing: 0.8,
 			type: "fft" as AnalyserType,

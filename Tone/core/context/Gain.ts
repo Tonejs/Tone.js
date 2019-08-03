@@ -60,8 +60,6 @@ export class Gain<Type extends Unit = GainFactor> extends ToneAudioNode<GainOpti
 		return Object.assign(ToneAudioNode.getDefaults(), {
 			convert : true,
 			gain : 1,
-			numberOfInputs: 1,
-			numberOfOutputs: 1,
 			units : "gain" as UnitName,
 		});
 	}

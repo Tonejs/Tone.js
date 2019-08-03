@@ -22,7 +22,7 @@ interface MergeOptions extends ToneAudioNodeOptions {
  */
 export class Merge extends ToneAudioNode<MergeOptions> {
 
-	name = "Merge";
+	readonly name = "Merge";
 
 	/**
 	 *  The merger node for the two channels.
@@ -32,14 +32,12 @@ export class Merge extends ToneAudioNode<MergeOptions> {
 	/**
 	 * The output is the input channels combined into a sigle (multichannel) output
 	 */
-	output: AudioNode;
+	readonly output: ChannelMergerNode;
 
 	/**
 	 * Multiple input connections combine into a single output.
 	 */
-	input: AudioNode;
-
-	protected _internalChannels = [];
+	readonly input: ChannelMergerNode;
 
 	constructor(channels?: Positive);
 	// tslint:disable-next-line: unified-signatures
@@ -49,17 +47,11 @@ export class Merge extends ToneAudioNode<MergeOptions> {
 		const options = optionsFromArguments(Merge.getDefaults(), arguments, ["channels"]);
 
 		this._merger = this.output = this.input = this.context.createChannelMerger(options.channels);
-
-		// @ts-ignore
-		this.numberOfInputs = options.channels;
-		// @ts-ignore
-		this.numberOfOutputs = 1;
 	}
 
 	static getDefaults(): MergeOptions {
 		return Object.assign(ToneAudioNode.getDefaults(), {
 			channels: 2,
-			numberOfOutputs : 1,
 		});
 	}
 

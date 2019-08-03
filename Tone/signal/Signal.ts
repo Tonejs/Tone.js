@@ -66,8 +66,6 @@ implements AbstractParam<Type> {
 			channelCountMode: "explicit",
 			channelInterpretation: "discrete",
 			convert: true,
-			numberOfInputs: 1,
-			numberOfOutputs: 1,
 			units: "number" as UnitName,
 			value: 0,
 		}) as SignalOptions<any>;

@@ -63,8 +63,6 @@ export class Delay extends ToneAudioNode<DelayOptions> {
 		return Object.assign(ToneAudioNode.getDefaults(), {
 			delayTime : 0,
 			maxDelay: 1,
-			numberOfInputs: 1,
-			numberOfOutputs: 1,
 		});
 	}
 
