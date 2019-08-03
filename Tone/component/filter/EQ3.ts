@@ -121,7 +121,7 @@ export class EQ3 extends ToneAudioNode<EQ3Options> {
 		this._multibandSplit.high.chain(this._highGain, this.output);
 
 		readOnly(this, ["low", "mid", "high", "lowFrequency", "highFrequency"]);
-		this._internalChannels = [this._multibandSplit, this.output];
+		this._internalChannels = [this._multibandSplit];
 	}
 
 	static getDefaults(): EQ3Options {

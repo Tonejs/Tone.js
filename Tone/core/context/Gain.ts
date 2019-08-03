@@ -35,11 +35,6 @@ export class Gain<Type extends Unit = GainFactor> extends ToneAudioNode<GainOpti
 	readonly input: GainNode = this._gainNode;
 	readonly output: GainNode = this._gainNode;
 
-	/**
-	 * Add all of the gain nodes
-	 */
-	protected _internalChannels: AudioNode[] = [this._gainNode];
-
 	constructor(gain?: GainFactor, units?: Unit);
 	constructor(options?: Partial<GainOptions>);
 	constructor() {

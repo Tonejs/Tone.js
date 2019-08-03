@@ -31,7 +31,6 @@ export class Volume extends ToneAudioNode<VolumeOptions> {
 		context: this.context,
 		units: "decibels",
 	});
-	protected _internalChannels = [this.output];
 
 	/**
 	 * Input and output are the same

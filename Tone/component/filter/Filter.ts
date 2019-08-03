@@ -38,11 +38,6 @@ export class Filter extends ToneAudioNode<FilterOptions> {
 	private _filters: BiquadFilterNode[] = [];
 
 	/**
-	 * The internal channels for channel routing changes
-	 */
-	protected _internalChannels = [this.input, ...this._filters, this.output];
-
-	/**
 	 *  the rolloff value of the filter
 	 */
 	private _rolloff!: number;
@@ -157,8 +152,8 @@ export class Filter extends ToneAudioNode<FilterOptions> {
 			this.gain.connect(filter.gain);
 			this._filters[count] = filter;
 		}
-		this._internalChannels = [this.input, ...this._filters, this.output];
-		connectSeries(...this._internalChannels);
+		this._internalChannels = this._filters;
+		connectSeries(this.input, ...this._internalChannels, this.output);
 	}
 
 	/**

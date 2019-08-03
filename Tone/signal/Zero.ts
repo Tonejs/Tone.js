@@ -16,7 +16,6 @@ export class Zero extends SignalOperator<ToneAudioNodeOptions> {
 	 * The gain node which connects the constant source to the output
 	 */
 	private _gain = new Gain({ context : this.context });
-	protected _internalChannels = [this._gain];
 
 	/**
 	 * Only outputs 0

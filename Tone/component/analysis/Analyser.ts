@@ -27,7 +27,6 @@ export class Analyser extends ToneAudioNode<AnalyserOptions> {
 	 *  The analyser node.
 	 */
 	private _analyser = this.context.createAnalyser();
-	protected _internalChannels = [this._analyser];
 
 	/**
 	 *  The analysis type

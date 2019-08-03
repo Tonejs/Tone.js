@@ -47,7 +47,6 @@ export class Delay extends ToneAudioNode<DelayOptions> {
 		this.maxDelay = Math.max(maxDelayInSeconds, this.toSeconds(options.delayTime));
 
 		this._delayNode = this.input = this.output = this.context.createDelay(maxDelayInSeconds);
-		this._internalChannels = [this._delayNode];
 
 		this.delayTime = new Param({
 			context: this.context,

@@ -20,7 +20,6 @@ export class AudioToGain extends SignalOperator<ToneAudioNodeOptions> {
 		context: this.context,
 		mapping: x => (x + 1) / 2,
 	});
-	protected _internalChannels = [this._norm];
 
 	/**
 	 * The AudioRange input [-1, 1]

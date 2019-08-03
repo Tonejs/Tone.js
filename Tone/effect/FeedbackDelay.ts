@@ -50,7 +50,6 @@ export class FeedbackDelay extends FeedbackEffect<FeedbackDelayOptions> {
 			maxDelay: options.maxDelay,
 		});
 		this.delayTime = this._delayNode.delayTime;
-		this._internalChannels.push(this._delayNode);
 
 		// connect it up
 		this.connectEffect(this._delayNode);

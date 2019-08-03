@@ -95,7 +95,7 @@ export class CrossFade extends ToneAudioNode<CrossFadeOptions> {
 	 */
 	readonly fade: Signal<NormalRange>;
 
-	protected _internalChannels = [this.a, this.b, this.output];
+	protected _internalChannels = [this.a, this.b];
 
 	constructor(options?: Partial<CrossFadeOptions>);
 	// tslint:disable-next-line: unified-signatures

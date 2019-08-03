@@ -55,8 +55,6 @@ export class WaveShaper extends SignalOperator<WaveShaperOptions> {
 	 */
 	output = this._shaper;
 
-	protected _internalChannels = [this._shaper];
-
 	constructor(options?: Partial<WaveShaperOptions>);
 	constructor(mapping?: WaveShaperMapping , length?: number);
 	constructor() {

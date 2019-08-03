@@ -79,8 +79,6 @@ export class Sampler extends Instrument<SamplerOptions> {
 	 */
 	curve: ToneBufferSourceCurve;
 
-	protected _internalChannels = [this.output];
-
 	constructor(options?: Partial<SamplerOptions>);
 	constructor(samples?: SamplesMap, options?: Partial<Omit<SamplerOptions, "urls">>);
 	constructor(samples?: SamplesMap, onload?: () => void, baseUrl?: string);

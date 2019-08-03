@@ -31,8 +31,6 @@ export class Negate extends SignalOperator<ToneAudioNodeOptions> {
 	input = this._multiply;
 	output = this._multiply;
 
-	protected _internalChannels = [this._multiply];
-
 	/**
 	 *  clean up
 	 *  @returns {Negate} this

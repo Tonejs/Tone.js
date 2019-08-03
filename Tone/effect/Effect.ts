@@ -1,6 +1,6 @@
 import { CrossFade } from "../component/channel/CrossFade";
 import { Gain } from "../core/context/Gain";
-import { InputNode, ToneAudioNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
+import { InputNode, OutputNode, ToneAudioNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
 import { NormalRange } from "../core/type/Units";
 import { readOnly } from "../core/util/Interface";
 import { Signal } from "../signal/Signal";
@@ -54,8 +54,6 @@ extends ToneAudioNode<Options> {
 	 */
 	output = this._dryWet;
 
-	protected _internalChannels: ToneAudioNode[] = [this.input, this.output, this.effectReturn, this.effectSend];
-
 	constructor(options: EffectOptions) {
 		super(options);
 
@@ -63,6 +61,7 @@ extends ToneAudioNode<Options> {
 		this.input.fan(this._dryWet.a, this.effectSend);
 		this.effectReturn.connect(this._dryWet.b);
 		this.wet.setValueAtTime(options.wet, 0);
+		this._internalChannels = [this.effectReturn, this.effectSend];
 		readOnly(this, "wet");
 	}
 
@@ -75,7 +74,9 @@ extends ToneAudioNode<Options> {
 	/**
 	 *  chains the effect in between the effectSend and effectReturn
 	 */
-	protected connectEffect(effect: InputNode): this {
+	protected connectEffect(effect: ToneAudioNode | AudioNode): this {
+		// add it to the internal channels
+		this._internalChannels.push(effect);
 		this.effectSend.chain(effect, this.effectReturn);
 		return this;
 	}

@@ -27,7 +27,7 @@ export class ToneOscillatorNode extends OneShotSource<ToneOscillatorNodeOptions>
 	 *  The oscillator
 	 */
 	private _oscillator = this.context.createOscillator();
-	protected _internalChannels = [this._gainNode, this._oscillator];
+	protected _internalChannels = [this._oscillator];
 
 	/**
 	 *  The frequency of the oscillator

@@ -50,7 +50,7 @@ export class Synth extends Monophonic<SynthOptions> {
 	 */
 	readonly envelope: AmplitudeEnvelope = new AmplitudeEnvelope({ context: this.context });
 
-	protected _internalChannels = [this.oscillator, this.envelope, this.output];
+	protected _internalChannels = [this.oscillator, this.envelope];
 
 	constructor(options?: RecursivePartial<SynthOptions>);
 	constructor() {

@@ -150,7 +150,6 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 		context: this.context,
 		value: 0,
 	});
-	protected _internalChannels = [this._sig];
 
 	/**
 	 * The output signal of the envelope

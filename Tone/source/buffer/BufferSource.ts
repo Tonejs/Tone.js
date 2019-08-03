@@ -34,7 +34,7 @@ export class ToneBufferSource extends OneShotSource<ToneBufferSourceOptions> {
 	 *  The oscillator
 	 */
 	private _source = this.context.createBufferSource();
-	protected _internalChannels = [this._gainNode, this._source];
+	protected _internalChannels = [this._source];
 
 	/**
 	 *  The frequency of the oscillator
@@ -77,6 +77,8 @@ export class ToneBufferSource extends OneShotSource<ToneBufferSourceOptions> {
 		this.loopStart = options.loopStart;
 		this.loopEnd = options.loopEnd;
 		this._buffer = new ToneAudioBuffer(options.buffer, options.onload);
+
+		this._internalChannels.push(this._source);
 	}
 
 	static getDefaults(): ToneBufferSourceOptions {

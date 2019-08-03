@@ -46,7 +46,6 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 	 * The output note
 	 */
 	output = this._volume;
-	protected _internalChannels = [this.output];
 
 	/**
 	 * There is no input

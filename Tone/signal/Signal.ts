@@ -40,7 +40,6 @@ implements AbstractParam<Type> {
 	readonly output: OutputNode = this._constantSource;
 	protected _param: Param<Type>;
 	readonly input: InputNode;
-	protected _internalChannels = [this._constantSource];
 
 	constructor(value?: Type, units?: UnitName);
 	constructor(options?: Partial<SignalOptions<Type>>);

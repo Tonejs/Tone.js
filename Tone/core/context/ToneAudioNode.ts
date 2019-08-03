@@ -75,40 +75,14 @@ extends ToneWithContext<Options> {
 	/**
 	 * List all of the node that must be set to match the ChannelProperties
 	 */
-	protected _internalChannels: OutputNode[] = [];
+	protected _internalChannels: Array<ToneAudioNode | AudioNode> = [];
 
 	static getDefaults(): ToneAudioNodeOptions {
 		return Object.assign(ToneWithContext.getDefaults(), {
 			channelCount: 2,
 			channelCountMode: "max" as ChannelCountMode,
 			channelInterpretation: "speakers" as ChannelInterpretation,
-			numberOfInputs: 0,
-			numberOfOutputs: 0,
 		});
-	}
-
-	constructor(options: ToneAudioNodeOptions) {
-		super(options);
-	}
-
-	protected createInsOuts(numberOfInputs: number = 0, numberOfOutputs: number = 0): void {
-		// if (numberOfInputs === 1) {
-		// 	this.input = this.context.createGain();
-		// } else if (numberOfInputs > 1) {
-		// 	this.input = [];
-		// 	for (let i = 0; i < numberOfInputs; i++) {
-		// 		this.input[i] = this.context.createGain();
-		// 	}
-		// }
-
-		// if (numberOfOutputs === 1) {
-		// 	this.output = this.context.createGain();
-		// } else if (numberOfOutputs > 1) {
-		// 	this.output = [];
-		// 	for (let o = 0; o < numberOfOutputs; o++) {
-		// 		this.output[o] = this.context.createGain();
-		// 	}
-		// }
 	}
 
 	///////////////////////////////////////////////////////////////////////////
@@ -116,18 +90,41 @@ extends ToneWithContext<Options> {
 	///////////////////////////////////////////////////////////////////////////
 
 	/**
+	 * Used to decide which nodes to get/set properties on
+	 */
+	private _isAudioNode(node: any): node is AudioNode | ToneAudioNode {
+		return isDefined(node) && (node instanceof ToneAudioNode || node instanceof AudioNode);
+	}
+
+	/**
+	 * Get all of the audio nodes (either internal or input/output) which together
+	 * make up how the class node responds to channel input/output
+	 */
+	private _getAudioNodes(): Array<ToneAudioNode | AudioNode> {
+		const nodeList = this._internalChannels.slice(0);
+		if (this._isAudioNode(this.input)) {
+			nodeList.push(this.input);
+		}
+		if (this._isAudioNode(this.output)) {
+			if (this.input !== this.output) {
+				nodeList.push(this.output);
+			}
+		}
+		return nodeList;
+	}
+
+	/**
 	 * Set the audio options for this node such as channelInterpretation
 	 * channelCount, etc.
 	 * @param options
 	 */
 	private _setChannelProperties(options: ChannelProperties): void {
-		if (this._internalChannels.length) {
-			this._internalChannels.forEach(node => {
-				node.channelCount = options.channelCount;
-				node.channelCountMode = options.channelCountMode;
-				node.channelInterpretation = options.channelInterpretation;
-			});
-		}
+		const nodeList = this._getAudioNodes();
+		nodeList.forEach(node => {
+			node.channelCount = options.channelCount;
+			node.channelCountMode = options.channelCountMode;
+			node.channelInterpretation = options.channelInterpretation;
+		});
 	}
 
 	/**
@@ -135,8 +132,10 @@ extends ToneWithContext<Options> {
 	 * channelCount, etc.
 	 */
 	private _getChannelProperties(): ChannelProperties {
-		if (this._internalChannels.length) {
-			const node = this._internalChannels[0];
+		const nodeList = this._getAudioNodes();
+		if (nodeList.length) {
+			// return the first one
+			const node = nodeList[0];
 			return {
 				channelCount: node.channelCount,
 				channelCountMode: node.channelCountMode,
@@ -170,6 +169,11 @@ extends ToneWithContext<Options> {
 	 *  channelCountMode determines how channels will be counted when up-mixing and
 	 *  down-mixing connections to any inputs to the node.
 	 *  The default value is "max". This attribute has no effect for nodes with no inputs.
+	 * * "max" - computedNumberOfChannels is the maximum of the number of channels of all
+	 * 		connections to an input. In this mode channelCount is ignored.
+	 * * "clamped-max" - computedNumberOfChannels is determined as for "max" and then clamped
+	 * 		to a maximum value of the given channelCount.
+	 * * "explicit" - computedNumberOfChannels is the exact value as specified by the channelCount.
 	 */
 	get channelCountMode(): ChannelCountMode {
 		return this._getChannelProperties().channelCountMode;

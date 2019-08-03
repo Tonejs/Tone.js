@@ -28,7 +28,6 @@ export class Abs extends SignalOperator<ToneAudioNodeOptions> {
 			}
 		},
 	});
-	protected _internalChannels = [this._abs];
 
 	/**
 	 * The AudioRange input [-1, 1]

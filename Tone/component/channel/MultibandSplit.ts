@@ -17,15 +17,15 @@ interface MultibandSplitOptions extends ToneAudioNodeOptions {
  *  with two crossover frequency controls.
  * ```
  *            +----------------------+
- *          +-> input < lowFrequency +>------------------> low
+ *          +-> input < lowFrequency +------------------> low
  *          | +----------------------+
  *          |
  *          | +--------------------------------------+
- * input +>-+-> lowFrequency < input < highFrequency +>--> mid
+ * input ---+-> lowFrequency < input < highFrequency +--> mid
  *          | +--------------------------------------+
  *          |
  *          | +-----------------------+
- *          +-> highFrequency < input +>-----------------> high
+ *          +-> highFrequency < input +-----------------> high
  *            +-----------------------+
  * ```
  *
@@ -34,12 +34,17 @@ interface MultibandSplitOptions extends ToneAudioNodeOptions {
  */
 export class MultibandSplit extends ToneAudioNode<MultibandSplitOptions> {
 
-	name = "MultibandSplit";
+	readonly name = "MultibandSplit";
 
 	/**
 	 *  the input
 	 */
 	readonly input = new Gain({ context: this.context });
+
+	/**
+	 * no output node, use either low, mid or high outputs
+	 */
+	readonly output = undefined;
 
 	/**
 	 *  The low band.
@@ -78,11 +83,6 @@ export class MultibandSplit extends ToneAudioNode<MultibandSplitOptions> {
 	});
 
 	/**
-	 * No output node. use either low/mid/high
-	 */
-	output = undefined;
-
-	/**
 	 *  The low/mid crossover frequency.
 	 */
 	readonly lowFrequency: Signal<Frequency>;
@@ -92,7 +92,7 @@ export class MultibandSplit extends ToneAudioNode<MultibandSplitOptions> {
 	 */
 	readonly highFrequency: Signal<Frequency>;
 
-	protected _internalChannels = [this.input, this.low, this.mid, this.high];
+	protected _internalChannels = [this.low, this.mid, this.high];
 
 	/**
 	 *  The Q or Quality of the filter
