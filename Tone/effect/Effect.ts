@@ -20,7 +20,7 @@ export interface EffectOptions extends ToneAudioNodeOptions {
 export abstract class Effect<Options extends EffectOptions>
 extends ToneAudioNode<Options> {
 
-	name = "Effect";
+	readonly name: string = "Effect";
 
 	/**
 	 *  the drywet knob to control the amount of effect

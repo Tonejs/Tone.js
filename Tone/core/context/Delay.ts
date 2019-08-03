@@ -16,7 +16,7 @@ export interface DelayOptions extends ToneAudioNodeOptions {
  */
 export class Delay extends ToneAudioNode<DelayOptions> {
 
-	name = "Delay";
+	readonly name = "Delay";
 
 	/**
 	 * The maximum delay time. This cannot be changed after
@@ -35,11 +35,6 @@ export class Delay extends ToneAudioNode<DelayOptions> {
 	private _delayNode: DelayNode;
 	readonly input: DelayNode;
 	readonly output: DelayNode;
-
-	/**
-	 * The internal channels for channel routing changes
-	 */
-	protected _internalChannels: AudioNode[];
 
 	constructor(options?: Partial<DelayOptions>)
 	constructor(delayTime?: Time, maxDelay?: Time)

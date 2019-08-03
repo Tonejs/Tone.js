@@ -19,7 +19,7 @@ interface GainOptions extends ToneAudioNodeOptions {
  */
 export class Gain<Type extends Unit = GainFactor> extends ToneAudioNode<GainOptions> {
 
-	name = "Gain";
+	readonly name = "Gain";
 
 	/**
 	 *  The gain parameter of the gain node.

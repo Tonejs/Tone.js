@@ -16,7 +16,8 @@ interface EQ3Options extends ToneAudioNodeOptions {
 }
 
 export class EQ3 extends ToneAudioNode<EQ3Options> {
-	name = "EQ3";
+
+	readonly name = "EQ3";
 
 	/**
 	 *  the input

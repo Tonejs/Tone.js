@@ -31,7 +31,7 @@ interface FilterOptions extends ToneAudioNodeOptions {
  */
 export class Filter extends ToneAudioNode<FilterOptions> {
 
-	name = "Filter";
+	readonly name = "Filter";
 
 	readonly input = new Gain({ context: this.context });
 	readonly output = new Gain({ context: this.context });

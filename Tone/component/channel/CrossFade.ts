@@ -44,7 +44,7 @@ interface CrossFadeOptions extends ToneAudioNodeOptions {
  */
 export class CrossFade extends ToneAudioNode<CrossFadeOptions> {
 
-	name = "CrossFade";
+	readonly name = "CrossFade";
 
 	/**
 	 * The crossfading is done by a StereoPannerNode
@@ -95,7 +95,7 @@ export class CrossFade extends ToneAudioNode<CrossFadeOptions> {
 	 */
 	readonly fade: Signal<NormalRange>;
 
-	protected _internalChannels = [this.a, this.b];
+	protected _internalChannels = [this.a, this.b, this.output];
 
 	constructor(options?: Partial<CrossFadeOptions>);
 	// tslint:disable-next-line: unified-signatures

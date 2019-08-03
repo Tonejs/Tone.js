@@ -28,7 +28,7 @@ export interface SynthOptions extends MonophonicOptions {
  */
 export class Synth extends Monophonic<SynthOptions> {
 
-	name = "Synth";
+	readonly name = "Synth";
 
 	/**
 	 *  The oscillator.

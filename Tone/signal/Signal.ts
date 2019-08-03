@@ -26,7 +26,7 @@ export interface SignalOptions<Type> extends ToneAudioNodeOptions {
 export class Signal<Type extends Unit = number> extends ToneAudioNode<SignalOptions<any>>
 implements AbstractParam<Type> {
 
-	name = "Signal";
+	readonly name: string = "Signal";
 
 	/**
 	 * Indicates if the value should be overridden on connection.

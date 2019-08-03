@@ -27,7 +27,7 @@ export class Subtract extends Signal {
 
 	override = false;
 
-	name = "Subtract";
+	readonly name = "Subtract";
 
 	/**
 	 *  the summing node

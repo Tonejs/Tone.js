@@ -25,7 +25,7 @@ interface ReverbOptions extends EffectOptions {
  */
 export class Reverb extends Effect<ReverbOptions> {
 
-	name = "Reverb";
+	readonly name = "Reverb";
 
 	/**
 	 *  Convolver node

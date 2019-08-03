@@ -21,7 +21,7 @@ import { PulseOscillator } from "./PulseOscillator";
  */
 export class PWMOscillator extends Source<PWMOscillatorOptions> implements ToneOscillatorInterface {
 
-	name = "PWMOscillator";
+	readonly name = "PWMOscillator";
 
 	readonly sourceType = "pwm";
 

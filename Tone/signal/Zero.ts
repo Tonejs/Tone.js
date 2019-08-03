@@ -9,7 +9,8 @@ import { SignalOperator } from "./SignalOperator";
  *  with a value of 0 and will not process nodes further down the graph.
  */
 export class Zero extends SignalOperator<ToneAudioNodeOptions> {
-	name = "Zero";
+
+	readonly name = "Zero";
 
 	/**
 	 * The gain node which connects the constant source to the output

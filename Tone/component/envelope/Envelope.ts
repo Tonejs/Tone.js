@@ -56,7 +56,7 @@ export interface EnvelopeOptions extends ToneAudioNodeOptions {
  */
 export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 
-	name = "Envelope";
+	readonly name: string = "Envelope";
 
 	/**
 	 * When triggerAttack is called, the attack time is the amount of
