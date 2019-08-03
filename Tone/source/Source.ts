@@ -37,8 +37,6 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 
 	/**
 	 *  The output volume node
-	 *  @type  {Tone.Volume}
-	 *  @private
 	 */
 	private _volume: Volume = new Volume({
 		context: this.context,
@@ -64,8 +62,6 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 
 	/**
 	 * 	Keep track of the scheduled state.
-	 *  @type {Tone.StateTimeline}
-	 *  @private
 	 */
 	protected _state: StateTimeline<{
 		duration?: Seconds;
@@ -149,7 +145,6 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 	 *  Start the source at the specified time. If no time is given,
 	 *  start the source now.
 	 *  @param  time When the source should be started.
-	 *  @returns {Source} this
 	 *  @example
 	 * source.start("+0.5"); //starts the source 0.5 seconds from now
 	 */
@@ -188,8 +183,7 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 	/**
 	 *  Stop the source at the specified time. If no time is given,
 	 *  stop the source now.
-	 *  @param  {Time} [time=now] When the source should be stopped.
-	 *  @returns {Source} this
+	 *  @param  time When the source should be stopped.
 	 *  @example
 	 * source.stop(); // stops the source immediately
 	 */
