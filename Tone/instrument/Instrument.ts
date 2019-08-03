@@ -60,7 +60,6 @@ export abstract class Instrument<Options extends InstrumentOptions> extends Tone
 
 	static getDefaults(): InstrumentOptions {
 		return Object.assign(ToneAudioNode.getDefaults(), {
-			numberOfOutputs: 1,
 			volume: 0,
 		});
 	}
