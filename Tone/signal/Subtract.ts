@@ -51,7 +51,6 @@ export class Subtract extends Signal {
 	constructor(value?: number);
 	constructor() {
 		super(Object.assign(optionsFromArguments(Subtract.getDefaults(), arguments, ["value"])));
-		const options = optionsFromArguments(Subtract.getDefaults(), arguments, ["value"]);
 
 		connectSeries(this._constantSource, this._neg, this._sum);
 	}
@@ -62,14 +61,10 @@ export class Subtract extends Signal {
 		});
 	}
 
-	/**
-	 *  Clean up.
-	 *  @returns {Tone.SignalBase} this
-	 */
 	dispose(): this {
 		super.dispose();
 		this._neg.dispose();
-		this._sum.disconnect();
+		this._sum.dispose();
 		return this;
 	}
 }
