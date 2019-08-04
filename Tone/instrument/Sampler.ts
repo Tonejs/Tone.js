@@ -272,13 +272,10 @@ export class Sampler extends Instrument<SamplerOptions> {
 	}
 
 	/**
-	 *  Add a note to the sampler.
-	 *  @param  {Note|Midi}   note      The buffer's pitch.
-	 *  @param  {String|Tone.Buffer|Audiobuffer}  url  Either the url of the bufer,
-	 *                                                 or a buffer which will be added
-	 *                                                 with the given name.
-	 *  @param  {Function=}  callback  The callback to invoke
-	 *                                 when the url is loaded.
+	 * Add a note to the sampler.
+	 * @param  note      The buffer's pitch.
+	 * @param  url  Either the url of the bufer, or a buffer which will be added with the given name.
+	 * @param  callback  The callback to invoke when the url is loaded.
 	 */
 	add(note: Note | MidiNote, url: string | ToneAudioBuffer | AudioBuffer, callback?: () => void): this {
 		this.assert(isNote(note) || isFinite(note), `note must be a pitch or midi: ${note}`);
