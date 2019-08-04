@@ -8,7 +8,7 @@
   "files": [
     "README.md",
     "LICENSE.md",
-	"build",
+    "build",
     "Tone"
   ],
   "scripts": {
@@ -20,12 +20,13 @@
     "increment": "node scripts/increment_version.js",
     "increment-ts": "node scripts/increment_version_ts.js",
     "karma": "karma start scripts/karma.conf.js --single-run --grep $npm_config_grep",
-    "karma:watch": "karma start scripts/karma.conf.js --auto-watch --browsers OnlineChrome --grep $npm_config_grep",
+    "karma:browser": "karma start scripts/karma.conf.js --auto-watch --browsers OnlineChrome --grep $npm_config_grep",
+    "karma:watch": "karma start scripts/karma.conf.js --auto-watch --grep $npm_config_grep",
     "lint:fix": "tslint --project tsconfig.json --fix",
     "scratch": "webpack -w --env.scratch --mode=development",
     "test": "npm run karma",
     "test:watch": "npm run collect:tests && npm run karma:watch",
-    "test:browser": "npm run collect:tests && concurrently \"webpack -w --mode=development --env.test\" \"http-server -p 9090 -c-1\" \"open http://localhost:9090/build/test.html\"",
+    "test:browser": "npm run karma:browser",
     "test:travis": "npm run build && npm run lint && npm run test",
     "test:html": "mocha ./test/html/testHTML.js --timeout 30000",
     "test:node": "node ./test/html/node_test.js",
