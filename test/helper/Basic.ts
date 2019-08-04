@@ -4,6 +4,7 @@ import "Tone/core/context/Destination";
 import { OfflineContext } from "Tone/core/context/OfflineContext";
 import { ToneWithContext } from "Tone/core/context/ToneWithContext";
 import { Tone } from "Tone/core/Tone";
+import { ConnectTest } from "./Connect";
 
 export const testAudioContext = new OfflineContext(1, 1, 11025);
 testAudioContext.initialize();
@@ -47,5 +48,7 @@ export function BasicTests(Constr, ...args: any[]): void {
 			}
 			instance.dispose();
 		});
+
+		ConnectTest(Constr, ...args);
 	});
 }

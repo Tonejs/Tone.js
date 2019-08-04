@@ -1,18 +1,11 @@
 import { expect } from "chai";
 import { BasicTests } from "test/helper/Basic";
-import { connectFrom } from "test/helper/Connect";
 import { Noise } from "../../source/Noise";
 import { Analyser } from "./Analyser";
 
 describe("Analyser", () => {
 
 	BasicTests(Analyser);
-
-	it("handles input connection", () => {
-		const anl = new Analyser();
-		connectFrom().connect(anl);
-		anl.dispose();
-	});
 
 	it("can get and set properties", () => {
 		const anl = new Analyser();

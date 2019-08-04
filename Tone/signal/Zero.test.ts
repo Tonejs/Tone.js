@@ -1,5 +1,5 @@
+import { expect } from "chai";
 import { BasicTests } from "test/helper/Basic";
-import { connectTo } from "test/helper/Connect";
 import { ConstantOutput } from "test/helper/ConstantOutput";
 import { Zero } from "./Zero";
 
@@ -9,10 +9,11 @@ describe("Zero", () => {
 
 	context("Zero", () => {
 
-		it("handles output connections", () => {
-			const abs = new Zero();
-			abs.connect(connectTo());
-			abs.dispose();
+		it("has 0 inputs and 1 output", () => {
+			const zero = new Zero();
+			expect(zero.numberOfInputs).to.equal(0);
+			expect(zero.numberOfOutputs).to.equal(1);
+			zero.dispose();
 		});
 
 		it("always outputs 0", () => {

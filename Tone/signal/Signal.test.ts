@@ -13,10 +13,10 @@ describe("Signal", () => {
 
 	context("Signal Rate Value", () => {
 
-		it("handles input and output connections", () => {
+		it("has 1 input and 1 output", () => {
 			const signal = new Signal<number>();
-			connectFrom().connect(signal);
-			signal.connect(connectTo());
+			expect(signal.numberOfInputs).to.equal(1);
+			expect(signal.numberOfOutputs).to.equal(1);
 			signal.dispose();
 		});
 

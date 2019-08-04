@@ -64,13 +64,6 @@ describe("AmplitudeEnvelope", () => {
 
 	context("Envelope", () => {
 
-		it("handles input and output connections", () => {
-			const ampEnv = new AmplitudeEnvelope();
-			connectFrom().connect(ampEnv);
-			ampEnv.connect(connectTo());
-			ampEnv.dispose();
-		});
-
 		it("extends envelope", () => {
 			const ampEnv = new AmplitudeEnvelope();
 			expect(ampEnv).to.be.instanceOf(Envelope);

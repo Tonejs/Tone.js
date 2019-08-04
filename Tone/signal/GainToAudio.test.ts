@@ -11,13 +11,6 @@ describe("GainToAudio", () => {
 
 	context("Gain To Audio", () => {
 
-		it("handles input and output connections", () => {
-			const g2a = new GainToAudio();
-			connectFrom().connect(g2a);
-			g2a.connect(connectTo());
-			g2a.dispose();
-		});
-
 		it("outputs 0 for an input value of 0.5", () => {
 			return ConstantOutput(() => {
 				const sig = new Signal(0.5);

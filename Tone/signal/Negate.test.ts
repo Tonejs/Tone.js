@@ -10,13 +10,6 @@ describe("Negate", () => {
 
 	context("Negating", () => {
 
-		it("handles input and output connections", () => {
-			const negate = new Negate();
-			connectFrom().connect(negate);
-			negate.connect(connectTo());
-			negate.dispose();
-		});
-
 		it("negateates a positive value", () => {
 			return ConstantOutput(() => {
 				const signal = new Signal(1);

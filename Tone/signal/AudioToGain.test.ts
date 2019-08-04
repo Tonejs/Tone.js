@@ -12,13 +12,6 @@ describe("AudioToGain", () => {
 
 	BasicTests(AudioToGain);
 
-	it("handles input and output connections", () => {
-		const a2g = new AudioToGain();
-		a2g.connect(connectTo());
-		connectFrom().connect(a2g);
-		a2g.dispose();
-	});
-
 	it("normalizes an oscillator to 0,1", () => {
 		return Offline(() => {
 			const osc = new Oscillator(1000).start();

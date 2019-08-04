@@ -10,13 +10,6 @@ describe("Abs", () => {
 
 	context("Absolute Value", () => {
 
-		it("handles input and output connections", () => {
-			const abs = new Abs();
-			connectFrom().connect(abs);
-			abs.connect(connectTo());
-			abs.dispose();
-		});
-
 		it("outputs the same value for positive values", () => {
 			return ConstantOutput(() => {
 				const signal = new Signal(0.4);

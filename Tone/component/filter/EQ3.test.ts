@@ -10,12 +10,6 @@ describe("EQ3", () => {
 
 	context("EQing", () => {
 
-		it("handles input and output connections", () => {
-			const eq3 = new EQ3();
-			connectFrom().connect(eq3);
-			eq3.dispose();
-		});
-
 		it("can be constructed with an object", () => {
 			const eq3 = new EQ3({
 				high : -10,

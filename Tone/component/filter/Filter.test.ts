@@ -12,12 +12,6 @@ describe("Filter", () => {
 
 	context("Filtering", () => {
 
-		it("handles input and output connections", () => {
-			const filter = new Filter();
-			connectFrom().connect(filter);
-			filter.dispose();
-		});
-
 		it("can be constructed with a arguments", () => {
 			const filter = new Filter(200, "highpass");
 			expect(filter.frequency.value).to.be.closeTo(200, 0.001);
