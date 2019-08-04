@@ -4,6 +4,7 @@ export { Context } from "./context/Context";
 export { OfflineContext } from "./context/OfflineContext";
 export { Offline } from "./context/Offline";
 export { ToneAudioBuffer } from "./context/ToneAudioBuffer";
+export { ToneAudioBuffers } from "./context/ToneAudioBuffers";
 export { Delay } from "./context/Delay";
 export { Clock } from "./clock/Clock";
 export { Frequency } from "./type/Frequency";
