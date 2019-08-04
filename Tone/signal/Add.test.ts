@@ -13,8 +13,7 @@ describe("Add", () => {
 		it("handles input and output connections", () => {
 			const add = new Add();
 			connectFrom().connect(add);
-			connectFrom().connect(add, 0);
-			connectFrom().connect(add, 1);
+			connectFrom().connect(add.addend);
 			add.connect(connectTo());
 			add.dispose();
 		});
@@ -42,10 +41,20 @@ describe("Add", () => {
 				const sigA = new Signal(1);
 				const sigB = new Signal(4);
 				const adder = new Add();
-				sigA.connect(adder, 0, 0);
-				sigB.connect(adder, 0, 1);
+				sigA.connect(adder);
+				sigB.connect(adder.addend);
 				adder.toDestination();
 			}, 5);
+		});
+
+		it("can set addend", () => {
+			return ConstantOutput(() => {
+				const signal = new Signal(10);
+				const adder = new Add(-1);
+				adder.addend.value = 2;
+				signal.connect(adder);
+				adder.toDestination();
+			}, 12);
 		});
 	});
 });
