@@ -1,3 +1,4 @@
+export { ToneAudioNode } from "./context/ToneAudioNode";
 export { Gain } from "./context/Gain";
 export { Context } from "./context/Context";
 export { OfflineContext } from "./context/OfflineContext";
