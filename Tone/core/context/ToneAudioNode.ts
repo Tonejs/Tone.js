@@ -1,12 +1,12 @@
 import { Unit } from "../type/Units";
-import { isArray, isDefined, isNumber } from "../util/TypeCheck";
+import { isDefined } from "../util/TypeCheck";
 import { Param } from "./Param";
 import { ToneWithContext, ToneWithContextOptions } from "./ToneWithContext";
 
 export type InputNode = ToneAudioNode | AudioNode | AudioParam | Param<Unit>;
 export type OutputNode = ToneAudioNode | AudioNode;
 
-export interface ChannelProperties {
+interface ChannelProperties {
 	channelCount: number;
 	channelCountMode: ChannelCountMode;
 	channelInterpretation: ChannelInterpretation;
@@ -15,11 +15,7 @@ export interface ChannelProperties {
 /**
  * The possible options for this node
  */
-export interface ToneAudioNodeOptions extends ToneWithContextOptions {
-	channelCount: number;
-	channelCountMode: ChannelCountMode;
-	channelInterpretation: ChannelInterpretation;
-}
+export type ToneAudioNodeOptions = ToneWithContextOptions;
 
 /**
  *  ToneAudioNode is the base class for classes which process audio.
@@ -33,13 +29,13 @@ extends ToneWithContext<Options> {
 	 * The input node or nodes. If the object is a source,
 	 * it does not have any input and this.input is undefined.
 	 */
-	abstract input: InputNode | InputNode | undefined;
+	abstract input: InputNode | undefined;
 
 	/**
 	 * The output nodes. If the object is a sink,
 	 * it does not have any output and this.output is undefined.
 	 */
-	abstract output: OutputNode | OutputNode | undefined;
+	abstract output: OutputNode | undefined;
 
 	/**
 	 *  The number of inputs feeding into the AudioNode.
@@ -62,11 +58,7 @@ extends ToneWithContext<Options> {
 	 */
 	get numberOfOutputs(): number {
 		if (isDefined(this.output)) {
-			if (this.output instanceof AudioParam || this.output instanceof Param) {
-				return 1;
-			} else {
-				return this.output.numberOfOutputs;
-			}
+			return this.output.numberOfOutputs;
 		} else {
 			return 0;
 		}
@@ -75,15 +67,7 @@ extends ToneWithContext<Options> {
 	/**
 	 * List all of the node that must be set to match the ChannelProperties
 	 */
-	protected _internalChannels: Array<ToneAudioNode | AudioNode> = [];
-
-	static getDefaults(): ToneAudioNodeOptions {
-		return Object.assign(ToneWithContext.getDefaults(), {
-			channelCount: 2,
-			channelCountMode: "max" as ChannelCountMode,
-			channelInterpretation: "speakers" as ChannelInterpretation,
-		});
-	}
+	protected _internalChannels: OutputNode[] = [];
 
 	///////////////////////////////////////////////////////////////////////////
 	// AUDIO PROPERTIES
@@ -100,7 +84,7 @@ extends ToneWithContext<Options> {
 	 * Get all of the audio nodes (either internal or input/output) which together
 	 * make up how the class node responds to channel input/output
 	 */
-	private _getAudioNodes(): Array<ToneAudioNode | AudioNode> {
+	private _getInternalNodes(): OutputNode[] {
 		const nodeList = this._internalChannels.slice(0);
 		if (this._isAudioNode(this.input)) {
 			nodeList.push(this.input);
@@ -119,7 +103,7 @@ extends ToneWithContext<Options> {
 	 * @param options
 	 */
 	private _setChannelProperties(options: ChannelProperties): void {
-		const nodeList = this._getAudioNodes();
+		const nodeList = this._getInternalNodes();
 		nodeList.forEach(node => {
 			node.channelCount = options.channelCount;
 			node.channelCountMode = options.channelCountMode;
@@ -132,23 +116,16 @@ extends ToneWithContext<Options> {
 	 * channelCount, etc.
 	 */
 	private _getChannelProperties(): ChannelProperties {
-		const nodeList = this._getAudioNodes();
-		if (nodeList.length) {
-			// return the first one
-			const node = nodeList[0];
-			return {
-				channelCount: node.channelCount,
-				channelCountMode: node.channelCountMode,
-				channelInterpretation: node.channelInterpretation,
-			};
-		} else {
-			// return the defaults
-			return {
-				channelCount: 2,
-				channelCountMode: "max",
-				channelInterpretation: "speakers",
-			};
-		}
+		const nodeList = this._getInternalNodes();
+		this.assert(nodeList.length > 0, "ToneAudioNode does not have any internal nodes");
+		// use the first node to get properties
+		// they should all be the same
+		const node = nodeList[0];
+		return {
+			channelCount: node.channelCount,
+			channelCountMode: node.channelCountMode,
+			channelInterpretation: node.channelInterpretation,
+		};
 	}
 
 	/**
@@ -159,7 +136,7 @@ extends ToneWithContext<Options> {
 	get channelCount(): number {
 		return this._getChannelProperties().channelCount;
 	}
-	set channelCount(channelCount: number) {
+	set channelCount(channelCount) {
 		const props = this._getChannelProperties();
 		// merge it with the other properties
 		this._setChannelProperties(Object.assign(props, { channelCount }));
@@ -178,7 +155,7 @@ extends ToneWithContext<Options> {
 	get channelCountMode(): ChannelCountMode {
 		return this._getChannelProperties().channelCountMode;
 	}
-	set channelCountMode(channelCountMode: ChannelCountMode) {
+	set channelCountMode(channelCountMode) {
 		const props = this._getChannelProperties();
 		// merge it with the other properties
 		this._setChannelProperties(Object.assign(props, { channelCountMode }));
@@ -192,7 +169,7 @@ extends ToneWithContext<Options> {
 	get channelInterpretation(): ChannelInterpretation {
 		return this._getChannelProperties().channelInterpretation;
 	}
-	set channelInterpretation(channelInterpretation: ChannelInterpretation) {
+	set channelInterpretation(channelInterpretation) {
 		const props = this._getChannelProperties();
 		// merge it with the other properties
 		this._setChannelProperties(Object.assign(props, { channelInterpretation }));
@@ -241,7 +218,6 @@ extends ToneWithContext<Options> {
 
 	/**
 	 *  Connect the output of this node to the rest of the nodes in series.
-	 *  @param nodes
 	 *  @example
 	 *  //connect a node to an effect, panVol and then to the master output
 	 *  node.chain(effect, panVol, Tone.Destination);
@@ -253,8 +229,6 @@ extends ToneWithContext<Options> {
 
 	/**
 	 *  connect the output of this node to the rest of the nodes in parallel.
-	 *  @param nodes
-	 *  @returns this
 	 */
 	fan(...nodes: InputNode[]): this {
 		nodes.forEach(node => this.connect(node));
@@ -267,30 +241,14 @@ extends ToneWithContext<Options> {
 	dispose(): this {
 		super.dispose();
 		if (isDefined(this.input)) {
-			if (isArray(this.input)) {
-				this.input.forEach(input => {
-					if (input instanceof ToneAudioNode) {
-						input.dispose();
-					} else if (input instanceof AudioNode) {
-						input.disconnect();
-					}
-				});
-			} else if (this.input instanceof ToneAudioNode) {
+			if (this.input instanceof ToneAudioNode) {
 				this.input.dispose();
 			} else if (this.input instanceof AudioNode) {
 				this.input.disconnect();
 			}
 		}
 		if (isDefined(this.output)) {
-			if (isArray(this.output)) {
-				this.output.forEach(output => {
-					if (output instanceof ToneAudioNode) {
-						output.dispose();
-					} else {
-						output.disconnect();
-					}
-				});
-			} else if (this.output instanceof ToneAudioNode) {
+			if (this.output instanceof ToneAudioNode) {
 				this.output.dispose();
 			} else if (this.output instanceof AudioNode) {
 				this.output.disconnect();
