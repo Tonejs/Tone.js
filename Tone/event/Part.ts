@@ -215,7 +215,7 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 	add(time: Time, value?: any): this;
 	add(time: Time | object, value?: any): this {
 		// extract the parameters
-		if (isObject(time) && time.hasOwnProperty("time")) {
+		if (time instanceof Object && time.hasOwnProperty("time")) {
 			value = time;
 			time = value.time;
 		}
