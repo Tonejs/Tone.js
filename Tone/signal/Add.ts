@@ -1,7 +1,7 @@
-import { Gain } from "Tone/core";
-import { connectSeries } from "Tone/core/Connect";
-import { optionsFromArguments } from "Tone/core/util/Defaults";
+import { connectSeries } from "../core/Connect";
+import { Gain } from "../core/context/Gain";
 import { Param } from "../core/context/Param";
+import { optionsFromArguments } from "../core/util/Defaults";
 import { Signal, SignalOptions } from "./Signal";
 
 /**
