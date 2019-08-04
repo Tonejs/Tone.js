@@ -5,8 +5,7 @@ import { Multiply } from "./Multiply";
 import { Signal } from "./Signal";
 import { SignalOperator } from "./SignalOperator";
 
-export interface ScaleOptions<Type> extends ToneAudioNodeOptions {
-	value: Type;
+export interface ScaleOptions extends ToneAudioNodeOptions {
 	outputMin: number;
 	outputMax: number;
 }
@@ -25,7 +24,7 @@ export interface ScaleOptions<Type> extends ToneAudioNodeOptions {
  * var signal = new Signal(0.5).connect(scale);
  * //the output of scale equals 75
  */
-export class Scale extends SignalOperator<ScaleOptions<number>> {
+export class Scale extends SignalOperator<ScaleOptions> {
 
 	readonly name: string = "Scale";
 
@@ -39,47 +38,45 @@ export class Scale extends SignalOperator<ScaleOptions<number>> {
 		value: 0,
 	});
 
-	value: number = 0;
-
 	private _outputMin!: number;
 
 	private _outputMax!: number;
 
-	constructor(options?: Partial<ScaleOptions<number>>);
+	constructor(options?: Partial<ScaleOptions>);
 	// tslint:disable-next-line: unified-signatures
 	constructor(value?: number);
 	constructor() {
-		super(Object.assign(optionsFromArguments(Scale.getDefaults(), arguments, ["value"])));
+		super(Object.assign(optionsFromArguments(Scale.getDefaults(), arguments, ["outputMin", "outputMax"])));
 
 		const options = optionsFromArguments(Scale.getDefaults(), arguments, ["outputMin", "outputMax"]);
 		this._outputMin = options.outputMin;
 		this._outputMax = options.outputMax;
 
-		this.connect(this.output);
+		this.input.connect(this.output);
 		this._setRange();
 	}
 
-	static getDefaults(): ScaleOptions<number> {
+	static getDefaults(): ScaleOptions {
 		return Object.assign(Signal.getDefaults(), {
 			outputMax: 1,
 			outputMin: 0,
 		});
 	}
 
-	get getMin(): number {
+	get min(): number {
 		return this._outputMin;
 	}
 
-	set setMin(min: number) {
+	set min(min) {
 		this._outputMin = min;
 		this._setRange();
 	}
 
-	get getMax(): number {
+	get max(): number {
 		return this._outputMax;
 	}
 
-	set setMax(max: number) {
+	set max(max) {
 		this._outputMax = max;
 		this._setRange();
 	}
@@ -89,7 +86,7 @@ export class Scale extends SignalOperator<ScaleOptions<number>> {
 	 */
 	private _setRange(): void {
 		this.output.value = this._outputMin;
-		this.value = this._outputMax - this._outputMin;
+		this.input.value = this._outputMax - this._outputMin;
 	}
 
 	/**

@@ -20,10 +20,10 @@ describe("Scale", () => {
 
 		it("can set the min and max values", () => {
 			const scale = new Scale({ outputMin: 0, outputMax: 100 });
-			scale.setMin = -0.01;
-			expect(scale.getMin).to.be.closeTo(-0.01, 0.001);
-			scale.setMax = 1000;
-			expect(scale.getMax).to.be.closeTo(1000, 0.001);
+			scale.min = -0.01;
+			expect(scale.min).to.be.closeTo(-0.01, 0.001);
+			scale.max = 1000;
+			expect(scale.max).to.be.closeTo(1000, 0.001);
 			scale.dispose();
 		});
 
@@ -40,7 +40,7 @@ describe("Scale", () => {
 			return ConstantOutput(() => {
 				const signal = new Signal(1);
 				const scale = new Scale({ outputMin: -10, outputMax: 0 });
-				scale.setMax = 8;
+				scale.max = 8;
 				signal.connect(scale);
 				scale.toDestination();
 			}, 8);
