@@ -12,14 +12,14 @@ describe("Scale", () => {
 	context("Scaling", () => {
 
 		it("handles input and output connections", () => {
-			const scale = new Scale({ outputMin: 0, outputMax: 100 });
+			const scale = new Scale({ min: 0, max: 100 });
 			connectFrom().connect(scale);
 			scale.connect(connectTo());
 			scale.dispose();
 		});
 
 		it("can set the min and max values", () => {
-			const scale = new Scale({ outputMin: 0, outputMax: 100 });
+			const scale = new Scale({ min: 0, max: 100 });
 			scale.min = -0.01;
 			expect(scale.min).to.be.closeTo(-0.01, 0.001);
 			scale.max = 1000;
@@ -30,7 +30,7 @@ describe("Scale", () => {
 		it("scales to the min when the input is 0", () => {
 			return ConstantOutput(() => {
 				const signal = new Signal(0);
-				const scale = new Scale({ outputMin: -10, outputMax: 8 });
+				const scale = new Scale({ min: -10, max: 8 });
 				signal.connect(scale);
 				scale.toDestination();
 			}, -10);
@@ -39,7 +39,7 @@ describe("Scale", () => {
 		it("scales to the max when the input is 1", () => {
 			return ConstantOutput(() => {
 				const signal = new Signal(1);
-				const scale = new Scale({ outputMin: -10, outputMax: 0 });
+				const scale = new Scale(-10, 0);
 				scale.max = 8;
 				signal.connect(scale);
 				scale.toDestination();
@@ -49,7 +49,7 @@ describe("Scale", () => {
 		it("scales an input of 0.5 to 15 (10, 20)", () => {
 			return ConstantOutput(() => {
 				const signal = new Signal(0.5);
-				const scale = new Scale({ outputMin: 10, outputMax: 20 });
+				const scale = new Scale({ min: 10, max: 20 });
 				signal.connect(scale);
 				scale.toDestination();
 			}, 15);

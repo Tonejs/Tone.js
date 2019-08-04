@@ -1,13 +1,13 @@
-import { ToneAudioNodeOptions } from "Tone/core/context/ToneAudioNode";
-import { optionsFromArguments } from "Tone/core/util/Defaults";
+import { ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
+import { optionsFromArguments } from "../core/util/Defaults";
 import { Add } from "./Add";
 import { Multiply } from "./Multiply";
 import { Signal } from "./Signal";
 import { SignalOperator } from "./SignalOperator";
 
 export interface ScaleOptions extends ToneAudioNodeOptions {
-	outputMin: number;
-	outputMax: number;
+	min: number;
+	max: number;
 }
 
 /**
@@ -28,54 +28,56 @@ export class Scale extends SignalOperator<ScaleOptions> {
 
 	readonly name: string = "Scale";
 
-	input = new Multiply({
+	readonly input = new Multiply({
 		context: this.context,
 		value: 1,
 	});
 
-	output = new Add({
+	readonly output = new Add({
 		context: this.context,
 		value: 0,
 	});
 
-	private _outputMin!: number;
-
-	private _outputMax!: number;
+	private _outputMin: number;
+	private _outputMax: number;
 
 	constructor(options?: Partial<ScaleOptions>);
-	// tslint:disable-next-line: unified-signatures
-	constructor(value?: number);
+	constructor(min?: number, max?: number);
 	constructor() {
-		super(Object.assign(optionsFromArguments(Scale.getDefaults(), arguments, ["outputMin", "outputMax"])));
+		super(Object.assign(optionsFromArguments(Scale.getDefaults(), arguments, ["min", "max"])));
 
-		const options = optionsFromArguments(Scale.getDefaults(), arguments, ["outputMin", "outputMax"]);
-		this._outputMin = options.outputMin;
-		this._outputMax = options.outputMax;
+		const options = optionsFromArguments(Scale.getDefaults(), arguments, ["min", "max"]);
+		this._outputMin = options.min;
+		this._outputMax = options.max;
 
 		this.input.connect(this.output);
 		this._setRange();
 	}
 
 	static getDefaults(): ScaleOptions {
-		return Object.assign(Signal.getDefaults(), {
-			outputMax: 1,
-			outputMin: 0,
+		return Object.assign(SignalOperator.getDefaults(), {
+			max: 1,
+			min: 0,
 		});
 	}
 
+	/**
+	 * The minimum output value. This number is output when the value input value is 0.
+	 */
 	get min(): number {
 		return this._outputMin;
 	}
-
 	set min(min) {
 		this._outputMin = min;
 		this._setRange();
 	}
 
+	/**
+	 * The maximum output value. This number is output when  the value input value is 1.
+	 */
 	get max(): number {
 		return this._outputMax;
 	}
-
 	set max(max) {
 		this._outputMax = max;
 		this._setRange();
@@ -89,9 +91,6 @@ export class Scale extends SignalOperator<ScaleOptions> {
 		this.input.value = this._outputMax - this._outputMin;
 	}
 
-	/**
-	 *  Clean up.
-	 */
 	dispose(): this {
 		super.dispose();
 		this.input.dispose();
