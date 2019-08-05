@@ -33,8 +33,8 @@
     "tsd": "node ./scripts/generate_docs.js",
     "lint": "tslint --project tsconfig.json",
     "ts:build": "tsc --project tsconfig.build.json",
-    "watch:old": "webpack -w --env.production --mode=development",
     "watch": "tsc --watch",
+    "webpack:watch": "webpack -w --env.production --mode=development",
     "webpack:build": "webpack -p --env.production"
   },
   "repository": {
