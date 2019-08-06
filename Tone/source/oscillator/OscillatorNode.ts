@@ -32,12 +32,12 @@ export class ToneOscillatorNode extends OneShotSource<ToneOscillatorNodeOptions>
 	/**
 	 *  The frequency of the oscillator
 	 */
-	readonly frequency: Param<"frequency">;
+	readonly frequency: Param<Frequency>;
 
 	/**
 	 *  The detune of the oscillator
 	 */
-	readonly detune: Param<"cents">;
+	readonly detune: Param<Cents>;
 
 	constructor(options?: Partial<ToneOscillatorNodeOptions>);
 	constructor(
