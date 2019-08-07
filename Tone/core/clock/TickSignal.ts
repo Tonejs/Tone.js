@@ -50,10 +50,10 @@ export class TickSignal<Type extends Hertz | BPM> extends Param<Type> {
 		this._param = this._sig.offset;
 
 		// set the multiplier
-		this.multiplier = options.multiplier;
+		this._multiplier = options.multiplier;
 
 		// clear the ticks from the beginning
-		this.cancelScheduledValues(0);
+		this._events.cancel(0);
 		// set an initial event
 		this._events.add({
 			ticks: 0,
