@@ -276,7 +276,7 @@ describe("Envelope", () => {
 			return Offline(() => {
 				const env = new Envelope(0.001, 0.1, 0.5);
 				env.attackCurve = "linear";
-				env.toMaster();
+				env.toDestination();
 				env.triggerAttack(0);
 				env.triggerRelease(0.4);
 				env.triggerAttack(0.4);
