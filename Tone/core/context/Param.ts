@@ -103,8 +103,8 @@ implements AbstractParam<Type> {
 	}
 	set value(value: Type) {
 		this._initialValue = this._fromType(value);
-		this.cancelScheduledValues(this.now());
-		this.setValueAtTime(value, this.now());
+		this.cancelScheduledValues(0);
+		this._param.value = this._fromType(value);
 	}
 
 	get minValue(): number {
@@ -188,6 +188,12 @@ implements AbstractParam<Type> {
 		this.assert(isFinite(numericValue) && isFinite(computedTime),
 			`Invalid argument(s) to setValueAtTime: ${JSON.stringify(value)}, ${JSON.stringify(time)}`);
 
+		const currentEvent = this._events.get(computedTime);
+		// if there's already the same event, don't bother adding this one
+		if (currentEvent && currentEvent.time === computedTime &&
+			currentEvent.type === "setValue" && currentEvent.value === numericValue) {
+			return this;
+		}
 		this.log(this.units, "setValue", value, computedTime);
 		this._events.add({
 			time: computedTime,
