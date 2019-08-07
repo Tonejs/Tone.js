@@ -29,6 +29,7 @@ export class Volume extends ToneAudioNode<VolumeOptions> {
 	 */
 	output: Gain<Decibels> = new Gain({
 		context: this.context,
+		gain: 0,
 		units: "decibels",
 	});
 
@@ -53,7 +54,7 @@ export class Volume extends ToneAudioNode<VolumeOptions> {
 		super(optionsFromArguments(Volume.getDefaults(), arguments, ["volume"]));
 		const options = optionsFromArguments(Volume.getDefaults(), arguments, ["volume"]);
 
-		this.volume.value = options.volume;
+		this.volume.setValueAtTime(options.volume, 0);
 		readOnly(this, "volume");
 		this._unmutedVolume = options.volume;
 

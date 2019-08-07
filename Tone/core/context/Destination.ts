@@ -46,7 +46,7 @@ export class Destination extends ToneAudioNode<DestinationOptions> {
 
 		connectSeries(this.input, this.output, this.context.rawContext.destination);
 
-		this.volume.value = options.volume;
+		this.volume.setValueAtTime(options.volume, 0);
 		this.mute = options.mute;
 	}
 
