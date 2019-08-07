@@ -87,7 +87,7 @@ implements AbstractParam<Type> {
 		// initialize
 		this._param = this.input = options.param;
 		this._events = new Timeline<AutomationEvent>(1000);
-		this._initialValue = this._param.value;
+		this._initialValue = this._param.defaultValue;
 		this.units = options.units;
 		this.convert = options.convert;
 
@@ -185,14 +185,15 @@ implements AbstractParam<Type> {
 	setValueAtTime(value: Type, time: Time): this {
 		const computedTime = this.toSeconds(time);
 		const numericValue = this._fromType(value);
+		this.assert(isFinite(numericValue) && isFinite(computedTime),
+			`Invalid argument(s) to setValueAtTime: ${JSON.stringify(value)}, ${JSON.stringify(time)}`);
+
+		this.log(this.units, "setValue", value, computedTime);
 		this._events.add({
 			time: computedTime,
 			type: "setValue",
 			value: numericValue,
 		});
-		this.log("setValue", value, computedTime);
-		this.assert(isFinite(numericValue) && isFinite(computedTime),
-			`Invalid argument(s) to setValueAtTime: ${JSON.stringify(value)}, ${JSON.stringify(time)}`);
 		this._param.setValueAtTime(numericValue, computedTime);
 		return this;
 	}
@@ -253,14 +254,14 @@ implements AbstractParam<Type> {
 	linearRampToValueAtTime(value: Type, endTime: Time): this {
 		const numericValue = this._fromType(value);
 		const computedTime = this.toSeconds(endTime);
+		this.assert(isFinite(numericValue) && isFinite(computedTime),
+			`Invalid argument(s) to linearRampToValueAtTime: ${JSON.stringify(value)}, ${JSON.stringify(endTime)}`);
 		this._events.add({
 			time: computedTime,
 			type: "linear",
 			value : numericValue,
 		});
-		this.log("linear", value, computedTime);
-		this.assert(isFinite(numericValue) && isFinite(computedTime),
-			`Invalid argument(s) to linearRampToValueAtTime: ${JSON.stringify(value)}, ${JSON.stringify(endTime)}`);
+		this.log(this.units, "linear", value, computedTime);
 		this._param.linearRampToValueAtTime(numericValue, computedTime);
 		return this;
 	}
@@ -269,15 +270,15 @@ implements AbstractParam<Type> {
 		let numericValue = this._fromType(value);
 		numericValue = Math.max(this._minOutput, numericValue);
 		const computedTime = this.toSeconds(endTime);
+		this.assert(isFinite(numericValue) && isFinite(computedTime),
+			`Invalid argument(s) to exponentialRampToValueAtTime: ${JSON.stringify(value)}, ${JSON.stringify(endTime)}`);
 		// store the event
 		this._events.add({
 			time: computedTime,
 			type: "exponential",
 			value : numericValue,
 		});
-		this.log("exponential", value, computedTime);
-		this.assert(isFinite(numericValue) && isFinite(computedTime),
-			`Invalid argument(s) to exponentialRampToValueAtTime: ${JSON.stringify(value)}, ${JSON.stringify(endTime)}`);
+		this.log(this.units, "exponential", value, computedTime);
 		this._param.exponentialRampToValueAtTime(numericValue, computedTime);
 		return this;
 	}
@@ -319,15 +320,15 @@ implements AbstractParam<Type> {
 		// The value will never be able to approach without timeConstant > 0.
 		this.assert(isFinite(timeConstant) && timeConstant > 0, "timeConstant must be a number greater than 0");
 		const computedTime = this.toSeconds(startTime);
+		this.assert(isFinite(numericValue) && isFinite(computedTime),
+			`Invalid argument(s) to setTargetAtTime: ${JSON.stringify(value)}, ${JSON.stringify(startTime)}`);
 		this._events.add({
 			constant: timeConstant,
 			time: computedTime,
 			type: "setTarget",
 			value: numericValue,
 		});
-		this.log("setTarget", value, computedTime, timeConstant);
-		this.assert(isFinite(numericValue) && isFinite(computedTime),
-			`Invalid argument(s) to setTargetAtTime: ${JSON.stringify(value)}, ${JSON.stringify(startTime)}`);
+		this.log(this.units, "setTarget", value, computedTime, timeConstant);
 		this._param.setTargetAtTime(numericValue, computedTime, timeConstant);
 		return this;
 	}
@@ -347,20 +348,21 @@ implements AbstractParam<Type> {
 
 	cancelScheduledValues(time: Time): this {
 		const computedTime = this.toSeconds(time);
-		this._events.cancel(computedTime);
 		this.assert(isFinite(computedTime), `Invalid argument to cancelScheduledValues: ${JSON.stringify(time)}`);
+		this._events.cancel(computedTime);
 		this._param.cancelScheduledValues(computedTime);
-		this.log("cancel", computedTime);
+		this.log(this.units, "cancel", computedTime);
 		return this;
 	}
 
 	cancelAndHoldAtTime(time: Time): this {
 		const computedTime = this.toSeconds(time);
 		const valueAtTime = this._fromType(this.getValueAtTime(computedTime));
-		this.log("cancelAndHoldAtTime", computedTime, "value=" + valueAtTime);
-
 		// remove the schedule events
 		this.assert(isFinite(computedTime), `Invalid argument to cancelAndHoldAtTime: ${JSON.stringify(time)}`);
+
+		this.log(this.units, "cancelAndHoldAtTime", computedTime, "value=" + valueAtTime);
+
 		this._param.cancelScheduledValues(computedTime);
 
 		// if there is an event at the given computedTime
