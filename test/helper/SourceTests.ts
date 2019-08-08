@@ -24,12 +24,10 @@ export function SourceTests(Constr, args?): void {
 			instance.dispose();
 		});
 
-		it.skip("has no input", () => {
+		it("has no input", () => {
 			const instance = new Constr(args);
 			// has no input
-			expect(() => {
-				connectFrom().connect(instance);
-			}).throws(Error);
+			expect(instance.numberOfInputs).to.equal(0);
 			instance.dispose();
 		});
 
