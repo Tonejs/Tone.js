@@ -28,13 +28,11 @@ export class PWMOscillator extends Source<PWMOscillatorOptions> implements ToneO
 	/**
 	 *  the pulse oscillator
 	 */
-	private _pulse: PulseOscillator = new PulseOscillator({ context: this.context });
+	private _pulse: PulseOscillator;
 	/**
 	 *  the modulator
-	 *  @type {Tone.Oscillator}
-	 *  @private
 	 */
-	private _modulator: Oscillator = new Oscillator({ context: this.context });
+	private _modulator: Oscillator;
 
 	/**
 	 *  Scale the oscillator so it doesn't go silent
@@ -48,17 +46,17 @@ export class PWMOscillator extends Source<PWMOscillatorOptions> implements ToneO
 	/**
 	 *  The frequency control.
 	 */
-	readonly frequency: Signal<Frequency> = this._modulator.frequency;
+	readonly frequency: Signal<Frequency>;
 
 	/**
 	 *  The detune of the oscillator.
 	 */
-	readonly detune: Signal<Cents> = this._modulator.detune;
+	readonly detune: Signal<Cents>;
 
 	/**
 	 *  The modulation rate of the oscillator.
 	 */
-	readonly modulationFrequency: Signal<Frequency> = this._pulse.frequency;
+	readonly modulationFrequency: Signal<Frequency>;
 
 	constructor(options?: Partial<PWMOscillatorOptions>);
 	constructor(frequency?: Frequency, modulationFrequency?: Frequency);
@@ -66,14 +64,25 @@ export class PWMOscillator extends Source<PWMOscillatorOptions> implements ToneO
 		super(optionsFromArguments(PWMOscillator.getDefaults(), arguments, ["frequency", "modulationFrequency"]));
 		const options = optionsFromArguments(PWMOscillator.getDefaults(), arguments, ["frequency", "modulationFrequency"]);
 
+		this._pulse = new PulseOscillator({
+			context: this.context,
+			frequency: options.modulationFrequency,
+		});
 		// change the pulse oscillator type
 		// @ts-ignore
 		this._pulse._sawtooth.type = "sine";
 
-		this._pulse.frequency.setValueAtTime(options.modulationFrequency, 0);
-		this._modulator.frequency.setValueAtTime(options.frequency, 0);
-		this._modulator.detune.setValueAtTime(options.detune, 0);
-		this._modulator.phase = options.phase;
+		this.modulationFrequency  = this._pulse.frequency;
+
+		this._modulator = new Oscillator({
+			context: this.context,
+			detune: options.detune,
+			frequency: options.frequency,
+			phase: options.phase,
+		});
+
+		this.frequency = this._modulator.frequency;
+		this.detune = this._modulator.detune;
 
 		// connections
 		this._modulator.chain(this._scale, this._pulse.width);

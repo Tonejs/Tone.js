@@ -37,28 +37,22 @@ export class FMOscillator extends Source<FMOscillatorOptions> implements ToneOsc
 	/**
 	 *  The carrier oscillator
 	 */
-	private _carrier: Oscillator = new Oscillator({
-		context : this.context,
-		frequency: 0,
-	});
+	private _carrier: Oscillator;
 
 	/**
 	 *  The oscillator's frequency
 	 */
-	readonly frequency: Signal<Frequency> = new Signal({
-		context: this.context,
-		units: "frequency",
-	});
+	readonly frequency: Signal<Frequency>;
 
 	/**
 	 *  The detune control signal.
 	 */
-	readonly detune: Signal<Cents> = this._carrier.detune;
+	readonly detune: Signal<Cents>;
 
 	/**
 	 *  The modulating oscillator
 	 */
-	private _modulator = new Oscillator({ context : this.context });
+	private _modulator: Oscillator;
 
 	/**
 	 *  Harmonicity is the frequency ratio between the carrier and the modulator oscillators.
@@ -68,25 +62,19 @@ export class FMOscillator extends Source<FMOscillatorOptions> implements ToneOsc
 	 * //pitch the modulator an octave below carrier
 	 * synth.harmonicity.value = 0.5;
 	 */
-	readonly harmonicity: Signal<Positive> = new Multiply({
-		context: this.context,
-		units: "positive",
-	});
+	readonly harmonicity: Signal<Positive>;
 
 	/**
 	 *  The modulation index which is in essence the depth or amount of the modulation. In other terms it is the
 	 *  ratio of the frequency of the modulating signal (mf) to the amplitude of the
 	 *  modulating signal (ma) -- as in ma/mf.
 	 */
-	readonly modulationIndex: Signal<Positive> = new Multiply({
-		context: this.context,
-		units: "positive",
-	});
+	readonly modulationIndex: Signal<Positive>;
 
 	/**
 	 *  the node where the modulation happens
 	 */
-	private _modulationNode = new Gain({
+	private _modulationNode: Gain = new Gain({
 		context: this.context,
 		gain: 0,
 	});
@@ -98,12 +86,39 @@ export class FMOscillator extends Source<FMOscillatorOptions> implements ToneOsc
 		super(optionsFromArguments(FMOscillator.getDefaults(), arguments, ["frequency", "type", "modulationType"]));
 		const options = optionsFromArguments(FMOscillator.getDefaults(), arguments, ["frequency", "type", "modulationType"]);
 
-		this._carrier.type = options.type;
-		this._modulator.type = options.modulationType;
-		this.frequency.setValueAtTime(options.frequency, 0);
-		this.detune.setValueAtTime(options.detune, 0);
-		this.harmonicity.setValueAtTime(options.harmonicity, 0);
-		this.modulationIndex.setValueAtTime(options.modulationIndex, 0);
+		this._carrier = new Oscillator({
+			context : this.context,
+			detune: options.detune,
+			frequency: 0,
+			phase: options.phase,
+			type: options.type,
+		} as OscillatorOptions);
+
+		this.detune = this._carrier.detune;
+
+		this.frequency = new Signal({
+			context: this.context,
+			units: "frequency",
+			value: options.frequency,
+		});
+
+		this._modulator = new Oscillator({
+			context : this.context,
+			phase: options.phase,
+			type: options.modulationType,
+		} as OscillatorOptions);
+
+		this.harmonicity = new Multiply({
+			context: this.context,
+			units: "positive",
+			value: options.harmonicity,
+		});
+
+		this.modulationIndex = new Multiply({
+			context: this.context,
+			units: "positive",
+			value: options.modulationIndex,
+		});
 
 		// connections
 		this.frequency.connect(this._carrier.frequency);
@@ -113,8 +128,6 @@ export class FMOscillator extends Source<FMOscillatorOptions> implements ToneOsc
 		this._modulationNode.connect(this._carrier.frequency);
 		this._carrier.connect(this.output);
 		this.detune.connect(this._modulator.detune);
-
-		this.phase = options.phase;
 
 		readOnly(this, ["modulationIndex", "frequency", "detune", "harmonicity"]);
 	}

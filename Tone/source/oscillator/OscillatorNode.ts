@@ -57,7 +57,7 @@ export class ToneOscillatorNode extends OneShotSource<ToneOscillatorNodeOptions>
 			context: this.context,
 			param : this._oscillator.frequency,
 			units : "frequency",
-			value : this.toFrequency(options.frequency),
+			value : options.frequency,
 		});
 
 		this.detune = new Param({

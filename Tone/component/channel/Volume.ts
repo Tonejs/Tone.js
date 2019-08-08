@@ -1,6 +1,6 @@
 import { Gain } from "../../core/context/Gain";
 import { Param } from "../../core/context/Param";
-import { ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
+import { InputNode, ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
 import { Decibels } from "../../core/type/Units";
 import { optionsFromArguments } from "../../core/util/Defaults";
 import { readOnly } from "../../core/util/Interface";
@@ -27,16 +27,12 @@ export class Volume extends ToneAudioNode<VolumeOptions> {
 	/**
 	 * the output node
 	 */
-	output: Gain<Decibels> = new Gain({
-		context: this.context,
-		gain: 0,
-		units: "decibels",
-	});
+	output: Gain<Decibels>;
 
 	/**
 	 * Input and output are the same
 	 */
-	input = this.output;
+	input: Gain;
 
 	/**
 	 * The unmuted volume
@@ -46,7 +42,7 @@ export class Volume extends ToneAudioNode<VolumeOptions> {
 	/**
 	 *  The volume control in decibels.
 	 */
-	volume: Param<Decibels> = this.output.gain;
+	volume: Param<Decibels>;
 
 	constructor(options?: Decibels | Partial<VolumeOptions>);
 	constructor() {
@@ -54,7 +50,12 @@ export class Volume extends ToneAudioNode<VolumeOptions> {
 		super(optionsFromArguments(Volume.getDefaults(), arguments, ["volume"]));
 		const options = optionsFromArguments(Volume.getDefaults(), arguments, ["volume"]);
 
-		this.volume.setValueAtTime(options.volume, 0);
+		this.input = this.output = new Gain({
+			context: this.context,
+			gain: options.volume,
+			units: "decibels",
+		});
+		this.volume = this.output.gain;
 		readOnly(this, "volume");
 		this._unmutedVolume = options.volume;
 

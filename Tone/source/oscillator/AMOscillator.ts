@@ -39,22 +39,22 @@ export class AMOscillator extends Source<AMOscillatorOptions> implements ToneOsc
 	/**
 	 *  The carrier oscillator
 	 */
-	private _carrier: Oscillator = new Oscillator({context : this.context });
+	private _carrier: Oscillator;
 
 	/**
 	 *  The oscillator's frequency
 	 */
-	readonly frequency: Signal<Frequency> = this._carrier.frequency;
+	readonly frequency: Signal<Frequency>;
 
 	/**
 	 *  The detune control signal.
 	 */
-	readonly detune: Signal<Cents> = this._carrier.detune;
+	readonly detune: Signal<Cents>;
 
 	/**
 	 *  The modulating oscillator
 	 */
-	private _modulator = new Oscillator({ context : this.context });
+	private _modulator: Oscillator;
 
 	/**
 	 *  convert the -1,1 output to 0,1
@@ -69,10 +69,7 @@ export class AMOscillator extends Source<AMOscillatorOptions> implements ToneOsc
 	 * //pitch the modulator an octave below carrier
 	 * synth.harmonicity.value = 0.5;
 	 */
-	readonly harmonicity: Signal<Positive> = new Multiply({
-		context: this.context,
-		units: "positive",
-	});
+	readonly harmonicity: Signal<Positive>;
 
 	/**
 	 *  the node where the modulation happens
@@ -88,18 +85,32 @@ export class AMOscillator extends Source<AMOscillatorOptions> implements ToneOsc
 		super(optionsFromArguments(AMOscillator.getDefaults(), arguments, ["frequency", "type", "modulationType"]));
 		const options = optionsFromArguments(AMOscillator.getDefaults(), arguments, ["frequency", "type", "modulationType"]);
 
-		this._carrier.type = options.type;
-		this._modulator.type = options.modulationType;
-		this.frequency.setValueAtTime(options.frequency, 0);
-		this.detune.setValueAtTime(options.detune, 0);
-		this.harmonicity.setValueAtTime(options.harmonicity, 0);
+		this._carrier  = new Oscillator({
+			context : this.context,
+			detune: options.detune,
+			frequency: options.frequency,
+			phase: options.phase,
+			type: options.type,
+		} as OscillatorOptions);
+		this.frequency = this._carrier.frequency,
+		this.detune = this._carrier.detune;
+
+		this._modulator = new Oscillator({
+			context : this.context,
+			phase: options.phase,
+			type: options.modulationType,
+		} as OscillatorOptions);
+
+		this.harmonicity = new Multiply({
+			context: this.context,
+			units: "positive",
+			value: options.harmonicity,
+		});
 
 		// connections
 		this.frequency.chain(this.harmonicity, this._modulator.frequency);
 		this._modulator.chain(this._modulationScale, this._modulationNode.gain);
 		this._carrier.chain(this._modulationNode, this.output);
-
-		this.phase = options.phase;
 
 		readOnly(this, ["frequency", "detune", "harmonicity"]);
 	}

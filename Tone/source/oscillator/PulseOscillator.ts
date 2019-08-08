@@ -49,10 +49,7 @@ export class PulseOscillator extends Source<PulseOscillatorOptions> implements T
 	/**
 	 *  The width of the pulse.
 	 */
-	width: Signal<AudioRange> = new Signal<AudioRange>({
-		context: this.context,
-		units: "audioRange",
-	});
+	width: Signal<AudioRange>;
 
 	/**
 	 *  gate the width amount
@@ -65,20 +62,17 @@ export class PulseOscillator extends Source<PulseOscillatorOptions> implements T
 	/**
 	 *  the sawtooth oscillator
 	 */
-	private _sawtooth: Oscillator = new Oscillator({
-		context: this.context,
-		type : "sawtooth",
-	});
+	private _sawtooth: Oscillator;
 
 	/**
 	 *  The frequency control.
 	 */
-	frequency: Signal<Frequency> = this._sawtooth.frequency;
+	frequency: Signal<Frequency>;
 
 	/**
 	 *  The detune in cents.
 	 */
-	detune: Signal<Cents> = this._sawtooth.detune;
+	detune: Signal<Cents>;
 
 	/**
 	 *  Threshold the signal to turn it into a square
@@ -95,10 +89,21 @@ export class PulseOscillator extends Source<PulseOscillatorOptions> implements T
 		super(optionsFromArguments(PulseOscillator.getDefaults(), arguments, ["frequency", "width"]));
 		const options = optionsFromArguments(PulseOscillator.getDefaults(), arguments, ["frequency", "width"]);
 
-		this.width.setValueAtTime(options.width, 0);
-		this._sawtooth.frequency.setValueAtTime(options.frequency, 0);
-		this._sawtooth.detune.setValueAtTime(options.detune, 0);
-		this._sawtooth.phase = options.phase;
+		this.width = new Signal({
+			context: this.context,
+			units: "audioRange",
+			value: options.width,
+		});
+
+		this._sawtooth = new Oscillator({
+			context: this.context,
+			detune: options.detune,
+			frequency: options.frequency,
+			phase: options.phase,
+			type : "sawtooth",
+		});
+		this.frequency = this._sawtooth.frequency;
+		this.detune = this._sawtooth.detune;
 
 		// connections
 		this._sawtooth.chain(this._thresh, this.output);

@@ -1,6 +1,7 @@
+import { Signal } from "Tone/signal";
 import { AmplitudeEnvelope } from "../component/envelope/AmplitudeEnvelope";
 import { Envelope, EnvelopeOptions } from "../component/envelope/Envelope";
-import { Time } from "../core/type/Units";
+import { Cents, Frequency, Time } from "../core/type/Units";
 import { omitFromObject, optionsFromArguments } from "../core/util/Defaults";
 import { readOnly } from "../core/util/Interface";
 import { RecursivePartial } from "../core/util/Interface";
@@ -33,31 +34,35 @@ export class Synth extends Monophonic<SynthOptions> {
 	/**
 	 *  The oscillator.
 	 */
-	readonly oscillator = new OmniOscillator({ context: this.context });
+	readonly oscillator: OmniOscillator<any>;
 
 	/**
 	 * The frequency signal
 	 */
-	readonly frequency = this.oscillator.frequency;
+	readonly frequency: Signal<Frequency>;
 
 	/**
 	 * The detune signal
 	 */
-	readonly detune = this.oscillator.detune;
+	readonly detune: Signal<Cents>;
 
 	/**
 	 * The envelope
 	 */
 	readonly envelope: AmplitudeEnvelope = new AmplitudeEnvelope({ context: this.context });
 
-	protected _internalChannels = [this.oscillator, this.envelope];
-
 	constructor(options?: RecursivePartial<SynthOptions>);
 	constructor() {
 		super(optionsFromArguments(Synth.getDefaults(), arguments));
 		const options = optionsFromArguments(Synth.getDefaults(), arguments);
 
-		this.oscillator.set(options.oscillator);
+		this.oscillator = new OmniOscillator(Object.assign({
+			context: this.context,
+		}, options.oscillator));
+
+		this.frequency = this.oscillator.frequency;
+		this.detune = this.oscillator.detune;
+
 		this.envelope.set(options.envelope);
 
 		// connect the oscillators to the output

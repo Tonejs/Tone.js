@@ -1,5 +1,6 @@
 import { Volume } from "../component/channel/Volume";
-import { ToneAudioNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
+import { Param } from "../core/context/Param";
+import { OutputNode, ToneAudioNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
 import { Decibels, Seconds, Time } from "../core/type/Units";
 import { defaultArg, optionsFromArguments } from "../core/util/Defaults";
 import { noOp, readOnly } from "../core/util/Interface";
@@ -38,17 +39,15 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 	/**
 	 *  The output volume node
 	 */
-	private _volume: Volume = new Volume({
-		context: this.context,
-	});
+	private _volume: Volume;
 
 	/**
 	 * The output note
 	 */
-	output = this._volume;
+	output: OutputNode;
 
 	/**
-	 * There is no input
+	 * Sources have no inputs
 	 */
 	input = undefined;
 
@@ -57,7 +56,7 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 	 * @example
 	 * source.volume.value = -6;
 	 */
-	volume = this._volume.volume;
+	volume: Param<Decibels>;
 
 	/**
 	 * 	Keep track of the scheduled state.
@@ -92,12 +91,15 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 
 	constructor(options: SourceOptions) {
 		super(options);
-		readOnly(this, "volume");
 		this._state.memory = 100;
-		this.volume.setValueAtTime(options.volume, 0);
-		// set mute initially
-		this.mute = options.mute;
 
+		this._volume = this.output = new Volume({
+			context: this.context,
+			mute: options.mute,
+			volume: options.volume,
+		});
+		this.volume = this._volume.volume;
+		readOnly(this, "volume");
 	}
 
 	static getDefaults(): SourceOptions {

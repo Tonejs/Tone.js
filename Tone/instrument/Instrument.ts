@@ -49,12 +49,11 @@ export abstract class Instrument<Options extends InstrumentOptions> extends Tone
 		super(optionsFromArguments(Instrument.getDefaults(), arguments));
 		const options = optionsFromArguments(Instrument.getDefaults(), arguments);
 
-		this._volume = new Volume({
+		this._volume = this.output = new Volume({
 			context: this.context,
 			volume: options.volume,
 		});
 		this.volume = this._volume.volume;
-		this.output = this._volume;
 		readOnly(this, "volume");
 	}
 

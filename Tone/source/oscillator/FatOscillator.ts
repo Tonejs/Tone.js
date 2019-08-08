@@ -24,18 +24,12 @@ export class FatOscillator extends Source<FatOscillatorOptions> implements ToneO
 	/**
 	 *  The oscillator's frequency
 	 */
-	readonly frequency: Signal<Frequency> = new Signal<Cents>({
-		context: this.context,
-		units: "frequency",
-	});
+	readonly frequency: Signal<Frequency>;
 
 	/**
 	 *  The detune control signal.
 	 */
-	readonly detune: Signal<Cents> = new Signal<Cents>({
-		context: this.context,
-		units: "cents",
-	});
+	readonly detune: Signal<Cents>;
 
 	/**
 	 *  The array of oscillators
@@ -74,8 +68,16 @@ export class FatOscillator extends Source<FatOscillatorOptions> implements ToneO
 		super(optionsFromArguments(FatOscillator.getDefaults(), arguments, ["frequency", "type", "spread"]));
 		const options = optionsFromArguments(FatOscillator.getDefaults(), arguments, ["frequency", "type", "spread"]);
 
-		this.frequency.setValueAtTime(options.frequency, 0);
-		this.detune.setValueAtTime(options.detune, 0);
+		this.frequency = new Signal({
+			context: this.context,
+			units: "frequency",
+			value: options.frequency,
+		});
+		this.detune = new Signal({
+			context: this.context,
+			units: "cents",
+			value: options.detune,
+		});
 
 		this._spread = options.spread;
 		this._type = options.type;
@@ -168,7 +170,6 @@ export class FatOscillator extends Source<FatOscillatorOptions> implements ToneO
 	get count(): number {
 		return this._oscillators.length;
 	}
-
 	set count(count: number) {
 		count = Math.max(count, 1);
 		if (this._oscillators.length !== count) {

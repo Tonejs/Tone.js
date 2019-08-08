@@ -1,5 +1,5 @@
 import { AudioRange, Cents, Degrees, Frequency, Positive, Time } from "../../core/type/Units";
-import { optionsFromArguments } from "../../core/util/Defaults";
+import { optionsFromArguments  } from "../../core/util/Defaults";
 import { readOnly } from "../../core/util/Interface";
 import { isNumber, isString } from "../../core/util/TypeCheck";
 import { Signal } from "../../signal/Signal";
@@ -105,18 +105,12 @@ implements Omit<ToneOscillatorInterface, "type"> {
 	/**
 	 *  The frequency control.
 	 */
-	readonly frequency: Signal<Frequency> = new Signal({
-		context: this.context,
-		units: "frequency",
-	});
+	readonly frequency: Signal<Frequency>;
 
 	/**
 	 *  The detune control.
 	 */
-	readonly detune: Signal<Cents> = new Signal<Cents>({
-		context: this.context,
-		units: "cents",
-	});
+	readonly detune: Signal<Cents>;
 
 	/**
 	 * The oscillator that can switch types
@@ -135,8 +129,16 @@ implements Omit<ToneOscillatorInterface, "type"> {
 		super(optionsFromArguments(OmniOscillator.getDefaults(), arguments, ["frequency", "type"]));
 		const options = optionsFromArguments(OmniOscillator.getDefaults(), arguments, ["frequency", "type"]);
 
-		this.frequency.setValueAtTime(options.frequency, 0);
-		this.detune.setValueAtTime(options.detune, 0);
+		this.frequency = new Signal({
+			context: this.context,
+			value: options.frequency,
+			units: "frequency",
+		});
+		this.detune = new Signal({
+			context: this.context,
+			value: options.detune,
+			units: "cents",
+		});
 		readOnly(this, ["frequency", "detune"]);
 
 		// set the options
@@ -152,7 +154,6 @@ implements Omit<ToneOscillatorInterface, "type"> {
 			PulseOscillator.getDefaults(),
 			PWMOscillator.getDefaults(),
 		);
-		// return Oscillator.getDefaults() as OmniOscillatorConstructorOptions;
 	}
 
 	/**
