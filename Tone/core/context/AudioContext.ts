@@ -4,6 +4,7 @@
 interface ToneWindow extends Window {
 	TONE_AUDIO_CONTEXT?: BaseAudioContext;
 	TONE_SILENCE_LOGGING?: boolean;
+	TONE_DEBUG_CLASS?: string;
 }
 
 /**

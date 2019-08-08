@@ -5,6 +5,7 @@
  *  @copyright 2014-2019 Yotam Mann
  */
 import { version } from "../version";
+import { theWindow } from "./context/AudioContext";
 
 ///////////////////////////////////////////////////////////////////////////
 // 	TONE
@@ -55,11 +56,10 @@ export abstract class Tone {
 	 * //prints all logs originating from Tone.OscillatorNode
 	 * Tone.global.TONE_DEBUG_CLASS = "OscillatorNode"
 	 */
-	protected log(...args): void {
+	protected log(...args: any[]): void {
 		// if the object is either set to debug = true
 		// or if there is a string on the Tone.global.with the class name
-		// @ts-ignore
-		if (this.debug || this.toString() === global.TONE_DEBUG_CLASS) {
+		if (this.debug || (theWindow && this.toString() === theWindow.TONE_DEBUG_CLASS)) {
 			args.unshift(this.toString() + ":");
 			// tslint:disable-next-line: no-console
 			console.log(...args);
