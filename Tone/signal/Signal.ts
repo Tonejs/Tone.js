@@ -78,6 +78,8 @@ implements AbstractParam<Type> {
 	dispose(): this {
 		super.dispose();
 		this._param.dispose();
+		this._constantSource.stop(this.now());
+		this._constantSource.disconnect();
 		return this;
 	}
 
