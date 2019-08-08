@@ -92,7 +92,7 @@ implements AbstractParam<Type> {
 		this.convert = options.convert;
 
 		// if the value is defined, set it immediately
-		if (isDefined(options.value)) {
+		if (isDefined(options.value) && options.value !== this._toType(this._initialValue)) {
 			this.setValueAtTime(options.value, 0);
 		}
 	}
