@@ -31,6 +31,13 @@ export function deepMerge<T>(target: T, ...sources: T[]): T {
 }
 
 /**
+ * Returns true if the two arrays have the same value for each of the elements
+ */
+export function deepEquals(arrayA: number[] | string[], arrayB: number[] | string[]): boolean {
+	return arrayA.length === arrayB.length && arrayA.every((element, index) => arrayB[index] === element);
+}
+
+/**
  * Convert an args array into an object.
  */
 export function optionsFromArguments<T extends object>(

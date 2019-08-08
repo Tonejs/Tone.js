@@ -1,6 +1,7 @@
 import { AudioRange, Cents, Degrees, Frequency, Radians, Time } from "../../core/type/Units";
-import { optionsFromArguments } from "../../core/util/Defaults";
+import { deepEquals, optionsFromArguments } from "../../core/util/Defaults";
 import { readOnly } from "../../core/util/Interface";
+import { isDefined } from "../../core/util/TypeCheck";
 import { Signal } from "../../signal/Signal";
 import { Source } from "../Source";
 import { ToneOscillatorConstructorOptions, ToneOscillatorInterface,
@@ -55,7 +56,7 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 	/**
 	 *  the phase of the oscillator between 0 - 360
 	 */
-	private _phase: Radians;
+	private _phase!: Radians;
 
 	/**
 	 *  the type of the oscillator
@@ -87,13 +88,12 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 
 		this._partials = options.partials;
 		this._partialCount = options.partialCount;
-		this._phase = options.phase;
 		this._type = options.type;
 
 		if (options.partialCount && options.type !== "custom") {
 			this._type = this.baseType + options.partialCount.toString();
 		}
-		this.phase = this._phase;
+		this.phase = options.phase;
 	}
 
 	static getDefaults(): ToneOscillatorOptions {
@@ -180,6 +180,40 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 		return this;
 	}
 
+	/**
+	 * Cache the periodic waves to avoid having to redo computations
+	 */
+	private static _periodicWaveCache: Array<{
+		partials: number[];
+		phase: number;
+		type: string;
+		partialCount: number;
+		real: Float32Array,
+		imag: Float32Array,
+	}> = [];
+
+	/**
+	 * Get a cached periodic wave. Avoids having to recompute
+	 * the oscillator values when they have already been computed
+	 * with the same values.
+	 */
+	private _getCachedPeriodicWave(): [Float32Array, Float32Array] | undefined {
+		if (this._type === "custom") {
+			const oscProps = Oscillator._periodicWaveCache.find(description => {
+				return  description.phase === this._phase &&
+					deepEquals(description.partials, this._partials);
+			});
+			return oscProps && [oscProps.real, oscProps.imag];
+		} else {
+			const oscProps = Oscillator._periodicWaveCache.find(description => {
+				return  description.type === this._type &&
+					description.phase === this._phase;
+			});
+			this._partialCount = oscProps ? oscProps.partialCount : this._partialCount;
+			return oscProps && [oscProps.real, oscProps.imag];
+		}
+	}
+
 	/* tslint:disable */
 	/**
 	 * The type of the oscillator: either sine, square, triangle, or sawtooth. Also capable of
@@ -206,6 +240,7 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 		return this._type;
 	}
 	set type(type: ToneOscillatorType) {
+		this._type = type;
 		const isBasicType = ["sine", "square", "sawtooth", "triangle"].indexOf(type) !== -1;
 		if (this._phase === 0 && isBasicType) {
 			this._wave = undefined;
@@ -216,14 +251,35 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 				this._oscillator.type = type as OscillatorType;
 			}
 		} else {
-			const [real, imag] = this._getRealImaginary(type, this._phase);
-			const periodicWave = this.context.createPeriodicWave(real, imag);
-			this._wave = periodicWave;
-			if (this._oscillator !== null) {
-				this._oscillator.setPeriodicWave(this._wave);
+			// first check if the value is cached
+			const cache = this._getCachedPeriodicWave();
+			if (isDefined(cache)) {
+				const [real, imag] = cache;
+				this._wave = this.context.createPeriodicWave(real, imag);
+				if (this._oscillator !== null) {
+					this._oscillator.setPeriodicWave(this._wave);
+				}
+			} else {
+				const [real, imag] = this._getRealImaginary(type, this._phase);
+				const periodicWave = this.context.createPeriodicWave(real, imag);
+				this._wave = periodicWave;
+				if (this._oscillator !== null) {
+					this._oscillator.setPeriodicWave(this._wave);
+				}
+				// set the cache
+				Oscillator._periodicWaveCache.push({
+					imag,
+					partialCount: this._partialCount,
+					partials: this._partials,
+					phase: this._phase,
+					real,
+					type: this._type,
+				});
+				if (Oscillator._periodicWaveCache.length > 100) {
+					Oscillator._periodicWaveCache.shift();
+				}
 			}
 		}
-		this._type = type;
 	}
 
 	/**
