@@ -131,13 +131,13 @@ implements Omit<ToneOscillatorInterface, "type"> {
 
 		this.frequency = new Signal({
 			context: this.context,
-			value: options.frequency,
 			units: "frequency",
+			value: options.frequency,
 		});
 		this.detune = new Signal({
 			context: this.context,
-			value: options.detune,
 			units: "cents",
+			value: options.detune,
 		});
 		readOnly(this, ["frequency", "detune"]);
 
