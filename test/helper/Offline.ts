@@ -2,12 +2,13 @@ import { TestAudioBuffer } from "@tonejs/plot";
 import { OfflineContext } from "Tone/core/context/OfflineContext";
 import { getContext, setContext } from "Tone/core/Global";
 import { Seconds } from "Tone/core/type/Units";
-import { isFunction } from "Tone/core/util/TypeCheck";
+import { isArray, isFunction } from "Tone/core/util/TypeCheck";
 
 type ReturnFunction = (time: Seconds) => void;
 
 export async function Offline(
-	callback: (context: OfflineContext) => void | ReturnFunction | Promise<void | ReturnFunction> | void,
+	callback: (context: OfflineContext) =>
+		void | ReturnFunction | ReturnFunction[] | Promise<void | ReturnFunction> | void,
 	duration = 0.1, channels = 1, sampleRate: number = 44100,
 ): Promise<TestAudioBuffer> {
 	const originalContext = getContext();
@@ -20,6 +21,11 @@ export async function Offline(
 	if (isFunction(retFunction)) {
 		const fn = retFunction;
 		offline.on("tick", () => fn(offline.now()));
+	} else if (isArray(retFunction)) {
+		// each element in the array is a timing callback
+		retFunction.forEach(fn => {
+			offline.on("tick", () => fn(offline.now()));
+		});
 	}
 	setContext(originalContext);
 	const buffer = await offline.render();
