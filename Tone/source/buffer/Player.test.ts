@@ -51,7 +51,7 @@ describe("Player", () => {
 		});
 	});
 
-	context.only("onstop", () => {
+	context("onstop", () => {
 
 		it ("invokes the onstop method when the player is explicitly stopped", () => {
 			let wasInvoked = false;
