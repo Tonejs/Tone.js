@@ -19,9 +19,6 @@ export function SourceTests(Constr, args?): void {
 			const instance = new Constr(args);
 			// has no input
 			expect(instance.numberOfInputs).to.equal(0);
-			// expect(() => {
-			// 	connectFrom().connect(instance);
-			// }).to.throw(Error);
 			instance.dispose();
 		});
 
