@@ -1,4 +1,5 @@
 import { Unit } from "../type/Units";
+import { assert } from "../util/Debug";
 import { isDefined } from "../util/TypeCheck";
 import { Param } from "./Param";
 import { ToneWithContext, ToneWithContextOptions } from "./ToneWithContext";
@@ -289,8 +290,16 @@ export function connectSeries(...nodes: InputNode[]): void {
  */
 export function connect(srcNode: OutputNode, dstNode: InputNode, outputNumber = 0, inputNumber = 0): void {
 
+	assert(isDefined(srcNode), "Cannot connect from undefined node");
+	assert(isDefined(dstNode), "Cannot connect to undefined node");
+
+	if (dstNode instanceof ToneAudioNode || dstNode instanceof AudioNode) {
+		assert(dstNode.numberOfInputs > 0, "Cannot connect to node with no inputs");
+	}
+	assert(srcNode.numberOfOutputs > 0, "Cannot connect from node with no outputs");
+
 	// resolve the input of the dstNode
-	while (!(dstNode instanceof AudioNode || dstNode instanceof AudioParam)) {
+	while (dstNode instanceof ToneAudioNode || dstNode instanceof Param) {
 		if (isDefined(dstNode.input)) {
 			dstNode = dstNode.input;
 		}
