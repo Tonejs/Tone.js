@@ -1,6 +1,6 @@
 import { AudioRange, Cents, Degrees, Frequency, Positive, Time } from "../../core/type/Units";
 import { optionsFromArguments } from "../../core/util/Defaults";
-import { readOnly } from "../../core/util/Interface";
+import { noOp, readOnly } from "../../core/util/Interface";
 import { AudioToGain } from "../../signal/AudioToGain";
 import { Multiply } from "../../signal/Multiply";
 import { Signal } from "../../signal/Signal";
@@ -179,6 +179,7 @@ export class FatOscillator extends Source<FatOscillatorOptions> implements ToneO
 			for (let i = 0; i < count; i++) {
 				const osc = new Oscillator({
 					context : this.context,
+					onstop: i === 0 ? () => this.onstop(this) : noOp,
 				});
 				if (this.type === "custom") {
 					osc.partials = this._partials;

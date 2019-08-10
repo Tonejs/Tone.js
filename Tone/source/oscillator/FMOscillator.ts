@@ -90,6 +90,7 @@ export class FMOscillator extends Source<FMOscillatorOptions> implements ToneOsc
 			context : this.context,
 			detune: options.detune,
 			frequency: 0,
+			onstop: () => this.onstop(this),
 			phase: options.phase,
 			type: options.type,
 		} as OscillatorOptions);

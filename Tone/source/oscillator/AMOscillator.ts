@@ -89,6 +89,7 @@ export class AMOscillator extends Source<AMOscillatorOptions> implements ToneOsc
 			context : this.context,
 			detune: options.detune,
 			frequency: options.frequency,
+			onstop: () => this.onstop(this),
 			phase: options.phase,
 			type: options.type,
 		} as OscillatorOptions);

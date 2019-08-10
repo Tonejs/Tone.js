@@ -78,6 +78,7 @@ export class PWMOscillator extends Source<PWMOscillatorOptions> implements ToneO
 			context: this.context,
 			detune: options.detune,
 			frequency: options.frequency,
+			onstop: () => this.onstop(this),
 			phase: options.phase,
 		});
 

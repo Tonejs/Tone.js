@@ -8,11 +8,9 @@ import { AMOscillator } from "./AMOscillator";
 import { FatOscillator } from "./FatOscillator";
 import { FMOscillator } from "./FMOscillator";
 import { Oscillator } from "./Oscillator";
-import { AMOscillatorOptions, FatOscillatorOptions,
-	FMOscillatorOptions, OmniOscillatorConstructorOptions,
+import { OmniOscillatorConstructorOptions,
 	OmniOscillatorOptions, OmniOscillatorType,
-	PulseOscillatorOptions, PWMOscillatorOptions,
-	ToneOscillatorInterface, ToneOscillatorOptions, ToneOscillatorType } from "./OscillatorInterface";
+	ToneOscillatorInterface, ToneOscillatorType } from "./OscillatorInterface";
 import { PulseOscillator } from "./PulseOscillator";
 import { PWMOscillator } from "./PWMOscillator";
 
@@ -27,23 +25,6 @@ type AnyOscillator = Oscillator | PWMOscillator | PulseOscillator | FatOscillato
 type TypeofAnyOscillator = typeof Oscillator | typeof PWMOscillator |
 	typeof PulseOscillator | typeof FatOscillator |
 	typeof AMOscillator | typeof FMOscillator;
-
-/**
- * Select the Oscillator's Options depending on the generic type.
- */
-type ConditionalOptions<Osc extends AnyOscillator> =
-	Osc extends FMOscillator ? FMOscillatorOptions :
-	Osc extends Oscillator ? ToneOscillatorOptions :
-	Osc extends AMOscillator ? AMOscillatorOptions :
-	Osc extends FatOscillator ? FatOscillatorOptions :
-	Osc extends PulseOscillator ? PulseOscillatorOptions :
-	Osc extends PWMOscillator ? PWMOscillatorOptions :
-	ToneOscillatorOptions;
-
-/**
- * The aggregate options of all of the oscillators
- */
-// export type OmniOscillatorOptions = ConditionalOptions<AnyOscillator>;
 
 /**
  * All of the Oscillator constructor types mapped to their name.
@@ -69,9 +50,11 @@ type IsPWMOscillator<Osc, Ret> = Osc extends PWMOscillator ? Ret : undefined;
 type IsPulseOscillator<Osc, Ret> = Osc extends PulseOscillator ? Ret : undefined;
 type IsFMOscillator<Osc, Ret> = Osc extends FMOscillator ? Ret : undefined;
 
+type AnyOscillatorConstructor = new (...args: any[]) => AnyOscillator;
+
 // tslint:disable-next-line: variable-name
 const OmniOscillatorSourceMap: {
-	[key in OmniOscSourceType] : TypeofAnyOscillator
+	[key in OmniOscSourceType] : AnyOscillatorConstructor
 } = {
 	am: AMOscillator,
 	fat: FatOscillator,
@@ -297,7 +280,8 @@ implements Omit<ToneOscillatorInterface, "type"> {
 	private _createNewOscillator(oscType: OmniOscSourceType): void {
 		if (oscType !== this._sourceType) {
 			this._sourceType = oscType;
-			const oscConstructor = OmniOscillatorSourceMap[oscType];
+			// tslint:disable-next-line: variable-name
+			const OscConstructor = OmniOscillatorSourceMap[oscType];
 			// short delay to avoid clicks on the change
 			const now = this.now();
 			if (this._oscillator) {
@@ -306,13 +290,13 @@ implements Omit<ToneOscillatorInterface, "type"> {
 				// dispose the old one
 				this.context.setTimeout(() => oldOsc.dispose(), this.blockTime);
 			}
-			// @ts-ignore
-			this._oscillator = new oscConstructor({
+			this._oscillator = new OscConstructor({
 				context : this.context,
 			});
 			this.frequency.connect(this._oscillator.frequency);
 			this.detune.connect(this._oscillator.detune);
 			this._oscillator.connect(this.output);
+			this._oscillator.onstop = () => this.onstop(this);
 			if (this.state === "started") {
 				this._oscillator.start(now);
 			}

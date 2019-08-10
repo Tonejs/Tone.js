@@ -7,9 +7,12 @@ import { noOp, readOnly } from "../core/util/Interface";
 import { BasicPlaybackState, StateTimeline } from "../core/util/StateTimeline";
 import { isUndef } from "../core/util/TypeCheck";
 
+type onStopCallback = (source: Source<any>) => void;
+
 export interface SourceOptions extends ToneAudioNodeOptions {
 	volume: Decibels;
 	mute: boolean;
+	onstop: onStopCallback;
 }
 
 /**
@@ -59,6 +62,11 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 	volume: Param<Decibels>;
 
 	/**
+	 * The callback to invoke when the source is stopped.
+	 */
+	onstop: onStopCallback;
+
+	/**
 	 * 	Keep track of the scheduled state.
 	 */
 	protected _state: StateTimeline<{
@@ -100,11 +108,13 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 		});
 		this.volume = this._volume.volume;
 		readOnly(this, "volume");
+		this.onstop = options.onstop;
 	}
 
 	static getDefaults(): SourceOptions {
 		return Object.assign(ToneAudioNode.getDefaults(), {
 			mute: false,
+			onstop: noOp,
 			volume: 0,
 		});
 	}
@@ -277,6 +287,7 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 	 */
 	dispose(): this {
 		super.dispose();
+		this.onstop = noOp;
 		this.unsync();
 		this._volume.dispose();
 		this._state.dispose();

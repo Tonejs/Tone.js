@@ -99,6 +99,7 @@ export class PulseOscillator extends Source<PulseOscillatorOptions> implements T
 			context: this.context,
 			detune: options.detune,
 			frequency: options.frequency,
+			onstop: () => this.onstop(this),
 			phase: options.phase,
 			type : "sawtooth",
 		});

@@ -115,6 +115,7 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 		// new oscillator with previous values
 		const oscillator = new ToneOscillatorNode({
 			context: this.context,
+			onended: () => this.onstop(this),
 		});
 		this._oscillator = oscillator;
 		if (this._wave) {

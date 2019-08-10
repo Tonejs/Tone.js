@@ -1,8 +1,5 @@
 // import APITest from "helper/APITest";
 import { expect } from "chai";
-// import Source from "Tone/source/Source";
-// import OutputAudioStereo from "helper/OutputAudioStereo";
-// import Test from "helper/Test";
 import { Offline } from "test/helper/Offline";
 import { OutputAudio } from "test/helper/OutputAudio";
 import { connectFrom, connectTo } from "./Connect";
@@ -11,12 +8,6 @@ import { connectFrom, connectTo } from "./Connect";
 export function SourceTests(Constr, args?): void {
 
 	context("Source Tests", () => {
-
-		// it("extends Tone.Source", () => {
-		// 	const instance = new Constr(args);
-		// 	expect(instance).to.be.an.instanceof(Source);
-		// 	instance.dispose();
-		// });
 
 		it("can connect the output", () => {
 			const instance = new Constr(args);
@@ -28,6 +19,9 @@ export function SourceTests(Constr, args?): void {
 			const instance = new Constr(args);
 			// has no input
 			expect(instance.numberOfInputs).to.equal(0);
+			// expect(() => {
+			// 	connectFrom().connect(instance);
+			// }).to.throw(Error);
 			instance.dispose();
 		});
 
@@ -54,13 +48,17 @@ export function SourceTests(Constr, args?): void {
 			});
 		});
 
-		// it("produces sound in both channels", () => {
-		// 	return OutputAudioStereo(() => {
-		// 		const instance = new Constr(args);
-		// 		instance.toDestination();
-		// 		instance.start();
-		// 	});
-		// });
+		it ("invokes the onstop method the source is stopped", () => {
+			let wasInvoked = false;
+			return Offline(() => {
+				const instance = new Constr(args);
+				instance.toDestination();
+				instance.onstop = () => wasInvoked = true;
+				instance.start(0).stop(0.1);
+			}, 0.2).then(() => {
+				expect(wasInvoked).to.equal(true);
+			});
+		});
 
 		it("be scheduled to start in the future", () => {
 			return Offline(() => {
