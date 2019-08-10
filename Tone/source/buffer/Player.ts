@@ -6,6 +6,8 @@ import { isUndef } from "../../core/util/TypeCheck";
 import { Source, SourceOptions } from "../Source";
 import { ToneBufferSource } from "./BufferSource";
 
+type onStopCallback = (source: Source<any>) => void;
+
 interface PlayerOptions extends SourceOptions {
 	onload: () => void;
 	playbackRate: Positive;
@@ -17,6 +19,7 @@ interface PlayerOptions extends SourceOptions {
 	fadeIn: Time;
 	fadeOut: Time;
 	url?: ToneAudioBuffer | string | AudioBuffer;
+	onstop: onStopCallback;
 }
 
 /**
@@ -86,6 +89,11 @@ export class Player extends Source<PlayerOptions> {
 	 */
 	fadeOut: Time;
 
+	/**
+	 * The callback to invoke when the source is stopped.
+	 */
+	onstop: onStopCallback = noOp;
+
 	constructor(options?: Partial<PlayerOptions>);
 	constructor(url?: string | AudioBuffer | ToneAudioBuffer, onload?: () => void);
 	constructor() {
@@ -105,6 +113,7 @@ export class Player extends Source<PlayerOptions> {
 		this._playbackRate = options.playbackRate;
 		this.fadeIn = options.fadeIn;
 		this.fadeOut = options.fadeOut;
+		this.onstop = options.onstop;
 	}
 
 	static getDefaults(): PlayerOptions {
@@ -116,6 +125,7 @@ export class Player extends Source<PlayerOptions> {
 			loopEnd : 0,
 			loopStart : 0,
 			onload : noOp,
+			onstop: noOp,
 			playbackRate : 1,
 			reverse : false,
 		});
@@ -150,6 +160,10 @@ export class Player extends Source<PlayerOptions> {
 	 * Internal callback when the buffer is done playing.
 	 */
 	private _onSourceEnd(source: ToneBufferSource): void {
+		// invoke the onstop function
+		this.onstop(this);
+
+		// delete the source from the active sources
 		this._activeSources.delete(source);
 		if (this._activeSources.size === 0 && !this._synced) {
 			this._state.setStateAtTime("stopped", this.now());

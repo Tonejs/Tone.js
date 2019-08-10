@@ -51,6 +51,51 @@ describe("Player", () => {
 		});
 	});
 
+	context.only("onstop", () => {
+
+		it ("invokes the onstop method when the player is explicitly stopped", () => {
+			let wasInvoked = false;
+			return Offline(() => {
+				const player = new Player({
+					onstop: () => {
+						wasInvoked = true;
+					},
+					url: buffer,
+				});
+				player.start(0).stop(0.1);
+			}, 0.2).then(() => {
+				expect(wasInvoked).to.equal(true);
+			});
+		});
+
+		it ("invokes the onstop method when the file is naturally over", () => {
+			let wasInvoked = false;
+			return Offline(() => {
+				const player = new Player(buffer);
+				player.start(0);
+				player.onstop = () => {
+					wasInvoked = true;
+					expect(player.state).to.equal("stopped");
+				};
+			}, buffer.duration * 1.1).then(() => {
+				expect(wasInvoked).to.equal(true);
+			});
+		});
+
+		it ("invokes the onstop method on restart", () => {
+			let wasInvoked = 0;
+			return Offline(() => {
+				const player = new Player(buffer);
+				player.start(0).restart(0.1).stop(0.2);
+				player.onstop = () => {
+					wasInvoked++;
+				};
+			}, 0.3).then(() => {
+				expect(wasInvoked).to.equal(2);
+			});
+		});
+	});
+
 	context("Loading", () => {
 
 		it("loads a url which was passed in", (done) => {
@@ -92,6 +137,13 @@ describe("Player", () => {
 	});
 
 	context("Reverse", () => {
+
+		it ("can get/set reverse", () => {
+			const player = new Player();
+			player.reverse = true;
+			expect(player.reverse).to.equal(true);
+			player.dispose();
+		});
 
 		it("can be played in reverse", () => {
 			const audioBuffer = (buffer.get() as AudioBuffer).getChannelData(0);
