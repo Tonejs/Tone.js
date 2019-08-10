@@ -387,6 +387,7 @@ export class Player extends Source<PlayerOptions> {
 		const stopEvent = this._state.getNextState("stopped", now);
 		if (stopEvent && stopEvent.implicitEnd) {
 			this._state.cancel(stopEvent.time);
+			this._activeSources.forEach(source => source.cancelStop());
 		}
 
 		// set all the sources
