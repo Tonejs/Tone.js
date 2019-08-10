@@ -49,7 +49,7 @@ export class Synth extends Monophonic<SynthOptions> {
 	/**
 	 * The envelope
 	 */
-	readonly envelope: AmplitudeEnvelope = new AmplitudeEnvelope({ context: this.context });
+	readonly envelope: AmplitudeEnvelope;
 
 	constructor(options?: RecursivePartial<SynthOptions>);
 	constructor() {
@@ -63,7 +63,9 @@ export class Synth extends Monophonic<SynthOptions> {
 		this.frequency = this.oscillator.frequency;
 		this.detune = this.oscillator.detune;
 
-		this.envelope.set(options.envelope);
+		this.envelope = new AmplitudeEnvelope(Object.assign({
+			context: this.context,
+		}, options.envelope));
 
 		// connect the oscillators to the output
 		this.oscillator.chain(this.envelope, this.output);
