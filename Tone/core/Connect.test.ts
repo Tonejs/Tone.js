@@ -1,6 +1,7 @@
 import { PassesAudio } from "@tonejs/plot";
 import { expect } from "chai";
 import { Offline } from "test/helper/Offline";
+import { Oscillator } from "../source/oscillator/Oscillator";
 import { connect, disconnect } from "./Connect";
 import { Gain } from "./context/Gain";
 
@@ -55,6 +56,16 @@ describe("Connect", () => {
 				disconnect(input, output);
 			}).catch(() => threwError = true);
 			expect(threwError).to.equal(true);
+		});
+
+		it ("throws an error if the destination has no input", () => {
+			const source = new Oscillator();
+			const gain = new Gain();
+			expect(() => {
+				gain.connect(source);
+			}).to.throw(Error);
+			gain.dispose();
+			source.dispose();
 		});
 
 		it("throws an error if things aren't connected to a specific channel", async () => {
