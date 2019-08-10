@@ -6,6 +6,7 @@
  */
 import { version } from "../version";
 import { theWindow } from "./context/AudioContext";
+import { assert, log } from "./util/Debug";
 
 ///////////////////////////////////////////////////////////////////////////
 // 	TONE
@@ -51,8 +52,7 @@ export abstract class Tone {
 	 * Prints the contents only if either the object has a property
 	 * called `debug` set to true, or a variable called TONE_DEBUG_CLASS
 	 * is set to the name of the class.
-	 * @param args
-	 *  @example
+	 * @example
 	 * //prints all logs originating from Tone.OscillatorNode
 	 * Tone.global.TONE_DEBUG_CLASS = "OscillatorNode"
 	 */
@@ -61,8 +61,7 @@ export abstract class Tone {
 		// or if there is a string on the Tone.global.with the class name
 		if (this.debug || (theWindow && this.toString() === theWindow.TONE_DEBUG_CLASS)) {
 			args.unshift(this.toString() + ":");
-			// tslint:disable-next-line: no-console
-			console.log(...args);
+			log(...args);
 		}
 	}
 
@@ -73,9 +72,7 @@ export abstract class Tone {
 	 *  @private
 	 */
 	protected assert(statement: boolean, error: string): void {
-		if (!statement) {
-			throw new Error(error);
-		}
+		assert(statement, error);
 	}
 
 	///////////////////////////////////////////////////////////////////////////
