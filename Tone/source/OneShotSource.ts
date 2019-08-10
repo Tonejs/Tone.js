@@ -6,8 +6,10 @@ import { BasicPlaybackState } from "../core/util/StateTimeline";
 
 export type OneShotSourceCurve = "linear" | "exponential";
 
+type onEndedCallback = (source: OneShotSource<any>) => void;
+
 export interface OneShotSourceOptions extends ToneAudioNodeOptions {
-	onended: () => void;
+	onended: onEndedCallback;
 	fadeIn: Time;
 	fadeOut: Time;
 	curve: OneShotSourceCurve;
@@ -19,7 +21,7 @@ export abstract class OneShotSource<Options extends ToneAudioNodeOptions> extend
 	 *  The callback to invoke after the
 	 *  source is done playing.
 	 */
-	onended: () => void = noOp;
+	onended: onEndedCallback = noOp;
 
 	/**
 	 * Sources do not have input nodes
@@ -75,6 +77,7 @@ export abstract class OneShotSource<Options extends ToneAudioNodeOptions> extend
 		this._fadeIn = options.fadeIn;
 		this._fadeOut = options.fadeOut;
 		this._curve = options.curve;
+		this.onended = options.onended;
 	}
 
 	static getDefaults(): OneShotSourceOptions {
@@ -174,7 +177,7 @@ export abstract class OneShotSource<Options extends ToneAudioNodeOptions> extend
 	 */
 	protected _onended(): void {
 		if (this.onended !== noOp) {
-			this.onended();
+			this.onended(this);
 			// overwrite onended to make sure it only is called once
 			this.onended = noOp;
 			// dispose when it's ended to free up for garbage collection
