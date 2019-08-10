@@ -6,7 +6,7 @@ import { getContext } from "Tone/core/Global";
 import { Player } from "./buffer/Player";
 import { Oscillator } from "./oscillator/Oscillator";
 
-describe.only("Source", () => {
+describe("Source", () => {
 
 	it("can be started and stopped", () => {
 		const source = new Oscillator();
@@ -143,7 +143,7 @@ describe.only("Source", () => {
 		}, 0.6);
 	});
 
-	context.only("sync", () => {
+	context("sync", () => {
 
 		const ramp = new Float32Array(getContext().sampleRate);
 		ramp.forEach((val, index) => {
