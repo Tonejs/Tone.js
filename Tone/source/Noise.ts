@@ -109,9 +109,13 @@ export class Noise extends Source<NoiseOptions> {
 	 */
 	protected _start(time?: Time): void {
 		const buffer = _noiseBuffers[this._type];
-		this._source = new ToneBufferSource(buffer).connect(this.output);
-		this._source.loop = true;
-		this._source.playbackRate.value = this._playbackRate;
+		this._source = new ToneBufferSource({
+			buffer,
+			context: this.context,
+			loop: true,
+			onended: () => this.onstop(this),
+			playbackRate: this._playbackRate,
+		}).connect(this.output);
 		this._source.start(this.toSeconds(time), Math.random() * (buffer.duration - 0.001));
 	}
 
