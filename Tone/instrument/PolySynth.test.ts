@@ -43,81 +43,6 @@ describe("PolySynth", () => {
 		}, "polySynth3.wav", 0.5);
 	});
 
-	context("Voice Stealing", () => {
-
-		it ("will run out of notes when voice stealing is set to 'none'", () => {
-			return Offline(() => {
-				const polySynth = new PolySynth(2);
-				polySynth.set({ envelope: { release : 0.1 } });
-				expect(polySynth.voiceStealing).to.equal("none");
-				polySynth.triggerAttackRelease("C4", 0.1, 0.1);
-				polySynth.triggerAttackRelease("D4", 0.1, 0.2);
-				polySynth.triggerAttackRelease("E4", 0.1, 0.2);
-				return [
-					atTime(0.1, () => {
-						expect(polySynth.activeVoices).to.equal(2);
-					}),
-					atTime(0.3, () => {
-						expect(polySynth.activeVoices).to.equal(1);
-					}),
-					atTime(0.4, () => {
-						expect(polySynth.activeVoices).to.equal(0);
-					}),
-				];
-			}, 1);
-		});
-
-		it ("will steal voice when voice stealing is set to 'lowest'", () => {
-			return Offline(() => {
-				const polySynth = new PolySynth({
-					polyphony : 2,
-					voiceStealing : "lowest",
-				});
-				expect(polySynth.voiceStealing).to.equal("lowest");
-				polySynth.set({ envelope: { release : 0.1 } });
-				polySynth.triggerAttackRelease("C4", 0.1, 0.1);
-				polySynth.triggerAttackRelease("D4", 0.1, 0.2);
-				polySynth.triggerAttackRelease("E4", 0.1, 0.2);
-				return [
-					atTime(0.1, () => {
-						expect(polySynth.activeVoices).to.equal(2);
-					}),
-					atTime(0.3, () => {
-						expect(polySynth.activeVoices).to.equal(2);
-					}),
-					atTime(0.4, () => {
-						expect(polySynth.activeVoices).to.equal(0);
-					}),
-				];
-			}, 1);
-		});
-
-		it ("will steal voice when voice stealing is set to 'highest'", () => {
-			return Offline(() => {
-				const polySynth = new PolySynth({
-					polyphony : 2,
-					voiceStealing : "highest",
-				});
-				expect(polySynth.voiceStealing).to.equal("highest");
-				polySynth.set({ envelope: { release : 0.1 } });
-				polySynth.triggerAttackRelease("D4", 0.1, 0.1);
-				polySynth.triggerAttackRelease("C4", 0.1, 0.2);
-				polySynth.triggerAttackRelease("E4", 0.1, 0.2);
-				return [
-					atTime(0.1, () => {
-						expect(polySynth.activeVoices).to.equal(2);
-					}),
-					atTime(0.3, () => {
-						expect(polySynth.activeVoices).to.equal(2);
-					}),
-					atTime(0.4, () => {
-						expect(polySynth.activeVoices).to.equal(0);
-					}),
-				];
-			}, 1);
-		});
-	});
-
 	context("Playing Notes", () => {
 
 		it("triggerAttackRelease can take an array of durations", () => {
@@ -180,14 +105,34 @@ describe("PolySynth", () => {
 				polySynth.toDestination();
 				polySynth.triggerAttackRelease("C4", 0.1, 0.1);
 				polySynth.triggerAttackRelease("D4", 0.1, 0.2);
+				polySynth.triggerAttackRelease("C4", 0.1, 0.5);
+				polySynth.triggerAttackRelease("C4", 0.1, 0.6);
 				return [
+					atTime(0, () => {
+						expect(polySynth.activeVoices).to.equal(0);
+					}),
 					atTime(0.1, () => {
+						expect(polySynth.activeVoices).to.equal(1);
+					}),
+					atTime(0.2, () => {
 						expect(polySynth.activeVoices).to.equal(2);
 					}),
 					atTime(0.3, () => {
 						expect(polySynth.activeVoices).to.equal(1);
 					}),
 					atTime(0.4, () => {
+						expect(polySynth.activeVoices).to.equal(0);
+					}),
+					atTime(0.5, () => {
+						expect(polySynth.activeVoices).to.equal(1);
+					}),
+					atTime(0.6, () => {
+						expect(polySynth.activeVoices).to.equal(1);
+					}),
+					atTime(0.7, () => {
+						expect(polySynth.activeVoices).to.equal(1);
+					}),
+					atTime(0.8, () => {
 						expect(polySynth.activeVoices).to.equal(0);
 					}),
 				];

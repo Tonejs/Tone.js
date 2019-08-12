@@ -1,5 +1,5 @@
 import { MidiClass } from "../core/type/Midi";
-import { Frequency, MidiNote, NormalRange, Time } from "../core/type/Units";
+import { Frequency, MidiNote, NormalRange, Seconds, Time } from "../core/type/Units";
 import { deepMerge, optionsFromArguments } from "../core/util/Defaults";
 import { RecursivePartial } from "../core/util/Interface";
 import { isArray } from "../core/util/TypeCheck";
@@ -26,13 +26,10 @@ type PartialVoiceOptions<T> = RecursivePartial<
 	>
 >;
 
-type VoiceStealing = "none" | "lowest" | "highest";
-
 interface PolySynthOptions<Voice> extends InstrumentOptions {
 	polyphony: number;
 	voice: VoiceConstructor<Voice>;
 	options: PartialVoiceOptions<Voice>;
-	voiceStealing: VoiceStealing;
 }
 
 /**
@@ -82,16 +79,6 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 	private options: VoiceOptions<Voice>;
 
 	/**
-	 * The voice stealing heuristic. If there are no more available
-	 * voices, voice stealing determines how a voice should be
-	 * chosen out of the active pool of voices.
-	 * * 'lowest' - Takes the lowest playing note
-	 * * 'highest' - Takes the highest playing note
-	 * * 'none' - Does not steal voices.
-	 */
-	voiceStealing: VoiceStealing;
-
-	/**
 	 * The polyphony limit.
 	 */
 	polyphony: number;
@@ -113,7 +100,6 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 		this.options = Object.assign(defaults, options.options) as VoiceOptions<Voice>;
 		this.voice = options.voice as unknown as VoiceConstructor<Voice>;
 		this.polyphony = options.polyphony;
-		this.voiceStealing = options.voiceStealing;
 	}
 
 	static getDefaults(): PolySynthOptions<Synth> {
@@ -121,7 +107,6 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 			options: {},
 			polyphony: 4,
 			voice: Synth,
-			voiceStealing: "none" as VoiceStealing,
 		});
 	}
 
@@ -164,15 +149,64 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 			voice.connect(this.output);
 			this._voices.push(voice);
 			return voice;
-		} else if (this.voiceStealing !== "none") {
-			// sort the voices by note
-			const voices = Array.from(this._activeVoices.keys()).sort();
-			const stealIndex = this.voiceStealing === "lowest" ? 0 : voices.length - 1;
-			const midiNote = voices[stealIndex];
-			const voice = this._activeVoices.get(midiNote);
-			// delete the voice from the active voices, it will be added back
-			this._activeVoices.delete(midiNote);
-			return voice;
+		}
+	}
+
+	/**
+	 * Internal method which triggers the attack
+	 */
+	private _triggerAttack(notes: Frequency[], time: Seconds, velocity?: NormalRange): void {
+		notes.forEach(note => {
+			const midiNote = new MidiClass(this.context, note).toMidi();
+			let voice: Voice | undefined;
+			// if there's already a note at that voice, reuse it
+			if (this._activeVoices.has(midiNote)) {
+				voice = this._activeVoices.get(midiNote);
+			} else {
+				// otherwise get the next available voice
+				voice = this._getNextAvailableVoice();
+			}
+			if (voice) {
+				voice.triggerAttack(note, time, velocity);
+				this._activeVoices.set(midiNote, voice);
+				this.log("triggerAttack", note);
+			}
+		});
+	}
+
+	/**
+	 * Internal method which triggers the release
+	 */
+	private _triggerRelease(notes: Frequency[], time: Seconds): void {
+		notes.forEach(note => {
+			const midiNote = new MidiClass(this.context, note).toMidi();
+			if (this._activeVoices.has(midiNote)) {
+				// trigger release on that note
+				const voice = this._activeVoices.get(midiNote) as Voice;
+				voice.triggerRelease(time);
+				this.log("triggerRelease", note);
+			}
+		});
+	}
+
+	/**
+	 * Schedule the attack/release events. If the time is in the future, then it should set a timeout
+	 * to wait for just-in-time scheduling
+	 */
+	private _scheduleEvent(type: "attack" | "release", notes: Frequency[], time: Seconds, velocity?: NormalRange): void {
+		// if the notes are greater than this amount of time in the future, they should be scheduled with setTimeout
+		if (time <= this.now()) {
+			// do it immediately
+			if (type === "attack") {
+				this._triggerAttack(notes, time, velocity);
+			} else {
+				this._triggerRelease(notes, time);
+			}
+		} else {
+			// schedule it to start in the future
+			this.context.setTimeout(() => {
+				this._scheduleEvent(type, notes, time, velocity);
+			}, time - this.now());
 		}
 	}
 
@@ -191,20 +225,21 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 			notes = [notes];
 		}
 		const computedTime = this.toSeconds(time);
-		notes.forEach(note => {
-			const midiNote = new MidiClass(this.context, note).toMidi();
-			let voice: Voice | undefined;
-			if (this._activeVoices.has(midiNote)) {
-				voice = this._activeVoices.get(midiNote);
-			} else {
-				voice = this._getNextAvailableVoice();
-			}
-			if (voice) {
-				voice.triggerAttack(note, computedTime, velocity);
-				this._activeVoices.set(midiNote, voice);
-				this.log("triggerAttack", note);
-			}
-		});
+		this._scheduleEvent("attack", notes, computedTime, velocity);
+		// notes.forEach(note => {
+		// 	const midiNote = new MidiClass(this.context, note).toMidi();
+		// 	let voice: Voice | undefined;
+		// 	if (this._activeVoices.has(midiNote)) {
+		// 		voice = this._activeVoices.get(midiNote);
+		// 	} else {
+		// 		voice = this._getNextAvailableVoice();
+		// 	}
+		// 	if (voice) {
+		// 		voice.triggerAttack(note, computedTime, velocity);
+		// 		this._activeVoices.set(midiNote, voice);
+		// 		this.log("triggerAttack", note);
+		// 	}
+		// });
 		return this;
 	}
 
@@ -221,15 +256,8 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 			notes = [notes];
 		}
 		const computedTime = this.toSeconds(time);
-		notes.forEach(note => {
-			const midiNote = new MidiClass(this.context, note).toMidi();
-			if (this._activeVoices.has(midiNote)) {
-				// trigger release on that note
-				const voice = this._activeVoices.get(midiNote) as Voice;
-				voice.triggerRelease(computedTime);
-				this.log("triggerRelease", note);
-			}
-		});
+		this._scheduleEvent("release", notes, computedTime);
+		// this._triggerRelease(notes, computedTime);
 		return this;
 	}
 
@@ -259,10 +287,14 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 			notes = notes as Frequency[];
 			for (let i = 0; i < notes.length; i++) {
 				const d = duration[Math.min(i, duration.length - 1)];
-				this.triggerRelease(notes[i], computedTime + this.toSeconds(d));
+				const durationSeconds = this.toSeconds(d);
+				this.assert(durationSeconds > 0, "The duration must be greater than 0");
+				this.triggerRelease(notes[i], computedTime + durationSeconds);
 			}
 		} else {
-			this.triggerRelease(notes, computedTime + this.toSeconds(duration));
+			const durationSeconds = this.toSeconds(duration);
+			this.assert(durationSeconds > 0, "The duration must be greater than 0");
+			this.triggerRelease(notes, computedTime + durationSeconds);
 		}
 		return this;
 	}
