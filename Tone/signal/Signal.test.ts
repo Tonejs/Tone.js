@@ -94,6 +94,19 @@ describe("Signal", () => {
 			expect(buffer.getValueAtTime(0.1)).to.be.closeTo(1, 0.001);
 		});
 
+		it("can set a ramp point and then ramp from there", async () => {
+			const buffer = await Offline(context => {
+				const sig = new Signal<number>(0).toDestination();
+				sig.setRampPoint(0);
+				sig.linearRampToValueAtTime(1, 1);
+				sig.setRampPoint(0.5);
+				sig.linearRampToValueAtTime(0, 1);
+			}, 1);
+			expect(buffer.getValueAtTime(0)).to.be.closeTo(0, 0.001);
+			expect(buffer.getValueAtTime(0.5)).to.be.closeTo(0.5, 0.001);
+			expect(buffer.getValueAtTime(1)).to.be.closeTo(0, 0.001);
+		});
+
 		it("can schedule multiple automations", async () => {
 			const buffer = await Offline(context => {
 				const sig = new Signal<number>(0).toDestination();
@@ -340,6 +353,16 @@ describe("Signal", () => {
 				expect(buffer.getValueAtTime(0.1)).to.be.closeTo(0, 0.01);
 				expect(buffer.getValueAtTime(0.4)).to.be.closeTo(1.9, 0.1);
 				expect(buffer.getValueAtTime(0.6)).to.be.closeTo(2, 0.01);
+			});
+		});
+
+		it("can set a target at time", () => {
+			return Offline(() => {
+				const sig = new Signal<number>(0).toDestination();
+				sig.setTargetAtTime(2, 0.1, 0.1);
+			}, 1).then((buffer) => {
+				expect(buffer.getValueAtTime(0)).to.be.closeTo(0, 0.01);
+				expect(buffer.getValueAtTime(0.6)).to.be.closeTo(2, 0.1);
 			});
 		});
 	});
