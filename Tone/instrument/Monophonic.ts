@@ -1,3 +1,4 @@
+import { Envelope } from "../component/envelope/Envelope";
 import { FrequencyClass } from "../core/type/Frequency";
 import { Cents, Frequency, NormalRange, Seconds, Time } from "../core/type/Units";
 import { optionsFromArguments } from "../core/util/Defaults";
@@ -26,6 +27,11 @@ export abstract class Monophonic<Options extends MonophonicOptions> extends Inst
 	 * Invoked when the release has finished and the output is silent.
 	 */
 	onsilence: onSilenceCallback;
+
+	/**
+	 * The instrument's envelope
+	 */
+	abstract envelope: Envelope;
 
 	/**
 	 * The instrument's frequency signal.
@@ -95,6 +101,17 @@ export abstract class Monophonic<Options extends MonophonicOptions> extends Inst
 	 * Internal method which starts the envelope release
 	 */
 	protected abstract _triggerEnvelopeRelease(time: Seconds): void;
+
+	/**
+	 * Get the level of the output at the given time. Measures
+	 * the envelope(s) value at the time.
+	 * @param time The time to query the envelope value
+	 * @return The output level between 0-1
+	 */
+	getLevelAtTime(time: Time): NormalRange {
+		time = this.toSeconds(time);
+		return this.envelope.getValueAtTime(time);
+	}
 
 	/**
 	 * Set the note at the given time. If no time is given, the note
