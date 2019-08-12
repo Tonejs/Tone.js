@@ -1,4 +1,4 @@
-// import { BaseToneOptions } from "../Tone";
+import { RecursivePartial } from "./Interface";
 import { isDefined, isObject, isUndef } from "./TypeCheck";
 
 type BaseToneOptions = import("../Tone").BaseToneOptions;
@@ -8,7 +8,7 @@ type BaseToneOptions = import("../Tone").BaseToneOptions;
  * @param target the object to merge into
  * @param sources the source objects to merge
  */
-export function deepMerge<T>(target: T, ...sources: T[]): T {
+export function deepMerge<T>(target: T, ...sources: Array<RecursivePartial<T>>): T {
 	if (!sources.length) { return target; }
 	const source = sources.shift();
 
@@ -17,6 +17,7 @@ export function deepMerge<T>(target: T, ...sources: T[]): T {
 			// values with the key 'value' are an exception
 			// they don't get deep merged
 			if (key === "value") {
+				// @ts-ignore
 				target[key] = source[key];
 			} else if (isObject(source[key])) {
 				if (!target[key]) { Object.assign(target, { [key]: {} }); }
