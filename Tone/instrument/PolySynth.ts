@@ -228,20 +228,6 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 		}
 		const computedTime = this.toSeconds(time);
 		this._scheduleEvent("attack", notes, computedTime, velocity);
-		// notes.forEach(note => {
-		// 	const midiNote = new MidiClass(this.context, note).toMidi();
-		// 	let voice: Voice | undefined;
-		// 	if (this._activeVoices.has(midiNote)) {
-		// 		voice = this._activeVoices.get(midiNote);
-		// 	} else {
-		// 		voice = this._getNextAvailableVoice();
-		// 	}
-		// 	if (voice) {
-		// 		voice.triggerAttack(note, computedTime, velocity);
-		// 		this._activeVoices.set(midiNote, voice);
-		// 		this.log("triggerAttack", note);
-		// 	}
-		// });
 		return this;
 	}
 
