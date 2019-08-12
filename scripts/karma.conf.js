@@ -1,12 +1,21 @@
 // Karma configuration
 const path = require("path");
 const argv = require("yargs")
-	.option("grep", {
-		default: "",
-	})
+	.alias("i", "file")
+	.alias("d", "dir")
 	.argv;
 
 let BROWSERS = ["HeadlessChrome", "HeadlessFirefox", "Safari"];
+
+// get the entry point files
+let entryPoints = undefined;
+if (typeof argv.file === "string"){
+	entryPoints = RegExp(`.*\\/${argv.file}\\.test\\.ts$`);
+	console.log(`testing file "${argv.file}"`)
+} else if (typeof argv.dir === "string"){
+	entryPoints = RegExp(`.*${argv.dir}.*\\/.*\\.test\\.ts$`);
+	console.log(`testing directory "${argv.dir}"`)
+}
 
 if (process.env.BROWSER === "chrome") {
 	BROWSERS = ["HeadlessChrome"];
@@ -45,6 +54,7 @@ module.exports = function(config) {
 				resolve: {
 					directories: ["Tone", "node_modules", "test"],
 				},
+				entrypoints : entryPoints
 			},
 			coverageOptions : {
 				exclude: /(.*\.test\.ts|test\/.*\.ts)$/i,
@@ -94,7 +104,6 @@ module.exports = function(config) {
 
 		client : {
 			mocha : {
-				grep: argv.grep,
 				reporter : "html",
 				timeout : 10000,
 				ui : "bdd",
