@@ -2,6 +2,7 @@ import { expect } from "chai";
 import { BasicTests } from "test/helper/Basic";
 import { CompareToFile } from "test/helper/CompareToFile";
 import { InstrumentTest } from "test/helper/InstrumentTests";
+import { MonophonicTest } from "test/helper/MonophonicTests";
 import { Offline } from "test/helper/Offline";
 import { Frequency } from "Tone/core/type/Frequency";
 import { Synth } from "./Synth";
@@ -10,6 +11,7 @@ describe("Synth", () => {
 
 	BasicTests(Synth);
 	InstrumentTest(Synth, "C4");
+	MonophonicTest(Synth, "C4");
 
 	it("matches a file basic", () => {
 		return CompareToFile(() => {

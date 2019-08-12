@@ -1,18 +1,27 @@
-import { Signal } from "Tone/signal";
 import { AmplitudeEnvelope } from "../component/envelope/AmplitudeEnvelope";
 import { Envelope, EnvelopeOptions } from "../component/envelope/Envelope";
+import { ToneAudioNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
 import { Cents, Frequency, Time } from "../core/type/Units";
 import { omitFromObject, optionsFromArguments } from "../core/util/Defaults";
 import { readOnly } from "../core/util/Interface";
 import { RecursivePartial } from "../core/util/Interface";
+import { Signal } from "../signal/Signal";
 import { OmniOscillator } from "../source/oscillator/OmniOscillator";
 import { OmniOscillatorConstructorOptions } from "../source/oscillator/OscillatorInterface";
-import { Source } from "../source/Source";
+import { Source, SourceOptions } from "../source/Source";
 import { Monophonic, MonophonicOptions } from "./Monophonic";
 
+/**
+ * The settable oscillator options. Does not include optiosn like
+ * "context" and "frequency" since those are controlled by the synth
+ */
+type LimitedOscillatorOptions = Omit<
+		Omit<OmniOscillatorConstructorOptions, keyof SourceOptions>,
+	"frequency" | "detune">;
+
 export interface SynthOptions extends MonophonicOptions {
-	oscillator: OmniOscillatorConstructorOptions;
-	envelope: EnvelopeOptions;
+	oscillator: LimitedOscillatorOptions;
+	envelope: Omit<EnvelopeOptions, keyof ToneAudioNodeOptions>;
 }
 
 /**
@@ -58,6 +67,7 @@ export class Synth extends Monophonic<SynthOptions> {
 
 		this.oscillator = new OmniOscillator(Object.assign({
 			context: this.context,
+			onstop: () => this.onsilence(this),
 		}, options.oscillator));
 
 		this.frequency = this.oscillator.frequency;
@@ -75,7 +85,7 @@ export class Synth extends Monophonic<SynthOptions> {
 	static getDefaults(): SynthOptions {
 		return Object.assign(Monophonic.getDefaults(), {
 			envelope: Object.assign(
-				omitFromObject(Envelope.getDefaults(), Object.keys(Source.getDefaults())),
+				omitFromObject(Envelope.getDefaults(), Object.keys(ToneAudioNode.getDefaults())),
 				{
 					attack : 0.005,
 					decay : 0.1,
@@ -84,7 +94,7 @@ export class Synth extends Monophonic<SynthOptions> {
 				},
 			),
 			oscillator: Object.assign(
-				omitFromObject(OmniOscillator.getDefaults(), Object.keys(Source.getDefaults())),
+				omitFromObject(OmniOscillator.getDefaults(), [...Object.keys(Source.getDefaults()), "frequency", "detune"]),
 				{
 					type: "triangle",
 				},
