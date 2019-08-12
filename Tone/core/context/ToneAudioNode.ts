@@ -202,6 +202,7 @@ extends ToneWithContext<Options> {
 	/**
 	 * Connect the output to the context's destination node.
 	 * alias for {@link toDestination}
+	 * @deprecated
 	 */
 	toMaster(): this {
 		console.warn("toMaster() has been renamed toDestination()");
