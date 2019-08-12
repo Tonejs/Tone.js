@@ -1,10 +1,6 @@
 import { expect } from "chai";
 import { Instrument } from "Tone/instrument/Instrument";
 import { connectTo } from "./Connect";
-// import Tone from "Tone/core/Tone";
-// import { Meter } from "./Meter";
-// import OutputAudioStereo from "./OutputAudioStereo";
-// import Test from "./Test";
 import { Offline } from "./Offline";
 import { OutputAudio } from "./OutputAudio";
 
