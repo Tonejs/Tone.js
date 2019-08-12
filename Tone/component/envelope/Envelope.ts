@@ -225,7 +225,6 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	 *  @param  name
 	 *  @param  direction In/Out
 	 *  @param  curve
-	 *  @private
 	 */
 	private _setCurve(
 		name: "_attackCurve" | "_decayCurve" | "_releaseCurve",
@@ -333,7 +332,7 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 			this._sig.linearRampTo(velocity, attack, time);
 		} else if (this._attackCurve === "exponential") {
 			this._sig.targetRampTo(velocity, attack, time);
-		} else if (attack > 0) {
+		} else {
 			this._sig.cancelAndHoldAtTime(time);
 			let curve = this._attackCurve;
 			// find the starting position in the curve
@@ -355,7 +354,9 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 			this.log("decay", decayStart);
 			if (this._decayCurve === "linear") {
 				this._sig.linearRampTo(decayValue, decay, decayStart + this.sampleTime);
-			} else if (this._decayCurve === "exponential") {
+			} else {
+				this.assert(this._decayCurve === "exponential",
+					`decayCurve can only be "linear" or "exponential", got ${this._decayCurve}`);
 				this._sig.exponentialApproachValueAtTime(decayValue, decayStart, decay);
 			}
 		}
@@ -380,10 +381,9 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 			} else if (this._releaseCurve === "exponential") {
 				this._sig.targetRampTo(0, release, time);
 			} else {
-				if (isArray(this._releaseCurve)) {
-					this._sig.cancelAndHoldAtTime(time);
-					this._sig.setValueCurveAtTime(this._releaseCurve, time, release, currentValue);
-				}
+				this.assert(isArray(this._releaseCurve), "releaseCurve must be either 'linear', 'exponential' or an array");
+				this._sig.cancelAndHoldAtTime(time);
+				this._sig.setValueCurveAtTime(this._releaseCurve, time, release, currentValue);
 			}
 		}
 		return this;
