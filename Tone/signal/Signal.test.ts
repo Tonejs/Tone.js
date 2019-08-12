@@ -391,13 +391,23 @@ describe("Signal", () => {
 			}, 0.315);
 		});
 
-		it("can be set to not convert the given units", () => {
+		it("can be set to not convert the given units in constructor", () => {
 			return ConstantOutput(() => {
 				const signal = new Signal<Decibels>({
 					convert: false,
 					units: "decibels",
 					value: -10,
 				}).toDestination();
+			}, -10);
+		});
+
+		it("can be set to not convert the given units in member", () => {
+			return ConstantOutput(() => {
+				const signal = new Signal<Decibels>({
+					units: "decibels",
+					value: -10,
+				}).toDestination();
+				signal.convert = false;
 			}, -10);
 		});
 
