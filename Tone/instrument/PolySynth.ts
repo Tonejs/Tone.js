@@ -149,6 +149,8 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 			voice.connect(this.output);
 			this._voices.push(voice);
 			return voice;
+		} else {
+			console.warn("Max polyphony exceeded. Note dropped.");
 		}
 	}
 

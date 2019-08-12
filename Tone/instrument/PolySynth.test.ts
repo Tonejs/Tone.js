@@ -98,6 +98,20 @@ describe("PolySynth", () => {
 			});
 		});
 
+		it("warns when too much polyphony is attempted and notes are dropped", () => {
+			let wasInvoked = false;
+			const originalWarn = console.warn;
+			console.warn = () => wasInvoked = true;
+			return Offline(() => {
+				const polySynth = new PolySynth(2);
+				polySynth.toDestination();
+				polySynth.triggerAttack(["C4", "D4", "G4"], 0.1);
+			}, 0.3).then((buffer) => {
+				expect(wasInvoked).to.equal(true);
+				console.warn = originalWarn;
+			});
+		});
+
 		it("reports the active notes", () => {
 			return Offline(() => {
 				const polySynth = new PolySynth(2);
