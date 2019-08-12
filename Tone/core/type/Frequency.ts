@@ -111,9 +111,8 @@ export class FrequencyClass<Type extends number = Hertz> extends TimeClass<Type,
 	///////////////////////////////////////////////////////////////////////////
 
 	/**
-	 *  Return the value of the frequency as a MIDI note
-	 *  @return  {MIDI}
-	 *  @example
+	 * Return the value of the frequency as a MIDI note
+	 * @example
 	 * Frequency("C4").toMidi(); //60
 	 */
 	toMidi(): MidiNote {
@@ -121,9 +120,8 @@ export class FrequencyClass<Type extends number = Hertz> extends TimeClass<Type,
 	}
 
 	/**
-	 *  Return the value of the frequency in Scientific Pitch Notation
-	 *  @return  {Note}
-	 *  @example
+	 * Return the value of the frequency in Scientific Pitch Notation
+	 * @example
 	 * Frequency(69, "midi").toNote(); //"A4"
 	 */
 	toNote(): Note {
