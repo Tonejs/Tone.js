@@ -56,7 +56,14 @@ export function setA4(freq: Hertz): void {
  * ftom(440); // returns 69
  */
 export function ftom(frequency: Hertz): MidiNote {
-	return 69 + Math.round(12 * Math.log2(frequency / A4)) as MidiNote;
+	return Math.round(ftomf(frequency)) as MidiNote;
+}
+
+/**
+ * Convert a frequency to a floating point midi value
+ */
+export function ftomf(frequency: Hertz): number {
+	return 69 + 12 * Math.log2(frequency / A4);
 }
 
 /**
