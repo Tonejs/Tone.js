@@ -706,6 +706,7 @@ describe("Envelope", () => {
 					releaseCurve : [1, 0, 1, 0],
 					sustain : 1,
 				}).toDestination();
+				expect(env.attackCurve).to.deep.equal([0, 1, 0, 1]);
 				env.triggerAttackRelease(0.3, 0.1);
 			}, 0.8).then((buffer) => {
 				buffer.forEach((sample, time) => {
