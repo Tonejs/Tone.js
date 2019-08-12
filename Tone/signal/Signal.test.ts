@@ -405,9 +405,9 @@ describe("Signal", () => {
 			return ConstantOutput(() => {
 				const signal = new Signal<Decibels>({
 					units: "decibels",
-					value: -10,
 				}).toDestination();
 				signal.convert = false;
+				signal.value = -10;
 			}, -10);
 		});
 
