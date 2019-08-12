@@ -170,7 +170,7 @@ export abstract class AbstractParam<Type extends Unit> {
 	 * True if the signal value is being overridden by
 	 * a connected signal. Internal use only.
 	 */
-	abstract readonly overridden: boolean = false;
+	abstract overridden: boolean;
 
 	/**
 	 * The minimum value of the output given the units
