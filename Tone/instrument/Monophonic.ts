@@ -1,11 +1,15 @@
 import { FrequencyClass } from "../core/type/Frequency";
 import { Cents, Frequency, NormalRange, Seconds, Time } from "../core/type/Units";
 import { optionsFromArguments } from "../core/util/Defaults";
+import { noOp } from "../core/util/Interface";
 import { Instrument, InstrumentOptions } from "../instrument/Instrument";
 import { Signal } from "../signal/Signal";
 
+type onSilenceCallback = (instrument: Monophonic<any>) => void;
+
 export interface MonophonicOptions extends InstrumentOptions {
 	portamento: Seconds;
+	onsilence: onSilenceCallback;
 }
 
 /**
@@ -19,9 +23,9 @@ export abstract class Monophonic<Options extends MonophonicOptions> extends Inst
 	portamento: Seconds;
 
 	/**
-	 * The instrument's envelope
+	 * Invoked when the release has finished and the output is silent.
 	 */
-	abstract envelope: any;
+	onsilence: onSilenceCallback;
 
 	/**
 	 * The instrument's frequency signal.
@@ -40,26 +44,24 @@ export abstract class Monophonic<Options extends MonophonicOptions> extends Inst
 		const options = optionsFromArguments(Monophonic.getDefaults(), arguments);
 
 		this.portamento = options.portamento;
-
+		this.onsilence = options.onsilence;
 	}
 
 	static getDefaults(): MonophonicOptions {
 		return Object.assign(Instrument.getDefaults(), {
+			onsilence: noOp,
 			portamento: 0,
 		});
 	}
 
 	/**
-	 *  Trigger the attack of the note optionally with a given velocity.
-	 *
-	 *
-	 *  @param  note The note to trigger.
-	 *  @param  time When the note should start.
-	 *  @param  velocity The velocity scaler determines how "loud" the note
-	 *                   will be triggered.
-	 *  @example
+	 * Trigger the attack of the note optionally with a given velocity.
+	 * @param  note The note to trigger.
+	 * @param  time When the note should start.
+	 * @param  velocity The velocity scaler determines how "loud" the note will be triggered.
+	 * @example
 	 * synth.triggerAttack("C4");
-	 *  @example
+	 * @example
 	 * //trigger the note a half second from now at half velocity
 	 * synth.triggerAttack("C4", "+0.5", 0.5);
 	 */
@@ -72,10 +74,9 @@ export abstract class Monophonic<Options extends MonophonicOptions> extends Inst
 	}
 
 	/**
-	 *  Trigger the release portion of the envelope
-	 *  @param  {Time} [time=now] If no time is given, the release happens immediatly
-	 *  @returns {Monophonic} this
-	 *  @example
+	 * Trigger the release portion of the envelope
+	 * @param  time If no time is given, the release happens immediatly
+	 * @example
 	 * synth.triggerRelease();
 	 */
 	triggerRelease(time?: Time): this {
@@ -86,31 +87,20 @@ export abstract class Monophonic<Options extends MonophonicOptions> extends Inst
 	}
 
 	/**
-	 *  Internal method which starts the envelope attack
+	 * Internal method which starts the envelope attack
 	 */
 	protected abstract _triggerEnvelopeAttack(time: Seconds, velocity: NormalRange): void;
 
 	/**
-	 *  Internal method which starts the envelope release
+	 * Internal method which starts the envelope release
 	 */
 	protected abstract _triggerEnvelopeRelease(time: Seconds): void;
 
 	/**
-	 *  Get the level of the output at the given time. Measures
-	 *  the envelope(s) value at the time.
-	 *  @param time The time to query the envelope value
-	 *  @return The output level between 0-1
-	 */
-	getLevelAtTime(time: Time): NormalRange {
-		time = this.toSeconds(time);
-		return this.envelope.getValueAtTime(time);
-	}
-
-	/**
-	 *  Set the note at the given time. If no time is given, the note
-	 *  will set immediately.
-	 *  @param note The note to change to.
-	 *  @param  time The time when the note should be set.
+	 * Set the note at the given time. If no time is given, the note
+	 * will set immediately.
+	 * @param note The note to change to.
+	 * @param  time The time when the note should be set.
 	 * @example
 	 * //change to F#6 in one quarter note from now.
 	 * synth.setNote("F#6", "+4n");
