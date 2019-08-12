@@ -49,6 +49,14 @@ describe("Player", () => {
 				done();
 			});
 		});
+
+		it("can be constructed with no arguments", () => {
+			const player = new Player();
+			// set the buffer
+			player.buffer = buffer;
+			expect(player.buffer.get()).to.equal(buffer.get());
+			player.dispose();
+		});
 	});
 
 	context("onstop", () => {
@@ -191,6 +199,21 @@ describe("Player", () => {
 		it("loops the audio", () => {
 			return Offline(() => {
 				const player = new Player(buffer);
+				player.loop = true;
+				player.toDestination();
+				player.start(0);
+			}, buffer.duration * 1.5).then((buff) => {
+				expect(buff.getRmsAtTime(0)).to.be.above(0);
+				expect(buff.getRmsAtTime(buffer.duration * 0.5)).to.be.above(0);
+				expect(buff.getRmsAtTime(buffer.duration)).to.be.above(0);
+				expect(buff.getRmsAtTime(buffer.duration * 1.2)).to.be.above(0);
+			});
+		});
+
+		it("setting the loop multiple times has no affect", () => {
+			return Offline(() => {
+				const player = new Player(buffer);
+				player.loop = true;
 				player.loop = true;
 				player.toDestination();
 				player.start(0);
