@@ -245,7 +245,6 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 		}
 		const computedTime = this.toSeconds(time);
 		this._scheduleEvent("release", notes, computedTime);
-		// this._triggerRelease(notes, computedTime);
 		return this;
 	}
 
@@ -336,8 +335,8 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 	 */
 	releaseAll(time?: Time): this {
 		const computedTime = this.toSeconds(time);
-		this._activeVoices.forEach((voice) => {
-			voice.triggerRelease(computedTime);
+		this._activeVoices.forEach((v, midi) => {
+			this.triggerRelease(new MidiClass(this.context, midi, "midi").toNote(), computedTime);
 		});
 		return this;
 	}
