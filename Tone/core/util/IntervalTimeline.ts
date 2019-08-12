@@ -10,6 +10,8 @@ export interface IntervalTimelineEvent {
 	[propName: string]: any;
 }
 
+type IteratorCallback = (event: IntervalTimelineEvent) => void;
+
 /**
  * Similar to Tone.Timeline, but all events represent
  * intervals with both "time" and "duration" times. The
@@ -126,7 +128,7 @@ export class IntervalTimeline extends Tone {
 	 *  Remove the node from the tree and replace it with
 	 *  a successor which follows the schema.
 	 */
-	private _removeNode(node): void {
+	private _removeNode(node: IntervalNode): void {
 		if (node.left === null && node.right === null) {
 			this._replaceNodeInParent(node, null);
 		} else if (node.right === null) {
@@ -188,17 +190,17 @@ export class IntervalTimeline extends Tone {
 
 	/**
 	 *  Rotate the tree to the left
-	 *  @param  {IntervalNode}  node
-	 *  @private
 	 */
-	_rotateLeft(node): void {
+	private _rotateLeft(node: IntervalNode): void {
 		const parent = node.parent;
 		const isLeftChild = node.isLeftChild();
 
 		// Make node.right the new root of this sub tree (instead of node)
 		const pivotNode = node.right;
-		node.right = pivotNode.left;
-		pivotNode.left = node;
+		if (pivotNode) {
+			node.right = pivotNode.left;
+			pivotNode.left = node;
+		}
 
 		if (parent !== null) {
 			if (isLeftChild) {
@@ -213,17 +215,17 @@ export class IntervalTimeline extends Tone {
 
 	/**
 	 *  Rotate the tree to the right
-	 *  @param  {IntervalNode}  node
-	 *  @private
 	 */
-	_rotateRight(node): void {
+	private _rotateRight(node: IntervalNode): void {
 		const parent = node.parent;
 		const isLeftChild = node.isLeftChild();
 
 		// Make node.left the new root of this sub tree (instead of node)
 		const pivotNode = node.left;
-		node.left = pivotNode.right;
-		pivotNode.right = node;
+		if (pivotNode) {
+			node.left = pivotNode.right;
+			pivotNode.right = node;
+		}
 
 		if (parent !== null) {
 			if (isLeftChild) {
@@ -282,7 +284,7 @@ export class IntervalTimeline extends Tone {
 	 *  Iterate over everything in the timeline.
 	 *  @param  callback The callback to invoke with every item
 	 */
-	forEach(callback: (event: IntervalTimelineEvent) => void): this {
+	forEach(callback: IteratorCallback): this {
 		if (this._root !== null) {
 			const allNodes: IntervalNode[] = [];
 			this._root.traverse(node => allNodes.push(node));
@@ -301,7 +303,7 @@ export class IntervalTimeline extends Tone {
 	 *  @param  time The time to check if items are overlapping
 	 *  @param  callback The callback to invoke with every item
 	 */
-	forEachAtTime(time: number, callback: (event: IntervalTimelineEvent) => void): this {
+	forEachAtTime(time: number, callback: IteratorCallback): this {
 		if (this._root !== null) {
 			const results: IntervalNode[] = [];
 			this._root.search(time, results);
@@ -320,7 +322,7 @@ export class IntervalTimeline extends Tone {
 	 *  @param  time The time to check if items are before
 	 *  @param  callback The callback to invoke with every item
 	 */
-	forEachFrom(time, callback): this {
+	forEachFrom(time: number, callback: IteratorCallback): this {
 		if (this._root !== null) {
 			const results: IntervalNode[] = [];
 			this._root.searchAfter(time, results);
@@ -380,7 +382,7 @@ class IntervalNode {
 	// the number of child nodes
 	height: number = 0;
 
-	constructor(low, high, event) {
+	constructor(low: number, high: number, event: IntervalTimelineEvent) {
 		this.event = event;
 		// the low value
 		this.low = low;
