@@ -1,4 +1,3 @@
-import { noOp } from "Tone/core/util/Interface";
 import { TicksClass } from "../core/type/Ticks";
 import { TransportTimeClass } from "../core/type/TransportTime";
 import { NormalRange, Positive, Seconds, Ticks, Time, TransportTime } from "../core/type/Units";
