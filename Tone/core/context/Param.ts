@@ -3,7 +3,7 @@ import { dbToGain, gainToDb } from "../type/Conversions";
 import { AudioRange, Decibels, Frequency, NormalRange, Positive, Time, Unit, UnitName } from "../type/Units";
 import { optionsFromArguments } from "../util/Defaults";
 import { Timeline } from "../util/Timeline";
-import { isDefined, isNumber } from "../util/TypeCheck";
+import { isDefined } from "../util/TypeCheck";
 import { ToneWithContext, ToneWithContextOptions } from "./ToneWithContext";
 
 export interface ParamOptions extends ToneWithContextOptions {
