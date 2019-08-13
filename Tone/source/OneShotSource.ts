@@ -131,6 +131,7 @@ export abstract class OneShotSource<Options extends ToneAudioNodeOptions> extend
 	 * @param time When to stop the source
 	 */
 	stop(time?: Time): this {
+		this.log("stop", time);
 		this._stopGain(this.toSeconds(time));
 		return this;
 	}
@@ -168,7 +169,7 @@ export abstract class OneShotSource<Options extends ToneAudioNodeOptions> extend
 			const additionalTail = this._curve === "exponential" ? fadeOutTime * 2 : 0;
 			this._stopSource(this.now() + additionalTail);
 			this._onended();
-		}, this._stopTime - this.context.currentTime);
+		}, this._stopTime - this.context.now());
 		return this;
 	}
 
@@ -209,6 +210,7 @@ export abstract class OneShotSource<Options extends ToneAudioNodeOptions> extend
 	 *  Cancel a scheduled stop event
 	 */
 	cancelStop(): this {
+		this.log("cancelStop");
 		this.assert(this._startTime !== -1, "Source is not started");
 		// cancel the stop envelope
 		this._gainNode.gain.cancelScheduledValues(this._startTime + this.sampleTime);
