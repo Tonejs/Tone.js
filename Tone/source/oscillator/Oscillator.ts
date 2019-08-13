@@ -137,7 +137,8 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 	 *  stop the oscillator
 	 */
 	protected _stop(time?: Time): void {
-		this.log("stop", time);
+		const computedTime = this.toSeconds(time);
+		this.log("stop", computedTime);
 		if (this._oscillator) {
 			time = this.toSeconds(time);
 			this._oscillator.stop(time);
