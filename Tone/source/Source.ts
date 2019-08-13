@@ -161,6 +161,7 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 	 */
 	start(time?: Time, offset?: Time, duration?: Time): this {
 		const computedTime = isUndef(time) && this._synced ? this.context.transport.seconds : this.toSeconds(time);
+		this.log("start", computedTime);
 		// if it's started, stop it and restart it
 		if (this._state.getValueAtTime(computedTime) === "started") {
 			this._state.cancel(computedTime);
@@ -200,6 +201,7 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 	 */
 	stop(time?: Time): this {
 		const computedTime = isUndef(time) && this._synced ? this.context.transport.seconds : this.toSeconds(time);
+		this.log("stop", computedTime);
 		if (!this._synced) {
 			this._stop.apply(this, arguments);
 		} else {
