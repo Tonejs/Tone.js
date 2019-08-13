@@ -72,7 +72,9 @@ describe("PolySynth", () => {
 				polySynth.set({ envelope: { release : 0.1 } });
 				polySynth.toDestination();
 				polySynth.triggerAttack(["C4", "E4", "G4", "B4"], 0);
-				polySynth.releaseAll(0.1);
+				return atTime(0.1, () => {
+					polySynth.releaseAll();
+				});
 			}, 0.3).then((buffer) => {
 				expect(buffer.getTimeOfFirstSound()).to.be.closeTo(0, 0.01);
 				expect(buffer.getTimeOfLastSound()).to.be.closeTo(0.2, 0.01);

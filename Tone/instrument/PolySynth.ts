@@ -330,14 +330,15 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 	}
 
 	/**
-	 *  Trigger the release portion of all the currently active voices.
-	 *  @param time When the notes should be released.
+	 * Trigger the release portion of all the currently active voices immediately.
+	 * Useful for silencing the synth.
 	 */
-	releaseAll(time?: Time): this {
-		const computedTime = this.toSeconds(time);
-		this._activeVoices.forEach((v, midi) => {
-			this.triggerRelease(new MidiClass(this.context, midi, "midi").toNote(), computedTime);
+	releaseAll(): this {
+		const now = this.now();
+		this._activeVoices.forEach((voice) => {
+			voice.triggerRelease(now);
 		});
+		this._activeVoices.clear();
 		return this;
 	}
 
