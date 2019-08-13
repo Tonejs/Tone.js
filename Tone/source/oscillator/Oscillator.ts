@@ -1,6 +1,6 @@
 import { AudioRange, Cents, Degrees, Frequency, Radians, Time } from "../../core/type/Units";
 import { deepEquals, optionsFromArguments } from "../../core/util/Defaults";
-import { readOnly } from "../../core/util/Interface";
+import { noOp, readOnly } from "../../core/util/Interface";
 import { isDefined } from "../../core/util/TypeCheck";
 import { Signal } from "../../signal/Signal";
 import { Source } from "../Source";
@@ -111,7 +111,11 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 	 *  start the oscillator
 	 */
 	protected _start(time?: Time): void {
-		this.log("start", time);
+		const computedTime = this.toSeconds(time);
+		if (this._oscillator) {
+			// remove the onended callback
+			this._oscillator.onended = noOp;
+		}
 		// new oscillator with previous values
 		const oscillator = new ToneOscillatorNode({
 			context: this.context,
@@ -129,8 +133,7 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 		this.detune.connect(this._oscillator.detune);
 
 		// start the oscillator
-		time = this.toSeconds(time);
-		this._oscillator.start(time);
+		this._oscillator.start(computedTime);
 	}
 
 	/**
@@ -138,10 +141,8 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 	 */
 	protected _stop(time?: Time): void {
 		const computedTime = this.toSeconds(time);
-		this.log("stop", computedTime);
 		if (this._oscillator) {
-			time = this.toSeconds(time);
-			this._oscillator.stop(time);
+			this._oscillator.stop(computedTime);
 		}
 	}
 
@@ -150,10 +151,12 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 	 * just cancels any scheduled 'stop' from being invoked.
 	 */
 	restart(time?: Time): this {
+		const computedTime = this.toSeconds(time);
+		this.log("restart", computedTime);
 		if (this._oscillator) {
 			this._oscillator.cancelStop();
 		}
-		this._state.cancel(this.toSeconds(time));
+		this._state.cancel(computedTime);
 		return this;
 	}
 
