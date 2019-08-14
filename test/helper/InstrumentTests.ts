@@ -44,14 +44,6 @@ export function InstrumentTest(Constr, note, constrArg?, optionsIndex?): void {
 			});
 		});
 
-		// it("produces sound in both channels", () => {
-		// 	return OutputAudioStereo(() => {
-		// 		const instance = new Constr(constrArg);
-		// 		instance.toDestination();
-		// 		instance.triggerAttack(note);
-		// 	});
-		// });
-
 		it("is silent before being triggered", () => {
 			return Offline(() => {
 				const instance = new Constr(constrArg);
