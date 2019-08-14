@@ -1,7 +1,7 @@
 import { AmplitudeEnvelope } from "../component/envelope/AmplitudeEnvelope";
 import { Envelope, EnvelopeOptions } from "../component/envelope/Envelope";
 import { ToneAudioNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
-import { Cents, Frequency, Time } from "../core/type/Units";
+import { Cents, Frequency, Seconds } from "../core/type/Units";
 import { omitFromObject, optionsFromArguments } from "../core/util/Defaults";
 import { readOnly } from "../core/util/Interface";
 import { RecursivePartial } from "../core/util/Interface";
@@ -107,16 +107,15 @@ export class Synth extends Monophonic<SynthOptions> {
 	 *  @param time the time the attack should start
 	 *  @param velocity the velocity of the note (0-1)
 	 */
-	protected _triggerEnvelopeAttack(time?: Time, velocity: number = 1): void {
-		const computedTime = this.toSeconds(time);
+	protected _triggerEnvelopeAttack(time: Seconds, velocity: number): void {
 		// the envelopes
-		this.envelope.triggerAttack(computedTime, velocity);
-		this.oscillator.start(computedTime);
+		this.envelope.triggerAttack(time, velocity);
+		this.oscillator.start(time);
 		// if there is no release portion, stop the oscillator
 		if (this.envelope.sustain === 0) {
 			const computedAttack = this.toSeconds(this.envelope.attack);
 			const computedDecay = this.toSeconds(this.envelope.decay);
-			this.oscillator.stop(computedTime + computedAttack + computedDecay);
+			this.oscillator.stop(time + computedAttack + computedDecay);
 		}
 	}
 
@@ -124,8 +123,7 @@ export class Synth extends Monophonic<SynthOptions> {
 	 *  start the release portion of the envelope
 	 *  @param time the time the release should start
 	 */
-	protected _triggerEnvelopeRelease(time: Time): void {
-		time = this.toSeconds(time);
+	protected _triggerEnvelopeRelease(time: Seconds): void {
 		this.envelope.triggerRelease(time);
 		this.oscillator.stop(time + this.toSeconds(this.envelope.release));
 	}
