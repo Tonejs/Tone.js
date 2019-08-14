@@ -3,7 +3,6 @@ import { BasicTests } from "test/helper/Basic";
 import { atTime, Offline } from "test/helper/Offline";
 import { Time } from "Tone/core/type/Time";
 import { noOp } from "Tone/core/util/Interface";
-import { ToneEvent } from "Tone/event/ToneEvent";
 import { Sequence } from "./Sequence";
 
 describe("Sequence", () => {
@@ -169,6 +168,18 @@ describe("Sequence", () => {
 				transport.start();
 			}, 0.1).then(() => {
 				expect(invoked).to.be.true;
+			});
+		});
+
+		it("can be scheduled to stop", () => {
+			let invoked = 0;
+			return Offline(({transport}) => {
+				const seq = new Sequence(() => {
+					invoked++;
+				}, [0, 1], 0.1).start(0).stop(0.5);
+				transport.start();
+			}, 1).then(() => {
+				expect(invoked).to.equal(6);
 			});
 		});
 
@@ -427,6 +438,5 @@ describe("Sequence", () => {
 				expect(invoked).to.be.true;
 			});
 		});
-
 	});
 });
