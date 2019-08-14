@@ -154,6 +154,18 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 	abstract restart(time: Time, offset?: Time, duration?: Time): this;
 
 	/**
+	 * Ensure that the scheduled time is not before the current time.
+	 * Should only be used when scheduled unsynced.
+	 */
+	private _clampToCurrentTime(time: Seconds): Seconds {
+		if (this._synced) {
+			return time;
+		} else {
+			return Math.max(time, this.context.currentTime);
+		}
+	}
+
+	/**
 	 *  Start the source at the specified time. If no time is given,
 	 *  start the source now.
 	 *  @param  time When the source should be started.
@@ -161,8 +173,8 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 	 * source.start("+0.5"); //starts the source 0.5 seconds from now
 	 */
 	start(time?: Time, offset?: Time, duration?: Time): this {
-		const computedTime = isUndef(time) && this._synced ?
-			this.context.transport.seconds : Math.max(this.toSeconds(time), this.context.currentTime);
+		let computedTime = isUndef(time) && this._synced ? this.context.transport.seconds : this.toSeconds(time);
+		computedTime = this._clampToCurrentTime(computedTime);
 		this.log("start", computedTime);
 		// if it's started, stop it and restart it
 		if (this._state.getValueAtTime(computedTime) === "started") {
@@ -202,8 +214,8 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 	 * source.stop(); // stops the source immediately
 	 */
 	stop(time?: Time): this {
-		const computedTime = isUndef(time) && this._synced ?
-			this.context.transport.seconds : Math.max(this.toSeconds(time), this.context.currentTime);
+		let computedTime = isUndef(time) && this._synced ? this.context.transport.seconds : this.toSeconds(time);
+		computedTime = this._clampToCurrentTime(computedTime);
 		this.log("stop", computedTime);
 		if (!this._synced) {
 			this._stop(computedTime);
