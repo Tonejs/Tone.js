@@ -81,8 +81,8 @@ export class ToneOscillatorNode extends OneShotSource<ToneOscillatorNodeOptions>
 	 * @param  time When to start the oscillator
 	 */
 	start(time?: Time): this {
-		this.log("start", time);
 		const computedTime = this.toSeconds(time);
+		this.log("start", computedTime);
 		this._startGain(computedTime);
 		this._oscillator.start(computedTime);
 		return this;
