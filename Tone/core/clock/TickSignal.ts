@@ -1,5 +1,6 @@
 import { connect } from "../Connect";
 import { AutomationEvent, Param, ParamOptions } from "../context/Param";
+import { InputNode } from "../context/ToneAudioNode";
 import { getContext } from "../Global";
 import { BPM, Hertz, Seconds, Ticks, Time } from "../type/Units";
 import { optionsFromArguments } from "../util/Defaults";
@@ -275,7 +276,7 @@ export class TickSignal<Type extends Hertz | BPM> extends Param<Type> {
 	/**
 	 * Connect the output signal
 	 */
-	connect(dstNode, outputNumber = 0, inputNumber = 0): this {
+	connect(dstNode: InputNode, outputNumber = 0, inputNumber = 0): this {
 		connect(this._sig, dstNode, outputNumber, inputNumber);
 		return this;
 	}
