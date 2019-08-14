@@ -1,4 +1,5 @@
 import { Volume } from "../component/channel/Volume";
+import "../core/context/Destination";
 import { Param } from "../core/context/Param";
 import { OutputNode, ToneAudioNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
 import { Decibels, Seconds, Time } from "../core/type/Units";
@@ -160,7 +161,8 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 	 * source.start("+0.5"); //starts the source 0.5 seconds from now
 	 */
 	start(time?: Time, offset?: Time, duration?: Time): this {
-		const computedTime = isUndef(time) && this._synced ? this.context.transport.seconds : this.toSeconds(time);
+		const computedTime = isUndef(time) && this._synced ?
+			this.context.transport.seconds : Math.max(this.toSeconds(time), this.context.currentTime);
 		this.log("start", computedTime);
 		// if it's started, stop it and restart it
 		if (this._state.getValueAtTime(computedTime) === "started") {
@@ -186,7 +188,7 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 					this._syncedStart(this.now(), this.context.transport.seconds);
 				}
 			} else {
-				this._start.apply(this, arguments);
+				this._start(computedTime, offset, duration);
 			}
 		}
 		return this;
@@ -200,10 +202,11 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 	 * source.stop(); // stops the source immediately
 	 */
 	stop(time?: Time): this {
-		const computedTime = isUndef(time) && this._synced ? this.context.transport.seconds : this.toSeconds(time);
+		const computedTime = isUndef(time) && this._synced ?
+			this.context.transport.seconds : Math.max(this.toSeconds(time), this.context.currentTime);
 		this.log("stop", computedTime);
 		if (!this._synced) {
-			this._stop.apply(this, arguments);
+			this._stop(computedTime);
 		} else {
 			const sched = this.context.transport.schedule(this._stop.bind(this), computedTime);
 			this._scheduled.push(sched);
