@@ -4,6 +4,7 @@ import { atTime, Offline } from "test/helper/Offline";
 import { Time } from "Tone/core/type/Time";
 import { noOp } from "Tone/core/util/Interface";
 import { Part } from "./Part";
+import { Sequence } from "./Sequence";
 import { ToneEvent } from "./ToneEvent";
 
 describe("Part", () => {
@@ -167,6 +168,20 @@ describe("Part", () => {
 				expect(part.length).to.equal(0);
 				const subPart = new Part({
 					events : [0, 0.5],
+				});
+				part.add(0.2, subPart);
+				expect(part.length).to.equal(1);
+				expect(part.at(0.2)).to.equal(subPart);
+				part.dispose();
+			});
+		});
+
+		it("can add a sequence", () => {
+			return Offline(() => {
+				const part = new Part();
+				expect(part.length).to.equal(0);
+				const subPart = new Sequence({
+					events: [0, 1, 2, 3],
 				});
 				part.add(0.2, subPart);
 				expect(part.length).to.equal(1);
