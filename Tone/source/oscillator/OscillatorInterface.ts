@@ -1,5 +1,6 @@
 // tslint:disable: max-line-length
 import { AudioRange, Cents, Degrees, Frequency, Positive } from "../../core/type/Units";
+import { Omit } from "../../core/util/Interface";
 import { Signal } from "../../signal/Signal";
 import { SourceOptions } from "../Source";
 
@@ -351,3 +352,15 @@ export type OmniOscillatorOptions =
 	OmniFMCustomOscillatorOptions & OmniFMTypeOscillatorOptions & OmniFMPartialsOscillatorOptions &
 	OmniAMCustomOscillatorOptions & OmniAMTypeOscillatorOptions & OmniAMPartialsOscillatorOptions &
 	ToneOscillatorConstructorOptions;
+
+type OmitSourceOptions<T extends BaseOscillatorOptions> = Omit<T, "frequency" | "detune" | "context">;
+
+/**
+ * The settable options for the omni oscillator inside of the source which excludes certain attributes that are defined by the parent class
+ */
+export type OmniOscillatorSynthOptions =
+	OmitSourceOptions<PulseOscillatorOptions> | OmitSourceOptions<PWMOscillatorOptions> |
+	OmitSourceOptions<OmniFatCustomOscillatorOptions> | OmitSourceOptions<OmniFatTypeOscillatorOptions> | OmitSourceOptions<OmniFatPartialsOscillatorOptions> |
+	OmitSourceOptions<OmniFMCustomOscillatorOptions> | OmitSourceOptions<OmniFMTypeOscillatorOptions> | OmitSourceOptions<OmniFMPartialsOscillatorOptions> |
+	OmitSourceOptions<OmniAMCustomOscillatorOptions> | OmitSourceOptions<OmniAMTypeOscillatorOptions> | OmitSourceOptions<OmniAMPartialsOscillatorOptions> |
+	OmitSourceOptions<ToneOscillatorConstructorOptions>;

@@ -7,20 +7,12 @@ import { readOnly } from "../core/util/Interface";
 import { RecursivePartial } from "../core/util/Interface";
 import { Signal } from "../signal/Signal";
 import { OmniOscillator } from "../source/oscillator/OmniOscillator";
-import { OmniOscillatorConstructorOptions } from "../source/oscillator/OscillatorInterface";
+import { OmniOscillatorConstructorOptions, OmniOscillatorSynthOptions } from "../source/oscillator/OscillatorInterface";
 import { Source, SourceOptions } from "../source/Source";
 import { Monophonic, MonophonicOptions } from "./Monophonic";
 
-/**
- * The settable oscillator options. Does not include optiosn like
- * "context" and "frequency" since those are controlled by the synth
- */
-type LimitedOscillatorOptions = Omit<
-		Omit<OmniOscillatorConstructorOptions, keyof SourceOptions>,
-	"frequency" | "detune">;
-
 export interface SynthOptions extends MonophonicOptions {
-	oscillator: LimitedOscillatorOptions;
+	oscillator: OmniOscillatorSynthOptions;
 	envelope: Omit<EnvelopeOptions, keyof ToneAudioNodeOptions>;
 }
 
