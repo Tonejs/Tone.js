@@ -112,10 +112,6 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 	 */
 	protected _start(time?: Time): void {
 		const computedTime = this.toSeconds(time);
-		if (this._oscillator) {
-			// remove the onended callback
-			this._oscillator.onended = noOp;
-		}
 		// new oscillator with previous values
 		const oscillator = new ToneOscillatorNode({
 			context: this.context,
