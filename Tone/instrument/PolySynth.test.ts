@@ -10,7 +10,6 @@ import { Synth } from "./Synth";
 describe("PolySynth", () => {
 
 	BasicTests(PolySynth);
-	InstrumentTest(PolySynth, "C4");
 
 	it("matches a file", () => {
 		return CompareToFile(() => {
@@ -155,6 +154,45 @@ describe("PolySynth", () => {
 			}, 1);
 		});
 
+		it("can trigger another attack before the release has ended", () => {
+			// compute the end time
+			return Offline(() => {
+				const synth = new PolySynth(4, Synth, {
+					envelope : {
+						release: 0.1,
+					},
+				});
+				synth.toDestination();
+				synth.triggerAttack("C4", 0.05);
+				synth.triggerRelease("C4", 0.1);
+				synth.triggerAttack("C4", 0.15);
+				synth.triggerRelease("C4", 0.2);
+			}, 1).then((buffer) => {
+				expect(buffer.getTimeOfLastSound()).to.be.closeTo(0.3, 0.01);
+			});
+		});
+
+		it("can trigger another attack right after the release has ended", () => {
+			// compute the end time
+			return Offline(() => {
+				const synth = new PolySynth(4, Synth, {
+					envelope : {
+						release: 0.1,
+					},
+				});
+				synth.toDestination();
+				synth.triggerAttack("C4", 0.05);
+				synth.triggerRelease("C4", 0.1);
+				synth.triggerAttack("C4", 0.2);
+				synth.triggerRelease("C4", 0.3);
+				return atTime(0.41, () => {
+					expect(synth.activeVoices).to.equal(0);
+				});
+			}, 1).then((buffer) => {
+				expect(buffer.getTimeOfLastSound()).to.be.closeTo(0.4, 0.01);
+			});
+		});
+
 	});
 
 	context("API", () => {
@@ -169,7 +207,7 @@ describe("PolySynth", () => {
 			polySynth.dispose();
 		});
 
-		it("can pass in the volume and detune", () => {
+		it("can pass in the volume", () => {
 			const polySynth = new PolySynth({
 				volume : -12,
 			});
@@ -185,6 +223,5 @@ describe("PolySynth", () => {
 			expect(polySynth.get().envelope.decay).to.equal(3);
 			polySynth.dispose();
 		});
-
 	});
 });

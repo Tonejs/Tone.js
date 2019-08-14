@@ -66,7 +66,7 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 	/**
 	 * The currently active voices
 	 */
-	private _activeVoices: Map<MidiNote, Voice> = new Map();
+	private _activeVoices: Array<{midi: MidiNote, voice: Voice}> = [];
 
 	/**
 	 * All of the allocated voices for this synth.
@@ -114,7 +114,17 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 	 * The number of active voices.
 	 */
 	get activeVoices(): number {
-		return this._activeVoices.size;
+		return this._activeVoices.length;
+	}
+
+	/**
+	 * If there is a voice active on that note, return it
+	 */
+	private _getActiveVoice(note: MidiNote): Voice | undefined {
+		const event = this._activeVoices.find(({midi}) => midi === note);
+		if (event) {
+			return event.voice;
+		}
 	}
 
 	/**
@@ -124,11 +134,8 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 	private _makeVoiceAvailable(voice: Voice): void {
 		this._availableVoices.push(voice);
 		// remove the midi note from 'active voices'
-		this._activeVoices.forEach((v, midi) => {
-			if (v === voice) {
-				this._activeVoices.delete(midi);
-			}
-		});
+		const activeVoiceIndex = this._activeVoices.findIndex((e) => e.voice === voice);
+		this._activeVoices.splice(activeVoiceIndex, 1);
 	}
 
 	/**
@@ -160,18 +167,23 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 	private _triggerAttack(notes: Frequency[], time: Seconds, velocity?: NormalRange): void {
 		notes.forEach(note => {
 			const midiNote = new MidiClass(this.context, note).toMidi();
-			let voice: Voice | undefined;
+			// let voice: Voice | undefined;
 			// if there's already a note at that voice, reuse it
-			if (this._activeVoices.has(midiNote)) {
-				voice = this._activeVoices.get(midiNote);
+			let voice = this._getActiveVoice(midiNote);
+			// if it has a note, and that note is still active
+			if (voice && voice.getLevelAtTime(time) > 0) {
+				const activeVoiceIndex = this._activeVoices.findIndex((e) => e.voice === voice);
+				this._activeVoices.splice(activeVoiceIndex, 1);
 			} else {
 				// otherwise get the next available voice
 				voice = this._getNextAvailableVoice();
 			}
 			if (voice) {
 				voice.triggerAttack(note, time, velocity);
-				this._activeVoices.set(midiNote, voice);
-				this.log("triggerAttack", note);
+				this._activeVoices.unshift({
+					midi: midiNote, voice,
+				});
+				this.log("triggerAttack", note, time);
 			}
 		});
 	}
@@ -182,11 +194,11 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 	private _triggerRelease(notes: Frequency[], time: Seconds): void {
 		notes.forEach(note => {
 			const midiNote = new MidiClass(this.context, note).toMidi();
-			if (this._activeVoices.has(midiNote)) {
+			const voice = this._getActiveVoice(midiNote);
+			if (voice) {
 				// trigger release on that note
-				const voice = this._activeVoices.get(midiNote) as Voice;
 				voice.triggerRelease(time);
-				this.log("triggerRelease", note);
+				this.log("triggerRelease", note, time);
 			}
 		});
 	}
@@ -196,6 +208,7 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 	 * to wait for just-in-time scheduling
 	 */
 	private _scheduleEvent(type: "attack" | "release", notes: Frequency[], time: Seconds, velocity?: NormalRange): void {
+		this.assert(!this.disposed, "Synth was already disposed");
 		// if the notes are greater than this amount of time in the future, they should be scheduled with setTimeout
 		if (time <= this.now()) {
 			// do it immediately
@@ -335,17 +348,17 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 	 */
 	releaseAll(): this {
 		const now = this.now();
-		this._activeVoices.forEach((voice) => {
+		this._activeVoices.forEach(({voice}) => {
 			voice.triggerRelease(now);
 		});
-		this._activeVoices.clear();
+		this._activeVoices = [];
 		return this;
 	}
 
 	dispose(): this {
 		super.dispose();
 		this._voices.forEach(v => v.dispose());
-		this._activeVoices.clear();
+		this._activeVoices = [];
 		this._availableVoices = [];
 		return this;
 	}
