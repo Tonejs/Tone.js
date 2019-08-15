@@ -36,7 +36,7 @@ export class Compressor extends ToneAudioNode<CompressorOptions> {
 	output = this._compressor;
 
 	/**
-	 *  the threshold vaue
+	 *  The decibel value above which the compression will start taking effect.
 	 */
 	readonly threshold: Param<Decibels>;
 
