@@ -5,7 +5,7 @@ import { readOnly, RecursivePartial } from "../core/util/Interface";
 import { Monophonic } from "./Monophonic";
 import { Synth, SynthOptions } from "./Synth";
 
-interface MembraneSynthOptions extends SynthOptions {
+export interface MembraneSynthOptions extends SynthOptions {
 	pitchDecay: Time;
 	octaves: Positive;
 }

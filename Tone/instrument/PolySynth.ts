@@ -4,7 +4,8 @@ import { deepMerge, optionsFromArguments } from "../core/util/Defaults";
 import { RecursivePartial } from "../core/util/Interface";
 import { isArray } from "../core/util/TypeCheck";
 import { Instrument, InstrumentOptions } from "./Instrument";
-import { Monophonic, MonophonicOptions } from "./Monophonic";
+import { MembraneSynth, MembraneSynthOptions } from "./MembraneSynth";
+import { Monophonic } from "./Monophonic";
 import { Synth, SynthOptions } from "./Synth";
 
 type VoiceConstructor<V> = {
@@ -15,6 +16,7 @@ type OmitMonophonicOptions<T> = Omit<T, "context" | "onsilence">;
 
 type VoiceOptions<T> =
 	T extends Synth ? SynthOptions :
+	T extends MembraneSynth ? MembraneSynthOptions :
 	never;
 
 /**
