@@ -1,9 +1,8 @@
-import { AmplitudeEnvelope } from "../component/envelope/AmplitudeEnvelope";
-import { Frequency, NormalRange, Positive, Time } from "../core/type/Units";
+import { FrequencyClass } from "../core/type/Frequency";
+import { Frequency, Positive, Time } from "../core/type/Units";
 import { deepMerge, optionsFromArguments } from "../core/util/Defaults";
 import { readOnly, RecursivePartial } from "../core/util/Interface";
-import { OmniOscillator } from "../source/oscillator/OmniOscillator";
-import { Instrument } from "./Instrument";
+import { Monophonic } from "./Monophonic";
 import { Synth, SynthOptions } from "./Synth";
 
 interface MembraneSynthOptions extends SynthOptions {
@@ -24,19 +23,9 @@ interface MembraneSynthOptions extends SynthOptions {
  * var synth = new MembraneSynth().toMaster();
  * synth.triggerAttackRelease("C2", "8n");
  */
-export class MembraneSynth extends Instrument<MembraneSynthOptions> {
+export class MembraneSynth extends Synth<MembraneSynthOptions> {
 
 	readonly name = "MembraneSynth";
-
-	/**
-	 *  The oscillator.
-	 */
-	readonly oscillator: OmniOscillator<any>;
-
-	/**
-	 *  The evelope.
-	 */
-	readonly envelope: AmplitudeEnvelope;
 
 	/**
 	 *  The number of octaves the pitch envelope ramps.
@@ -48,26 +37,24 @@ export class MembraneSynth extends Instrument<MembraneSynthOptions> {
 	 */
 	pitchDecay: Time;
 
+	/**
+	 * Portamento is ignored in this synth. use pitch decay instead.
+	 */
+	readonly portamento = 0;
+
 	constructor(options?: RecursivePartial<MembraneSynthOptions>)
 	constructor() {
 
 		super(optionsFromArguments(MembraneSynth.getDefaults(), arguments));
 		const options = optionsFromArguments(MembraneSynth.getDefaults(), arguments);
 
-		this.oscillator = new OmniOscillator(Object.assign({
-			context: this.context,
-		}, options.oscillator));
-		this.envelope = new AmplitudeEnvelope(Object.assign({
-			context: this.context,
-		}, options.envelope));
-		this.octaves = options.octaves;
 		this.pitchDecay = options.pitchDecay;
-		this.oscillator.chain(this.envelope, this.output);
+		this.octaves = options.octaves;
 		readOnly(this, ["oscillator", "envelope"]);
 	}
 
 	static getDefaults(): MembraneSynthOptions {
-		return deepMerge(Instrument.getDefaults(), Synth.getDefaults(), {
+		return deepMerge(Monophonic.getDefaults(), Synth.getDefaults(), {
 			envelope : {
 				attack : 0.001,
 				attackCurve : "exponential",
@@ -83,44 +70,17 @@ export class MembraneSynth extends Instrument<MembraneSynthOptions> {
 		});
 	}
 
-	/**
-	 *  Trigger the note at the given time with the given velocity.
-	 *
-	 *  @param  note     the note
-	 *  @param  time the time, if not given is now
-	 *  @param  velocity defaults to 1
-	 *  @example
-	 *  kick.triggerAttack(60);
-	 */
-	triggerAttack(note: Frequency, time?: Time, velocity?: NormalRange): this {
+	setNote(note: Frequency | FrequencyClass, time?: Time): this {
 		const seconds = this.toSeconds(time);
-		const hertz = this.toFrequency(note);
+		const hertz = this.toFrequency(note instanceof FrequencyClass ? note.toFrequency() : note);
 		const maxNote = hertz * this.octaves;
 		this.oscillator.frequency.setValueAtTime(maxNote, seconds);
 		this.oscillator.frequency.exponentialRampToValueAtTime(hertz, seconds + this.toSeconds(this.pitchDecay));
-		this.envelope.triggerAttack(seconds, velocity);
-		this.oscillator.start(seconds);
-		if (this.envelope.sustain === 0) {
-			this.oscillator.stop(seconds + this.toSeconds(this.envelope.attack) + this.toSeconds(this.envelope.decay));
-		}
-		return this;
-	}
-
-	/**
-	 *  Trigger the release portion of the note.
-	 *  @param  time the time the note will release
-	 */
-	triggerRelease(time?: Time): this {
-		const seconds = this.toSeconds(time);
-		this.envelope.triggerRelease(seconds);
-		this.oscillator.stop(seconds + this.toSeconds(this.envelope.release));
 		return this;
 	}
 
 	dispose(): this {
 		super.dispose();
-		this.oscillator.dispose();
-		this.envelope.dispose();
 		return this;
 	}
 }

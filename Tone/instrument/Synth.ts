@@ -28,9 +28,9 @@ export interface SynthOptions extends MonophonicOptions {
  * var synth = new Synth().toDestination();
  * synth.triggerAttackRelease("C4", "8n");
  */
-export class Synth extends Monophonic<SynthOptions> {
+export class Synth<Options extends SynthOptions = SynthOptions> extends Monophonic<Options> {
 
-	readonly name = "Synth";
+	readonly name: string = "Synth";
 
 	/**
 	 *  The oscillator.
