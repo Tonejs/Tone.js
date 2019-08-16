@@ -7,7 +7,6 @@
 		"noImplicitAny": false,
 		"noUnusedLocals": false,
 		"removeComments": false,
-		"experimentalDecorators": true,
 		"outDir": "./build/esm",
 		"sourceMap": true,
 		"moduleResolution": "node",
