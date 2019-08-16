@@ -1,8 +1,13 @@
 /**
+ * Either the online or offline audio context
+ */
+export type AnyAudioContext = AudioContext | OfflineAudioContext;
+
+/**
  * Interface for things that Tone.js adds to the window
  */
 interface ToneWindow extends Window {
-	TONE_AUDIO_CONTEXT?: BaseAudioContext;
+	TONE_AUDIO_CONTEXT?: AnyAudioContext;
 	TONE_SILENCE_LOGGING?: boolean;
 	TONE_DEBUG_CLASS?: string;
 }
@@ -15,13 +20,14 @@ export const theWindow: ToneWindow | null = typeof self === "object" ? self : nu
 /**
  * If the browser has a window object which has an AudioContext
  */
-export const hasAudioContext = theWindow && theWindow.hasOwnProperty("AudioContext");
+export const hasAudioContext = theWindow &&
+	(theWindow.hasOwnProperty("AudioContext") || theWindow.hasOwnProperty("webkitAudioContext"));
 
 /**
  * The global audio context which is getable and assignable through
  * getAudioContext and setAudioContext
  */
-let globalContext: BaseAudioContext;
+let globalContext: AnyAudioContext;
 
 // if it was created already, use that one
 // this enables multiple versions of Tone.js to run on the same page.
@@ -32,7 +38,7 @@ if (theWindow && theWindow.TONE_AUDIO_CONTEXT) {
 /**
  * Returns the default system-wide AudioContext
  */
-export function getAudioContext(): BaseAudioContext {
+export function getAudioContext(): AnyAudioContext {
 	if (!globalContext && hasAudioContext) {
 		setAudioContext(new AudioContext());
 	}
@@ -42,7 +48,7 @@ export function getAudioContext(): BaseAudioContext {
 /**
  * Set the default audio context
  */
-export function setAudioContext(context: BaseAudioContext): void {
+export function setAudioContext(context: AnyAudioContext): void {
 	globalContext = context;
 	if (theWindow) {
 		theWindow.TONE_AUDIO_CONTEXT = globalContext;

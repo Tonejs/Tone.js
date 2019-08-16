@@ -3,6 +3,7 @@ import { Param } from "../core/context/Param";
 import { InputNode, OutputNode, ToneAudioNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
 import { connect } from "../core/context/ToneAudioNode";
 import { Time, Unit, UnitName } from "../core/type/Units";
+import { isAudioParam } from "../core/util/AdvancedTypeCheck";
 import { optionsFromArguments } from "../core/util/Defaults";
 
 export interface SignalOptions<Type> extends ToneAudioNodeOptions {
@@ -189,7 +190,7 @@ implements AbstractParam<Type> {
  * @param inputNum the input number
  */
 export function connectSignal(signal: OutputNode, destination: InputNode, outputNum?: number, inputNum?: number): void {
-	if (destination instanceof Param || destination instanceof AudioParam ||
+	if (destination instanceof Param || isAudioParam(destination) ||
 		(destination instanceof Signal && destination.override)) {
 		// cancel changes
 		destination.cancelScheduledValues(0);

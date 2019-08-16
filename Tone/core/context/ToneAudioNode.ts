@@ -1,10 +1,12 @@
 import { Unit } from "../type/Units";
 import { assert } from "../util/Debug";
 import { isDefined } from "../util/TypeCheck";
-import { Param } from "./Param";
+import { isAudioContext } from "./Context";
+import { isOfflineAudioContext } from "./OfflineContext";
+import { isAudioParam, Param } from "./Param";
 import { ToneWithContext, ToneWithContextOptions } from "./ToneWithContext";
 
-export type InputNode = ToneAudioNode | AudioNode | AudioParam | Param<Unit>;
+export type InputNode = ToneAudioNode | AudioNode |  Param<Unit> | AudioParam;
 export type OutputNode = ToneAudioNode | AudioNode;
 
 interface ChannelProperties {
@@ -44,7 +46,7 @@ extends ToneWithContext<Options> {
 	 */
 	get numberOfInputs(): number {
 		if (isDefined(this.input)) {
-			if (this.input instanceof AudioParam || this.input instanceof Param) {
+			if (isAudioParam(this.input) || this.input instanceof Param) {
 				return 1;
 			} else {
 				return this.input.numberOfInputs;
@@ -78,7 +80,7 @@ extends ToneWithContext<Options> {
 	 * Used to decide which nodes to get/set properties on
 	 */
 	private _isAudioNode(node: any): node is AudioNode | ToneAudioNode {
-		return isDefined(node) && (node instanceof ToneAudioNode || node instanceof AudioNode);
+		return isDefined(node) && (node instanceof ToneAudioNode || isAudioNode(node));
 	}
 
 	/**
@@ -245,14 +247,14 @@ extends ToneWithContext<Options> {
 		if (isDefined(this.input)) {
 			if (this.input instanceof ToneAudioNode) {
 				this.input.dispose();
-			} else if (this.input instanceof AudioNode) {
+			} else if (isAudioNode(this.input)) {
 				this.input.disconnect();
 			}
 		}
 		if (isDefined(this.output)) {
 			if (this.output instanceof ToneAudioNode) {
 				this.output.dispose();
-			} else if (this.output instanceof AudioNode) {
+			} else if (isAudioNode(this.output)) {
 				this.output.disconnect();
 			}
 		}
@@ -274,7 +276,7 @@ export function connectSeries(...nodes: InputNode[]): void {
 	nodes.reduce((prev, current) => {
 		if (prev instanceof ToneAudioNode) {
 			prev.connect(current);
-		} else if (prev instanceof AudioNode) {
+		} else if (isAudioNode(prev)) {
 			connect(prev, current);
 		}
 		return current;
@@ -294,7 +296,7 @@ export function connect(srcNode: OutputNode, dstNode: InputNode, outputNumber = 
 	assert(isDefined(srcNode), "Cannot connect from undefined node");
 	assert(isDefined(dstNode), "Cannot connect to undefined node");
 
-	if (dstNode instanceof ToneAudioNode || dstNode instanceof AudioNode) {
+	if (dstNode instanceof ToneAudioNode || isAudioNode(dstNode)) {
 		assert(dstNode.numberOfInputs > 0, "Cannot connect to node with no inputs");
 	}
 	assert(srcNode.numberOfOutputs > 0, "Cannot connect from node with no outputs");
@@ -313,8 +315,8 @@ export function connect(srcNode: OutputNode, dstNode: InputNode, outputNumber = 
 	}
 
 	// make the connection
-	if (dstNode instanceof AudioParam) {
-		srcNode.connect(dstNode, outputNumber);
+	if (isAudioParam(dstNode)) {
+		srcNode.connect(dstNode as AudioParam, outputNumber);
 	} else {
 		srcNode.connect(dstNode, outputNumber, inputNumber);
 	}
@@ -344,17 +346,25 @@ export function disconnect(
 	}
 
 	// resolve the src node
-	while (!(srcNode instanceof AudioNode)) {
+	while (!(isAudioNode(srcNode))) {
 		if (isDefined(srcNode.output)) {
 			srcNode = srcNode.output;
 		}
 	}
 
-	if (dstNode instanceof AudioParam) {
-		srcNode.disconnect(dstNode, outputNumber);
-	} else if (dstNode instanceof AudioNode) {
+	if (isAudioParam(dstNode)) {
+		srcNode.disconnect(dstNode as AudioParam, outputNumber);
+	} else if (isAudioNode(dstNode)) {
 		srcNode.disconnect(dstNode, outputNumber, inputNumber);
 	} else {
 		srcNode.disconnect();
 	}
+}
+
+/**
+ * Test if the given value is an instanceof AudioNode
+ */
+export function isAudioNode(arg: any): arg is AudioNode {
+	return arg instanceof Object && Reflect.has(arg, "context") &&
+		(isAudioContext(arg.context) || isOfflineAudioContext(arg.context));
 }

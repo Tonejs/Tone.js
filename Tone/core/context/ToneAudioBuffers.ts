@@ -1,4 +1,5 @@
 import { Tone } from "../Tone";
+import { isAudioBuffer } from "../util/AdvancedTypeCheck";
 import { optionsFromArguments } from "../util/Defaults";
 import { noOp } from "../util/Interface";
 import { isString } from "../util/TypeCheck";
@@ -141,7 +142,7 @@ export class ToneAudioBuffers extends Tone {
 		if (url instanceof ToneAudioBuffer) {
 			this._buffers.set(name.toString(), url);
 			callback();
-		} else if (url instanceof AudioBuffer) {
+		} else if (isAudioBuffer(url)) {
 			this._buffers.set(name.toString(), new ToneAudioBuffer(url));
 			callback();
 		} else if (isString(url)) {

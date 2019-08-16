@@ -1,5 +1,6 @@
 import { Context } from "../context/Context";
 import { Seconds } from "../type/Units";
+import { isFunction } from "../util/TypeCheck";
 
 /**
  *  Wrapper around the OfflineAudioContext
@@ -26,18 +27,21 @@ export class OfflineContext extends Context {
 	 */
 	protected _context!: OfflineAudioContext;
 
-	constructor(channels: number | OfflineAudioContext, duration: Seconds, sampleRate: number) {
+	constructor(
+		channels: number | OfflineAudioContext,
+		duration: Seconds, sampleRate: number,
+	) {
 
 		super({
 			clockSource: "offline",
-			context: channels instanceof OfflineAudioContext ?
+			context: isOfflineAudioContext(channels) ?
 				channels : new OfflineAudioContext(channels, duration * sampleRate, sampleRate),
 			lookAhead: 0,
-			updateInterval: channels instanceof OfflineAudioContext ?
+			updateInterval: isOfflineAudioContext(channels) ?
 					128 / channels.sampleRate : 128 / sampleRate,
 		});
 
-		this._duration = channels instanceof OfflineAudioContext ?
+		this._duration = isOfflineAudioContext(channels) ?
 			channels.length / channels.sampleRate : duration;
 	}
 
@@ -72,7 +76,15 @@ export class OfflineContext extends Context {
 	/**
 	 *  Close the context
 	 */
-	close(): Promise<OfflineContext> {
-		return Promise.resolve(this);
+	close(): Promise<void> {
+		return Promise.resolve();
 	}
+}
+
+/**
+ * Test if the arg is instanceof an OfflineAudioContext
+ */
+export function isOfflineAudioContext(arg: any): arg is OfflineAudioContext {
+	return arg instanceof Object &&  Reflect.has(arg, "destination") &&
+		isFunction(arg.startRendering) && !(arg instanceof OfflineContext);
 }

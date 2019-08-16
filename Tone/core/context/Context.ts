@@ -4,8 +4,8 @@ import { optionsFromArguments } from "../util/Defaults";
 import { Emitter } from "../util/Emitter";
 import { Omit } from "../util/Interface";
 import { Timeline } from "../util/Timeline";
-import { isString } from "../util/TypeCheck";
-import { getAudioContext } from "./AudioContext";
+import { isFunction, isString } from "../util/TypeCheck";
+import { AnyAudioContext, getAudioContext } from "./AudioContext";
 import { closeContext, initializeContext } from "./ContextInitialization";
 
 type Transport = import("../clock/Transport").Transport;
@@ -14,8 +14,10 @@ type Destination = import("./Destination").Destination;
 export type ContextLatencyHint = AudioContextLatencyCategory | "fastest";
 
 // these are either not used in Tone.js or deprecated and not implemented.
-export type ExcludedFromBaseAudioContext = "createScriptProcessor" | "onstatechange" | "addEventListener"
-	| "removeEventListener" | "listener" | "dispatchEvent" | "audioWorklet" | "destination";
+export type ExcludedFromBaseAudioContext = "onstatechange" | "addEventListener" |
+	"removeEventListener" | "listener" | "dispatchEvent" | "audioWorklet" | "destination" | "createScriptProcessor";
+	// "createMediaStreamSource" | "createMediaElementSource" | "createMediaStreamTrackSource" |
+	// "baseLatency" | "suspend" |
 
 // the subset of the BaseAudioContext which Tone.Context implements.
 export type BaseAudioContextSubset = Omit<BaseAudioContext, ExcludedFromBaseAudioContext>;
@@ -25,7 +27,7 @@ export interface ContextOptions {
 	latencyHint: ContextLatencyHint;
 	lookAhead: Seconds;
 	updateInterval: Seconds;
-	context: BaseAudioContext;
+	context: AnyAudioContext;
 }
 
 export interface ContextTimeoutEvent {
@@ -51,7 +53,7 @@ export class Context extends Emitter<"statechange" | "tick"> implements BaseAudi
 	/**
 	 * private reference to the BaseAudioContext
 	 */
-	protected readonly _context: BaseAudioContext;
+	protected readonly _context: AnyAudioContext;
 
 	/**
 	 * A reliable callback method
@@ -93,7 +95,7 @@ export class Context extends Emitter<"statechange" | "tick"> implements BaseAudi
 	 */
 	private _initialized: boolean = false;
 
-	constructor(context?: BaseAudioContext);
+	constructor(context?: AnyAudioContext);
 	// tslint:disable-next-line: unified-signatures
 	constructor(options?: Partial<ContextOptions>);
 	constructor() {
@@ -316,7 +318,7 @@ export class Context extends Emitter<"statechange" | "tick"> implements BaseAudi
 	/**
 	 *  The unwrapped AudioContext.
 	 */
-	get rawContext(): BaseAudioContext {
+	get rawContext(): AnyAudioContext {
 		return this._context;
 	}
 
@@ -332,7 +334,7 @@ export class Context extends Emitter<"statechange" | "tick"> implements BaseAudi
 	 *  to initially start the AudioContext.
 	 */
 	resume(): Promise<void> {
-		if (this._context.state === "suspended" && this._context instanceof AudioContext) {
+		if (this._context.state === "suspended" && isAudioContext(this._context)) {
 			return this._context.resume();
 		} else {
 			return Promise.resolve();
@@ -343,14 +345,13 @@ export class Context extends Emitter<"statechange" | "tick"> implements BaseAudi
 	 *  Promise which is invoked when the context is running.
 	 *  Tries to resume the context if it's not started.
 	 */
-	async close(): Promise<Context> {
-		if (this._context instanceof AudioContext) {
+	async close(): Promise<void> {
+		if (isAudioContext(this._context)) {
 			await this._context.close();
 		}
 		if (this._initialized) {
 			closeContext(this);
 		}
-		return this;
 	}
 
 	/**
@@ -438,4 +439,12 @@ export class Context extends Emitter<"statechange" | "tick"> implements BaseAudi
 		});
 		return this;
 	}
+}
+
+/**
+ * Test if the arg is an instanceof AudioContext
+ */
+export function isAudioContext(arg: any): arg is AudioContext {
+	return arg instanceof Object &&  Reflect.has(arg, "destination") &&
+		isFunction(arg.close) && isFunction(arg.resume) && !(arg instanceof Context);
 }

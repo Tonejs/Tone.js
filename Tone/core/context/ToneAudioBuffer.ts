@@ -69,7 +69,7 @@ export class ToneAudioBuffer extends Tone {
 		this.reverse = options.reverse;
 		this.onload = options.onload;
 
-		if (options.url && options.url instanceof AudioBuffer || options.url instanceof ToneAudioBuffer) {
+		if (options.url && isAudioBuffer(options.url) || options.url instanceof ToneAudioBuffer) {
 			this.set(options.url);
 		} else if (isString(options.url)) {
 			// initiate the download
@@ -407,4 +407,12 @@ export class ToneAudioBuffer extends Tone {
 			await promise;
 		}
 	}
+}
+
+/**
+ * Test if the arg is instanceof an AudioBuffer
+ */
+export function isAudioBuffer(arg: any): arg is AudioBuffer {
+	return arg instanceof Object &&  Reflect.has(arg, "sampleRate")
+		&& Reflect.has(arg, "duration") && !(arg instanceof ToneAudioBuffer);
 }
