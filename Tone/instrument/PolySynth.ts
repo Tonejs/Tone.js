@@ -15,8 +15,8 @@ type VoiceConstructor<V> = {
 type OmitMonophonicOptions<T> = Omit<T, "context" | "onsilence">;
 
 type VoiceOptions<T> =
-	T extends Synth ? SynthOptions :
 	T extends MembraneSynth ? MembraneSynthOptions :
+	T extends Synth ? SynthOptions :
 	never;
 
 /**
