@@ -1,7 +1,14 @@
-import { RecursivePartial } from "./Interface";
+import { isAudioBuffer, isAudioNode, isAudioParam } from "./AdvancedTypeCheck";
 import { isDefined, isObject, isUndef } from "./TypeCheck";
 
 type BaseToneOptions = import("../Tone").BaseToneOptions;
+
+/**
+ * Some objects should not be merged
+ */
+function noCopy(key: string, arg: any): boolean {
+	return key === "value" || isAudioParam(arg) || isAudioNode(arg) || isAudioBuffer(arg);
+}
 
 /**
  * Recursively merge an object
@@ -18,9 +25,7 @@ export function deepMerge(target: any, ...sources: any[]): any {
 
 	if (isObject(target) && isObject(source)) {
 		for (const key in source) {
-			// values with the key 'value' are an exception
-			// they don't get deep merged
-			if (key === "value") {
+			if (noCopy(key, source[key])) {
 				target[key] = source[key];
 			} else if (isObject(source[key])) {
 				if (!target[key]) { Object.assign(target, { [key]: {} }); }
