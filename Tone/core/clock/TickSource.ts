@@ -267,7 +267,7 @@ export class TickSource<Type extends BPM | Hertz> extends ToneWithContext<TickSo
 	 * source.start("+0.1");
 	 * source.getStateAtTime("+0.1"); //returns "started"
 	 */
-	getStateAtTime(time): PlaybackState {
+	getStateAtTime(time: Time): PlaybackState {
 		time = this.toSeconds(time);
 		return this._state.getValueAtTime(time);
 	}
