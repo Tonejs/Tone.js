@@ -27,22 +27,24 @@ export class OfflineContext extends Context {
 	 */
 	protected _context!: OfflineAudioContext;
 
+	constructor(context: OfflineAudioContext);
 	constructor(
-		channels: number | OfflineAudioContext,
+		channels: number,
 		duration: Seconds, sampleRate: number,
-	) {
+	);
+	constructor() {
 
 		super({
 			clockSource: "offline",
-			context: isOfflineAudioContext(channels) ?
-				channels : new OfflineAudioContext(channels, duration * sampleRate, sampleRate),
+			context: isOfflineAudioContext(arguments[0]) ?
+				arguments[0] : new OfflineAudioContext(arguments[0], arguments[1] * arguments[2], arguments[2]),
 			lookAhead: 0,
-			updateInterval: isOfflineAudioContext(channels) ?
-					128 / channels.sampleRate : 128 / sampleRate,
+			updateInterval: isOfflineAudioContext(arguments[0]) ?
+					128 / arguments[0].sampleRate : 128 / arguments[2],
 		});
 
-		this._duration = isOfflineAudioContext(channels) ?
-			channels.length / channels.sampleRate : duration;
+		this._duration = isOfflineAudioContext(arguments[0]) ?
+			arguments[0].length / arguments[0].sampleRate : arguments[1];
 	}
 
 	/**
