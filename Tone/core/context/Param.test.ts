@@ -133,7 +133,7 @@ describe("Param", () => {
 				matchesOutputCurve(param, testBuffer);
 			});
 
-			it("can cancel and hold", async () => {
+			it.skip("can cancel and hold", async () => {
 				let param;
 				const testBuffer = await Offline(context => {
 					const source = context.createConstantSource();
