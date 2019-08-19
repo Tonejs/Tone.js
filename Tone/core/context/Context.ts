@@ -1,10 +1,11 @@
 import { Ticker, TickerClockSource } from "../clock/Ticker";
 import { Seconds } from "../type/Units";
+import { isAudioContext } from "../util/AdvancedTypeCheck";
 import { optionsFromArguments } from "../util/Defaults";
 import { Emitter } from "../util/Emitter";
 import { Omit } from "../util/Interface";
 import { Timeline } from "../util/Timeline";
-import { isFunction, isString } from "../util/TypeCheck";
+import { isString } from "../util/TypeCheck";
 import { AnyAudioContext, getAudioContext } from "./AudioContext";
 import { closeContext, initializeContext } from "./ContextInitialization";
 
@@ -439,12 +440,4 @@ export class Context extends Emitter<"statechange" | "tick"> implements BaseAudi
 		});
 		return this;
 	}
-}
-
-/**
- * Test if the arg is an instanceof AudioContext
- */
-export function isAudioContext(arg: any): arg is AudioContext {
-	return arg instanceof Object &&  Reflect.has(arg, "destination") &&
-		isFunction(arg.close) && isFunction(arg.resume) && !(arg instanceof Context);
 }

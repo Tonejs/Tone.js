@@ -1,6 +1,6 @@
 import { Context } from "../context/Context";
 import { Seconds } from "../type/Units";
-import { isFunction } from "../util/TypeCheck";
+import { isOfflineAudioContext } from "../util/AdvancedTypeCheck";
 
 /**
  *  Wrapper around the OfflineAudioContext
@@ -69,7 +69,7 @@ export class OfflineContext extends Context {
 			// invoke all the callbacks on that time
 			this.emit("tick");
 			// increment the clock in 5ms chunks
-			this._currentTime += 0.005;
+			this._currentTime += 128 / this.sampleRate;
 		}
 
 		return this._context.startRendering();
@@ -81,12 +81,4 @@ export class OfflineContext extends Context {
 	close(): Promise<void> {
 		return Promise.resolve();
 	}
-}
-
-/**
- * Test if the arg is instanceof an OfflineAudioContext
- */
-export function isOfflineAudioContext(arg: any): arg is OfflineAudioContext {
-	return arg instanceof Object &&  Reflect.has(arg, "destination") &&
-		isFunction(arg.startRendering) && !(arg instanceof OfflineContext);
 }

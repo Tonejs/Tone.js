@@ -1,9 +1,10 @@
 import { AbstractParam } from "../context/AbstractParam";
 import { dbToGain, gainToDb } from "../type/Conversions";
 import { AudioRange, Decibels, Frequency, NormalRange, Positive, Time, Unit, UnitName } from "../type/Units";
+import { isAudioParam } from "../util/AdvancedTypeCheck";
 import { optionsFromArguments } from "../util/Defaults";
 import { Timeline } from "../util/Timeline";
-import { isDefined, isFunction } from "../util/TypeCheck";
+import { isDefined } from "../util/TypeCheck";
 import { ToneWithContext, ToneWithContextOptions } from "./ToneWithContext";
 
 export interface ParamOptions extends ToneWithContextOptions {
@@ -73,7 +74,7 @@ implements AbstractParam<Type> {
 	/**
 	 *  The minimum output value
 	 */
-	private _minOutput = 1e-5;
+	private _minOutput = 1e-7;
 
 	constructor(param: AudioParam, units?: Unit, convert?: boolean);
 	constructor(options: Partial<ParamOptions>);
@@ -430,13 +431,4 @@ implements AbstractParam<Type> {
 	protected _exponentialInterpolate(t0: number, v0: number, t1: number, v1: number, t: number): number {
 		return v0 * Math.pow(v1 / v0, (t - t0) / (t1 - t0));
 	}
-}
-
-/**
- * Test if the given value is an instanceof AudioParam
- */
-export function isAudioParam(arg: any): arg is AudioParam {
-	return arg instanceof Object &&  Reflect.has(arg, "value") &&
-		!Reflect.has(arg, "input") &&
-		isFunction(arg.setValueAtTime);
 }

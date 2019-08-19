@@ -1,6 +1,7 @@
 import { getContext } from "../Global";
 import { Tone } from "../Tone";
 import { Samples, Seconds, Time } from "../type/Units";
+import { isAudioBuffer } from "../util/AdvancedTypeCheck";
 import { optionsFromArguments } from "../util/Defaults";
 import { noOp } from "../util/Interface";
 import { isArray, isNumber, isString } from "../util/TypeCheck";
@@ -407,12 +408,4 @@ export class ToneAudioBuffer extends Tone {
 			await promise;
 		}
 	}
-}
-
-/**
- * Test if the arg is instanceof an AudioBuffer
- */
-export function isAudioBuffer(arg: any): arg is AudioBuffer {
-	return arg instanceof Object &&  Reflect.has(arg, "sampleRate")
-		&& Reflect.has(arg, "duration") && !(arg instanceof ToneAudioBuffer);
 }

@@ -1,9 +1,8 @@
 import { Unit } from "../type/Units";
+import { isAudioNode, isAudioParam } from "../util/AdvancedTypeCheck";
 import { assert } from "../util/Debug";
 import { isDefined } from "../util/TypeCheck";
-import { isAudioContext } from "./Context";
-import { isOfflineAudioContext } from "./OfflineContext";
-import { isAudioParam, Param } from "./Param";
+import { Param } from "./Param";
 import { ToneWithContext, ToneWithContextOptions } from "./ToneWithContext";
 
 export type InputNode = ToneAudioNode | AudioNode |  Param<Unit> | AudioParam;
@@ -359,12 +358,4 @@ export function disconnect(
 	} else {
 		srcNode.disconnect();
 	}
-}
-
-/**
- * Test if the given value is an instanceof AudioNode
- */
-export function isAudioNode(arg: any): arg is AudioNode {
-	return arg instanceof Object && Reflect.has(arg, "context") &&
-		(isAudioContext(arg.context) || isOfflineAudioContext(arg.context));
 }
