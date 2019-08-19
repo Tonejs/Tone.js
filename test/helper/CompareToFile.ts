@@ -15,7 +15,7 @@ export async function CompareToFile(
 	const origContext = getContext();
 	try {
 		await Compare.toFile(context => {
-			const offlineContext = new OfflineContext(context, duration, 44100);
+			const offlineContext = new OfflineContext(context);
 			setContext(offlineContext);
 			callback(offlineContext);
 		}, prefix + "audio/compare/" + url, threshold, RENDER_NEW, duration, channels, 44100);
