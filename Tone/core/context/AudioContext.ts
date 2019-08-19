@@ -1,3 +1,21 @@
+// import { AudioContext as stdAudioContext,
+// 	OfflineAudioContext as stdOfflineAudioContext } from "standardized-audio-context";
+
+/**
+ * Create a new AudioContext
+ */
+function createAudioContext(): AudioContext {
+	// return new stdAudioContext() as unknown as AudioContext;
+	return new AudioContext();
+}
+
+/**
+ * Create a new OfflineAudioContext
+ */
+export function createOfflineAudioContext(channels: number, length: number, sampleRate: number): OfflineAudioContext {
+	return new OfflineAudioContext(channels, length, sampleRate);
+}
+
 /**
  * Either the online or offline audio context
  */
@@ -40,7 +58,7 @@ if (theWindow && theWindow.TONE_AUDIO_CONTEXT) {
  */
 export function getAudioContext(): AnyAudioContext {
 	if (!globalContext && hasAudioContext) {
-		setAudioContext(new AudioContext());
+		setAudioContext(createAudioContext());
 	}
 	return globalContext;
 }

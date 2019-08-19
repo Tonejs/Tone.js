@@ -27,7 +27,8 @@ context("OfflineContext", () => {
 		osc.connect(ctx.rawContext.destination);
 		osc.start(0.1);
 		return ctx.render().then(buffer => {
-			expect(buffer).to.be.instanceOf(AudioBuffer);
+			expect(buffer).to.have.property("length");
+			expect(buffer).to.have.property("sampleRate");
 			const array = buffer.getChannelData(0);
 			for (let i = 0; i < array.length; i++) {
 				if (array[i] !== 0) {

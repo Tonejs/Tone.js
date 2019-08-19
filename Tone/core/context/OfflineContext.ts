@@ -1,3 +1,4 @@
+import { createOfflineAudioContext } from "../context/AudioContext";
 import { Context } from "../context/Context";
 import { Seconds } from "../type/Units";
 import { isOfflineAudioContext } from "../util/AdvancedTypeCheck";
@@ -37,7 +38,7 @@ export class OfflineContext extends Context {
 		super({
 			clockSource: "offline",
 			context: isOfflineAudioContext(arguments[0]) ?
-				arguments[0] : new OfflineAudioContext(arguments[0], arguments[1] * arguments[2], arguments[2]),
+				arguments[0] : createOfflineAudioContext(arguments[0], arguments[1] * arguments[2], arguments[2]),
 			lookAhead: 0,
 			updateInterval: isOfflineAudioContext(arguments[0]) ?
 					128 / arguments[0].sampleRate : 128 / arguments[2],

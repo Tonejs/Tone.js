@@ -1,4 +1,5 @@
 import { expect } from "chai";
+import { ConstantOutput } from "test/helper/ConstantOutput";
 import { Offline } from "test/helper/Offline";
 import { ONLINE_TESTING } from "test/helper/Supports";
 import { Transport } from "../clock/Transport";
@@ -6,6 +7,7 @@ import { getContext } from "../Global";
 import { Tone } from "../Tone";
 import { getAudioContext } from "./AudioContext";
 import { Context } from "./Context";
+import { connect } from "./ToneAudioNode";
 
 describe("Context", () => {
 
@@ -18,11 +20,11 @@ describe("Context", () => {
 		it("extends the AudioContext methods", () => {
 			const ctx = new Context(getAudioContext());
 			expect(ctx).to.have.property("createGain");
-			expect(ctx.createGain()).to.be.instanceOf(GainNode);
+			expect(ctx.createGain()).to.have.property("gain");
 			expect(ctx).to.have.property("createOscillator");
-			expect(ctx.createOscillator()).to.be.instanceOf(OscillatorNode);
+			expect(ctx.createOscillator()).to.be.have.property("frequency");
 			expect(ctx).to.have.property("createDelay");
-			expect(ctx.createDelay()).to.be.instanceOf(DelayNode);
+			expect(ctx.createDelay()).to.be.have.property("delayTime");
 			expect(ctx).to.have.property("createConstantSource");
 			ctx.dispose();
 		});
@@ -40,7 +42,8 @@ describe("Context", () => {
 
 		it("has a rawContext", () => {
 			const ctx = new Context(getAudioContext());
-			expect(ctx.rawContext).is.instanceOf(AudioContext);
+			expect(ctx.rawContext).has.property("destination");
+			expect(ctx.rawContext).has.property("sampleRate");
 			return ctx.dispose();
 		});
 
@@ -284,10 +287,10 @@ describe("Context", () => {
 		});
 
 		it("gets a constant signal", () => {
-			const bufferSrc = ctx.getConstant(1);
-			expect(bufferSrc).is.instanceOf(AudioBufferSourceNode);
-			const buffer = bufferSrc.buffer.getChannelData(0);
-			buffer.forEach(sample => expect(sample).to.equal(1));
+			return ConstantOutput(context => {
+				const bufferSrc = context.getConstant(1);
+				connect(bufferSrc, context.destination);
+			}, 1);
 		});
 
 		it("multiple calls return the same buffer source", () => {
