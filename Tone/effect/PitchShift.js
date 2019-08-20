@@ -231,4 +231,3 @@ Tone.PitchShift.prototype.dispose = function(){
 };
 
 export default Tone.PitchShift;
-
