@@ -47,6 +47,22 @@ describe("Noise", () => {
 
 	});
 
+	context("Fades", () => {
+		it("can set the fade in/out", () => {
+			const noise = new Noise({
+				fadeIn : 0.1,
+			});
+			expect(noise.fadeIn).to.equal(0.1);
+			expect(noise.fadeOut).to.equal(0);
+			noise.start();
+			noise.fadeIn = 0.2;
+			noise.fadeOut = 0.1;
+			expect(noise.fadeIn).to.equal(0.2);
+			expect(noise.fadeOut).to.equal(0.1);
+			noise.dispose();
+		});
+	});
+
 	context("Type", () => {
 
 		it("can be set to 3 noise types", () => {

@@ -3,12 +3,15 @@ import { Positive, Time } from "../core/type/Units";
 import { optionsFromArguments } from "../core/util/Defaults";
 import { Source, SourceOptions } from "../source/Source";
 import { ToneBufferSource } from "./buffer/BufferSource";
+import { OneShotSourceCurve } from "./OneShotSource";
 
 type NoiseType = "white" | "brown" | "pink";
 
 interface NoiseOptions extends SourceOptions {
 	type: NoiseType;
 	playbackRate: Positive;
+	fadeIn: Time;
+	fadeOut: Time;
 }
 
 /**
@@ -35,7 +38,7 @@ interface NoiseOptions extends SourceOptions {
  */
 export class Noise extends Source<NoiseOptions> {
 
-	name = "Noise";
+	readonly name = "Noise";
 
 	/**
 	 * Private reference to the source
@@ -53,17 +56,33 @@ export class Noise extends Source<NoiseOptions> {
 	 */
 	private _playbackRate: Positive;
 
-	constructor(options?: NoiseType | Partial<NoiseOptions>);
+	/**
+	 *  The fadeIn time of the amplitude envelope.
+	 */
+	protected _fadeIn: Time;
+
+	/**
+	 *  The fadeOut time of the amplitude envelope.
+	 */
+	protected _fadeOut: Time;
+
+	constructor(type?: NoiseType);
+	// tslint:disable-next-line: unified-signatures
+	constructor(options?: Partial<NoiseOptions>);
 	constructor() {
 		super(optionsFromArguments(Noise.getDefaults(), arguments, ["type"]));
 		const options = optionsFromArguments(Noise.getDefaults(), arguments, ["type"]);
 
 		this._playbackRate = options.playbackRate;
 		this.type = options.type;
+		this._fadeIn = options.fadeIn;
+		this._fadeOut = options.fadeOut;
 	}
 
 	static getDefaults(): NoiseOptions {
 		return Object.assign(Source.getDefaults(), {
+			fadeIn: 0,
+			fadeOut: 0,
 			playbackRate: 1,
 			type: "white" as NoiseType,
 		});
@@ -112,6 +131,8 @@ export class Noise extends Source<NoiseOptions> {
 		this._source = new ToneBufferSource({
 			buffer,
 			context: this.context,
+			fadeIn: this._fadeIn,
+			fadeOut: this._fadeOut,
 			loop: true,
 			onended: () => this.onstop(this),
 			playbackRate: this._playbackRate,
@@ -129,6 +150,32 @@ export class Noise extends Source<NoiseOptions> {
 		if (this._source) {
 			this._source.stop(this.toSeconds(time));
 			this._source = null;
+		}
+	}
+
+	/**
+	 *  The fadeIn time of the amplitude envelope.
+	 */
+	get fadeIn(): Time {
+		return this._fadeIn;
+	}
+	set fadeIn(time) {
+		this._fadeIn = time;
+		if (this._source) {
+			this._source.fadeIn = this._fadeIn;
+		}
+	}
+
+	/**
+	 *  The fadeOut time of the amplitude envelope.
+	 */
+	get fadeOut(): Time {
+		return this._fadeOut;
+	}
+	set fadeOut(time) {
+		this._fadeOut = time;
+		if (this._source) {
+			this._source.fadeOut = this._fadeOut;
 		}
 	}
 
