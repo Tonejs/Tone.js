@@ -1,5 +1,5 @@
 import Tone from "../core/Tone";
-import "../component/PhaseShiftAllpass";
+import "../component/filter/PhaseShiftAllpass";
 import "../source/Oscillator";
 import "../signal/Signal";
 import "../signal/Multiply";
