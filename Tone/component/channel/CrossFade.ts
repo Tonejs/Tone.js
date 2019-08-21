@@ -113,6 +113,11 @@ export class CrossFade extends ToneAudioNode<CrossFadeOptions> {
 
 		this.context.getConstant(1).connect(this._panner);
 		this._panner.connect(this._split);
+		// this is necessary for standardized-audio-context
+		// doesn't make any difference for the native AudioContext
+		// https://github.com/chrisguttandin/standardized-audio-context/issues/647
+		this._panner.channelCount = 1;
+		this._panner.channelCountMode = "explicit";
 		connect(this._split, this.a.gain, 0);
 		connect(this._split, this.b.gain, 1);
 
