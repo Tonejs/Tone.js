@@ -11,10 +11,9 @@ interface AnalyserOptions extends ToneAudioNodeOptions {
 }
 
 /**
- *  Wrapper around the native Web Audio's [AnalyserNode](http://webaudio.github.io/web-audio-api/#idl-def-AnalyserNode).
- *  Extracts FFT or Waveform data from the incoming signal.
- *  @param type The return type of the analysis, either "fft", or "waveform".
- *  @param size The size of the FFT. This must be a power of two in the range 16 to 16384.
+ * Wrapper around the native Web Audio's [AnalyserNode](http://webaudio.github.io/web-audio-api/#idl-def-AnalyserNode).
+ * Extracts FFT or Waveform data from the incoming signal.
+ * @category Component
  */
 export class Analyser extends ToneAudioNode<AnalyserOptions> {
 
@@ -38,6 +37,10 @@ export class Analyser extends ToneAudioNode<AnalyserOptions> {
 	 */
 	private _buffer!: Float32Array;
 
+	/**
+	 * @param type The return type of the analysis, either "fft", or "waveform".
+	 * @param size The size of the FFT. This must be a power of two in the range 16 to 16384.
+	 */
 	constructor(type?: AnalyserType, size?: number);
 	constructor(options?: Partial<AnalyserOptions>);
 	constructor() {

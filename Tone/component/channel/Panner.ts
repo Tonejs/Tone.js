@@ -10,7 +10,6 @@ interface TonePannerOptions extends ToneAudioNodeOptions {
 
 /**
  * Panner is an equal power Left/Right Panner. It is a wrapper around the StereoPannerNode.
- * @param pan The initail panner value (center).
  * @example
  * //pan the input signal hard right.
  * var panner = new Panner(1);
@@ -32,6 +31,9 @@ export class Panner extends ToneAudioNode<TonePannerOptions> {
 	readonly pan: Param<AudioRange>;
 
 	constructor(options?: Partial<TonePannerOptions>);
+	/**
+	 * @param pan The initial panner value (center).
+	 */
 	// tslint:disable-next-line: unified-signatures
 	constructor(pan?: AudioRange);
 	constructor() {
