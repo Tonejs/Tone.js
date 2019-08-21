@@ -33,7 +33,7 @@ export class Panner extends ToneAudioNode<TonePannerOptions> {
 
 	constructor(options?: Partial<TonePannerOptions>);
 	// tslint:disable-next-line: unified-signatures
-	constructor(fade?: NormalRange);
+	constructor(pan?: AudioRange);
 	constructor() {
 		super(Object.assign(optionsFromArguments(Panner.getDefaults(), arguments, ["pan"])));
 		const options = optionsFromArguments(Panner.getDefaults(), arguments, ["pan"]);
