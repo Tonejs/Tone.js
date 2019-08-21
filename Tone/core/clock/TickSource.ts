@@ -19,9 +19,8 @@ interface TickSourceOffsetEvent {
 }
 
 /**
- *  Uses [TickSignal](TickSignal) to track elapsed ticks with complex automation curves.
- *
- *  @param frequency The initial frequency that the signal ticks at
+ * Uses [TickSignal](TickSignal) to track elapsed ticks with complex automation curves.
+ * @category Core
  */
 export class TickSource<Type extends BPM | Hertz> extends ToneWithContext<TickSourceOptions> {
 
@@ -42,6 +41,9 @@ export class TickSource<Type extends BPM | Hertz> extends ToneWithContext<TickSo
 	 */
 	private _tickOffset: Timeline<TickSourceOffsetEvent> = new Timeline();
 
+	/**
+	 * @param frequency The initial frequency that the signal ticks at
+	 */
 	constructor(frequency?: Frequency);
 	// tslint:disable-next-line: unified-signatures
 	constructor(options?: Partial<TickSourceOptions>);

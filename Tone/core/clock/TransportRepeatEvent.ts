@@ -13,6 +13,7 @@ interface TransportRepeatEventOptions extends TransportEventOptions {
 /**
  * TransportRepeatEvent is an internal class used by Tone.Transport
  * to schedule repeat events. This class should not be instantiated directly.
+ * @category Core
  */
 export class TransportRepeatEvent extends TransportEvent {
 
@@ -51,6 +52,9 @@ export class TransportRepeatEvent extends TransportEvent {
 	 */
 	protected context: Context;
 
+	/**
+	 * @param Transport The transport object which the event belongs to
+	 */
 	constructor(transport: Transport, opts: Partial<TransportRepeatEventOptions>) {
 
 		super(transport, opts);

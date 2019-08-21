@@ -23,15 +23,13 @@ type ClockEvent = "start" | "stop" | "pause";
  * loose JS timing), the time passed in as the argument to the callback
  * is precise. For most applications, it is better to use Tone.Transport
  * instead of the Clock by itself since you can synchronize multiple callbacks.
- *
- * @param callback The callback to be invoked with the time of the audio event
- * @param frequency The rate of the callback
  * @example
  * //the callback will be invoked approximately once a second
  * //and will print the time exactly once a second apart.
  * const clock = new Clock(time => {
  * 	console.log(time);
  * }, 1);
+ * @category Core
  */
 export class Clock<Type extends BPM | Hertz = Hertz>
 extends ToneWithContext<ClockOptions> implements Emitter<ClockEvent> {
@@ -69,8 +67,12 @@ extends ToneWithContext<ClockOptions> implements Emitter<ClockEvent> {
 	 */
 	frequency: TickSignal<Type>;
 
-	constructor(options: Partial<ClockOptions>);
+	/**
+	 * @param callback The callback to be invoked with the time of the audio event
+	 * @param frequency The rate of the callback
+	 */
 	constructor(callback?: ClockCallback, frequency?: Frequency);
+	constructor(options: Partial<ClockOptions>);
 	constructor() {
 
 		super(optionsFromArguments(Clock.getDefaults(), arguments, ["callback", "frequency"]));

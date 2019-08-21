@@ -13,7 +13,7 @@ export interface TransportEventOptions {
  * TransportEvent is an internal class used by (Tone.Transport)[Transport]
  * to schedule events. Do no invoke this class directly, it is
  * handled from within Tone.Transport.
- * @param Transport The transport object which the event belongs to
+ * @category Core
  */
 export class TransportEvent {
 
@@ -42,6 +42,9 @@ export class TransportEvent {
 	 */
 	private _once: boolean;
 
+	/**
+	 * @param Transport The transport object which the event belongs to
+	 */
 	constructor(transport: Transport, opts: Partial<TransportEventOptions>) {
 
 		const options: TransportEventOptions = Object.assign(TransportEvent.getDefaults(), opts);

@@ -24,8 +24,7 @@ interface TickSignalOptions extends ParamOptions {
  * Thank you Bruno Dias, H. Sofia Pinto, and David M. Matos,
  * for your [WAC paper](https://smartech.gatech.edu/bitstream/handle/1853/54588/WAC2016-49.pdf)
  * describing integrating timing functions for tempo calculations.
- *
- * @param value The initial value of the signal
+ * @category Core
  */
 export class TickSignal<Type extends Hertz | BPM> extends Param<Type> {
 
@@ -40,6 +39,9 @@ export class TickSignal<Type extends Hertz | BPM> extends Param<Type> {
 	private _multiplier: number = 1;
 
 	constructor(options: Partial<TickSignalOptions>);
+	/**
+	 * @param value The initial value of the signal
+	 */
 	constructor(value?: number);
 	constructor() {
 

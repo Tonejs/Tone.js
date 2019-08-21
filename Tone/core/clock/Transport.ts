@@ -60,6 +60,7 @@ type TransportCallback = (time: Seconds) => void;
  * Transport.schedule(function(time){
  * 	//do something with the time
  * }, "16:0:0");
+ * @category Core
  */
 export class Transport extends ToneWithContext<TransportOptions> implements Emitter<TransportEventNames> {
 
