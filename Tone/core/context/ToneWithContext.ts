@@ -18,6 +18,7 @@ export interface ToneWithContextOptions {
 
 /**
  * The Base class for all nodes that have an AudioContext.
+ * @category Core
  */
 export abstract class ToneWithContext<Options extends ToneWithContextOptions> extends Tone {
 

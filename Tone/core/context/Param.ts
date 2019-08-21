@@ -30,16 +30,17 @@ export interface AutomationEvent {
 }
 
 /**
- *  Param wraps the native Web Audio's AudioParam to provide
+ * Param wraps the native Web Audio's AudioParam to provide
  * additional unit conversion functionality. It also
  * serves as a base-class for classes which have a single,
  * automatable parameter.
+ * @category Core
  */
 export class Param<Type extends Unit = number>
 extends ToneWithContext<ParamOptions>
 implements AbstractParam<Type> {
 
-	name = "Param";
+	readonly name: string = "Param";
 
 	static getDefaults(): ParamOptions {
 		return Object.assign(ToneWithContext.getDefaults(), {

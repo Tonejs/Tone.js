@@ -40,6 +40,7 @@ interface ToneAudioBuffersOptions {
  * 	"onload" : callback,
  * 	"baseUrl" : "../path/to/audio/"
  * })
+ * @category Core
  */
 export class ToneAudioBuffers extends Tone {
 

@@ -5,6 +5,7 @@
  * A note in Scientific pitch notation.
  * The pitch class + octave number
  * e.g. "C4", "D#3", "G-1"
+ * @category Unit
  */
 export type Note = "Cbb-4" | "Cb-4" | "C-4" | "C#-4" | "Cx-4" | "Dbb-4" | "Db-4" | "D-4" | "D#-4" | "Dx-4" | "Ebb-4" | "Eb-4" | "E-4" | "E#-4" | "Ex-4" | "Fbb-4" | "Fb-4" | "F-4" | "F#-4" | "Fx-4" | "Gbb-4" | "Gb-4" | "G-4" | "G#-4" | "Gx-4" | "Abb-4" | "Ab-4" | "A-4" | "A#-4" | "Ax-4" | "Bbb-4" | "Bb-4" | "B-4" | "B#-4" | "Bx-4" |
 	"Cbb-3" | "Cb-3" | "C-3" | "C#-3" | "Cx-3" | "Dbb-3" | "Db-3" | "D-3" | "D#-3" | "Dx-3" | "Ebb-3" | "Eb-3" | "E-3" | "E#-3" | "Ex-3" | "Fbb-3" | "Fb-3" | "F-3" | "F#-3" | "Fx-3" | "Gbb-3" | "Gb-3" | "G-3" | "G#-3" | "Gx-3" | "Abb-3" | "Ab-3" | "A-3" | "A#-3" | "Ax-3" | "Bbb-3" | "Bb-3" | "B-3" | "B#-3" | "Bx-3" |
@@ -24,7 +25,8 @@ export type Note = "Cbb-4" | "Cb-4" | "C-4" | "C#-4" | "Cx-4" | "Dbb-4" | "Db-4"
 	"Cbb11" | "Cb11" | "C11" | "C#11" | "Cx11" | "Dbb11" | "Db11" | "D11" | "D#11" | "Dx11" | "Ebb11" | "Eb11" | "E11" | "E#11" | "Ex11" | "Fbb11" | "Fb11" | "F11" | "F#11" | "Fx11" | "Gbb11" | "Gb11" | "G11" | "G#11" | "Gx11" | "Abb11" | "Ab11" | "A11" | "A#11" | "Ax11" | "Bbb11" | "Bb11" | "B11" | "B#11" | "Bx11";
 
 /**
- *  A number representing a midi note. Integers between 0-127
+ * A number representing a midi note. Integers between 0-127
+ * @category Unit
  */
 export type MidiNote = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 |
 	21 | 22 | 23 | 24 | 25 | 26 | 27 | 28 | 29 | 30 | 31 | 32 | 33 | 34 | 35 | 36 | 37 | 38 | 39 | 40 |

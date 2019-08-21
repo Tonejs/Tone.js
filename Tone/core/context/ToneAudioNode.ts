@@ -20,7 +20,8 @@ interface ChannelProperties {
 export type ToneAudioNodeOptions = ToneWithContextOptions;
 
 /**
- *  ToneAudioNode is the base class for classes which process audio.
+ * ToneAudioNode is the base class for classes which process audio.
+ * @category Core
  */
 export abstract class ToneAudioNode<Options extends ToneAudioNodeOptions = ToneAudioNodeOptions>
 extends ToneWithContext<Options> {
@@ -144,16 +145,16 @@ extends ToneWithContext<Options> {
 		this._setChannelProperties(Object.assign(props, { channelCount }));
 	}
 
+	// tslint:disable: max-line-length
 	/**
 	 *  channelCountMode determines how channels will be counted when up-mixing and
 	 *  down-mixing connections to any inputs to the node.
 	 *  The default value is "max". This attribute has no effect for nodes with no inputs.
-	 * * "max" - computedNumberOfChannels is the maximum of the number of channels of all
-	 * 		connections to an input. In this mode channelCount is ignored.
-	 * * "clamped-max" - computedNumberOfChannels is determined as for "max" and then clamped
-	 * 		to a maximum value of the given channelCount.
+	 * * "max" - computedNumberOfChannels is the maximum of the number of channels of all connections to an input. In this mode channelCount is ignored.
+	 * * "clamped-max" - computedNumberOfChannels is determined as for "max" and then clamped to a maximum value of the given channelCount.
 	 * * "explicit" - computedNumberOfChannels is the exact value as specified by the channelCount.
 	 */
+	// tslint:enable: max-line-length
 	get channelCountMode(): ChannelCountMode {
 		return this._getChannelProperties().channelCountMode;
 	}
