@@ -41,7 +41,7 @@ export function EffectTests(Constr, args?, before?): void {
 
 		it("can be constructed with an object", () => {
 			const instance = new Constr({
-				wet : "0.25",
+				wet : 0.25,
 			});
 			if (before) {
 				before(instance);
