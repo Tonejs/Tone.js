@@ -23,6 +23,7 @@ export interface TimelineEvent {
  *         Internally, events are stored in time order for fast
  *         retrieval.
  *  @param memory The number of previous events that are retained.
+ * @category Core
  */
 export class Timeline<GenericEvent extends TimelineEvent> extends Tone {
 

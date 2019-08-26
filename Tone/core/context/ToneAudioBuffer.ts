@@ -35,6 +35,7 @@ interface ToneAudioBufferOptions {
  * @example
  * //can load provide fallback extension types if the first type is not supported.
  * var buffer = new ToneAudioBuffer("path/to/sound.[mp3|ogg|wav]");
+ * @category Core
  */
 export class ToneAudioBuffer extends Tone {
 

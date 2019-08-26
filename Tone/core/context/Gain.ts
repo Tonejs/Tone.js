@@ -16,6 +16,7 @@ interface GainOptions extends ToneAudioNodeOptions {
  * API and is useful for routing audio and adjusting gains.
  * @param  gain The initial gain of the GainNode
  * @param units The units of the gain parameter.
+ * @category Core
  */
 export class Gain<Type extends Unit = GainFactor> extends ToneAudioNode<GainOptions> {
 

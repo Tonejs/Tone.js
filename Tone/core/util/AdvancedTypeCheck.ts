@@ -1,3 +1,4 @@
+import { isAnyAudioNode } from "standardized-audio-context";
 import { isFunction } from "./TypeCheck";
 
 /**
@@ -13,9 +14,7 @@ export function isAudioParam(arg: any): arg is AudioParam {
  * Test if the given value is an instanceof AudioNode
  */
 export function isAudioNode(arg: any): arg is AudioNode {
-	return arg instanceof Object && Reflect.has(arg, "context") &&
-		!Reflect.has(arg, "input") &&
-		(isAudioContext(arg.context) || isOfflineAudioContext(arg.context));
+	return isAnyAudioNode(arg);
 }
 
 /**

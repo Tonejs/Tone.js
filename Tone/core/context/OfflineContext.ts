@@ -5,9 +5,7 @@ import { isOfflineAudioContext } from "../util/AdvancedTypeCheck";
 
 /**
  *  Wrapper around the OfflineAudioContext
- *  @param  channels  The number of channels to render
- *  @param  duration  The duration to render in samples
- *  @param sampleRate the sample rate to render at
+ * @category Core
  */
 export class OfflineContext extends Context {
 
@@ -29,6 +27,11 @@ export class OfflineContext extends Context {
 	protected _context!: OfflineAudioContext;
 
 	constructor(context: OfflineAudioContext);
+	/**
+	 *  @param  channels  The number of channels to render
+	 *  @param  duration  The duration to render in samples
+	 *  @param sampleRate the sample rate to render at
+	 */
 	constructor(
 		channels: number,
 		duration: Seconds, sampleRate: number,

@@ -39,6 +39,7 @@ export interface ContextTimeoutEvent {
 
 /**
  * Wrapper around the native AudioContext.
+ * @category Core
  */
 export class Context extends Emitter<"statechange" | "tick"> implements BaseAudioContextSubset {
 

@@ -35,6 +35,7 @@ import { ToneAudioBuffer } from "./ToneAudioBuffer";
  * }, 4).then(function(buffer){
  * 	//do something with the output buffer
  * })
+ * @category Core
  */
 export async function Offline(
 	callback: (context: OfflineContext) => Promise<void> | void,

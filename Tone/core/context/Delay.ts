@@ -13,6 +13,7 @@ export interface DelayOptions extends ToneAudioNodeOptions {
  *  Wrapper around Web Audio's native [DelayNode](http://webaudio.github.io/web-audio-api/#the-delaynode-interface).
  *  @param delayTime The delay applied to the incoming signal.
  *  @param maxDelay The maximum delay time.
+ * @category Core
  */
 export class Delay extends ToneAudioNode<DelayOptions> {
 

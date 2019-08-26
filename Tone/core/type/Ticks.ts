@@ -9,6 +9,7 @@ import { Seconds, Ticks } from "./Units";
  * into the parameter of any method which takes time as an argument.
  * @example
  * const t = Ticks("4n"); //a quarter note as ticks
+ * @category Unit
  */
 export class TicksClass extends TransportTimeClass<Ticks> {
 
@@ -59,6 +60,10 @@ export class TicksClass extends TransportTimeClass<Ticks> {
 	}
 }
 
+/**
+ * Convert a time representation to ticks
+ * @category Unit
+ */
 export function Ticks(value?: TimeValue, units?: TimeBaseUnit): TicksClass {
 	return new TicksClass(getContext(), value, units);
 }

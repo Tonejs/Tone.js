@@ -14,6 +14,7 @@ import { Hertz, Interval, MidiNote, Seconds, Ticks } from "./Units";
  *  @param  {String=}  units  The units of the value.
  *  @example
  * var t = Midi("4n");//a quarter note
+ * @category Unit
  */
 export class MidiClass extends FrequencyClass<MidiNote> {
 
@@ -82,6 +83,7 @@ export class MidiClass extends FrequencyClass<MidiNote> {
 
 /**
  * Convert a value into a FrequencyClass object.
+ * @category Unit
  */
 export function Midi(value?: TimeValue, units?: FrequencyUnit): MidiClass {
 	return new MidiClass(getContext(), value, units);

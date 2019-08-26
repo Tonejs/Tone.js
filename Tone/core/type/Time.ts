@@ -10,6 +10,7 @@ import { BarsBeatsSixteenths, MidiNote, Seconds, Subdivision, Ticks, Time } from
  * @param  units  The units of the value.
  * @example
  * var t = Time("4n");//a quarter note
+ * @category Unit
  */
 export class TimeClass<Type extends Seconds | Ticks = Seconds, Unit extends string = TimeBaseUnit>
 extends TimeBaseClass<Type, Unit> {
@@ -138,6 +139,7 @@ extends TimeBaseClass<Type, Unit> {
  * Create a TimeClass from a time string or number.
  * @param value A value which reprsents time
  * @param units The value's units if they can't be inferred by the value.
+ * @category Unit
  */
 export function Time(value?: TimeValue, units?: TimeBaseUnit): TimeClass<Seconds> {
 	return new TimeClass(getContext(), value, units);

@@ -20,6 +20,7 @@ interface DrawEvent extends TimelineEvent {
  * 		//do drawing or DOM manipulation here
  * 	}, time)
  * }, "+0.5")
+ * @category Core
  */
 export class Draw extends ToneWithContext<ToneWithContextOptions> {
 

@@ -14,6 +14,7 @@ export type FrequencyUnit = TimeBaseUnit | "midi";
  * Frequency("C3") // 261
  * Frequency(38, "midi") //
  * Frequency("C3").transpose(4);
+ * @category Unit
  */
 export class FrequencyClass<Type extends number = Hertz> extends TimeClass<Type, FrequencyUnit> {
 
@@ -242,6 +243,7 @@ const scaleIndexToNote = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", 
 
 /**
  * Convert a value into a FrequencyClass object.
+ * @category Unit
  */
 export function Frequency(value?: TimeValue | Frequency, units?: FrequencyUnit): FrequencyClass {
 	return new FrequencyClass(getContext(), value, units);

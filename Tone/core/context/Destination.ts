@@ -25,6 +25,7 @@ interface DestinationOptions extends ToneAudioNodeOptions {
  * //a convenience for connecting to the master output is also provided:
  * oscillator.toDestination();
  * //the above two examples are equivalent.
+ * @category Core
  */
 export class Destination extends ToneAudioNode<DestinationOptions> {
 
