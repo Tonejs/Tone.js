@@ -85,7 +85,7 @@ Tone.Synth.prototype._triggerEnvelopeAttack = function(time, velocity){
 	this.oscillator.start(time);
 	//if there is no release portion, stop the oscillator
 	if (this.envelope.sustain === 0){
-		this.oscillator.stop(time + this.envelope.attack + this.envelope.decay);
+		this.oscillator.stop(time + this.toSeconds(this.envelope.attack) + this.toSeconds(this.envelope.decay));
 	}
 	return this;
 };
@@ -99,7 +99,7 @@ Tone.Synth.prototype._triggerEnvelopeAttack = function(time, velocity){
 Tone.Synth.prototype._triggerEnvelopeRelease = function(time){
 	time = this.toSeconds(time);
 	this.envelope.triggerRelease(time);
-	this.oscillator.stop(time + this.envelope.release);
+	this.oscillator.stop(time + this.toSeconds(this.envelope.release));
 	return this;
 };
 

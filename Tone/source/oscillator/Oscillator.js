@@ -134,19 +134,6 @@ Tone.Oscillator.prototype._start = function(time){
 	this.frequency.connect(this._oscillator.frequency);
 	this.detune.connect(this._oscillator.detune);
 
-	//disconnect onended
-	oscillator.onended = function(){
-		//defer the callback for the offline context rendering
-		setTimeout(function(){
-			if (this.frequency){
-				this.frequency.disconnect(oscillator.frequency);
-			}
-			if (this.detune){
-				this.detune.disconnect(oscillator.detune);
-			}
-		}.bind(this), 100);
-	}.bind(this);
-
 	//start the oscillator
 	time = this.toSeconds(time);
 	this._oscillator.start(time);

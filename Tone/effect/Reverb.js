@@ -80,8 +80,8 @@ Tone.Reverb.prototype.generate = function(){
 		gainNode.gain.setValueAtTime(0, 0);
 		gainNode.gain.setValueAtTime(1, this.preDelay);
 		//decay
-		gainNode.gain.exponentialApproachValueAtTime(0, this.preDelay, this.decay - this.preDelay);
-	}.bind(this), this.decay).then(function(buffer){
+		gainNode.gain.exponentialApproachValueAtTime(0, this.preDelay, this.decay + this.preDelay);
+	}.bind(this), this.decay + this.preDelay).then(function(buffer){
 		this._convolver.buffer = buffer.get();
 		return this;
 	}.bind(this));
