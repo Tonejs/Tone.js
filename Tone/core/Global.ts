@@ -1,6 +1,8 @@
 import { version } from "../version";
 import { hasAudioContext, theWindow } from "./context/AudioContext";
 import { Context } from "./context/Context";
+import { OfflineContext } from "./context/OfflineContext";
+import { isAudioContext, isOfflineAudioContext } from "./util/AdvancedTypeCheck";
 
 /**
  * This dummy context is used to avoid throwing immediate errors when importing in Node.js
@@ -29,9 +31,15 @@ export function getContext(): Context {
 /**
  * Set the default audio context
  */
-export function setContext(context: Context): void {
-	globalContext = context;
-	context.initialize();
+export function setContext(context: Context | AudioContext | OfflineAudioContext): void {
+	if (isAudioContext(context)) {
+		globalContext = new Context(context);
+	} else if (isOfflineAudioContext(context)) {
+		globalContext = new OfflineContext(context);
+	} else {
+		globalContext = context;
+	}
+	globalContext.initialize();
 }
 
 /**
