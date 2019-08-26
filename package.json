@@ -1,6 +1,6 @@
 {
   "name": "tone",
-  "version": "14.2.0",
+  "version": "14.3.0",
   "description": "A Web Audio framework for making interactive music in the browser.",
   "main": "build/Tone.js",
   "module": "build/esm/index.js",
@@ -17,7 +17,8 @@
     "collect": "npm run collect:deps",
     "collect:deps": "node scripts/collect_deps.js",
     "collect:tests": "node scripts/collect_tests.js --file $npm_config_file --dir $npm_config_dir",
-    "docs": "typedoc --json \"./docs/tone.json\" \"./Tone\" --exclude \"./Tone/**/*.test.ts\"",
+    "docs": "typedoc --options \"./scripts/typedoc.json\"",
+    "docs:json": "typedoc --options \"./scripts/typedoc.json\" --json \"./out/tone.json\"",
     "increment": "node scripts/increment_version.js",
     "increment-ts": "node scripts/increment_version_ts.js",
     "karma": "karma start scripts/karma.conf.js --single-run --file $npm_config_file --dir $npm_config_dir",
@@ -103,5 +104,7 @@
     "webpack-cli": "^3.1.2",
     "yargs": "^13.2.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "standardized-audio-context": "^21.1.1"
+  }
 }

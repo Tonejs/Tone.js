@@ -19,7 +19,7 @@ const defaults = {
 		globalObject : "typeof self !== 'undefined' ? self : this",
 	},
 	resolve : {
-		extensions: ['.ts']
+		extensions: ['.ts', '.js']
 	},
 	module : {
 		rules : [

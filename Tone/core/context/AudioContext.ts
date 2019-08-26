@@ -1,19 +1,20 @@
-// import { AudioContext as stdAudioContext,
-// 	OfflineAudioContext as stdOfflineAudioContext } from "standardized-audio-context";
+import {
+	AudioContext as stdAudioContext,
+	OfflineAudioContext as stdOfflineAudioContext,
+} from "standardized-audio-context";
 
 /**
  * Create a new AudioContext
  */
 function createAudioContext(): AudioContext {
-	// return new stdAudioContext() as unknown as AudioContext;
-	return new AudioContext();
+	return new stdAudioContext() as unknown as AudioContext;
 }
 
 /**
  * Create a new OfflineAudioContext
  */
 export function createOfflineAudioContext(channels: number, length: number, sampleRate: number): OfflineAudioContext {
-	return new OfflineAudioContext(channels, length, sampleRate);
+	return new stdOfflineAudioContext(channels, length, sampleRate)  as unknown as OfflineAudioContext;
 }
 
 /**
@@ -32,11 +33,13 @@ interface ToneWindow extends Window {
 
 /**
  * A reference to the window object
+ * @hidden
  */
 export const theWindow: ToneWindow | null = typeof self === "object" ? self : null;
 
 /**
  * If the browser has a window object which has an AudioContext
+ * @hidden
  */
 export const hasAudioContext = theWindow &&
 	(theWindow.hasOwnProperty("AudioContext") || theWindow.hasOwnProperty("webkitAudioContext"));
