@@ -9,13 +9,9 @@ export interface EffectOptions extends ToneAudioNodeOptions {
 	wet: NormalRange;
 }
 /**
- * 	@class  Effect is the base class for effects. Connect the effect between
- * 	        the effectSend and effectReturn GainNodes, then control the amount of
- * 	        effect which goes to the output using the wet control.
- *
- *  @constructor
- *  @extends {Tone.AudioNode}
- *  @param {NormalRange|Object} [wet] The starting wet value.
+ * Effect is the base class for effects. Connect the effect between
+ * the effectSend and effectReturn GainNodes, then control the amount of
+ * effect which goes to the output using the wet control.
  */
 export abstract class Effect<Options extends EffectOptions>
 extends ToneAudioNode<Options> {

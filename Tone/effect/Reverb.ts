@@ -21,7 +21,6 @@ interface ReverbOptions extends EffectOptions {
  * 	Inspiration from [ReverbGen](https://github.com/adelespinasse/reverbGen).
  * 	Copyright (c) 2014 Alan deLespinasse Apache 2.0 License.
  *
- *  @param decay The amount of time it will reverberate for.
  */
 export class Reverb extends Effect<ReverbOptions> {
 
@@ -42,6 +41,9 @@ export class Reverb extends Effect<ReverbOptions> {
 	 */
 	preDelay: Seconds;
 
+	/**
+	 *  @param decay The amount of time it will reverberate for.
+	 */
 	constructor(decay?: Seconds);
 	// tslint:disable-next-line: unified-signatures
 	constructor(options?: Partial<ReverbOptions>);

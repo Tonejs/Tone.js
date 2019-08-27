@@ -15,8 +15,6 @@ interface ToneConvolverOptions extends EffectOptions {
  * Convolution is useful for reverb and filter emulation. Read more about convolution reverb on
  * [Wikipedia](https://en.wikipedia.org/wiki/Convolution_reverb).
  *
- * @param url The URL of the impulse response or the Tone.Buffer contianing the impulse response.
- * @param onload The callback to invoke when the url is loaded.
  * @example
  * //initializing the convolver with an impulse response
  * var convolver = new Convolver("./path/to/ir.wav").toDestination();
@@ -35,6 +33,10 @@ export class Convolver extends Effect<ToneConvolverOptions> {
 	 */
 	private _buffer: ToneAudioBuffer;
 
+	/**
+	 * @param url The URL of the impulse response or the Tone.Buffer contianing the impulse response.
+	 * @param onload The callback to invoke when the url is loaded.
+	 */
 	constructor(url?: string | AudioBuffer | ToneAudioBuffer, onload?: () => void);
 	constructor(options?: Partial<ToneConvolverOptions>);
 	constructor() {

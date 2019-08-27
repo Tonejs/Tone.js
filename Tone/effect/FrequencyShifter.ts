@@ -25,7 +25,6 @@ interface FrequencyShifterOptions extends EffectOptions {
  * be an option to low pass filter your input before frequency shifting it to get ride of the aliasing.
  * You can find a very detailed description of the algorithm here: https://larzeitlin.github.io/RMFS/
  *
- * @param frequency The incoming signal is shifted by this frequency value.
  * @example
  * let input = new Tone.Oscillator(230, "sawtooth").start();
  * let shift = new FrequencyShifter(42).toDestination();
@@ -76,6 +75,9 @@ export class FrequencyShifter extends Effect<FrequencyShifterOptions> {
 	 */
 	private _phaseShifter: PhaseShiftAllpass;
 
+	/**
+	 * @param frequency The incoming signal is shifted by this frequency value.
+	 */
 	constructor(frequency?: Frequency);
 	// tslint:disable-next-line: unified-signatures
 	constructor(options?: Partial<FrequencyShifterOptions>);
