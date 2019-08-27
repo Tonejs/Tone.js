@@ -21,9 +21,6 @@ interface SequenceOptions<T> extends Omit<ToneEventOptions<T>, "value"> {
  * given subdivision. Sub-arrays will subdivide that beat
  * by the number of items are in the array.
  * Sequence notation inspiration from [Tidal](http://yaxu.org/tidal/)
- * @param  callback  The callback to invoke with every note
- * @param  sequence  The sequence
- * @param  subdivision  The subdivision between which events are placed.
  * @example
  * var seq = new Sequence(function(time, note){
  * 	console.log(note);
@@ -62,6 +59,11 @@ export class Sequence<ValueType = any> extends ToneEvent<ValueType> {
 	 */
 	private _eventsArray: ValueType[] = [];
 
+	/**
+	 * @param  callback  The callback to invoke with every note
+	 * @param  sequence  The sequence
+	 * @param  subdivision  The subdivision between which events are placed.
+	 */
 	constructor(
 		callback?: ToneEventCallback<ValueType>,
 		events?: SequenceEventDescription<ValueType>,

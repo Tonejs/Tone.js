@@ -19,17 +19,15 @@ interface PartOptions<T> extends Omit<ToneEventOptions<CallbackType<T>>, "value"
 }
 
 /**
- *  Part is a collection ToneEvents which can be started/stopped and looped as a single unit.
+ * Part is a collection ToneEvents which can be started/stopped and looped as a single unit.
  *
- *  @param callback The callback to invoke on each event
- *  @param events the array of events
- *  @example
+ * @example
  * var part = new Part(function(time, note){
  * 	//the notes given as the second element in the array
  * 	//will be passed in as the second argument
  * 	synth.triggerAttackRelease(note, "8n", time);
  * }, [[0, "C2"], ["0:2", "C3"], ["0:3:2", "G2"]]);
- *  @example
+ * @example
  * //use an array of objects as long as the object has a "time" attribute
  * var part = new Part(function(time, value){
  * 	//the value is an object which contains both the note and the velocity
@@ -55,8 +53,12 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 	 */
 	private _events: Set<ToneEvent> = new Set();
 
-	constructor(options?: Partial<PartOptions<ValueType>>);
+	/**
+	 *  @param callback The callback to invoke on each event
+	 *  @param events the array of events
+	 */
 	constructor(callback?: ToneEventCallback<CallbackType<ValueType>>, value?: ValueType[]);
+	constructor(options?: Partial<PartOptions<ValueType>>);
 	constructor() {
 
 		super(optionsFromArguments(Part.getDefaults(), arguments, ["callback", "events"]));

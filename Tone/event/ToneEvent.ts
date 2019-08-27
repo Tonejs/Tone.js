@@ -26,8 +26,6 @@ export interface ToneEventOptions<T> extends ToneWithContextOptions {
  * ToneEvent abstracts away this.context.transport.schedule and provides a schedulable
  * callback for a single or repeatable events along the timeline.
  *
- * @param callback The callback to invoke at the time.
- * @param value The value or values which should be passed to the callback function on invocation.
  * @example
  * var chord = new ToneEvent(function(time, chord){
  * 	//the chord as well as the exact time of the event
@@ -102,6 +100,10 @@ export class ToneEvent<ValueType = any> extends ToneWithContext<ToneEventOptions
 	 */
 	mute: boolean;
 
+	/**
+	 * @param callback The callback to invoke at the time.
+	 * @param value The value or values which should be passed to the callback function on invocation.
+	 */
 	constructor(callback?: ToneEventCallback<ValueType>, value?: ValueType);
 	constructor(options?: Partial<ToneEventOptions<ValueType>>);
 	constructor() {
