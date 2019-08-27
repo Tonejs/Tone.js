@@ -1,4 +1,4 @@
-### 14.2.0
+### 14.3.0
 
 * **Converted to typescript!!! (WIP)**
 * Input/Outputs are no longer arrays. 
@@ -7,7 +7,7 @@
 	* More consistent with Web Audio API
 * FrequencyShifter - thanks @Foaly 
 
-### 13.8.19
+### 13.8.25
 
 * Moving to common.js-style code
 
