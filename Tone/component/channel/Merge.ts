@@ -9,7 +9,6 @@ interface MergeOptions extends ToneAudioNodeOptions {
 /**
  * Merge brings multiple mono input channels into a single multichannel output channel.
  *
- * @param channels The number of channels to merge.
  * @example
  * var merge = new Merge().toDestination();
  * //routing a sine tone in the left channel
@@ -39,6 +38,9 @@ export class Merge extends ToneAudioNode<MergeOptions> {
 	 */
 	readonly input: ChannelMergerNode;
 
+	/**
+	 * @param channels The number of channels to merge.
+	 */
 	constructor(channels?: Positive);
 	// tslint:disable-next-line: unified-signatures
 	constructor(options?: Partial<MergeOptions>);

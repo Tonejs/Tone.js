@@ -8,7 +8,6 @@ interface SplitOptions extends ToneAudioNodeOptions {
 /**
  * Split splits an incoming signal into the number of given channels.
  *
- * @param channels The number of channels to merge.
  * @example
  * var split = new Split();
  * stereoSignal.connect(split);
@@ -24,6 +23,9 @@ export class Split extends ToneAudioNode<SplitOptions> {
 	readonly input: ChannelSplitterNode;
 	readonly output: ChannelSplitterNode;
 
+	/**
+	 * @param channels The number of channels to merge.
+	 */
 	constructor(channels?: number);
 	// tslint:disable-next-line: unified-signatures
 	constructor(options?: Partial<SplitOptions>);

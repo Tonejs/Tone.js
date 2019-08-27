@@ -20,8 +20,6 @@ interface ToneAudioBuffersOptions {
 /**
  * A data structure for holding multiple buffers in a Map-like datastructure.
  *
- * @param  urls      An object literal or array of urls to load.
- * @param onload  The callback to invoke when the buffers are loaded.
  * @example
  * //load a whole bank of piano samples
  * var pianoSamples = new ToneAudioBuffers({
@@ -61,6 +59,11 @@ export class ToneAudioBuffers extends Tone {
 	 */
 	private _loadingCount: number = 0;
 
+	/**
+	 * @param  urls  An object literal or array of urls to load.
+	 * @param onload  The callback to invoke when the buffers are loaded.
+	 * @param baseUrl A prefix url to add before all the urls
+	 */
 	constructor(
 		urls?: ToneAudioBuffersUrlMap,
 		onload?: () => void,

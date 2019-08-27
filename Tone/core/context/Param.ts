@@ -77,6 +77,11 @@ implements AbstractParam<Type> {
 	 */
 	private _minOutput = 1e-7;
 
+	/**
+	 * @param param The AudioParam to wrap
+	 * @param units The unit name
+	 * @param convert Whether or not to convert the value to the target units
+	 */
 	constructor(param: AudioParam, units?: Unit, convert?: boolean);
 	constructor(options: Partial<ParamOptions>);
 	constructor() {

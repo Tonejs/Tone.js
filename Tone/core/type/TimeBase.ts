@@ -24,8 +24,6 @@ export interface TimeExpression<Type extends number> {
 
 /**
  * TimeBase is a flexible encoding of time which can be evaluated to and from a string.
- * @param  val    The time value as a number, string or object
- * @param  units  Unit values
  * @example
  * new TimeBase(4, "n")
  * new TimeBase(2, "t")
@@ -58,6 +56,12 @@ export abstract class TimeBaseClass<Type extends number, Unit extends string> ex
 	 */
 	readonly defaultUnits: Unit = "s" as Unit;
 
+	/**
+	 * @param context The context associated with the time value. Used to compute
+	 * Transport and context-relative timing.
+	 * @param  value  The time value as a number, string or object
+	 * @param  units  Unit values
+	 */
 	constructor(context: Context, value?: TimeValue, units?: Unit) {
 		super();
 

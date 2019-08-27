@@ -65,7 +65,7 @@ export class CrossFade extends ToneAudioNode<CrossFadeOptions> {
 	/**
 	 * The input which is at full level when fade = 0
 	 */
-	a: Gain = new Gain({
+	readonly a: Gain = new Gain({
 		context : this.context,
 		gain: 0,
 	});
@@ -73,7 +73,7 @@ export class CrossFade extends ToneAudioNode<CrossFadeOptions> {
 	/**
 	 * The input which is at full level when fade = 1
 	 */
-	b: Gain = new Gain({
+	readonly b: Gain = new Gain({
 		context : this.context,
 		gain: 0,
 	});
@@ -81,12 +81,12 @@ export class CrossFade extends ToneAudioNode<CrossFadeOptions> {
 	/**
 	 * The output is a mix between `a` and `b` at the ratio of `fade`
 	 */
-	output: Gain = new Gain({ context : this.context });
+	readonly output: Gain = new Gain({ context : this.context });
 
 	/**
 	 * CrossFade has no input, you must choose either `a` or `b`
 	 */
-	input: undefined;
+	readonly input: undefined;
 
 	/**
 	 * 	The mix between the two inputs. A fade value of 0
@@ -97,9 +97,12 @@ export class CrossFade extends ToneAudioNode<CrossFadeOptions> {
 
 	protected _internalChannels = [this.a, this.b];
 
-	constructor(options?: Partial<CrossFadeOptions>);
-	// tslint:disable-next-line: unified-signatures
+	/**
+	 * @param fade The initial fade value [0, 1].
+	 */
 	constructor(fade?: NormalRange);
+	// tslint:disable-next-line: unified-signatures
+	constructor(options?: Partial<CrossFadeOptions>);
 	constructor() {
 		super(Object.assign(optionsFromArguments(CrossFade.getDefaults(), arguments, ["fade"])));
 		const options = optionsFromArguments(CrossFade.getDefaults(), arguments, ["fade"]);

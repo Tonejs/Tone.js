@@ -21,12 +21,6 @@ interface ToneAudioBufferOptions {
  * Aside from load callbacks from individual buffers, ToneAudioBuffer
  * provides events which keep track of the loading progress
  * of _all_ of the buffers. These are ToneAudioBuffer.on("load" / "progress" / "error")
- *
- * @param url The url to load, or the audio buffer to set.
- * @param onload A callback which is invoked after the buffer is loaded.
- *                            It's recommended to use `ToneAudioBuffer.on('load', callback)` instead
- *                            since it will give you a callback when _all_ buffers are loaded.
- * @param onerror The callback to invoke if there is an error
  * @example
  * var buffer = new ToneAudioBuffer("path/to/sound.mp3", function(){
  * 	//the buffer is now available.
@@ -56,12 +50,20 @@ export class ToneAudioBuffer extends Tone {
 	 */
 	onload: (buffer: ToneAudioBuffer) => void = noOp;
 
-	constructor(options?: Partial<ToneAudioBufferOptions>);
+	/**
+	 *
+	 * @param url The url to load, or the audio buffer to set.
+	 * @param onload A callback which is invoked after the buffer is loaded.
+	 *                            It's recommended to use `ToneAudioBuffer.on('load', callback)` instead
+	 *                            since it will give you a callback when _all_ buffers are loaded.
+	 * @param onerror The callback to invoke if there is an error
+	 */
 	constructor(
 		url?: string | ToneAudioBuffer | AudioBuffer,
 		onload?: (buffer: ToneAudioBuffer) => void,
 		onerror?: (error: Error) => void,
 	);
+	constructor(options?: Partial<ToneAudioBufferOptions>);
 	constructor() {
 
 		super();

@@ -10,9 +10,7 @@ export interface DelayOptions extends ToneAudioNodeOptions {
 }
 
 /**
- *  Wrapper around Web Audio's native [DelayNode](http://webaudio.github.io/web-audio-api/#the-delaynode-interface).
- *  @param delayTime The delay applied to the incoming signal.
- *  @param maxDelay The maximum delay time.
+ * Wrapper around Web Audio's native [DelayNode](http://webaudio.github.io/web-audio-api/#the-delaynode-interface).
  * @category Core
  */
 export class Delay extends ToneAudioNode<DelayOptions> {
@@ -37,8 +35,12 @@ export class Delay extends ToneAudioNode<DelayOptions> {
 	readonly input: DelayNode;
 	readonly output: DelayNode;
 
-	constructor(options?: Partial<DelayOptions>)
-	constructor(delayTime?: Time, maxDelay?: Time)
+	/**
+	 * @param delayTime The delay applied to the incoming signal.
+	 * @param maxDelay The maximum delay time.
+	 */
+	constructor(delayTime?: Time, maxDelay?: Time);
+	constructor(options?: Partial<DelayOptions>);
 	constructor() {
 		super(optionsFromArguments(Delay.getDefaults(), arguments, ["delayTime", "maxDelay"]));
 

@@ -28,9 +28,6 @@ interface MultibandSplitOptions extends ToneAudioNodeOptions {
  *          +-> highFrequency < input +-----------------> high
  *            +-----------------------+
  * ```
- *
- *  @param lowFrequency the low/mid crossover frequency
- *  @param highFrequency the mid/high crossover frequency
  */
 export class MultibandSplit extends ToneAudioNode<MultibandSplitOptions> {
 
@@ -99,6 +96,10 @@ export class MultibandSplit extends ToneAudioNode<MultibandSplitOptions> {
 	 */
 	readonly Q: Signal<Positive>;
 
+	/**
+	 *  @param lowFrequency the low/mid crossover frequency
+	 *  @param highFrequency the mid/high crossover frequency
+	 */
 	constructor(lowFrequency?: Frequency, highFrequency?: Frequency);
 	constructor(options?: Partial<MultibandSplitOptions>);
 	constructor() {

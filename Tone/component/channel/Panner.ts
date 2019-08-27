@@ -32,7 +32,7 @@ export class Panner extends ToneAudioNode<TonePannerOptions> {
 
 	constructor(options?: Partial<TonePannerOptions>);
 	/**
-	 * @param pan The initial panner value (center).
+	 * @param pan The initial panner value (Defaults to 0 = "center").
 	 */
 	// tslint:disable-next-line: unified-signatures
 	constructor(pan?: AudioRange);

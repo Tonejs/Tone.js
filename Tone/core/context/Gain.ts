@@ -14,8 +14,6 @@ interface GainOptions extends ToneAudioNodeOptions {
  * A thin wrapper around the Native Web Audio GainNode.
  * The GainNode is a basic building block of the Web Audio
  * API and is useful for routing audio and adjusting gains.
- * @param  gain The initial gain of the GainNode
- * @param units The units of the gain parameter.
  * @category Core
  */
 export class Gain<Type extends Unit = GainFactor> extends ToneAudioNode<GainOptions> {
@@ -36,6 +34,10 @@ export class Gain<Type extends Unit = GainFactor> extends ToneAudioNode<GainOpti
 	readonly input: GainNode = this._gainNode;
 	readonly output: GainNode = this._gainNode;
 
+	/**
+	 * @param  gain The initial gain of the GainNode
+	 * @param units The units of the gain parameter.
+	 */
 	constructor(gain?: GainFactor, units?: Unit);
 	constructor(options?: Partial<GainOptions>);
 	constructor() {

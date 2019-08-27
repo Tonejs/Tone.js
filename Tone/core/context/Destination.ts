@@ -13,13 +13,13 @@ interface DestinationOptions extends ToneAudioNodeOptions {
 }
 
 /**
- *  A single master output which is connected to the
- *  AudioDestinationNode (aka your speakers).
- *  It provides useful conveniences such as the ability
- *  to set the volume and mute the entire application.
- *  It also gives you the ability to apply master effects to your application.
+ * A single master output which is connected to the
+ * AudioDestinationNode (aka your speakers).
+ * It provides useful conveniences such as the ability
+ * to set the volume and mute the entire application.
+ * It also gives you the ability to apply master effects to your application.
  *
- *  @example
+ * @example
  * //the audio will go from the oscillator to the speakers
  * oscillator.connect(Destination);
  * //a convenience for connecting to the master output is also provided:

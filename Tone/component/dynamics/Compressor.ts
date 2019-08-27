@@ -18,9 +18,6 @@ interface CompressorOptions extends ToneAudioNodeOptions {
  * Compression reduces the volume of loud sounds or amplifies quiet sounds
  * by narrowing or "compressing" an audio signal's dynamic range.
  * Read more on [Wikipedia](https://en.wikipedia.org/wiki/Dynamic_range_compression).
- *
- * @param threshold The value above which the compression starts to be applied.
- * @param ratio The gain reduction ratio.
  * @example
  * var comp = new Compressor(-30, 3);
  */
@@ -61,6 +58,10 @@ export class Compressor extends ToneAudioNode<CompressorOptions> {
 	 */
 	readonly ratio: Param<Decibels>;
 
+	/**
+	 * @param threshold The value above which the compression starts to be applied.
+	 * @param ratio The gain reduction ratio.
+	 */
 	constructor(threshold?: Decibels, ratio?: Positive);
 	constructor(options?: Partial<CompressorOptions>);
 	constructor() {

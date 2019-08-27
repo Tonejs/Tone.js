@@ -11,12 +11,9 @@ interface VolumeOptions extends ToneAudioNodeOptions {
 }
 
 /**
- *  @class Volume is a simple volume node, useful for creating a volume fader.
+ * Volume is a simple volume node, useful for creating a volume fader.
  *
- *  @extends {Tone.AudioNode}
- *  @constructor
- *  @param {Decibels} [volume=0] the initial volume
- *  @example
+ * @example
  * var vol = new Volume(-12);
  * instrument.chain(vol, Tone.Master);
  */
@@ -44,7 +41,12 @@ export class Volume extends ToneAudioNode<VolumeOptions> {
 	 */
 	volume: Param<Decibels>;
 
-	constructor(options?: Decibels | Partial<VolumeOptions>);
+	/**
+	 * @param volume the initial volume in decibels
+	 */
+	constructor(volume?: Decibels);
+	// tslint:disable-next-line: unified-signatures
+	constructor(options?: Partial<VolumeOptions>);
 	constructor() {
 
 		super(optionsFromArguments(Volume.getDefaults(), arguments, ["volume"]));

@@ -16,18 +16,12 @@ interface FilterOptions extends ToneAudioNodeOptions {
 }
 
 /**
- *  @class  Tone.Filter is a filter which allows for all of the same native methods
- *          as the [BiquadFilterNode](http://webaudio.github.io/web-audio-api/#the-biquadfilternode-interface).
- *          Tone.Filter has the added ability to set the filter rolloff at -12
- *          (default), -24 and -48.
- *
- *  @constructor
- *  @extends {Tone.AudioNode}
- *  @param frequency The cutoff frequency of the filter.
- *  @param type The type of filter.
- *  @param rolloff The drop in decibels per octave after the cutoff frequency
- *  @example
- *  var filter = new Filter(200, "highpass");
+ * Tone.Filter is a filter which allows for all of the same native methods
+ * as the [BiquadFilterNode](http://webaudio.github.io/web-audio-api/#the-biquadfilternode-interface).
+ * Tone.Filter has the added ability to set the filter rolloff at -12
+ * (default), -24 and -48.
+ * @example
+ * var filter = new Filter(200, "highpass");
  */
 export class Filter extends ToneAudioNode<FilterOptions> {
 
@@ -63,6 +57,11 @@ export class Filter extends ToneAudioNode<FilterOptions> {
 	 */
 	readonly gain: Signal<Decibels>;
 
+	/**
+	 * @param frequency The cutoff frequency of the filter.
+	 * @param type The type of filter.
+	 * @param rolloff The drop in decibels per octave after the cutoff frequency
+	 */
 	constructor(frequency?: Frequency, type?: BiquadFilterType, rolloff?: number);
 	constructor(options?: Partial<FilterOptions>);
 	constructor() {

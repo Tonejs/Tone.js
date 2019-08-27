@@ -18,16 +18,15 @@ export interface TimelineEvent {
 }
 
 /**
- *  @class A Timeline class for scheduling and maintaining state
- *         along a timeline. All events must have a "time" property.
- *         Internally, events are stored in time order for fast
- *         retrieval.
- *  @param memory The number of previous events that are retained.
+ * A Timeline class for scheduling and maintaining state
+ * along a timeline. All events must have a "time" property.
+ * Internally, events are stored in time order for fast
+ * retrieval.
  * @category Core
  */
 export class Timeline<GenericEvent extends TimelineEvent> extends Tone {
 
-	name = "Timeline";
+	readonly name: string = "Timeline";
 
 	/**
 	 *  The memory of the timeline, i.e.
@@ -40,9 +39,13 @@ export class Timeline<GenericEvent extends TimelineEvent> extends Tone {
 	 */
 	protected _timeline: GenericEvent[] = [];
 
-	constructor(options?: Partial<TimelineOptions>);
-	// tslint:disable-next-line: unified-signatures
+	/**
+	 *
+	 *  @param memory The number of previous events that are retained.
+	 */
 	constructor(memory?: number);
+	// tslint:disable-next-line: unified-signatures
+	constructor(options?: Partial<TimelineOptions>);
 	constructor() {
 		super();
 		const options = optionsFromArguments(Timeline.getDefaults(), arguments, ["memory"]);
