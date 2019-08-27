@@ -11,15 +11,11 @@ export interface ScaleOptions extends ToneAudioNodeOptions {
 }
 
 /**
- *  @class  Performs a linear scaling on an input signal.
- *          Scales a NormalRange input to between
- *          outputMin and outputMax.
+ * Performs a linear scaling on an input signal.
+ * Scales a NormalRange input to between
+ * outputMin and outputMax.
  *
- *  @constructor
- *  @extends {SignalOperator}
- *  @param outputMin The output value when the input is 0.
- *  @param outputMax The output value when the input is 1.
- *  @example
+ * @example
  * var scale = new Scale(50, 100);
  * var signal = new Signal(0.5).connect(scale);
  * //the output of scale equals 75
@@ -41,8 +37,12 @@ export class Scale extends SignalOperator<ScaleOptions> {
 	private _outputMin: number;
 	private _outputMax: number;
 
-	constructor(options?: Partial<ScaleOptions>);
+	/**
+	 * @param min The output value when the input is 0.
+	 * @param max The output value when the input is 1.
+	 */
 	constructor(min?: number, max?: number);
+	constructor(options?: Partial<ScaleOptions>);
 	constructor() {
 		super(Object.assign(optionsFromArguments(Scale.getDefaults(), arguments, ["min", "max"])));
 

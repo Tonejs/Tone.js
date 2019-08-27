@@ -9,8 +9,6 @@ import { Signal, SignalOptions } from "../signal/Signal";
  * Subtract the signal connected to the input is subtracted from the signal connected
  * The subtrahend.
  *
- * @param value The value to subtract from the incoming signal. If the value
- *                         is omitted, it will subtract the second signal from the first.
  * @example
  * var sub = new Subtract(1);
  * var sig = new Tone.Signal(4).connect(sub);
@@ -46,9 +44,13 @@ export class Subtract extends Signal {
 	 */
 	subtrahend: Param<number> = this._param;
 
-	constructor(options?: Partial<SignalOptions<number>>);
-	// tslint:disable-next-line: unified-signatures
+	/**
+	 * @param value The value to subtract from the incoming signal. If the value
+	 *              is omitted, it will subtract the second signal from the first.
+	 */
 	constructor(value?: number);
+	// tslint:disable-next-line: unified-signatures
+	constructor(options?: Partial<SignalOptions<number>>);
 	constructor() {
 		super(Object.assign(optionsFromArguments(Subtract.getDefaults(), arguments, ["value"])));
 

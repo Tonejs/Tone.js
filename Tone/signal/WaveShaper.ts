@@ -18,21 +18,11 @@ interface WaveShaperOptions extends ToneAudioNodeOptions {
  * Wraps the native Web Audio API
  * [WaveShaperNode](http://webaudio.github.io/web-audio-api/#the-waveshapernode-interface).
  *
- *  @param mapping The function used to define the values.
- *                 The mapping function should take two arguments:
- *                 the first is the value at the current position
- *                 and the second is the array position.
- *                 If the argument is an array, that array will be
- *                 set as the wave shaping function. The input
- *                 signal is an AudioRange [-1, 1] value and the output
- *                 signal can take on any numerical values.
- *
- *  @param bufferLen The length of the WaveShaperNode buffer.
- *  @example
+ * @example
  * var timesTwo = new WaveShaper(function(val){
  * 	return val * 2;
  * }, 2048);
- *  @example
+ * @example
  * //a waveshaper can also be constructed with an array of values
  * var invert = new WaveShaper([1, -1]);
  */
@@ -55,8 +45,20 @@ export class WaveShaper extends SignalOperator<WaveShaperOptions> {
 	 */
 	output = this._shaper;
 
-	constructor(options?: Partial<WaveShaperOptions>);
+	/**
+	 *  @param mapping The function used to define the values.
+	 *                 The mapping function should take two arguments:
+	 *                 the first is the value at the current position
+	 *                 and the second is the array position.
+	 *                 If the argument is an array, that array will be
+	 *                 set as the wave shaping function. The input
+	 *                 signal is an AudioRange [-1, 1] value and the output
+	 *                 signal can take on any numerical values.
+	 *
+	 *  @param bufferLen The length of the WaveShaperNode buffer.
+	 */
 	constructor(mapping?: WaveShaperMapping , length?: number);
+	constructor(options?: Partial<WaveShaperOptions>);
 	constructor() {
 		super(Object.assign(optionsFromArguments(WaveShaper.getDefaults(), arguments, ["mapping", "length"])));
 		const options = optionsFromArguments(WaveShaper.getDefaults(), arguments, ["mapping", "length"]);

@@ -19,8 +19,7 @@ export interface SignalOptions<Type> extends ToneAudioNodeOptions {
  * [AudioParam](http://webaudio.github.io/web-audio-api/#the-audioparam-interface)
  * as well as additional conveniences. Read more about working with signals
  * [here](https://github.com/Tonejs/Tone.js/wiki/Signals).
- *  @param value Initial value of the signal
- *  @param units unit The units the signal is in.
+ *
  * @example
  * const signal = new Tone.Signal(10);
  */
@@ -42,6 +41,10 @@ implements AbstractParam<Type> {
 	protected _param: Param<Type>;
 	readonly input: InputNode;
 
+	/**
+	 * @param value Initial value of the signal
+	 * @param units The unit name, e.g. "frequency"
+	 */
 	constructor(value?: Type, units?: UnitName);
 	constructor(options?: Partial<SignalOptions<Type>>);
 	constructor() {

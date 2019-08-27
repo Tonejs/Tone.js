@@ -9,7 +9,6 @@ import { Signal, SignalOptions } from "./Signal";
  * passed into the constructor, Tone.Add will sum input and `addend`
  * If a value is passed into the constructor, the it will be added to the input.
  *
- * @param value If no value is provided, Tone.Add will sum the first  and second inputs.
  * @example
  * var signal = new Signal(2);
  * var add = new Add(2);
@@ -41,9 +40,12 @@ export class Add extends Signal {
 	 */
 	readonly addend: Param<number> = this._param;
 
-	constructor(options?: Partial<SignalOptions<number>>);
-	// tslint:disable-next-line: unified-signatures
+	/**
+	 * @param value If no value is provided, Tone.Add will sum the first  and second inputs.
+	 */
 	constructor(value?: number);
+	// tslint:disable-next-line: unified-signatures
+	constructor(options?: Partial<SignalOptions<number>>);
 	constructor() {
 		super(Object.assign(optionsFromArguments(Add.getDefaults(), arguments, ["value"])));
 

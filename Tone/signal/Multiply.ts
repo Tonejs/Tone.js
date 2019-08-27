@@ -7,7 +7,6 @@ import { Signal, SignalOptions } from "./Signal";
  * Multiply two incoming signals. Or, if a number is given in the constructor,
  * multiplies the incoming signal by that value.
  *
- * @param {number=} value Constant value to multiple
  * @example
  * const mult = new Multiply();
  * const sigA = new Tone.Signal(3);
@@ -15,7 +14,7 @@ import { Signal, SignalOptions } from "./Signal";
  * sigA.connect(mult);
  * sigB.connect(mult.factor);
  * //output of mult is 12.
- *  @example
+ * @example
  * const mult = new Multiply(10);
  * const sig = new Tone.Signal(2).connect(mult);
  * //the output of mult is 20.
@@ -49,9 +48,12 @@ export class Multiply extends Signal<number> {
 	 */
 	factor: Param<number>;
 
-	constructor(options?: Partial<SignalOptions<number>>);
-	// tslint:disable-next-line: unified-signatures
+	/**
+	 * @param value Constant value to multiple
+	 */
 	constructor(value?: number);
+	// tslint:disable-next-line: unified-signatures
+	constructor(options?: Partial<SignalOptions<number>>);
 	constructor() {
 		super(Object.assign(optionsFromArguments(Multiply.getDefaults(), arguments, ["value"])));
 		const options = optionsFromArguments(Multiply.getDefaults(), arguments, ["value"]);

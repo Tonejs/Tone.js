@@ -3,9 +3,9 @@ import { SignalOperator } from "./SignalOperator";
 import { WaveShaper } from "./WaveShaper";
 
 /**
- *  Return the absolute value of an incoming signal.
+ * Return the absolute value of an incoming signal.
  *
- *  @example
+ * @example
  * var signal = new Tone.Signal(-1);
  * var abs = new Tone.Abs();
  * signal.connect(abs);

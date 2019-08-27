@@ -4,11 +4,9 @@ import { Multiply } from "./Multiply";
 import { SignalOperator } from "./SignalOperator";
 
 /**
- *  @class Negate the incoming signal. i.e. an input signal of 10 will output -10
+ * Negate the incoming signal. i.e. an input signal of 10 will output -10
  *
- *  @constructor
- *  @extends {Tone.SignalBase}
- *  @example
+ * @example
  * var neg = new Negate();
  * var sig = new Signal(-2).connect(neg);
  * //output of neg is positive 2.
