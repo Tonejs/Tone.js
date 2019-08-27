@@ -1,3 +1,5 @@
+### 13.8.24
+
 * Moving to common.js-style code
 * Including tone.d.ts in builds (still WIP)
 
