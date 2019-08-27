@@ -23,7 +23,6 @@ export interface SynthOptions extends MonophonicOptions {
  * | OmniOscillator +>--> AmplitudeEnvelope +>--> Output
  * +----------------+   +-------------------+
  * ```
- * @param options the options available for the synth.
  * @example
  * var synth = new Synth().toDestination();
  * synth.triggerAttackRelease("C4", "8n");
@@ -52,6 +51,9 @@ export class Synth<Options extends SynthOptions = SynthOptions> extends Monophon
 	 */
 	readonly envelope: AmplitudeEnvelope;
 
+	/**
+	 * @param options the options available for the synth.
+	 */
 	constructor(options?: RecursivePartial<SynthOptions>);
 	constructor() {
 		super(optionsFromArguments(Synth.getDefaults(), arguments));

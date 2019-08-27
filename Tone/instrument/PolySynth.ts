@@ -41,10 +41,7 @@ interface PolySynthOptions<Voice> extends InstrumentOptions {
  * one of the other types of synths, allowing any of the
  * monophonic synthesizers to be polyphonic.
  *
- *  @param polyphony The maximum polyphony of the synth
- *  @param voice The constructor of the voices
- *  @param options	The options object to set the synth voice
- *  @example
+ * @example
  * //a polysynth composed of 6 Voices of Synth
  * var synth = new PolySynth(6, Tone.Synth, {
  *   oscillator : {
@@ -87,6 +84,11 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 
 	private readonly voice: VoiceConstructor<Voice>;
 
+	/**
+	 * @param polyphony The maximum polyphony of the synth
+	 * @param voice The constructor of the voices
+	 * @param options	The options object to set the synth voice
+	 */
 	constructor(
 		polyphony?: number,
 		voice?: VoiceConstructor<Voice>,

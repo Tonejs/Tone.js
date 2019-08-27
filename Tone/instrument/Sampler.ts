@@ -30,12 +30,7 @@ interface SamplerOptions extends InstrumentOptions {
  * were not explicitly included which can save loading time.
  *
  * For sample or buffer playback where repitching is not necessary,
- * use {@link Player}.
- * @param samples An object of samples mapping either Midi
- *                         Note Numbers or Scientific Pitch Notation
- *                         to the url of that sample.
- * @param onload The callback to invoke when all of the samples are loaded.
- * @param baseUrl The root URL of all of the samples, which is prepended to all the URLs.
+ * use [[Player]].
  * @example
  * var sampler = new Sampler({
  * 	"C3" : "path/to/C3.mp3",
@@ -79,9 +74,20 @@ export class Sampler extends Instrument<SamplerOptions> {
 	 */
 	curve: ToneBufferSourceCurve;
 
-	constructor(options?: Partial<SamplerOptions>);
-	constructor(samples?: SamplesMap, options?: Partial<Omit<SamplerOptions, "urls">>);
+	/**
+	 * @param samples An object of samples mapping either Midi Note Numbers or
+	 * 				Scientific Pitch Notation to the url of that sample.
+	 * @param onload The callback to invoke when all of the samples are loaded.
+	 * @param baseUrl The root URL of all of the samples, which is prepended to all the URLs.
+	 */
 	constructor(samples?: SamplesMap, onload?: () => void, baseUrl?: string);
+	/**
+	 * @param samples An object of samples mapping either Midi Note Numbers or
+	 * 				Scientific Pitch Notation to the url of that sample.
+	 * @param options The remaining options associated with the sampler
+	 */
+	constructor(samples?: SamplesMap, options?: Partial<Omit<SamplerOptions, "urls">>);
+	constructor(options?: Partial<SamplerOptions>);
 	constructor() {
 
 		super(optionsFromArguments(Sampler.getDefaults(), arguments, ["urls", "onload", "baseUrl"], "urls"));

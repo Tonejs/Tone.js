@@ -18,7 +18,6 @@ export interface MembraneSynthOptions extends SynthOptions {
  * during MembraneSynth.triggerAttack(note). The frequency envelope
  * starts at <code>note * .octaves</code> and ramps to <code>note</code>
  * over the duration of <code>.pitchDecay</code>.
- * @param options the options available for the synth see defaults below
  * @example
  * var synth = new MembraneSynth().toMaster();
  * synth.triggerAttackRelease("C2", "8n");
@@ -42,6 +41,9 @@ export class MembraneSynth extends Synth<MembraneSynthOptions> {
 	 */
 	readonly portamento = 0;
 
+	/**
+	 * @param options the options available for the synth see defaults
+	 */
 	constructor(options?: RecursivePartial<MembraneSynthOptions>)
 	constructor() {
 
