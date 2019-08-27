@@ -15,6 +15,9 @@ export interface OneShotSourceOptions extends ToneAudioNodeOptions {
 	curve: OneShotSourceCurve;
 }
 
+/**
+ * Base class for fire-and-forget nodes
+ */
 export abstract class OneShotSource<Options extends ToneAudioNodeOptions> extends ToneAudioNode<Options> {
 
 	/**

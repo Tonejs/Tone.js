@@ -23,9 +23,6 @@ import { FMConstructorOptions, FMOscillatorOptions,
  * +-----------------+
  * ```
  *
- * @param frequency The starting frequency of the oscillator.
- * @param type The type of the carrier oscillator.
- * @param modulationType The type of the modulator oscillator.
  * @example
  * //a sine oscillator frequency-modulated by a square wave
  * var fmOsc = new FMOscillator("Ab3", "sine", "square").toDestination().start();
@@ -79,8 +76,13 @@ export class FMOscillator extends Source<FMOscillatorOptions> implements ToneOsc
 		gain: 0,
 	});
 
-	constructor(options?: Partial<FMConstructorOptions>);
+	/**
+	 * @param frequency The starting frequency of the oscillator.
+	 * @param type The type of the carrier oscillator.
+	 * @param modulationType The type of the modulator oscillator.
+	 */
 	constructor(frequency?: Frequency, type?: ToneOscillatorType, modulationType?: ToneOscillatorType);
+	constructor(options?: Partial<FMConstructorOptions>);
 	constructor() {
 
 		super(optionsFromArguments(FMOscillator.getDefaults(), arguments, ["frequency", "type", "modulationType"]));

@@ -13,11 +13,7 @@ interface ToneOscillatorNodeOptions extends OneShotSourceOptions {
 /**
  * Wrapper around the native fire-and-forget OscillatorNode.
  * Adds the ability to reschedule the stop method.
- * ***[Tone.Oscillator](Oscillator) is better for most use-cases***
- *  @extends {Tone.AudioNode}
- *  @param  {AudioBuffer|Tone.Buffer}  buffer   The buffer to play
- *  @param  {Function}  onload  The callback to invoke when the
- *                               buffer is done playing.
+ * ***[[Oscillator]] is better for most use-cases***
  */
 export class ToneOscillatorNode extends OneShotSource<ToneOscillatorNodeOptions> {
 
@@ -40,6 +36,10 @@ export class ToneOscillatorNode extends OneShotSource<ToneOscillatorNodeOptions>
 	readonly detune: Param<Cents>;
 
 	constructor(options?: Partial<ToneOscillatorNodeOptions>);
+	/**
+	 *  @param  frequency   The frequency value
+	 *  @param  type  The basic oscillator type
+	 */
 	constructor(
 		frequency: Frequency,
 		type: OscillatorType,

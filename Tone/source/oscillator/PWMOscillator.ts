@@ -13,9 +13,6 @@ import { PulseOscillator } from "./PulseOscillator";
  * at the modulationFrequency. This has the effect of continuously
  * changing the timbre of the oscillator by altering the harmonics
  * generated.
- *
- * @param {Frequency} frequency The starting frequency of the oscillator.
- * @param {Frequency} modulationFrequency The modulation frequency of the width of the pulse.
  * @example
  *  var pwm = new PWMOscillator("Ab3", 0.3).toDestination().start();
  */
@@ -58,8 +55,12 @@ export class PWMOscillator extends Source<PWMOscillatorOptions> implements ToneO
 	 */
 	readonly modulationFrequency: Signal<Frequency>;
 
-	constructor(options?: Partial<PWMOscillatorOptions>);
+	/**
+	 * @param {Frequency} frequency The starting frequency of the oscillator.
+	 * @param {Frequency} modulationFrequency The modulation frequency of the width of the pulse.
+	 */
 	constructor(frequency?: Frequency, modulationFrequency?: Frequency);
+	constructor(options?: Partial<PWMOscillatorOptions>);
 	constructor() {
 		super(optionsFromArguments(PWMOscillator.getDefaults(), arguments, ["frequency", "modulationFrequency"]));
 		const options = optionsFromArguments(PWMOscillator.getDefaults(), arguments, ["frequency", "modulationFrequency"]);

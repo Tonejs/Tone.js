@@ -17,13 +17,11 @@ export interface SourceOptions extends ToneAudioNodeOptions {
 }
 
 /**
- *  @class  Base class for sources. Sources have start/stop methods
- *          and the ability to be synced to the
- *          start/stop of this.context.transport.
+ * Base class for sources. Sources have start/stop methods
+ * and the ability to be synced to the
+ * start/stop of this.context.transport.
  *
- *  @constructor
- *  @extends {Tone.AudioNode}
- *  @example
+ * @example
  * //Multiple state change events can be chained together,
  * //but must be set in the correct order and with ascending times
  *

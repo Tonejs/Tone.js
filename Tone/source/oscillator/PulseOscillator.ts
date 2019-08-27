@@ -37,8 +37,6 @@ import { PulseOscillatorOptions, ToneOscillatorInterface } from "./OscillatorInt
  *       | |                                         | |
  * +-----+ +-------+                                 +-+
  * ```
- * @param frequency The frequency of the oscillator
- * @param width The width of the pulse
  * @example
  * var pulse = new PulseOscillator("E5", 0.4).toDestination().start();
  */
@@ -82,8 +80,12 @@ export class PulseOscillator extends Source<PulseOscillatorOptions> implements T
 		mapping: val => val <= 0 ? -1 : 1,
 	});
 
-	constructor(options?: Partial<PulseOscillatorOptions>);
+	/**
+	 * @param frequency The frequency of the oscillator
+	 * @param width The width of the pulse
+	 */
 	constructor(frequency?: Frequency, width?: AudioRange);
+	constructor(options?: Partial<PulseOscillatorOptions>);
 	constructor() {
 
 		super(optionsFromArguments(PulseOscillator.getDefaults(), arguments, ["frequency", "width"]));

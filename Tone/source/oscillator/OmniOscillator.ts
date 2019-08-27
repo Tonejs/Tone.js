@@ -20,13 +20,6 @@ import { PWMOscillator } from "./PWMOscillator";
 type AnyOscillator = Oscillator | PWMOscillator | PulseOscillator | FatOscillator | AMOscillator | FMOscillator;
 
 /**
- * The constructor of each of the OmniOscillator types
- */
-type TypeofAnyOscillator = typeof Oscillator | typeof PWMOscillator |
-	typeof PulseOscillator | typeof FatOscillator |
-	typeof AMOscillator | typeof FMOscillator;
-
-/**
  * All of the Oscillator constructor types mapped to their name.
  */
 interface OmniOscillatorSource {
@@ -73,9 +66,6 @@ const OmniOscillatorSourceMap: {
  * will use the FMOscillator, AMOscillator or FatOscillator respectively.
  * For example: `omniOsc.type = "fatsawtooth"` will create set the oscillator
  * to a FatOscillator of type "sawtooth".
- *
- * @param frequency The initial frequency of the oscillator.
- * @param type The type of the oscillator.
  * @example
  * var omniOsc = new OmniOscillator("C#4", "pwm");
  */
@@ -105,8 +95,12 @@ implements Omit<ToneOscillatorInterface, "type"> {
 	 */
 	private _sourceType!: OmniOscSourceType;
 
-	constructor(options?: Partial<OmniOscillatorConstructorOptions>);
+	/**
+	 * @param frequency The initial frequency of the oscillator.
+	 * @param type The type of the oscillator.
+	 */
 	constructor(frequency?: Frequency, type?: OmniOscillatorType);
+	constructor(options?: Partial<OmniOscillatorConstructorOptions>);
 	constructor() {
 
 		super(optionsFromArguments(OmniOscillator.getDefaults(), arguments, ["frequency", "type"]));

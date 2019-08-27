@@ -21,10 +21,6 @@ interface PlayerOptions extends SourceOptions {
 
 /**
  * Player is an audio file player with start, loop, and stop functions.
- *
- * @param url Either the AudioBuffer or the url from which to load the AudioBuffer
- * @param onload The function to invoke when the buffer is loaded.
- *                            Recommended to use Tone.Buffer.on('load') instead.
  * @example
  * var player = new Player("./path/to/sample.mp3").toDestination();
  * //play as soon as the buffer is loaded
@@ -86,8 +82,12 @@ export class Player extends Source<PlayerOptions> {
 	 */
 	fadeOut: Time;
 
-	constructor(options?: Partial<PlayerOptions>);
+	/**
+	 * @param url Either the AudioBuffer or the url from which to load the AudioBuffer
+	 * @param onload The function to invoke when the buffer is loaded.
+	 */
 	constructor(url?: string | AudioBuffer | ToneAudioBuffer, onload?: () => void);
+	constructor(options?: Partial<PlayerOptions>);
 	constructor() {
 
 		super(optionsFromArguments(Player.getDefaults(), arguments, ["url", "onload"]));

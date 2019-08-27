@@ -13,8 +13,6 @@ import { ToneOscillatorNode } from "./OscillatorNode";
  *  phase rotation, multiple oscillator types (see Oscillator.type),
  *  and Transport syncing (see Oscillator.syncFrequency).
  *
- *  @param frequency Starting frequency
- *  @param type The oscillator type. Read more about type below.
  *  @example
  * //make and start a 440hz sine tone
  * var osc = new Oscillator(440, "sine").toDestination().start();
@@ -60,13 +58,15 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 
 	/**
 	 *  the type of the oscillator
-	 *  @type {string}
-	 *  @private
 	 */
-	private _type;
+	private _type: ToneOscillatorType;
 
-	constructor(options?: Partial<ToneOscillatorConstructorOptions>)
+	/**
+	 *  @param frequency Starting frequency
+	 *  @param type The oscillator type. Read more about type below.
+	 */
 	constructor(frequency?: Frequency, type?: ToneOscillatorType);
+	constructor(options?: Partial<ToneOscillatorConstructorOptions>)
 	constructor() {
 
 		super(optionsFromArguments(Oscillator.getDefaults(), arguments, ["frequency", "type"]));
@@ -91,7 +91,7 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 		this._type = options.type;
 
 		if (options.partialCount && options.type !== "custom") {
-			this._type = this.baseType + options.partialCount.toString();
+			this._type = this.baseType + options.partialCount.toString() as ToneOscillatorType;
 		}
 		this.phase = options.phase;
 	}
@@ -121,7 +121,7 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 		if (this._wave) {
 			this._oscillator.setPeriodicWave(this._wave);
 		} else {
-			this._oscillator.type = this._type;
+			this._oscillator.type = this._type as OscillatorType;
 		}
 		// connect the control signal to the oscillator frequency & detune
 		this._oscillator.connect(this.output);
@@ -291,7 +291,7 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 	 * osc.partialCount = 2
 	 */
 	get baseType(): OscillatorType {
-		return this._type.replace(this.partialCount, "");
+		return (this._type as string).replace(this.partialCount.toString(), "") as OscillatorType;
 	}
 	set baseType(baseType: OscillatorType) {
 		if (this.partialCount && this._type !== "custom" && baseType !== "custom") {
@@ -319,7 +319,7 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 		let type = this._type;
 		const partial = /^(sine|triangle|square|sawtooth)(\d+)$/.exec(this._type);
 		if (partial) {
-			type = partial[1];
+			type = partial[1] as OscillatorType;
 		}
 		if (this._type !== "custom") {
 			if (p === 0) {

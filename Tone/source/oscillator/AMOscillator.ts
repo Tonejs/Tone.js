@@ -25,9 +25,6 @@ import { AMConstructorOptions, AMOscillatorOptions,
  * +---------------+
  * ```
  *
- * @param frequency The starting frequency of the oscillator.
- * @param type The type of the carrier oscillator.
- * @param modulationType The type of the modulator oscillator.
  * @example
  * //a sine oscillator frequency-modulated by a square wave
  * var fmOsc = new AMOscillator("Ab3", "sine", "square").toDestination().start();
@@ -78,8 +75,13 @@ export class AMOscillator extends Source<AMOscillatorOptions> implements ToneOsc
 		context: this.context,
 	});
 
-	constructor(options?: Partial<AMConstructorOptions>);
+	/**
+	 * @param frequency The starting frequency of the oscillator.
+	 * @param type The type of the carrier oscillator.
+	 * @param modulationType The type of the modulator oscillator.
+	 */
 	constructor(frequency?: Frequency, type?: ToneOscillatorType, modulationType?: ToneOscillatorType);
+	constructor(options?: Partial<AMConstructorOptions>);
 	constructor() {
 
 		super(optionsFromArguments(AMOscillator.getDefaults(), arguments, ["frequency", "type", "modulationType"]));

@@ -19,7 +19,6 @@ interface NoiseOptions extends SourceOptions {
  * Noise supports the noise types: "pink", "white", and "brown". Read more about
  * colors of noise on [Wikipedia](https://en.wikipedia.org/wiki/Colors_of_noise).
  *
- * @param type the noise type (white|pink|brown)
  * @example
  * //initialize the noise and start
  * var noise = new Noise("pink").start();
@@ -66,6 +65,9 @@ export class Noise extends Source<NoiseOptions> {
 	 */
 	protected _fadeOut: Time;
 
+	/**
+	 * @param type the noise type (white|pink|brown)
+	 */
 	constructor(type?: NoiseType);
 	// tslint:disable-next-line: unified-signatures
 	constructor(options?: Partial<NoiseOptions>);
