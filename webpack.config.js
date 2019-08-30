@@ -15,8 +15,7 @@ const defaults = {
 		path : path.resolve(__dirname, "build"),
 		filename : "[name].js",
 		library: "Tone",
-		libraryTarget : "umd",
-		globalObject : "typeof self !== 'undefined' ? self : this",
+		libraryTarget : "umd"
 	},
 	resolve : {
 		extensions: ['.ts', '.js']
