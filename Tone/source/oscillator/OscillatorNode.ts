@@ -35,7 +35,6 @@ export class ToneOscillatorNode extends OneShotSource<ToneOscillatorNodeOptions>
 	 */
 	readonly detune: Param<Cents>;
 
-	constructor(options?: Partial<ToneOscillatorNodeOptions>);
 	/**
 	 * @param  frequency   The frequency value
 	 * @param  type  The basic oscillator type
@@ -44,6 +43,7 @@ export class ToneOscillatorNode extends OneShotSource<ToneOscillatorNodeOptions>
 		frequency: Frequency,
 		type: OscillatorType,
 	);
+	constructor(options?: Partial<ToneOscillatorNodeOptions>);
 	constructor() {
 
 		super(optionsFromArguments(ToneOscillatorNode.getDefaults(), arguments, ["frequency", "type"]));
