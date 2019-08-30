@@ -4,9 +4,9 @@ import { optionsFromArguments } from "../core/util/Defaults";
 import { Source, SourceOptions } from "../source/Source";
 import { ToneBufferSource } from "./buffer/BufferSource";
 
-type NoiseType = "white" | "brown" | "pink";
+export type NoiseType = "white" | "brown" | "pink";
 
-interface NoiseOptions extends SourceOptions {
+export interface NoiseOptions extends SourceOptions {
 	type: NoiseType;
 	playbackRate: Positive;
 	fadeIn: Time;
