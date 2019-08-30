@@ -1,19 +1,12 @@
 export { getContext, setContext } from "./core/Global";
-export * from "./core/index";
-export * from "./source/index";
-export * from "./signal/index";
-export * from "./instrument/index";
-export * from "./event/index";
-export * from "./effect/index";
-export * from "./component/index";
-import { Seconds } from "./core/type/Units";
-
+export * from "./classes";
 import { getContext } from "./core/Global";
 export { start } from "./core/Global";
+
 /**
  *  The current audio context time
  */
-export function now(): Seconds {
+export function now(): import("./core/type/Units").Seconds {
 	return getContext().now();
 }
 
