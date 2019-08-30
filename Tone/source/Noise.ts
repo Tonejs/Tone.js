@@ -142,10 +142,7 @@ export class Noise extends Source<NoiseOptions> {
 	}
 
 	/**
-	 *  internal stop method
-	 *
-	 * @param {Time} time
-	 * @private
+	 * internal stop method
 	 */
 	protected _stop(time?: Time): void {
 		if (this._source) {

@@ -344,10 +344,9 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 	}
 
 	/**
-	 *  Returns the real and imaginary components based
-	 *  on the oscillator type.
+	 * Returns the real and imaginary components based
+	 * on the oscillator type.
 	 * @returns [real: Float32Array, imaginary: Float32Array]
-	 * @private
 	 */
 	private _getRealImaginary(type: ToneOscillatorType, phase: Radians): Float32Array[] {
 		const fftSize = 4096;

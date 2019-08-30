@@ -203,8 +203,7 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	 *  Get the curve
 	 * @param  curve
 	 * @param  direction  In/Out
-	 * @return  {String}  The curve name
-	 * @private
+	 * @return The curve name
 	 */
 	private _getCurve(curve: InternalEnvelopeCurve, direction: EnvelopeDirection): EnvelopeCurve {
 		if (isString(curve)) {

@@ -206,7 +206,6 @@ export class Sequence<ValueType = any> extends ToneEvent<ValueType> {
 	 *  Get the time of the index given the Sequence's subdivision
 	 * @param  index
 	 * @return The time of that index
-	 * @private
 	 */
 	private _indexTime(index: number): Seconds {
 		return new TicksClass(this.context, index * (this._subdivision) + this.startOffset).toSeconds();

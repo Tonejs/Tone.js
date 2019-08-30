@@ -49,7 +49,6 @@ export class Sampler extends Instrument<SamplerOptions> {
 	/**
 	 * The stored and loaded buffers
 	 * @type {Tone.Buffers}
-	 * @private
 	 */
 	private _buffers: ToneAudioBuffers;
 

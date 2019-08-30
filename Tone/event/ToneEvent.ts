@@ -141,7 +141,6 @@ export class ToneEvent<ValueType = any> extends ToneWithContext<ToneEventOptions
 	 *  Reschedule all of the events along the timeline
 	 *  with the updated values.
 	 * @param after Only reschedules events after the given time.
-	 * @private
 	 */
 	private _rescheduleEvents(after: Ticks = -1): void {
 		// if no argument is given, schedules all of the events

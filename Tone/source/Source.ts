@@ -79,11 +79,9 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 	}> = new StateTimeline("stopped");
 
 	/**
-	 *  The synced `start` callback function from the transport
-	 * @type {Function}
-	 * @private
+	 * The synced `start` callback function from the transport
 	 */
-	protected _synced = false;
+	protected _synced: boolean = false;
 
 	/**
 	 *  Keep track of all of the scheduled event ids

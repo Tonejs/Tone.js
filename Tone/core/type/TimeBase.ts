@@ -224,7 +224,6 @@ export abstract class TimeBaseClass<Type extends number, Unit extends string> ex
 
 	/**
 	 *  Returns the value of a tick in the current time units
-	 * @private
 	 */
 	protected _ticksToUnits(ticks: Ticks): Type {
 		return (ticks * (this._beatsToUnits(1)) / this._getPPQ()) as Type;
