@@ -197,7 +197,6 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 	/**
 	 *  called on every tick
 	 * @param  tickTime clock relative tick time
-	 * @private
 	 */
 	private _processTick(tickTime: Seconds, ticks: Ticks): void {
 		// handle swing
