@@ -54,8 +54,8 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 	private _events: Set<ToneEvent> = new Set();
 
 	/**
-	 *  @param callback The callback to invoke on each event
-	 *  @param events the array of events
+	 * @param callback The callback to invoke on each event
+	 * @param events the array of events
 	 */
 	constructor(callback?: ToneEventCallback<CallbackType<ValueType>>, value?: ValueType[]);
 	constructor(options?: Partial<PartOptions<ValueType>>);
@@ -82,8 +82,8 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 
 	/**
 	 *  Start the part at the given time.
-	 *  @param  time    When to start the part.
-	 *  @param  offset  The offset from the start of the part to begin playing at.
+	 * @param  time    When to start the part.
+	 * @param  offset  The offset from the start of the part to begin playing at.
 	 */
 	start(time?: TransportTime, offset?: Time): this {
 		const ticks = this.toTicks(time);
@@ -111,9 +111,9 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 	/**
 	 *  Start the event in the given event at the correct time given
 	 *  the ticks and offset and looping.
-	 *  @param  event
-	 *  @param  ticks
-	 *  @param  offset
+	 * @param  event
+	 * @param  ticks
+	 * @param  offset
 	 */
 	private _startNote(event: ToneEvent, ticks: Ticks, offset: Ticks): void {
 		ticks -= offset;
@@ -145,7 +145,7 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 
 	/**
 	 *  Stop the part at the given time.
-	 *  @param  time  When to stop the part.
+	 * @param  time  When to stop the part.
 	 */
 	stop(time?: TransportTime): this {
 		const ticks = this.toTicks(time);
@@ -198,9 +198,9 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 
 	/**
 	 *  Add a an event to the part.
-	 *  @param time The time the note should start. If an object is passed in, it should
+	 * @param time The time the note should start. If an object is passed in, it should
 	 *  			have a 'time' attribute and the rest of the object will be used as the 'value'.
-	 *  @param  value
+	 * @param  value
 	 * @example
 	 * part.add("1m", "C#+11");
 	 * @example
@@ -269,8 +269,8 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 	/**
 	 *  Remove an event from the part. If the event at that time is a Part,
 	 *  it will remove the entire part.
-	 *  @param time The time of the event
-	 *  @param value Optionally select only a specific event value
+	 * @param time The time of the event
+	 * @param value Optionally select only a specific event value
 	 */
 	remove(obj: {
 		time: Time,
@@ -306,7 +306,7 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 
 	/**
 	 *  Cancel scheduled state change events: i.e. "start" and "stop".
-	 *  @param after The time after which to cancel the scheduled events.
+	 * @param after The time after which to cancel the scheduled events.
 	 */
 	cancel(after?: TransportTime | TransportTimeClass): this {
 		this._forEach(event => event.cancel(after));
@@ -332,8 +332,8 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 
 	/**
 	 *  Set the attribute of all of the events
-	 *  @param  attr  the attribute to set
-	 *  @param  value      The value to set it to
+	 * @param  attr  the attribute to set
+	 * @param  value      The value to set it to
 	 */
 	private _setAll(attr: string, value: any): void {
 		this._forEach(event => {
@@ -343,7 +343,7 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 
 	/**
 	 *  Internal tick method
-	 *  @param  time  The time of the event in seconds
+	 * @param  time  The time of the event in seconds
 	 */
 	protected _tick(time: Seconds, value?: any): void {
 		if (!this.mute) {
@@ -354,7 +354,7 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 	/**
 	 *  Determine if the event should be currently looping
 	 *  given the loop boundries of this Part.
-	 *  @param  event  The event to test
+	 * @param  event  The event to test
 	 */
 	private _testLoopBoundries(event: ToneEvent): void {
 		if (this._loop && (event.startOffset < this._loopStart || event.startOffset >= this._loopEnd)) {
@@ -420,9 +420,9 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 	/**
 	 *  The loopEnd point determines when it will
 	 *  loop if Part.loop is true.
-	 *  @memberOf Part#
-	 *  @type {Time}
-	 *  @name loopEnd
+	 * @memberOf Part#
+	 * @type {Time}
+	 * @name loopEnd
 	 */
 	get loopEnd(): Time {
 		return new TicksClass(this.context, this._loopEnd).toSeconds();

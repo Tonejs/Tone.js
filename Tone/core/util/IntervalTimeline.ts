@@ -38,7 +38,7 @@ export class IntervalTimeline extends Tone {
 	/**
 	 *  The event to add to the timeline. All events must
 	 *  have a time and duration value
-	 *  @param  event  The event to add to the timeline
+	 * @param  event  The event to add to the timeline
 	 */
 	add(event: IntervalTimelineEvent): this {
 		this.assert(isDefined(event.time), "Events must have a time property");
@@ -64,7 +64,7 @@ export class IntervalTimeline extends Tone {
 
 	/**
 	 *  Remove an event from the timeline.
-	 *  @param  event  The event to remove from the timeline
+	 * @param  event  The event to remove from the timeline
 	 */
 	remove(event: IntervalTimelineEvent): this {
 		if (this._root !== null) {
@@ -83,7 +83,7 @@ export class IntervalTimeline extends Tone {
 
 	/**
 	 *  The number of items in the timeline.
-	 *  @readOnly
+	 * @readOnly
 	 */
 	get length(): number {
 		return this._length;
@@ -91,7 +91,7 @@ export class IntervalTimeline extends Tone {
 
 	/**
 	 *  Remove events whose time time is after the given time
-	 *  @param  time  The time to query.
+	 * @param  time  The time to query.
 	 */
 	cancel(after: number): this {
 		this.forEachFrom(after, event => this.remove(event));
@@ -262,7 +262,7 @@ export class IntervalTimeline extends Tone {
 	/**
 	 *  Get an event whose time and duration span the give time. Will
 	 *  return the match whose "time" value is closest to the given time.
-	 *  @return  The event which spans the desired time
+	 * @return  The event which spans the desired time
 	 */
 	get(time: number): IntervalTimelineEvent | null {
 		if (this._root !== null) {
@@ -283,7 +283,7 @@ export class IntervalTimeline extends Tone {
 
 	/**
 	 *  Iterate over everything in the timeline.
-	 *  @param  callback The callback to invoke with every item
+	 * @param  callback The callback to invoke with every item
 	 */
 	forEach(callback: IteratorCallback): this {
 		if (this._root !== null) {
@@ -301,8 +301,8 @@ export class IntervalTimeline extends Tone {
 	/**
 	 *  Iterate over everything in the array in which the given time
 	 *  overlaps with the time and duration time of the event.
-	 *  @param  time The time to check if items are overlapping
-	 *  @param  callback The callback to invoke with every item
+	 * @param  time The time to check if items are overlapping
+	 * @param  callback The callback to invoke with every item
 	 */
 	forEachAtTime(time: number, callback: IteratorCallback): this {
 		if (this._root !== null) {
@@ -320,8 +320,8 @@ export class IntervalTimeline extends Tone {
 	/**
 	 *  Iterate over everything in the array in which the time is greater
 	 *  than or equal to the given time.
-	 *  @param  time The time to check if items are before
-	 *  @param  callback The callback to invoke with every item
+	 * @param  time The time to check if items are before
+	 * @param  callback The callback to invoke with every item
 	 */
 	forEachFrom(time: number, callback: IteratorCallback): this {
 		if (this._root !== null) {
@@ -360,8 +360,8 @@ export class IntervalTimeline extends Tone {
  *  References:
  *  https://brooknovak.wordpress.com/2013/12/07/augmented-interval-tree-in-c/
  *  http://www.mif.vu.lt/~valdas/ALGORITMAI/LITERATURA/Cormen/Cormen.pdf
- *  @param low
- *  @param high
+ * @param low
+ * @param high
  */
 // tslint:disable-next-line: max-classes-per-file
 class IntervalNode {
@@ -413,8 +413,8 @@ class IntervalNode {
 	/**
 	 *  Search the tree for nodes which overlap
 	 *  with the given point
-	 *  @param  point  The point to query
-	 *  @param  results  The array to put the results
+	 * @param  point  The point to query
+	 * @param  results  The array to put the results
 	 */
 	search(point: number, results: IntervalNode[]): void {
 		// If p is to the right of the rightmost point of any interval
@@ -444,8 +444,8 @@ class IntervalNode {
 	/**
 	 *  Search the tree for nodes which are less
 	 *  than the given point
-	 *  @param  point  The point to query
-	 *  @param  results  The array to put the results
+	 * @param  point  The point to query
+	 * @param  results  The array to put the results
 	 */
 	searchAfter(point: number, results: IntervalNode[]): void {
 		// Check this node
@@ -463,7 +463,7 @@ class IntervalNode {
 
 	/**
 	 *  Invoke the callback on this element and both it's branches
-	 *  @param  {Function}  callback
+	 * @param  {Function}  callback
 	 */
 	traverse(callback: (self: IntervalNode) => void): void {
 		callback(this);
@@ -505,7 +505,7 @@ class IntervalNode {
 
 	/**
 	 *  The balance is how the leafs are distributed on the node
-	 *  @return  Negative numbers are balanced to the right
+	 * @return  Negative numbers are balanced to the right
 	 */
 	getBalance(): number {
 		let balance = 0;
@@ -520,7 +520,7 @@ class IntervalNode {
 	}
 
 	/**
-	 *  @returns true if this node is the left child of its parent
+	 * @returns true if this node is the left child of its parent
 	 */
 	isLeftChild(): boolean {
 		return this.parent !== null && this.parent.left === this;

@@ -42,7 +42,7 @@ export class Reverb extends Effect<ReverbOptions> {
 	preDelay: Seconds;
 
 	/**
-	 *  @param decay The amount of time it will reverberate for.
+	 * @param decay The amount of time it will reverberate for.
 	 */
 	constructor(decay?: Seconds);
 	// tslint:disable-next-line: unified-signatures

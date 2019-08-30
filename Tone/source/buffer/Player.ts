@@ -165,10 +165,10 @@ export class Player extends Source<PlayerOptions> {
 	 *  and/or duration which will play the buffer from a position
 	 *  within the buffer for the given duration.
 	 *
-	 *  @param  time When the player should start.
-	 *  @param  offset The offset from the beginning of the sample
+	 * @param  time When the player should start.
+	 * @param  offset The offset from the beginning of the sample
 	 *                                 to start at.
-	 *  @param  duration How long the sample should play. If no duration is given, it will default to the full length
+	 * @param  duration How long the sample should play. If no duration is given, it will default to the full length
 	 *                   of the sample (minus any offset)
 	 */
 	start(time?: Time, offset?: Time, duration?: Time): this {
@@ -265,10 +265,10 @@ export class Player extends Source<PlayerOptions> {
 	 *  Seek to a specific time in the player's buffer. If the
 	 *  source is no longer playing at that time, it will stop.
 	 *  If you seek to a time that
-	 *  @param {Time} offset The time to seek to.
-	 *  @param {Time=} time The time for the seek event to occur.
-	 *  @return {Player} this
-	 *  @example
+	 * @param {Time} offset The time to seek to.
+	 * @param {Time=} time The time for the seek event to occur.
+	 * @return {Player} this
+	 * @example
 	 * source.start(0.2);
 	 * source.stop(0.4);
 	 */

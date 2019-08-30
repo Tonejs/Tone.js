@@ -213,7 +213,7 @@ extends ToneWithContext<Options> {
 
 	/**
 	 *  disconnect the output
-	 *  @param output Either the output index to disconnect if the output is an array, or the node to disconnect from.
+	 * @param output Either the output index to disconnect if the output is an array, or the node to disconnect from.
 	 */
 	disconnect(destination?: InputNode, outputNum = 0, inputNum = 0): this {
 		disconnect(this, destination, outputNum, inputNum);
@@ -222,7 +222,7 @@ extends ToneWithContext<Options> {
 
 	/**
 	 *  Connect the output of this node to the rest of the nodes in series.
-	 *  @example
+	 * @example
 	 *  //connect a node to an effect, panVol and then to the master output
 	 *  node.chain(effect, panVol, Tone.Destination);
 	 */
@@ -269,7 +269,7 @@ extends ToneWithContext<Options> {
 
 /**
  *  connect together all of the arguments in series
- *  @param nodes
+ * @param nodes
  */
 export function connectSeries(...nodes: InputNode[]): void {
 	const first = nodes.shift();

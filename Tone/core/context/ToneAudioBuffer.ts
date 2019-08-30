@@ -135,8 +135,8 @@ export class ToneAudioBuffer extends Tone {
 	/**
 	 *  Makes an fetch request for the selected url then decodes the file as an audio buffer.
 	 * 	Invokes the callback once the audio buffer loads.
-	 *  @param url The url of the buffer to load. filetype support depends on the browser.
-	 *  @returns A Promise which resolves with this ToneAudioBuffer
+	 * @param url The url of the buffer to load. filetype support depends on the browser.
+	 * @returns A Promise which resolves with this ToneAudioBuffer
 	 */
 	async load(url: string): Promise<this> {
 		const promise = ToneAudioBuffer.load(url);
@@ -187,7 +187,7 @@ export class ToneAudioBuffer extends Tone {
 
 	/**
 	 * 	Sums multiple channels into 1 channel
-	 *  @param channel Optionally only copy a single channel from the array.
+	 * @param channel Optionally only copy a single channel from the array.
 	 */
 	toMono(chanNum?: number): this {
 		if (isNumber(chanNum)) {
@@ -211,7 +211,7 @@ export class ToneAudioBuffer extends Tone {
 	/**
 	 * 	Get the buffer as an array. Single channel buffers will return a 1-dimensional
 	 * 	Float32Array, and multichannel buffers will return multidimensional arrays.
-	 *  @param channel Optionally only copy a single channel from the array.
+	 * @param channel Optionally only copy a single channel from the array.
 	 */
 	toArray(channel?: number): Float32Array | Float32Array[] {
 		if (isNumber(channel)) {
@@ -229,8 +229,8 @@ export class ToneAudioBuffer extends Tone {
 
 	/**
 	 *  Returns the Float32Array representing the PCM audio data for the specific channel.
-	 *  @param  channel  The channel number to return
-	 *  @return The audio as a TypedArray
+	 * @param  channel  The channel number to return
+	 * @return The audio as a TypedArray
 	 */
 	getChannelData(channel: number): Float32Array {
 		if (this._buffer) {
@@ -243,8 +243,8 @@ export class ToneAudioBuffer extends Tone {
 	/**
 	 *  Cut a subsection of the array and return a buffer of the
 	 *  subsection. Does not modify the original buffer
-	 *  @param start The time to start the slice
-	 *  @param end The end time to slice. If none is given will default to the end of the buffer
+	 * @param start The time to start the slice
+	 * @param end The end time to slice. If none is given will default to the end of the buffer
 	 */
 	slice(start: Seconds, end: Seconds = this.duration): ToneAudioBuffer {
 		const startSamples = Math.floor(start * this.sampleRate);
@@ -335,8 +335,8 @@ export class ToneAudioBuffer extends Tone {
 	/**
 	 *  Create a ToneAudioBuffer from the array. To create a multichannel AudioBuffer,
 	 *  pass in a multidimensional array.
-	 *  @param array The array to fill the audio buffer
-	 *  @return A ToneAudioBuffer created from the array
+	 * @param array The array to fill the audio buffer
+	 * @return A ToneAudioBuffer created from the array
 	 */
 	static fromArray(array: Float32Array | Float32Array[]): ToneAudioBuffer {
 		return (new ToneAudioBuffer()).fromArray(array);
@@ -389,10 +389,10 @@ export class ToneAudioBuffer extends Tone {
 
 	/**
 	 *  Checks a url's extension to see if the current browser can play that file type.
-	 *  @param url The url/extension to test
-	 *  @return If the file extension can be played
-	 *  @static
-	 *  @example
+	 * @param url The url/extension to test
+	 * @return If the file extension can be played
+	 * @static
+	 * @example
 	 * ToneAudioBuffer.supportsType("wav"); //returns true
 	 * ToneAudioBuffer.supportsType("path/to/file.wav"); //returns true
 	 */

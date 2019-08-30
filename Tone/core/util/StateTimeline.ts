@@ -10,7 +10,7 @@ export interface StateTimelineEvent extends TimelineEvent {
 
 /**
  *  A Timeline State. Provides the methods: `setStateAtTime("state", time)` and `getValueAtTime(time)`
- *  @param initial The initial state of the StateTimeline.  Defaults to `undefined`
+ * @param initial The initial state of the StateTimeline.  Defaults to `undefined`
  * @category Core
  */
 export class StateTimeline<AdditionalOptions extends {} = {}> extends Timeline<StateTimelineEvent & AdditionalOptions> {
@@ -30,8 +30,8 @@ export class StateTimeline<AdditionalOptions extends {} = {}> extends Timeline<S
 	/**
 	 *  Returns the scheduled state scheduled before or at
 	 *  the given time.
-	 *  @param  time  The time to query.
-	 *  @return  The name of the state input in setStateAtTime.
+	 * @param  time  The time to query.
+	 * @return  The name of the state input in setStateAtTime.
 	 */
 	getValueAtTime(time: Seconds): PlaybackState {
 		const event = this.get(time);
@@ -60,9 +60,9 @@ export class StateTimeline<AdditionalOptions extends {} = {}> extends Timeline<S
 
 	/**
 	 *  Return the event before the time with the given state
-	 *  @param  state The state to look for
-	 *  @param  time  When to check before
-	 *  @return  The event with the given state before the time
+	 * @param  state The state to look for
+	 * @param  time  When to check before
+	 * @return  The event with the given state before the time
 	 */
 	getLastState(state: PlaybackState, time: number): StateTimelineEvent & AdditionalOptions | undefined {
 		// time = this.toSeconds(time);
@@ -77,9 +77,9 @@ export class StateTimeline<AdditionalOptions extends {} = {}> extends Timeline<S
 
 	/**
 	 *  Return the event after the time with the given state
-	 *  @param  state The state to look for
-	 *  @param  time  When to check from
-	 *  @return  The event with the given state after the time
+	 * @param  state The state to look for
+	 * @param  time  When to check from
+	 * @return  The event with the given state after the time
 	 */
 	getNextState(state: PlaybackState, time: number): StateTimelineEvent & AdditionalOptions | undefined {
 		// time = this.toSeconds(time);

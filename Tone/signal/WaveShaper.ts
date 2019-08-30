@@ -46,7 +46,7 @@ export class WaveShaper extends SignalOperator<WaveShaperOptions> {
 	output = this._shaper;
 
 	/**
-	 *  @param mapping The function used to define the values.
+	 * @param mapping The function used to define the values.
 	 *                 The mapping function should take two arguments:
 	 *                 the first is the value at the current position
 	 *                 and the second is the array position.
@@ -55,7 +55,7 @@ export class WaveShaper extends SignalOperator<WaveShaperOptions> {
 	 *                 signal is an AudioRange [-1, 1] value and the output
 	 *                 signal can take on any numerical values.
 	 *
-	 *  @param bufferLen The length of the WaveShaperNode buffer.
+	 * @param bufferLen The length of the WaveShaperNode buffer.
 	 */
 	constructor(mapping?: WaveShaperMapping , length?: number);
 	constructor(options?: Partial<WaveShaperOptions>);
@@ -78,7 +78,7 @@ export class WaveShaper extends SignalOperator<WaveShaperOptions> {
 
 	/**
 	 *  Uses a mapping function to set the value of the curve.
-	 *  @param mapping The function used to define the values.
+	 * @param mapping The function used to define the values.
 	 *                 The mapping function take two arguments:
 	 *                 the first is the value at the current position
 	 *                 which goes from -1 to 1 over the number of elements

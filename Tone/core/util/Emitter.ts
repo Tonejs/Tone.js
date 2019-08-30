@@ -23,8 +23,8 @@ export class Emitter<EventType extends string = string> extends Tone {
 
 	/**
 	 *  Bind a callback to a specific event.
-	 *  @param  event     The name of the event to listen for.
-	 *  @param  callback  The callback to invoke when the event is emitted
+	 * @param  event     The name of the event to listen for.
+	 * @param  callback  The callback to invoke when the event is emitted
 	 */
 	on(event: EventType, callback: (...args: any[]) => void): this {
 		// split the event
@@ -43,8 +43,8 @@ export class Emitter<EventType extends string = string> extends Tone {
 
 	/**
 	 *  Bind a callback which is only invoked once
-	 *  @param  event     The name of the event to listen for.
-	 *  @param  callback  The callback to invoke when the event is emitted
+	 * @param  event     The name of the event to listen for.
+	 * @param  callback  The callback to invoke when the event is emitted
 	 */
 	once(event: EventType, callback: (...args: any[]) => void): this {
 		const boundCallback = (...args: any[])  => {
@@ -59,8 +59,8 @@ export class Emitter<EventType extends string = string> extends Tone {
 
 	/**
 	 *  Remove the event listener.
-	 *  @param  event     The event to stop listening to.
-	 *  @param  callback  The callback which was bound to the event with Emitter.on.
+	 * @param  event     The event to stop listening to.
+	 * @param  callback  The callback which was bound to the event with Emitter.on.
 	 *                    If no callback is given, all callbacks events are removed.
 	 */
 	off(event: EventType, callback?: (...args: any[]) => void): this {
@@ -88,8 +88,8 @@ export class Emitter<EventType extends string = string> extends Tone {
 	/**
 	 *  Invoke all of the callbacks bound to the event
 	 *  with any arguments passed in.
-	 *  @param  event  The name of the event.
-	 *  @param args The arguments to pass to the functions listening.
+	 * @param  event  The name of the event.
+	 * @param args The arguments to pass to the functions listening.
 	 */
 	emit(event, ...args: any[]): this {
 		if (this._events) {

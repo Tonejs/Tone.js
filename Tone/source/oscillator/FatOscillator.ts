@@ -11,10 +11,10 @@ import { FatConstructorOptions, FatOscillatorOptions,
 
 /**
  *  FatOscillator is an array of oscillators with detune spread between the oscillators
- *  @param frequency The oscillator's frequency.
- *  @param type The type of the oscillator.
- *  @param spread The detune spread between the oscillators.
- *  @example
+ * @param frequency The oscillator's frequency.
+ * @param type The type of the oscillator.
+ * @param spread The detune spread between the oscillators.
+ * @example
  * var fatOsc = new FatOscillator("Ab3", "sine", 40).toDestination().start();
  */
 export class FatOscillator extends Source<FatOscillatorOptions> implements ToneOscillatorInterface {

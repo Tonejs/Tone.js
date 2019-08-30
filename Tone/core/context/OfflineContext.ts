@@ -27,9 +27,9 @@ export class OfflineContext extends Context {
 	protected _context!: OfflineAudioContext;
 
 	/**
-	 *  @param  channels  The number of channels to render
-	 *  @param  duration  The duration to render in seconds
-	 *  @param sampleRate the sample rate to render at
+	 * @param  channels  The number of channels to render
+	 * @param  duration  The duration to render in seconds
+	 * @param sampleRate the sample rate to render at
 	 */
 	constructor(
 		channels: number,

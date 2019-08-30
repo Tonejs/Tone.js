@@ -10,7 +10,7 @@ import { Envelope, EnvelopeOptions } from "./Envelope";
  * of the signal.
  * Read more about ADSR Envelopes on [Wikipedia](https://en.wikipedia.org/wiki/Synthesizer#ADSR_envelope).
  *
- *  @example
+ * @example
  * var ampEnv = new AmplitudeEnvelope({
  * 	"attack": 0.1,
  * 	"decay": 0.2,

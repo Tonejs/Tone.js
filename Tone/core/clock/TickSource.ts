@@ -81,8 +81,8 @@ export class TickSource<Type extends BPM | Hertz> extends ToneWithContext<TickSo
 	/**
 	 *  Start the clock at the given time. Optionally pass in an offset
 	 *  of where to start the tick counter from.
-	 *  @param  time    The time the clock should start
-	 *  @param offset The number of ticks to start the source at
+	 * @param  time    The time the clock should start
+	 * @param offset The number of ticks to start the source at
 	 */
 	start(time: Time, offset?: Ticks): this {
 		const computedTime = this.toSeconds(time);
@@ -117,7 +117,7 @@ export class TickSource<Type extends BPM | Hertz> extends ToneWithContext<TickSo
 
 	/**
 	 *  Pause the clock. Pausing does not reset the tick counter.
-	 *  @param time The time when the clock should stop.
+	 * @param time The time when the clock should stop.
 	 */
 	pause(time: Time): this {
 		const computedTime = this.toSeconds(time);
@@ -129,7 +129,7 @@ export class TickSource<Type extends BPM | Hertz> extends ToneWithContext<TickSo
 
 	/**
 	 *  Cancel start/stop/pause and setTickAtTime events scheduled after the given time.
-	 *  @param time When to clear the events after
+	 * @param time When to clear the events after
 	 */
 	cancel(time: Time): this {
 		time = this.toSeconds(time);
@@ -207,8 +207,8 @@ export class TickSource<Type extends BPM | Hertz> extends ToneWithContext<TickSo
 
 	/**
 	 *  Return the elapsed seconds at the given time.
-	 *  @param  time  When to get the elapsed seconds
-	 *  @return  The number of elapsed seconds
+	 * @param  time  When to get the elapsed seconds
+	 * @return  The number of elapsed seconds
 	 */
 	getSecondsAtTime(time: Time): Seconds {
 		time = this.toSeconds(time);
@@ -264,8 +264,8 @@ export class TickSource<Type extends BPM | Hertz> extends ToneWithContext<TickSo
 
 	/**
 	 *  Returns the scheduled state at the given time.
-	 *  @param  time  The time to query.
-	 *  @example
+	 * @param  time  The time to query.
+	 * @example
 	 * source.start("+0.1");
 	 * source.getStateAtTime("+0.1"); //returns "started"
 	 */
@@ -293,9 +293,9 @@ export class TickSource<Type extends BPM | Hertz> extends ToneWithContext<TickSo
 	/**
 	 *  Invoke the callback event at all scheduled ticks between the
 	 *  start time and the end time
-	 *  @param  startTime  The beginning of the search range
-	 *  @param  endTime    The end of the search range
-	 *  @param  callback   The callback to invoke with each tick
+	 * @param  startTime  The beginning of the search range
+	 * @param  endTime    The end of the search range
+	 * @param  callback   The callback to invoke with each tick
 	 */
 	forEachTickBetween(startTime: Time, endTime: Time, callback: (when: Seconds, ticks: Ticks) => void): this {
 		const computedStartTime = this.toSeconds(startTime);

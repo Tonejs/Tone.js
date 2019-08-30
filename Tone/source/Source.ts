@@ -80,8 +80,8 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 
 	/**
 	 *  The synced `start` callback function from the transport
-	 *  @type {Function}
-	 *  @private
+	 * @type {Function}
+	 * @private
 	 */
 	protected _synced = false;
 
@@ -166,8 +166,8 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 	/**
 	 *  Start the source at the specified time. If no time is given,
 	 *  start the source now.
-	 *  @param  time When the source should be started.
-	 *  @example
+	 * @param  time When the source should be started.
+	 * @example
 	 * source.start("+0.5"); //starts the source 0.5 seconds from now
 	 */
 	start(time?: Time, offset?: Time, duration?: Time): this {
@@ -207,8 +207,8 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 	/**
 	 *  Stop the source at the specified time. If no time is given,
 	 *  stop the source now.
-	 *  @param  time When the source should be stopped.
-	 *  @example
+	 * @param  time When the source should be stopped.
+	 * @example
 	 * source.stop(); // stops the source immediately
 	 */
 	stop(time?: Time): this {

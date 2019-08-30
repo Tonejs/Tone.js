@@ -119,12 +119,12 @@ export abstract class Instrument<Options extends InstrumentOptions> extends Tone
 
 	/**
 	 *  Trigger the attack and then the release after the duration.
-	 *  @param  note     The note to trigger.
-	 *  @param  duration How long the note should be held for before
+	 * @param  note     The note to trigger.
+	 * @param  duration How long the note should be held for before
 	 *                          triggering the release. This value must be greater than 0.
-	 *  @param time  When the note should be triggered.
-	 *  @param  velocity The velocity the note should be triggered at.
-	 *  @example
+	 * @param time  When the note should be triggered.
+	 * @param  velocity The velocity the note should be triggered at.
+	 * @example
 	 * //trigger "C4" for the duration of an 8th note
 	 * synth.triggerAttackRelease("C4", "8n");
 	 */
@@ -148,7 +148,7 @@ export abstract class Instrument<Options extends InstrumentOptions> extends Tone
 
 	/**
 	 * Trigger the release phase of the current note.
-	 *  @param time when to trigger the release
+	 * @param time when to trigger the release
 	 */
 	abstract triggerRelease(...args: any[]): this;
 	// tslint:disable-next-line: variable-name
@@ -156,7 +156,7 @@ export abstract class Instrument<Options extends InstrumentOptions> extends Tone
 
 	/**
 	 *  clean up
-	 *  @returns {Instrument} this
+	 * @returns {Instrument} this
 	 */
 	dispose(): this {
 		super.dispose();

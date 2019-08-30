@@ -31,7 +31,7 @@ export class Negate extends SignalOperator<ToneAudioNodeOptions> {
 
 	/**
 	 *  clean up
-	 *  @returns {Negate} this
+	 * @returns {Negate} this
 	 */
 	dispose(): this {
 		super.dispose();

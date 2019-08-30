@@ -113,8 +113,8 @@ extends ToneWithContext<ClockOptions> implements Emitter<ClockEvent> {
 	/**
 	 *  Start the clock at the given time. Optionally pass in an offset
 	 *  of where to start the tick counter from.
-	 *  @param  time    The time the clock should start
-	 *  @param offset  Where the tick counter starts counting from.
+	 * @param  time    The time the clock should start
+	 * @param offset  Where the tick counter starts counting from.
 	 */
 	start(time?: Time, offset?: Ticks): this {
 		// make sure the context is started
@@ -133,8 +133,8 @@ extends ToneWithContext<ClockOptions> implements Emitter<ClockEvent> {
 
 	/**
 	 *  Stop the clock. Stopping the clock resets the tick counter to 0.
-	 *  @param time The time when the clock should stop.
-	 *  @example
+	 * @param time The time when the clock should stop.
+	 * @example
 	 * clock.stop();
 	 */
 	stop(time?: Time): this {
@@ -150,7 +150,7 @@ extends ToneWithContext<ClockOptions> implements Emitter<ClockEvent> {
 
 	/**
 	 *  Pause the clock. Pausing does not reset the tick counter.
-	 *  @param time The time when the clock should stop.
+	 * @param time The time when the clock should stop.
 	 */
 	pause(time?: Time): this {
 		const computedTime = this.toSeconds(time);
@@ -187,8 +187,8 @@ extends ToneWithContext<ClockOptions> implements Emitter<ClockEvent> {
 
 	/**
 	 *  Return the elapsed seconds at the given time.
-	 *  @param  time  When to get the elapsed seconds
-	 *  @return  The number of elapsed seconds
+	 * @param  time  When to get the elapsed seconds
+	 * @return  The number of elapsed seconds
 	 */
 	getSecondsAtTime(time: Time): Seconds {
 		return this._tickSource.getSecondsAtTime(time);

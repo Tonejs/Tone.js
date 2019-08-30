@@ -48,8 +48,8 @@ export class MidiClass extends FrequencyClass<MidiNote> {
 
 	/**
 	 *  Return the value of the frequency as a MIDI note
-	 *  @return  {MIDI}
-	 *  @example
+	 * @return  {MIDI}
+	 * @example
 	 * Midi(60).toMidi(); //60
 	 */
 	toMidi(): MidiNote {
@@ -58,8 +58,8 @@ export class MidiClass extends FrequencyClass<MidiNote> {
 
 	/**
 	 *  Return the value of the frequency as a MIDI note
-	 *  @return  {MIDI}
-	 *  @example
+	 * @return  {MIDI}
+	 * @example
 	 * Midi(60).toFrequency(); //261.6255653005986
 	 */
 	toFrequency(): Hertz {
@@ -68,8 +68,8 @@ export class MidiClass extends FrequencyClass<MidiNote> {
 
 	/**
 	 *  Transposes the frequency by the given number of semitones.
-	 *  @return A new transposed MidiClass
-	 *  @example
+	 * @return A new transposed MidiClass
+	 * @example
 	 * Midi("A4").transpose(3); //"C5"
 	 */
 	transpose(interval: Interval): MidiClass {

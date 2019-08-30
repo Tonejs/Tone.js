@@ -126,12 +126,12 @@ export class ToneBufferSource extends OneShotSource<ToneBufferSourceOptions> {
 
 	/**
 	 *  Start the buffer
-	 *  @param  time When the player should start.
-	 *  @param  offset The offset from the beginning of the sample to start at.
-	 *  @param  duration How long the sample should play. If no duration
+	 * @param  time When the player should start.
+	 * @param  offset The offset from the beginning of the sample to start at.
+	 * @param  duration How long the sample should play. If no duration
 	 *                   is given, it will default to the full length
 	 *                   of the sample (minus any offset)
-	 *  @param  gain  The gain to play the buffer back at.
+	 * @param  gain  The gain to play the buffer back at.
 	 */
 	start(time?: Time, offset?: Time, duration?: Time, gain: GainFactor = 1): this {
 		this.assert(this.buffer.loaded, "buffer is either not set or not loaded");

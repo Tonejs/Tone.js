@@ -414,9 +414,9 @@ export class Context extends Emitter<"statechange" | "tick"> implements BaseAudi
 	/**
 	 *  A setTimeout which is guarented by the clock source.
 	 *  Also runs in the offline context.
-	 *  @param  fn       The callback to invoke
-	 *  @param  timeout  The timeout in seconds
-	 *  @returns ID to use when invoking Context.clearTimeout
+	 * @param  fn       The callback to invoke
+	 * @param  timeout  The timeout in seconds
+	 * @returns ID to use when invoking Context.clearTimeout
 	 */
 	setTimeout(fn: (...args: any[]) => void, timeout: Seconds): number {
 		this._timeoutIds++;
@@ -431,7 +431,7 @@ export class Context extends Emitter<"statechange" | "tick"> implements BaseAudi
 
 	/**
 	 *  Clears a previously scheduled timeout with Tone.context.setTimeout
-	 *  @param  id  The ID returned from setTimeout
+	 * @param  id  The ID returned from setTimeout
 	 */
 	clearTimeout(id: number): Context {
 		this._timeouts.forEach(event => {

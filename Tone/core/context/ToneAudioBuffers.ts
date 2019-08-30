@@ -99,7 +99,7 @@ export class ToneAudioBuffers extends Tone {
 
 	/**
 	 *  True if the buffers object has a buffer by that name.
-	 *  @param  name  The key or index of the buffer.
+	 * @param  name  The key or index of the buffer.
 	 */
 	has(name: string | number): boolean {
 		return this._buffers.has(name.toString());
@@ -108,7 +108,7 @@ export class ToneAudioBuffers extends Tone {
 	/**
 	 *  Get a buffer by name. If an array was loaded,
 	 *  then use the array index.
-	 *  @param  name  The key or index of the buffer.
+	 * @param  name  The key or index of the buffer.
 	 */
 	get(name: string | number): ToneAudioBuffer {
 		this.assert(this.has(name), `ToneAudioBuffers has no buffer named: ${name}`);
@@ -134,9 +134,9 @@ export class ToneAudioBuffers extends Tone {
 
 	/**
 	 *  Add a buffer by name and url to the Buffers
-	 *  @param  name      A unique name to give the buffer
-	 *  @param  url  Either the url of the bufer, or a buffer which will be added with the given name.
-	 *  @param  callback  The callback to invoke when the url is loaded.
+	 * @param  name      A unique name to give the buffer
+	 * @param  url  Either the url of the bufer, or a buffer which will be added with the given name.
+	 * @param  callback  The callback to invoke when the url is loaded.
 	 */
 	add(
 		name: string | number,

@@ -97,8 +97,8 @@ export class MultibandSplit extends ToneAudioNode<MultibandSplitOptions> {
 	readonly Q: Signal<Positive>;
 
 	/**
-	 *  @param lowFrequency the low/mid crossover frequency
-	 *  @param highFrequency the mid/high crossover frequency
+	 * @param lowFrequency the low/mid crossover frequency
+	 * @param highFrequency the mid/high crossover frequency
 	 */
 	constructor(lowFrequency?: Frequency, highFrequency?: Frequency);
 	constructor(options?: Partial<MultibandSplitOptions>);

@@ -35,7 +35,7 @@ export interface EnvelopeOptions extends ToneAudioNodeOptions {
  *   /                           \
  * ```
  *
- *  @example
+ * @example
  * //an amplitude envelope
  * var gainNode = Tone.context.createGain();
  * var env = new Envelope({
@@ -154,13 +154,13 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	input: InputNode | undefined = undefined;
 
 	/**
-	 *  @param attack The amount of time it takes for the envelope to go from
+	 * @param attack The amount of time it takes for the envelope to go from
 	 *                         0 to it's maximum value.
-	 *  @param decay	The period of time after the attack that it takes for the envelope
+	 * @param decay	The period of time after the attack that it takes for the envelope
 	 *                       	to fall to the sustain value. Value must be greater than 0.
-	 *  @param sustain	The percent of the maximum value that the envelope rests at until
+	 * @param sustain	The percent of the maximum value that the envelope rests at until
 	 *                                	the release is triggered.
-	 *  @param release	The amount of time after the release is triggered it takes to reach 0.
+	 * @param release	The amount of time after the release is triggered it takes to reach 0.
 	 *                         	Value must be greater than 0.
 	 */
 	constructor(attack?: Time, decay?: Time, sustain?: NormalRange, release?: Time);
@@ -201,10 +201,10 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 
 	/**
 	 *  Get the curve
-	 *  @param  curve
-	 *  @param  direction  In/Out
-	 *  @return  {String}  The curve name
-	 *  @private
+	 * @param  curve
+	 * @param  direction  In/Out
+	 * @return  {String}  The curve name
+	 * @private
 	 */
 	private _getCurve(curve: InternalEnvelopeCurve, direction: EnvelopeDirection): EnvelopeCurve {
 		if (isString(curve)) {
@@ -224,9 +224,9 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 
 	/**
 	 *  Assign a the curve to the given name using the direction
-	 *  @param  name
-	 *  @param  direction In/Out
-	 *  @param  curve
+	 * @param  name
+	 * @param  direction In/Out
+	 * @param  curve
 	 */
 	private _setCurve(
 		name: "_attackCurve" | "_decayCurve" | "_releaseCurve",
@@ -367,8 +367,8 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 
 	/**
 	 *  Triggers the release of the envelope.
-	 *  @param  time When the release portion of the envelope should start.
-	 *  @example
+	 * @param  time When the release portion of the envelope should start.
+	 * @example
 	 *  //trigger release immediately
 	 *  env.triggerRelease();
 	 */
@@ -402,10 +402,10 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	/**
 	 *  triggerAttackRelease is shorthand for triggerAttack, then waiting
 	 *  some duration, then triggerRelease.
-	 *  @param duration The duration of the sustain.
-	 *  @param time When the attack should be triggered.
-	 *  @param velocity The velocity of the envelope.
-	 *  @example
+	 * @param duration The duration of the sustain.
+	 * @param time When the attack should be triggered.
+	 * @param velocity The velocity of the envelope.
+	 * @example
 	 * //trigger the attack and then the release after 0.6 seconds.
 	 * env.triggerAttackRelease(0.6);
 	 */

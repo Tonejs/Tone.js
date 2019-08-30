@@ -98,8 +98,8 @@ export class Synth<Options extends SynthOptions = SynthOptions> extends Monophon
 
 	/**
 	 *  start the attack portion of the envelope
-	 *  @param time the time the attack should start
-	 *  @param velocity the velocity of the note (0-1)
+	 * @param time the time the attack should start
+	 * @param velocity the velocity of the note (0-1)
 	 */
 	protected _triggerEnvelopeAttack(time: Seconds, velocity: number): void {
 		// the envelopes
@@ -115,7 +115,7 @@ export class Synth<Options extends SynthOptions = SynthOptions> extends Monophon
 
 	/**
 	 *  start the release portion of the envelope
-	 *  @param time the time the release should start
+	 * @param time the time the release should start
 	 */
 	protected _triggerEnvelopeRelease(time: Seconds): void {
 		this.envelope.triggerRelease(time);

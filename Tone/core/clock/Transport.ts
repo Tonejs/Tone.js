@@ -196,8 +196,8 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 
 	/**
 	 *  called on every tick
-	 *  @param  tickTime clock relative tick time
-	 *  @private
+	 * @param  tickTime clock relative tick time
+	 * @private
 	 */
 	private _processTick(tickTime: Seconds, ticks: Ticks): void {
 		// handle swing
@@ -278,9 +278,9 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 
 	/**
 	 *  Schedule an event that will be removed after it is invoked.
-	 *  @param callback The callback to invoke once.
-	 *  @param time The time the callback should be invoked.
-	 *  @returns The ID of the scheduled event.
+	 * @param callback The callback to invoke once.
+	 * @param time The time the callback should be invoked.
+	 * @returns The ID of the scheduled event.
 	 */
 	scheduleOnce(callback: TransportCallback, time: TransportTime | TransportTimeClass): number {
 		const event = new TransportEvent(this, {
@@ -568,8 +568,8 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 
 	/**
 	 *  Return the elapsed seconds at the given time.
-	 *  @param  time  When to get the elapsed seconds
-	 *  @return  The number of elapsed seconds
+	 * @param  time  When to get the elapsed seconds
+	 * @return  The number of elapsed seconds
 	 */
 	getSecondsAtTime(time: Time): Seconds {
 		return this._clock.getSecondsAtTime(time);
@@ -622,8 +622,8 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 	 *  any changes in the tempo will change the signal in the same
 	 *  ratio.
 	 *
-	 *  @param signal
-	 *  @param ratio Optionally pass in the ratio between the two signals.
+	 * @param signal
+	 * @param ratio Optionally pass in the ratio between the two signals.
 	 * 				Otherwise it will be computed based on their current values.
 	 */
 	syncSignal(signal: Signal<any>, ratio?: number): this {

@@ -40,7 +40,7 @@ export class Timeline<GenericEvent extends TimelineEvent> extends Tone {
 	protected _timeline: GenericEvent[] = [];
 
 	/**
-	 *  @param memory The number of previous events that are retained.
+	 * @param memory The number of previous events that are retained.
 	 */
 	constructor(memory?: number);
 	// tslint:disable-next-line: unified-signatures
@@ -67,7 +67,7 @@ export class Timeline<GenericEvent extends TimelineEvent> extends Tone {
 
 	/**
 	 *  Insert an event object onto the timeline. Events must have a "time" attribute.
-	 *  @param event  The event object to insert into the timeline.
+	 * @param event  The event object to insert into the timeline.
 	 */
 	add(event: GenericEvent): Timeline<GenericEvent> {
 		// the event needs to have a time attribute
@@ -85,8 +85,8 @@ export class Timeline<GenericEvent extends TimelineEvent> extends Tone {
 
 	/**
 	 *  Remove an event from the timeline.
-	 *  @param  {Object}  event  The event object to remove from the list.
-	 *  @returns {Timeline} this
+	 * @param  {Object}  event  The event object to remove from the list.
+	 * @returns {Timeline} this
 	 */
 	remove(event: GenericEvent): Timeline<GenericEvent> {
 		const index = this._timeline.indexOf(event);
@@ -98,7 +98,7 @@ export class Timeline<GenericEvent extends TimelineEvent> extends Tone {
 
 	/**
 	 *  Get the nearest event whose time is less than or equal to the given time.
-	 *  @param  time  The time to query.
+	 * @param  time  The time to query.
 	 */
 	get(time: number, param: TimelineSearchParam = "time"): GenericEvent | null {
 		const index = this._search(time, param);
@@ -111,7 +111,7 @@ export class Timeline<GenericEvent extends TimelineEvent> extends Tone {
 
 	/**
 	 *  Return the first event in the timeline without removing it
-	 *  @returns {Object} The first event object
+	 * @returns {Object} The first event object
 	 */
 	peek(): GenericEvent | undefined {
 		return this._timeline[0];
@@ -126,7 +126,7 @@ export class Timeline<GenericEvent extends TimelineEvent> extends Tone {
 
 	/**
 	 *  Get the event which is scheduled after the given time.
-	 *  @param  time  The time to query.
+	 * @param  time  The time to query.
 	 */
 	getAfter(time: number, param: TimelineSearchParam = "time"): GenericEvent | null {
 		const index = this._search(time, param);
@@ -139,7 +139,7 @@ export class Timeline<GenericEvent extends TimelineEvent> extends Tone {
 
 	/**
 	 *  Get the event before the event at the given time.
-	 *  @param  time  The time to query.
+	 * @param  time  The time to query.
 	 */
 	getBefore(time: number): GenericEvent | null {
 		const len = this._timeline.length;
@@ -157,7 +157,7 @@ export class Timeline<GenericEvent extends TimelineEvent> extends Tone {
 
 	/**
 	 *  Cancel events at and after the given time
-	 *  @param  time  The time to query.
+	 * @param  time  The time to query.
 	 */
 	cancel(after: number): Timeline<GenericEvent> {
 		if (this._timeline.length > 1) {
@@ -190,8 +190,8 @@ export class Timeline<GenericEvent extends TimelineEvent> extends Tone {
 
 	/**
 	 *  Cancel events before or equal to the given time.
-	 *  @param  {Number}  time  The time to cancel before.
-	 *  @returns {Timeline} this
+	 * @param  {Number}  time  The time to cancel before.
+	 * @returns {Timeline} this
 	 */
 	cancelBefore(time): Timeline<GenericEvent> {
 		const index = this._search(time);
@@ -220,7 +220,7 @@ export class Timeline<GenericEvent extends TimelineEvent> extends Tone {
 	 *  nearest event index whose time is after or equal to the given time.
 	 *  If a time is searched before the first index in the timeline, -1 is returned.
 	 *  If the time is after the end, the index of the last item is returned.
-	 *  @param  time
+	 * @param  time
 	 */
 	protected _search(time: number, param: TimelineSearchParam = "time"): number {
 		if (this._timeline.length === 0) {
@@ -272,7 +272,7 @@ export class Timeline<GenericEvent extends TimelineEvent> extends Tone {
 
 	/**
 	 *  Iterate over everything in the array
-	 *  @param  callback The callback to invoke with every item
+	 * @param  callback The callback to invoke with every item
 	 */
 	forEach(callback: (event: GenericEvent) => void): Timeline<GenericEvent> {
 		this._iterate(callback);
@@ -281,8 +281,8 @@ export class Timeline<GenericEvent extends TimelineEvent> extends Tone {
 
 	/**
 	 *  Iterate over everything in the array at or before the given time.
-	 *  @param  time The time to check if items are before
-	 *  @param  callback The callback to invoke with every item
+	 * @param  time The time to check if items are before
+	 * @param  callback The callback to invoke with every item
 	 */
 	forEachBefore(time, callback: (event: GenericEvent) => void): Timeline<GenericEvent> {
 		// iterate over the items in reverse so that removing an item doesn't break things
@@ -295,8 +295,8 @@ export class Timeline<GenericEvent extends TimelineEvent> extends Tone {
 
 	/**
 	 *  Iterate over everything in the array after the given time.
-	 *  @param  time The time to check if items are before
-	 *  @param  callback The callback to invoke with every item
+	 * @param  time The time to check if items are before
+	 * @param  callback The callback to invoke with every item
 	 */
 	forEachAfter(time, callback: (event: GenericEvent) => void): Timeline<GenericEvent> {
 		// iterate over the items in reverse so that removing an item doesn't break things
@@ -309,9 +309,9 @@ export class Timeline<GenericEvent extends TimelineEvent> extends Tone {
 	 *  Iterate over everything in the array between the startTime and endTime.
 	 *  The timerange is inclusive of the startTime, but exclusive of the endTime.
 	 *  range = [startTime, endTime).
-	 *  @param  startTime The time to check if items are before
-	 *  @param  endTime The end of the test interval.
-	 *  @param  callback The callback to invoke with every item
+	 * @param  startTime The time to check if items are before
+	 * @param  endTime The end of the test interval.
+	 * @param  callback The callback to invoke with every item
 	 */
 	forEachBetween(startTime: number, endTime: number, callback: (event: GenericEvent) => void): Timeline<GenericEvent> {
 		let lowerBound = this._search(startTime);
@@ -334,8 +334,8 @@ export class Timeline<GenericEvent extends TimelineEvent> extends Tone {
 	/**
 	 *  Iterate over everything in the array at or after the given time. Similar to
 	 *  forEachAfter, but includes the item(s) at the given time.
-	 *  @param  time The time to check if items are before
-	 *  @param  callback The callback to invoke with every item
+	 * @param  time The time to check if items are before
+	 * @param  callback The callback to invoke with every item
 	 */
 	forEachFrom(time: number, callback: (event: GenericEvent) => void): Timeline<GenericEvent> {
 		// iterate over the items in reverse so that removing an item doesn't break things
@@ -350,8 +350,8 @@ export class Timeline<GenericEvent extends TimelineEvent> extends Tone {
 
 	/**
 	 *  Iterate over everything in the array at the given time
-	 *  @param  time The time to check if items are before
-	 *  @param  callback The callback to invoke with every item
+	 * @param  time The time to check if items are before
+	 * @param  callback The callback to invoke with every item
 	 */
 	forEachAtTime(time: number, callback: (event: GenericEvent) => void): Timeline<GenericEvent> {
 		// iterate over the items in reverse so that removing an item doesn't break things

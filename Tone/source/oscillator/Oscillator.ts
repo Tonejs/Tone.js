@@ -13,7 +13,7 @@ import { ToneOscillatorNode } from "./OscillatorNode";
  *  phase rotation, multiple oscillator types (see Oscillator.type),
  *  and Transport syncing (see Oscillator.syncFrequency).
  *
- *  @example
+ * @example
  * //make and start a 440hz sine tone
  * var osc = new Oscillator(440, "sine").toDestination().start();
  */
@@ -62,8 +62,8 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 	private _type: ToneOscillatorType;
 
 	/**
-	 *  @param frequency Starting frequency
-	 *  @param type The oscillator type. Read more about type below.
+	 * @param frequency Starting frequency
+	 * @param type The oscillator type. Read more about type below.
 	 */
 	constructor(frequency?: Frequency, type?: ToneOscillatorType);
 	constructor(options?: Partial<ToneOscillatorConstructorOptions>)
@@ -159,7 +159,7 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 	/**
 	 *  Sync the signal to the Transport's bpm. Any changes to the transports bpm,
 	 *  will also affect the oscillators frequency.
-	 *  @example
+	 * @example
 	 * Tone.Transport.bpm.value = 120;
 	 * osc.frequency.value = 440;
 	 * //the ration between the bpm and the frequency will be maintained
@@ -346,8 +346,8 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 	/**
 	 *  Returns the real and imaginary components based
 	 *  on the oscillator type.
-	 *  @returns [real: Float32Array, imaginary: Float32Array]
-	 *  @private
+	 * @returns [real: Float32Array, imaginary: Float32Array]
+	 * @private
 	 */
 	private _getRealImaginary(type: ToneOscillatorType, phase: Radians): Float32Array[] {
 		const fftSize = 4096;

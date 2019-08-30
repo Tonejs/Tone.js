@@ -62,7 +62,7 @@ export class AMOscillator extends Source<AMOscillatorOptions> implements ToneOsc
 	 *  Harmonicity is the frequency ratio between the carrier and the modulator oscillators.
 	 *  A harmonicity of 1 gives both oscillators the same frequency.
 	 *  Harmonicity = 2 means a change of an octave.
-	 *  @example
+	 * @example
 	 * //pitch the modulator an octave below carrier
 	 * synth.harmonicity.value = 0.5;
 	 */

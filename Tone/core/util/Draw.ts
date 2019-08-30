@@ -56,8 +56,8 @@ export class Draw extends ToneWithContext<ToneWithContextOptions> {
 	/**
 	 *  Schedule a function at the given time to be invoked
 	 *  on the nearest animation frame.
-	 *  @param  callback  Callback is invoked at the given time.
-	 *  @param  time      The time relative to the AudioContext time to invoke the callback.
+	 * @param  callback  Callback is invoked at the given time.
+	 * @param  time      The time relative to the AudioContext time to invoke the callback.
 	 */
 	schedule(callback: () => void, time: Time): this {
 		this._events.add({
@@ -73,7 +73,7 @@ export class Draw extends ToneWithContext<ToneWithContextOptions> {
 
 	/**
 	 *  Cancel events scheduled after the given time
-	 *  @param  after  Time after which scheduled events will be removed from the scheduling timeline.
+	 * @param  after  Time after which scheduled events will be removed from the scheduling timeline.
 	 */
 	cancel(after?: Time): this {
 		this._events.cancel(this.toSeconds(after));

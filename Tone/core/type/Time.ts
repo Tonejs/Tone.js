@@ -60,8 +60,8 @@ extends TimeBaseClass<Type, Unit> {
 	/**
 	 *  Convert a Time to Notation. The notation values are will be the
 	 *  closest representation between 1m to 128th note.
-	 *  @return {Notation}
-	 *  @example
+	 * @return {Notation}
+	 * @example
 	 * //if the Transport is at 120bpm:
 	 * Time(2).toNotation();//returns "1m"
 	 */

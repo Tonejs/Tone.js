@@ -140,8 +140,8 @@ export class ToneEvent<ValueType = any> extends ToneWithContext<ToneEventOptions
 	/**
 	 *  Reschedule all of the events along the timeline
 	 *  with the updated values.
-	 *  @param after Only reschedules events after the given time.
-	 *  @private
+	 * @param after Only reschedules events after the given time.
+	 * @private
 	 */
 	private _rescheduleEvents(after: Ticks = -1): void {
 		// if no argument is given, schedules all of the events
@@ -220,7 +220,7 @@ export class ToneEvent<ValueType = any> extends ToneWithContext<ToneEventOptions
 
 	/**
 	 *  Start the note at the given time.
-	 *  @param  time  When the event should start.
+	 * @param  time  When the event should start.
 	 */
 	start(time?: TransportTime | TransportTimeClass): this {
 		const ticks = this.toTicks(time);
@@ -237,7 +237,7 @@ export class ToneEvent<ValueType = any> extends ToneWithContext<ToneEventOptions
 
 	/**
 	 *  Stop the Event at the given time.
-	 *  @param  time  When the event should stop.
+	 * @param  time  When the event should stop.
 	 */
 	stop(time?: TransportTime | TransportTimeClass): this {
 		this.cancel(time);
@@ -256,7 +256,7 @@ export class ToneEvent<ValueType = any> extends ToneWithContext<ToneEventOptions
 
 	/**
 	 *  Cancel all scheduled events greater than or equal to the given time
-	 *  @param  time  The time after which events will be cancel.
+	 * @param  time  The time after which events will be cancel.
 	 */
 	cancel(time?: TransportTime | TransportTimeClass): this {
 		time = defaultArg(time, -Infinity);
@@ -271,7 +271,7 @@ export class ToneEvent<ValueType = any> extends ToneWithContext<ToneEventOptions
 	/**
 	 *  The callback function invoker. Also
 	 *  checks if the Event is done playing
-	 *  @param  time  The time of the event in seconds
+	 * @param  time  The time of the event in seconds
 	 */
 	protected _tick(time: Seconds): void {
 		const ticks = this.context.transport.getTicksAtTime(time);
@@ -317,7 +317,7 @@ export class ToneEvent<ValueType = any> extends ToneWithContext<ToneEventOptions
 
 	/**
 	 * 	The playback rate of the note. Defaults to 1.
-	 *  @example
+	 * @example
 	 * note.loop = true;
 	 * //repeat the note twice as fast
 	 * note.playbackRate = 2;

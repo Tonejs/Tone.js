@@ -37,8 +37,8 @@ export class ToneOscillatorNode extends OneShotSource<ToneOscillatorNodeOptions>
 
 	constructor(options?: Partial<ToneOscillatorNodeOptions>);
 	/**
-	 *  @param  frequency   The frequency value
-	 *  @param  type  The basic oscillator type
+	 * @param  frequency   The frequency value
+	 * @param  type  The basic oscillator type
 	 */
 	constructor(
 		frequency: Frequency,

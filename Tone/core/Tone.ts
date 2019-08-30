@@ -1,8 +1,8 @@
 /**
  *  Tone.js
- *  @author Yotam Mann
- *  @license http://opensource.org/licenses/MIT MIT License
- *  @copyright 2014-2019 Yotam Mann
+ * @author Yotam Mann
+ * @license http://opensource.org/licenses/MIT MIT License
+ * @copyright 2014-2019 Yotam Mann
  */
 import { version } from "../version";
 import { theWindow } from "./context/AudioContext";
@@ -16,8 +16,8 @@ import { assert, log } from "./util/Debug";
 export interface BaseToneOptions {}
 
 /**
- *  @class  Tone is the base class of all other classes.
- *  @constructor
+ * @class  Tone is the base class of all other classes.
+ * @constructor
  */
 export abstract class Tone {
 
@@ -67,9 +67,9 @@ export abstract class Tone {
 
 	/**
 	 *  Assert that the statement is true, otherwise invoke the error.
-	 *  @param {Boolean} statement
-	 *  @param {String} error The message which is passed into an Error
-	 *  @private
+	 * @param {Boolean} statement
+	 * @param {String} error The message which is passed into an Error
+	 * @private
 	 */
 	protected assert(statement: boolean, error: string): void {
 		assert(statement, error);
@@ -114,10 +114,10 @@ export abstract class Tone {
 	 *  <br><br>
 	 *  WARNING: if object is self referential, it will go into an an
 	 *  infinite recursive loop.
-	 *  @memberOf Tone
-	 *  @param  {*} given
-	 *  @param  {*} fallback
-	 *  @return {*}
+	 * @memberOf Tone
+	 * @param  {*} given
+	 * @param  {*} fallback
+	 * @return {*}
 	 */
 	// static defaultArg(given, fallback) {
 		// if (isObject(given) && isObject(fallback)) {

@@ -2,7 +2,7 @@ import { Decibels, GainFactor, Hertz, Interval, MidiNote, NormalRange } from "./
 
 /**
  *  Equal power gain scale. Good for cross-fading.
- *  @param  percent (0-1)
+ * @param  percent (0-1)
  */
 export function equalPowerScale(percent: NormalRange): number {
 	const piFactor = 0.5 * Math.PI;

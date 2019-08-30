@@ -124,8 +124,8 @@ export class Sequence<ValueType = any> extends ToneEvent<ValueType> {
 
 	/**
 	 *  Start the part at the given time.
-	 *  @param  time    When to start the part.
-	 *  @param  offset  The offset index to start at
+	 * @param  time    When to start the part.
+	 * @param  offset  The offset index to start at
 	 */
 	start(time?: TransportTime, offset?: number): this {
 		this._part.start(time, offset ? this._indexTime(offset) : offset);
@@ -134,7 +134,7 @@ export class Sequence<ValueType = any> extends ToneEvent<ValueType> {
 
 	/**
 	 *  Stop the part at the given time.
-	 *  @param  time  When to stop the part.
+	 * @param  time  When to stop the part.
 	 */
 	stop(time?: TransportTime): this {
 		this._part.stop(time);
@@ -204,9 +204,9 @@ export class Sequence<ValueType = any> extends ToneEvent<ValueType> {
 
 	/**
 	 *  Get the time of the index given the Sequence's subdivision
-	 *  @param  index
-	 *  @return The time of that index
-	 *  @private
+	 * @param  index
+	 * @return The time of that index
+	 * @private
 	 */
 	private _indexTime(index: number): Seconds {
 		return new TicksClass(this.context, index * (this._subdivision) + this.startOffset).toSeconds();
