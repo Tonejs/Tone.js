@@ -28,13 +28,15 @@ export abstract class ToneWithContext<Options extends ToneWithContextOptions> ex
 	readonly context: Context;
 
 	/**
-	 * The default context to use if no AudioContext is passed in to the constructor
+	 * The default context to use if no AudioContext is passed in to the constructor.
+	 * Probably should not be set manually. Used internally.
+	 * @hidden
 	 */
 	readonly defaultContext?: Context;
 
 	constructor(context?: Context | Partial<ToneWithContextOptions>) {
-		const options = optionsFromArguments(ToneWithContext.getDefaults(), arguments, ["context"]);
 		super();
+		const options = optionsFromArguments(ToneWithContext.getDefaults(), arguments, ["context"]);
 		if (this.defaultContext) {
 			this.context = this.defaultContext;
 		} else {
