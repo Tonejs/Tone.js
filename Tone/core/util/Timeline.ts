@@ -40,7 +40,6 @@ export class Timeline<GenericEvent extends TimelineEvent> extends Tone {
 	protected _timeline: GenericEvent[] = [];
 
 	/**
-	 *
 	 *  @param memory The number of previous events that are retained.
 	 */
 	constructor(memory?: number);

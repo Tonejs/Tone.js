@@ -51,8 +51,8 @@ export class ToneBufferSource extends OneShotSource<ToneBufferSourceOptions> {
 	private _sourceStopped: boolean = false;
 
 	/**
-	 *  @param  buffer   The buffer to play
-	 *  @param  onended  The callback to invoke when the buffer is done playing.
+	 * @param buffer The buffer to play
+	 * @param onload The callback to invoke when the buffer is done playing.
 	 */
 	constructor(buffer?: ToneAudioBuffer | AudioBuffer | string, onload?: () => void);
 	constructor(options?: Partial<ToneBufferSourceOptions>);

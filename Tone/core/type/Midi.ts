@@ -5,14 +5,10 @@ import { TimeValue } from "./TimeBase";
 import { Hertz, Interval, MidiNote, Seconds, Ticks } from "./Units";
 
 /**
- *  @class Midi is a primitive type for encoding Time values.
- *         Midi can be constructed with or without the `new` keyword. Midi can be passed
- *         into the parameter of any method which takes time as an argument.
- *  @constructor
- *  @extends {Tone.Frequency}
- *  @param  {String|Number}  val    The time value.
- *  @param  {String=}  units  The units of the value.
- *  @example
+ * Midi is a primitive type for encoding Time values.
+ * Midi can be constructed with or without the `new` keyword. Midi can be passed
+ * into the parameter of any method which takes time as an argument.
+ * @example
  * var t = Midi("4n");//a quarter note
  * @category Unit
  */

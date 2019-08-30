@@ -85,9 +85,9 @@ export class FrequencyClass<Type extends number = Hertz> extends TimeClass<Type,
 	///////////////////////////////////////////////////////////////////////////
 
 	/**
-	 *  Transposes the frequency by the given number of semitones.
-	 *  @return  A new transposed frequency
-	 *  @example
+	 * Transposes the frequency by the given number of semitones.
+	 * @return  A new transposed frequency
+	 * @example
 	 * Frequency("A4").transpose(3); //"C5"
 	 */
 	transpose(interval: Interval): FrequencyClass {
@@ -95,10 +95,10 @@ export class FrequencyClass<Type extends number = Hertz> extends TimeClass<Type,
 	}
 
 	/**
-	 *  Takes an array of semitone intervals and returns
-	 *  an array of frequencies transposed by those intervals.
-	 *  @return  Returns an array of Frequencies
-	 *  @example
+	 * Takes an array of semitone intervals and returns
+	 * an array of frequencies transposed by those intervals.
+	 * @return  Returns an array of Frequencies
+	 * @example
 	 * Frequency("A4").harmonize([0, 3, 7]); //["A4", "C5", "E5"]
 	 */
 	harmonize(intervals: Interval[]): FrequencyClass[] {
@@ -220,8 +220,6 @@ export class FrequencyClass<Type extends number = Hertz> extends TimeClass<Type,
 
 /**
  *  Note to scale index
- *  @type  {Object}
- *  @private
  */
 const noteToScaleIndex = {
 	// tslint:disable-next-line
@@ -236,8 +234,6 @@ const noteToScaleIndex = {
 
 /**
  *  scale index to note (sharps)
- *  @type  {Array}
- *  @private
  */
 const scaleIndexToNote = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
 
