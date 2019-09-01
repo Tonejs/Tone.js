@@ -11,23 +11,23 @@ let BROWSERS = ["HeadlessChrome", "HeadlessFirefox", "Safari"];
 let entryPoints = undefined;
 if (typeof argv.file === "string"){
 	entryPoints = RegExp(`.*\\/${argv.file}\\.test\\.ts$`);
-	console.log(`testing file "${argv.file}"`)
+	console.log(`testing file "${argv.file}"`);
 } else if (typeof argv.dir === "string"){
 	entryPoints = RegExp(`.*${argv.dir}.*\\/.*\\.test\\.ts$`);
-	console.log(`testing directory "${argv.dir}"`)
+	console.log(`testing directory "${argv.dir}"`);
 }
 
-if (process.env.BROWSER === "chrome") {
+if (process.env.BROWSER === "chrome"){
 	BROWSERS = ["HeadlessChrome"];
-} else if (process.env.BROWSER === "firefox") {
+} else if (process.env.BROWSER === "firefox"){
 	BROWSERS = ["HeadlessFirefox"];
-} else if (process.env.BROWSER === "safari") {
+} else if (process.env.BROWSER === "safari"){
 	BROWSERS = ["Safari"];
 } else {
 	BROWSERS = ["HeadlessChrome", "HeadlessFirefox"];
 }
 
-module.exports = function(config) {
+module.exports = function(config){
 	const configuration = {
 
 		// base path that will be used to resolve all patterns (eg. files, exclude)
@@ -46,27 +46,30 @@ module.exports = function(config) {
 		],
 
 		// Karma Typescript compiler options
-		karmaTypescriptConfig: {
+		karmaTypescriptConfig : {
 			compilerOptions : {
-				module: "commonjs",
+				module : "commonjs",
 			},
-			bundlerOptions: {
-				resolve: {
-					directories: ["Tone", "node_modules", "test"],
+			bundlerOptions : {
+				resolve : {
+					directories : ["Tone", "node_modules", "test"],
 				},
-				entrypoints : entryPoints
+				entrypoints : entryPoints,
+				transforms : [
+					require("karma-typescript-es6-transform"),
+				],
 			},
 			coverageOptions : {
-				exclude: /(.*\.test\.ts|test\/.*\.ts)$/i,
+				exclude : /(.*\.test\.ts|test\/.*\.ts)$/i,
 			},
-			reports: {
-				html: path.resolve(__dirname, "../coverage"),
-				lcovonly: {
+			reports : {
+				html : path.resolve(__dirname, "../coverage"),
+				lcovonly : {
 					directory : path.resolve(__dirname, "../coverage"),
-					filename: "coverage.lcov",
+					filename : "coverage.lcov",
 				},
 			},
-			tsconfig: "./tsconfig.json",
+			tsconfig : "./tsconfig.json",
 		},
 
 		// list of files to exclude
@@ -76,8 +79,8 @@ module.exports = function(config) {
 
 		// preprocess matching files before serving them to the browser
 		// available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
-		preprocessors: {
-			"**/*.ts": "karma-typescript",
+		preprocessors : {
+			"**/*.ts" : "karma-typescript",
 			// "Tone/**/*.ts": "coverage",
 		},
 
@@ -121,7 +124,7 @@ module.exports = function(config) {
 
 		// level of logging
 		// possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
-		logLevel: config.LOG_ERROR,
+		logLevel : config.LOG_ERROR,
 
 		// enable / disable watching file and executing tests whenever any file changes
 		autoWatch : false,
@@ -144,8 +147,7 @@ module.exports = function(config) {
 		customLaunchers : {
 			HeadlessChrome : {
 				base : "ChromeHeadless",
-				flags : ["--no-sandbox", "--use-fake-ui-for-media-stream", "--use-fake-device-for-media-stream",
-						"--autoplay-policy=no-user-gesture-required"],
+				flags : ["--no-sandbox", "--use-fake-ui-for-media-stream", "--use-fake-device-for-media-stream", "--autoplay-policy=no-user-gesture-required"],
 			},
 			HeadlessFirefox : {
 				base : "Firefox",
@@ -155,10 +157,9 @@ module.exports = function(config) {
 					"media.navigator.permission.disabled" : true,
 				},
 			},
-			OnlineChrome: {
-				base: "Chrome",
-				flags: ["--no-sandbox", "--use-fake-ui-for-media-stream", "--use-fake-device-for-media-stream",
-					"--autoplay-policy=no-user-gesture-required"],
+			OnlineChrome : {
+				base : "Chrome",
+				flags : ["--no-sandbox", "--use-fake-ui-for-media-stream", "--use-fake-device-for-media-stream", "--autoplay-policy=no-user-gesture-required"],
 			},
 		},
 	};

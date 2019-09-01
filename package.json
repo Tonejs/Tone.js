@@ -88,6 +88,7 @@
     "karma-sourcemap-loader": "^0.3.7",
     "karma-spec-reporter": "0.0.32",
     "karma-typescript": "^4.0.0",
+    "karma-typescript-es6-transform": "^4.1.1",
     "mocha": "^5.1.1",
     "proxy-polyfill": "^0.2.0",
     "semver": "^5.5.0",
