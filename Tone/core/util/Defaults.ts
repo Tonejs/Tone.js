@@ -85,12 +85,11 @@ export function optionsFromArguments<T extends object>(
 /**
  * Return this instances default values by calling Constructor.getDefaults()
  */
-export function getDefaultsFromInstance<T>(instance: T): BaseToneOptions {
-	type ToneClass = {
+export function getDefaultsFromInstance<T extends {}, O extends {}>(instance: unknown): O {
+	type ToneClass =  T & {
 		constructor: ToneClass;
-		getDefaults: () => BaseToneOptions;
-	} & T;
-
+		getDefaults: () => O;
+	};
 	return (instance as ToneClass).constructor.getDefaults();
 }
 

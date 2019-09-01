@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { BasicTests } from "test/helper/Basic";
 import { Noise } from "../../source/Noise";
-import { Analyser } from "./Analyser";
+import { Analyser, AnalyserOptions } from "./Analyser";
 
 describe("Analyser", () => {
 
@@ -13,7 +13,7 @@ describe("Analyser", () => {
 			size: 32,
 			smoothing: 0.2,
 		});
-		const values = anl.get();
+		const values = anl.get<Analyser, AnalyserOptions>();
 		expect(values.size).to.equal(32);
 		expect(values.smoothing).to.equal(0.2);
 		anl.dispose();

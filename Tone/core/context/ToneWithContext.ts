@@ -109,8 +109,8 @@ export abstract class ToneWithContext<Options extends ToneWithContextOptions> ex
 	 * osc.get();
 	 * //returns {"type" : "sine", "frequency" : 440, ...etc}
 	 */
-	get(): Options {
-		const defaults = getDefaultsFromInstance(this) as Options;
+	get<ClassType, ClassOptionsType>(): ClassOptionsType {
+		const defaults = getDefaultsFromInstance<ClassType, ClassOptionsType>(this);
 		Object.keys(defaults).forEach(attribute => {
 			if (Reflect.has(this, attribute)) {
 				const member = this[attribute];
@@ -146,7 +146,7 @@ export abstract class ToneWithContext<Options extends ToneWithContextOptions> ex
 	 * 	"type" : "highpass"
 	 * });
 	 */
-	set(props: RecursivePartial<Options>): this {
+	set<ClassOptionsType>(props: RecursivePartial<ClassOptionsType>): this {
 		Object.keys(props).forEach(attribute => {
 			if (Reflect.has(this, attribute) && isDefined(this[attribute])) {
 				if (this[attribute] && isDefined(this[attribute].value) && isDefined(this[attribute].setValueAtTime)) {

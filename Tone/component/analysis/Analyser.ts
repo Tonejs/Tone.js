@@ -4,7 +4,7 @@ import { optionsFromArguments } from "../../core/util/Defaults";
 
 type AnalyserType = "fft" | "waveform";
 
-interface AnalyserOptions extends ToneAudioNodeOptions {
+export interface AnalyserOptions extends ToneAudioNodeOptions {
 	size: PowerOfTwo;
 	type: AnalyserType;
 	smoothing: NormalRange;

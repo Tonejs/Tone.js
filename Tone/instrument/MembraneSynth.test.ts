@@ -2,7 +2,7 @@ import { expect } from "chai";
 import { BasicTests } from "test/helper/Basic";
 import { CompareToFile } from "test/helper/CompareToFile";
 import { InstrumentTest } from "test/helper/InstrumentTests";
-import { MembraneSynth } from "./MembraneSynth";
+import { MembraneSynth, MembraneSynthOptions } from "./MembraneSynth";
 
 describe("MembraneSynth", () => {
 
@@ -67,7 +67,7 @@ describe("MembraneSynth", () => {
 			drumSynth.set({
 				envelope : { decay: 0.24 },
 			});
-			expect(drumSynth.get().envelope.decay).to.equal(0.24);
+			expect(drumSynth.get<MembraneSynth, MembraneSynthOptions>().envelope.decay).to.equal(0.24);
 			drumSynth.dispose();
 		});
 	});
