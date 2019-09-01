@@ -8,7 +8,9 @@ import { MetalSynth } from "./MetalSynth";
 describe("MetalSynth", () => {
 
 	BasicTests(MetalSynth);
-	// InstrumentTest(MetalSynth);
+
+	// This was originally called without a second parameter, set to C2 arbitrarily
+	InstrumentTest(MetalSynth, "C2");
 
 	if (Supports.CHROME_AUDIO_RENDERING) {
 		it("matches a file", () => {

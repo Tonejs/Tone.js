@@ -1,7 +1,8 @@
 // tslint:disable: max-line-length
+import { Envelope } from "../component/envelope/Envelope";
 import { Filter } from "../component/filter/Filter";
 import { Gain } from "../core/context/Gain";
-import { Frequency, NormalRange, Positive, Time } from "../core/type/Units";
+import { Cents, Frequency, NormalRange, Positive, Time } from "../core/type/Units";
 import { deepMerge, optionsFromArguments } from "../core/util/Defaults";
 import { RecursivePartial } from "../core/util/Interface";
 import { Multiply } from "../signal/Multiply";
@@ -9,6 +10,8 @@ import { Scale } from "../signal/Scale";
 import { Signal } from "../signal/Signal";
 import { FMOscillator } from "../source/oscillator/FMOscillator";
 import { Synth, SynthOptions } from "./Synth";
+import { Instrument } from "./Instrument";
+import { Monophonic } from "./Monophonic";
 
 interface MetalSynthOptions extends SynthOptions {
 	frequency: Frequency;
@@ -31,7 +34,7 @@ const inharmRatios: number[] = [1.0, 1.483, 1.932, 2.546, 2.630, 3.897];
  * Inspiration from [Sound on Sound](https://web.archive.org/web/20160610143924/https://www.soundonsound.com/sos/jul02/articles/synthsecrets0702.asp).
  */
 
-export class MetalSynth extends Synth<MetalSynthOptions> {
+export class MetalSynth extends Monophonic<MetalSynthOptions> {
 
 	readonly name = "MetalSynth";
 
@@ -43,11 +46,18 @@ export class MetalSynth extends Synth<MetalSynthOptions> {
 	private _oscillators: FMOscillator[] = [];
 	frequency: Signal<Frequency>;
 
+	readonly envelope: Envelope;
+
+	readonly detune: Signal<Cents>;
+
 	constructor(options?: RecursivePartial<MetalSynthOptions>)
 	constructor() {
 		super(optionsFromArguments(MetalSynth.getDefaults(), arguments));
 		const options = optionsFromArguments(MetalSynth.getDefaults(), arguments);
 
+		// not sure about setting this here -- but it was required because the abstract value was defined in Monophonic
+		this.detune = new Signal<Cents>(0) 
+		
 		this.octaves = options.octaves;
 		this.frequency = new Signal(options.frequency);
 
@@ -76,6 +86,14 @@ export class MetalSynth extends Synth<MetalSynthOptions> {
 		}
 
 		this._filterFreqScaler = new Scale(this.toFrequency(options.resonance), 7000);
+
+		this.envelope = new Envelope({
+			attack : options.envelope.attack,
+			attackCurve : "linear",
+			decay : options.envelope.decay,
+			sustain : 0,
+			release : options.envelope.release,
+		});
 		this.envelope.chain(this._filterFreqScaler, this._highpass.frequency);
 		this.envelope.connect(this._amplitue.gain);
 	}
@@ -100,7 +118,7 @@ export class MetalSynth extends Synth<MetalSynthOptions> {
 	 *  @param time When the attack should be triggered.
 	 *  @param velocity The velocity that the envelope should be triggered at.
 	 */
-	public triggerAttack(time: Time, velocity: NormalRange = 1): this {
+	public _triggerEnvelopeAttack(time: Time, velocity: NormalRange = 1): this {
 		this.envelope.triggerAttack(time, velocity);
 		this._oscillators.forEach(osc => osc.start(time));
 		if (this.envelope.sustain === 0) {
@@ -115,7 +133,7 @@ export class MetalSynth extends Synth<MetalSynthOptions> {
 	 *  Trigger the release of the envelope.
 	 *  @param time When the release should be triggered.
 	 */
-	public triggerRelease(time: Time): this {
+	public _triggerEnvelopeRelease(time: Time): this {
 		this.envelope.triggerRelease(time);
 		this._oscillators.forEach(osc => osc.stop(this.toSeconds(time) + this.toSeconds(this.envelope.release)));
 		return this;
@@ -129,7 +147,7 @@ export class MetalSynth extends Synth<MetalSynthOptions> {
 	 *  @param velocity  The velocity that the envelope should be triggered at.
 	 */
 	public triggerAttackRelease(duration: Time, time: Time, velocity: NormalRange = 1): this {
-		this.triggerAttack(time, velocity);
+		this.triggerAttack(this.toSeconds(time), velocity);
 		this.triggerRelease(this.toSeconds(time) + this.toSeconds(duration));
 		return this;
 	}
