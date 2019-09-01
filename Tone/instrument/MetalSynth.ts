@@ -9,9 +9,8 @@ import { Multiply } from "../signal/Multiply";
 import { Scale } from "../signal/Scale";
 import { Signal } from "../signal/Signal";
 import { FMOscillator } from "../source/oscillator/FMOscillator";
-import { Synth, SynthOptions } from "./Synth";
-import { Instrument } from "./Instrument";
 import { Monophonic } from "./Monophonic";
+import { Synth, SynthOptions } from "./Synth";
 
 interface MetalSynthOptions extends SynthOptions {
 	frequency: Frequency;
@@ -33,19 +32,51 @@ const inharmRatios: number[] = [1.0, 1.483, 1.932, 2.546, 2.630, 3.897];
  * Based on CymbalSynth by [@polyrhythmatic](https://github.com/polyrhythmatic).
  * Inspiration from [Sound on Sound](https://web.archive.org/web/20160610143924/https://www.soundonsound.com/sos/jul02/articles/synthsecrets0702.asp).
  */
-
 export class MetalSynth extends Monophonic<MetalSynthOptions> {
 
 	readonly name = "MetalSynth";
 
-	private _amplitue: Gain;
-	private _freqMultipliers: Multiply[] = [];
-	private _filterFreqScaler: Scale;
-	private _highpass: Filter;
-	private _octaves: number;
-	private _oscillators: FMOscillator[] = [];
+	/**
+	 * The frequency of the cymbal
+	 */
 	frequency: Signal<Frequency>;
 
+	/**
+	 * The array of FMOscillators
+	 */
+	private _oscillators: FMOscillator[] = [];
+
+	/**
+	 * The frequency multipliers
+	 */
+	private _freqMultipliers: Multiply[] = [];
+
+	/**
+	 * The amplitude for the body
+	 */
+	private _amplitue: Gain;
+
+	/**
+	 * Highpass the output
+	 */
+	private _highpass: Filter;
+
+	/**
+	 * The number of octaves the highpass
+	 * filter frequency ramps
+	 */
+	private _octaves: number;
+
+	/**
+	 * Scale the body envelope
+	 * for the bandpass
+	 */
+	private _filterFreqScaler: Scale;
+
+	/**
+	 * The envelope which is connected both to the
+	 * amplitude and highpass filter's cutoff frequency
+	 */
 	readonly envelope: Envelope;
 
 	readonly detune: Signal<Cents>;
@@ -55,12 +86,13 @@ export class MetalSynth extends Monophonic<MetalSynthOptions> {
 		super(optionsFromArguments(MetalSynth.getDefaults(), arguments));
 		const options = optionsFromArguments(MetalSynth.getDefaults(), arguments);
 
-		// not sure about setting this here -- but it was required because the abstract value was defined in Monophonic
-		this.detune = new Signal<Cents>(0) 
-		
+		// not sure about setting this here -- but it was required because the abstract value was defined as non-optional in Monophonic
+		this.detune = new Signal<Cents>(0);
+
 		this.octaves = options.octaves;
 		this.frequency = new Signal(options.frequency);
 
+		// set the octaves
 		this._octaves = options.octaves;
 
 		this._amplitue = new Gain(0).connect(this.output);
@@ -87,13 +119,16 @@ export class MetalSynth extends Monophonic<MetalSynthOptions> {
 
 		this._filterFreqScaler = new Scale(this.toFrequency(options.resonance), 7000);
 
+		// tslint:disable:object-literal-sort-keys
 		this.envelope = new Envelope({
-			attack : options.envelope.attack,
-			attackCurve : "linear",
-			decay : options.envelope.decay,
-			sustain : 0,
-			release : options.envelope.release,
+			attack: options.envelope.attack,
+			attackCurve: "linear",
+			decay: options.envelope.decay,
+			sustain: 0,
+			release: options.envelope.release,
 		});
+		// tslint:enable:object-literal-sort-keys
+
 		this.envelope.chain(this._filterFreqScaler, this._highpass.frequency);
 		this.envelope.connect(this._amplitue.gain);
 	}
