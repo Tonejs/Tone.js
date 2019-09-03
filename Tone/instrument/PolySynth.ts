@@ -29,7 +29,7 @@ type PartialVoiceOptions<T> = RecursivePartial<
 >;
 
 interface PolySynthOptions<Voice> extends InstrumentOptions {
-	polyphony: number;
+	maxPolyphony: number;
 	voice: VoiceConstructor<Voice>;
 	options: PartialVoiceOptions<Voice>;
 }
@@ -42,8 +42,7 @@ interface PolySynthOptions<Voice> extends InstrumentOptions {
  * monophonic synthesizers to be polyphonic.
  *
  * @example
- * //a polysynth composed of 6 Voices of Synth
- * var synth = new PolySynth(6, Tone.Synth, {
+ * var synth = new PolySynth(Tone.Synth, {
  *   oscillator : {
  * 		type : "square"
  * 	}
@@ -80,36 +79,50 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 	/**
 	 * The polyphony limit.
 	 */
-	polyphony: number;
+	maxPolyphony: number;
 
+	/**
+	 * The voice constructor
+	 */
 	private readonly voice: VoiceConstructor<Voice>;
 
 	/**
-	 * @param polyphony The maximum polyphony of the synth
+	 * The GC timeout. Held so that it could be cancelled when the node is disposed.
+	 */
+	private _gcTimeout: number = -1;
+
+	/**
+	 * A moving average of the number of active voices
+	 */
+	private _averageActiveVoices: number = 0;
+
+	/**
 	 * @param voice The constructor of the voices
 	 * @param options	The options object to set the synth voice
 	 */
 	constructor(
-		polyphony?: number,
 		voice?: VoiceConstructor<Voice>,
 		options?: PartialVoiceOptions<Voice>,
 	);
 	constructor(options?: Partial<PolySynthOptions<Voice>>);
 	constructor() {
 
-		super(optionsFromArguments(PolySynth.getDefaults(), arguments, ["polyphony", "voice", "options"]));
-		const options = optionsFromArguments(PolySynth.getDefaults(), arguments, ["polyphony", "voice", "options"]);
+		super(optionsFromArguments(PolySynth.getDefaults(), arguments, ["voice", "options"]));
+		const options = optionsFromArguments(PolySynth.getDefaults(), arguments, ["voice", "options"]);
 
 		const defaults = options.voice.getDefaults();
 		this.options = Object.assign(defaults, options.options) as VoiceOptions<Voice>;
 		this.voice = options.voice as unknown as VoiceConstructor<Voice>;
-		this.polyphony = options.polyphony;
+		this.maxPolyphony = options.maxPolyphony;
+
+		// kick off the GC interval
+		this._collectGarbage();
 	}
 
 	static getDefaults(): PolySynthOptions<Synth> {
 		return Object.assign(Instrument.getDefaults(), {
+			maxPolyphony: 32,
 			options: {},
-			polyphony: 4,
 			voice: Synth,
 		});
 	}
@@ -144,15 +157,15 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 
 	/**
 	 * Get an available voice from the pool of available voices.
-	 * If one is not available and the polyphony limit is reached,
+	 * If one is not available and the maxPolyphony limit is reached,
 	 * steal a voice, otherwise return null.
 	 */
 	private _getNextAvailableVoice(): Voice | undefined {
 		// if there are available voices, return the first one
 		if (this._availableVoices.length) {
 			return this._availableVoices.shift();
-		} else if (this._voices.length < this.polyphony) {
-			// otherwise if there is still more polyphony, make a new voice
+		} else if (this._voices.length < this.maxPolyphony) {
+			// otherwise if there is still more maxPolyphony, make a new voice
 			const voice = new this.voice(Object.assign(this.options, {
 				context: this.context,
 				onsilence: this._makeVoiceAvailable.bind(this),
@@ -163,6 +176,22 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 		} else {
 			console.warn("Max polyphony exceeded. Note dropped.");
 		}
+	}
+
+	/**
+	 * Occasionally check if there are any allocated voices which can be cleaned up.
+	 */
+	private _collectGarbage(): void {
+		this._averageActiveVoices = Math.max(this._averageActiveVoices * 0.95, this.activeVoices);
+		if (this._availableVoices.length && this._voices.length > this._averageActiveVoices) {
+			// take off an available note
+			const firstAvail = this._availableVoices.shift() as Voice;
+			const index = this._voices.indexOf(firstAvail);
+			this._voices.splice(index, 1);
+			firstAvail.dispose();
+		}
+		this._gcTimeout = this.context.setTimeout(this._collectGarbage.bind(this), 1);
+		return;
 	}
 
 	/**
@@ -343,7 +372,8 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 	 *  Get the synth's attributes.
 	 */
 	get(): VoiceOptions<Voice> {
-		return this.options;
+		// return a clone of the options
+		return Object.assign({}, this.options);
 	}
 
 	/**
@@ -364,6 +394,7 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 		this._voices.forEach(v => v.dispose());
 		this._activeVoices = [];
 		this._availableVoices = [];
+		this.context.clearTimeout(this._gcTimeout);
 		return this;
 	}
 }

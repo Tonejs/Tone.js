@@ -13,7 +13,7 @@ describe("PolySynth", () => {
 
 	it("matches a file", () => {
 		return CompareToFile(() => {
-			const synth = new PolySynth(2).toDestination();
+			const synth = new PolySynth().toDestination();
 			synth.triggerAttackRelease("C4", 0.2, 0);
 			synth.triggerAttackRelease("C4", 0.1, 0.1);
 			synth.triggerAttackRelease("E4", 0.1, 0.2);
@@ -26,7 +26,7 @@ describe("PolySynth", () => {
 
 	it("matches another file", () => {
 		return CompareToFile(() => {
-			const synth = new PolySynth(4).toDestination();
+			const synth = new PolySynth().toDestination();
 			synth.triggerAttackRelease(["C4", "E4", "G4", "B4"], 0.2, 0);
 			synth.triggerAttackRelease(["C4", "E4", "G4", "B4"], 0.2, 0.3);
 		}, "polySynth2.wav", 0.6);
@@ -34,7 +34,7 @@ describe("PolySynth", () => {
 
 	it("matches a file and chooses the right voice", () => {
 		return CompareToFile(() => {
-			const synth = new PolySynth(3).toDestination();
+			const synth = new PolySynth().toDestination();
 			synth.triggerAttackRelease(["C4", "E4"], 1, 0);
 			synth.triggerAttackRelease("G4", 0.1, 0.2);
 			synth.triggerAttackRelease("B4", 0.1, 0.4);
@@ -46,7 +46,7 @@ describe("PolySynth", () => {
 
 		it("triggerAttackRelease can take an array of durations", () => {
 			return OutputAudio(() => {
-				const polySynth = new PolySynth(2);
+				const polySynth = new PolySynth();
 				polySynth.toDestination();
 				polySynth.triggerAttackRelease(["C4", "D4"], [0.1, 0.2]);
 			});
@@ -54,7 +54,7 @@ describe("PolySynth", () => {
 
 		it("triggerAttack and triggerRelease can be invoked without arrays", () => {
 			return Offline(() => {
-				const polySynth = new PolySynth(2);
+				const polySynth = new PolySynth();
 				polySynth.set({ envelope: { release : 0.1 } });
 				polySynth.toDestination();
 				polySynth.triggerAttack("C4", 0);
@@ -67,7 +67,7 @@ describe("PolySynth", () => {
 
 		it("can stop all of the currently playing sounds", () => {
 			return Offline(() => {
-				const polySynth = new PolySynth(4);
+				const polySynth = new PolySynth();
 				polySynth.set({ envelope: { release : 0.1 } });
 				polySynth.toDestination();
 				polySynth.triggerAttack(["C4", "E4", "G4", "B4"], 0);
@@ -82,7 +82,7 @@ describe("PolySynth", () => {
 
 		it("is silent before being triggered", () => {
 			return Offline(() => {
-				const polySynth = new PolySynth(2);
+				const polySynth = new PolySynth();
 				polySynth.toDestination();
 			}).then((buffer) => {
 				expect(buffer.isSilent()).to.be.true;
@@ -91,7 +91,7 @@ describe("PolySynth", () => {
 
 		it("can be scheduled to start in the future", () => {
 			return Offline(() => {
-				const polySynth = new PolySynth(2);
+				const polySynth = new PolySynth();
 				polySynth.toDestination();
 				polySynth.triggerAttack("C4", 0.1);
 			}, 0.3).then((buffer) => {
@@ -104,7 +104,9 @@ describe("PolySynth", () => {
 			const originalWarn = console.warn;
 			console.warn = () => wasInvoked = true;
 			return Offline(() => {
-				const polySynth = new PolySynth(2);
+				const polySynth = new PolySynth({
+					maxPolyphony: 2,
+				});
 				polySynth.toDestination();
 				polySynth.triggerAttack(["C4", "D4", "G4"], 0.1);
 			}, 0.3).then((buffer) => {
@@ -115,7 +117,7 @@ describe("PolySynth", () => {
 
 		it("reports the active notes", () => {
 			return Offline(() => {
-				const polySynth = new PolySynth(2);
+				const polySynth = new PolySynth();
 				polySynth.set({ envelope: { release : 0.1 } });
 				polySynth.toDestination();
 				polySynth.triggerAttackRelease("C4", 0.1, 0.1);
@@ -157,7 +159,7 @@ describe("PolySynth", () => {
 		it("can trigger another attack before the release has ended", () => {
 			// compute the end time
 			return Offline(() => {
-				const synth = new PolySynth(4, Synth, {
+				const synth = new PolySynth(Synth, {
 					envelope : {
 						release: 0.1,
 					},
@@ -175,7 +177,7 @@ describe("PolySynth", () => {
 		it("can trigger another attack right after the release has ended", () => {
 			// compute the end time
 			return Offline(() => {
-				const synth = new PolySynth(4, Synth, {
+				const synth = new PolySynth(Synth, {
 					envelope : {
 						release: 0.1,
 					},
@@ -198,7 +200,7 @@ describe("PolySynth", () => {
 	context("API", () => {
 
 		it("can be constructed with an options object", () => {
-			const polySynth = new PolySynth(4, Synth, {
+			const polySynth = new PolySynth(Synth, {
 				envelope : {
 					sustain : 0.3,
 				},
