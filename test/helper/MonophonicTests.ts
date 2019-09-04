@@ -31,5 +31,13 @@ export function MonophonicTest(Constr, note, constrArg?): void {
 				expect(wasInvoked).to.equal(true);
 			});
 		});
+
+		it ("can pass in the detune into the constructor", () => {
+			const instance = new Constr({
+				detune: -100,
+			});
+			expect(instance.detune.value).to.be.closeTo(-100, 0.1);
+			instance.dispose();
+		});
 	});
 }
