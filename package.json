@@ -99,6 +99,6 @@
     "yargs": "^13.2.0"
   },
   "dependencies": {
-    "standardized-audio-context": "^21.2.1"
+    "standardized-audio-context": "^21.2.0"
   }
 }
