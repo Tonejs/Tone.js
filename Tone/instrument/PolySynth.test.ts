@@ -99,6 +99,43 @@ describe("PolySynth", () => {
 			});
 		});
 
+		it("can be synced to the transport", () => {
+			return Offline(({transport}) => {
+				const polySynth = new PolySynth(Synth, {
+					envelope: {
+						release: 0.1,
+					},
+				}).sync();
+				polySynth.toDestination();
+				polySynth.triggerAttackRelease("C4", 0.1, 0.1);
+				polySynth.triggerAttackRelease("E4", 0.1, 0.3);
+				transport.start(0.1);
+			}, 0.8).then((buffer) => {
+				expect(buffer.getTimeOfFirstSound()).to.be.closeTo(0.2, 0.01);
+				expect(buffer.getTimeOfLastSound()).to.be.closeTo(0.6, 0.01);
+			});
+		});
+
+		it("disposes voices when they are no longer used", () => {
+			return Offline(() => {
+				const polySynth = new PolySynth(Synth, {
+					envelope : {
+						release: 0.1,
+					},
+				});
+				polySynth.toDestination();
+				polySynth.triggerAttackRelease(["C4", "E4", "G4", "B4", "D5"], 0.1, 0);
+				return [
+					atTime(0, () => {
+						expect(polySynth.activeVoices).to.equal(5);
+					}),
+					atTime(0.3, () => {
+						expect(polySynth.activeVoices).to.equal(0);
+					}),
+				];
+			}, 10);
+		});
+
 		it("warns when too much polyphony is attempted and notes are dropped", () => {
 			let wasInvoked = false;
 			const originalWarn = console.warn;
