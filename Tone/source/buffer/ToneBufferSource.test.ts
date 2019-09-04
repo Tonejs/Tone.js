@@ -11,7 +11,7 @@ import { Offline } from "test/helper/Offline";
 import { ONLINE_TESTING } from "test/helper/Supports";
 import { ToneAudioBuffer } from "Tone/core/context/ToneAudioBuffer";
 import { getContext } from "Tone/core/Global";
-import { ToneBufferSource } from "./BufferSource";
+import { ToneBufferSource } from "./ToneBufferSource";
 
 const sampleRate = getContext().sampleRate;
 

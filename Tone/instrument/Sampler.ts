@@ -7,7 +7,7 @@ import { optionsFromArguments } from "../core/util/Defaults";
 import { noOp } from "../core/util/Interface";
 import { isArray, isNote, isNumber, isString } from "../core/util/TypeCheck";
 import { Instrument, InstrumentOptions } from "../instrument/Instrument";
-import { ToneBufferSource, ToneBufferSourceCurve } from "../source/buffer/BufferSource";
+import { ToneBufferSource, ToneBufferSourceCurve } from "../source/buffer/ToneBufferSource";
 
 interface SamplesMap {
 	[note: string]: ToneAudioBuffer | AudioBuffer | string;

@@ -2,7 +2,7 @@ import { ToneAudioBuffer } from "../core/context/ToneAudioBuffer";
 import { Positive, Time } from "../core/type/Units";
 import { optionsFromArguments } from "../core/util/Defaults";
 import { Source, SourceOptions } from "../source/Source";
-import { ToneBufferSource } from "./buffer/BufferSource";
+import { ToneBufferSource } from "./buffer/ToneBufferSource";
 
 export type NoiseType = "white" | "brown" | "pink";
 

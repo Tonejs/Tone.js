@@ -7,5 +7,5 @@ export * from "./oscillator/FatOscillator";
 export * from "./oscillator/PWMOscillator";
 export * from "./oscillator/OmniOscillator";
 export * from "./oscillator/OscillatorNode";
-export * from "./buffer/BufferSource";
+export * from "./buffer/ToneBufferSource";
 export * from "./buffer/Player";

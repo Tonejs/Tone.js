@@ -4,7 +4,7 @@ import { defaultArg, optionsFromArguments } from "../../core/util/Defaults";
 import { noOp } from "../../core/util/Interface";
 import { isUndef } from "../../core/util/TypeCheck";
 import { Source, SourceOptions } from "../Source";
-import { ToneBufferSource } from "./BufferSource";
+import { ToneBufferSource } from "./ToneBufferSource";
 
 export interface PlayerOptions extends SourceOptions {
 	onload: () => void;
