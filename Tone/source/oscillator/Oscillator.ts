@@ -6,7 +6,7 @@ import { Signal } from "../../signal/Signal";
 import { Source } from "../Source";
 import { ToneOscillatorConstructorOptions, ToneOscillatorInterface,
 	ToneOscillatorOptions, ToneOscillatorType } from "./OscillatorInterface";
-import { ToneOscillatorNode } from "./OscillatorNode";
+import { ToneOscillatorNode } from "./ToneOscillatorNode";
 
 export { ToneOscillatorOptions } from "./OscillatorInterface";
 /**

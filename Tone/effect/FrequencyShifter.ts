@@ -7,7 +7,7 @@ import { Multiply } from "../signal/Multiply";
 import { Negate } from "../signal/Negate";
 import { Signal } from "../signal/Signal";
 import { Oscillator } from "../source/oscillator/Oscillator";
-import { ToneOscillatorNode } from "../source/oscillator/OscillatorNode";
+import { ToneOscillatorNode } from "../source/oscillator/ToneOscillatorNode";
 
 interface FrequencyShifterOptions extends EffectOptions {
 	frequency: Frequency;
