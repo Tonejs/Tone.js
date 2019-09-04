@@ -198,7 +198,7 @@ export class MetalSynth extends Monophonic<MetalSynthOptions> {
 
 	/**
 	 *  The modulationIndex of the oscillators which make up the source.
-	 *  see [[FMOscillator#modulationIndex]]
+	 *  see [[FMOscillator.modulationIndex]]
 	 */
 	get modulationIndex(): number {
 		return this._oscillators[0].modulationIndex.value;
@@ -222,11 +222,11 @@ export class MetalSynth extends Monophonic<MetalSynthOptions> {
 	 * The lower level of the highpass filter which is attached to the envelope.
 	 * This value should be between [0, 7000]
 	 */
-	get resonance(): number {
+	get resonance(): Frequency {
 		return this._filterFreqScaler.min;
 	}
 	set resonance(val) {
-		this._filterFreqScaler.min = val;
+		this._filterFreqScaler.min = this.toFrequency(val);
 		this.octaves = this._octaves;
 	}
 
