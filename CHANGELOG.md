@@ -1,13 +1,13 @@
 ### 14.3.0
 
 * **Converted to typescript!!! (WIP)**
-* Input/Outputs are no longer arrays. 
+* Input/Outputs are no longer arrays.
 	* simplifies connect/disconnect logic greatly. Simplifies API to just have clearly named inputs/outputs instead of overloading input/output connect numbers
 * Using "Destination" instead of "Master" for output
 	* More consistent with Web Audio API
-* FrequencyShifter - thanks @Foaly 
-* PolySynth does not require a polyphony value. 
-	* Voice allocation and disposing is done automatically based on demand. 
+* FrequencyShifter - thanks @Foaly
+* PolySynth does not require a polyphony value.
+	* Voice allocation and disposing is done automatically based on demand.
 * MetalSynth and MembraneSynth extends Monophonic enabling them to be used in PolySynth
 
 ### 13.8.25
@@ -17,15 +17,15 @@
 **Breaking Changes**
 
 * AudioNode.prototype.connect is no longer overwritten. This means that you can no longer connect native nodes to Tone.js Nodes.
-* Tone.connect(srcNode, destNode, [ouputNum], [inputNum]) is the way to connect native Web Audio nodes with Tone.js nodes. 
+* Tone.connect(srcNode, destNode, [ouputNum], [inputNum]) is the way to connect native Web Audio nodes with Tone.js nodes.
 
 ### 13.4.9
 
 * Updating semantic versioning to be more in line with other [semvers](https://semver.org/). Now version is 13.x.x
 * logging full version
-* Added Object notation for Tone.TimeBase and classes that extend it. 
+* Added Object notation for Tone.TimeBase and classes that extend it.
 	- i.e. Tone.Time({'4n' : 1, '8t' : 2})
-	- Replacement for deprecated expression strings. 
+	- Replacement for deprecated expression strings.
 * Tone.Meter uses RMS instead of peak (thanks [@Idicious](https://github.com/Idicious))
 * Tone.Sampler supports polyphonic syntax (thanks [@zfan40](https://github.com/zfan40))
 * Building files with [webpack](https://webpack.js.org/)
@@ -33,7 +33,7 @@
 * Changing references to `window` allowing it to not throw error in node context
 * Testing examples
 * Tone.Channel combines Tone.PanVol with Tone.Solo.
-* Removing require.html example. 
+* Removing require.html example.
 * adding `partialCount` and `baseType` to Oscillator classes, helps with getting/setting complex types.
 
 
@@ -51,7 +51,7 @@
 * [TickSource](https://tonejs.github.io/docs/TickSource) (used in Clock and Player) tracks the elapsed ticks
 	* Improved precision of tracking ticks in Transport and Clock
 * `Player.position` returns the playback position of the AudioBuffer accounting for any playbackRate changes
-* Removing `retrigger` option with Tone.Player. Tone.BufferSource should be used if retriggering is desired. 
+* Removing `retrigger` option with Tone.Player. Tone.BufferSource should be used if retriggering is desired.
 
 **BREAKING CHANGES:**
 
