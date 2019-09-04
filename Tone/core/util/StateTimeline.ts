@@ -15,7 +15,7 @@ export interface StateTimelineEvent extends TimelineEvent {
  */
 export class StateTimeline<AdditionalOptions extends {} = {}> extends Timeline<StateTimelineEvent & AdditionalOptions> {
 
-	readonly name = "StateTimeline";
+		readonly name: string = "StateTimeline";
 
 	/**
 	 *  The initial state

@@ -21,7 +21,7 @@ interface ToneConvolverOptions extends EffectOptions {
  */
 export class Convolver extends Effect<ToneConvolverOptions> {
 
-	name = "Convolver";
+		readonly name: string = "Convolver";
 
 	/**
 	 *  The native ConvolverNode

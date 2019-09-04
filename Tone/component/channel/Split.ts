@@ -13,7 +13,7 @@ interface SplitOptions extends ToneAudioNodeOptions {
  * stereoSignal.connect(split);
  */
 export class Split extends ToneAudioNode<SplitOptions> {
-	readonly name = "Split";
+		readonly name: string = "Split";
 
 	/**
 	 * The splitting node

@@ -23,7 +23,7 @@ interface CompressorOptions extends ToneAudioNodeOptions {
  */
 export class Compressor extends ToneAudioNode<CompressorOptions> {
 
-	readonly name = "Compressor";
+		readonly name: string = "Compressor";
 
 	/**
 	 *  the compressor node

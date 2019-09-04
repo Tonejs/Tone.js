@@ -33,7 +33,7 @@ interface ToneAudioBufferOptions {
  */
 export class ToneAudioBuffer extends Tone {
 
-	name = "ToneAudioBuffer";
+		readonly name: string = "ToneAudioBuffer";
 
 	/**
 	 *  stores the loaded AudioBuffer

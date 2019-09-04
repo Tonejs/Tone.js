@@ -43,7 +43,7 @@ export interface ContextTimeoutEvent {
  */
 export class Context extends Emitter<"statechange" | "tick"> implements BaseAudioContextSubset {
 
-	name = "Context";
+		readonly name: string = "Context";
 
 	/**
 	 * The amount of time into the future events are scheduled. Giving Web Audio

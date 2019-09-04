@@ -24,7 +24,7 @@ interface TickSourceOffsetEvent {
  */
 export class TickSource<Type extends BPM | Hertz> extends ToneWithContext<TickSourceOptions> {
 
-	name = "TickSource";
+		readonly name: string = "TickSource";
 
 	/**
 	 *  The frequency the callback function should be invoked.

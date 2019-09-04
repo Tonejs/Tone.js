@@ -38,7 +38,7 @@ interface PartOptions<T> extends Omit<ToneEventOptions<CallbackType<T>>, "value"
  */
 export class Part<ValueType = any> extends ToneEvent<ValueType> {
 
-	name = "Part";
+		readonly name: string = "Part";
 
 	/**
 	 *  Tracks the scheduled events

@@ -17,7 +17,7 @@ export interface ToneOscillatorNodeOptions extends OneShotSourceOptions {
  */
 export class ToneOscillatorNode extends OneShotSource<ToneOscillatorNodeOptions> {
 
-	readonly name = "ToneOscillatorNode";
+		readonly name: string = "ToneOscillatorNode";
 
 	/**
 	 *  The oscillator

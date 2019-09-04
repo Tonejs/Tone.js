@@ -39,7 +39,7 @@ export interface ToneEventOptions<T> extends ToneWithContextOptions {
  */
 export class ToneEvent<ValueType = any> extends ToneWithContext<ToneEventOptions<ValueType>> {
 
-	name = "ToneEvent";
+	readonly name: string = "ToneEvent";
 
 	/**
 	 *  Loop value

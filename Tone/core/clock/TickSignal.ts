@@ -28,7 +28,7 @@ interface TickSignalOptions extends ParamOptions {
  */
 export class TickSignal<Type extends Hertz | BPM> extends Param<Type> {
 
-	readonly name = "TickSignal";
+		readonly name: string = "TickSignal";
 
 	protected _events: Timeline<TickAutomationEvent> = new Timeline(Infinity);
 

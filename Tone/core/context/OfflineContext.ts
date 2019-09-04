@@ -9,7 +9,7 @@ import { isOfflineAudioContext } from "../util/AdvancedTypeCheck";
  */
 export class OfflineContext extends Context {
 
-	name = "OfflineContext";
+		readonly name: string = "OfflineContext";
 
 	/**
 	 *  A private reference to the duration

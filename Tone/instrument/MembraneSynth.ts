@@ -24,7 +24,7 @@ export interface MembraneSynthOptions extends SynthOptions {
  */
 export class MembraneSynth extends Synth<MembraneSynthOptions> {
 
-	readonly name = "MembraneSynth";
+		readonly name: string = "MembraneSynth";
 
 	/**
 	 *  The number of octaves the pitch envelope ramps.

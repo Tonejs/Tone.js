@@ -34,7 +34,7 @@ interface SequenceOptions<T> extends Omit<ToneEventOptions<T>, "value"> {
  */
 export class Sequence<ValueType = any> extends ToneEvent<ValueType> {
 
-	name = "Sequence";
+		readonly name: string = "Sequence";
 
 	/**
 	 *  The subdivison of each note

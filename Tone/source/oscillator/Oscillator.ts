@@ -20,7 +20,7 @@ export { ToneOscillatorOptions } from "./OscillatorInterface";
  */
 export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOscillatorInterface {
 
-	name = "Oscillator";
+		readonly name: string = "Oscillator";
 
 	/**
 	 *  the main oscillator

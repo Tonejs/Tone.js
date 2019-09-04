@@ -17,7 +17,7 @@ interface AnalyserOptions extends ToneAudioNodeOptions {
  */
 export class Analyser extends ToneAudioNode<AnalyserOptions> {
 
-	readonly name = "Analyser";
+		readonly name: string = "Analyser";
 
 	input: AnalyserNode;
 	output: AnalyserNode;

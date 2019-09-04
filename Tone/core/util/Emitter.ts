@@ -14,7 +14,7 @@ export interface EmitterEventObject {
  */
 export class Emitter<EventType extends string = string> extends Tone {
 
-	name = "Emitter";
+	readonly name: string = "Emitter";
 
 	/**
 	 * Private container for the events

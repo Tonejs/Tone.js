@@ -12,7 +12,7 @@ import { TimeBaseUnit, TimeValue } from "./TimeBase";
  */
 export class TransportTimeClass<Type extends Seconds | Ticks = Seconds> extends TimeClass<Type> {
 
-	name = "TransportTime";
+		readonly name: string = "TransportTime";
 
 	/**
 	 * Return the current time in whichever context is relevant

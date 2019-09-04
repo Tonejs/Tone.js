@@ -29,7 +29,7 @@ interface DestinationOptions extends ToneAudioNodeOptions {
  */
 export class Destination extends ToneAudioNode<DestinationOptions> {
 
-	readonly name = "Destination";
+		readonly name: string = "Destination";
 
 	input: Volume = new Volume({ context: this.context });
 	output: Gain = new Gain({ context : this.context });

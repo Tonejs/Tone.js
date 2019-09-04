@@ -34,7 +34,7 @@ type ClockEvent = "start" | "stop" | "pause";
 export class Clock<Type extends BPM | Hertz = Hertz>
 extends ToneWithContext<ClockOptions> implements Emitter<ClockEvent> {
 
-	name = "Clock";
+	readonly name: string = "Clock";
 
 	/**
 	 *  The callback function to invoke at the scheduled tick.

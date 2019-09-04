@@ -13,7 +13,7 @@ import { SignalOperator } from "./SignalOperator";
  */
 export class Negate extends SignalOperator<ToneAudioNodeOptions> {
 
-	name = "Negate";
+		readonly name: string = "Negate";
 
 	/**
 	 *  negation is done by multiplying by -1

@@ -25,7 +25,7 @@ interface FeedbackDelayOptions extends FeedbackEffectOptions {
  */
 export class FeedbackDelay extends FeedbackEffect<FeedbackDelayOptions> {
 
-	name = "FeedbackDelay";
+		readonly name: string = "FeedbackDelay";
 
 	/**
 	 *  the delay node

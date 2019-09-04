@@ -11,7 +11,7 @@ import { WaveShaper } from "./WaveShaper";
  */
 export class GainToAudio extends SignalOperator<ToneAudioNodeOptions> {
 
-	name = "GainToAudio";
+		readonly name: string = "GainToAudio";
 
 	/**
 	 * The node which converts the audio ranges
