@@ -2,7 +2,7 @@ import { MidiClass } from "../core/type/Midi";
 import { Frequency, MidiNote, NormalRange, Seconds, Time } from "../core/type/Units";
 import { deepMerge, optionsFromArguments } from "../core/util/Defaults";
 import { RecursivePartial } from "../core/util/Interface";
-import { isArray } from "../core/util/TypeCheck";
+import { isArray, isNumber } from "../core/util/TypeCheck";
 import { Instrument, InstrumentOptions } from "./Instrument";
 import { MembraneSynth, MembraneSynthOptions } from "./MembraneSynth";
 import { Monophonic } from "./Monophonic";
@@ -109,6 +109,9 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 
 		super(optionsFromArguments(PolySynth.getDefaults(), arguments, ["voice", "options"]));
 		const options = optionsFromArguments(PolySynth.getDefaults(), arguments, ["voice", "options"]);
+
+		// check against the old API (pre 14.3.0)
+		this.assert(!isNumber(options.voice), "DEPRECATED: The polyphony count is no longer the first argument.");
 
 		const defaults = options.voice.getDefaults();
 		this.options = Object.assign(defaults, options.options) as VoiceOptions<Voice>;
