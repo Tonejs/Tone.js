@@ -1,25 +1,23 @@
 import { expect } from "chai";
-import { BasicTests } from "../../test/helper/Basic";
-import { CompareToFile } from "../../test/helper/CompareToFile";
-import { InstrumentTest } from "../../test/helper/InstrumentTests";
-import * as Supports from "../../test/helper/Supports";
+import { BasicTests } from "test/helper/Basic";
+import { CompareToFile } from "test/helper/CompareToFile";
+import { InstrumentTest } from "test/helper/InstrumentTests";
+import { MonophonicTest } from "test/helper/MonophonicTests";
 import { MetalSynth } from "./MetalSynth";
 
 describe("MetalSynth", () => {
 
 	BasicTests(MetalSynth);
 
-	// This was originally called without a second parameter, set to C2 arbitrarily
 	InstrumentTest(MetalSynth, "C2");
+	MonophonicTest(MetalSynth, "C4");
 
-	if (Supports.CHROME_AUDIO_RENDERING) {
-		it("matches a file", () => {
-			return CompareToFile(() => {
-				const synth = new MetalSynth().toMaster();
-				synth.triggerAttackRelease(0.1, 0.05);
-			}, "metalSynth.wav", 7.4);
-		});
-	}
+	it("matches a file", () => {
+		return CompareToFile(() => {
+			const synth = new MetalSynth().toDestination();
+			synth.triggerAttackRelease(200, 0.1, 0.05);
+		}, "metalSynth.wav", 2);
+	});
 
 	context("API", () => {
 
@@ -54,9 +52,9 @@ describe("MetalSynth", () => {
 		it("can get/set attributes", () => {
 			const cymbal = new MetalSynth();
 			cymbal.set({
-				frequency: 120,
+				modulationIndex: 5,
 			});
-			expect(cymbal.get().frequency).to.be.closeTo(120, 0.01);
+			expect(cymbal.get().modulationIndex).to.be.closeTo(5, 0.01);
 			cymbal.harmonicity = 2;
 			expect(cymbal.harmonicity).to.be.closeTo(2, 0.01);
 			cymbal.resonance = 2222;

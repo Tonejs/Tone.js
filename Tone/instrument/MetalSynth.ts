@@ -1,23 +1,22 @@
-// tslint:disable: max-line-length
-import { Envelope } from "../component/envelope/Envelope";
+import { Envelope, EnvelopeOptions } from "../component/envelope/Envelope";
 import { Filter } from "../component/filter/Filter";
 import { Gain } from "../core/context/Gain";
+import { ToneAudioNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
 import { Cents, Frequency, NormalRange, Positive, Time } from "../core/type/Units";
-import { deepMerge, optionsFromArguments } from "../core/util/Defaults";
-import { RecursivePartial } from "../core/util/Interface";
+import { deepMerge, omitFromObject, optionsFromArguments } from "../core/util/Defaults";
+import { noOp, RecursivePartial } from "../core/util/Interface";
 import { Multiply } from "../signal/Multiply";
 import { Scale } from "../signal/Scale";
 import { Signal } from "../signal/Signal";
 import { FMOscillator } from "../source/oscillator/FMOscillator";
-import { Monophonic } from "./Monophonic";
-import { Synth, SynthOptions } from "./Synth";
+import { Monophonic, MonophonicOptions } from "./Monophonic";
 
-interface MetalSynthOptions extends SynthOptions {
-	frequency: Frequency;
+interface MetalSynthOptions extends MonophonicOptions {
 	harmonicity: Positive;
 	modulationIndex: Positive;
 	octaves: number;
 	resonance: Frequency;
+	envelope: Omit<EnvelopeOptions, keyof ToneAudioNodeOptions>;
 }
 
 /**
@@ -28,9 +27,9 @@ const inharmRatios: number[] = [1.0, 1.483, 1.932, 2.546, 2.630, 3.897];
 
 /**
  * A highly inharmonic and spectrally complex source with a highpass filter
- * and amplitude envelope which is good for making metalophone sounds.
+ * and amplitude envelope which is good for making metallophone sounds.
  * Based on CymbalSynth by [@polyrhythmatic](https://github.com/polyrhythmatic).
- * Inspiration from [Sound on Sound](https://web.archive.org/web/20160610143924/https://www.soundonsound.com/sos/jul02/articles/synthsecrets0702.asp).
+ * Inspiration from [Sound on Sound](https://shorturl.at/rSZ12).
  */
 export class MetalSynth extends Monophonic<MetalSynthOptions> {
 
@@ -39,7 +38,12 @@ export class MetalSynth extends Monophonic<MetalSynthOptions> {
 	/**
 	 * The frequency of the cymbal
 	 */
-	frequency: Signal<Frequency>;
+	readonly frequency: Signal<Frequency>;
+
+	/**
+	 * The detune applied to the oscillators
+	 */
+	readonly detune: Signal<Cents>;
 
 	/**
 	 * The array of FMOscillators
@@ -52,9 +56,9 @@ export class MetalSynth extends Monophonic<MetalSynthOptions> {
 	private _freqMultipliers: Multiply[] = [];
 
 	/**
-	 * The amplitude for the body
+	 * The gain node for the envelope.
 	 */
-	private _amplitue: Gain;
+	private _amplitude: Gain;
 
 	/**
 	 * Highpass the output
@@ -68,79 +72,97 @@ export class MetalSynth extends Monophonic<MetalSynthOptions> {
 	private _octaves: number;
 
 	/**
-	 * Scale the body envelope
-	 * for the bandpass
+	 * Scale the body envelope for the highpass filter
 	 */
 	private _filterFreqScaler: Scale;
 
 	/**
 	 * The envelope which is connected both to the
-	 * amplitude and highpass filter's cutoff frequency
+	 * amplitude and a highpass filter's cutoff frequency.
+	 * The lower-limit of the filter is controlled by the [[#resonance]]
 	 */
 	readonly envelope: Envelope;
-
-	readonly detune: Signal<Cents>;
 
 	constructor(options?: RecursivePartial<MetalSynthOptions>)
 	constructor() {
 		super(optionsFromArguments(MetalSynth.getDefaults(), arguments));
 		const options = optionsFromArguments(MetalSynth.getDefaults(), arguments);
 
-		// not sure about setting this here -- but it was required because the abstract value was defined as non-optional in Monophonic
-		this.detune = new Signal<Cents>(0);
+		this.detune = new Signal({
+			context: this.context,
+			units: "cents",
+			value: options.detune,
+		});
 
-		this.octaves = options.octaves;
-		this.frequency = new Signal(options.frequency);
+		this.frequency = new Signal({
+			context: this.context,
+			units: "frequency",
+		});
 
-		// set the octaves
-		this._octaves = options.octaves;
-
-		this._amplitue = new Gain(0).connect(this.output);
+		this._amplitude = new Gain({
+			context: this.context,
+			gain: 0,
+		}).connect(this.output);
 
 		this._highpass = new Filter({
 			Q: -3.0102999566398125,
+			context: this.context,
 			type: "highpass",
-		}).connect(this._amplitue);
+		}).connect(this._amplitude);
 
 		for (let i = 0; i < inharmRatios.length; i++) {
 			const osc = new FMOscillator({
+				context: this.context,
 				harmonicity: options.harmonicity,
 				modulationIndex: options.modulationIndex,
 				modulationType: "square",
+				onstop: i === 0 ? () => this.onsilence(this) : noOp,
 				type: "square",
 			});
 			osc.connect(this._highpass);
 			this._oscillators[i] = osc;
 
-			const mult = new Multiply(inharmRatios[i]);
+			const mult = new Multiply({
+				context: this.context,
+				value: inharmRatios[i],
+			});
 			this._freqMultipliers[i] = mult;
 			this.frequency.chain(mult, osc.frequency);
+			this.detune.connect(osc.detune);
 		}
 
-		this._filterFreqScaler = new Scale(this.toFrequency(options.resonance), 7000);
+		this._filterFreqScaler = new Scale({
+			context: this.context,
+			max: 7000,
+			min: this.toFrequency(options.resonance),
+		});
 
-		// tslint:disable:object-literal-sort-keys
 		this.envelope = new Envelope({
 			attack: options.envelope.attack,
 			attackCurve: "linear",
+			context: this.context,
 			decay: options.envelope.decay,
-			sustain: 0,
 			release: options.envelope.release,
+			sustain: 0,
 		});
-		// tslint:enable:object-literal-sort-keys
 
 		this.envelope.chain(this._filterFreqScaler, this._highpass.frequency);
-		this.envelope.connect(this._amplitue.gain);
+		this.envelope.connect(this._amplitude.gain);
+		// set the octaves
+		this._octaves = options.octaves;
+		this.octaves = options.octaves;
 	}
 
 	static getDefaults(): MetalSynthOptions {
-		return deepMerge(Synth.getDefaults(), {
-			envelope: {
-				attack: 0.001,
-				decay: 1.4,
-				release: 0.2,
-			},
-			frequency: 200,
+		return deepMerge(Monophonic.getDefaults(), {
+			envelope: Object.assign(
+				omitFromObject(Envelope.getDefaults(), Object.keys(ToneAudioNode.getDefaults())),
+				{
+					attack: 0.001,
+					decay: 1.4,
+					release: 0.2,
+				},
+			),
 			harmonicity: 5.1,
 			modulationIndex: 32,
 			octaves: 1.5,
@@ -153,7 +175,7 @@ export class MetalSynth extends Monophonic<MetalSynthOptions> {
 	 *  @param time When the attack should be triggered.
 	 *  @param velocity The velocity that the envelope should be triggered at.
 	 */
-	public _triggerEnvelopeAttack(time: Time, velocity: NormalRange = 1): this {
+	protected _triggerEnvelopeAttack(time: Time, velocity: NormalRange = 1): this {
 		this.envelope.triggerAttack(time, velocity);
 		this._oscillators.forEach(osc => osc.start(time));
 		if (this.envelope.sustain === 0) {
@@ -168,53 +190,20 @@ export class MetalSynth extends Monophonic<MetalSynthOptions> {
 	 *  Trigger the release of the envelope.
 	 *  @param time When the release should be triggered.
 	 */
-	public _triggerEnvelopeRelease(time: Time): this {
+	protected _triggerEnvelopeRelease(time: Time): this {
 		this.envelope.triggerRelease(time);
 		this._oscillators.forEach(osc => osc.stop(this.toSeconds(time) + this.toSeconds(this.envelope.release)));
 		return this;
 	}
 
 	/**
-	 *  Trigger the attack and release of the envelope after the given
-	 *  duration.
-	 *  @param duration  The duration before triggering the release
-	 *  @param time      When the attack should be triggered.
-	 *  @param velocity  The velocity that the envelope should be triggered at.
-	 */
-	public triggerAttackRelease(duration: Time, time: Time, velocity: NormalRange = 1): this {
-		this.triggerAttack(this.toSeconds(time), velocity);
-		this.triggerRelease(this.toSeconds(time) + this.toSeconds(duration));
-		return this;
-	}
-
-	/**
-	 * Sync the instrument to the Transport. All subsequent calls of
-	 * [triggerAttack](#triggerattack) and [triggerRelease](#triggerrelease)
-	 * will be scheduled along the transport.
-	 * @example
-	 * synth.sync()
-	 * //schedule 3 notes when the transport first starts
-	 * synth.triggerAttackRelease('8n', 0)
-	 * synth.triggerAttackRelease('8n', '8n')
-	 * synth.triggerAttackRelease('8n', '4n')
-	 * //start the transport to hear the notes
-	 * Transport.start()
-	 */
-	public sync(): this {
-		this._syncMethod("triggerRelease", 0);
-		this._syncMethod("triggerAttack", 0);
-		return this;
-	}
-
-	/**
 	 *  The modulationIndex of the oscillators which make up the source.
-	 *  see Tone.FMOscillator.modulationIndex
+	 *  see [[FMOscillator#modulationIndex]]
 	 */
-	public get modulationIndex(): number {
+	get modulationIndex(): number {
 		return this._oscillators[0].modulationIndex.value;
 	}
-
-	public set modulationIndex(val: number) {
+	set modulationIndex(val) {
 		this._oscillators.forEach(osc => (osc.modulationIndex.value = val));
 	}
 
@@ -222,22 +211,21 @@ export class MetalSynth extends Monophonic<MetalSynthOptions> {
 	 *  The harmonicity of the oscillators which make up the source.
 	 *  see Tone.FMOscillator.harmonicity
 	 */
-	public get harmonicity(): number {
+	get harmonicity(): number {
 		return this._oscillators[0].harmonicity.value;
 	}
-
-	public set harmonicity(val: number) {
+	set harmonicity(val) {
 		this._oscillators.forEach(osc => (osc.harmonicity.value = val));
 	}
 
 	/**
-	 *  The frequency of the highpass filter attached to the envelope
+	 * The lower level of the highpass filter which is attached to the envelope.
+	 * This value should be between [0, 7000]
 	 */
-	public get resonance(): number {
+	get resonance(): number {
 		return this._filterFreqScaler.min;
 	}
-
-	public set resonance(val: number) {
+	set resonance(val) {
 		this._filterFreqScaler.min = val;
 		this.octaves = this._octaves;
 	}
@@ -246,11 +234,10 @@ export class MetalSynth extends Monophonic<MetalSynthOptions> {
 	 *  The number of octaves above the "resonance" frequency
 	 *  that the filter ramps during the attack/decay envelope
 	 */
-	public get octaves(): number {
+	get octaves(): number {
 		return this._octaves;
 	}
-
-	public set octaves(val: number) {
+	set octaves(val) {
 		this._octaves = val;
 		this._filterFreqScaler.max = this._filterFreqScaler.min * Math.pow(2, val);
 	}
@@ -260,8 +247,9 @@ export class MetalSynth extends Monophonic<MetalSynthOptions> {
 		this._oscillators.forEach(osc => osc.dispose());
 		this._freqMultipliers.forEach(freqMult => freqMult.dispose());
 		this.frequency.dispose();
+		this.detune.dispose();
 		this._filterFreqScaler.dispose();
-		this._amplitue.dispose();
+		this._amplitude.dispose();
 		this.envelope.dispose();
 		this._highpass.dispose();
 		return this;
