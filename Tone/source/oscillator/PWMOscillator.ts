@@ -8,6 +8,8 @@ import { Oscillator } from "./Oscillator";
 import { PWMOscillatorOptions, ToneOscillatorInterface } from "./OscillatorInterface";
 import { PulseOscillator } from "./PulseOscillator";
 
+export { PWMOscillatorOptions } from "./OscillatorInterface";
+
 /**
  * PWMOscillator modulates the width of a Tone.PulseOscillator
  * at the modulationFrequency. This has the effect of continuously

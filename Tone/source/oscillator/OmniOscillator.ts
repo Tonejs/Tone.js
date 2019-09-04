@@ -14,6 +14,8 @@ import { OmniOscillatorConstructorOptions,
 import { PulseOscillator } from "./PulseOscillator";
 import { PWMOscillator } from "./PWMOscillator";
 
+export { OmniOscillatorOptions } from "./OscillatorInterface";
+
 /**
  * All of the oscillator types that OmniOscillator can take on
  */

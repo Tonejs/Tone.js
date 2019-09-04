@@ -11,6 +11,8 @@ import { AMConstructorOptions, AMOscillatorOptions,
 	NonCustomOscillatorType, ToneOscillatorInterface,
 	ToneOscillatorType } from "./OscillatorInterface";
 
+export { AMOscillatorOptions } from "./OscillatorInterface";
+
 /**
  * An amplitude modulated oscillator node. It is implemented with
  * two oscillators, one which modulators the other's amplitude

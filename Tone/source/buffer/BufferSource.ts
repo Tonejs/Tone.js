@@ -9,7 +9,7 @@ import { OneShotSource, OneShotSourceCurve, OneShotSourceOptions } from "../OneS
 
 export type ToneBufferSourceCurve = OneShotSourceCurve;
 
-interface ToneBufferSourceOptions extends OneShotSourceOptions {
+export interface ToneBufferSourceOptions extends OneShotSourceOptions {
 	buffer: ToneAudioBuffer;
 	curve: ToneBufferSourceCurve;
 	playbackRate: Positive;
@@ -26,7 +26,7 @@ interface ToneBufferSourceOptions extends OneShotSourceOptions {
  */
 export class ToneBufferSource extends OneShotSource<ToneBufferSourceOptions> {
 
-	name = "ToneBufferSource";
+	readonly name = "ToneBufferSource";
 
 	/**
 	 *  The oscillator

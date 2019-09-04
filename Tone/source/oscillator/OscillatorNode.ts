@@ -4,7 +4,7 @@ import { Cents, Frequency, Seconds, Time } from "../../core/type/Units";
 import { optionsFromArguments } from "../../core/util/Defaults";
 import { OneShotSource, OneShotSourceOptions } from "../OneShotSource";
 
-interface ToneOscillatorNodeOptions extends OneShotSourceOptions {
+export interface ToneOscillatorNodeOptions extends OneShotSourceOptions {
 	frequency: Frequency;
 	detune: Cents;
 	type: OscillatorType;

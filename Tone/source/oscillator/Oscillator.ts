@@ -8,6 +8,7 @@ import { ToneOscillatorConstructorOptions, ToneOscillatorInterface,
 	ToneOscillatorOptions, ToneOscillatorType } from "./OscillatorInterface";
 import { ToneOscillatorNode } from "./OscillatorNode";
 
+export { ToneOscillatorOptions } from "./OscillatorInterface";
 /**
  *  Oscillator supports a number of features including
  *  phase rotation, multiple oscillator types (see Oscillator.type),

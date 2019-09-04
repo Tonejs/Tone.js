@@ -8,6 +8,8 @@ import { Source } from "../Source";
 import { Oscillator } from "./Oscillator";
 import { PulseOscillatorOptions, ToneOscillatorInterface } from "./OscillatorInterface";
 
+export { PulseOscillatorOptions } from "./OscillatorInterface";
+
 /**
  * PulseOscillator is an oscillator with control over pulse width,
  * also known as the duty cycle. At 50% duty cycle (width = 0) the wave is

@@ -9,6 +9,8 @@ import { Oscillator } from "./Oscillator";
 import { FatConstructorOptions, FatOscillatorOptions,
 	ToneOscillatorInterface, ToneOscillatorType } from "./OscillatorInterface";
 
+export { FatOscillatorOptions } from "./OscillatorInterface";
+
 /**
  *  FatOscillator is an array of oscillators with detune spread between the oscillators
  * @param frequency The oscillator's frequency.

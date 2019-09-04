@@ -6,7 +6,7 @@ import { isUndef } from "../../core/util/TypeCheck";
 import { Source, SourceOptions } from "../Source";
 import { ToneBufferSource } from "./BufferSource";
 
-interface PlayerOptions extends SourceOptions {
+export interface PlayerOptions extends SourceOptions {
 	onload: () => void;
 	playbackRate: Positive;
 	loop: boolean;
@@ -28,7 +28,7 @@ interface PlayerOptions extends SourceOptions {
  */
 export class Player extends Source<PlayerOptions> {
 
-	name = "Player";
+	readonly name = "Player";
 
 	/**
 	 * If the file should play as soon

@@ -9,6 +9,7 @@ import { Oscillator } from "./Oscillator";
 import { FMConstructorOptions, FMOscillatorOptions,
 	NonCustomOscillatorType, ToneOscillatorInterface, ToneOscillatorType } from "./OscillatorInterface";
 
+export { FMOscillatorOptions } from "./OscillatorInterface";
 /**
  * FMOscillator implements a frequency modulation synthesis
  * ```
