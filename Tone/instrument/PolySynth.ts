@@ -5,6 +5,7 @@ import { RecursivePartial } from "../core/util/Interface";
 import { isArray, isNumber } from "../core/util/TypeCheck";
 import { Instrument, InstrumentOptions } from "./Instrument";
 import { MembraneSynth, MembraneSynthOptions } from "./MembraneSynth";
+import { MetalSynth, MetalSynthOptions } from "./MetalSynth";
 import { Monophonic } from "./Monophonic";
 import { Synth, SynthOptions } from "./Synth";
 
@@ -16,6 +17,7 @@ type OmitMonophonicOptions<T> = Omit<T, "context" | "onsilence">;
 
 type VoiceOptions<T> =
 	T extends MembraneSynth ? MembraneSynthOptions :
+	T extends MetalSynth ? MetalSynthOptions :
 	T extends Synth ? SynthOptions :
 	never;
 
@@ -28,7 +30,7 @@ type PartialVoiceOptions<T> = RecursivePartial<
 	>
 >;
 
-interface PolySynthOptions<Voice> extends InstrumentOptions {
+export interface PolySynthOptions<Voice> extends InstrumentOptions {
 	maxPolyphony: number;
 	voice: VoiceConstructor<Voice>;
 	options: PartialVoiceOptions<Voice>;
