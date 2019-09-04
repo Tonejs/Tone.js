@@ -6,6 +6,9 @@
 * Using "Destination" instead of "Master" for output
 	* More consistent with Web Audio API
 * FrequencyShifter - thanks @Foaly 
+* PolySynth does not require a polyphony value. 
+	* Voice allocation and disposing is done automatically based on demand. 
+* MetalSynth and MembraneSynth extends Monophonic enabling them to be used in PolySynth
 
 ### 13.8.25
 
