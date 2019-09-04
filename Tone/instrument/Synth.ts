@@ -61,6 +61,7 @@ export class Synth<Options extends SynthOptions = SynthOptions> extends Monophon
 
 		this.oscillator = new OmniOscillator(Object.assign({
 			context: this.context,
+			detune: options.detune,
 			onstop: () => this.onsilence(this),
 		}, options.oscillator));
 
