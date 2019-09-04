@@ -11,6 +11,7 @@ type onSilenceCallback = (instrument: Monophonic<any>) => void;
 export interface MonophonicOptions extends InstrumentOptions {
 	portamento: Seconds;
 	onsilence: onSilenceCallback;
+	detune: Cents;
 }
 
 /**
@@ -55,6 +56,7 @@ export abstract class Monophonic<Options extends MonophonicOptions> extends Inst
 
 	static getDefaults(): MonophonicOptions {
 		return Object.assign(Instrument.getDefaults(), {
+			detune: 0,
 			onsilence: noOp,
 			portamento: 0,
 		});
