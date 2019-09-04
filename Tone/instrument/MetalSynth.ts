@@ -11,7 +11,7 @@ import { Signal } from "../signal/Signal";
 import { FMOscillator } from "../source/oscillator/FMOscillator";
 import { Monophonic, MonophonicOptions } from "./Monophonic";
 
-interface MetalSynthOptions extends MonophonicOptions {
+export interface MetalSynthOptions extends MonophonicOptions {
 	harmonicity: Positive;
 	modulationIndex: Positive;
 	octaves: number;

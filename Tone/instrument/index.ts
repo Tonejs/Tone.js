@@ -1,5 +1,5 @@
-export { Synth } from "./Synth";
-export { Sampler } from "./Sampler";
-export { PolySynth } from "./PolySynth";
-export { MembraneSynth } from "./MembraneSynth";
-export { MetalSynth } from "./MetalSynth";
+export * from "./Synth";
+export * from "./Sampler";
+export * from "./PolySynth";
+export * from "./MembraneSynth";
+export * from "./MetalSynth";

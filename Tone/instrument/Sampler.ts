@@ -14,7 +14,7 @@ interface SamplesMap {
 	[midi: number]: ToneAudioBuffer | AudioBuffer | string;
 }
 
-interface SamplerOptions extends InstrumentOptions {
+export interface SamplerOptions extends InstrumentOptions {
 	attack: Time;
 	release: Time;
 	onload: () => void;
