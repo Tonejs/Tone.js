@@ -180,8 +180,8 @@ export class Context extends Emitter<"statechange" | "tick"> implements BaseAudi
 	createGain(): GainNode {
 		return this._context.createGain();
 	}
-	createIIRFilter(feedforward: number[], feedback: number[]): IIRFilterNode {
-		return this._context.createIIRFilter(feedforward, feedback);
+	createIIRFilter(feedForward: number[], feedback: number[]): IIRFilterNode {
+		return this._context.createIIRFilter(feedForward, feedback);
 	}
 	createPanner(): PannerNode {
 		return this._context.createPanner();
@@ -412,7 +412,7 @@ export class Context extends Emitter<"statechange" | "tick"> implements BaseAudi
 	}
 
 	/**
-	 *  A setTimeout which is guarented by the clock source.
+	 *  A setTimeout which is guaranteed by the clock source.
 	 *  Also runs in the offline context.
 	 * @param  fn       The callback to invoke
 	 * @param  timeout  The timeout in seconds
