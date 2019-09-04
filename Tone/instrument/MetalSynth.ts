@@ -33,7 +33,7 @@ const inharmRatios: number[] = [1.0, 1.483, 1.932, 2.546, 2.630, 3.897];
  */
 export class MetalSynth extends Monophonic<MetalSynthOptions> {
 
-		readonly name: string = "MetalSynth";
+	readonly name: string = "MetalSynth";
 
 	/**
 	 * The frequency of the cymbal

@@ -23,7 +23,7 @@ type IteratorCallback = (event: IntervalTimelineEvent) => void;
  */
 export class IntervalTimeline extends Tone {
 
-		readonly name: string = "IntervalTimeline";
+	readonly name: string = "IntervalTimeline";
 
 	/**
 	 *  The root node of the inteval tree

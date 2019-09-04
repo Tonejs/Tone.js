@@ -75,7 +75,7 @@ export class OmniOscillator<OscType extends AnyOscillator>
 extends Source<OmniOscillatorConstructorOptions>
 implements Omit<ToneOscillatorInterface, "type"> {
 
-		readonly name: string = "OmniOscillator";
+	readonly name: string = "OmniOscillator";
 
 	/**
 	 *  The frequency control.

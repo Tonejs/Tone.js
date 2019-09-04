@@ -33,7 +33,7 @@ export { AMOscillatorOptions } from "./OscillatorInterface";
  */
 export class AMOscillator extends Source<AMOscillatorOptions> implements ToneOscillatorInterface {
 
-		readonly name: string = "AMOscillator";
+	readonly name: string = "AMOscillator";
 
 	/**
 	 *  The carrier oscillator

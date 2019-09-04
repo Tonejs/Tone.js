@@ -21,7 +21,7 @@ export { FatOscillatorOptions } from "./OscillatorInterface";
  */
 export class FatOscillator extends Source<FatOscillatorOptions> implements ToneOscillatorInterface {
 
-		readonly name: string = "FatOscillator";
+	readonly name: string = "FatOscillator";
 
 	/**
 	 *  The oscillator's frequency

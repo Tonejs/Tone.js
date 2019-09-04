@@ -26,7 +26,7 @@ export class Add extends Signal {
 
 	override = false;
 
-		readonly name: string = "Add";
+	readonly name: string = "Add";
 
 	/**
 	 *  the summing node

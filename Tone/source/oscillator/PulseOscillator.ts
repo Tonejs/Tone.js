@@ -44,7 +44,7 @@ export { PulseOscillatorOptions } from "./OscillatorInterface";
  */
 export class PulseOscillator extends Source<PulseOscillatorOptions> implements ToneOscillatorInterface {
 
-		readonly name: string = "PulseOscillator";
+	readonly name: string = "PulseOscillator";
 
 	/**
 	 *  The width of the pulse.

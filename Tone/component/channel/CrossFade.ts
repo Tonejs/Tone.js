@@ -44,7 +44,7 @@ interface CrossFadeOptions extends ToneAudioNodeOptions {
  */
 export class CrossFade extends ToneAudioNode<CrossFadeOptions> {
 
-		readonly name: string = "CrossFade";
+	readonly name: string = "CrossFade";
 
 	/**
 	 * The crossfading is done by a StereoPannerNode

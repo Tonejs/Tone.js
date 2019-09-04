@@ -21,7 +21,7 @@ interface MergeOptions extends ToneAudioNodeOptions {
  */
 export class Merge extends ToneAudioNode<MergeOptions> {
 
-		readonly name: string = "Merge";
+	readonly name: string = "Merge";
 
 	/**
 	 *  The merger node for the two channels.

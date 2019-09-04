@@ -36,7 +36,7 @@ export interface NoiseOptions extends SourceOptions {
  */
 export class Noise extends Source<NoiseOptions> {
 
-		readonly name: string = "Noise";
+	readonly name: string = "Noise";
 
 	/**
 	 * Private reference to the source

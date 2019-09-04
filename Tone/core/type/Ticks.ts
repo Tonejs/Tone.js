@@ -13,7 +13,7 @@ import { Seconds, Ticks } from "./Units";
  */
 export class TicksClass extends TransportTimeClass<Ticks> {
 
-		readonly name: string = "Ticks";
+	readonly name: string = "Ticks";
 
 	readonly defaultUnits: TimeBaseUnit = "i";
 

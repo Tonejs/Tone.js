@@ -28,7 +28,7 @@ export interface PlayerOptions extends SourceOptions {
  */
 export class Player extends Source<PlayerOptions> {
 
-		readonly name: string = "Player";
+	readonly name: string = "Player";
 
 	/**
 	 * If the file should play as soon

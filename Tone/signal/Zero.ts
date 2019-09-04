@@ -10,7 +10,7 @@ import { SignalOperator } from "./SignalOperator";
  */
 export class Zero extends SignalOperator<ToneAudioNodeOptions> {
 
-		readonly name: string = "Zero";
+	readonly name: string = "Zero";
 
 	/**
 	 * The gain node which connects the constant source to the output
@@ -27,6 +27,7 @@ export class Zero extends SignalOperator<ToneAudioNodeOptions> {
 	 */
 	input = undefined;
 
+	constructor(options?: Partial<ToneAudioNodeOptions>);
 	constructor() {
 		super(Object.assign(optionsFromArguments(Zero.getDefaults(), arguments)));
 		connect(this.context.getConstant(0), this._gain);

@@ -24,7 +24,7 @@ export interface FeedbackEffectOptions extends EffectOptions {
  */
 export abstract class FeedbackEffect<Options extends FeedbackEffectOptions> extends Effect<Options> {
 
-		readonly name: string = "FeedbackEffect";
+	readonly name: string = "FeedbackEffect";
 
 	/**
 	 *  the gain which controls the feedback

@@ -20,7 +20,7 @@ export { PWMOscillatorOptions } from "./OscillatorInterface";
  */
 export class PWMOscillator extends Source<PWMOscillatorOptions> implements ToneOscillatorInterface {
 
-		readonly name: string = "PWMOscillator";
+	readonly name: string = "PWMOscillator";
 
 	readonly sourceType = "pwm";
 

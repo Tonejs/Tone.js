@@ -11,7 +11,7 @@ import { ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudi
  */
 export class PhaseShiftAllpass extends ToneAudioNode<ToneAudioNodeOptions> {
 
-		readonly name: string = "PhaseShiftAllpass";
+	readonly name: string = "PhaseShiftAllpass";
 
 	readonly input = new Gain({ context : this.context });
 

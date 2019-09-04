@@ -64,7 +64,7 @@ type TransportCallback = (time: Seconds) => void;
  */
 export class Transport extends ToneWithContext<TransportOptions> implements Emitter<TransportEventNames> {
 
-		readonly name: string = "Transport";
+	readonly name: string = "Transport";
 
 	///////////////////////////////////////////////////////////////////////
 	// 	LOOPING

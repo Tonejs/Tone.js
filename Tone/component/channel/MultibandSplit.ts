@@ -31,7 +31,7 @@ interface MultibandSplitOptions extends ToneAudioNodeOptions {
  */
 export class MultibandSplit extends ToneAudioNode<MultibandSplitOptions> {
 
-		readonly name: string = "MultibandSplit";
+	readonly name: string = "MultibandSplit";
 
 	/**
 	 *  the input

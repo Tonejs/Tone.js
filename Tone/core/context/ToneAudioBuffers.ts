@@ -42,7 +42,7 @@ interface ToneAudioBuffersOptions {
  */
 export class ToneAudioBuffers extends Tone {
 
-		readonly name: string = "ToneAudioBuffers";
+	readonly name: string = "ToneAudioBuffers";
 
 	/**
 	 *  All of the buffers

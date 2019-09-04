@@ -30,7 +30,7 @@ export { FMOscillatorOptions } from "./OscillatorInterface";
  */
 export class FMOscillator extends Source<FMOscillatorOptions> implements ToneOscillatorInterface {
 
-		readonly name: string = "FMOscillator";
+	readonly name: string = "FMOscillator";
 
 	/**
 	 *  The carrier oscillator

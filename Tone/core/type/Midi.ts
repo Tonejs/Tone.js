@@ -14,7 +14,7 @@ import { Hertz, Interval, MidiNote, Seconds, Ticks } from "./Units";
  */
 export class MidiClass extends FrequencyClass<MidiNote> {
 
-		readonly name: string = "Midi";
+	readonly name: string = "Midi";
 
 	readonly defaultUnits = "midi";
 

@@ -19,7 +19,7 @@ interface VolumeOptions extends ToneAudioNodeOptions {
  */
 export class Volume extends ToneAudioNode<VolumeOptions> {
 
-		readonly name: string = "Volume";
+	readonly name: string = "Volume";
 
 	/**
 	 * the output node

@@ -8,7 +8,7 @@ import { ToneOscillatorConstructorOptions, ToneOscillatorInterface,
 	ToneOscillatorOptions, ToneOscillatorType } from "./OscillatorInterface";
 import { ToneOscillatorNode } from "./ToneOscillatorNode";
 
-export { ToneOscillatorOptions } from "./OscillatorInterface";
+export { ToneOscillatorOptions, ToneOscillatorType } from "./OscillatorInterface";
 /**
  *  Oscillator supports a number of features including
  *  phase rotation, multiple oscillator types (see Oscillator.type),
@@ -20,7 +20,7 @@ export { ToneOscillatorOptions } from "./OscillatorInterface";
  */
 export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOscillatorInterface {
 
-		readonly name: string = "Oscillator";
+	readonly name: string = "Oscillator";
 
 	/**
 	 *  the main oscillator

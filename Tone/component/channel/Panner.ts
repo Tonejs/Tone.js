@@ -16,7 +16,7 @@ interface TonePannerOptions extends ToneAudioNodeOptions {
  */
 export class Panner extends ToneAudioNode<TonePannerOptions> {
 
-		readonly name: string = "Panner";
+	readonly name: string = "Panner";
 
 	/**
 	 *  the panner node

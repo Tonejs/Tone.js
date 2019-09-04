@@ -56,7 +56,7 @@ export interface PolySynthOptions<Voice> extends InstrumentOptions {
  */
 export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument<VoiceOptions<Voice>> {
 
-		readonly name: string = "PolySynth";
+	readonly name: string = "PolySynth";
 
 	/**
 	 * The voices which are not currently in use

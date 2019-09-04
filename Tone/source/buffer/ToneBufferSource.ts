@@ -26,7 +26,7 @@ export interface ToneBufferSourceOptions extends OneShotSourceOptions {
  */
 export class ToneBufferSource extends OneShotSource<ToneBufferSourceOptions> {
 
-		readonly name: string = "ToneBufferSource";
+	readonly name: string = "ToneBufferSource";
 
 	/**
 	 *  The oscillator

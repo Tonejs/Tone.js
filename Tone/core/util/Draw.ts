@@ -24,7 +24,7 @@ interface DrawEvent extends TimelineEvent {
  */
 export class Draw extends ToneWithContext<ToneWithContextOptions> {
 
-		readonly name: string = "Draw";
+	readonly name: string = "Draw";
 
 	/**
 	 *  The duration after which events are not invoked.

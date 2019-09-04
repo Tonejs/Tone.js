@@ -28,7 +28,7 @@ interface WaveShaperOptions extends ToneAudioNodeOptions {
  */
 export class WaveShaper extends SignalOperator<WaveShaperOptions> {
 
-		readonly name: string = "WaveShaper";
+	readonly name: string = "WaveShaper";
 
 	/**
 	 *  the waveshaper node

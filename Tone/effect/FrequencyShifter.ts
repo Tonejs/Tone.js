@@ -32,7 +32,7 @@ interface FrequencyShifterOptions extends EffectOptions {
  */
 export class FrequencyShifter extends Effect<FrequencyShifterOptions> {
 
-		readonly name: string = "FrequencyShifter";
+	readonly name: string = "FrequencyShifter";
 
 	/**
 	 *  The ring modulators carrier frequency. This frequency determines

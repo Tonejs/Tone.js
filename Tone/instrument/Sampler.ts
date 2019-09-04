@@ -44,7 +44,7 @@ export interface SamplerOptions extends InstrumentOptions {
  */
 export class Sampler extends Instrument<SamplerOptions> {
 
-		readonly name: string = "Sampler";
+	readonly name: string = "Sampler";
 
 	/**
 	 * The stored and loaded buffers

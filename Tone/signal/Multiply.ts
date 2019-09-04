@@ -21,7 +21,7 @@ import { Signal, SignalOptions } from "./Signal";
  */
 export class Multiply extends Signal<number> {
 
-		readonly name: string = "Multiply";
+	readonly name: string = "Multiply";
 
 	/**
 	 * Indicates if the value should be overridden on connection
