@@ -113,9 +113,9 @@ export class Context extends Emitter<"statechange" | "tick"> implements BaseAudi
 		this.on("tick", this._timeoutLoop.bind(this));
 
 		// fwd events from the context
-		this._context.addEventListener("statechange", () => {
+		this._context.onstatechange = () => {
 			this.emit("statechange", this.state);
-		});
+		};
 	}
 
 	static getDefaults(): ContextOptions {
