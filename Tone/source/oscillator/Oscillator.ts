@@ -241,7 +241,7 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 	get type(): ToneOscillatorType {
 		return this._type;
 	}
-	set type(type: ToneOscillatorType) {
+	set type(type) {
 		this._type = type;
 		const isBasicType = ["sine", "square", "sawtooth", "triangle"].indexOf(type) !== -1;
 		if (this._phase === 0 && isBasicType) {
@@ -294,7 +294,7 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 	get baseType(): OscillatorType {
 		return (this._type as string).replace(this.partialCount.toString(), "") as OscillatorType;
 	}
-	set baseType(baseType: OscillatorType) {
+	set baseType(baseType) {
 		if (this.partialCount && this._type !== "custom" && baseType !== "custom") {
 			this.type = baseType + this.partialCount as ToneOscillatorType;
 		} else {
@@ -316,7 +316,7 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 	get partialCount(): number {
 		return this._partialCount;
 	}
-	set partialCount(p: number) {
+	set partialCount(p) {
 		let type = this._type;
 		const partial = /^(sine|triangle|square|sawtooth)(\d+)$/.exec(this._type);
 		if (partial) {
@@ -434,15 +434,17 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 	}
 
 	/**
-	 *  Returns the initial value of the oscillator.
+	 * Returns the initial value of the oscillator when stopped.
+	 * E.g. a "sine" oscillator with phase = 90 would return an initial value of -1.
 	 */
-	protected _getInitialValue(): AudioRange {
+	getInitialValue(): AudioRange {
 		const [real, imag] = this._getRealImaginary(this._type, 0);
 		let maxValue = 0;
 		const twoPi = Math.PI * 2;
-		// check for peaks in 8 places
-		for (let i = 0; i < 8; i++) {
-			maxValue = Math.max(this._inverseFFT(real, imag, (i / 8) * twoPi), maxValue);
+		const testPositions = 32;
+		// check for peaks in 16 places
+		for (let i = 0; i < testPositions; i++) {
+			maxValue = Math.max(this._inverseFFT(real, imag, (i / testPositions) * twoPi), maxValue);
 		}
 		return -this._inverseFFT(real, imag, this._phase) / maxValue;
 	}
@@ -460,7 +462,7 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 	get partials(): number[] {
 		return this._partials;
 	}
-	set partials(partials: number[]) {
+	set partials(partials) {
 		this._partials = partials;
 		if (partials.length) {
 			this.type = "custom";
@@ -475,15 +477,12 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 	get phase(): Degrees {
 		return this._phase * (180 / Math.PI);
 	}
-	set phase(phase: Degrees) {
+	set phase(phase) {
 		this._phase = phase * Math.PI / 180;
 		// reset the type
 		this.type = this._type;
 	}
 
-	/**
-	 *  Dispose and disconnect.
-	 */
 	dispose(): this {
 		super.dispose();
 		if (this._oscillator !== null) {

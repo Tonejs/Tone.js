@@ -242,4 +242,31 @@ describe("Oscillator", () => {
 		});
 	});
 
+	context("initialValue", () => {
+		it ("can get the initial value of a basic oscillator type", () => {
+			const osc = new Oscillator(10, "sine");
+			expect(osc.getInitialValue()).to.be.closeTo(0, 0.01);
+			osc.dispose();
+		});
+
+		it ("can get the initial value when the phase is rotated", () => {
+			const osc = new Oscillator({
+				phase: 90,
+				type: "sine",
+			});
+			expect(osc.getInitialValue()).to.be.closeTo(-1, 0.01);
+			osc.dispose();
+		});
+
+		it ("can get the initial value of more complex types", () => {
+			const osc = new Oscillator({
+				partials: [0, 2, 4, 1, 3],
+				phase: 145,
+				type: "custom",
+			});
+			expect(osc.getInitialValue()).to.be.closeTo(-0.2, 0.05);
+			osc.dispose();
+		});
+	});
+
 });
