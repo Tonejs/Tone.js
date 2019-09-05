@@ -150,7 +150,9 @@ Tone.Source.prototype.start = function(time, offset, duration){
 		time = Tone.Transport.seconds;
 	} else {
 		time = this.toSeconds(time);
-		time = Math.max(time, this.context.currentTime);
+		if (!this._synced){
+			time = Math.max(time, this.context.currentTime);
+		}
 	}
 	//if it's started, stop it and restart it
 	if (this._state.getValueAtTime(time) === Tone.State.Started){
