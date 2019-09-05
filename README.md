@@ -48,11 +48,16 @@ Tone.js abstracts away the AudioContext time. Instead of defining all values in 
 
 # Starting Audio
 
-Most browsers will not play _any_ audio until a user clicks something (like a play button). Execute the above example only after a users invokes `resume()` on Tone's context, or simply `Tone.start()`
+Browsers will not play _any_ audio until a user clicks something (like a play button) and the AudioContext has had a chance to start. Execute the above example only after a users invokes `resume()` on Tone's context, or simply `Tone.start()`. 
+
+`Tone.start` returns a promise, the audio will be ready only after that promise is resolved. Scheduling or playing audio before the AudioContext is running will result in silence or wrong scheduling.
 
 ```javascript
 //attach a click listener to a play button
-document.querySelector('button').addEventListener('click', () => Tone.start())
+document.querySelector('button').addEventListener('click', async () => {
+	await Tone.start()
+	console.log('audio is ready')
+})
 ``` 
 
 # Scheduling

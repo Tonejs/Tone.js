@@ -49,7 +49,10 @@ export function setContext(context: Context | AudioContext | OfflineAudioContext
  * More about the Autoplay policy
  * [here](https://developers.google.com/web/updates/2017/09/autoplay-policy-changes#webaudio)
  * @example
- * document.querySelector('#playbutton').addEventListener('click', () => Tone.start())
+ * document.querySelector('#playbutton').addEventListener('click', async () => {
+ * 	await Tone.start()
+ * 	console.log('audio ready')
+ * })
  */
 export function start(): Promise <void> {
 	return globalContext.resume();
