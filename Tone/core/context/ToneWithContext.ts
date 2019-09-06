@@ -34,7 +34,13 @@ export abstract class ToneWithContext<Options extends ToneWithContextOptions> ex
 	 */
 	readonly defaultContext?: Context;
 
-	constructor(context?: Context | Partial<ToneWithContextOptions>) {
+	/**
+	 * Pass in a constructor as the first argument
+	 */
+	constructor(context?: Context)
+	// tslint:disable-next-line: unified-signatures
+	constructor(options?: Partial<ToneWithContextOptions>);
+	constructor() {
 		super();
 		const options = optionsFromArguments(ToneWithContext.getDefaults(), arguments, ["context"]);
 		if (this.defaultContext) {
