@@ -114,7 +114,7 @@ export class TickSignal<Type extends Hertz | BPM> extends Param<Type> {
 	}
 
 	exponentialRampToValueAtTime(value: Type, time: Time): this {
-		// aproximate it with multiple linear ramps
+		// approximate it with multiple linear ramps
 		time = this.toSeconds(time);
 		const computedVal = this._fromType(value);
 
@@ -268,7 +268,7 @@ export class TickSignal<Type extends Hertz | BPM> extends Param<Type> {
 		return this._multiplier;
 	}
 	set multiplier(m: number) {
-		// get and reset the current value with the new multipler
+		// get and reset the current value with the new multiplier
 		// might be necessary to clear all the previous values
 		const currentVal = this.value;
 		this._multiplier = m;
