@@ -420,6 +420,39 @@ implements AbstractParam<Type> {
 		return this;
 	}
 
+	/**
+	 * Apply all of the previously scheduled events to the passed in Param or AudioParam.
+	 * The applied values will start at the context's current time and schedule
+	 * all of the events which are scheduled on this Param onto the passed in param.
+	 */
+	apply(param: Param | AudioParam): this {
+		const now = this.context.currentTime;
+		// set the param's value at the current time and schedule everything else
+		param.setValueAtTime(this.getValueAtTime(now) as number, now);
+		// if the previous event was a curve, then set the rest of it
+		const previousEvent = this._events.get(now);
+		if (previousEvent && previousEvent.type === "setTargetAtTime") {
+			// approx it until the next event with linear ramps
+			const nextEvent = this._events.getAfter(previousEvent.time);
+			// or for 2 seconds if there is no event
+			const endTime = nextEvent ? nextEvent.time : now + 2;
+			const subdivisions = (endTime - now) / 10;
+			for (let i = now; i < endTime; i += subdivisions) {
+				param.linearRampToValueAtTime(this.getValueAtTime(i) as number, i);
+			}
+		}
+		this._events.forEachAfter(this.context.currentTime, event => {
+			if (event.type === "cancelScheduledValues") {
+				param.cancelScheduledValues(event.time);
+			} else if (event.type === "setTargetAtTime") {
+				param.setTargetAtTime(event.value, event.time, event.constant);
+			} else {
+				param[event.type](event.value, event.time);
+			}
+		});
+		return this;
+	}
+
 	dispose(): this {
 		super.dispose();
 		this._events.dispose();

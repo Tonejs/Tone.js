@@ -66,15 +66,16 @@ implements AbstractParam<Type> {
 	static getDefaults(): SignalOptions<any> {
 		return Object.assign(ToneAudioNode.getDefaults(), {
 			channelCount: 1,
-			channelCountMode: "explicit",
-			channelInterpretation: "discrete",
+			channelCountMode: "explicit" as ChannelCountMode,
+			channelInterpretation: "discrete" as ChannelInterpretation,
 			convert: true,
 			units: "number" as UnitName,
 			value: 0,
-		}) as SignalOptions<any>;
+		});
 	}
 
 	connect(destination: InputNode, outputNum: number = 0, inputNum: number = 0): this {
+		// start it only when connected to something
 		connectSignal(this, destination, outputNum, inputNum);
 		return this;
 	}
@@ -179,6 +180,14 @@ implements AbstractParam<Type> {
 	}
 	get minValue(): number {
 		return this._param.minValue;
+	}
+
+	/**
+	 * See [[Param.apply]].
+	 */
+	apply(param: Param | AudioParam): this {
+		this._param.apply(param);
+		return this;
 	}
 }
 

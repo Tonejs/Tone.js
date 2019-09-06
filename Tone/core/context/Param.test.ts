@@ -1,11 +1,13 @@
 import { Compare, Plot } from "@tonejs/plot";
 import { expect } from "chai";
 import { BasicTests, testAudioContext } from "test/helper/Basic";
-import { Offline } from "test/helper/Offline";
+import { atTime, Offline } from "test/helper/Offline";
 import { SCHEDULE_RAMP_AFTER_SET_TARGET } from "test/helper/Supports";
 import { BPM, Decibels, Frequency, Positive, Seconds, Time, Unit, UnitName } from "Tone/core/type/Units";
+import { Signal } from "Tone/signal/Signal";
 import { getContext } from "../Global";
 import { Param } from "./Param";
+import { connect } from "./ToneAudioNode";
 
 const audioContext = getContext();
 
@@ -262,6 +264,75 @@ describe("Param", () => {
 			expect(testBuffer.getValueAtTime(0)).to.be.closeTo(-10, 0.01);
 		});
 
+	});
+
+	context("apply", () => {
+		it ("can apply a scheduled curve", () => {
+			let sig;
+			return Offline(context => {
+				const signal = new Signal();
+				sig = signal;
+				signal.setValueAtTime(0, 0);
+				signal.linearRampToValueAtTime(0.5, 0.1);
+				signal.exponentialRampToValueAtTime(0.2, 0.5);
+				signal.linearRampToValueAtTime(4, 2);
+				signal.cancelScheduledValues(1);
+				signal.setTargetAtTime(4, 1, 0.1);
+				const source = context.createConstantSource();
+				source.start(0);
+				connect(source, context.destination);
+				return atTime(0.4, () => {
+					signal.apply(source.offset);
+				});
+			}, 2).then(async buffer => {
+				for (let time = 0.41; time < 2; time += 0.1) {
+					expect(buffer.getValueAtTime(time)).to.be.closeTo(sig.getValueAtTime(time), 0.01);
+				}
+				// document.body.appendChild(await Plot.signal(buffer));
+			});
+		});
+
+		it ("can apply a scheduled curve that starts with a setTargetAtTime", () => {
+			let sig;
+			return Offline(context => {
+				const signal = new Signal();
+				sig = signal;
+				signal.setTargetAtTime(2, 0, 0.2);
+				const source = context.createConstantSource();
+				source.start(0);
+				connect(source, context.destination);
+				return atTime(0.4, () => {
+					signal.apply(source.offset);
+				});
+			}, 2).then(async buffer => {
+				for (let time = 0.41; time < 2; time += 0.1) {
+					expect(buffer.getValueAtTime(time)).to.be.closeTo(sig.getValueAtTime(time), 0.05);
+				}
+				// document.body.appendChild(await Plot.signal(buffer));
+			});
+		});
+
+		it ("can apply a scheduled curve that starts with a setTargetAtTime and then schedules other things", () => {
+			let sig;
+			return Offline(context => {
+				const signal = new Signal();
+				sig = signal;
+				signal.setTargetAtTime(2, 0, 0.2);
+				signal.setValueAtTime(1, 0.8);
+				signal.linearRampToValueAtTime(0, 2);
+				const source = context.createConstantSource();
+				source.start(0);
+				connect(source, context.destination);
+				return atTime(0.4, () => {
+					signal.apply(source.offset);
+				});
+			}, 2).then(async buffer => {
+				for (let time = 0.41; time < 2; time += 0.1) {
+					expect(buffer.getValueAtTime(time)).to.be.closeTo(sig.getValueAtTime(time), 0.05);
+				}
+				// document.body.appendChild(await Plot.signal(buffer));
+			});
+		});
 	});
 
 	context("Unit Conversions", () => {
