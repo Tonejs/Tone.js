@@ -459,6 +459,10 @@ implements AbstractParam<Type> {
 		return this;
 	}
 
+	get defaultValue(): Type {
+		return this._toType(this._param.defaultValue);
+	}
+
 	///////////////////////////////////////////////////////////////////////////
 	// 	AUTOMATION CURVE CALCULATIONS
 	// 	MIT License, copyright (c) 2014 Jordan Santell

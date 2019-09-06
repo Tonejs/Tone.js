@@ -406,6 +406,29 @@ describe("Param", () => {
 		testMinMaxValue("hertz", 0, rangeMax);
 	});
 
+	context("defaultValue", () => {
+		it ("has the right default value for default units", () => {
+			const source = audioContext.createConstantSource();
+			source.connect(audioContext.rawContext.destination);
+			const param = new Param({
+				context : audioContext,
+				param: source.offset,
+			});
+			expect(param.defaultValue).to.be.equal(1);
+		});
+
+		it ("has the right default value for default decibels", () => {
+			const source = audioContext.createConstantSource();
+			source.connect(audioContext.rawContext.destination);
+			const param = new Param({
+				context : audioContext,
+				param: source.offset,
+				units: "decibels",
+			});
+			expect(param.defaultValue).to.be.equal(0);
+		});
+	});
+
 	// const allSchedulingMethods = ['setValueAtTime', 'linearRampToValueAtTime', 'exponentialRampToValueAtTime']
 
 	context("setValueAtTime", () => {
