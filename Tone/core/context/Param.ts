@@ -17,17 +17,25 @@ export interface ParamOptions extends ToneWithContextOptions {
 /**
  * the possible automation types
  */
-type AutomationType = "linear" | "exponential" | "setValue" | "setTarget" | "cancel";
+type AutomationType = "linearRampToValueAtTime" | "exponentialRampToValueAtTime" |
+	"setValueAtTime" | "setTargetAtTime" | "cancelScheduledValues";
 
+interface TargetAutomationEvent {
+	type: "setTargetAtTime";
+	time: number;
+	value: number;
+	constant: number;
+}
+
+interface NormalAutomationEvent {
+	type: Exclude<AutomationType, "setTargetAtTime">;
+	time: number;
+	value: number;
+}
 /**
  * The events on the automation
  */
-export interface AutomationEvent {
-	type: AutomationType;
-	time: number;
-	value: number;
-	constant?: number;
-}
+export type AutomationEvent = NormalAutomationEvent | TargetAutomationEvent;
 
 /**
  * Param wraps the native Web Audio's AudioParam to provide
@@ -195,10 +203,10 @@ implements AbstractParam<Type> {
 		this.assert(isFinite(numericValue) && isFinite(computedTime),
 			`Invalid argument(s) to setValueAtTime: ${JSON.stringify(value)}, ${JSON.stringify(time)}`);
 
-		this.log(this.units, "setValue", value, computedTime);
+		this.log(this.units, "setValueAtTime", value, computedTime);
 		this._events.add({
 			time: computedTime,
-			type: "setValue",
+			type: "setValueAtTime",
 			value: numericValue,
 		});
 		this._param.setValueAtTime(numericValue, computedTime);
@@ -213,7 +221,7 @@ implements AbstractParam<Type> {
 		// if it was set by
 		if (before === null) {
 			value = this._initialValue;
-		} else if (before.type === "setTarget" && (after === null || after.type === "setValue")) {
+		} else if (before.type === "setTargetAtTime" && (after === null || after.type === "setValueAtTime")) {
 			const previous = this._events.getBefore(before.time);
 			let previousVal;
 			if (previous === null) {
@@ -221,14 +229,14 @@ implements AbstractParam<Type> {
 			} else {
 				previousVal = previous.value;
 			}
-			if (isDefined(before.constant)) {
+			if (before.type === "setTargetAtTime") {
 				value = this._exponentialApproach(before.time, previousVal, before.value, before.constant, computedTime);
 			}
 		} else if (after === null) {
 			value = before.value;
-		} else if (after.type === "linear" || after.type === "exponential") {
+		} else if (after.type === "linearRampToValueAtTime" || after.type === "exponentialRampToValueAtTime") {
 			let beforeValue = before.value;
-			if (before.type === "setTarget") {
+			if (before.type === "setTargetAtTime") {
 				const previous = this._events.getBefore(before.time);
 				if (previous === null) {
 					beforeValue = this._initialValue;
@@ -236,7 +244,7 @@ implements AbstractParam<Type> {
 					beforeValue = previous.value;
 				}
 			}
-			if (after.type === "linear") {
+			if (after.type === "linearRampToValueAtTime") {
 				value = this._linearInterpolate(before.time, beforeValue, after.time, after.value, computedTime);
 			} else {
 				value = this._exponentialInterpolate(before.time, beforeValue, after.time, after.value, computedTime);
@@ -265,10 +273,10 @@ implements AbstractParam<Type> {
 			`Invalid argument(s) to linearRampToValueAtTime: ${JSON.stringify(value)}, ${JSON.stringify(endTime)}`);
 		this._events.add({
 			time: computedTime,
-			type: "linear",
+			type: "linearRampToValueAtTime",
 			value : numericValue,
 		});
-		this.log(this.units, "linear", value, computedTime);
+		this.log(this.units, "linearRampToValueAtTime", value, computedTime);
 		this._param.linearRampToValueAtTime(numericValue, computedTime);
 		return this;
 	}
@@ -282,10 +290,10 @@ implements AbstractParam<Type> {
 		// store the event
 		this._events.add({
 			time: computedTime,
-			type: "exponential",
+			type: "exponentialRampToValueAtTime",
 			value : numericValue,
 		});
-		this.log(this.units, "exponential", value, computedTime);
+		this.log(this.units, "exponentialRampToValueAtTime", value, computedTime);
 		this._param.exponentialRampToValueAtTime(numericValue, computedTime);
 		return this;
 	}
@@ -332,10 +340,10 @@ implements AbstractParam<Type> {
 		this._events.add({
 			constant: timeConstant,
 			time: computedTime,
-			type: "setTarget",
+			type: "setTargetAtTime",
 			value: numericValue,
 		});
-		this.log(this.units, "setTarget", value, computedTime, timeConstant);
+		this.log(this.units, "setTargetAtTime", value, computedTime, timeConstant);
 		this._param.setTargetAtTime(numericValue, computedTime, timeConstant);
 		return this;
 	}
@@ -358,7 +366,7 @@ implements AbstractParam<Type> {
 		this.assert(isFinite(computedTime), `Invalid argument to cancelScheduledValues: ${JSON.stringify(time)}`);
 		this._events.cancel(computedTime);
 		this._param.cancelScheduledValues(computedTime);
-		this.log(this.units, "cancel", computedTime);
+		this.log(this.units, "cancelScheduledValues", computedTime);
 		return this;
 	}
 
@@ -386,9 +394,9 @@ implements AbstractParam<Type> {
 		} else if (after) {
 			// cancel the next event(s)
 			this._events.cancel(after.time);
-			if (after.type === "linear") {
+			if (after.type === "linearRampToValueAtTime") {
 				this.linearRampToValueAtTime(this._toType(valueAtTime), computedTime);
-			} else if (after.type === "exponential") {
+			} else if (after.type === "exponentialRampToValueAtTime") {
 				this.exponentialRampToValueAtTime(this._toType(valueAtTime), computedTime);
 			}
 		}
@@ -396,7 +404,7 @@ implements AbstractParam<Type> {
 		// set the value at the given time
 		this._events.add({
 			time: computedTime,
-			type: "setValue",
+			type: "setValueAtTime",
 			value: valueAtTime,
 		});
 		this._param.setValueAtTime(valueAtTime, computedTime);

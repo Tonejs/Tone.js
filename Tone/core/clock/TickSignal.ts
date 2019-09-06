@@ -7,9 +7,9 @@ import { optionsFromArguments } from "../util/Defaults";
 import { Timeline } from "../util/Timeline";
 import { isUndef } from "../util/TypeCheck";
 
-interface TickAutomationEvent extends AutomationEvent {
+type TickAutomationEvent = AutomationEvent & {
 	ticks: number;
-}
+};
 
 interface TickSignalOptions extends ParamOptions {
 	value: Hertz | BPM;
@@ -61,7 +61,7 @@ export class TickSignal<Type extends Hertz | BPM> extends Param<Type> {
 		this._events.add({
 			ticks: 0,
 			time : 0,
-			type : "setValue",
+			type : "setValueAtTime",
 			value: this._fromType(options.value as Type),
 		});
 		this.setValueAtTime(options.value as Type, 0);
@@ -142,7 +142,7 @@ export class TickSignal<Type extends Hertz | BPM> extends Param<Type> {
 			event = {
 				ticks : 0,
 				time : 0,
-				type: "setValue",
+				type: "setValueAtTime",
 				value: 0,
 			};
 		} else if (isUndef(event.ticks)) {
@@ -153,7 +153,7 @@ export class TickSignal<Type extends Hertz | BPM> extends Param<Type> {
 		let val1 = this._fromType(this.getValueAtTime(time));
 		// if it's right on the line, take the previous value
 		const onTheLineEvent = this._events.get(time);
-		if (onTheLineEvent && onTheLineEvent.time === time && onTheLineEvent.type === "setValue") {
+		if (onTheLineEvent && onTheLineEvent.time === time && onTheLineEvent.type === "setValueAtTime") {
 			val1 = this._fromType(this.getValueAtTime(time - this.sampleTime));
 		}
 		return 0.5 * (time - event.time) * (val0 + val1) + event.ticks;
@@ -193,7 +193,7 @@ export class TickSignal<Type extends Hertz | BPM> extends Param<Type> {
 		if (before && before.ticks === tick) {
 			return before.time;
 		} else if (before && after &&
-			after.type === "linear" &&
+			after.type === "linearRampToValueAtTime" &&
 			before.value !== after.value) {
 			const val0 = this._fromType(this.getValueAtTime(before.time));
 			const val1 = this._fromType(this.getValueAtTime(after.time));
