@@ -4,9 +4,10 @@ import { Offline } from "test/helper/Offline";
 import { ONLINE_TESTING } from "test/helper/Supports";
 import { Transport } from "../clock/Transport";
 import { getContext } from "../Global";
-import { Tone } from "../Tone";
 import { getAudioContext } from "./AudioContext";
 import { Context } from "./Context";
+//  import it for the side effects
+import "./Destination";
 import { connect } from "./ToneAudioNode";
 
 describe("Context", () => {
@@ -194,6 +195,81 @@ describe("Context", () => {
 					expect(transport.now()).to.be.closeTo(0.01, 0.005);
 				}, 0.01);
 			}, 0.05);
+		});
+	});
+
+	context("setInterval", () => {
+
+		if (ONLINE_TESTING) {
+
+			let ctx;
+			beforeEach(() => {
+				ctx = new Context();
+				return ctx.resume();
+			});
+
+			afterEach(() => {
+				return ctx.dispose();
+			});
+
+			it("can set an interval", done => {
+				ctx.setInterval(() => {
+					done();
+				}, 0.1);
+			});
+
+			it("returns an id", () => {
+				// tslint:disable-next-line
+				expect(ctx.setInterval(() => { }, 0.1)).to.be.a("number");
+				// try clearing a random ID, shouldn't cause any errors
+				ctx.clearInterval(-2);
+			});
+
+			it("timeout is not invoked when cancelled", done => {
+				const id = ctx.setInterval(() => {
+					throw new Error("shouldn't be invoked");
+				}, 0.01);
+				ctx.clearInterval(id);
+				ctx.setInterval(() => {
+					done();
+				}, 0.02);
+			});
+
+			it("order is maintained", done => {
+				let wasInvoked = false;
+				ctx.setInterval(() => {
+					expect(wasInvoked).to.equal(true);
+					done();
+				}, 0.02);
+				ctx.setInterval(() => {
+					wasInvoked = true;
+				}, 0.01);
+			});
+		}
+
+		it("is invoked in the offline context", () => {
+			let invocationCount = 0;
+			return Offline(context => {
+				context.setInterval(() => {
+					invocationCount++;
+				}, 0.01);
+			}, 0.051).then(() => {
+				expect(invocationCount).to.equal(4);
+			});
+		});
+
+		it("is invoked in with the right interval", () => {
+			let numberOfInvocations = 0;
+			return Offline(context => {
+				let intervalTime = context.now();
+				context.setInterval(() => {
+					expect(context.now() - intervalTime).to.be.closeTo(0.01, 0.005);
+					intervalTime = context.now();
+					numberOfInvocations++;
+				}, 0.01);
+			}, 0.051).then(() => {
+				expect(numberOfInvocations).to.equal(4);
+			});
 		});
 	});
 

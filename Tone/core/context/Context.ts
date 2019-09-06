@@ -433,12 +433,42 @@ export class Context extends Emitter<"statechange" | "tick"> implements BaseAudi
 	 *  Clears a previously scheduled timeout with Tone.context.setTimeout
 	 * @param  id  The ID returned from setTimeout
 	 */
-	clearTimeout(id: number): Context {
+	clearTimeout(id: number): this {
 		this._timeouts.forEach(event => {
 			if (event.id === id) {
 				this._timeouts.remove(event);
 			}
 		});
 		return this;
+	}
+
+	/**
+	 * Clear the function scheduled by [[setInterval]]
+	 */
+	clearInterval(id: number): this {
+		return this.clearTimeout(id);
+	}
+
+	/**
+	 * Adds a repeating event to the context's callback clock
+	 */
+	setInterval(fn: (...args: any[]) => void, interval: Seconds): number {
+		const id = ++this._timeoutIds;
+		const intervalFn = () => {
+			const now = this.now();
+			this._timeouts.add({
+				callback : () => {
+					// invoke the callback
+					fn();
+					// invoke the event to repeat it
+					intervalFn();
+				},
+				id,
+				time : now + interval,
+			});
+		};
+		// kick it off
+		intervalFn();
+		return id;
 	}
 }
