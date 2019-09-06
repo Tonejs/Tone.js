@@ -121,7 +121,7 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 		this.maxPolyphony = options.maxPolyphony;
 
 		// kick off the GC interval
-		this._collectGarbage();
+		this._gcTimeout = this.context.setInterval(this._collectGarbage.bind(this), 1);
 	}
 
 	static getDefaults(): PolySynthOptions<Synth> {
@@ -195,8 +195,6 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 			this._voices.splice(index, 1);
 			firstAvail.dispose();
 		}
-		this._gcTimeout = this.context.setTimeout(this._collectGarbage.bind(this), 1);
-		return;
 	}
 
 	/**
@@ -399,7 +397,7 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 		this._voices.forEach(v => v.dispose());
 		this._activeVoices = [];
 		this._availableVoices = [];
-		this.context.clearTimeout(this._gcTimeout);
+		this.context.clearInterval(this._gcTimeout);
 		return this;
 	}
 }
