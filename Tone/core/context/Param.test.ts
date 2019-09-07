@@ -14,6 +14,7 @@ const audioContext = getContext();
 describe("Param", () => {
 
 	BasicTests(Param, {
+		context: testAudioContext,
 		param: testAudioContext.createOscillator().frequency,
 	});
 
