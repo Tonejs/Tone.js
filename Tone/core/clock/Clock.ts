@@ -1,7 +1,7 @@
 import { ToneWithContext, ToneWithContextOptions } from "../context/ToneWithContext";
 import { BPM, Frequency, Hertz, Seconds, Ticks, Time } from "../type/Units";
 import { optionsFromArguments } from "../util/Defaults";
-import { Emitter, EmitterEventObject } from "../util/Emitter";
+import { Emitter } from "../util/Emitter";
 import { noOp, readOnly } from "../util/Interface";
 import { PlaybackState, StateTimeline } from "../util/StateTimeline";
 import { TickSignal } from "./TickSignal";
