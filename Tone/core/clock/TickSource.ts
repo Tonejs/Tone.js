@@ -29,7 +29,7 @@ export class TickSource<Type extends BPM | Hertz> extends ToneWithContext<TickSo
 	/**
 	 *  The frequency the callback function should be invoked.
 	 */
-	frequency: TickSignal<Type>;
+	readonly frequency: TickSignal<Type>;
 
 	/**
 	 *  The state timeline
@@ -51,10 +51,10 @@ export class TickSource<Type extends BPM | Hertz> extends ToneWithContext<TickSo
 		super(optionsFromArguments(TickSource.getDefaults(), arguments, ["frequency"]));
 		const options = optionsFromArguments(TickSource.getDefaults(), arguments, ["frequency"]);
 
-		this.frequency = new TickSignal({
+		this.frequency = new TickSignal<Type>({
 			context: this.context,
 			units: options.units,
-			value: this.toFrequency(options.frequency),
+			value: options.frequency as Type,
 		});
 		readOnly(this, "frequency");
 

@@ -16,6 +16,7 @@ import { IntervalTimeline } from "../util/IntervalTimeline";
 import { Timeline } from "../util/Timeline";
 import { isArray, isDefined } from "../util/TypeCheck";
 import { Clock } from "./Clock";
+import { TickParam } from "./TickParam";
 import { TransportEvent } from "./TransportEvent";
 import { TransportRepeatEvent } from "./TransportRepeatEvent";
 
@@ -107,7 +108,7 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 	 * //ramp the bpm to 120 over 10 seconds
 	 * Transport.bpm.rampTo(120, 10);
 	 */
-	bpm: Param<BPM>;
+	bpm: TickParam<BPM>;
 
 	/**
 	 *  The time signature, or more accurately the numerator
@@ -168,7 +169,7 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 			units: "bpm",
 		});
 		this._bindClockEvents();
-		this.bpm = this._clock.frequency;
+		this.bpm = this._clock.frequency as unknown as TickParam<BPM>;
 		this._clock.frequency.multiplier = options.ppq;
 		this.bpm.value = options.bpm;
 		readOnly(this, "bpm");

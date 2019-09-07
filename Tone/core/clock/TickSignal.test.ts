@@ -8,18 +8,18 @@ describe("TickSignal", () => {
 	BasicTests(TickSignal);
 
 	it("can be created and disposed", () => {
-		const tickSignal = new TickSignal();
+		const tickSignal = new TickSignal<number>();
 		tickSignal.dispose();
 	});
 
 	it("can schedule a change in the future", () => {
-		const tickSignal = new TickSignal(1);
+		const tickSignal = new TickSignal<number>(1);
 		tickSignal.setValueAtTime(2, 0.2);
 		tickSignal.dispose();
 	});
 
 	it("can schedule a ramp in the future", () => {
-		const tickSignal = new TickSignal(1);
+		const tickSignal = new TickSignal<number>(1);
 		tickSignal.setValueAtTime(2, 0);
 		tickSignal.linearRampToValueAtTime(0.1, 0.2);
 		tickSignal.exponentialRampToValueAtTime(1, 0.4);
@@ -27,13 +27,13 @@ describe("TickSignal", () => {
 	});
 
 	it("calculates the ticks when no changes are scheduled", () => {
-		const tickSignal0 = new TickSignal(2);
+		const tickSignal0 = new TickSignal<number>(2);
 		expect(tickSignal0.getTicksAtTime(1)).to.be.closeTo(2, 0.01);
 		expect(tickSignal0.getTicksAtTime(2)).to.be.closeTo(4, 0.01);
 		expect(tickSignal0.getTimeOfTick(4)).to.be.closeTo(2, 0.01);
 		tickSignal0.dispose();
 
-		const tickSignal1 = new TickSignal(1);
+		const tickSignal1 = new TickSignal<number>(1);
 		expect(tickSignal1.getTicksAtTime(1)).to.be.closeTo(1, 0.01);
 		expect(tickSignal1.getTicksAtTime(2)).to.be.closeTo(2, 0.01);
 		expect(tickSignal1.getTimeOfTick(2)).to.be.closeTo(2, 0.01);
@@ -41,7 +41,7 @@ describe("TickSignal", () => {
 	});
 
 	it("calculates the ticks in the future when a setValueAtTime is scheduled", () => {
-		const tickSignal = new TickSignal(1);
+		const tickSignal = new TickSignal<number>(1);
 		tickSignal.setValueAtTime(2, 0.5);
 		expect(tickSignal.getTicksAtTime(0)).to.be.closeTo(0, 0.01);
 		expect(tickSignal.getTicksAtTime(0.5)).to.be.closeTo(0.5, 0.01);
@@ -52,7 +52,7 @@ describe("TickSignal", () => {
 	});
 
 	it("calculates the ticks in the future when multiple setValueAtTime are scheduled", () => {
-		const tickSignal = new TickSignal(1);
+		const tickSignal = new TickSignal<number>(1);
 		tickSignal.setValueAtTime(2, 1);
 		tickSignal.setValueAtTime(4, 2);
 		expect(tickSignal.getTicksAtTime(0)).to.be.closeTo(0, 0.01);
@@ -67,7 +67,7 @@ describe("TickSignal", () => {
 	});
 
 	it("if ticks are 0, getTicksAtTime will return 0", () => {
-		const tickSignal = new TickSignal(0);
+		const tickSignal = new TickSignal<number>(0);
 		tickSignal.setValueAtTime(0, 1);
 		tickSignal.linearRampToValueAtTime(0, 2);
 		expect(tickSignal.getTicksAtTime(0)).to.equal(0);
@@ -78,7 +78,7 @@ describe("TickSignal", () => {
 	});
 
 	it("calculates the ticks in the future when a linearRampToValueAtTime is scheduled", () => {
-		const tickSignal = new TickSignal(1);
+		const tickSignal = new TickSignal<number>(1);
 		tickSignal.setValueAtTime(1, 0);
 		tickSignal.linearRampToValueAtTime(2, 1);
 		expect(tickSignal.getTicksAtTime(0)).to.be.closeTo(0, 0.01);
@@ -89,7 +89,7 @@ describe("TickSignal", () => {
 	});
 
 	it("calculates the ticks in the future when multiple linearRampToValueAtTime are scheduled", () => {
-		const tickSignal = new TickSignal(1);
+		const tickSignal = new TickSignal<number>(1);
 		tickSignal.setValueAtTime(1, 0);
 		tickSignal.linearRampToValueAtTime(2, 1);
 		tickSignal.linearRampToValueAtTime(0, 2);
@@ -102,7 +102,7 @@ describe("TickSignal", () => {
 	});
 
 	it("calculates the ticks in the future when a exponentialRampToValueAtTime is scheduled", () => {
-		const tickSignal = new TickSignal(1);
+		const tickSignal = new TickSignal<number>(1);
 		tickSignal.setValueAtTime(1, 0);
 		tickSignal.exponentialRampToValueAtTime(2, 1);
 		expect(tickSignal.getTicksAtTime(0)).to.be.closeTo(0, 0.01);
@@ -114,7 +114,7 @@ describe("TickSignal", () => {
 	});
 
 	it("calculates the ticks in the future when multiple exponentialRampToValueAtTime are scheduled", () => {
-		const tickSignal = new TickSignal(1);
+		const tickSignal = new TickSignal<number>(1);
 		tickSignal.setValueAtTime(1, 0);
 		tickSignal.exponentialRampToValueAtTime(2, 1);
 		tickSignal.exponentialRampToValueAtTime(0, 2);
@@ -127,7 +127,7 @@ describe("TickSignal", () => {
 	});
 
 	it("computes the time of a given tick when setTargetAtTime is scheduled", () => {
-		const tickSignal = new TickSignal(1);
+		const tickSignal = new TickSignal<number>(1);
 		tickSignal.setTargetAtTime(0.5, 0, 0.1);
 		expect(tickSignal.getTimeOfTick(0)).to.be.closeTo(0, 0.01);
 		expect(tickSignal.getTimeOfTick(1)).to.be.closeTo(1.89, 0.01);
@@ -136,7 +136,7 @@ describe("TickSignal", () => {
 	});
 
 	it("computes the time of a given tick when multiple setTargetAtTime are scheduled", () => {
-		const tickSignal = new TickSignal(1);
+		const tickSignal = new TickSignal<number>(1);
 		tickSignal.setTargetAtTime(0.5, 0, 0.1);
 		tickSignal.setTargetAtTime(2, 1, 1);
 		expect(tickSignal.getTimeOfTick(0)).to.be.closeTo(0, 0.01);
@@ -146,14 +146,14 @@ describe("TickSignal", () => {
 	});
 
 	it("computes the time of a given tick when nothing is scheduled", () => {
-		const tickSignal0 = new TickSignal(1);
+		const tickSignal0 = new TickSignal<number>(1);
 		expect(tickSignal0.getTimeOfTick(0)).to.be.closeTo(0, 0.01);
 		expect(tickSignal0.getTimeOfTick(1)).to.be.closeTo(1, 0.01);
 		expect(tickSignal0.getTimeOfTick(2)).to.be.closeTo(2, 0.01);
 		expect(tickSignal0.getTimeOfTick(3)).to.be.closeTo(3, 0.01);
 		tickSignal0.dispose();
 
-		const tickSigna1 = new TickSignal(2);
+		const tickSigna1 = new TickSignal<number>(2);
 		expect(tickSigna1.getTimeOfTick(0)).to.be.closeTo(0, 0.01);
 		expect(tickSigna1.getTimeOfTick(1)).to.be.closeTo(0.5, 0.01);
 		expect(tickSigna1.getTimeOfTick(2)).to.be.closeTo(1, 0.01);
@@ -162,7 +162,7 @@ describe("TickSignal", () => {
 	});
 
 	it("computes the time of a given tick when setValueAtTime is scheduled", () => {
-		const tickSignal = new TickSignal(1);
+		const tickSignal = new TickSignal<number>(1);
 		tickSignal.setValueAtTime(0.5, 1);
 		expect(tickSignal.getTimeOfTick(0)).to.be.closeTo(0, 0.01);
 		expect(tickSignal.getTimeOfTick(1)).to.be.closeTo(1, 0.01);
@@ -172,13 +172,13 @@ describe("TickSignal", () => {
 	});
 
 	it("returns Infinity if the tick interval is 0", () => {
-		const tickSignal = new TickSignal(0);
+		const tickSignal = new TickSignal<number>(0);
 		expect(tickSignal.getTimeOfTick(1)).to.equal(Infinity);
 		tickSignal.dispose();
 	});
 
 	it("computes the time of a given tick when multiple setValueAtTime are scheduled", () => {
-		const tickSignal = new TickSignal(1);
+		const tickSignal = new TickSignal<number>(1);
 		tickSignal.setValueAtTime(0.5, 1);
 		tickSignal.setValueAtTime(0, 2);
 		expect(tickSignal.getTimeOfTick(0)).to.be.closeTo(0, 0.01);
@@ -189,7 +189,7 @@ describe("TickSignal", () => {
 	});
 
 	it("computes the time of a given tick when a linearRampToValueAtTime is scheduled", () => {
-		const tickSignal = new TickSignal(1);
+		const tickSignal = new TickSignal<number>(1);
 		tickSignal.setValueAtTime(1, 0);
 		tickSignal.linearRampToValueAtTime(2, 1);
 		expect(tickSignal.getTimeOfTick(0)).to.be.closeTo(0, 0.01);
@@ -200,7 +200,7 @@ describe("TickSignal", () => {
 	});
 
 	it("computes the time of a given tick when multiple linearRampToValueAtTime are scheduled", () => {
-		const tickSignal = new TickSignal(1);
+		const tickSignal = new TickSignal<number>(1);
 		tickSignal.setValueAtTime(1, 0);
 		tickSignal.linearRampToValueAtTime(2, 1);
 		tickSignal.linearRampToValueAtTime(0, 2);
@@ -212,7 +212,7 @@ describe("TickSignal", () => {
 	});
 
 	it("computes the time of a given tick when a exponentialRampToValueAtTime is scheduled", () => {
-		const tickSignal = new TickSignal(1);
+		const tickSignal = new TickSignal<number>(1);
 		tickSignal.exponentialRampToValueAtTime(2, 1);
 		expect(tickSignal.getTimeOfTick(0)).to.be.closeTo(0, 0.01);
 		expect(tickSignal.getTimeOfTick(2)).to.be.closeTo(1.25, 0.1);
@@ -221,7 +221,7 @@ describe("TickSignal", () => {
 	});
 
 	it("computes the time of a given tick when multiple exponentialRampToValueAtTime are scheduled", () => {
-		const tickSignal = new TickSignal(1);
+		const tickSignal = new TickSignal<number>(1);
 		tickSignal.setValueAtTime(1, 0);
 		tickSignal.exponentialRampToValueAtTime(2, 1);
 		tickSignal.exponentialRampToValueAtTime(0, 2);
@@ -233,7 +233,7 @@ describe("TickSignal", () => {
 	});
 
 	it("can schedule multiple types of curves", () => {
-		const tickSignal = new TickSignal(1);
+		const tickSignal = new TickSignal<number>(1);
 		tickSignal.setValueAtTime(1, 0);
 		tickSignal.exponentialRampToValueAtTime(4, 1);
 		tickSignal.linearRampToValueAtTime(0.2, 2);
@@ -250,7 +250,7 @@ describe("TickSignal", () => {
 	});
 
 	it("can get the duration of a tick at any point in time", () => {
-		const tickSignal = new TickSignal(1);
+		const tickSignal = new TickSignal<number>(1);
 		tickSignal.setValueAtTime(2, 1);
 		tickSignal.setValueAtTime(10, 2);
 		expect(tickSignal.getDurationOfTicks(1, 0)).to.be.closeTo(1, 0.01);
@@ -261,7 +261,7 @@ describe("TickSignal", () => {
 
 	context("BPM / PPQ", () => {
 		it ("can be set as PPQ", () => {
-			const tickSignal = new TickSignal({
+			const tickSignal = new TickSignal<number>({
 				multiplier: 10,
 				units: "bpm",
 				value: 120,
@@ -274,7 +274,7 @@ describe("TickSignal", () => {
 		});
 
 		it("calculates the ticks in the future when multiple setValueAtTime are scheduled", () => {
-			const tickSignal = new TickSignal({
+			const tickSignal = new TickSignal<number>({
 				multiplier: 20,
 				units: "bpm",
 				value: 60,
@@ -295,7 +295,7 @@ describe("TickSignal", () => {
 
 	it("outputs a signal", () => {
 		return Offline((context) => {
-			const sched = new TickSignal(1).connect(context.destination);
+			const sched = new TickSignal<number>(1).connect(context.destination);
 			sched.linearRampTo(3, 1, 0);
 		}, 1.01).then(buffer => {
 			expect(buffer.getValueAtTime(0)).to.be.closeTo(1, 0.01);
@@ -306,7 +306,7 @@ describe("TickSignal", () => {
 
 	it("outputs a signal with bpm units", () => {
 		return Offline((context) => {
-			const sched = new TickSignal({
+			const sched = new TickSignal<number>({
 				units: "bpm",
 				value : 120,
 			}).connect(context.destination);
@@ -320,7 +320,7 @@ describe("TickSignal", () => {
 
 	it("outputs a signal with bpm units and a multiplier", () => {
 		return Offline((context) => {
-			const sched = new TickSignal({
+			const sched = new TickSignal<number>({
 				multiplier : 10,
 				units: "bpm",
 				value : 60,
@@ -337,7 +337,7 @@ describe("TickSignal", () => {
 
 		it("converts from time to ticks", () => {
 			return Offline(() => {
-				const tickSignal = new TickSignal(20);
+				const tickSignal = new TickSignal<number>(20);
 				expect(tickSignal.ticksToTime(20, 0).valueOf()).to.be.closeTo(1, 0.01);
 				expect(tickSignal.ticksToTime(10, 0).valueOf()).to.be.closeTo(0.5, 0.01);
 				expect(tickSignal.ticksToTime(10, 10).valueOf()).to.be.closeTo(0.5, 0.01);
@@ -347,7 +347,7 @@ describe("TickSignal", () => {
 
 		it("converts from time to ticks with a linear ramp on the tempo", () => {
 			return Offline(() => {
-				const tickSignal = new TickSignal(1);
+				const tickSignal = new TickSignal<number>(1);
 				tickSignal.linearRampTo(2, 2, 1);
 				expect(tickSignal.ticksToTime(1, 0).valueOf()).to.be.closeTo(1, 0.01);
 				expect(tickSignal.ticksToTime(1, 1).valueOf()).to.be.closeTo(0.82, 0.01);
@@ -359,7 +359,7 @@ describe("TickSignal", () => {
 
 		it("converts from time to ticks with a setValueAtTime", () => {
 			return Offline(() => {
-				const tickSignal = new TickSignal(1);
+				const tickSignal = new TickSignal<number>(1);
 				tickSignal.setValueAtTime(2, 1);
 				expect(tickSignal.ticksToTime(1, 0).valueOf()).to.be.closeTo(1, 0.01);
 				expect(tickSignal.ticksToTime(1, 1).valueOf()).to.be.closeTo(0.5, 0.01);
@@ -372,7 +372,7 @@ describe("TickSignal", () => {
 
 		it("converts from time to ticks with an exponential ramp", () => {
 			return Offline(() => {
-				const tickSignal = new TickSignal(1);
+				const tickSignal = new TickSignal<number>(1);
 				tickSignal.exponentialRampTo(2, 1, 1);
 				expect(tickSignal.ticksToTime(1, 0).valueOf()).to.be.closeTo(1, 0.01);
 				expect(tickSignal.ticksToTime(1, 1).valueOf()).to.be.closeTo(0.75, 0.01);
@@ -384,7 +384,7 @@ describe("TickSignal", () => {
 
 		it("converts from time to ticks with a setTargetAtTime", () => {
 			return Offline(() => {
-				const tickSignal = new TickSignal(1);
+				const tickSignal = new TickSignal<number>(1);
 				tickSignal.setTargetAtTime(2, 1, 1);
 				expect(tickSignal.ticksToTime(1, 0).valueOf()).to.be.closeTo(1, 0.01);
 				expect(tickSignal.ticksToTime(1, 1).valueOf()).to.be.closeTo(0.79, 0.01);
@@ -396,7 +396,7 @@ describe("TickSignal", () => {
 
 		it("converts from ticks to time", () => {
 			return Offline(() => {
-				const tickSignal = new TickSignal(20);
+				const tickSignal = new TickSignal<number>(20);
 				expect(tickSignal.timeToTicks(1, 0).valueOf()).to.be.closeTo(20, 0.01);
 				expect(tickSignal.timeToTicks(0.5, 0).valueOf()).to.be.closeTo(10, 0.01);
 				expect(tickSignal.timeToTicks(0.5, 2).valueOf()).to.be.closeTo(10, 0.01);
@@ -406,7 +406,7 @@ describe("TickSignal", () => {
 
 		it("converts from ticks to time with a setValueAtTime", () => {
 			return Offline(() => {
-				const tickSignal = new TickSignal(1);
+				const tickSignal = new TickSignal<number>(1);
 				tickSignal.setValueAtTime(2, 1);
 				expect(tickSignal.timeToTicks(1, 0).valueOf()).to.be.closeTo(1, 0.01);
 				expect(tickSignal.timeToTicks(1, 1).valueOf()).to.be.closeTo(2, 0.01);
@@ -418,7 +418,7 @@ describe("TickSignal", () => {
 
 		it("converts from ticks to time with a linear ramp", () => {
 			return Offline(() => {
-				const tickSignal = new TickSignal(1);
+				const tickSignal = new TickSignal<number>(1);
 				tickSignal.linearRampTo(2, 1, 1);
 				expect(tickSignal.timeToTicks(1, 0).valueOf()).to.be.closeTo(1, 0.01);
 				expect(tickSignal.timeToTicks(1, 1).valueOf()).to.be.closeTo(1.5, 0.01);
@@ -430,7 +430,7 @@ describe("TickSignal", () => {
 
 		it("converts from ticks to time with an exponential ramp", () => {
 			return Offline(() => {
-				const tickSignal = new TickSignal(1);
+				const tickSignal = new TickSignal<number>(1);
 				tickSignal.exponentialRampTo(2, 1, 1);
 				expect(tickSignal.timeToTicks(1, 0).valueOf()).to.be.closeTo(1, 0.01);
 				expect(tickSignal.timeToTicks(1, 1).valueOf()).to.be.closeTo(1.44, 0.01);
@@ -442,7 +442,7 @@ describe("TickSignal", () => {
 
 		it("converts from ticks to time with a setTargetAtTime", () => {
 			return Offline(() => {
-				const tickSignal = new TickSignal(1);
+				const tickSignal = new TickSignal<number>(1);
 				tickSignal.setTargetAtTime(2, 1, 1);
 				expect(tickSignal.timeToTicks(1, 0).valueOf()).to.be.closeTo(1, 0.01);
 				expect(tickSignal.timeToTicks(1, 1).valueOf()).to.be.closeTo(1.31, 0.01);
