@@ -5,7 +5,7 @@ import { isDefined } from "../util/TypeCheck";
 import { Param } from "./Param";
 import { ToneWithContext, ToneWithContextOptions } from "./ToneWithContext";
 
-export type InputNode = ToneAudioNode | AudioNode |  Param<Unit> | AudioParam;
+export type InputNode = ToneAudioNode | AudioNode |  Param<any> | AudioParam;
 export type OutputNode = ToneAudioNode | AudioNode;
 
 interface ChannelProperties {
@@ -212,8 +212,7 @@ extends ToneWithContext<Options> {
 	}
 
 	/**
-	 *  disconnect the output
-	 * @param output Either the output index to disconnect if the output is an array, or the node to disconnect from.
+	 * disconnect the output
 	 */
 	disconnect(destination?: InputNode, outputNum = 0, inputNum = 0): this {
 		disconnect(this, destination, outputNum, inputNum);
