@@ -31,8 +31,8 @@ export class Subtract extends Signal {
 	 *  the summing node
 	 */
 	private _sum: Gain = new Gain({ context: this.context });
-	input = this._sum;
-	output = this._sum;
+	readonly input: Gain = this._sum;
+	readonly output: Gain = this._sum;
 
 	/**
 	 *  Negate the input of the second input before connecting it to the summing node.
