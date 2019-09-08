@@ -74,9 +74,6 @@ export class ToneConstantSource<Type extends Unit = number> extends OneShotSourc
 		this._source.stop(time);
 	}
 
-	/**
-	 *  Clean up.
-	 */
 	dispose(): this {
 		super.dispose();
 		if (this.state === "started") {
