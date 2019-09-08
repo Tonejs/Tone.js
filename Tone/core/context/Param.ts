@@ -7,10 +7,10 @@ import { Timeline } from "../util/Timeline";
 import { isDefined } from "../util/TypeCheck";
 import { ToneWithContext, ToneWithContextOptions } from "./ToneWithContext";
 
-export interface ParamOptions extends ToneWithContextOptions {
+export interface ParamOptions<Type> extends ToneWithContextOptions {
 	units: UnitName;
-	value?: any;
-	param: AudioParam;
+	value?: Type;
+	param: AudioParam | Param<Type>;
 	convert: boolean;
 }
 
@@ -45,16 +45,16 @@ export type AutomationEvent = NormalAutomationEvent | TargetAutomationEvent;
  * @category Core
  */
 export class Param<Type extends Unit = number>
-extends ToneWithContext<ParamOptions>
+extends ToneWithContext<ParamOptions<Type>>
 implements AbstractParam<Type> {
 
 	readonly name: string = "Param";
 
-	static getDefaults(): ParamOptions {
+	static getDefaults(): ParamOptions<any> {
 		return Object.assign(ToneWithContext.getDefaults(), {
 			convert: true,
 			units: "number" as UnitName,
-		} as ParamOptions);
+		} as ParamOptions<any>);
 	}
 
 	/**
@@ -91,14 +91,18 @@ implements AbstractParam<Type> {
 	 * @param convert Whether or not to convert the value to the target units
 	 */
 	constructor(param: AudioParam, units?: Unit, convert?: boolean);
-	constructor(options: Partial<ParamOptions>);
+	constructor(options: Partial<ParamOptions<Type>>);
 	constructor() {
 		super(optionsFromArguments(Param.getDefaults(), arguments, ["param", "units", "convert"]));
 
 		const options = optionsFromArguments(Param.getDefaults(), arguments, ["param", "units", "convert"]);
 
-		this.assert(isDefined(options.param) && isAudioParam(options.param), "param must be an AudioParam");
+		this.assert(isDefined(options.param) &&
+			(isAudioParam(options.param) || options.param instanceof Param), "param must be an AudioParam");
 
+		while (!isAudioParam(options.param)) {
+			options.param = options.param._param;
+		}
 		// initialize
 		this._param = this.input = options.param;
 		this._events = new Timeline<AutomationEvent>(1000);
