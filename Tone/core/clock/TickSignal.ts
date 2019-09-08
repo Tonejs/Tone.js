@@ -1,4 +1,5 @@
 import { Signal, SignalOptions } from "../../signal/Signal";
+import { InputNode } from "../context/ToneAudioNode";
 import { BPM, Hertz, Seconds, Ticks, Time } from "../type/Units";
 import { optionsFromArguments } from "../util/Defaults";
 import { TickParam } from "./TickParam";
@@ -26,6 +27,7 @@ export class TickSignal<Type extends Hertz | BPM> extends Signal<Type> {
 	 * The param which controls the output signal value
 	 */
 	protected _param: TickParam<Type>;
+	readonly input: InputNode;
 
 	/**
 	 * @param value The initial value of the signal
@@ -37,7 +39,7 @@ export class TickSignal<Type extends Hertz | BPM> extends Signal<Type> {
 		super(optionsFromArguments(TickSignal.getDefaults(), arguments, ["value"]));
 		const options = optionsFromArguments(TickSignal.getDefaults(), arguments, ["value"]);
 
-		this._param = new TickParam({
+		this.input = this._param = new TickParam({
 			context: this.context,
 			convert: options.convert,
 			multiplier : options.multiplier,
