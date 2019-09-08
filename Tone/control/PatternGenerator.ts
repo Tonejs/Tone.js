@@ -151,5 +151,3 @@ export function* PatternGenerator<T>(values: T[], pattern: PatternName = "up"): 
 			yield* infiniteGen(values, randomOnce);
 	}
 }
-
-PatternGenerator([0, 1, 2, 3, 4, 5]);
