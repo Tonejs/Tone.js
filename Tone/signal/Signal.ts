@@ -65,9 +65,6 @@ implements AbstractParam<Type> {
 
 	static getDefaults(): SignalOptions<any> {
 		return Object.assign(ToneAudioNode.getDefaults(), {
-			channelCount: 1,
-			channelCountMode: "explicit" as ChannelCountMode,
-			channelInterpretation: "discrete" as ChannelInterpretation,
 			convert: true,
 			units: "number" as UnitName,
 			value: 0,
