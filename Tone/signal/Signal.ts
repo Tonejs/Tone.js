@@ -5,6 +5,7 @@ import { connect } from "../core/context/ToneAudioNode";
 import { Time, Unit, UnitName } from "../core/type/Units";
 import { isAudioParam } from "../core/util/AdvancedTypeCheck";
 import { optionsFromArguments } from "../core/util/Defaults";
+import { ToneConstantSource } from "./ToneConstantSource";
 
 export interface SignalOptions<Type> extends ToneAudioNodeOptions {
 	value: Type;
@@ -36,8 +37,8 @@ implements AbstractParam<Type> {
 	/**
 	 * The constant source node which generates the signal
 	 */
-	protected _constantSource: ConstantSourceNode = this.context.createConstantSource();
-	readonly output: OutputNode = this._constantSource;
+	protected _constantSource: ToneConstantSource<Type>;
+	readonly output: OutputNode;
 	protected _param: Param<Type>;
 	readonly input: InputNode;
 
@@ -53,14 +54,14 @@ implements AbstractParam<Type> {
 
 		const options = optionsFromArguments(Signal.getDefaults(), arguments, ["value", "units"]) as SignalOptions<Type>;
 
-		this._constantSource.start(0);
-		this.input = this._param = new Param({
+		this.output = this._constantSource = new ToneConstantSource({
 			context: this.context,
 			convert: options.convert,
-			param: this._constantSource.offset,
+			offset: options.value,
 			units: options.units,
-			value: options.value,
 		});
+		this._constantSource.start(0);
+		this.input = this._param = this._constantSource.offset;
 	}
 
 	static getDefaults(): SignalOptions<any> {
@@ -80,8 +81,7 @@ implements AbstractParam<Type> {
 	dispose(): this {
 		super.dispose();
 		this._param.dispose();
-		this._constantSource.stop(this.now());
-		this._constantSource.disconnect();
+		this._constantSource.dispose();
 		return this;
 	}
 
