@@ -49,7 +49,7 @@ export class Gain<Type extends Unit = GainFactor> extends ToneAudioNode<GainOpti
 			convert : options.convert,
 			param : this._gainNode.gain,
 			units : options.units,
-			value : options.gain,
+			value : options.gain as Type,
 		});
 		readOnly(this, "gain");
 	}

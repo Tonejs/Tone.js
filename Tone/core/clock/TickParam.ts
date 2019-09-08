@@ -8,7 +8,7 @@ type TickAutomationEvent = AutomationEvent & {
 	ticks: number;
 };
 
-interface TickParamOptions extends ParamOptions {
+interface TickParamOptions<Type> extends ParamOptions<Type> {
 	multiplier: number;
 }
 
@@ -40,7 +40,7 @@ export class TickParam<Type extends Hertz | BPM> extends Param<Type> {
 	 * @param value The initial value of the signal
 	 */
 	constructor(value?: number);
-	constructor(options: Partial<TickParamOptions>);
+	constructor(options: Partial<TickParamOptions<Type>>);
 	constructor() {
 
 		super(optionsFromArguments(TickParam.getDefaults(), arguments, ["value"]));
@@ -56,12 +56,12 @@ export class TickParam<Type extends Hertz | BPM> extends Param<Type> {
 			ticks: 0,
 			time : 0,
 			type : "setValueAtTime",
-			value: this._fromType(options.value as Type),
+			value: this._fromType(options.value),
 		});
-		this.setValueAtTime(options.value as Type, 0);
+		this.setValueAtTime(options.value, 0);
 	}
 
-	static getDefaults(): TickParamOptions {
+	static getDefaults(): TickParamOptions<any> {
 		return Object.assign(Param.getDefaults(), {
 			multiplier: 1,
 			units: "hertz",
