@@ -34,7 +34,7 @@ export class Multiply extends Signal<number> {
 	private _mult: Gain = new Gain({ context : this.context });
 
 	/**
-	 * The multiplcant input.
+	 * The multiplicand input.
 	 */
 	input = this._mult;
 
@@ -68,9 +68,6 @@ export class Multiply extends Signal<number> {
 		});
 	}
 
-	/**
-	 *  clean up
-	 */
 	dispose(): this {
 		super.dispose();
 		this._mult.dispose();
