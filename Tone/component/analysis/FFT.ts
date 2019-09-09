@@ -1,4 +1,5 @@
 import { InputNode, OutputNode, ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
+import { dbToGain } from "../../core/type/Conversions";
 import { NormalRange, PowerOfTwo } from "../../core/type/Units";
 import { optionsFromArguments } from "../../core/util/Defaults";
 import { Analyser } from "./Analyser";
@@ -6,6 +7,7 @@ import { Analyser } from "./Analyser";
 export interface FFTOptions extends ToneAudioNodeOptions {
 	size: PowerOfTwo;
 	smoothing: NormalRange;
+	normalRange: boolean;
 }
 
 /**
@@ -31,6 +33,13 @@ export class FFT extends ToneAudioNode<FFTOptions> {
 	private _analyser: Analyser;
 
 	/**
+	 * If the output should be in decibels or normal range between 0-1. If `normalRange` is false,
+	 * the output range will be the measured decibel value, otherwise the decibel value will be converted to
+	 * the range of 0-1
+	 */
+	normalRange: boolean;
+
+	/**
 	 * @param size size The size of the FFT. Value must be a power of two in the range 16 to 16384.
 	 */
 	constructor(size?: PowerOfTwo);
@@ -40,6 +49,7 @@ export class FFT extends ToneAudioNode<FFTOptions> {
 		super(optionsFromArguments(FFT.getDefaults(), arguments, ["size"]));
 		const options = optionsFromArguments(FFT.getDefaults(), arguments, ["size"]);
 
+		this.normalRange = options.normalRange;
 		this.input = this.output = this._analyser = new Analyser({
 			context: this.context,
 			size: options.size,
@@ -49,6 +59,7 @@ export class FFT extends ToneAudioNode<FFTOptions> {
 
 	static getDefaults(): FFTOptions {
 		return Object.assign(ToneAudioNode.getDefaults(), {
+			normalRange: false,
 			size: 1024,
 			smoothing: 0.8,
 		});
@@ -59,7 +70,7 @@ export class FFT extends ToneAudioNode<FFTOptions> {
 	 *  Returns the frequency data of length [[size]] as a Float32Array of decibel values.
 	 */
 	getValue(): Float32Array {
-		return this._analyser.getValue();
+		return this._analyser.getValue().map(v => this.normalRange ? dbToGain(v) : v);
 	}
 
 	/**
