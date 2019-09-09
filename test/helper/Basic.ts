@@ -52,3 +52,18 @@ export function BasicTests(Constr, ...args: any[]): void {
 		ConnectTest(Constr, ...args);
 	});
 }
+
+/**
+ * Assert that the function triggers a warning
+ */
+export async function warns(fn: (...args: any[]) => any): Promise<void> {
+	let wasInvoked = false;
+	const originalWarn = console.warn;
+	console.warn = () => wasInvoked = true;
+	const ret = fn();
+	if (ret instanceof Promise) {
+		await ret;
+	}
+	expect(wasInvoked).to.equal(true);
+	console.warn = originalWarn;
+}

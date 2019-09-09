@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { BasicTests } from "test/helper/Basic";
+import { BasicTests, warns } from "test/helper/Basic";
 import { CompareToFile } from "test/helper/CompareToFile";
 import { InstrumentTest } from "test/helper/InstrumentTests";
 import { atTime, Offline } from "test/helper/Offline";
@@ -137,18 +137,14 @@ describe("PolySynth", () => {
 		});
 
 		it("warns when too much polyphony is attempted and notes are dropped", () => {
-			let wasInvoked = false;
-			const originalWarn = console.warn;
-			console.warn = () => wasInvoked = true;
-			return Offline(() => {
-				const polySynth = new PolySynth({
-					maxPolyphony: 2,
-				});
-				polySynth.toDestination();
-				polySynth.triggerAttack(["C4", "D4", "G4"], 0.1);
-			}, 0.3).then((buffer) => {
-				expect(wasInvoked).to.equal(true);
-				console.warn = originalWarn;
+			warns(() => {
+				return Offline(() => {
+					const polySynth = new PolySynth({
+						maxPolyphony: 2,
+					});
+					polySynth.toDestination();
+					polySynth.triggerAttack(["C4", "D4", "G4"], 0.1);
+				}, 0.3);
 			});
 		});
 
