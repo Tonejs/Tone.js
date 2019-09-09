@@ -1,10 +1,9 @@
-import { InputNode, OutputNode, ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
 import { gainToDb } from "../../core/type/Conversions";
 import { Decibels, NormalRange } from "../../core/type/Units";
 import { optionsFromArguments } from "../../core/util/Defaults";
-import { Analyser } from "./Analyser";
+import { MeterBase, MeterBaseOptions } from "./MeterBase";
 
-export interface MeterOptions extends ToneAudioNodeOptions {
+export interface MeterOptions extends MeterBaseOptions {
 	smoothing: NormalRange;
 }
 
@@ -20,7 +19,7 @@ export interface MeterOptions extends ToneAudioNodeOptions {
  * //the current level of the mic input in decibels
  * var level = meter.getLevel();
  */
-export class Meter extends ToneAudioNode<MeterOptions> {
+export class Meter extends MeterBase<MeterOptions> {
 
 	readonly name: string = "Meter";
 
@@ -35,21 +34,6 @@ export class Meter extends ToneAudioNode<MeterOptions> {
 	private _rms = 0;
 
 	/**
-	 * The signal to be analysed
-	 */
-	input: InputNode;
-
-	/**
-	 * The output is just a pass through of the input
-	 */
-	output: OutputNode;
-
-	/**
-	 * The analyser node for the incoming signal
-	 */
-	private _analyser: Analyser;
-
-	/**
 	 * @param smoothing The amount of smoothing applied between frames.
 	 */
 	constructor(smoothing?: NormalRange);
@@ -60,23 +44,29 @@ export class Meter extends ToneAudioNode<MeterOptions> {
 		const options = optionsFromArguments(Meter.getDefaults(), arguments, ["smoothing"]);
 
 		this.smoothing = options.smoothing;
-		this.input = this.output = this._analyser = new Analyser({
-			context: this.context,
-			size: 256,
-			type: "waveform",
-		});
+		this._analyser.size = 256;
+		this._analyser.type = "waveform";
 	}
 
 	static getDefaults(): MeterOptions {
-		return Object.assign(ToneAudioNode.getDefaults(), {
+		return Object.assign(MeterBase.getDefaults(), {
 			smoothing: 0.8,
 		});
 	}
 
 	/**
-	 *  Get the current decibel value of the incoming signal
+	 * Use [[getValue]] instead. For the previous getValue behavior, use DCMeter.
+	 * @deprecated
 	 */
 	getLevel(): Decibels {
+		console.warn("'getLevel' has been changed to 'getValue'");
+		return this.getValue();
+	}
+
+	/**
+	 * Get the current decibel value of the incoming signal
+	 */
+	getValue(): number {
 		const values = this._analyser.getValue();
 		const totalSquared = values.reduce((total, current) => total + current * current, 0);
 		const rms = Math.sqrt(totalSquared / values.length);
@@ -84,14 +74,6 @@ export class Meter extends ToneAudioNode<MeterOptions> {
 		// but can jump up instantly
 		this._rms = Math.max(rms, this._rms * this.smoothing);
 		return gainToDb(this._rms);
-	}
-
-	/**
-	 *  Get the signal value of the incoming signal
-	 */
-	getValue(): number {
-		const value = this._analyser.getValue();
-		return value[0];
 	}
 
 	dispose(): this {

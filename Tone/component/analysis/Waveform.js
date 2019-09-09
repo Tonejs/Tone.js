@@ -8,9 +8,9 @@ import "../core/AudioNode";
  *  @param {Number=} size The size of the FFT. Value must be a power of
  *                       two in the range 32 to 32768.
  */
-Tone.Waveform = function(){
+const Waveform = function(){
 
-	var options = Tone.defaults(arguments, ["size"], Tone.Waveform);
+	var options = Tone.defaults(arguments, ["size"], Waveform);
 	options.type = Tone.Analyser.Type.Waveform;
 	Tone.AudioNode.call(this);
 
@@ -22,14 +22,14 @@ Tone.Waveform = function(){
 	this._analyser = this.input = this.output = new Tone.Analyser(options);
 };
 
-Tone.extend(Tone.Waveform, Tone.AudioNode);
+Tone.extend(Waveform, Tone.AudioNode);
 
 /**
  *  The default values.
  *  @type {Object}
  *  @const
  */
-Tone.Waveform.defaults = {
+Waveform.defaults = {
 	"size" : 1024
 };
 
@@ -38,17 +38,17 @@ Tone.Waveform.defaults = {
  *  of length [size](#size) as a Float32Array with values between -1 and 1.
  *  @returns {TypedArray}
  */
-Tone.Waveform.prototype.getValue = function(){
+Waveform.prototype.getValue = function(){
 	return this._analyser.getValue();
 };
 
 /**
  *  The size of analysis. This must be a power of two in the range 32 to 32768.
- *  @memberOf Tone.Waveform#
+ *  @memberOf Waveform#
  *  @type {Number}
  *  @name size
  */
-Object.defineProperty(Tone.Waveform.prototype, "size", {
+Object.defineProperty(Waveform.prototype, "size", {
 	get : function(){
 		return this._analyser.size;
 	},
@@ -58,13 +58,13 @@ Object.defineProperty(Tone.Waveform.prototype, "size", {
 });
 /**
  *  Clean up.
- *  @return  {Tone.Waveform}  this
+ *  @return  {Waveform}  this
  */
-Tone.Waveform.prototype.dispose = function(){
+Waveform.prototype.dispose = function(){
 	Tone.AudioNode.prototype.dispose.call(this);
 	this._analyser.dispose();
 	this._analyser = null;
 };
 
-export default Tone.Waveform;
+export default Waveform;
 

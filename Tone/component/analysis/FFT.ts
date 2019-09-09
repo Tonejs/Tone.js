@@ -2,9 +2,9 @@ import { InputNode, OutputNode, ToneAudioNode, ToneAudioNodeOptions } from "../.
 import { dbToGain } from "../../core/type/Conversions";
 import { NormalRange, PowerOfTwo } from "../../core/type/Units";
 import { optionsFromArguments } from "../../core/util/Defaults";
-import { Analyser } from "./Analyser";
+import { MeterBase, MeterBaseOptions } from "./MeterBase";
 
-export interface FFTOptions extends ToneAudioNodeOptions {
+export interface FFTOptions extends MeterBaseOptions {
 	size: PowerOfTwo;
 	smoothing: NormalRange;
 	normalRange: boolean;
@@ -13,24 +13,9 @@ export interface FFTOptions extends ToneAudioNodeOptions {
 /**
  * Get the current frequency data of the connected audio source using a fast Fourier transform.
  */
-export class FFT extends ToneAudioNode<FFTOptions> {
+export class FFT extends MeterBase<FFTOptions> {
 
 	readonly name: string = "FFT";
-
-	/**
-	 * The signal to be analysed
-	 */
-	input: InputNode;
-
-	/**
-	 * The output is just a pass through of the input
-	 */
-	output: OutputNode;
-
-	/**
-	 * The analyser node for the incoming signal
-	 */
-	private _analyser: Analyser;
 
 	/**
 	 * If the output should be in decibels or normal range between 0-1. If `normalRange` is false,
@@ -40,7 +25,7 @@ export class FFT extends ToneAudioNode<FFTOptions> {
 	normalRange: boolean;
 
 	/**
-	 * @param size size The size of the FFT. Value must be a power of two in the range 16 to 16384.
+	 * @param size The size of the FFT. Value must be a power of two in the range 16 to 16384.
 	 */
 	constructor(size?: PowerOfTwo);
 	// tslint:disable-next-line: unified-signatures
@@ -50,11 +35,8 @@ export class FFT extends ToneAudioNode<FFTOptions> {
 		const options = optionsFromArguments(FFT.getDefaults(), arguments, ["size"]);
 
 		this.normalRange = options.normalRange;
-		this.input = this.output = this._analyser = new Analyser({
-			context: this.context,
-			size: options.size,
-			type: "fft",
-		});
+		this._analyser.type = "fft";
+		this.size = options.size;
 	}
 
 	static getDefaults(): FFTOptions {
@@ -93,11 +75,5 @@ export class FFT extends ToneAudioNode<FFTOptions> {
 	}
 	set smoothing(val) {
 		this._analyser.smoothing = val;
-	}
-
-	dispose(): this {
-		super.dispose();
-		this._analyser.dispose();
-		return this;
 	}
 }

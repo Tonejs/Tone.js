@@ -1,7 +1,7 @@
 import { expect } from "chai";
-import { BasicTests } from "test/helper/Basic";
+import { BasicTests, warns } from "test/helper/Basic";
 import { PassAudio } from "test/helper/PassAudio";
-import { ONLINE_TESTING } from "test/helper/Supports"
+import { ONLINE_TESTING } from "test/helper/Supports";
 import { Signal } from "Tone/signal/Signal";
 import { Oscillator } from "Tone/source/oscillator/Oscillator";
 import { Meter } from "./Meter";
@@ -43,24 +43,21 @@ describe("Meter", () => {
 			});
 		});
 
-		if (ONLINE_TESTING) {
-			it("measures the rms incoming signal", (done) => {
-				const meter = new Meter();
-				const signal = new Signal(1).connect(meter);
-				setTimeout(() => {
-					expect(meter.getValue()).to.be.closeTo(1, 0.05);
-					meter.dispose();
-					signal.dispose();
-					done();
-				}, 400);
+		it ("warns of deprecated method", () => {
+			warns(() => {
+				const meter = new Meter().toDestination();
+				meter.getLevel();
+				meter.dispose();
 			});
+		});
 
+		if (ONLINE_TESTING) {
 			it("can get the rms level of the incoming signal", (done) => {
 				const meter = new Meter();
 				const osc = new Oscillator().connect(meter).start();
 				osc.volume.value = -6;
 				setTimeout(() => {
-					expect(meter.getLevel()).to.be.closeTo(-9, 1);
+					expect(meter.getValue()).to.be.closeTo(-9, 1);
 					meter.dispose();
 					osc.dispose();
 					done();
