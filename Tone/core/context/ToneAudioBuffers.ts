@@ -1,5 +1,4 @@
 import { Tone } from "../Tone";
-import { isAudioBuffer } from "../util/AdvancedTypeCheck";
 import { optionsFromArguments } from "../util/Defaults";
 import { noOp } from "../util/Interface";
 import { isString } from "../util/TypeCheck";
