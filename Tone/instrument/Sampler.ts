@@ -111,6 +111,11 @@ export class Sampler extends Instrument<SamplerOptions> {
 		this.attack = options.attack;
 		this.release = options.release;
 		this.curve = options.curve;
+
+		// invoke the callback if it's already loaded
+		if (this._buffers.loaded) {
+			options.onload();
+		}
 	}
 
 	static getDefaults(): SamplerOptions {
