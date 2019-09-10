@@ -1,4 +1,5 @@
 import { expect } from "chai";
+import "test/helper/ToneAudioBuffer";
 import { ToneAudioBuffer } from "./ToneAudioBuffer";
 import { ToneAudioBuffers } from "./ToneAudioBuffers";
 
@@ -119,11 +120,11 @@ describe("ToneAudioBuffers", () => {
 		buffer.dispose();
 	});
 
-	it("can add a Tone.Buffer", () => {
+	it("can add a ToneAudioBuffer", () => {
 		const buff = new ToneAudioBuffer();
 		const buffer = new ToneAudioBuffers();
 		buffer.add("name", buff);
-		expect(buffer.get("name")).to.equal(buff);
+		expect(buffer.get("name").get()).to.equal(buff.get());
 	});
 
 	it("can add an AudioBuffer", done => {
@@ -135,12 +136,12 @@ describe("ToneAudioBuffers", () => {
 		});
 	});
 
-	it("can be constructed with Tone.ToneAudioBuffers", () => {
+	it("can be constructed with ToneAudioBuffers", () => {
 		const buff = new ToneAudioBuffer();
 		const buffer = new ToneAudioBuffers({
 			buff,
 		});
-		expect(buffer.get("buff")).to.equal(buff);
+		expect(buffer.get("buff").get()).to.equal(buff.get());
 	});
 
 });
