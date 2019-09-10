@@ -129,7 +129,7 @@ export class ToneAudioBuffers extends Tone {
 	 * If the buffers are loaded or not
 	 */
 	get loaded(): boolean {
-		return Array.from(this._buffers).every(([name, buffer]) => buffer.loaded);
+		return Array.from(this._buffers).every(([_, buffer]) => buffer.loaded);
 	}
 
 	/**
