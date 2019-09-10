@@ -9,3 +9,4 @@ export * from "./oscillator/OmniOscillator";
 export * from "./oscillator/ToneOscillatorNode";
 export * from "./buffer/ToneBufferSource";
 export * from "./buffer/Player";
+export * from "./buffer/Players";
