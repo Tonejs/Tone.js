@@ -77,7 +77,6 @@ export class ToneAudioBuffers extends Tone {
 		);
 
 		this.baseUrl = options.baseUrl;
-		const urlMap: ToneAudioBuffersUrlMap = {};
 		// add each one
 		Object.keys(options.urls).forEach(name => {
 			this._loadingCount++;
