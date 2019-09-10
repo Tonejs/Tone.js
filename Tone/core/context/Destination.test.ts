@@ -1,4 +1,5 @@
 import { expect } from "chai";
+import { warns } from "test/helper/Basic";
 import { Offline } from "test/helper/Offline";
 import { PassAudio } from "test/helper/PassAudio";
 import { Oscillator } from "Tone/source/oscillator/Oscillator";
@@ -39,6 +40,13 @@ describe("Destination", () => {
 		return Offline((context) => {
 			context.destination.volume.value = -20;
 			expect(context.destination.volume.value).to.be.closeTo(-20, 0.1);
+		});
+	});
+
+	it("warns when toMaster is called", () => {
+		warns(() => {
+			const osc = new Oscillator().toMaster();
+			osc.dispose();
 		});
 	});
 
