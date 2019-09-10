@@ -114,7 +114,8 @@ export class Sampler extends Instrument<SamplerOptions> {
 
 		// invoke the callback if it's already loaded
 		if (this._buffers.loaded) {
-			options.onload();
+			// invoke onload deferred
+			Promise.resolve().then(options.onload);
 		}
 	}
 

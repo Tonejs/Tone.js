@@ -113,7 +113,7 @@ describe("Sampler", () => {
 			const sampler = new Sampler({
 				A4 : A4_buffer,
 			}, () => {
-				// expect(sampler.loaded).to.be.true;
+				expect(sampler.loaded).to.be.true;
 				done();
 			}, "./baseUrl");
 		});
