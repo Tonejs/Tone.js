@@ -28,12 +28,12 @@ describe("Players", () => {
 			players.dispose();
 		});
 
-		it.skip("can be constructed with an AudioBuffer", () => {
-			// const players = new Players({
-			// 	test : buffer.get(),
-			// });
-			// expect(players.player("test").buffer.get()).to.equal(buffer.get());
-			// players.dispose();
+		it("can be constructed with an AudioBuffer", () => {
+			const players = new Players({
+				test : buffer.get() as AudioBuffer,
+			});
+			expect(players.player("test").buffer.get()).to.equal(buffer.get());
+			players.dispose();
 		});
 
 		it("can be constructed with a url", (done) => {
