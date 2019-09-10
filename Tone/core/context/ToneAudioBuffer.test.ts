@@ -1,6 +1,5 @@
 import { expect } from "chai";
 import "test/helper/ToneAudioBuffer";
-import { Context } from "../context/Context";
 import { getContext } from "../Global";
 import { ToneAudioBuffer } from "./ToneAudioBuffer";
 
