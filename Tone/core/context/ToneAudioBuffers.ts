@@ -143,10 +143,10 @@ export class ToneAudioBuffers extends Tone {
 		url: string | AudioBuffer | ToneAudioBuffer,
 		callback: () => void = noOp,
 	): this {
-		if (url instanceof ToneAudioBuffer || isAudioBuffer(url)) {
-			this._buffers.set(name.toString(), new ToneAudioBuffer(url, callback));
-		} else if (isString(url)) {
+		if (isString(url)) {
 			this._buffers.set(name.toString(), new ToneAudioBuffer(this.baseUrl + url, callback));
+		} else {
+			this._buffers.set(name.toString(), new ToneAudioBuffer(url, callback));
 		}
 		return this;
 	}
