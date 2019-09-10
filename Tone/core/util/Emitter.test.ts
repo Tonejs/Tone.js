@@ -29,6 +29,16 @@ describe("Emitter", () => {
 		emitter.dispose();
 	});
 
+	it("'off' does nothing if there is no event scheduled", () => {
+		const emitter = new Emitter();
+		const callback = () => {
+			throw new Error("should call this");
+		};
+		emitter.off("something", callback);
+		emitter.emit("something");
+		emitter.dispose();
+	});
+
 	it("removes all events when no callback is given", () => {
 		const emitter = new Emitter();
 		emitter.on("something", () => {
