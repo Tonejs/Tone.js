@@ -5,7 +5,7 @@ import { noOp } from "../util/Interface";
 import { isString } from "../util/TypeCheck";
 import { ToneAudioBuffer } from "./ToneAudioBuffer";
 
-interface ToneAudioBuffersUrlMap {
+export interface ToneAudioBuffersUrlMap {
 	[name: string]: string | AudioBuffer | ToneAudioBuffer;
 	[name: number]: string | AudioBuffer | ToneAudioBuffer;
 }
@@ -143,21 +143,14 @@ export class ToneAudioBuffers extends Tone {
 		url: string | AudioBuffer | ToneAudioBuffer,
 		callback: () => void = noOp,
 	): this {
-		if (url instanceof ToneAudioBuffer) {
-			this._buffers.set(name.toString(), url);
-			callback();
-		} else if (isAudioBuffer(url)) {
-			this._buffers.set(name.toString(), new ToneAudioBuffer(url));
-			callback();
+		if (url instanceof ToneAudioBuffer || isAudioBuffer(url)) {
+			this._buffers.set(name.toString(), new ToneAudioBuffer(url, callback));
 		} else if (isString(url)) {
 			this._buffers.set(name.toString(), new ToneAudioBuffer(this.baseUrl + url, callback));
 		}
 		return this;
 	}
 
-	/**
-	 *  Clean up.
-	 */
 	dispose(): this {
 		super.dispose();
 		this._buffers.forEach(buffer => buffer.dispose());
