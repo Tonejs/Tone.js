@@ -29,8 +29,8 @@ export class Compressor extends ToneAudioNode<CompressorOptions> {
 	 *  the compressor node
 	 */
 	private _compressor: DynamicsCompressorNode = this.context.createDynamicsCompressor();
-	input = this._compressor;
-	output = this._compressor;
+	readonly input = this._compressor;
+	readonly output = this._compressor;
 
 	/**
 	 *  The decibel value above which the compression will start taking effect.
@@ -66,8 +66,8 @@ export class Compressor extends ToneAudioNode<CompressorOptions> {
 	constructor(options?: Partial<CompressorOptions>);
 	constructor() {
 
-		super(optionsFromArguments(Compressor.getDefaults(), arguments, ["treshold", "ratio"]));
-		const options = optionsFromArguments(Compressor.getDefaults(), arguments, ["treshold", "ratio"]);
+		super(optionsFromArguments(Compressor.getDefaults(), arguments, ["threshold", "ratio"]));
+		const options = optionsFromArguments(Compressor.getDefaults(), arguments, ["threshold", "ratio"]);
 
 		this.threshold = new Param({
 			context: this.context,

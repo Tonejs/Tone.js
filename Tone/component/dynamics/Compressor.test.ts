@@ -42,6 +42,13 @@ describe("Compressor", () => {
 			comp.dispose();
 		});
 
+		it("can be constructed with args", () => {
+			const comp = new Compressor(-10, 4);
+			expect(comp.threshold.value).to.have.be.closeTo(-10, 0.1);
+			expect(comp.ratio).to.have.be.closeTo(4, 0.1);
+			comp.dispose();
+		});
+
 		it("can get/set all interfaces", () => {
 			const comp = new Compressor();
 			const values = {
