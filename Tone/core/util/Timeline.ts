@@ -1,4 +1,5 @@
 import { Tone } from "../Tone";
+import { Seconds } from "../type/Units";
 import { optionsFromArguments } from "./Defaults";
 
 type TimelineSearchParam = "ticks" | "time";
@@ -283,7 +284,7 @@ export class Timeline<GenericEvent extends TimelineEvent> extends Tone {
 	 * @param  time The time to check if items are before
 	 * @param  callback The callback to invoke with every item
 	 */
-	forEachBefore(time, callback: (event: GenericEvent) => void): this {
+	forEachBefore(time: Seconds, callback: (event: GenericEvent) => void): this {
 		// iterate over the items in reverse so that removing an item doesn't break things
 		const upperBound = this._search(time);
 		if (upperBound !== -1) {
@@ -297,7 +298,7 @@ export class Timeline<GenericEvent extends TimelineEvent> extends Tone {
 	 * @param  time The time to check if items are before
 	 * @param  callback The callback to invoke with every item
 	 */
-	forEachAfter(time, callback: (event: GenericEvent) => void): this {
+	forEachAfter(time: Seconds, callback: (event: GenericEvent) => void): this {
 		// iterate over the items in reverse so that removing an item doesn't break things
 		const lowerBound = this._search(time);
 		this._iterate(callback, lowerBound + 1);
