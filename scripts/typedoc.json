@@ -8,5 +8,6 @@
 	"out" : "./docs",
 	"excludeProtected" : true,
 	"excludePrivate" : true,
-	"listInvalidSymbolLinks" : true
+	"listInvalidSymbolLinks" : true,
+	"excludeNotExported" : false
 }
