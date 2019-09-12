@@ -32,7 +32,7 @@ export abstract class Tone {
 	protected abstract name: string;
 
 	/**
-	 * Takes a partial options an returns the completed options by filling in the defaults
+	 * Returns all of the default options belonging to the class.
 	 */
 	static getDefaults(): BaseToneOptions {
 		return {};
