@@ -79,7 +79,7 @@ export class MetalSynth extends Monophonic<MetalSynthOptions> {
 	/**
 	 * The envelope which is connected both to the
 	 * amplitude and a highpass filter's cutoff frequency.
-	 * The lower-limit of the filter is controlled by the [[#resonance]]
+	 * The lower-limit of the filter is controlled by the [[resonance]]
 	 */
 	readonly envelope: Envelope;
 
@@ -221,6 +221,8 @@ export class MetalSynth extends Monophonic<MetalSynthOptions> {
 	/**
 	 * The lower level of the highpass filter which is attached to the envelope.
 	 * This value should be between [0, 7000]
+	 * @min 0
+	 * @max 7000
 	 */
 	get resonance(): Frequency {
 		return this._filterFreqScaler.min;
