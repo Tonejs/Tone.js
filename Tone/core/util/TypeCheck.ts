@@ -32,7 +32,7 @@ export function isNumber(arg: any): arg is number {
  *  Test if the given argument is an object literal (i.e. `{}`);
  */
 export function isObject(arg: any): arg is object {
-	return (Object.prototype.toString.call(arg) === "[object Object]" && arg.constructor === Object);
+	return arg != null && typeof arg === "object" && Array.isArray(arg) === false;
 }
 
 /**
