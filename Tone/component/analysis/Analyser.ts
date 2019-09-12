@@ -2,9 +2,9 @@ import { ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudi
 import { NormalRange, PowerOfTwo } from "../../core/type/Units";
 import { optionsFromArguments } from "../../core/util/Defaults";
 
-type AnalyserType = "fft" | "waveform";
+export type AnalyserType = "fft" | "waveform";
 
-interface AnalyserOptions extends ToneAudioNodeOptions {
+export interface AnalyserOptions extends ToneAudioNodeOptions {
 	size: PowerOfTwo;
 	type: AnalyserType;
 	smoothing: NormalRange;
@@ -19,8 +19,8 @@ export class Analyser extends ToneAudioNode<AnalyserOptions> {
 
 	readonly name: string = "Analyser";
 
-	input: AnalyserNode;
-	output: AnalyserNode;
+	readonly input: AnalyserNode;
+	readonly output: AnalyserNode;
 
 	/**
 	 *  The analyser node.
