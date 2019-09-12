@@ -219,7 +219,8 @@ export class FrequencyClass<Type extends number = Hertz> extends TimeClass<Type,
 ///////////////////////////////////////////////////////////////////////////
 
 /**
- *  Note to scale index
+ * Note to scale index. 
+ * @hidden
  */
 const noteToScaleIndex = {
 	// tslint:disable-next-line
@@ -233,7 +234,8 @@ const noteToScaleIndex = {
 };
 
 /**
- *  scale index to note (sharps)
+ * scale index to note (sharps)
+ * @hidden
  */
 const scaleIndexToNote = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
 
