@@ -19,8 +19,8 @@ describe("MembraneSynth", () => {
 	it("matches another file", () => {
 		return CompareToFile(() => {
 			const synth = new MembraneSynth({
-				envelope : {
-					sustain : 0,
+				envelope: {
+					sustain: 0,
 				},
 			}).toDestination();
 			synth.triggerAttackRelease("C2", 0.1);
@@ -54,8 +54,8 @@ describe("MembraneSynth", () => {
 
 		it("can be constructed with an options object", () => {
 			const drumSynth = new MembraneSynth({
-				envelope : {
-					sustain : 0.3,
+				envelope: {
+					sustain: 0.3,
 				},
 			});
 			expect(drumSynth.envelope.sustain).to.equal(0.3);
@@ -65,7 +65,7 @@ describe("MembraneSynth", () => {
 		it("can get/set attributes", () => {
 			const drumSynth = new MembraneSynth();
 			drumSynth.set({
-				envelope : { decay: 0.24 },
+				envelope: { decay: 0.24 },
 			});
 			expect(drumSynth.get().envelope.decay).to.equal(0.24);
 			drumSynth.dispose();

@@ -37,8 +37,8 @@ describe("FeedbackDelay", () => {
 
 		it("can pass in options in the constructor", () => {
 			const feedbackDelay = new FeedbackDelay({
-				delayTime : 0.2,
-				feedback : 0.3,
+				delayTime: 0.2,
+				feedback: 0.3,
 			});
 			expect(feedbackDelay.delayTime.value).to.be.closeTo(0.2, 0.01);
 			expect(feedbackDelay.feedback.value).to.be.closeTo(0.3, 0.01);
@@ -48,7 +48,7 @@ describe("FeedbackDelay", () => {
 		it("can get/set the options", () => {
 			const feedbackDelay = new FeedbackDelay();
 			feedbackDelay.set({
-				feedback : 0.4,
+				feedback: 0.4,
 			});
 			expect(feedbackDelay.get().feedback).to.be.closeTo(0.4, 0.01);
 			feedbackDelay.dispose();

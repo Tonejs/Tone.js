@@ -30,8 +30,8 @@ describe("Convolver", () => {
 
 		it("can pass in options in the constructor", () => {
 			const convolver = new Convolver({
-				normalize : false,
-				url : testFile,
+				normalize: false,
+				url: testFile,
 			});
 			expect(convolver.normalize).to.be.false;
 			convolver.dispose();
@@ -46,7 +46,7 @@ describe("Convolver", () => {
 
 		it("invokes the onload function when loaded", (done) => {
 			const convolver = new Convolver({
-				url : testFile,
+				url: testFile,
 				onload(): void {
 					convolver.dispose();
 					done();
@@ -83,7 +83,7 @@ describe("Convolver", () => {
 
 		it("can be constructed with loaded buffer", (done) => {
 			const buffer = new ToneAudioBuffer({
-				url : testFile,
+				url: testFile,
 				onload(): void {
 					const convolver = new Convolver(buffer);
 					expect(convolver.buffer).is.not.null;
@@ -96,8 +96,8 @@ describe("Convolver", () => {
 
 		it("can be constructed with unloaded buffer", (done) => {
 			const convolver = new Convolver({
-				url : new ToneAudioBuffer({
-					url : testFile,
+				url: new ToneAudioBuffer({
+					url: testFile,
 				}),
 				onload(): void {
 					expect(convolver.buffer).is.not.null;

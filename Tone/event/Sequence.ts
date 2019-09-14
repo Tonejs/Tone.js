@@ -91,10 +91,10 @@ export class Sequence<ValueType = any> extends ToneEvent<ValueType> {
 	}
 
 	static getDefaults(): SequenceOptions<any> {
-		return Object.assign( omitFromObject(ToneEvent.getDefaults(), ["value"]), {
+		return Object.assign(omitFromObject(ToneEvent.getDefaults(), ["value"]), {
 			events: [],
 			loop: true,
-			loopEnd : 0,
+			loopEnd: 0,
 			loopStart: 0,
 			subdivision: "8n",
 		});

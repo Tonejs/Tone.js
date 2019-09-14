@@ -59,8 +59,8 @@ export class Reverb extends Effect<ReverbOptions> {
 
 	static getDefaults(): ReverbOptions {
 		return Object.assign(Effect.getDefaults(), {
-			decay : 1.5,
-			preDelay : 0.01,
+			decay: 1.5,
+			preDelay: 0.01,
 		});
 	}
 

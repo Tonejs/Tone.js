@@ -4,7 +4,7 @@ import { assert } from "../core/util/Debug";
  * The name of the patterns
  */
 export type PatternName = "up" | "down" | "upDown" | "downUp" |
-	"alternateUp" | "alternateDown" | "random" | "randomOnce";
+"alternateUp" | "alternateDown" | "random" | "randomOnce";
 
 /**
  * Start at the first value and go up to the last

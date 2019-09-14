@@ -10,24 +10,24 @@ import { Monophonic } from "./Monophonic";
 import { Synth, SynthOptions } from "./Synth";
 
 type VoiceConstructor<V> = {
-	getDefaults: () => VoiceOptions<V>,
+	getDefaults: () => VoiceOptions<V>;
 } & (new (...args: any[]) => V);
 
 type OmitMonophonicOptions<T> = Omit<T, "context" | "onsilence">;
 
 type VoiceOptions<T> =
 	T extends MembraneSynth ? MembraneSynthOptions :
-	T extends MetalSynth ? MetalSynthOptions :
-	T extends Synth ? SynthOptions :
-	never;
+		T extends MetalSynth ? MetalSynthOptions :
+			T extends Synth ? SynthOptions :
+				never;
 
 /**
  * The settable synth options. excludes monophonic options.
  */
 type PartialVoiceOptions<T> = RecursivePartial<
-	OmitMonophonicOptions<
-		VoiceOptions<T>
-	>
+OmitMonophonicOptions<
+VoiceOptions<T>
+>
 >;
 
 export interface PolySynthOptions<Voice> extends InstrumentOptions {
@@ -66,7 +66,7 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 	/**
 	 * The currently active voices
 	 */
-	private _activeVoices: Array<{midi: MidiNote, voice: Voice}> = [];
+	private _activeVoices: Array<{midi: MidiNote; voice: Voice}> = [];
 
 	/**
 	 * All of the allocated voices for this synth.
@@ -143,7 +143,7 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 	 * If there is a voice active on that note, return it
 	 */
 	private _getActiveVoice(note: MidiNote): Voice | undefined {
-		const event = this._activeVoices.find(({midi}) => midi === note);
+		const event = this._activeVoices.find(({ midi }) => midi === note);
 		if (event) {
 			return event.voice;
 		}
@@ -385,7 +385,7 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 	 */
 	releaseAll(): this {
 		const now = this.now();
-		this._activeVoices.forEach(({voice}) => {
+		this._activeVoices.forEach(({ voice }) => {
 			voice.triggerRelease(now);
 		});
 		this._activeVoices = [];

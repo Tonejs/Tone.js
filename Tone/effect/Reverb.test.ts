@@ -12,8 +12,8 @@ describe("Reverb", () => {
 
 		it("can pass in options in the constructor", () => {
 			const reverb = new Reverb({
-				decay : 2,
-				preDelay : 0.1,
+				decay: 2,
+				preDelay: 0.1,
 			});
 			expect(reverb.decay).to.be.closeTo(2, 0.001);
 			expect(reverb.preDelay).to.be.closeTo(0.1, 0.001);
@@ -23,7 +23,7 @@ describe("Reverb", () => {
 		it("can get/set the options", () => {
 			const reverb = new Reverb();
 			reverb.set({
-				decay : 0.4,
+				decay: 0.4,
 			});
 			expect(reverb.get().decay).to.be.closeTo(0.4, 0.001);
 			reverb.dispose();

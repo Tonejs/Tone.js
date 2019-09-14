@@ -63,8 +63,8 @@ export class Convolver extends Effect<ToneConvolverOptions> {
 
 	static getDefaults(): ToneConvolverOptions {
 		return Object.assign(Effect.getDefaults(), {
-			normalize : true,
-			onload : noOp,
+			normalize: true,
+			onload: noOp,
 		});
 	}
 

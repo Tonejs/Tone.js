@@ -24,7 +24,7 @@ describe("FrequencyShifter", () => {
 
 		it("can pass in options in the constructor", () => {
 			const shifter = new FrequencyShifter({
-				frequency : -20,
+				frequency: -20,
 			});
 			expect(shifter.frequency.value).to.be.closeTo(-20, 0.001);
 			shifter.dispose();
@@ -33,7 +33,7 @@ describe("FrequencyShifter", () => {
 		it("can get/set the options", () => {
 			const shifter = new FrequencyShifter();
 			shifter.set({
-				frequency : 40,
+				frequency: 40,
 			});
 			expect(shifter.get().frequency).to.be.closeTo(40, 0.001);
 			shifter.dispose();

@@ -55,7 +55,7 @@ describe("PolySynth", () => {
 		it("triggerAttack and triggerRelease can be invoked without arrays", () => {
 			return Offline(() => {
 				const polySynth = new PolySynth();
-				polySynth.set({ envelope: { release : 0.1 } });
+				polySynth.set({ envelope: { release: 0.1 } });
 				polySynth.toDestination();
 				polySynth.triggerAttack("C4", 0);
 				polySynth.triggerRelease("C4", 0.1);
@@ -68,7 +68,7 @@ describe("PolySynth", () => {
 		it("can stop all of the currently playing sounds", () => {
 			return Offline(() => {
 				const polySynth = new PolySynth();
-				polySynth.set({ envelope: { release : 0.1 } });
+				polySynth.set({ envelope: { release: 0.1 } });
 				polySynth.toDestination();
 				polySynth.triggerAttack(["C4", "E4", "G4", "B4"], 0);
 				return atTime(0.1, () => {
@@ -100,7 +100,7 @@ describe("PolySynth", () => {
 		});
 
 		it("can be synced to the transport", () => {
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				const polySynth = new PolySynth(Synth, {
 					envelope: {
 						release: 0.1,
@@ -119,7 +119,7 @@ describe("PolySynth", () => {
 		it("disposes voices when they are no longer used", () => {
 			return Offline(() => {
 				const polySynth = new PolySynth(Synth, {
-					envelope : {
+					envelope: {
 						release: 0.1,
 					},
 				});
@@ -151,7 +151,7 @@ describe("PolySynth", () => {
 		it("reports the active notes", () => {
 			return Offline(() => {
 				const polySynth = new PolySynth();
-				polySynth.set({ envelope: { release : 0.1 } });
+				polySynth.set({ envelope: { release: 0.1 } });
 				polySynth.toDestination();
 				polySynth.triggerAttackRelease("C4", 0.1, 0.1);
 				polySynth.triggerAttackRelease("D4", 0.1, 0.2);
@@ -193,7 +193,7 @@ describe("PolySynth", () => {
 			// compute the end time
 			return Offline(() => {
 				const synth = new PolySynth(Synth, {
-					envelope : {
+					envelope: {
 						release: 0.1,
 					},
 				});
@@ -211,7 +211,7 @@ describe("PolySynth", () => {
 			// compute the end time
 			return Offline(() => {
 				const synth = new PolySynth(Synth, {
-					envelope : {
+					envelope: {
 						release: 0.1,
 					},
 				});
@@ -234,8 +234,8 @@ describe("PolySynth", () => {
 
 		it("can be constructed with an options object", () => {
 			const polySynth = new PolySynth(Synth, {
-				envelope : {
-					sustain : 0.3,
+				envelope: {
+					sustain: 0.3,
 				},
 			});
 			expect(polySynth.get().envelope.sustain).to.equal(0.3);
@@ -244,7 +244,7 @@ describe("PolySynth", () => {
 
 		it("can pass in the volume", () => {
 			const polySynth = new PolySynth({
-				volume : -12,
+				volume: -12,
 			});
 			expect(polySynth.volume.value).to.be.closeTo(-12, 0.1);
 			polySynth.dispose();
@@ -253,7 +253,7 @@ describe("PolySynth", () => {
 		it("can get/set attributes", () => {
 			const polySynth = new PolySynth();
 			polySynth.set({
-				envelope : {decay : 3},
+				envelope: { decay: 3 },
 			});
 			expect(polySynth.get().envelope.decay).to.equal(3);
 			polySynth.dispose();

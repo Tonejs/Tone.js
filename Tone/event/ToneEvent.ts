@@ -71,7 +71,7 @@ export class ToneEvent<ValueType = any> extends ToneWithContext<ToneEventOptions
 	 * Tracks the scheduled events
 	 */
 	protected _state: StateTimeline<{
-		id: number,
+		id: number;
 	}> = new StateTimeline("stopped");
 
 	/**
@@ -125,15 +125,15 @@ export class ToneEvent<ValueType = any> extends ToneWithContext<ToneEventOptions
 
 	static getDefaults(): ToneEventOptions<any> {
 		return Object.assign(ToneWithContext.getDefaults(), {
-			callback : noOp,
-			humanize : false,
-			loop : false,
-			loopEnd : "1m",
-			loopStart : 0,
-			mute : false,
-			playbackRate : 1,
-			probability : 1,
-			value : null,
+			callback: noOp,
+			humanize: false,
+			loop: false,
+			loopEnd: "1m",
+			loopStart: 0,
+			mute: false,
+			playbackRate: 1,
+			probability: 1,
+			value: null,
 		});
 	}
 
@@ -162,7 +162,7 @@ export class ToneEvent<ValueType = any> extends ToneWithContext<ToneEventOptions
 					}
 					if (duration !== Infinity) {
 						// schedule a stop since it's finite duration
-						this._state.setStateAtTime("stopped", startTick + duration + 1, { id : -1 });
+						this._state.setStateAtTime("stopped", startTick + duration + 1, { id: -1 });
 						duration = new TicksClass(this.context, duration);
 					}
 					const interval = new TicksClass(this.context, this._getLoopDuration());
@@ -225,8 +225,8 @@ export class ToneEvent<ValueType = any> extends ToneWithContext<ToneEventOptions
 		const ticks = this.toTicks(time);
 		if (this._state.getValueAtTime(ticks) === "stopped") {
 			this._state.add({
-				id : -1,
-				state : "started",
+				id: -1,
+				state: "started",
 				time: ticks,
 			});
 			this._rescheduleEvents(ticks);

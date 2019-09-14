@@ -51,7 +51,7 @@ export abstract class OneShotSource<Options extends ToneAudioNodeOptions> extend
 	 */
 	output: Gain = new Gain({
 		context: this.context,
-		gain : 0,
+		gain: 0,
 	});
 
 	/**
@@ -86,9 +86,9 @@ export abstract class OneShotSource<Options extends ToneAudioNodeOptions> extend
 	static getDefaults(): OneShotSourceOptions {
 		return Object.assign(ToneAudioNode.getDefaults(), {
 			curve: "linear" as OneShotSourceCurve,
-			fadeIn : 0,
+			fadeIn: 0,
 			fadeOut: 0,
-			onended : noOp,
+			onended: noOp,
 		});
 	}
 

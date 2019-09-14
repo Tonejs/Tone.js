@@ -121,11 +121,11 @@ export class Sampler extends Instrument<SamplerOptions> {
 
 	static getDefaults(): SamplerOptions {
 		return Object.assign(Instrument.getDefaults(), {
-			attack : 0,
-			baseUrl : "",
-			curve : "exponential" as "exponential",
-			onload : noOp,
-			release : 0.1,
+			attack: 0,
+			baseUrl: "",
+			curve: "exponential" as "exponential",
+			onload: noOp,
+			release: 0.1,
 			urls: {},
 		});
 	}
@@ -170,9 +170,9 @@ export class Sampler extends Instrument<SamplerOptions> {
 			const source = new ToneBufferSource({
 				buffer,
 				context: this.context,
-				curve : this.curve,
-				fadeIn : this.attack,
-				fadeOut : this.release,
+				curve: this.curve,
+				fadeIn: this.attack,
+				fadeOut: this.release,
 				playbackRate,
 			}).connect(this.output);
 			source.start(time, 0, buffer.duration / playbackRate, velocity);

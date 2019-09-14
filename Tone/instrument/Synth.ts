@@ -82,10 +82,10 @@ export class Synth<Options extends SynthOptions = SynthOptions> extends Monophon
 			envelope: Object.assign(
 				omitFromObject(Envelope.getDefaults(), Object.keys(ToneAudioNode.getDefaults())),
 				{
-					attack : 0.005,
-					decay : 0.1,
-					release : 1,
-					sustain : 0.3,
+					attack: 0.005,
+					decay: 0.1,
+					release: 1,
+					sustain: 0.3,
 				},
 			),
 			oscillator: Object.assign(

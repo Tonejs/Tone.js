@@ -107,7 +107,7 @@ export class FrequencyShifter extends Effect<FrequencyShifterOptions> {
 		this._sineMultiply = new Multiply({ context: this.context });
 		this._cosineMultiply = new Multiply({ context: this.context });
 		this._negate = new Negate({ context: this.context });
-		this._add = new Add({context: this.context });
+		this._add = new Add({ context: this.context });
 
 		this._phaseShifter = new PhaseShiftAllpass({ context: this.context });
 		this.effectSend.connect(this._phaseShifter);

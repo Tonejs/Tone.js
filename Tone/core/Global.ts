@@ -7,6 +7,7 @@ import { isAudioContext, isOfflineAudioContext } from "./util/AdvancedTypeCheck"
 /**
  * This dummy context is used to avoid throwing immediate errors when importing in Node.js
  */
+// eslint-disable-next-line @typescript-eslint/no-object-literal-type-assertion
 const dummyContext: Context = {
 	destination: {},
 	transport: {},
@@ -67,5 +68,6 @@ if (theWindow && !theWindow.TONE_SILENCE_LOGGING) {
 		prefix = "";
 	}
 	const printString = ` * Tone.js ${prefix}${version} * `;
+	// eslint-disable-next-line no-console
 	console.log(`%c${printString}`, "background: #000; color: #fff");
 }

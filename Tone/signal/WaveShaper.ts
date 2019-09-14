@@ -6,7 +6,7 @@ import { SignalOperator } from "./SignalOperator";
 
 type WaveShaperMappingFn = (value: number, index?: number) => number;
 
-type WaveShaperMapping =  WaveShaperMappingFn | number[] | Float32Array;
+type WaveShaperMapping = WaveShaperMappingFn | number[] | Float32Array;
 
 interface WaveShaperOptions extends ToneAudioNodeOptions {
 	mapping?: WaveShaperMapping;
@@ -57,7 +57,7 @@ export class WaveShaper extends SignalOperator<WaveShaperOptions> {
 	 *
 	 * @param bufferLen The length of the WaveShaperNode buffer.
 	 */
-	constructor(mapping?: WaveShaperMapping , length?: number);
+	constructor(mapping?: WaveShaperMapping, length?: number);
 	constructor(options?: Partial<WaveShaperOptions>);
 	constructor() {
 		super(Object.assign(optionsFromArguments(WaveShaper.getDefaults(), arguments, ["mapping", "length"])));

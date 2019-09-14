@@ -32,12 +32,12 @@ describe("ToneEvent", () => {
 		it("can pass in arguments in options object", () => {
 			return Offline(() => {
 				const callback = noOp;
-				const value = { a : 1 };
+				const value = { a: 1 };
 				const note = new ToneEvent({
 					callback,
-					loop : true,
-					loopEnd : "4n",
-					probability : 0.3,
+					loop: true,
+					loopEnd: "4n",
+					probability: 0.3,
 					value,
 				});
 				expect(note.callback).to.equal(callback);
@@ -58,8 +58,8 @@ describe("ToneEvent", () => {
 				const note = new ToneEvent();
 				note.set({
 					callback,
-					loop : 8,
-					value : "D4",
+					loop: 8,
+					value: "D4",
 				});
 				expect(note.callback).to.equal(callback);
 				expect(note.value).to.equal("D4");
@@ -73,8 +73,8 @@ describe("ToneEvent", () => {
 				const callback = noOp;
 				const note = new ToneEvent({
 					callback,
-					loop : 4,
-					value : "D3",
+					loop: 4,
+					value: "D3",
 				});
 				const values = note.get();
 				expect(values.value).to.equal("D3");
@@ -87,7 +87,7 @@ describe("ToneEvent", () => {
 	context("ToneEvent callback", () => {
 
 		it("does not invoke get invoked until started", () => {
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				const event = new ToneEvent(() => {
 					throw new Error("shouldn't call this callback");
 				}, "C4");
@@ -97,7 +97,7 @@ describe("ToneEvent", () => {
 
 		it("is invoked after it's started", () => {
 			let invoked = false;
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				const note = new ToneEvent(() => {
 					note.dispose();
 					invoked = true;
@@ -110,7 +110,7 @@ describe("ToneEvent", () => {
 
 		it("passes in the scheduled time to the callback", () => {
 			let invoked = false;
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				const now = 0.1;
 				const note = new ToneEvent((time) => {
 					expect(time).to.be.a("number");
@@ -127,7 +127,7 @@ describe("ToneEvent", () => {
 
 		it("passes in the value to the callback", () => {
 			let invoked = false;
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				const note = new ToneEvent((time, thing) => {
 					expect(time).to.be.a("number");
 					expect(thing).to.equal("thing");
@@ -141,7 +141,7 @@ describe("ToneEvent", () => {
 		});
 
 		it("can mute the callback", () => {
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				const note = new ToneEvent(() => {
 					throw new Error("shouldn't call this callback");
 				}, "C4").start();
@@ -153,7 +153,7 @@ describe("ToneEvent", () => {
 
 		it("can trigger with some probability", () => {
 
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				const note = new ToneEvent(() => {
 					throw new Error("shouldn't call this callback");
 				}, "C4").start();
@@ -167,7 +167,7 @@ describe("ToneEvent", () => {
 	context("Scheduling", () => {
 
 		it("can be started and stopped multiple times", () => {
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				const note = new ToneEvent().start(0).stop(0.2).start(0.4);
 				transport.start(0);
 				return (time) => {
@@ -186,7 +186,7 @@ describe("ToneEvent", () => {
 
 		it("restarts when transport is restarted", () => {
 
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				const note = new ToneEvent().start(0).stop(0.4);
 				transport.start(0).stop(0.5).start(0.55);
 				return (time) => {
@@ -204,7 +204,7 @@ describe("ToneEvent", () => {
 		});
 
 		it("can be cancelled", () => {
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				const note = new ToneEvent().start(0);
 				expect(note.state).to.equal("started");
 				transport.start();
@@ -238,13 +238,13 @@ describe("ToneEvent", () => {
 
 		it("can be set to loop", () => {
 			let callCount = 0;
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				new ToneEvent({
 					callback(): void {
 						callCount++;
 					},
-					loop : true,
-					loopEnd : 0.25,
+					loop: true,
+					loopEnd: 0.25,
 				}).start(0);
 				transport.start(0);
 			}, 0.8).then(() => {
@@ -254,7 +254,7 @@ describe("ToneEvent", () => {
 		});
 
 		it("can be set to loop at a specific interval", () => {
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				let lastCall;
 				new ToneEvent({
 					callback(time): void {
@@ -263,19 +263,19 @@ describe("ToneEvent", () => {
 						}
 						lastCall = time;
 					},
-					loop : true,
-					loopEnd : 0.25,
+					loop: true,
+					loopEnd: 0.25,
 				}).start(0);
 				transport.start();
 			}, 1);
 		});
 
 		it("can adjust the loop duration after starting", () => {
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				let lastCall;
 				const note = new ToneEvent({
-					loop : true,
-					loopEnd : 0.5,
+					loop: true,
+					loopEnd: 0.5,
 					callback(time): void {
 						if (lastCall) {
 							expect(time - lastCall).to.be.closeTo(0.25, 0.01);
@@ -291,10 +291,10 @@ describe("ToneEvent", () => {
 
 		it("can loop a specific number of times", () => {
 			let callCount = 0;
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				new ToneEvent({
-					loop : 3,
-					loopEnd : 0.125,
+					loop: 3,
+					loopEnd: 0.125,
 					callback(): void {
 						callCount++;
 					},
@@ -307,10 +307,10 @@ describe("ToneEvent", () => {
 
 		it("plays once when loop is 1", () => {
 			let callCount = 0;
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				new ToneEvent({
-					loop : 1,
-					loopEnd : 0.125,
+					loop: 1,
+					loopEnd: 0.125,
 					callback(): void {
 						callCount++;
 					},
@@ -323,10 +323,10 @@ describe("ToneEvent", () => {
 
 		it("plays once when loop is 0", () => {
 			let callCount = 0;
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				new ToneEvent({
-					loop : 0,
-					loopEnd : 0.125,
+					loop: 0,
+					loopEnd: 0.125,
 					callback(): void {
 						callCount++;
 					},
@@ -339,10 +339,10 @@ describe("ToneEvent", () => {
 
 		it("plays once when loop is false", () => {
 			let callCount = 0;
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				new ToneEvent({
-					loop : false,
-					loopEnd : 0.125,
+					loop: false,
+					loopEnd: 0.125,
 					callback(): void {
 						callCount++;
 					},
@@ -354,12 +354,12 @@ describe("ToneEvent", () => {
 		});
 
 		it("can be started and stopped multiple times", () => {
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				const eventTimes = [0.3, 0.4, 0.9, 1.0, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9];
 				let eventTimeIndex = 0;
 				new ToneEvent({
-					loop : true,
-					loopEnd : 0.1,
+					loop: true,
+					loopEnd: 0.1,
 					callback(time): void {
 						expect(eventTimes.length).to.be.gt(eventTimeIndex);
 						expect(eventTimes[eventTimeIndex]).to.be.closeTo(time, 0.05);
@@ -372,10 +372,10 @@ describe("ToneEvent", () => {
 
 		it("loops the correct amount of times when the event is started in the transport's past", () => {
 			let callCount = 0;
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				const note = new ToneEvent({
-					loop : 3,
-					loopEnd : 0.2,
+					loop: 3,
+					loopEnd: 0.2,
 					callback(): void {
 						callCount++;
 					},
@@ -394,10 +394,10 @@ describe("ToneEvent", () => {
 		});
 
 		it("reports the progress of the loop", () => {
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				const note = new ToneEvent({
-					loop : true,
-					loopEnd : 1,
+					loop: true,
+					loopEnd: 1,
 				});
 				expect(note.progress).to.equal(0);
 				note.start(0);
@@ -409,10 +409,10 @@ describe("ToneEvent", () => {
 		});
 
 		it("progress is 0 when not looping", () => {
-			Offline(({transport}) => {
+			Offline(({ transport }) => {
 				const note = new ToneEvent({
-					loop : false,
-					loopEnd : 0.25,
+					loop: false,
+					loopEnd: 0.25,
 				}).start(0);
 				transport.start();
 				return () => {
@@ -425,12 +425,12 @@ describe("ToneEvent", () => {
 	context("playbackRate and humanize", () => {
 
 		it("can adjust the playbackRate", () => {
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				let lastCall;
 				new ToneEvent({
-					loop : true,
-					loopEnd : 0.5,
-					playbackRate : 2,
+					loop: true,
+					loopEnd: 0.5,
+					playbackRate: 2,
 					callback(time): void {
 						if (lastCall) {
 							expect(time - lastCall).to.be.closeTo(0.25, 0.01);
@@ -443,12 +443,12 @@ describe("ToneEvent", () => {
 		});
 
 		it("can adjust the playbackRate after starting", () => {
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				let lastCall;
 				const note = new ToneEvent({
-					loop : true,
-					loopEnd : 0.25,
-					playbackRate : 1,
+					loop: true,
+					loopEnd: 0.25,
+					playbackRate: 1,
 					callback(time): void {
 						if (lastCall) {
 							expect(time - lastCall).to.be.closeTo(0.5, 0.01);
@@ -464,12 +464,12 @@ describe("ToneEvent", () => {
 		});
 
 		it("can humanize the callback by some amount", () => {
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				let lastCall;
 				const note = new ToneEvent({
-					humanize : 0.05,
-					loop : true,
-					loopEnd : 0.25,
+					humanize: 0.05,
+					loop: true,
+					loopEnd: 0.25,
 					callback(time): void {
 						if (lastCall) {
 							expect(time - lastCall).to.be.within(0.2, 0.3);

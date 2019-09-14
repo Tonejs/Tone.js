@@ -119,19 +119,19 @@ export abstract class Tone {
 	 * @return {*}
 	 */
 	// static defaultArg(given, fallback) {
-		// if (isObject(given) && isObject(fallback)) {
-		// 	const ret = {};
-		// 	// make a deep copy of the given object
-		// 	for (const givenProp in given) {
-		// 		ret[givenProp] = Tone.defaultArg(fallback[givenProp], given[givenProp]);
-		// 	}
-		// 	for (const fallbackProp in fallback) {
-		// 		ret[fallbackProp] = Tone.defaultArg(given[fallbackProp], fallback[fallbackProp]);
-		// 	}
-		// 	return ret;
-		// } else {
-		// 	return isUndef(given) ? fallback : given;
-		// }
+	// if (isObject(given) && isObject(fallback)) {
+	// 	const ret = {};
+	// 	// make a deep copy of the given object
+	// 	for (const givenProp in given) {
+	// 		ret[givenProp] = Tone.defaultArg(fallback[givenProp], given[givenProp]);
+	// 	}
+	// 	for (const fallbackProp in fallback) {
+	// 		ret[fallbackProp] = Tone.defaultArg(given[fallbackProp], fallback[fallbackProp]);
+	// 	}
+	// 	return ret;
+	// } else {
+	// 	return isUndef(given) ? fallback : given;
+	// }
 	// }
 
 	// protected options(argsArray: IArguments, keys: string[]): object {

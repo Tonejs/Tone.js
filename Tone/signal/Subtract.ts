@@ -37,7 +37,7 @@ export class Subtract extends Signal {
 	/**
 	 * Negate the input of the second input before connecting it to the summing node.
 	 */
-	private _neg: Negate = new Negate({ context : this.context });
+	private _neg: Negate = new Negate({ context: this.context });
 
 	/**
 	 * The value which is subtracted from the main signal

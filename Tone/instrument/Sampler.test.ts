@@ -18,15 +18,15 @@ describe("Sampler", () => {
 	BasicTests(Sampler);
 
 	InstrumentTest(Sampler, "A4", {
-		69 : A4_buffer,
+		69: A4_buffer,
 	}, 1);
 
 	it("matches a file", () => {
 		return CompareToFile(() => {
 			const sampler = new Sampler({
-				69 : A4_buffer,
+				69: A4_buffer,
 			}, {
-				release : 0.4,
+				release: 0.4,
 			}).toDestination();
 			sampler.triggerAttackRelease("C4", 0.1, 0, 0.2);
 			sampler.triggerAttackRelease("E4", 0.1, 0.2, 0.4);
@@ -40,10 +40,10 @@ describe("Sampler", () => {
 
 		it("can be constructed with an options object", () => {
 			const sampler = new Sampler({
-				69 : A4_buffer,
+				69: A4_buffer,
 			}, {
-				attack : 0.2,
-				release : 0.3,
+				attack: 0.2,
+				release: 0.3,
 			});
 			expect(sampler.attack).to.equal(0.2);
 			expect(sampler.release).to.equal(0.3);
@@ -52,10 +52,10 @@ describe("Sampler", () => {
 
 		it("can be constructed with an options object with urls object", () => {
 			const sampler = new Sampler({
-				attack : 0.4,
-				release : 0.5,
-				urls : {
-					69 : A4_buffer,
+				attack: 0.4,
+				release: 0.5,
+				urls: {
+					69: A4_buffer,
 				},
 			});
 			expect(sampler.attack).to.equal(0.4);
@@ -66,7 +66,7 @@ describe("Sampler", () => {
 		it("urls can be described as either midi or notes", () => {
 			return Offline(() => {
 				const sampler = new Sampler({
-					A4 : A4_buffer,
+					A4: A4_buffer,
 				}).toDestination();
 				sampler.triggerAttack("A4");
 			}).then((buffer) => {
@@ -84,8 +84,8 @@ describe("Sampler", () => {
 		it("throws an error if the url key is not midi or pitch notation", () => {
 			expect(() => {
 				const sampler = new Sampler({
-					urls : {
-						note : A4_buffer,
+					urls: {
+						note: A4_buffer,
 					},
 				});
 			}).throws(Error);
@@ -102,7 +102,7 @@ describe("Sampler", () => {
 
 		it("invokes the callback when loaded", (done) => {
 			const sampler = new Sampler({
-				A4 : "./audio/sine.wav",
+				A4: "./audio/sine.wav",
 			}, () => {
 				expect(sampler.loaded).to.be.true;
 				done();
@@ -111,7 +111,7 @@ describe("Sampler", () => {
 
 		it("can pass in a callback and baseUrl", (done) => {
 			const sampler = new Sampler({
-				A4 : A4_buffer,
+				A4: A4_buffer,
 			}, () => {
 				expect(sampler.loaded).to.be.true;
 				done();
@@ -121,9 +121,9 @@ describe("Sampler", () => {
 		it("can dispose while playing sounds", () => {
 			return Offline(() => {
 				const sampler = new Sampler({
-					A4 : A4_buffer,
+					A4: A4_buffer,
 				}, {
-					release : 0,
+					release: 0,
 				}).toDestination();
 				sampler.triggerAttack("A4", 0);
 				sampler.triggerRelease("A4", 0.2);
@@ -138,7 +138,7 @@ describe("Sampler", () => {
 		it("repitches the note", () => {
 			return Offline(() => {
 				const sampler = new Sampler({
-					A4 : A4_buffer,
+					A4: A4_buffer,
 				}).toDestination();
 				sampler.triggerAttack("G4");
 			}).then((buffer) => {
@@ -149,9 +149,9 @@ describe("Sampler", () => {
 		it("is silent after the release", () => {
 			return Offline(() => {
 				const sampler = new Sampler({
-					A4 : A4_buffer,
+					A4: A4_buffer,
 				}, {
-					release : 0,
+					release: 0,
 				}).toDestination();
 				sampler.triggerAttack("A4", 0);
 				sampler.triggerRelease("A4", 0.2);
@@ -163,9 +163,9 @@ describe("Sampler", () => {
 		it("can triggerRelease after the buffer has already stopped", () => {
 			return Offline(() => {
 				const sampler = new Sampler({
-					A4 : A4_buffer,
+					A4: A4_buffer,
 				}, {
-					release : 0,
+					release: 0,
 				}).toDestination();
 				sampler.triggerAttack("A4", 0);
 				return atTime(A4_buffer.duration + 0.01, () => {
@@ -179,9 +179,9 @@ describe("Sampler", () => {
 		it("can release multiple notes", () => {
 			return Offline(() => {
 				const sampler = new Sampler({
-					A4 : A4_buffer,
+					A4: A4_buffer,
 				}, {
-					release : 0,
+					release: 0,
 				}).toDestination();
 				sampler.triggerAttack("A4", 0);
 				sampler.triggerAttack("C4", 0);
@@ -196,9 +196,9 @@ describe("Sampler", () => {
 		it("can trigger the attack and release", () => {
 			return Offline(() => {
 				const sampler = new Sampler({
-					A4 : A4_buffer,
+					A4: A4_buffer,
 				}, {
-					release : 0,
+					release: 0,
 				}).toDestination();
 				sampler.triggerAttackRelease("A4", 0.2, 0.1);
 			}, 0.4).then((buffer) => {
@@ -210,9 +210,9 @@ describe("Sampler", () => {
 		it("can trigger polyphonic attack release", () => {
 			return Offline(() => {
 				const sampler = new Sampler({
-					A4 : A4_buffer,
+					A4: A4_buffer,
 				}, {
-					release : 0,
+					release: 0,
 				}).toDestination();
 				sampler.triggerAttackRelease(["A4", "C4"], [0.2, 0.3], 0.1);
 			}, 0.5).then((buffer) => {

@@ -48,13 +48,13 @@ describe("Synth", () => {
 
 		it("can be constructed with an options object", () => {
 			const simple = new Synth({
-				envelope : {
-					sustain : 0.3,
+				envelope: {
+					sustain: 0.3,
 				},
 				oscillator: {
 					type: "sine",
 				},
-				volume : -5,
+				volume: -5,
 			});
 			expect(simple.envelope.sustain).to.equal(0.3);
 			expect(simple.oscillator.type).to.equal("sine");
@@ -85,10 +85,10 @@ describe("Synth", () => {
 		it("is silent after triggerAttack if sustain is 0", () => {
 			return Offline(() => {
 				const synth = new Synth({
-					envelope : {
-						attack : 0.1,
-						decay : 0.1,
-						sustain : 0,
+					envelope: {
+						attack: 0.1,
+						decay: 0.1,
+						sustain: 0,
 					},
 				}).toDestination();
 				synth.triggerAttack("C4", 0);
@@ -102,7 +102,7 @@ describe("Synth", () => {
 		it("can play notes with a portamento", () => {
 			return Offline(() => {
 				const synth = new Synth({
-					portamento : 0.1,
+					portamento: 0.1,
 				});
 				expect(synth.portamento).to.equal(0.1);
 				synth.frequency.toDestination();

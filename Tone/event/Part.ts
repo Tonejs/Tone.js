@@ -9,10 +9,10 @@ import { ToneEvent, ToneEventCallback, ToneEventOptions } from "./ToneEvent";
 type CallbackType<T> =
 	T extends {
 		time: Time;
-		[key: string]: any,
+		[key: string]: any;
 	} ? T :
-	T extends ArrayLike<any> ? T[1] :
-	T extends Time ? null : never;
+		T extends ArrayLike<any> ? T[1] :
+			T extends Time ? null : never;
 
 interface PartOptions<T> extends Omit<ToneEventOptions<CallbackType<T>>, "value"> {
 	events: T[];
@@ -44,8 +44,8 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 	 * Tracks the scheduled events
 	 */
 	protected _state: StateTimeline<{
-		id: number,
-		offset: number,
+		id: number;
+		offset: number;
 	}> = new StateTimeline("stopped");
 
 	/**
@@ -96,10 +96,10 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 			}
 			const computedOffset = this.toTicks(offset);
 			this._state.add({
-				id : -1,
+				id: -1,
 				offset: computedOffset,
-				state : "started",
-				time : ticks,
+				state: "started",
+				time: ticks,
 			});
 			this._forEach(event => {
 				this._startNote(event, ticks, computedOffset);
@@ -210,7 +210,7 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 	 * });
 	 */
 	add(obj: {
-		time: Time,
+		time: Time;
 		[key: string]: any;
 	}): this;
 	add(time: Time, value?: any): this;
@@ -227,7 +227,7 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 			event.callback = this._tick.bind(this);
 		} else {
 			event = new ToneEvent({
-				callback : this._tick.bind(this),
+				callback: this._tick.bind(this),
 				context: this.context,
 				value,
 			});
@@ -237,12 +237,12 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 
 		// initialize the values
 		event.set({
-			humanize : this.humanize,
-			loop : this.loop,
-			loopEnd : this.loopEnd,
-			loopStart : this.loopStart,
-			playbackRate : this.playbackRate,
-			probability : this.probability,
+			humanize: this.humanize,
+			loop: this.loop,
+			loopEnd: this.loopEnd,
+			loopStart: this.loopStart,
+			playbackRate: this.playbackRate,
+			probability: this.probability,
 		});
 
 		this._events.add(event);
@@ -273,7 +273,7 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 	 * @param value Optionally select only a specific event value
 	 */
 	remove(obj: {
-		time: Time,
+		time: Time;
 		[key: string]: any;
 	}): this;
 	remove(time: Time, value?: any): this;

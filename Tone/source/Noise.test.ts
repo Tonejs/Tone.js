@@ -11,7 +11,7 @@ describe("Noise", () => {
 	BasicTests(Noise);
 	SourceTests(Noise);
 
-	it("matches a file",  () => {
+	it("matches a file", () => {
 		return CompareToFile(() => {
 			const noise = new Noise().toDestination();
 			noise.start(0.1).stop(0.2);
@@ -50,7 +50,7 @@ describe("Noise", () => {
 	context("Fades", () => {
 		it("can set the fade in/out", () => {
 			const noise = new Noise({
-				fadeIn : 0.1,
+				fadeIn: 0.1,
 			});
 			expect(noise.fadeIn).to.equal(0.1);
 			expect(noise.fadeOut).to.equal(0);

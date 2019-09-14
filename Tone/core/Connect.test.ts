@@ -58,7 +58,7 @@ describe("Connect", () => {
 			expect(threwError).to.equal(true);
 		});
 
-		it ("throws an error if the destination has no input", () => {
+		it("throws an error if the destination has no input", () => {
 			const source = new Oscillator();
 			const gain = new Gain();
 			expect(() => {
@@ -116,7 +116,7 @@ describe("Connect", () => {
 		});
 	});
 
-		// context("connections", () => {
+	// context("connections", () => {
 	// 	it("can connect with args",  () => {
 	// 		const nodeA = new ToneAudioNode({
 	// 			numberOfOutputs : 1,

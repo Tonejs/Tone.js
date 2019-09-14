@@ -57,12 +57,12 @@ export class MembraneSynth extends Synth<MembraneSynthOptions> {
 
 	static getDefaults(): MembraneSynthOptions {
 		return deepMerge(Monophonic.getDefaults(), Synth.getDefaults(), {
-			envelope : {
-				attack : 0.001,
-				attackCurve : "exponential",
-				decay : 0.4,
-				release : 1.4,
-				sustain : 0.01,
+			envelope: {
+				attack: 0.001,
+				attackCurve: "exponential",
+				decay: 0.4,
+				release: 1.4,
+				sustain: 0.01,
 			},
 			octaves: 10,
 			oscillator: {

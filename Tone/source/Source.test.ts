@@ -17,7 +17,7 @@ describe("Source", () => {
 
 	it("can be constructed with an options object", () => {
 		const source = new Oscillator({
-			volume : -20,
+			volume: -20,
 		});
 		expect(source.volume.value).to.be.closeTo(-20, 0.1);
 		source.dispose();
@@ -25,7 +25,7 @@ describe("Source", () => {
 
 	it("can be muted in the constructor options", () => {
 		const source = new Oscillator({
-			mute : true,
+			mute: true,
 		});
 		expect(source.mute).to.be.true;
 		source.dispose();
@@ -52,7 +52,7 @@ describe("Source", () => {
 
 	it("can get and set values with an object", () => {
 		const source = new Oscillator();
-		source.set({volume: -10});
+		source.set({ volume: -10 });
 		expect(source.get().volume).to.be.closeTo(-10, 0.1);
 		source.dispose();
 	});
@@ -152,7 +152,7 @@ describe("Source", () => {
 		const rampBuffer = ToneAudioBuffer.fromArray(ramp);
 
 		it("can sync its start to the transport", () => {
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				const source = new Oscillator();
 				source.sync().start(0);
 				expect(source.state).to.equal("stopped");
@@ -164,7 +164,7 @@ describe("Source", () => {
 		});
 
 		it("calling sync multiple times has no affect", () => {
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				const source = new Oscillator();
 				source.sync().sync().start(0);
 				expect(source.state).to.equal("stopped");
@@ -176,7 +176,7 @@ describe("Source", () => {
 		});
 
 		it("can unsync after it was synced", () => {
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				const source = new Oscillator();
 				source.sync().start(0);
 				source.unsync();
@@ -186,7 +186,7 @@ describe("Source", () => {
 		});
 
 		it("calling unsync multiple times has no affect", () => {
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				const source = new Oscillator();
 				source.sync().start(0);
 				source.unsync().unsync();
@@ -196,7 +196,7 @@ describe("Source", () => {
 		});
 
 		it("can sync its stop to the transport", () => {
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				const source = new Oscillator();
 				source.sync().start(0);
 				expect(source.state).to.equal("stopped");
@@ -212,7 +212,7 @@ describe("Source", () => {
 		});
 
 		it("can schedule multiple starts/stops", () => {
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				const source = new Oscillator();
 				source.sync().start(0.1).stop(0.2).start(0.3);
 				transport.start(0).stop(0.4);
@@ -233,7 +233,7 @@ describe("Source", () => {
 		});
 
 		it("has correct offset when the transport is started with an offset", () => {
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				const source = new Oscillator();
 				source.sync().start(0.3).stop(0.4);
 				transport.start(0, 0.1);
@@ -250,7 +250,7 @@ describe("Source", () => {
 		});
 
 		it("can start with an offset after the start time of the source", () => {
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				const source = new Oscillator();
 				source.sync().start(0);
 				transport.start(0, 0.1);
@@ -260,7 +260,7 @@ describe("Source", () => {
 		});
 
 		it("can sync its start to the transport after a delay", () => {
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				const source = new Oscillator();
 				source.sync().start(0.3);
 				transport.start(0).stop(0.4);
@@ -277,7 +277,7 @@ describe("Source", () => {
 		});
 
 		it("correct state when the transport position is changed", () => {
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				const source = new Oscillator();
 				source.sync().start(0.3).stop(0.4);
 				transport.start(0).stop(0.4);
@@ -290,7 +290,7 @@ describe("Source", () => {
 		});
 
 		it("gives the correct offset on time on start/stop events", () => {
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				const source = new Player(rampBuffer).toDestination();
 				source.sync().start(0.2, 0.1).stop(0.3);
 				transport.start(0.2);
@@ -302,7 +302,7 @@ describe("Source", () => {
 		});
 
 		it("gives the correct offset on time on start/stop events when started with an offset", () => {
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				const source = new Player(rampBuffer).toDestination();
 				source.sync().start(0.2, 0.1).stop(0.4);
 				transport.start(0.2, 0.1);
@@ -316,7 +316,7 @@ describe("Source", () => {
 		});
 
 		it("gives the correct offset on time on start/stop events invoked with an transport offset that's in the middle of the event", () => {
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				const source = new Player(rampBuffer).toDestination();
 				source.sync().start(0.2, 0.1).stop(0.4);
 				transport.start(0, 0.3);
@@ -328,7 +328,7 @@ describe("Source", () => {
 		});
 
 		it("gives the correct duration when invoked with an transport offset that's in the middle of the event", () => {
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				const source = new Player(rampBuffer).toDestination();
 				source.sync().start(0.2, 0.1, 0.3);
 				transport.start(0, 0.3);
@@ -341,7 +341,7 @@ describe("Source", () => {
 		});
 
 		it("stops at the right time when transport.stop is invoked before the scheduled stop", () => {
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				const source = new Player(rampBuffer).toDestination();
 				source.sync().start(0.2).stop(0.4);
 				transport.start(0).stop(0.3);
@@ -353,7 +353,7 @@ describe("Source", () => {
 		});
 
 		it("invokes the right methods and offsets when the transport is seeked", () => {
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				const source = new Player(rampBuffer).toDestination();
 				source.sync().start(0.2);
 				transport.start(0, 0.3);

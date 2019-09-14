@@ -43,9 +43,9 @@ export class ToneConstantSource<Type extends Unit = number> extends OneShotSourc
 		this.offset = new Param({
 			context: this.context,
 			convert: options.convert,
-			param : this._source.offset,
-			units : options.units,
-			value : options.offset,
+			param: this._source.offset,
+			units: options.units,
+			value: options.offset,
 		});
 	}
 

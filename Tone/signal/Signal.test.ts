@@ -186,7 +186,7 @@ describe("Signal", () => {
 			}, 1);
 		});
 		it("can cancel and hold a linear automation curve", async () => {
-			const buffer = await  Offline(() => {
+			const buffer = await Offline(() => {
 				const sig = new Signal<number>(0).toDestination();
 				sig.linearRampTo(2, 1);
 				sig.cancelAndHoldAtTime(0.5);
@@ -228,7 +228,7 @@ describe("Signal", () => {
 				const sig = new Signal<number>(1).toDestination();
 				sig.linearRampTo(50, 0.3, 0.2);
 			}, 0.7).then((buffer) => {
-				buffer.forEach((sample, time)  => {
+				buffer.forEach((sample, time) => {
 					if (time >= 0.6) {
 						expect(sample).to.be.closeTo(50, 0.5);
 					} else if (time < 0.2) {
@@ -263,7 +263,7 @@ describe("Signal", () => {
 				const sig = new Signal<number>(1).toDestination();
 				sig.exponentialRampTo(50, 0.4);
 			}, 0.6).then((buffer) => {
-				buffer.forEach((sample, time)  => {
+				buffer.forEach((sample, time) => {
 					if (time >= 0.4) {
 						expect(sample).to.be.closeTo(50, 0.5);
 					} else if (time < 0.39) {
@@ -278,7 +278,7 @@ describe("Signal", () => {
 				const sig = new Signal<number>(1).toDestination();
 				sig.exponentialRampTo(50, 0.3, 0.2);
 			}, 0.8).then((buffer) => {
-				buffer.forEach((sample, time)  => {
+				buffer.forEach((sample, time) => {
 					if (time >= 0.6) {
 						expect(sample).to.be.closeTo(50, 0.5);
 					} else if (time < 0.2) {
@@ -293,7 +293,7 @@ describe("Signal", () => {
 				const sig = new Signal<number>(3).toDestination();
 				sig.rampTo(0.2, 0.1);
 			}, 0.4).then((buffer) => {
-				buffer.forEach((sample, time)  => {
+				buffer.forEach((sample, time) => {
 					if (time >= 0.1) {
 						expect(sample).to.be.closeTo(0.2, 0.1);
 					} else {
@@ -308,7 +308,7 @@ describe("Signal", () => {
 				const sig = new Signal<number>(0).toDestination();
 				sig.rampTo(2, 0.1, 0.4);
 			}, 0.6).then((buffer) => {
-				buffer.forEach((sample, time)  => {
+				buffer.forEach((sample, time) => {
 					if (time < 0.4) {
 						expect(sample).to.be.closeTo(0, 0.1);
 					} else if (time > 0.5) {

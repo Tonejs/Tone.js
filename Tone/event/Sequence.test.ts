@@ -45,11 +45,11 @@ describe("Sequence", () => {
 				const callback = noOp;
 				const seq = new Sequence({
 					callback,
-					events : [0, 1, 2],
-					humanize : true,
-					loop : true,
-					loopEnd : 2,
-					probability : 0.3,
+					events: [0, 1, 2],
+					humanize: true,
+					loop: true,
+					loopEnd: 2,
+					probability: 0.3,
 				});
 				expect(seq.callback).to.equal(callback);
 				expect(seq.length).to.equal(3);
@@ -160,7 +160,7 @@ describe("Sequence", () => {
 
 		it("invokes the callback after it's started", () => {
 			let invoked = false;
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				const seq = new Sequence(() => {
 					seq.dispose();
 					invoked = true;
@@ -173,7 +173,7 @@ describe("Sequence", () => {
 
 		it("can be scheduled to stop", () => {
 			let invoked = 0;
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				const seq = new Sequence(() => {
 					invoked++;
 				}, [0, 1], 0.1).start(0).stop(0.5);
@@ -185,7 +185,7 @@ describe("Sequence", () => {
 
 		it("passes in the scheduled time to the callback", () => {
 			let invoked = false;
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				const now = 0.1;
 				const seq = new Sequence((time) => {
 					expect(time).to.be.a("number");
@@ -202,7 +202,7 @@ describe("Sequence", () => {
 
 		it("passes in the value to the callback", () => {
 			let invoked = false;
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				const seq = new Sequence((time, thing) => {
 					expect(time).to.be.a("number");
 					expect(thing).to.equal("thing");
@@ -217,7 +217,7 @@ describe("Sequence", () => {
 
 		it("invokes the scheduled events in the right order", () => {
 			let count = 0;
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				const seq = new Sequence((time, value) => {
 					expect(value).to.equal(count);
 					count++;
@@ -231,7 +231,7 @@ describe("Sequence", () => {
 
 		it("invokes the scheduled events at the correct times", () => {
 			let count = 0;
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				const eighth = transport.toSeconds("8n");
 				const times = [0, eighth, eighth * 1.5, eighth * 2, eighth * (2 + 1 / 3), eighth * (2 + 2 / 3)];
 				const seq = new Sequence((time) => {
@@ -247,7 +247,7 @@ describe("Sequence", () => {
 
 		it("can schedule rests using 'null'", () => {
 			let count = 0;
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				const eighth = transport.toSeconds("8n");
 				const times = [0, eighth * 2.5];
 				const seq = new Sequence((time, value) => {
@@ -263,7 +263,7 @@ describe("Sequence", () => {
 
 		it("can schedule triple nested arrays", () => {
 			let count = 0;
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				const eighth = transport.toSeconds("8n");
 				const times = [0, eighth, eighth * 1.5, eighth * 1.75];
 				const seq = new Sequence((time) => {
@@ -279,7 +279,7 @@ describe("Sequence", () => {
 
 		it("starts an event added after the seq was started", () => {
 			let invoked = false;
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				const seq = new Sequence({
 					callback(time, value): void {
 						if (value === 1) {
@@ -287,7 +287,7 @@ describe("Sequence", () => {
 							invoked = true;
 						}
 					},
-					events : [[0, 2]],
+					events: [[0, 2]],
 				}).start(0);
 				transport.start();
 
@@ -305,11 +305,11 @@ describe("Sequence", () => {
 
 		it("can be set to loop", () => {
 			let callCount = 0;
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				const seq = new Sequence({
-					events : [0, 1],
-					loop : true,
-					loopEnd : 0.2,
+					events: [0, 1],
+					loop: true,
+					loopEnd: 0.2,
 					callback(): void {
 						callCount++;
 						if (callCount > 2) {
@@ -325,12 +325,12 @@ describe("Sequence", () => {
 
 		it("can loop between loopStart and loopEnd", () => {
 			let invokations = 0;
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				const seq = new Sequence({
-					events : [0, [1, 2, 3], [4, 5]],
-					loopEnd : 2,
-					loopStart : 1,
-					subdivision : "8n",
+					events: [0, [1, 2, 3], [4, 5]],
+					loopEnd: 2,
+					loopStart: 1,
+					subdivision: "8n",
 					callback(time, value): void {
 						expect(value).to.be.at.least(1);
 						expect(value).to.be.at.most(3);
@@ -345,7 +345,7 @@ describe("Sequence", () => {
 
 		it("can set the loop points after starting", () => {
 			let invoked = false;
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				let switched = false;
 				const seq = new Sequence({
 					callback(time, value): void {
@@ -359,8 +359,8 @@ describe("Sequence", () => {
 							invoked = true;
 						}
 					},
-					events : [0, [1, 2, 3], [4, 5]],
-					subdivision : "16n",
+					events: [0, [1, 2, 3], [4, 5]],
+					subdivision: "16n",
 				}).start(0);
 				transport.start();
 			}, 0.7).then(() => {
@@ -373,12 +373,12 @@ describe("Sequence", () => {
 
 		it("can adjust the playbackRate", () => {
 			let invoked = false;
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				let lastCall;
 				new Sequence({
-					events : [0, 1],
-					playbackRate : 2,
-					subdivision : "4n",
+					events: [0, 1],
+					playbackRate: 2,
+					subdivision: "4n",
 					callback(time): void {
 						if (lastCall) {
 							invoked = true;
@@ -395,12 +395,12 @@ describe("Sequence", () => {
 
 		it("adjusts speed of subsequences", () => {
 			let invoked = false;
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				let lastCall;
 				new Sequence({
-					events : [[0, 1], [2, 3]],
-					playbackRate : 0.5,
-					subdivision : "8n",
+					events: [[0, 1], [2, 3]],
+					playbackRate: 0.5,
+					subdivision: "8n",
 					callback(time): void {
 						if (lastCall) {
 							expect(time - lastCall).to.be.closeTo(0.25, 0.01);
@@ -417,12 +417,12 @@ describe("Sequence", () => {
 
 		it("can adjust the playbackRate after starting", () => {
 			let invoked = false;
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				let lastCall;
 				const seq = new Sequence({
-					events : [0, 1],
-					playbackRate : 1,
-					subdivision : "8n",
+					events: [0, 1],
+					playbackRate: 1,
+					subdivision: "8n",
 					callback(time): void {
 						if (lastCall) {
 							expect(time - lastCall).to.be.closeTo(0.5, 0.01);

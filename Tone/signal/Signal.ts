@@ -25,7 +25,7 @@ export interface SignalOptions<Type> extends ToneAudioNodeOptions {
  * const signal = new Tone.Signal(10);
  */
 export class Signal<Type extends Unit = number> extends ToneAudioNode<SignalOptions<any>>
-implements AbstractParam<Type> {
+	implements AbstractParam<Type> {
 
 	readonly name: string = "Signal";
 

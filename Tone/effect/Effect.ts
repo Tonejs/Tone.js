@@ -14,14 +14,14 @@ export interface EffectOptions extends ToneAudioNodeOptions {
  * effect which goes to the output using the wet control.
  */
 export abstract class Effect<Options extends EffectOptions>
-extends ToneAudioNode<Options> {
+	extends ToneAudioNode<Options> {
 
 	readonly name: string = "Effect";
 
 	/**
 	 * the drywet knob to control the amount of effect
 	 */
-	private _dryWet: CrossFade = new CrossFade({ context : this.context });
+	private _dryWet: CrossFade = new CrossFade({ context: this.context });
 
 	/**
 	 * The wet control is how much of the effected
@@ -33,17 +33,17 @@ extends ToneAudioNode<Options> {
 	/**
 	 * connect the effectSend to the input of hte effect
 	 */
-	protected effectSend: Gain = new Gain({ context : this.context });
+	protected effectSend: Gain = new Gain({ context: this.context });
 
 	/**
 	 * connect the output of the effect to the effectReturn
 	 */
-	protected effectReturn: Gain = new Gain({ context : this.context });
+	protected effectReturn: Gain = new Gain({ context: this.context });
 
 	/**
 	 * The effect input node
 	 */
-	input: Gain = new Gain({ context : this.context });
+	input: Gain = new Gain({ context: this.context });
 
 	/**
 	 * The effect output
@@ -63,7 +63,7 @@ extends ToneAudioNode<Options> {
 
 	static getDefaults(): EffectOptions {
 		return Object.assign(ToneAudioNode.getDefaults(), {
-			wet : 1,
+			wet: 1,
 		});
 	}
 
