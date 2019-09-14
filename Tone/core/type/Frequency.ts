@@ -33,9 +33,9 @@ export class FrequencyClass<Type extends number = Hertz> extends TimeClass<Type,
 		setA4(freq);
 	}
 
-	///////////////////////////////////////////////////////////////////////////
+	//-------------------------------------////
 	// 	AUGMENT BASE EXPRESSIONS
-	///////////////////////////////////////////////////////////////////////////
+	//-------------------------------------////
 
 	protected _getExpressions(): TimeExpression<Type> {
 		return Object.assign({}, super._getExpressions(), {
@@ -80,9 +80,9 @@ export class FrequencyClass<Type extends number = Hertz> extends TimeClass<Type,
 		});
 	}
 
-	///////////////////////////////////////////////////////////////////////////
+	//-------------------------------------////
 	// 	EXPRESSIONS
-	///////////////////////////////////////////////////////////////////////////
+	//-------------------------------------////
 
 	/**
 	 * Transposes the frequency by the given number of semitones.
@@ -107,9 +107,9 @@ export class FrequencyClass<Type extends number = Hertz> extends TimeClass<Type,
 		});
 	}
 
-	///////////////////////////////////////////////////////////////////////////
+	//-------------------------------------////
 	// 	UNIT CONVERSIONS
-	///////////////////////////////////////////////////////////////////////////
+	//-------------------------------------////
 
 	/**
 	 * Return the value of the frequency as a MIDI note
@@ -153,9 +153,9 @@ export class FrequencyClass<Type extends number = Hertz> extends TimeClass<Type,
 		return Math.floor(quarters * this._getPPQ());
 	}
 
-	///////////////////////////////////////////////////////////////////////////
+	//-------------------------------------////
 	// 	UNIT CONVERSIONS HELPERS
-	///////////////////////////////////////////////////////////////////////////
+	//-------------------------------------////
 
 	/**
 	 * With no arguments, return 0
@@ -214,9 +214,9 @@ export class FrequencyClass<Type extends number = Hertz> extends TimeClass<Type,
 	}
 }
 
-///////////////////////////////////////////////////////////////////////////
+//-------------------------------------////
 // 	FREQUENCY CONVERSIONS
-///////////////////////////////////////////////////////////////////////////
+//-------------------------------------////
 
 /**
  * Note to scale index. 

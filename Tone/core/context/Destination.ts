@@ -108,9 +108,9 @@ export class Destination extends ToneAudioNode<DestinationOptions> {
 	}
 }
 
-///////////////////////////////////////////////////////////////////////////
+//-------------------------------------////
 // 	INITIALIZATION
-///////////////////////////////////////////////////////////////////////////
+//-------------------------------------////
 
 onContextInit(context => {
 	context.destination = new Destination({ context });

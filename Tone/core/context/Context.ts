@@ -16,9 +16,9 @@ export type ContextLatencyHint = AudioContextLatencyCategory | "fastest";
 
 // these are either not used in Tone.js or deprecated and not implemented.
 export type ExcludedFromBaseAudioContext = "onstatechange" | "addEventListener" |
-	"removeEventListener" | "listener" | "dispatchEvent" | "audioWorklet" | "destination" | "createScriptProcessor";
-	// "createMediaStreamSource" | "createMediaElementSource" | "createMediaStreamTrackSource" |
-	// "baseLatency" | "suspend" |
+"removeEventListener" | "listener" | "dispatchEvent" | "audioWorklet" | "destination" | "createScriptProcessor";
+// "createMediaStreamSource" | "createMediaElementSource" | "createMediaStreamTrackSource" |
+// "baseLatency" | "suspend" |
 
 // the subset of the BaseAudioContext which Tone.Context implements.
 export type BaseAudioContextSubset = Omit<BaseAudioContext, ExcludedFromBaseAudioContext>;
@@ -140,9 +140,9 @@ export class Context extends Emitter<"statechange" | "tick"> implements BaseAudi
 		return this;
 	}
 
-	///////////////////////////////////////////////////////////////////////
+	//---------------------------
 	// BASE AUDIO CONTEXT METHODS
-	///////////////////////////////////////////////////////////////////////
+	//---------------------------
 
 	createAnalyser(): AnalyserNode {
 		return this._context.createAnalyser();
@@ -252,9 +252,9 @@ export class Context extends Emitter<"statechange" | "tick"> implements BaseAudi
 		this._destination = d;
 	}
 
-	///////////////////////////////////////////////////////////////////////
+	//---------------------------
 	// TICKER
-	///////////////////////////////////////////////////////////////////////
+	//---------------------------
 
 	/**
 	 * How often the interval callback is invoked.
@@ -390,15 +390,15 @@ export class Context extends Emitter<"statechange" | "tick"> implements BaseAudi
 		return this;
 	}
 
-	///////////////////////////////////////////////////////////////////////
+	//---------------------------
 	// TIMEOUTS
-	///////////////////////////////////////////////////////////////////////
+	//---------------------------
 
 	/**
 	 * The private loop which keeps track of the context scheduled timeouts
 	 * Is invoked from the clock source
 	 */
-	private _timeoutLoop(): void  {
+	private _timeoutLoop(): void {
 		const now = this.now();
 		let firstEvent = this._timeouts.peek();
 		while (this._timeouts.length && firstEvent && firstEvent.time <= now) {
@@ -422,9 +422,9 @@ export class Context extends Emitter<"statechange" | "tick"> implements BaseAudi
 		this._timeoutIds++;
 		const now = this.now();
 		this._timeouts.add({
-			callback : fn,
-			id : this._timeoutIds,
-			time : now + timeout,
+			callback: fn,
+			id: this._timeoutIds,
+			time: now + timeout,
 		});
 		return this._timeoutIds;
 	}
@@ -457,14 +457,14 @@ export class Context extends Emitter<"statechange" | "tick"> implements BaseAudi
 		const intervalFn = () => {
 			const now = this.now();
 			this._timeouts.add({
-				callback : () => {
+				callback: () => {
 					// invoke the callback
 					fn();
 					// invoke the event to repeat it
 					intervalFn();
 				},
 				id,
-				time : now + interval,
+				time: now + interval,
 			});
 		};
 		// kick it off

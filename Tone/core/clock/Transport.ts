@@ -67,9 +67,9 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 
 	readonly name: string = "Transport";
 
-	///////////////////////////////////////////////////////////////////////
+	//-------------------------------------
 	// 	LOOPING
-	//////////////////////////////////////////////////////////////////////
+	//-------------------------------------
 
 	/**
 	 * If the transport loops or not.
@@ -86,9 +86,9 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 	 */
 	private _loopEnd: Ticks = 0;
 
-	///////////////////////////////////////////////////////////////////////
+	//-------------------------------------
 	// 	CLOCK/TEMPO
-	//////////////////////////////////////////////////////////////////////
+	//-------------------------------------
 
 	/**
 	 * Pulses per quarter is the number of ticks per quarter note.
@@ -116,9 +116,9 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 	 */
 	private _timeSignature: number;
 
-	///////////////////////////////////////////////////////////////////////
+	//-------------------------------------
 	// 	TIMELINE EVENTS
-	//////////////////////////////////////////////////////////////////////
+	//-------------------------------------
 
 	/**
 	 * All the events in an object to keep track by ID
@@ -140,9 +140,9 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 	 */
 	private _syncedSignals: SyncedSignalEvent[] = [];
 
-	///////////////////////////////////////////////////////////////////////
+	//-------------------------------------
 	// 	SWING
-	//////////////////////////////////////////////////////////////////////
+	//-------------------------------------
 
 	/**
 	 * The subdivision of the swing
@@ -191,9 +191,9 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 		});
 	}
 
-	///////////////////////////////////////////////////////////////////////////////
+	//-------------------------------------
 	// 	TICKS
-	///////////////////////////////////////////////////////////////////////////////
+	//-------------------------------------
 
 	/**
 	 * called on every tick
@@ -223,9 +223,9 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 		this._timeline.forEachAtTime(ticks, event => event.invoke(tickTime));
 	}
 
-	///////////////////////////////////////////////////////////////////////////////
+	//-------------------------------------
 	// 	SCHEDULABLE EVENTS
-	///////////////////////////////////////////////////////////////////////////////
+	//-------------------------------------
 
 	/**
 	 * Schedule an event along the timeline.
@@ -332,9 +332,9 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 		return this;
 	}
 
-	///////////////////////////////////////////////////////////////////////////////
+	//-------------------------------------
 	// 	START/STOP/PAUSE
-	///////////////////////////////////////////////////////////////////////////////
+	//-------------------------------------
 
 	/**
 	 * Bind start/stop/pause events from the clock and emit them.
@@ -413,9 +413,9 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 		return this;
 	}
 
-	///////////////////////////////////////////////////////////////////////////////
+	//-------------------------------------
 	// 	SETTERS/GETTERS
-	///////////////////////////////////////////////////////////////////////////////
+	//-------------------------------------
 
 	/**
 	 * The time signature as just the numerator over 4.
@@ -588,9 +588,9 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 		this._clock.frequency.multiplier = ppq;
 	}
 
-	///////////////////////////////////////////////////////////////////////////////
+	//-------------------------------------
 	// 	SYNCING
-	///////////////////////////////////////////////////////////////////////////////
+	//-------------------------------------
 
 	/**
 	 * Returns the time aligned to the next subdivision
@@ -680,9 +680,9 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 		return this;
 	}
 
-	///////////////////////////////////////////////////////////////////////
+	//-------------------------------------
 	// EMITTER MIXIN TO SATISFY COMPILER
-	///////////////////////////////////////////////////////////////////////
+	//-------------------------------------
 
 	on!: (event: TransportEventNames, callback: (...args: any[]) => void) => this;
 	once!: (event: TransportEventNames, callback: (...args: any[]) => void) => this;
@@ -692,9 +692,9 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 
 Emitter.mixin(Transport);
 
-///////////////////////////////////////////////////////////////////////////////
+//-------------------------------------
 // 	INITIALIZATION
-///////////////////////////////////////////////////////////////////////////////
+//-------------------------------------
 
 onContextInit(context => {
 	context.transport = new Transport({ context });

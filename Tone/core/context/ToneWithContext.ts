@@ -105,9 +105,9 @@ export abstract class ToneWithContext<Options extends ToneWithContextOptions> ex
 		return new TransportTimeClass(this.context, time).toTicks();
 	}
 
-	///////////////////////////////////////////////////////////////////////////
+	//-------------------------------------////
 	// 	GET/SET
-	///////////////////////////////////////////////////////////////////////////
+	//-------------------------------------////
 
 	/**
 	 * Get the object's attributes.

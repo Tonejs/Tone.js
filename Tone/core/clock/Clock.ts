@@ -27,12 +27,12 @@ type ClockEvent = "start" | "stop" | "pause";
  * //the callback will be invoked approximately once a second
  * //and will print the time exactly once a second apart.
  * const clock = new Clock(time => {
- * console.log(time);
+ * 	console.log(time);
  * }, 1);
  * @category Core
  */
 export class Clock<Type extends BPM | Hertz = Hertz>
-extends ToneWithContext<ClockOptions> implements Emitter<ClockEvent> {
+	extends ToneWithContext<ClockOptions> implements Emitter<ClockEvent> {
 
 	readonly name: string = "Clock";
 
@@ -281,9 +281,9 @@ extends ToneWithContext<ClockOptions> implements Emitter<ClockEvent> {
 		return this;
 	}
 
-	///////////////////////////////////////////////////////////////////////
+	//-------------------------------------
 	// EMITTER MIXIN TO SATISFY COMPILER
-	///////////////////////////////////////////////////////////////////////
+	//-------------------------------------
 
 	on!: (event: ClockEvent, callback: (...args: any[]) => void) => this;
 	once!: (event: ClockEvent, callback: (...args: any[]) => void) => this;

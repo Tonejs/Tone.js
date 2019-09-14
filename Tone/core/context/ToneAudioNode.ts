@@ -75,9 +75,9 @@ extends ToneWithContext<Options> {
 	 */
 	protected _internalChannels: OutputNode[] = [];
 
-	///////////////////////////////////////////////////////////////////////////
+	//-------------------------------------////
 	// AUDIO PROPERTIES
-	///////////////////////////////////////////////////////////////////////////
+	//-------------------------------------////
 
 	/**
 	 * Used to decide which nodes to get/set properties on
@@ -181,9 +181,9 @@ extends ToneWithContext<Options> {
 		this._setChannelProperties(Object.assign(props, { channelInterpretation }));
 	}
 
-	///////////////////////////////////////////////////////////////////////////
+	//-------------------------------------////
 	// CONNECTIONS
-	///////////////////////////////////////////////////////////////////////////
+	//-------------------------------------////
 
 	/**
 	 * connect the output of a ToneAudioNode to an AudioParam, AudioNode, or ToneAudioNode
@@ -265,9 +265,9 @@ extends ToneWithContext<Options> {
 	}
 }
 
-///////////////////////////////////////////////////////////////////////////////
+//-------------------------------------
 // CONNECTIONS
-///////////////////////////////////////////////////////////////////////////////
+//-------------------------------------
 
 /**
  * connect together all of the arguments in series
