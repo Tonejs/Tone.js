@@ -6,33 +6,30 @@ import { ToneAudioBuffer } from "./ToneAudioBuffer";
 /**
  * Generate a buffer by rendering all of the Tone.js code within the callback using the OfflineAudioContext.
  * The OfflineAudioContext is capable of rendering much faster than real time in many cases.
- * The callback function also passes in an offline instance of Tone.Transport which can be used
- * to schedule events along the Transport. **NOTE** OfflineAudioContext has the same restrictions
- * as the AudioContext in that on certain platforms (like iOS) it must be invoked by an explicit
- * user action like a click or tap.
- * @param  callback  All Tone.js nodes which are created and scheduled
- * 					within this callback are recorded into the output Buffer.
+ * The callback function also passes in an offline instance of [[Context]] which can be used
+ * to schedule events along the Transport. 
+ * @param  callback  All Tone.js nodes which are created and scheduled within this callback are recorded into the output Buffer.
  * @param  duration     the amount of time to record for.
- * @return  The promise which is invoked with the Tone.Buffer of the recorded output.
+ * @return  The promise which is invoked with the ToneAudioBuffer of the recorded output.
  * @example
  * //render 2 seconds of the oscillator
- * Tone.Offline(function(){
+ * Tone.Offline(() => {
  * 	//only nodes created in this callback will be recorded
  * 	var oscillator = new Tone.Oscillator().toDestination().start(0)
  * 	//schedule their events
- * }, 2).then(function(buffer){
+ * }, 2).then((buffer) => {
  * 	//do something with the output buffer
  * })
  * @example
  * //can also schedule events along the Transport
  * //using the passed in Offline Transport
- * Tone.Offline(function(Transport){
+ * Tone.Offline(({ transport }) => {
  * 	var osc = new Tone.Oscillator().toDestination()
- * 	Transport.schedule(function(time){
+ * 	transport.schedule(function(time){
  * 		osc.start(time).stop(time + 0.1)
  * 	}, 1)
- * 	Transport.start(0.2)
- * }, 4).then(function(buffer){
+ * 	transport.start(0.2)
+ * }, 4).then((buffer) => {
  * 	//do something with the output buffer
  * })
  * @category Core

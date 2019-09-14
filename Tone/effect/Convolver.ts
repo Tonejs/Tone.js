@@ -34,7 +34,7 @@ export class Convolver extends Effect<ToneConvolverOptions> {
 	private _buffer: ToneAudioBuffer;
 
 	/**
-	 * @param url The URL of the impulse response or the Tone.Buffer contianing the impulse response.
+	 * @param url The URL of the impulse response or the ToneAudioBuffer containing the impulse response.
 	 * @param onload The callback to invoke when the url is loaded.
 	 */
 	constructor(url?: string | AudioBuffer | ToneAudioBuffer, onload?: () => void);
