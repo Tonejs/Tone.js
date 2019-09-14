@@ -86,6 +86,7 @@
     "semver": "^5.5.0",
     "teoria": "^2.5.0",
     "ts-loader": "^6.0.4",
+    "typedoc": "^0.15.0",
     "typescript": "^3.5.3",
     "ua-parser-js": "^0.7.20",
     "webpack": "^4.39.3",
