@@ -5,7 +5,6 @@
 	"categorizeByGroup" : true,
 	"categoryOrder" : ["Global", "Core"],
 	"exclude" : ["./Tone/**/*.test.ts", "./test/**/*.ts"],
-	"out" : "./docs",
 	"excludeProtected" : true,
 	"excludePrivate" : true,
 	"listInvalidSymbolLinks" : true,
