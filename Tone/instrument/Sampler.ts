@@ -236,7 +236,7 @@ export class Sampler extends Instrument<SamplerOptions> {
 
 	/**
 	 * Sync the instrument to the Transport. All subsequent calls of
-	 * [triggerAttack](#triggerattack) and [triggerRelease](#triggerrelease)
+	 * [[triggerAttack]] and [[triggerRelease]]
 	 * will be scheduled along the transport.
 	 * @example
 	 * synth.sync()

@@ -131,7 +131,7 @@ export abstract class AbstractParam<Type extends Unit> {
 	abstract cancelScheduledValues(time: Time): this;
 
 	/**
-	 * This is similar to [cancelScheduledValues](#cancelScheduledValues) except
+	 * This is similar to [[cancelScheduledValues]] except
 	 * it holds the automated value at time until the next automated event.
 	 */
 	abstract cancelAndHoldAtTime(time: Time): this;
