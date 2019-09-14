@@ -44,7 +44,7 @@ export function SourceTests(Constr, args?): void {
 			});
 		});
 
-		it ("invokes the onstop method the source is stopped", () => {
+		it("invokes the onstop method the source is stopped", () => {
 			let wasInvoked = false;
 			return Offline(() => {
 				const instance = new Constr(args);

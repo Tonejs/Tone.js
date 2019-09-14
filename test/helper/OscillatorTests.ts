@@ -8,8 +8,8 @@ export function OscillatorTests(Constr, args?): void {
 
 		it("can be created with an options object", () => {
 			const instance = new Constr({
-				detune : -20,
-				frequency : 200,
+				detune: -20,
+				frequency: 200,
 			});
 			expect(instance.frequency.value).to.equal(200);
 			expect(instance.detune.value).to.equal(-20);
@@ -45,7 +45,7 @@ export function OscillatorTests(Constr, args?): void {
 
 		it("can get/set the phase", () => {
 			const osc = new Constr({
-				phase : 180,
+				phase: 180,
 			});
 			expect(osc.phase).to.be.closeTo(180, 0.001);
 			osc.phase = 270;
