@@ -20,7 +20,6 @@ export class Waveform extends MeterBase<WaveformOptions> {
 	 * @param size The size of the Waveform. Value must be a power of two in the range 16 to 16384.
 	 */
 	constructor(size?: PowerOfTwo);
-	// tslint:disable-next-line: unified-signatures
 	constructor(options?: Partial<WaveformOptions>);
 	constructor() {
 		super(optionsFromArguments(Waveform.getDefaults(), arguments, ["size"]));

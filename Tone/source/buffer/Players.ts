@@ -78,7 +78,6 @@ export class Players extends ToneAudioNode<PlayersOptions> {
 	 * @param urls An object mapping a name to a url.
 	 * @param options The remaining options associated with the players
 	 */
-	// tslint:disable-next-line: unified-signatures
 	constructor(urls?: ToneAudioBuffersUrlMap, options?: Partial<Omit<PlayersOptions, "urls">>);
 	constructor(options?: Partial<GainOptions>);
 	constructor() {

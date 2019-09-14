@@ -45,7 +45,6 @@ export class TickSource<Type extends BPM | Hertz> extends ToneWithContext<TickSo
 	 * @param frequency The initial frequency that the signal ticks at
 	 */
 	constructor(frequency?: Frequency);
-	// tslint:disable-next-line: unified-signatures
 	constructor(options?: Partial<TickSourceOptions>);
 	constructor() {
 		super(optionsFromArguments(TickSource.getDefaults(), arguments, ["frequency"]));

@@ -383,7 +383,6 @@ describe("Transport", () => {
 		it("can schedule an event on the timeline", () => {
 			return Offline(context => {
 				const transport = new Transport({context});
-				// tslint:disable-next-line: no-empty
 				const eventID = transport.schedule(() => { }, 0);
 				expect(eventID).to.be.a("number");
 			});
@@ -714,7 +713,6 @@ describe("Transport", () => {
 		it("can schedule a single event on the timeline", () => {
 			return Offline(context => {
 				const transport = new Transport({context});
-				// tslint:disable-next-line: no-empty
 				const eventID = transport.scheduleOnce(() => {}, 0);
 				expect(eventID).to.be.a("number");
 			});

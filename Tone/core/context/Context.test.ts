@@ -160,7 +160,6 @@ describe("Context", () => {
 			});
 
 			it("returns an id", () => {
-				// tslint:disable-next-line
 				expect(ctx.setTimeout(() => { }, 0.1)).to.be.a("number");
 				// try clearing a random ID, shouldn't cause any errors
 				ctx.clearTimeout(-2);
@@ -219,7 +218,6 @@ describe("Context", () => {
 			});
 
 			it("returns an id", () => {
-				// tslint:disable-next-line
 				expect(ctx.setInterval(() => { }, 0.1)).to.be.a("number");
 				// try clearing a random ID, shouldn't cause any errors
 				ctx.clearInterval(-2);

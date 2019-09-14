@@ -9,7 +9,6 @@ import { ConnectTest } from "./Connect";
 export const testAudioContext = new OfflineContext(1, 1, 11025);
 testAudioContext.initialize();
 
-// tslint:disable-next-line
 export function BasicTests(Constr, ...args: any[]): void {
 
 	context("Basic", () => {

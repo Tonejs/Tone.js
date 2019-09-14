@@ -4,7 +4,6 @@ import { Offline } from "test/helper/Offline";
 import { OutputAudio } from "test/helper/OutputAudio";
 import { connectFrom, connectTo } from "./Connect";
 
-// tslint:disable-next-line
 export function SourceTests(Constr, args?): void {
 
 	context("Source Tests", () => {

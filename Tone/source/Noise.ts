@@ -68,7 +68,6 @@ const _noiseBuffers = {
 			for (let channelNum = 0; channelNum < NUM_CHANNELS; channelNum++) {
 				const channel = new Float32Array(BUFFER_LENGTH);
 				buffer[channelNum] = channel;
-				// tslint:disable-next-line: one-variable-per-declaration
 				let b0, b1, b2, b3, b4, b5, b6;
 				b0 = b1 = b2 = b3 = b4 = b5 = b6 = 0.0;
 				for (let i = 0; i < BUFFER_LENGTH; i++) {
@@ -160,7 +159,6 @@ export class Noise extends Source<NoiseOptions> {
 	 * @param type the noise type (white|pink|brown)
 	 */
 	constructor(type?: NoiseType);
-	// tslint:disable-next-line: unified-signatures
 	constructor(options?: Partial<NoiseOptions>);
 	constructor() {
 		super(optionsFromArguments(Noise.getDefaults(), arguments, ["type"]));

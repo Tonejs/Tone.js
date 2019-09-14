@@ -2,7 +2,6 @@ import { expect } from "chai";
 import { connectFrom } from "test/helper/Connect";
 import { Offline } from "test/helper/Offline";
 
-// tslint:disable-next-line
 export function OscillatorTests(Constr, args?): void {
 
 	context("Oscillator Tests", () => {

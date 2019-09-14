@@ -2,12 +2,11 @@ import { expect } from "chai";
 import { Offline } from "test/helper/Offline";
 import { Monophonic } from "Tone/instrument/Monophonic";
 
-// tslint:disable-next-line
 export function MonophonicTest(Constr, note, constrArg?): void {
 
 	context("Monophonic Tests", () => {
 
-		it ("has an onsilence callback which is invoked after the release has finished", () => {
+		it("has an onsilence callback which is invoked after the release has finished", () => {
 			let wasInvoked = false;
 			return Offline(() => {
 				const instance = new Constr(constrArg);
@@ -19,7 +18,7 @@ export function MonophonicTest(Constr, note, constrArg?): void {
 			});
 		});
 
-		it ("invokes onsilence callback when the sustain is set to 0", () => {
+		it("invokes onsilence callback when the sustain is set to 0", () => {
 			let wasInvoked = false;
 			return Offline(() => {
 				const instance = new Constr(constrArg);
@@ -32,7 +31,7 @@ export function MonophonicTest(Constr, note, constrArg?): void {
 			});
 		});
 
-		it ("can pass in the detune into the constructor", () => {
+		it("can pass in the detune into the constructor", () => {
 			const instance = new Constr({
 				detune: -100,
 			});

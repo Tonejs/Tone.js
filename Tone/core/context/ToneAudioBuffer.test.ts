@@ -142,13 +142,11 @@ describe("ToneAudioBuffer", () => {
 
 		it("can load a file with fallback extensions", async () => {
 			const buffer = await ToneAudioBuffer.load("./audio/sine.[nope|nada|wav]");
-			// tslint:disable-next-line: no-unused-expression
 			expect(buffer).to.exist;
 		});
 
 		it("takes the first supported format when multiple extensions are provided", async () => {
 			const buffer = await ToneAudioBuffer.load("./audio/sine.[wav|nope]");
-			// tslint:disable-next-line: no-unused-expression
 			expect(buffer).to.exist;
 		});
 

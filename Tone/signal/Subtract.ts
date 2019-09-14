@@ -49,7 +49,6 @@ export class Subtract extends Signal {
 	 *             is omitted, it will subtract the second signal from the first.
 	 */
 	constructor(value?: number);
-	// tslint:disable-next-line: unified-signatures
 	constructor(options?: Partial<SignalOptions<number>>);
 	constructor() {
 		super(Object.assign(optionsFromArguments(Subtract.getDefaults(), arguments, ["value"])));

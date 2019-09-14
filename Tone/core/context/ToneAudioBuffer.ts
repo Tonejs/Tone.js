@@ -323,9 +323,9 @@ export class ToneAudioBuffer extends Tone {
 		}
 	}
 
-	//-------------------------------------////
+	//-------------------------------------
 	// STATIC METHODS
-	//-------------------------------------////
+	//-------------------------------------
 
 	/**
 	 * A path which is prefixed before every url.

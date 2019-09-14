@@ -4,7 +4,6 @@ import { connectTo } from "./Connect";
 import { Offline } from "./Offline";
 import { OutputAudio } from "./OutputAudio";
 
-// tslint:disable-next-line
 export function InstrumentTest(Constr, note, constrArg?, optionsIndex?): void {
 
 	context("Instrument Tests", () => {

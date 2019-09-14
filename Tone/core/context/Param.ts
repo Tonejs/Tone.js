@@ -196,10 +196,10 @@ implements AbstractParam<Type> {
 		}
 	}
 
-	//-------------------------------------////
+	//-------------------------------------
 	// ABSTRACT PARAM INTERFACE
 	// all docs are generated from ParamInterface.ts
-	//-------------------------------------////
+	//-------------------------------------
 
 	setValueAtTime(value: Type, time: Time): this {
 		const computedTime = this.toSeconds(time);
@@ -467,10 +467,10 @@ implements AbstractParam<Type> {
 		return this._toType(this._param.defaultValue);
 	}
 
-	//-------------------------------------////
+	//-------------------------------------
 	// 	AUTOMATION CURVE CALCULATIONS
 	// 	MIT License, copyright (c) 2014 Jordan Santell
-	//-------------------------------------////
+	//-------------------------------------
 
 	// Calculates the the value along the curve produced by setTargetAtTime
 	protected _exponentialApproach(t0: number, v0: number, v1: number, timeConstant: number, t: number): number {

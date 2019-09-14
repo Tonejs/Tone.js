@@ -37,7 +37,6 @@ export class Meter extends MeterBase<MeterOptions> {
 	 * @param smoothing The amount of smoothing applied between frames.
 	 */
 	constructor(smoothing?: NormalRange);
-	// tslint:disable-next-line: unified-signatures
 	constructor(options?: Partial<MeterOptions>);
 	constructor() {
 		super(optionsFromArguments(Meter.getDefaults(), arguments, ["smoothing"]));

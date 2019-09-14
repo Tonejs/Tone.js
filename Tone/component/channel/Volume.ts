@@ -45,7 +45,6 @@ export class Volume extends ToneAudioNode<VolumeOptions> {
 	 * @param volume the initial volume in decibels
 	 */
 	constructor(volume?: Decibels);
-	// tslint:disable-next-line: unified-signatures
 	constructor(options?: Partial<VolumeOptions>);
 	constructor() {
 

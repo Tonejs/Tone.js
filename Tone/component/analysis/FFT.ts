@@ -28,7 +28,6 @@ export class FFT extends MeterBase<FFTOptions> {
 	 * @param size The size of the FFT. Value must be a power of two in the range 16 to 16384.
 	 */
 	constructor(size?: PowerOfTwo);
-	// tslint:disable-next-line: unified-signatures
 	constructor(options?: Partial<FFTOptions>);
 	constructor() {
 		super(optionsFromArguments(FFT.getDefaults(), arguments, ["size"]));

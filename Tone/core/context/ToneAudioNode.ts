@@ -75,9 +75,9 @@ extends ToneWithContext<Options> {
 	 */
 	protected _internalChannels: OutputNode[] = [];
 
-	//-------------------------------------////
+	//-------------------------------------
 	// AUDIO PROPERTIES
-	//-------------------------------------////
+	//-------------------------------------
 
 	/**
 	 * Used to decide which nodes to get/set properties on
@@ -148,7 +148,6 @@ extends ToneWithContext<Options> {
 		this._setChannelProperties(Object.assign(props, { channelCount }));
 	}
 
-	// tslint:disable: max-line-length
 	/**
 	 * channelCountMode determines how channels will be counted when up-mixing and
 	 * down-mixing connections to any inputs to the node.
@@ -157,7 +156,6 @@ extends ToneWithContext<Options> {
 	 * * "clamped-max" - computedNumberOfChannels is determined as for "max" and then clamped to a maximum value of the given channelCount.
 	 * * "explicit" - computedNumberOfChannels is the exact value as specified by the channelCount.
 	 */
-	// tslint:enable: max-line-length
 	get channelCountMode(): ChannelCountMode {
 		return this._getChannelProperties().channelCountMode;
 	}
@@ -181,9 +179,9 @@ extends ToneWithContext<Options> {
 		this._setChannelProperties(Object.assign(props, { channelInterpretation }));
 	}
 
-	//-------------------------------------////
+	//-------------------------------------
 	// CONNECTIONS
-	//-------------------------------------////
+	//-------------------------------------
 
 	/**
 	 * connect the output of a ToneAudioNode to an AudioParam, AudioNode, or ToneAudioNode

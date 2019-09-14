@@ -44,7 +44,6 @@ export class Timeline<GenericEvent extends TimelineEvent> extends Tone {
 	 * @param memory The number of previous events that are retained.
 	 */
 	constructor(memory?: number);
-	// tslint:disable-next-line: unified-signatures
 	constructor(options?: Partial<TimelineOptions>);
 	constructor() {
 		super();

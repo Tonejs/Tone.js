@@ -150,9 +150,9 @@ export abstract class TimeBaseClass<Type extends number, Unit extends string> ex
 		};
 	}
 
-	//-------------------------------------////
+	//-------------------------------------
 	// 	VALUE OF
-	//-------------------------------------////
+	//-------------------------------------
 
 	/**
 	 * Evaluate the time value. Returns the time in seconds.
@@ -197,9 +197,9 @@ export abstract class TimeBaseClass<Type extends number, Unit extends string> ex
 		}
 	}
 
-	//-------------------------------------////
+	//-------------------------------------
 	// 	UNIT CONVERSIONS
-	//-------------------------------------////
+	//-------------------------------------
 
 	/**
 	 * Returns the value of a frequency in the current units
@@ -236,9 +236,9 @@ export abstract class TimeBaseClass<Type extends number, Unit extends string> ex
 		return this._now();
 	}
 
-	//-------------------------------------////
+	//-------------------------------------
 	// 	TEMPO CONVERSIONS
-	//-------------------------------------////
+	//-------------------------------------
 
 	/**
 	 * Return the bpm
@@ -266,9 +266,9 @@ export abstract class TimeBaseClass<Type extends number, Unit extends string> ex
 	 */
 	protected abstract _now(): Type;
 
-	//-------------------------------------////
+	//-------------------------------------
 	// 	CONVERSION INTERFACE
-	//-------------------------------------////
+	//-------------------------------------
 
 	/**
 	 * Coerce a time type into this units type.

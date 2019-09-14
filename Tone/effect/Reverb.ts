@@ -45,7 +45,6 @@ export class Reverb extends Effect<ReverbOptions> {
 	 * @param decay The amount of time it will reverberate for.
 	 */
 	constructor(decay?: Seconds);
-	// tslint:disable-next-line: unified-signatures
 	constructor(options?: Partial<ReverbOptions>);
 	constructor() {
 

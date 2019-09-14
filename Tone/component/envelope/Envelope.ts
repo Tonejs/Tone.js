@@ -460,7 +460,6 @@ type EnvelopeCurveName =  keyof EnvelopeCurveMap;
 /**
  * Generate some complex envelope curves.
  */
-// tslint:disable-next-line: variable-name
 const EnvelopeCurves: EnvelopeCurveMap = (() => {
 
 	const curveLen = 128;

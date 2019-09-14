@@ -22,7 +22,6 @@ type Tone = {
 /**
  * Bind the TimeBaseClass to the context
  */
-// tslint:disable-next-line: typedef
 function bindTypeClass(context: Context, type) {
 	return (...args: any[]) => new type(context, ...args);
 }

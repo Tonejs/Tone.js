@@ -52,7 +52,6 @@ export class Multiply extends Signal<number> {
 	 * @param value Constant value to multiple
 	 */
 	constructor(value?: number);
-	// tslint:disable-next-line: unified-signatures
 	constructor(options?: Partial<SignalOptions<number>>);
 	constructor() {
 		super(Object.assign(optionsFromArguments(Multiply.getDefaults(), arguments, ["value"])));

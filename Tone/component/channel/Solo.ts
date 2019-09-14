@@ -27,7 +27,6 @@ export class Solo extends ToneAudioNode<SoloOptions> {
 	 * @param solo If the connection should be initially solo'ed.
 	 */
 	constructor(solo?: boolean);
-	// tslint:disable-next-line: unified-signatures
 	constructor(options?: Partial<SoloOptions>);
 	constructor() {
 

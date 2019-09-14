@@ -13,11 +13,9 @@ export function now(): import("./core/type/Units").Seconds {
 /**
  * The Transport object belonging to the global Tone.js Context
  */
-// tslint:disable-next-line: variable-name
 export const Transport = getContext().transport;
 
 /**
  * The Destination (output) belonging to the global Tone.js Context
  */
-// tslint:disable-next-line: variable-name
 export const Destination = getContext().destination;

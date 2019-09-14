@@ -101,7 +101,6 @@ export class CrossFade extends ToneAudioNode<CrossFadeOptions> {
 	 * @param fade The initial fade value [0, 1].
 	 */
 	constructor(fade?: NormalRange);
-	// tslint:disable-next-line: unified-signatures
 	constructor(options?: Partial<CrossFadeOptions>);
 	constructor() {
 		super(Object.assign(optionsFromArguments(CrossFade.getDefaults(), arguments, ["fade"])));

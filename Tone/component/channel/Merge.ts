@@ -42,7 +42,6 @@ export class Merge extends ToneAudioNode<MergeOptions> {
 	 * @param channels The number of channels to merge.
 	 */
 	constructor(channels?: Positive);
-	// tslint:disable-next-line: unified-signatures
 	constructor(options?: Partial<MergeOptions>);
 	constructor() {
 		super(optionsFromArguments(Merge.getDefaults(), arguments, ["channels"]));

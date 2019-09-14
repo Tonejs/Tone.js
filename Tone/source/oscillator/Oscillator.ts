@@ -190,8 +190,8 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 		phase: number;
 		type: string;
 		partialCount: number;
-		real: Float32Array,
-		imag: Float32Array,
+		real: Float32Array;
+		imag: Float32Array;
 	}> = [];
 
 	/**
@@ -202,13 +202,13 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 	private _getCachedPeriodicWave(): [Float32Array, Float32Array] | undefined {
 		if (this._type === "custom") {
 			const oscProps = Oscillator._periodicWaveCache.find(description => {
-				return  description.phase === this._phase &&
+				return description.phase === this._phase &&
 					deepEquals(description.partials, this._partials);
 			});
 			return oscProps && [oscProps.real, oscProps.imag];
 		} else {
 			const oscProps = Oscillator._periodicWaveCache.find(description => {
-				return  description.type === this._type &&
+				return description.type === this._type &&
 					description.phase === this._phase;
 			});
 			this._partialCount = oscProps ? oscProps.partialCount : this._partialCount;
@@ -216,7 +216,6 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 		}
 	}
 
-	/* tslint:disable */
 	/**
 	 * The type of the oscillator: either sine, square, triangle, or sawtooth. Also capable of
 	 * setting the first x number of partials of the oscillator. For example: "sine4" would
@@ -237,7 +236,6 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 	 * //set the first 6 partials of a sawtooth wave
 	 * osc.type = "sawtooth6";
 	 */
-	/* tslint:enable */
 	get type(): ToneOscillatorType {
 		return this._type;
 	}
@@ -379,7 +377,6 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 			this._partials = [];
 		}
 
-		// tslint:disable: no-bitwise
 		for (let n = 1; n < periodicWaveSize; ++n) {
 			const piFactor = 2 / (n * Math.PI);
 			let b;

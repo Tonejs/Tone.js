@@ -67,6 +67,5 @@ if (theWindow && !theWindow.TONE_SILENCE_LOGGING) {
 		prefix = "";
 	}
 	const printString = ` * Tone.js ${prefix}${version} * `;
-	// tslint:disable-next-line: no-console
 	console.log(`%c${printString}`, "background: #000; color: #fff");
 }

@@ -98,7 +98,6 @@ export class Context extends Emitter<"statechange" | "tick"> implements BaseAudi
 	private _initialized: boolean = false;
 
 	constructor(context?: AnyAudioContext);
-	// tslint:disable-next-line: unified-signatures
 	constructor(options?: Partial<ContextOptions>);
 	constructor() {
 		super();

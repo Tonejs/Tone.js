@@ -349,9 +349,9 @@ export class IntervalTimeline extends Tone {
 	}
 }
 
-//-------------------------------------////
+//-------------------------------------
 // 	INTERVAL NODE HELPER
-//-------------------------------------////
+//-------------------------------------
 
 /**
  * Represents a node in the binary search tree, with the addition
@@ -363,7 +363,6 @@ export class IntervalTimeline extends Tone {
  * @param low
  * @param high
  */
-// tslint:disable-next-line: max-classes-per-file
 class IntervalNode {
 
 	// the event container

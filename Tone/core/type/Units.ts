@@ -71,7 +71,6 @@ export type TimeObject = {
 	[sub in Subdivision]?: number;
 };
 
-// tslint:disable: max-line-length
 /**
  * Time can be described in a number of ways. Read more [Time](https://github.com/Tonejs/Tone.js/wiki/Time).
  * * Numbers, which will be taken literally as the time (in seconds).
@@ -83,7 +82,6 @@ export type TimeObject = {
  * * No Argument, for methods which accept time, no argument will be interpreted as "now" (i.e. the currentTime).
  * @category Unit
  */
-// tslint:enable: max-line-length
 export type Time = string | Seconds | TimeObject | Subdivision;
 
 /**

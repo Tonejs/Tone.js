@@ -255,7 +255,6 @@ describe("IntervalTimeline", () => {
 				sched.add(event);
 				events.push(event);
 			}
-			// tslint:disable-next-line: prefer-for-of
 			for (let j = 0; j < events.length; j++) {
 				const event = events[j];
 				const eventVal = sched.get(event.time);

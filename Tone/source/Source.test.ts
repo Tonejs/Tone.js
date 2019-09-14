@@ -315,7 +315,6 @@ describe("Source", () => {
 			});
 		});
 
-		// tslint:disable-next-line: max-line-length
 		it("gives the correct offset on time on start/stop events invoked with an transport offset that's in the middle of the event", () => {
 			return Offline(({transport}) => {
 				const source = new Player(rampBuffer).toDestination();

@@ -74,8 +74,8 @@ describe("Signal", () => {
 
 		it("can be scheduled to set a value in the future", async () => {
 			const buffer = await Offline((context) => {
-					const sig = new Signal<number>(0).toDestination();
-					sig.setValueAtTime(2, 0.2);
+				const sig = new Signal<number>(0).toDestination();
+				sig.setValueAtTime(2, 0.2);
 			}, 0.25);
 			expect(buffer.getValueAtTime(0)).to.be.closeTo(0, 0.001);
 			expect(buffer.getValueAtTime(0.19)).to.be.closeTo(0, 0.001);

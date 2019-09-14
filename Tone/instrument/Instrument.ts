@@ -143,7 +143,6 @@ export abstract class Instrument<Options extends InstrumentOptions> extends Tone
 	 * @param velocity the velocity to trigger the note (betwee 0-1)
 	 */
 	abstract triggerAttack(note: Frequency, time?: Time, velocity?: NormalRange): this;
-	// tslint:disable-next-line: variable-name
 	private _original_triggerAttack = this.triggerAttack;
 
 	/**
@@ -151,7 +150,6 @@ export abstract class Instrument<Options extends InstrumentOptions> extends Tone
 	 * @param time when to trigger the release
 	 */
 	abstract triggerRelease(...args: any[]): this;
-	// tslint:disable-next-line: variable-name
 	private _original_triggerRelease = this.triggerRelease;
 
 	/**

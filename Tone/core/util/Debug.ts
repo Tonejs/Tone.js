@@ -8,6 +8,6 @@ export function assert(statement: boolean, error: string): void {
 }
 
 export function log(...args: any[]): void {
-	// tslint:disable-next-line: no-console
+	// eslint-disable-next-line no-console
 	console.log(...args);
 }

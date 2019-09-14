@@ -47,7 +47,6 @@ type IsFMOscillator<Osc, Ret> = Osc extends FMOscillator ? Ret : undefined;
 
 type AnyOscillatorConstructor = new (...args: any[]) => AnyOscillator;
 
-// tslint:disable-next-line: variable-name
 const OmniOscillatorSourceMap: {
 	[key in OmniOscSourceType] : AnyOscillatorConstructor
 } = {
@@ -276,7 +275,6 @@ implements Omit<ToneOscillatorInterface, "type"> {
 	private _createNewOscillator(oscType: OmniOscSourceType): void {
 		if (oscType !== this._sourceType) {
 			this._sourceType = oscType;
-			// tslint:disable-next-line: variable-name
 			const OscConstructor = OmniOscillatorSourceMap[oscType];
 			// short delay to avoid clicks on the change
 			const now = this.now();

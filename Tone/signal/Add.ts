@@ -44,7 +44,6 @@ export class Add extends Signal {
 	 * @param value If no value is provided, Tone.Add will sum the first  and second inputs.
 	 */
 	constructor(value?: number);
-	// tslint:disable-next-line: unified-signatures
 	constructor(options?: Partial<SignalOptions<number>>);
 	constructor() {
 		super(Object.assign(optionsFromArguments(Add.getDefaults(), arguments, ["value"])));

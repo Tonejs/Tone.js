@@ -38,7 +38,6 @@ export abstract class ToneWithContext<Options extends ToneWithContextOptions> ex
 	 * Pass in a constructor as the first argument
 	 */
 	constructor(context?: Context)
-	// tslint:disable-next-line: unified-signatures
 	constructor(options?: Partial<ToneWithContextOptions>);
 	constructor() {
 		super();
@@ -105,9 +104,9 @@ export abstract class ToneWithContext<Options extends ToneWithContextOptions> ex
 		return new TransportTimeClass(this.context, time).toTicks();
 	}
 
-	//-------------------------------------////
+	//-------------------------------------
 	// 	GET/SET
-	//-------------------------------------////
+	//-------------------------------------
 
 	/**
 	 * Get the object's attributes.

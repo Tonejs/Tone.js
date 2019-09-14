@@ -27,7 +27,6 @@ export class Split extends ToneAudioNode<SplitOptions> {
 	 * @param channels The number of channels to merge.
 	 */
 	constructor(channels?: number);
-	// tslint:disable-next-line: unified-signatures
 	constructor(options?: Partial<SplitOptions>);
 	constructor() {
 		super(optionsFromArguments(Split.getDefaults(), arguments, ["channels"]));

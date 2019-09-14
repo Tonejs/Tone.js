@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/camelcase */
 import { expect } from "chai";
 import { BasicTests } from "test/helper/Basic";
 import { CompareToFile } from "test/helper/CompareToFile";
@@ -8,7 +9,6 @@ import { Sampler } from "Tone/instrument/Sampler";
 
 describe("Sampler", () => {
 
-	// tslint:disable-next-line: variable-name
 	const A4_buffer = new ToneAudioBuffer();
 
 	beforeEach(() => {

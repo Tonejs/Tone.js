@@ -54,9 +54,9 @@ extends TimeBaseClass<Type, Unit> {
 		return value + diff * percent as Type;
 	}
 
-	//-------------------------------------////
+	//-------------------------------------
 	// CONVERSIONS
-	//-------------------------------------////
+	//-------------------------------------
 	/**
 	 * Convert a Time to Notation. The notation values are will be the
 	 * closest representation between 1m to 128th note.

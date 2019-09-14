@@ -85,11 +85,11 @@ implements AbstractParam<Type> {
 		return this;
 	}
 
-	//-------------------------------------////
+	//-------------------------------------
 	// ABSTRACT PARAM INTERFACE
 	// just a proxy for the ConstantSourceNode's offset AudioParam
 	// all docs are generated from AbstractParam.ts
-	//-------------------------------------////
+	//-------------------------------------
 
 	setValueAtTime(value: Type, time: Time): this {
 		this._param.setValueAtTime(value, time);

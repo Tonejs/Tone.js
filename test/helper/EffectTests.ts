@@ -6,7 +6,6 @@ import { Merge } from "Tone/component/channel/Merge";
 import { Effect } from "Tone/effect/Effect";
 import { Signal } from "Tone/signal/Signal";
 
-// tslint:disable-next-line: variable-name
 export function EffectTests(Constr, args?, before?): void {
 
 	context("Effect Tests", () => {

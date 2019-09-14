@@ -35,7 +35,6 @@ export class Distortion extends Effect<DistortionOptions> {
 	 * @param distortion The amount of distortion (nominal range of 0-1)
 	 */
 	constructor(distortion?: number);
-	// tslint:disable-next-line: unified-signatures
 	constructor(options?: Partial<DistortionOptions>);
 	constructor() {
 

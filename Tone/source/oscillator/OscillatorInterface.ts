@@ -1,4 +1,3 @@
-// tslint:disable: max-line-length
 import { AudioRange, Cents, Degrees, Frequency, Positive } from "../../core/type/Units";
 import { Omit } from "../../core/util/Interface";
 import { Signal } from "../../signal/Signal";

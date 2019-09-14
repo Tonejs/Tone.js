@@ -79,7 +79,6 @@ export class FrequencyShifter extends Effect<FrequencyShifterOptions> {
 	 * @param frequency The incoming signal is shifted by this frequency value.
 	 */
 	constructor(frequency?: Frequency);
-	// tslint:disable-next-line: unified-signatures
 	constructor(options?: Partial<FrequencyShifterOptions>);
 	constructor() {
 
