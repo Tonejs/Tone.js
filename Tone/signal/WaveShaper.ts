@@ -31,7 +31,7 @@ export class WaveShaper extends SignalOperator<WaveShaperOptions> {
 	readonly name: string = "WaveShaper";
 
 	/**
-	 *  the waveshaper node
+	 * the waveshaper node
 	 */
 	private _shaper: WaveShaperNode = this.context.createWaveShaper();
 
@@ -47,13 +47,13 @@ export class WaveShaper extends SignalOperator<WaveShaperOptions> {
 
 	/**
 	 * @param mapping The function used to define the values.
-	 *                 The mapping function should take two arguments:
-	 *                 the first is the value at the current position
-	 *                 and the second is the array position.
-	 *                 If the argument is an array, that array will be
-	 *                 set as the wave shaping function. The input
-	 *                 signal is an AudioRange [-1, 1] value and the output
-	 *                 signal can take on any numerical values.
+	 *                The mapping function should take two arguments:
+	 *                the first is the value at the current position
+	 *                and the second is the array position.
+	 *                If the argument is an array, that array will be
+	 *                set as the wave shaping function. The input
+	 *                signal is an AudioRange [-1, 1] value and the output
+	 *                signal can take on any numerical values.
 	 *
 	 * @param bufferLen The length of the WaveShaperNode buffer.
 	 */
@@ -77,12 +77,12 @@ export class WaveShaper extends SignalOperator<WaveShaperOptions> {
 	}
 
 	/**
-	 *  Uses a mapping function to set the value of the curve.
+	 * Uses a mapping function to set the value of the curve.
 	 * @param mapping The function used to define the values.
-	 *                 The mapping function take two arguments:
-	 *                 the first is the value at the current position
-	 *                 which goes from -1 to 1 over the number of elements
-	 *                 in the curve array. The second argument is the array position.
+	 *                The mapping function take two arguments:
+	 *                the first is the value at the current position
+	 *                which goes from -1 to 1 over the number of elements
+	 *                in the curve array. The second argument is the array position.
 	 * @example
 	 * //map the input signal from [-1, 1] to [0, 10]
 	 * shaper.setMap(function(val, index){
@@ -127,7 +127,7 @@ export class WaveShaper extends SignalOperator<WaveShaperOptions> {
 	}
 
 	/**
-	 *  Clean up.
+	 * Clean up.
 	 */
 	dispose(): this {
 		super.dispose();

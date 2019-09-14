@@ -37,7 +37,7 @@ export class Sequence<ValueType = any> extends ToneEvent<ValueType> {
 	readonly name: string = "Sequence";
 
 	/**
-	 *  The subdivison of each note
+	 * The subdivison of each note
 	 */
 	private _subdivision: Ticks;
 
@@ -123,7 +123,7 @@ export class Sequence<ValueType = any> extends ToneEvent<ValueType> {
 	}
 
 	/**
-	 *  Start the part at the given time.
+	 * Start the part at the given time.
 	 * @param  time    When to start the part.
 	 * @param  offset  The offset index to start at
 	 */
@@ -133,7 +133,7 @@ export class Sequence<ValueType = any> extends ToneEvent<ValueType> {
 	}
 
 	/**
-	 *  Stop the part at the given time.
+	 * Stop the part at the given time.
 	 * @param  time  When to stop the part.
 	 */
 	stop(time?: TransportTime): this {
@@ -142,9 +142,9 @@ export class Sequence<ValueType = any> extends ToneEvent<ValueType> {
 	}
 
 	/**
-	 *  The subdivision of the sequence. This can only be
-	 *  set in the constructor. The subdivision is the
-	 *  interval between successive steps.
+	 * The subdivision of the sequence. This can only be
+	 * set in the constructor. The subdivision is the
+	 * interval between successive steps.
 	 */
 	get subdivision(): Seconds {
 		return new TicksClass(this.context, this._subdivision).toSeconds();
@@ -203,7 +203,7 @@ export class Sequence<ValueType = any> extends ToneEvent<ValueType> {
 	}
 
 	/**
-	 *  Get the time of the index given the Sequence's subdivision
+	 * Get the time of the index given the Sequence's subdivision
 	 * @param  index
 	 * @return The time of that index
 	 */

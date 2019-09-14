@@ -27,7 +27,7 @@ export type NormalRange = number;
 export type AudioRange = number;
 
 /**
- *  Half-step note increments, i.e. 12 is an octave above the root. and 1 is a half-step up.
+ * Half-step note increments, i.e. 12 is an octave above the root. and 1 is a half-step up.
  * @category Unit
  */
 export type Interval = number;
@@ -73,27 +73,26 @@ export type TimeObject = {
 
 // tslint:disable: max-line-length
 /**
- *  Time can be described in a number of ways. Read more [Time](https://github.com/Tonejs/Tone.js/wiki/Time).
- *
- *  * Numbers, which will be taken literally as the time (in seconds).
- *  * Notation, ("4n", "8t") describes time in BPM and time signature relative values.
- *  * TransportTime, ("4:3:2") will also provide tempo and time signature relative times in the form BARS:QUARTERS:SIXTEENTHS.
- *  * Frequency, ("8hz") is converted to the length of the cycle in seconds.
- *  * Now-Relative, ("+1") prefix any of the above with "+" and it will be interpreted as "the current time plus whatever expression follows".
- *  * Object, ({"4n" : 3, "8t" : -1}). The resulting time is equal to the sum of all of the keys multiplied by the values in the object.
- *  * No Argument, for methods which accept time, no argument will be interpreted as "now" (i.e. the currentTime).
+ * Time can be described in a number of ways. Read more [Time](https://github.com/Tonejs/Tone.js/wiki/Time).
+ * * Numbers, which will be taken literally as the time (in seconds).
+ * * Notation, ("4n", "8t") describes time in BPM and time signature relative values.
+ * * TransportTime, ("4:3:2") will also provide tempo and time signature relative times in the form BARS:QUARTERS:SIXTEENTHS.
+ * * Frequency, ("8hz") is converted to the length of the cycle in seconds.
+ * * Now-Relative, ("+1") prefix any of the above with "+" and it will be interpreted as "the current time plus whatever expression follows".
+ * * Object, ({"4n" : 3, "8t" : -1}). The resulting time is equal to the sum of all of the keys multiplied by the values in the object.
+ * * No Argument, for methods which accept time, no argument will be interpreted as "now" (i.e. the currentTime).
  * @category Unit
  */
 // tslint:enable: max-line-length
 export type Time = string | Seconds | TimeObject | Subdivision;
 
 /**
- *  Frequency can be described similar to time, except ultimately the
- *  values are converted to frequency instead of seconds. A number
- *  is taken literally as the value in hertz. Additionally any of the
- *  Time encodings can be used. Note names in the form
- *  of NOTE OCTAVE (i.e. C4) are also accepted and converted to their
- *  frequency value.
+ * Frequency can be described similar to time, except ultimately the
+ * values are converted to frequency instead of seconds. A number
+ * is taken literally as the value in hertz. Additionally any of the
+ * Time encodings can be used. Note names in the form
+ * of NOTE OCTAVE (i.e. C4) are also accepted and converted to their
+ * frequency value.
  * @category Unit
  */
 export type Frequency = Subdivision | Note | string | Hertz;
@@ -105,54 +104,54 @@ export type Frequency = Subdivision | Note | string | Hertz;
 export type TimeSignature = number | number[];
 
 /**
- *  TransportTime describes a position along the Transport's timeline. It is
- *  similar to Time in that it uses all the same encodings, but TransportTime specifically
- *  pertains to the Transport's timeline, which is startable, stoppable, loopable, and seekable.
- *  [Read more](https://github.com/Tonejs/Tone.js/wiki/TransportTime)
+ * TransportTime describes a position along the Transport's timeline. It is
+ * similar to Time in that it uses all the same encodings, but TransportTime specifically
+ * pertains to the Transport's timeline, which is startable, stoppable, loopable, and seekable.
+ * [Read more](https://github.com/Tonejs/Tone.js/wiki/TransportTime)
  * @category Unit
  */
 export type TransportTime = Time;
 
 /**
- *  Ticks are the basic subunit of the Transport. They are
- *  the smallest unit of time that the Transport supports.
+ * Ticks are the basic subunit of the Transport. They are
+ * the smallest unit of time that the Transport supports.
  * @category Unit
  */
 export type Ticks = number;
 
 /**
- *  Beats per minute
+ * Beats per minute
  * @category Unit
  */
 export type BPM = number;
 
 /**
- *  Angle between 0 and 360.
+ * Angle between 0 and 360.
  * @category Unit
  */
 export type Degrees = number;
 
 /**
- *  Angle between 0 and 2 * PI.
+ * Angle between 0 and 2 * PI.
  * @category Unit
  */
 export type Radians = number;
 
 /**
- *  A colon-separated representation of time in the form of
- *  Bars:Beats:Sixteenths.
+ * A colon-separated representation of time in the form of
+ * Bars:Beats:Sixteenths.
  * @category Unit
  */
 export type BarsBeatsSixteenths  = string;
 /**
- *  Sampling is the reduction of a continuous signal to a discrete signal.
- *  Audio is typically sampled 44100 times per second.
+ * Sampling is the reduction of a continuous signal to a discrete signal.
+ * Audio is typically sampled 44100 times per second.
  * @category Unit
  */
 export type Samples = number | "samples";
 
 /**
- *  Hertz are a frequency representation defined as one cycle per second.
+ * Hertz are a frequency representation defined as one cycle per second.
  * @category Unit
  */
 export type Hertz = number;
@@ -165,13 +164,13 @@ export type Hertz = number;
 export type Cents = number;
 
 /**
- *  One millisecond is a thousandth of a second.
+ * One millisecond is a thousandth of a second.
  * @category Unit
  */
 export type Milliseconds = number;
 
 /**
- *  A value which is a power of 2
+ * A value which is a power of 2
  * @category Unit
  */
 export type PowerOfTwo = number;

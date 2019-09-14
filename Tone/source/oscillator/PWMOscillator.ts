@@ -16,7 +16,7 @@ export { PWMOscillatorOptions } from "./OscillatorInterface";
  * changing the timbre of the oscillator by altering the harmonics
  * generated.
  * @example
- *  var pwm = new PWMOscillator("Ab3", 0.3).toDestination().start();
+ * var pwm = new PWMOscillator("Ab3", 0.3).toDestination().start();
  */
 export class PWMOscillator extends Source<PWMOscillatorOptions> implements ToneOscillatorInterface {
 
@@ -25,17 +25,17 @@ export class PWMOscillator extends Source<PWMOscillatorOptions> implements ToneO
 	readonly sourceType = "pwm";
 
 	/**
-	 *  the pulse oscillator
+	 * the pulse oscillator
 	 */
 	private _pulse: PulseOscillator;
 	/**
-	 *  the modulator
+	 * the modulator
 	 */
 	private _modulator: Oscillator;
 
 	/**
-	 *  Scale the oscillator so it doesn't go silent
-	 *  at the extreme values.
+	 * Scale the oscillator so it doesn't go silent
+	 * at the extreme values.
 	 */
 	private _scale: Multiply = new Multiply({
 		context: this.context,
@@ -43,17 +43,17 @@ export class PWMOscillator extends Source<PWMOscillatorOptions> implements ToneO
 	});
 
 	/**
-	 *  The frequency control.
+	 * The frequency control.
 	 */
 	readonly frequency: Signal<Frequency>;
 
 	/**
-	 *  The detune of the oscillator.
+	 * The detune of the oscillator.
 	 */
 	readonly detune: Signal<Cents>;
 
 	/**
-	 *  The modulation rate of the oscillator.
+	 * The modulation rate of the oscillator.
 	 */
 	readonly modulationFrequency: Signal<Frequency>;
 
@@ -104,7 +104,7 @@ export class PWMOscillator extends Source<PWMOscillatorOptions> implements ToneO
 		});
 	}
 	/**
-	 *  start the oscillator
+	 * start the oscillator
 	 */
 	protected _start(time: Time): void {
 		time = this.toSeconds(time);
@@ -113,7 +113,7 @@ export class PWMOscillator extends Source<PWMOscillatorOptions> implements ToneO
 	}
 
 	/**
-	 *  stop the oscillator
+	 * stop the oscillator
 	 */
 	protected _stop(time: Time): void {
 		time = this.toSeconds(time);
@@ -122,7 +122,7 @@ export class PWMOscillator extends Source<PWMOscillatorOptions> implements ToneO
 	}
 
 	/**
-	 *  restart the oscillator
+	 * restart the oscillator
 	 */
 	restart(time?: Time): this {
 		this._modulator.restart(time);
@@ -169,7 +169,7 @@ export class PWMOscillator extends Source<PWMOscillatorOptions> implements ToneO
 	}
 
 	/**
-	 *  Clean up.
+	 * Clean up.
 	 */
 	dispose(): this {
 		super.dispose();

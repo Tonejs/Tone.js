@@ -19,35 +19,35 @@ export class MidiClass extends FrequencyClass<MidiNote> {
 	readonly defaultUnits = "midi";
 
 	/**
-	 *  Returns the value of a frequency in the current units
+	 * Returns the value of a frequency in the current units
 	 */
 	protected _frequencyToUnits(freq: Hertz): MidiNote {
 		return ftom(super._frequencyToUnits(freq));
 	}
 
 	/**
-	 *  Returns the value of a tick in the current time units
+	 * Returns the value of a tick in the current time units
 	 */
 	protected _ticksToUnits(ticks: Ticks): MidiNote {
 		return ftom(super._ticksToUnits(ticks));
 	}
 
 	/**
-	 *  Return the value of the beats in the current units
+	 * Return the value of the beats in the current units
 	 */
 	protected _beatsToUnits(beats: number): MidiNote {
 		return ftom(super._beatsToUnits(beats));
 	}
 
 	/**
-	 *  Returns the value of a second in the current units
+	 * Returns the value of a second in the current units
 	 */
 	protected _secondsToUnits(seconds: Seconds): MidiNote {
 		return ftom(super._secondsToUnits(seconds));
 	}
 
 	/**
-	 *  Return the value of the frequency as a MIDI note
+	 * Return the value of the frequency as a MIDI note
 	 * @return  {MIDI}
 	 * @example
 	 * Midi(60).toMidi(); //60
@@ -57,7 +57,7 @@ export class MidiClass extends FrequencyClass<MidiNote> {
 	}
 
 	/**
-	 *  Return the value of the frequency as a MIDI note
+	 * Return the value of the frequency as a MIDI note
 	 * @return  {MIDI}
 	 * @example
 	 * Midi(60).toFrequency(); //261.6255653005986
@@ -67,7 +67,7 @@ export class MidiClass extends FrequencyClass<MidiNote> {
 	}
 
 	/**
-	 *  Transposes the frequency by the given number of semitones.
+	 * Transposes the frequency by the given number of semitones.
 	 * @return A new transposed MidiClass
 	 * @example
 	 * Midi("A4").transpose(3); //"C5"

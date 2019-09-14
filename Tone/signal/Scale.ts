@@ -84,7 +84,7 @@ export class Scale extends SignalOperator<ScaleOptions> {
 	}
 
 	/**
-	 *  set the values
+	 * set the values
 	 */
 	private _setRange(): void {
 		this.output.value = this._outputMin;

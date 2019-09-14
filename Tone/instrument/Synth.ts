@@ -32,7 +32,7 @@ export class Synth<Options extends SynthOptions = SynthOptions> extends Monophon
 	readonly name: string = "Synth";
 
 	/**
-	 *  The oscillator.
+	 * The oscillator.
 	 */
 	readonly oscillator: OmniOscillator<any>;
 
@@ -98,7 +98,7 @@ export class Synth<Options extends SynthOptions = SynthOptions> extends Monophon
 	}
 
 	/**
-	 *  start the attack portion of the envelope
+	 * start the attack portion of the envelope
 	 * @param time the time the attack should start
 	 * @param velocity the velocity of the note (0-1)
 	 */
@@ -115,7 +115,7 @@ export class Synth<Options extends SynthOptions = SynthOptions> extends Monophon
 	}
 
 	/**
-	 *  start the release portion of the envelope
+	 * start the release portion of the envelope
 	 * @param time the time the release should start
 	 */
 	protected _triggerEnvelopeRelease(time: Seconds): void {
@@ -124,7 +124,7 @@ export class Synth<Options extends SynthOptions = SynthOptions> extends Monophon
 	}
 
 	/**
-	 *  clean up
+	 * clean up
 	 */
 	dispose(): this {
 		super.dispose();

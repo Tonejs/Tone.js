@@ -18,8 +18,8 @@ interface FeedbackDelayOptions extends FeedbackEffectOptions {
  * @example
  * var feedbackDelay = new FeedbackDelay("8n", 0.5).toDestination();
  * var tom = new Tone.MembraneSynth({
- * 	"octaves" : 4,
- * 	"pitchDecay" : 0.1
+ * "octaves" : 4,
+ * "pitchDecay" : 0.1
  * }).connect(feedbackDelay);
  * tom.triggerAttackRelease("A2","32n");
  */
@@ -28,12 +28,12 @@ export class FeedbackDelay extends FeedbackEffect<FeedbackDelayOptions> {
 	readonly name: string = "FeedbackDelay";
 
 	/**
-	 *  the delay node
+	 * the delay node
 	 */
 	private _delayNode: Delay;
 
 	/**
-	 *  The delayTime of the FeedbackDelay.
+	 * The delayTime of the FeedbackDelay.
 	 */
 	readonly delayTime: Param<Time>;
 

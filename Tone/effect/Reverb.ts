@@ -12,14 +12,14 @@ interface ReverbOptions extends EffectOptions {
 }
 
 /**
- *  Simple convolution created with decaying noise.
- *  Generates an Impulse Response Buffer
- * 	with Tone.Offline then feeds the IR into ConvolverNode.
- * 	Note: the Reverb will not make any sound until [generate](#generate)
- * 	has been invoked and resolved.
+ * Simple convolution created with decaying noise.
+ * Generates an Impulse Response Buffer
+ * with Tone.Offline then feeds the IR into ConvolverNode.
+ * Note: the Reverb will not make any sound until [generate](#generate)
+ * has been invoked and resolved.
  *
- * 	Inspiration from [ReverbGen](https://github.com/adelespinasse/reverbGen).
- * 	Copyright (c) 2014 Alan deLespinasse Apache 2.0 License.
+ * Inspiration from [ReverbGen](https://github.com/adelespinasse/reverbGen).
+ * Copyright (c) 2014 Alan deLespinasse Apache 2.0 License.
  *
  */
 export class Reverb extends Effect<ReverbOptions> {
@@ -27,7 +27,7 @@ export class Reverb extends Effect<ReverbOptions> {
 	readonly name: string = "Reverb";
 
 	/**
-	 *  Convolver node
+	 * Convolver node
 	 */
 	private _convolver: ConvolverNode = this.context.createConvolver();
 

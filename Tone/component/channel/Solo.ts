@@ -64,9 +64,9 @@ export class Solo extends ToneAudioNode<SoloOptions> {
 	private static _soloed: Map<Context, Set<Solo>> = new Map();
 
 	/**
-	 *  Isolates this instance and mutes all other instances of Solo.
-	 *  Only one instance can be soloed at a time. A soloed
-	 *  instance will report `solo=false` when another instance is soloed.
+	 * Isolates this instance and mutes all other instances of Solo.
+	 * Only one instance can be soloed at a time. A soloed
+	 * instance will report `solo=false` when another instance is soloed.
 	 */
 	get solo(): boolean {
 		return this._isSoloed();
@@ -81,7 +81,7 @@ export class Solo extends ToneAudioNode<SoloOptions> {
 	}
 
 	/**
-	 *  If the current instance is muted, i.e. another instance is soloed
+	 * If the current instance is muted, i.e. another instance is soloed
 	 */
 	get muted(): boolean {
 		return this.input.gain.value === 0;
@@ -124,7 +124,7 @@ export class Solo extends ToneAudioNode<SoloOptions> {
 	}
 
 	/**
-	 *  Solo the current instance and unsolo all other instances.
+	 * Solo the current instance and unsolo all other instances.
 	 */
 	private _updateSolo(): void {
 		if (this._isSoloed()) {

@@ -26,19 +26,19 @@ export class Compressor extends ToneAudioNode<CompressorOptions> {
 	readonly name: string = "Compressor";
 
 	/**
-	 *  the compressor node
+	 * the compressor node
 	 */
 	private _compressor: DynamicsCompressorNode = this.context.createDynamicsCompressor();
 	readonly input = this._compressor;
 	readonly output = this._compressor;
 
 	/**
-	 *  The decibel value above which the compression will start taking effect.
+	 * The decibel value above which the compression will start taking effect.
 	 */
 	readonly threshold: Param<Decibels>;
 
 	/**
-	 *  The amount of time (in seconds) to reduce the gain by 10dB.
+	 * The amount of time (in seconds) to reduce the gain by 10dB.
 	 */
 	readonly attack: Param<Time>;
 

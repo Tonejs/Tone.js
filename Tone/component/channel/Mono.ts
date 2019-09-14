@@ -15,7 +15,7 @@ export class Mono extends ToneAudioNode<MonoOptions> {
 	readonly name: string = "Mono";
 
 	/**
-	 *  merge the signal
+	 * merge the signal
 	 */
 	private _merge: Merge;
 

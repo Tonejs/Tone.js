@@ -24,7 +24,7 @@ export class Merge extends ToneAudioNode<MergeOptions> {
 	readonly name: string = "Merge";
 
 	/**
-	 *  The merger node for the two channels.
+	 * The merger node for the two channels.
 	 */
 	private _merger: ChannelMergerNode;
 

@@ -48,17 +48,17 @@ export class FFT extends MeterBase<FFTOptions> {
 	}
 
 	/**
-	 *  Gets the current frequency data from the connected audio source.
-	 *  Returns the frequency data of length [[size]] as a Float32Array of decibel values.
+	 * Gets the current frequency data from the connected audio source.
+	 * Returns the frequency data of length [[size]] as a Float32Array of decibel values.
 	 */
 	getValue(): Float32Array {
 		return this._analyser.getValue().map(v => this.normalRange ? dbToGain(v) : v);
 	}
 
 	/**
-	 *  The size of analysis. This must be a power of two in the range 16 to 16384.
-	 *  Determines the size of the array returned by [[getValue]] (i.e. the number of
-	 *  frequency bins). Large FFT sizes may be costly to compute.
+	 * The size of analysis. This must be a power of two in the range 16 to 16384.
+	 * Determines the size of the array returned by [[getValue]] (i.e. the number of
+	 * frequency bins). Large FFT sizes may be costly to compute.
 	 */
 	get size(): PowerOfTwo {
 		return this._analyser.size;
@@ -68,7 +68,7 @@ export class FFT extends MeterBase<FFTOptions> {
 	}
 
 	/**
-	 *  0 represents no time averaging with the last analysis frame.
+	 * 0 represents no time averaging with the last analysis frame.
 	 */
 	get smoothing(): NormalRange {
 		return this._analyser.smoothing;

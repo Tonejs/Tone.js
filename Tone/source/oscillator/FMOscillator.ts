@@ -33,29 +33,29 @@ export class FMOscillator extends Source<FMOscillatorOptions> implements ToneOsc
 	readonly name: string = "FMOscillator";
 
 	/**
-	 *  The carrier oscillator
+	 * The carrier oscillator
 	 */
 	private _carrier: Oscillator;
 
 	/**
-	 *  The oscillator's frequency
+	 * The oscillator's frequency
 	 */
 	readonly frequency: Signal<Frequency>;
 
 	/**
-	 *  The detune control signal.
+	 * The detune control signal.
 	 */
 	readonly detune: Signal<Cents>;
 
 	/**
-	 *  The modulating oscillator
+	 * The modulating oscillator
 	 */
 	private _modulator: Oscillator;
 
 	/**
-	 *  Harmonicity is the frequency ratio between the carrier and the modulator oscillators.
-	 *  A harmonicity of 1 gives both oscillators the same frequency.
-	 *  Harmonicity = 2 means a change of an octave.
+	 * Harmonicity is the frequency ratio between the carrier and the modulator oscillators.
+	 * A harmonicity of 1 gives both oscillators the same frequency.
+	 * Harmonicity = 2 means a change of an octave.
 	 * @example
 	 * //pitch the modulator an octave below carrier
 	 * synth.harmonicity.value = 0.5;
@@ -63,14 +63,14 @@ export class FMOscillator extends Source<FMOscillatorOptions> implements ToneOsc
 	readonly harmonicity: Signal<Positive>;
 
 	/**
-	 *  The modulation index which is in essence the depth or amount of the modulation. In other terms it is the
-	 *  ratio of the frequency of the modulating signal (mf) to the amplitude of the
-	 *  modulating signal (ma) -- as in ma/mf.
+	 * The modulation index which is in essence the depth or amount of the modulation. In other terms it is the
+	 * ratio of the frequency of the modulating signal (mf) to the amplitude of the
+	 * modulating signal (ma) -- as in ma/mf.
 	 */
 	readonly modulationIndex: Signal<Positive>;
 
 	/**
-	 *  the node where the modulation happens
+	 * the node where the modulation happens
 	 */
 	private _modulationNode: Gain = new Gain({
 		context: this.context,
@@ -145,7 +145,7 @@ export class FMOscillator extends Source<FMOscillatorOptions> implements ToneOsc
 	}
 
 	/**
-	 *  start the oscillator
+	 * start the oscillator
 	 */
 	protected _start(time: Time): void {
 		this._modulator.start(time);
@@ -153,7 +153,7 @@ export class FMOscillator extends Source<FMOscillatorOptions> implements ToneOsc
 	}
 
 	/**
-	 *  stop the oscillator
+	 * stop the oscillator
 	 */
 	protected _stop(time: Time): void {
 		this._modulator.stop(time);
@@ -161,7 +161,7 @@ export class FMOscillator extends Source<FMOscillatorOptions> implements ToneOsc
 	}
 
 	/**
-	 *  stop and restart the oscillator
+	 * stop and restart the oscillator
 	 */
 	restart(time?: Time): this {
 		this._modulator.restart(time);
@@ -245,7 +245,7 @@ export class FMOscillator extends Source<FMOscillatorOptions> implements ToneOsc
 	}
 
 	/**
-	 *  Clean up.
+	 * Clean up.
 	 */
 	dispose(): this {
 		super.dispose();

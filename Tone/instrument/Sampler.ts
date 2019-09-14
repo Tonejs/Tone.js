@@ -68,21 +68,21 @@ export class Sampler extends Instrument<SamplerOptions> {
 	release: Time;
 
 	/**
-	 *  The shape of the attack/release curve.
-	 *  Either "linear" or "exponential"
+	 * The shape of the attack/release curve.
+	 * Either "linear" or "exponential"
 	 */
 	curve: ToneBufferSourceCurve;
 
 	/**
 	 * @param samples An object of samples mapping either Midi Note Numbers or
-	 * 				Scientific Pitch Notation to the url of that sample.
+	 * 			Scientific Pitch Notation to the url of that sample.
 	 * @param onload The callback to invoke when all of the samples are loaded.
 	 * @param baseUrl The root URL of all of the samples, which is prepended to all the URLs.
 	 */
 	constructor(samples?: SamplesMap, onload?: () => void, baseUrl?: string);
 	/**
 	 * @param samples An object of samples mapping either Midi Note Numbers or
-	 * 				Scientific Pitch Notation to the url of that sample.
+	 * 			Scientific Pitch Notation to the url of that sample.
 	 * @param options The remaining options associated with the sampler
 	 */
 	constructor(samples?: SamplesMap, options?: Partial<Omit<SamplerOptions, "urls">>);

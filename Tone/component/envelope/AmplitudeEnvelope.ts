@@ -36,11 +36,11 @@ export class AmplitudeEnvelope extends Envelope {
 	/**
 	 * @param attack The amount of time it takes for the envelope to go from 0 to it's maximum value.
 	 * @param decay	The period of time after the attack that it takes for the envelope
-	 *                       	to fall to the sustain value. Value must be greater than 0.
+	 *                      	to fall to the sustain value. Value must be greater than 0.
 	 * @param sustain	The percent of the maximum value that the envelope rests at until
-	 *                                	the release is triggered.
+	 *                               	the release is triggered.
 	 * @param release	The amount of time after the release is triggered it takes to reach 0.
-	 *                         	Value must be greater than 0.
+	 *                        	Value must be greater than 0.
 	 */
 	constructor(attack?: Time, decay?: Time, sustain?: NormalRange, release?: Time);
 	constructor(options?: Partial<EnvelopeOptions>)

@@ -148,8 +148,8 @@ export abstract class ToneWithContext<Options extends ToneWithContextOptions> ex
 	 * @example
 	 * //set values using an object
 	 * filter.set({
-	 * 	"frequency" : 300,
-	 * 	"type" : "highpass"
+	 * "frequency" : 300,
+	 * "type" : "highpass"
 	 * });
 	 */
 	set(props: RecursivePartial<Options>): this {

@@ -4,7 +4,7 @@ import { isArray } from "./TypeCheck";
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
 /**
- *  Make the property not writable using `defineProperty`. Internal use only.
+ * Make the property not writable using `defineProperty`. Internal use only.
  */
 export function readOnly(target: object, property: string | string[]): void {
 	if (isArray(property)) {
@@ -18,7 +18,7 @@ export function readOnly(target: object, property: string | string[]): void {
 }
 
 /**
- *  Make an attribute writeable. Internal use only.
+ * Make an attribute writeable. Internal use only.
  */
 export function writable(target: object, property: string | string[]): void {
 	if (isArray(property)) {

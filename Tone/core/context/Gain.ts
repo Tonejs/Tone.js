@@ -21,7 +21,7 @@ export class Gain<Type extends Unit = GainFactor> extends ToneAudioNode<GainOpti
 	readonly name: string = "Gain";
 
 	/**
-	 *  The gain parameter of the gain node.
+	 * The gain parameter of the gain node.
 	 */
 	readonly gain: Param<Type>;
 
@@ -63,7 +63,7 @@ export class Gain<Type extends Unit = GainFactor> extends ToneAudioNode<GainOpti
 	}
 
 	/**
-	 *  Clean up.
+	 * Clean up.
 	 */
 	dispose(): this {
 		super.dispose();

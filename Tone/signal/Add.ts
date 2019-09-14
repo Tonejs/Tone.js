@@ -29,7 +29,7 @@ export class Add extends Signal {
 	readonly name: string = "Add";
 
 	/**
-	 *  the summing node
+	 * the summing node
 	 */
 	private _sum: Gain = new Gain({ context: this.context });
 	readonly input = this._sum;

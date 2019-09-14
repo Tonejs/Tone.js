@@ -42,61 +42,61 @@ export class ToneEvent<ValueType = any> extends ToneWithContext<ToneEventOptions
 	readonly name: string = "ToneEvent";
 
 	/**
-	 *  Loop value
+	 * Loop value
 	 */
 	protected _loop: boolean | number;
 
 	/**
-	 *  The callback to invoke.
+	 * The callback to invoke.
 	 */
 	callback: ToneEventCallback<ValueType>;
 
 	/**
-	 *  The value which is passed to the
-	 *  callback function.
+	 * The value which is passed to the
+	 * callback function.
 	 */
 	value: ValueType;
 
 	/**
-	 *  When the note is scheduled to start.
+	 * When the note is scheduled to start.
 	 */
 	protected _loopStart: Ticks;
 
 	/**
-	 *  When the note is scheduled to start.
+	 * When the note is scheduled to start.
 	 */
 	protected _loopEnd: Ticks;
 
 	/**
-	 *  Tracks the scheduled events
+	 * Tracks the scheduled events
 	 */
 	protected _state: StateTimeline<{
 		id: number,
 	}> = new StateTimeline("stopped");
 
 	/**
-	 *  The playback speed of the note. A speed of 1
-	 *  is no change.
+	 * The playback speed of the note. A speed of 1
+	 * is no change.
 	 */
 	protected _playbackRate: Positive;
 
 	/**
-	 *  A delay time from when the event is scheduled to start
+	 * A delay time from when the event is scheduled to start
 	 */
 	protected _startOffset: Ticks = 0;
 
 	/**
-	 *  private holder of probability value
+	 * private holder of probability value
 	 */
 	protected _probability: NormalRange;
 
 	/**
-	 *  the amount of variation from the given time.
+	 * the amount of variation from the given time.
 	 */
 	protected _humanize: boolean | Time;
 
 	/**
-	 *  If mute is true, the callback won't be invoked.
+	 * If mute is true, the callback won't be invoked.
 	 */
 	mute: boolean;
 
@@ -138,8 +138,8 @@ export class ToneEvent<ValueType = any> extends ToneWithContext<ToneEventOptions
 	}
 
 	/**
-	 *  Reschedule all of the events along the timeline
-	 *  with the updated values.
+	 * Reschedule all of the events along the timeline
+	 * with the updated values.
 	 * @param after Only reschedules events after the given time.
 	 */
 	private _rescheduleEvents(after: Ticks = -1): void {
@@ -176,7 +176,7 @@ export class ToneEvent<ValueType = any> extends ToneWithContext<ToneEventOptions
 	}
 
 	/**
-	 *  Returns the playback state of the note, either "started" or "stopped".
+	 * Returns the playback state of the note, either "started" or "stopped".
 	 */
 	get state(): BasicPlaybackState {
 		return this._state.getValueAtTime(this.context.transport.ticks) as BasicPlaybackState;
@@ -193,7 +193,7 @@ export class ToneEvent<ValueType = any> extends ToneWithContext<ToneEventOptions
 	}
 
 	/**
-	 *  The probability of the notes being triggered.
+	 * The probability of the notes being triggered.
 	 */
 	get probability(): NormalRange {
 		return this._probability;
@@ -203,9 +203,9 @@ export class ToneEvent<ValueType = any> extends ToneWithContext<ToneEventOptions
 	}
 
 	/**
-	 *  If set to true, will apply small random variation
-	 *  to the callback time. If the value is given as a time, it will randomize
-	 *  by that amount.
+	 * If set to true, will apply small random variation
+	 * to the callback time. If the value is given as a time, it will randomize
+	 * by that amount.
 	 * @example
 	 * event.humanize = true;
 	 */
@@ -218,7 +218,7 @@ export class ToneEvent<ValueType = any> extends ToneWithContext<ToneEventOptions
 	}
 
 	/**
-	 *  Start the note at the given time.
+	 * Start the note at the given time.
 	 * @param  time  When the event should start.
 	 */
 	start(time?: TransportTime | TransportTimeClass): this {
@@ -235,7 +235,7 @@ export class ToneEvent<ValueType = any> extends ToneWithContext<ToneEventOptions
 	}
 
 	/**
-	 *  Stop the Event at the given time.
+	 * Stop the Event at the given time.
 	 * @param  time  When the event should stop.
 	 */
 	stop(time?: TransportTime | TransportTimeClass): this {
@@ -254,7 +254,7 @@ export class ToneEvent<ValueType = any> extends ToneWithContext<ToneEventOptions
 	}
 
 	/**
-	 *  Cancel all scheduled events greater than or equal to the given time
+	 * Cancel all scheduled events greater than or equal to the given time
 	 * @param  time  The time after which events will be cancel.
 	 */
 	cancel(time?: TransportTime | TransportTimeClass): this {
@@ -268,8 +268,8 @@ export class ToneEvent<ValueType = any> extends ToneWithContext<ToneEventOptions
 	}
 
 	/**
-	 *  The callback function invoker. Also
-	 *  checks if the Event is done playing
+	 * The callback function invoker. Also
+	 * checks if the Event is done playing
 	 * @param  time  The time of the event in seconds
 	 */
 	protected _tick(time: Seconds): void {
@@ -290,21 +290,21 @@ export class ToneEvent<ValueType = any> extends ToneWithContext<ToneEventOptions
 	}
 
 	/**
-	 *  Get the duration of the loop.
+	 * Get the duration of the loop.
 	 */
 	protected _getLoopDuration(): Ticks {
 		return Math.round((this._loopEnd - this._loopStart) / this._playbackRate);
 	}
 
 	/**
-	 *  If the note should loop or not
-	 *  between ToneEvent.loopStart and
-	 *  ToneEvent.loopEnd. If set to true,
-	 *  the event will loop indefinitely,
-	 *  if set to a number greater than 1
-	 *  it will play a specific number of
-	 *  times, if set to false, 0 or 1, the
-	 *  part will only play once.
+	 * If the note should loop or not
+	 * between ToneEvent.loopStart and
+	 * ToneEvent.loopEnd. If set to true,
+	 * the event will loop indefinitely,
+	 * if set to a number greater than 1
+	 * it will play a specific number of
+	 * times, if set to false, 0 or 1, the
+	 * part will only play once.
 	 */
 	get loop(): boolean | number {
 		return this._loop;
@@ -315,7 +315,7 @@ export class ToneEvent<ValueType = any> extends ToneWithContext<ToneEventOptions
 	}
 
 	/**
-	 * 	The playback rate of the note. Defaults to 1.
+	 * The playback rate of the note. Defaults to 1.
 	 * @example
 	 * note.loop = true;
 	 * //repeat the note twice as fast
@@ -330,8 +330,8 @@ export class ToneEvent<ValueType = any> extends ToneWithContext<ToneEventOptions
 	}
 
 	/**
-	 *  The loopEnd point is the time the event will loop
-	 *  if ToneEvent.loop is true.
+	 * The loopEnd point is the time the event will loop
+	 * if ToneEvent.loop is true.
 	 */
 	get loopEnd(): Time {
 		return new TicksClass(this.context, this._loopEnd).toSeconds();
@@ -344,7 +344,7 @@ export class ToneEvent<ValueType = any> extends ToneWithContext<ToneEventOptions
 	}
 
 	/**
-	 *  The time when the loop should start.
+	 * The time when the loop should start.
 	 */
 	get loopStart(): Time {
 		return new TicksClass(this.context, this._loopStart).toSeconds();
@@ -357,9 +357,9 @@ export class ToneEvent<ValueType = any> extends ToneWithContext<ToneEventOptions
 	}
 
 	/**
-	 *  The current progress of the loop interval.
-	 *  Returns 0 if the event is not started yet or
-	 *  it is not set to loop.
+	 * The current progress of the loop interval.
+	 * Returns 0 if the event is not started yet or
+	 * it is not set to loop.
 	 */
 	get progress(): NormalRange {
 		if (this._loop) {

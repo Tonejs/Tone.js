@@ -18,8 +18,8 @@ export abstract class AbstractParam<Type extends Unit> {
 	abstract setValueAtTime(value: Type, time: Time): this;
 
 	/**
-	 *  Get the signals value at the given time. Subsequent scheduling
-	 *  may invalidate the returned value.
+	 * Get the signals value at the given time. Subsequent scheduling
+	 * may invalidate the returned value.
 	 * @param time When to get the value
 	 */
 	abstract getValueAtTime(time: Time): Type;
@@ -41,8 +41,8 @@ export abstract class AbstractParam<Type extends Unit> {
 	abstract linearRampToValueAtTime(value: Type, time: Time): this;
 
 	/**
-	 *  Schedules an exponential continuous change in parameter value from
-	 *  the previous scheduled parameter value to the given value.
+	 * Schedules an exponential continuous change in parameter value from
+	 * the previous scheduled parameter value to the given value.
 	 */
 	abstract exponentialRampToValueAtTime(value: Type, time: Time): this;
 
@@ -52,7 +52,7 @@ export abstract class AbstractParam<Type extends Unit> {
 	 * duration of the rampTime.
 	 * @param value   The value to ramp to.
 	 * @param rampTime the time that it takes the
-	 *                              value to ramp from it's current value
+	 *                             value to ramp from it's current value
 	 * @param startTime When the ramp should start.
 	 * @example
 	 * //exponentially ramp to the value 2 over 4 seconds.
@@ -61,13 +61,13 @@ export abstract class AbstractParam<Type extends Unit> {
 	abstract exponentialRampTo(value: Type, rampTime: Time, startTime?: Time): this;
 
 	/**
-	 *  Schedules an linear continuous change in parameter value from
-	 *  the current time and current value to the given value over the
-	 *  duration of the rampTime.
+	 * Schedules an linear continuous change in parameter value from
+	 * the current time and current value to the given value over the
+	 * duration of the rampTime.
 	 *
 	 * @param  value   The value to ramp to.
 	 * @param  rampTime the time that it takes the
-	 *                               value to ramp from it's current value
+	 *                              value to ramp from it's current value
 	 * @param startTime 	When the ramp should start.
 	 * @returns {Param} this
 	 * @example
@@ -77,12 +77,12 @@ export abstract class AbstractParam<Type extends Unit> {
 	abstract linearRampTo(value: Type, rampTime: Time, startTime?: Time): this;
 
 	/**
-	 *  Start exponentially approaching the target value at the given time. Since it
-	 *  is an exponential approach it will continue approaching after the ramp duration. The
-	 *  rampTime is the time that it takes to reach over 99% of the way towards the value.
+	 * Start exponentially approaching the target value at the given time. Since it
+	 * is an exponential approach it will continue approaching after the ramp duration. The
+	 * rampTime is the time that it takes to reach over 99% of the way towards the value.
 	 * @param  value   The value to ramp to.
 	 * @param  rampTime the time that it takes the
-	 *                               value to ramp from it's current value
+	 *                              value to ramp from it's current value
 	 * @param startTime 	When the ramp should start.
 	 * @example
 	 * //exponentially ramp to the value 2 over 4 seconds.

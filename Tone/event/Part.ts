@@ -33,7 +33,7 @@ interface PartOptions<T> extends Omit<ToneEventOptions<CallbackType<T>>, "value"
  * 	//the value is an object which contains both the note and the velocity
  * 	synth.triggerAttackRelease(value.note, "8n", time, value.velocity);
  * }, [{"time" : 0, "note" : "C3", "velocity": 0.9},
- * 	   {"time" : "0:2", "note" : "C4", "velocity": 0.5}
+ * {"time" : "0:2", "note" : "C4", "velocity": 0.5}
  * ]).start(0);
  */
 export class Part<ValueType = any> extends ToneEvent<ValueType> {
@@ -41,7 +41,7 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 	readonly name: string = "Part";
 
 	/**
-	 *  Tracks the scheduled events
+	 * Tracks the scheduled events
 	 */
 	protected _state: StateTimeline<{
 		id: number,
@@ -81,7 +81,7 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 	}
 
 	/**
-	 *  Start the part at the given time.
+	 * Start the part at the given time.
 	 * @param  time    When to start the part.
 	 * @param  offset  The offset from the start of the part to begin playing at.
 	 */
@@ -109,8 +109,8 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 	}
 
 	/**
-	 *  Start the event in the given event at the correct time given
-	 *  the ticks and offset and looping.
+	 * Start the event in the given event at the correct time given
+	 * the ticks and offset and looping.
 	 * @param  event
 	 * @param  ticks
 	 * @param  offset
@@ -144,7 +144,7 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 	}
 
 	/**
-	 *  Stop the part at the given time.
+	 * Stop the part at the given time.
 	 * @param  time  When to stop the part.
 	 */
 	stop(time?: TransportTime): this {
@@ -197,9 +197,9 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 	}
 
 	/**
-	 *  Add a an event to the part.
+	 * Add a an event to the part.
 	 * @param time The time the note should start. If an object is passed in, it should
-	 *  			have a 'time' attribute and the rest of the object will be used as the 'value'.
+	 * 		have a 'time' attribute and the rest of the object will be used as the 'value'.
 	 * @param  value
 	 * @example
 	 * part.add("1m", "C#+11");
@@ -253,7 +253,7 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 	}
 
 	/**
-	 *  Restart the given event
+	 * Restart the given event
 	 */
 	private _restartEvent(event: ToneEvent): void {
 		this._state.forEach((stateEvent) => {
@@ -267,8 +267,8 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 	}
 
 	/**
-	 *  Remove an event from the part. If the event at that time is a Part,
-	 *  it will remove the entire part.
+	 * Remove an event from the part. If the event at that time is a Part,
+	 * it will remove the entire part.
 	 * @param time The time of the event
 	 * @param value Optionally select only a specific event value
 	 */
@@ -296,7 +296,7 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 	}
 
 	/**
-	 *  Remove all of the notes from the group.
+	 * Remove all of the notes from the group.
 	 */
 	clear(): this {
 		this._forEach(event => event.dispose());
@@ -305,7 +305,7 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 	}
 
 	/**
-	 *  Cancel scheduled state change events: i.e. "start" and "stop".
+	 * Cancel scheduled state change events: i.e. "start" and "stop".
 	 * @param after The time after which to cancel the scheduled events.
 	 */
 	cancel(after?: TransportTime | TransportTimeClass): this {
@@ -315,7 +315,7 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 	}
 
 	/**
-	 *  Iterate over all of the events
+	 * Iterate over all of the events
 	 */
 	private _forEach(callback: (event: ToneEvent) => void): this {
 		if (this._events) {
@@ -331,7 +331,7 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 	}
 
 	/**
-	 *  Set the attribute of all of the events
+	 * Set the attribute of all of the events
 	 * @param  attr  the attribute to set
 	 * @param  value      The value to set it to
 	 */
@@ -342,7 +342,7 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 	}
 
 	/**
-	 *  Internal tick method
+	 * Internal tick method
 	 * @param  time  The time of the event in seconds
 	 */
 	protected _tick(time: Seconds, value?: any): void {
@@ -352,8 +352,8 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 	}
 
 	/**
-	 *  Determine if the event should be currently looping
-	 *  given the loop boundries of this Part.
+	 * Determine if the event should be currently looping
+	 * given the loop boundries of this Part.
 	 * @param  event  The event to test
 	 */
 	private _testLoopBoundries(event: ToneEvent): void {
@@ -366,7 +366,7 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 	}
 
 	/**
-	 *  The probability of the notes being triggered.
+	 * The probability of the notes being triggered.
 	 */
 	get probability(): NormalRange {
 		return this._probability;
@@ -418,8 +418,8 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 	}
 
 	/**
-	 *  The loopEnd point determines when it will
-	 *  loop if Part.loop is true.
+	 * The loopEnd point determines when it will
+	 * loop if Part.loop is true.
 	 * @memberOf Part#
 	 * @type {Time}
 	 * @name loopEnd
@@ -438,8 +438,8 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 	}
 
 	/**
-	 *  The loopStart point determines when it will
-	 *  loop if Part.loop is true.
+	 * The loopStart point determines when it will
+	 * loop if Part.loop is true.
 	 */
 	get loopStart(): Time {
 		return new TicksClass(this.context, this._loopStart).toSeconds();
@@ -455,7 +455,7 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 	}
 
 	/**
-	 * 	The playback rate of the part
+	 * The playback rate of the part
 	 */
 	get playbackRate(): Positive {
 		return this._playbackRate;
@@ -466,7 +466,7 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 	}
 
 	/**
-	 * 	The number of scheduled notes in the part.
+	 * The number of scheduled notes in the part.
 	 */
 	get length(): number {
 		return this._events.size;

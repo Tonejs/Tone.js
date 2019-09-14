@@ -27,12 +27,12 @@ export abstract class FeedbackEffect<Options extends FeedbackEffectOptions> exte
 	readonly name: string = "FeedbackEffect";
 
 	/**
-	 *  the gain which controls the feedback
+	 * the gain which controls the feedback
 	 */
 	private _feedbackGain: Gain<NormalRange>;
 
 	/**
-	 *  The amount of signal which is fed back into the effect input.
+	 * The amount of signal which is fed back into the effect input.
 	 */
 	feedback: Param<NormalRange>;
 

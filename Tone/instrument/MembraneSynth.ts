@@ -27,12 +27,12 @@ export class MembraneSynth extends Synth<MembraneSynthOptions> {
 	readonly name: string = "MembraneSynth";
 
 	/**
-	 *  The number of octaves the pitch envelope ramps.
+	 * The number of octaves the pitch envelope ramps.
 	 */
 	octaves: Positive;
 
 	/**
-	 *  The amount of time the frequency envelope takes.
+	 * The amount of time the frequency envelope takes.
 	 */
 	pitchDecay: Time;
 

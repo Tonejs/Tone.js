@@ -1,5 +1,5 @@
 /**
- *  Assert that the statement is true, otherwise invoke an error with the given message.
+ * Assert that the statement is true, otherwise invoke an error with the given message.
  */
 export function assert(statement: boolean, error: string): void {
 	if (!statement) {

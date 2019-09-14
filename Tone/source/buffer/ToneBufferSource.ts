@@ -22,20 +22,20 @@ export interface ToneBufferSourceOptions extends OneShotSourceOptions {
 }
 
 /**
- *  Wrapper around the native BufferSourceNode.
+ * Wrapper around the native BufferSourceNode.
  */
 export class ToneBufferSource extends OneShotSource<ToneBufferSourceOptions> {
 
 	readonly name: string = "ToneBufferSource";
 
 	/**
-	 *  The oscillator
+	 * The oscillator
 	 */
 	private _source = this.context.createBufferSource();
 	protected _internalChannels = [this._source];
 
 	/**
-	 *  The frequency of the oscillator
+	 * The frequency of the oscillator
 	 */
 	readonly playbackRate: Param<Positive>;
 
@@ -65,7 +65,7 @@ export class ToneBufferSource extends OneShotSource<ToneBufferSourceOptions> {
 		this._source.onended = () => this._stopSource();
 
 		/**
-		 *  The playbackRate of the buffer
+		 * The playbackRate of the buffer
 		 */
 		this.playbackRate = new Param({
 			context: this.context,
@@ -95,7 +95,7 @@ export class ToneBufferSource extends OneShotSource<ToneBufferSourceOptions> {
 	}
 
 	/**
-	 *  The fadeIn time of the amplitude envelope.
+	 * The fadeIn time of the amplitude envelope.
 	 */
 	get fadeIn(): Time {
 		return this._fadeIn;
@@ -105,7 +105,7 @@ export class ToneBufferSource extends OneShotSource<ToneBufferSourceOptions> {
 	}
 
 	/**
-	 *  The fadeOut time of the amplitude envelope.
+	 * The fadeOut time of the amplitude envelope.
 	 */
 	get fadeOut(): Time {
 		return this._fadeOut;
@@ -125,12 +125,12 @@ export class ToneBufferSource extends OneShotSource<ToneBufferSourceOptions> {
 	}
 
 	/**
-	 *  Start the buffer
+	 * Start the buffer
 	 * @param  time When the player should start.
 	 * @param  offset The offset from the beginning of the sample to start at.
 	 * @param  duration How long the sample should play. If no duration
-	 *                   is given, it will default to the full length
-	 *                   of the sample (minus any offset)
+	 *                  is given, it will default to the full length
+	 *                  of the sample (minus any offset)
 	 * @param  gain  The gain to play the buffer back at.
 	 */
 	start(time?: Time, offset?: Time, duration?: Time, gain: GainFactor = 1): this {
@@ -233,7 +233,7 @@ export class ToneBufferSource extends OneShotSource<ToneBufferSourceOptions> {
 	}
 
 	/**
-	 *  Clean up.
+	 * Clean up.
 	 */
 	dispose(): this {
 		super.dispose();

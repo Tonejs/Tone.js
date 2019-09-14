@@ -20,18 +20,18 @@ export class ToneOscillatorNode extends OneShotSource<ToneOscillatorNodeOptions>
 	readonly name: string = "ToneOscillatorNode";
 
 	/**
-	 *  The oscillator
+	 * The oscillator
 	 */
 	private _oscillator = this.context.createOscillator();
 	protected _internalChannels = [this._oscillator];
 
 	/**
-	 *  The frequency of the oscillator
+	 * The frequency of the oscillator
 	 */
 	readonly frequency: Param<Frequency>;
 
 	/**
-	 *  The detune of the oscillator
+	 * The detune of the oscillator
 	 */
 	readonly detune: Param<Cents>;
 
@@ -112,7 +112,7 @@ export class ToneOscillatorNode extends OneShotSource<ToneOscillatorNodeOptions>
 	}
 
 	/**
-	 *  Clean up.
+	 * Clean up.
 	 */
 	dispose(): this {
 		super.dispose();

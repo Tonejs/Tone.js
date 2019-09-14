@@ -1,7 +1,7 @@
 import { Decibels, GainFactor, Hertz, Interval, MidiNote, NormalRange } from "./Units";
 
 /**
- *  Equal power gain scale. Good for cross-fading.
+ * Equal power gain scale. Good for cross-fading.
  * @param  percent (0-1)
  */
 export function equalPowerScale(percent: NormalRange): number {
@@ -10,14 +10,14 @@ export function equalPowerScale(percent: NormalRange): number {
 }
 
 /**
- *  Convert decibels into gain.
+ * Convert decibels into gain.
  */
 export function dbToGain(db: Decibels): GainFactor {
 	return Math.pow(10, db / 20);
 }
 
 /**
- *  Convert gain to decibels.
+ * Convert gain to decibels.
  */
 export function gainToDb(gain: GainFactor): Decibels {
 	return 20 * (Math.log(gain) / Math.LN10);

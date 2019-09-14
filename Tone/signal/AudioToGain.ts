@@ -32,7 +32,7 @@ export class AudioToGain extends SignalOperator<ToneAudioNodeOptions> {
 	output = this._norm;
 
 	/**
-	 *  clean up
+	 * clean up
 	 */
 	dispose(): this {
 		super.dispose();

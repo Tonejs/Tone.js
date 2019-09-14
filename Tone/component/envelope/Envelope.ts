@@ -20,9 +20,9 @@ export interface EnvelopeOptions extends ToneAudioNodeOptions {
 }
 
 /**
- *  Envelope is an [ADSR](https://en.wikipedia.org/wiki/Synthesizer#ADSR_envelope)
- *  envelope generator. Envelope outputs a signal which
- *  can be connected to an AudioParam or Tone.Signal.
+ * Envelope is an [ADSR](https://en.wikipedia.org/wiki/Synthesizer#ADSR_envelope)
+ * envelope generator. Envelope outputs a signal which
+ * can be connected to an AudioParam or Tone.Signal.
  * ```
  *           /\
  *          /  \
@@ -85,9 +85,9 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	decay: Time;
 
 	/**
-	 * 	The sustain value is the value
-	 * 	which the envelope rests at after triggerAttack is
-	 * 	called, but before triggerRelease is invoked.
+	 * The sustain value is the value
+	 * which the envelope rests at after triggerAttack is
+	 * called, but before triggerRelease is invoked.
 	 * ```
 	 *           /\
 	 *          /  \
@@ -103,9 +103,9 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	sustain: NormalRange;
 
 	/**
-	 *  After triggerRelease is called, the envelope's
-	 *  value will fall to it's miminum value over the
-	 *  duration of the release time.
+	 * After triggerRelease is called, the envelope's
+	 * value will fall to it's miminum value over the
+	 * duration of the release time.
 	 * ```
 	 *           /\
 	 *          /  \
@@ -121,22 +121,22 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	release: Time;
 
 	/**
-	 *  The automation curve type for the attack
+	 * The automation curve type for the attack
 	 */
 	private _attackCurve!: InternalEnvelopeCurve;
 
 	/**
-	 *  The automation curve type for the decay
+	 * The automation curve type for the decay
 	 */
 	private _decayCurve!: BasicEnvelopeCurve;
 
 	/**
-	 *  The automation curve type for the release
+	 * The automation curve type for the release
 	 */
 	private _releaseCurve!: InternalEnvelopeCurve;
 
 	/**
-	 *  the signal which is output.
+	 * the signal which is output.
 	 */
 	protected _sig: Signal<NormalRange> = new Signal({
 		context: this.context,
@@ -155,13 +155,13 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 
 	/**
 	 * @param attack The amount of time it takes for the envelope to go from
-	 *                         0 to it's maximum value.
+	 *                        0 to it's maximum value.
 	 * @param decay	The period of time after the attack that it takes for the envelope
-	 *                       	to fall to the sustain value. Value must be greater than 0.
+	 *                      	to fall to the sustain value. Value must be greater than 0.
 	 * @param sustain	The percent of the maximum value that the envelope rests at until
-	 *                                	the release is triggered.
+	 *                               	the release is triggered.
 	 * @param release	The amount of time after the release is triggered it takes to reach 0.
-	 *                         	Value must be greater than 0.
+	 *                        	Value must be greater than 0.
 	 */
 	constructor(attack?: Time, decay?: Time, sustain?: NormalRange, release?: Time);
 	constructor(options?: Partial<EnvelopeOptions>)
@@ -200,7 +200,7 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	}
 
 	/**
-	 *  Get the curve
+	 * Get the curve
 	 * @param  curve
 	 * @param  direction  In/Out
 	 * @return The curve name
@@ -222,7 +222,7 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	}
 
 	/**
-	 *  Assign a the curve to the given name using the direction
+	 * Assign a the curve to the given name using the direction
 	 * @param  name
 	 * @param  direction In/Out
 	 * @param  curve
@@ -305,7 +305,7 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	 * Trigger the attack/decay portion of the ADSR envelope.
 	 * @param  time When the attack should start.
 	 * @param velocity The velocity of the envelope scales the vales.
-	 *                              number between 0-1
+	 *                             number between 0-1
 	 * @example
 	 * //trigger the attack 0.5 seconds from now with a velocity of 0.2
 	 * env.triggerAttack("+0.5", 0.2);
@@ -365,11 +365,11 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	}
 
 	/**
-	 *  Triggers the release of the envelope.
+	 * Triggers the release of the envelope.
 	 * @param  time When the release portion of the envelope should start.
 	 * @example
-	 *  //trigger release immediately
-	 *  env.triggerRelease();
+	 * //trigger release immediately
+	 * env.triggerRelease();
 	 */
 	triggerRelease(time?: Time): this {
 		this.log("triggerRelease", time);
@@ -391,16 +391,16 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	}
 
 	/**
-	 *  Get the scheduled value at the given time. This will
-	 *  return the unconverted (raw) value.
+	 * Get the scheduled value at the given time. This will
+	 * return the unconverted (raw) value.
 	 */
 	getValueAtTime(time: Time): NormalRange {
 		return this._sig.getValueAtTime(time);
 	}
 
 	/**
-	 *  triggerAttackRelease is shorthand for triggerAttack, then waiting
-	 *  some duration, then triggerRelease.
+	 * triggerAttackRelease is shorthand for triggerAttack, then waiting
+	 * some duration, then triggerRelease.
 	 * @param duration The duration of the sustain.
 	 * @param time When the attack should be triggered.
 	 * @param velocity The velocity of the envelope.
@@ -416,7 +416,7 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	}
 
 	/**
-	 *  Cancels all scheduled envelope changes after the given time.
+	 * Cancels all scheduled envelope changes after the given time.
 	 */
 	cancel(after?: Time): this {
 		this._sig.cancelScheduledValues(this.toSeconds(after));
@@ -458,7 +458,7 @@ interface EnvelopeCurveMap {
 type EnvelopeCurveName =  keyof EnvelopeCurveMap;
 
 /**
- *  Generate some complex envelope curves.
+ * Generate some complex envelope curves.
  */
 // tslint:disable-next-line: variable-name
 const EnvelopeCurves: EnvelopeCurveMap = (() => {
@@ -508,7 +508,7 @@ const EnvelopeCurves: EnvelopeCurveMap = (() => {
 	}
 
 	/**
-	 *  Invert a value curve to make it work for the release
+	 * Invert a value curve to make it work for the release
 	 */
 	function invertCurve(curve: number[]): number[] {
 		const out = new Array(curve.length);
@@ -519,14 +519,14 @@ const EnvelopeCurves: EnvelopeCurveMap = (() => {
 	}
 
 	/**
-	 *  reverse the curve
+	 * reverse the curve
 	 */
 	function reverseCurve(curve: number[]): number[] {
 		return curve.slice(0).reverse();
 	}
 
 	/**
-	 *  attack and release curve arrays
+	 * attack and release curve arrays
 	 */
 	return {
 		bounce : {

@@ -27,7 +27,7 @@ type ClockEvent = "start" | "stop" | "pause";
  * //the callback will be invoked approximately once a second
  * //and will print the time exactly once a second apart.
  * const clock = new Clock(time => {
- * 	console.log(time);
+ * console.log(time);
  * }, 1);
  * @category Core
  */
@@ -37,22 +37,22 @@ extends ToneWithContext<ClockOptions> implements Emitter<ClockEvent> {
 	readonly name: string = "Clock";
 
 	/**
-	 *  The callback function to invoke at the scheduled tick.
+	 * The callback function to invoke at the scheduled tick.
 	 */
 	callback: ClockCallback = noOp;
 
 	/**
-	 *  The tick counter
+	 * The tick counter
 	 */
 	private _tickSource: TickSource<Type>;
 
 	/**
-	 *  The last time the loop callback was invoked
+	 * The last time the loop callback was invoked
 	 */
 	private _lastUpdate: number = 0;
 
 	/**
-	 *  Keep track of the playback state
+	 * Keep track of the playback state
 	 */
 	private _state: StateTimeline = new StateTimeline("stopped");
 
@@ -63,7 +63,7 @@ extends ToneWithContext<ClockOptions> implements Emitter<ClockEvent> {
 	private _boundLoop: () => void = this._loop.bind(this);
 
 	/**
-	 *  The rate the callback function should be invoked.
+	 * The rate the callback function should be invoked.
 	 */
 	frequency: TickSignal<Type>;
 
@@ -104,15 +104,15 @@ extends ToneWithContext<ClockOptions> implements Emitter<ClockEvent> {
 	}
 
 	/**
-	 *  Returns the playback state of the source, either "started", "stopped" or "paused".
+	 * Returns the playback state of the source, either "started", "stopped" or "paused".
 	 */
 	get state(): PlaybackState {
 		return this._state.getValueAtTime(this.now());
 	}
 
 	/**
-	 *  Start the clock at the given time. Optionally pass in an offset
-	 *  of where to start the tick counter from.
+	 * Start the clock at the given time. Optionally pass in an offset
+	 * of where to start the tick counter from.
 	 * @param  time    The time the clock should start
 	 * @param offset  Where the tick counter starts counting from.
 	 */
@@ -132,7 +132,7 @@ extends ToneWithContext<ClockOptions> implements Emitter<ClockEvent> {
 	}
 
 	/**
-	 *  Stop the clock. Stopping the clock resets the tick counter to 0.
+	 * Stop the clock. Stopping the clock resets the tick counter to 0.
 	 * @param time The time when the clock should stop.
 	 * @example
 	 * clock.stop();
@@ -149,7 +149,7 @@ extends ToneWithContext<ClockOptions> implements Emitter<ClockEvent> {
 	}
 
 	/**
-	 *  Pause the clock. Pausing does not reset the tick counter.
+	 * Pause the clock. Pausing does not reset the tick counter.
 	 * @param time The time when the clock should stop.
 	 */
 	pause(time?: Time): this {
@@ -165,8 +165,8 @@ extends ToneWithContext<ClockOptions> implements Emitter<ClockEvent> {
 	}
 
 	/**
-	 *  The number of times the callback was invoked. Starts counting at 0
-	 *  and increments after the callback was invoked.
+	 * The number of times the callback was invoked. Starts counting at 0
+	 * and increments after the callback was invoked.
 	 */
 	get ticks(): Ticks {
 		return Math.ceil(this.getTicksAtTime(this.now()));
@@ -176,7 +176,7 @@ extends ToneWithContext<ClockOptions> implements Emitter<ClockEvent> {
 	}
 
 	/**
-	 *  The time since ticks=0 that the Clock has been running. Accounts for tempo curves
+	 * The time since ticks=0 that the Clock has been running. Accounts for tempo curves
 	 */
 	get seconds(): Seconds {
 		return this._tickSource.seconds;
@@ -186,7 +186,7 @@ extends ToneWithContext<ClockOptions> implements Emitter<ClockEvent> {
 	}
 
 	/**
-	 *  Return the elapsed seconds at the given time.
+	 * Return the elapsed seconds at the given time.
 	 * @param  time  When to get the elapsed seconds
 	 * @return  The number of elapsed seconds
 	 */
@@ -224,7 +224,7 @@ extends ToneWithContext<ClockOptions> implements Emitter<ClockEvent> {
 	}
 
 	/**
-	 *  The scheduling loop.
+	 * The scheduling loop.
 	 */
 	private _loop(): void {
 
@@ -271,7 +271,7 @@ extends ToneWithContext<ClockOptions> implements Emitter<ClockEvent> {
 	}
 
 	/**
-	 *  Clean up
+	 * Clean up
 	 */
 	dispose(): this {
 		super.dispose();

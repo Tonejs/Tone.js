@@ -16,17 +16,17 @@ export class PhaseShiftAllpass extends ToneAudioNode<ToneAudioNodeOptions> {
 	readonly input = new Gain({ context : this.context });
 
 	/**
-	 *  The Allpass filter in the first bank
+	 * The Allpass filter in the first bank
 	 */
 	private _bank0: IIRFilterNode[];
 
 	/**
-	 *  The Allpass filter in the seconds bank
+	 * The Allpass filter in the seconds bank
 	 */
 	private _bank1: IIRFilterNode[];
 
 	/**
-	 *  A IIR filter implementing a delay by one sample used by the first bank
+	 * A IIR filter implementing a delay by one sample used by the first bank
 	 */
 	private _oneSampleDelay: IIRFilterNode;
 

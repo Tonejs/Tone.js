@@ -36,34 +36,34 @@ export class AMOscillator extends Source<AMOscillatorOptions> implements ToneOsc
 	readonly name: string = "AMOscillator";
 
 	/**
-	 *  The carrier oscillator
+	 * The carrier oscillator
 	 */
 	private _carrier: Oscillator;
 
 	/**
-	 *  The oscillator's frequency
+	 * The oscillator's frequency
 	 */
 	readonly frequency: Signal<Frequency>;
 
 	/**
-	 *  The detune control signal.
+	 * The detune control signal.
 	 */
 	readonly detune: Signal<Cents>;
 
 	/**
-	 *  The modulating oscillator
+	 * The modulating oscillator
 	 */
 	private _modulator: Oscillator;
 
 	/**
-	 *  convert the -1,1 output to 0,1
+	 * convert the -1,1 output to 0,1
 	 */
 	private _modulationScale = new AudioToGain({ context: this.context });
 
 	/**
-	 *  Harmonicity is the frequency ratio between the carrier and the modulator oscillators.
-	 *  A harmonicity of 1 gives both oscillators the same frequency.
-	 *  Harmonicity = 2 means a change of an octave.
+	 * Harmonicity is the frequency ratio between the carrier and the modulator oscillators.
+	 * A harmonicity of 1 gives both oscillators the same frequency.
+	 * Harmonicity = 2 means a change of an octave.
 	 * @example
 	 * //pitch the modulator an octave below carrier
 	 * synth.harmonicity.value = 0.5;
@@ -71,7 +71,7 @@ export class AMOscillator extends Source<AMOscillatorOptions> implements ToneOsc
 	readonly harmonicity: Signal<Positive>;
 
 	/**
-	 *  the node where the modulation happens
+	 * the node where the modulation happens
 	 */
 	private _modulationNode = new Gain({
 		context: this.context,
@@ -128,7 +128,7 @@ export class AMOscillator extends Source<AMOscillatorOptions> implements ToneOsc
 	}
 
 	/**
-	 *  start the oscillator
+	 * start the oscillator
 	 */
 	protected _start(time: Seconds): void {
 		this._modulator.start(time);
@@ -136,7 +136,7 @@ export class AMOscillator extends Source<AMOscillatorOptions> implements ToneOsc
 	}
 
 	/**
-	 *  stop the oscillator
+	 * stop the oscillator
 	 */
 	protected _stop(time: Seconds): void {
 		this._modulator.stop(time);
@@ -144,7 +144,7 @@ export class AMOscillator extends Source<AMOscillatorOptions> implements ToneOsc
 	}
 
 	/**
-	 *  restart the oscillator
+	 * restart the oscillator
 	 */
 	restart(time?: Time): this {
 		this._modulator.restart(time);
@@ -230,7 +230,7 @@ export class AMOscillator extends Source<AMOscillatorOptions> implements ToneOsc
 	}
 
 	/**
-	 *  Clean up.
+	 * Clean up.
 	 */
 	dispose(): this {
 		super.dispose();

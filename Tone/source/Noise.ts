@@ -49,18 +49,18 @@ export class Noise extends Source<NoiseOptions> {
 	private _type!: NoiseType;
 
 	/**
-	 *  The playback rate of the noise. Affects
-	 *  the "frequency" of the noise.
+	 * The playback rate of the noise. Affects
+	 * the "frequency" of the noise.
 	 */
 	private _playbackRate: Positive;
 
 	/**
-	 *  The fadeIn time of the amplitude envelope.
+	 * The fadeIn time of the amplitude envelope.
 	 */
 	protected _fadeIn: Time;
 
 	/**
-	 *  The fadeOut time of the amplitude envelope.
+	 * The fadeOut time of the amplitude envelope.
 	 */
 	protected _fadeOut: Time;
 
@@ -111,8 +111,8 @@ export class Noise extends Source<NoiseOptions> {
 	}
 
 	/**
-	 *  The playback rate of the noise. Affects
-	 *  the "frequency" of the noise.
+	 * The playback rate of the noise. Affects
+	 * the "frequency" of the noise.
 	 */
 	get playbackRate(): Positive {
 		return this._playbackRate;
@@ -125,7 +125,7 @@ export class Noise extends Source<NoiseOptions> {
 	}
 
 	/**
-	 *  internal start method
+	 * internal start method
 	 */
 	protected _start(time?: Time): void {
 		const buffer = _noiseBuffers[this._type];
@@ -152,7 +152,7 @@ export class Noise extends Source<NoiseOptions> {
 	}
 
 	/**
-	 *  The fadeIn time of the amplitude envelope.
+	 * The fadeIn time of the amplitude envelope.
 	 */
 	get fadeIn(): Time {
 		return this._fadeIn;
@@ -165,7 +165,7 @@ export class Noise extends Source<NoiseOptions> {
 	}
 
 	/**
-	 *  The fadeOut time of the amplitude envelope.
+	 * The fadeOut time of the amplitude envelope.
 	 */
 	get fadeOut(): Time {
 		return this._fadeOut;
@@ -190,7 +190,7 @@ export class Noise extends Source<NoiseOptions> {
 	}
 
 	/**
-	 *  Clean up.
+	 * Clean up.
 	 */
 	dispose(): this {
 		super.dispose();

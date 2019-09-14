@@ -1,5 +1,5 @@
 /**
- *  Tone.js
+ * Tone.js
  * @author Yotam Mann
  * @license http://opensource.org/licenses/MIT MIT License
  * @copyright 2014-2019 Yotam Mann
@@ -66,7 +66,7 @@ export abstract class Tone {
 	}
 
 	/**
-	 *  Assert that the statement is true, otherwise invoke the error.
+	 * Assert that the statement is true, otherwise invoke the error.
 	 * @param statement
 	 * @param error The message which is passed into an Error
 	 */
@@ -84,7 +84,7 @@ export abstract class Tone {
 	private _wasDisposed: boolean = false;
 
 	/**
-	 *  disconnect and dispose.
+	 * disconnect and dispose.
 	 */
 	dispose(): this {
 		this._wasDisposed = true;
@@ -105,14 +105,14 @@ export abstract class Tone {
 	///////////////////////////////////////////////////////////////////////////
 
 	/**
-	 *  If the `given` parameter is undefined, use the `fallback`.
-	 *  If both `given` and `fallback` are object literals, it will
-	 *  return a deep copy which includes all of the parameters from both
-	 *  objects. If a parameter is undefined in given, it will return
-	 *  the fallback property.
-	 *  <br><br>
-	 *  WARNING: if object is self referential, it will go into an an
-	 *  infinite recursive loop.
+	 * If the `given` parameter is undefined, use the `fallback`.
+	 * If both `given` and `fallback` are object literals, it will
+	 * return a deep copy which includes all of the parameters from both
+	 * objects. If a parameter is undefined in given, it will return
+	 * the fallback property.
+	 * <br><br>
+	 * WARNING: if object is self referential, it will go into an an
+	 * infinite recursive loop.
 	 * @memberOf Tone
 	 * @param  {*} given
 	 * @param  {*} fallback

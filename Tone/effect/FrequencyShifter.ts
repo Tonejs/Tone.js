@@ -35,13 +35,13 @@ export class FrequencyShifter extends Effect<FrequencyShifterOptions> {
 	readonly name: string = "FrequencyShifter";
 
 	/**
-	 *  The ring modulators carrier frequency. This frequency determines
-	 *  by how many Hertz the input signal will be shifted up or down. Default is 0.
+	 * The ring modulators carrier frequency. This frequency determines
+	 * by how many Hertz the input signal will be shifted up or down. Default is 0.
 	 */
 	readonly frequency: Signal<Frequency>;
 
 	/**
-	 *  The ring modulators sine carrier
+	 * The ring modulators sine carrier
 	 */
 	private _sine: ToneOscillatorNode;
 
@@ -51,27 +51,27 @@ export class FrequencyShifter extends Effect<FrequencyShifterOptions> {
 	private _cosine: Oscillator;
 
 	/**
-	 *  The sine multiply operator
+	 * The sine multiply operator
 	 */
 	private _sineMultiply: Multiply;
 
 	/**
-	 *  The cosine multiply operator
+	 * The cosine multiply operator
 	 */
 	private _cosineMultiply: Multiply;
 
 	/**
-	 *  The negate operator
+	 * The negate operator
 	 */
 	private _negate: Negate;
 
 	/**
-	 *  The final add operator
+	 * The final add operator
 	 */
 	private _add: Add;
 
 	/**
-	 *  The phase shifter to create the initial 90° phase offset
+	 * The phase shifter to create the initial 90° phase offset
 	 */
 	private _phaseShifter: PhaseShiftAllpass;
 

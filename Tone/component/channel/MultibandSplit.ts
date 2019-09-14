@@ -13,8 +13,8 @@ interface MultibandSplitOptions extends ToneAudioNodeOptions {
 }
 
 /**
- *  Split the incoming signal into three bands (low, mid, high)
- *  with two crossover frequency controls.
+ * Split the incoming signal into three bands (low, mid, high)
+ * with two crossover frequency controls.
  * ```
  *            +----------------------+
  *          +-> input < lowFrequency +------------------> low
@@ -34,7 +34,7 @@ export class MultibandSplit extends ToneAudioNode<MultibandSplitOptions> {
 	readonly name: string = "MultibandSplit";
 
 	/**
-	 *  the input
+	 * the input
 	 */
 	readonly input = new Gain({ context: this.context });
 
@@ -44,7 +44,7 @@ export class MultibandSplit extends ToneAudioNode<MultibandSplitOptions> {
 	readonly output = undefined;
 
 	/**
-	 *  The low band.
+	 * The low band.
 	 */
 	readonly low = new Filter({
 		context: this.context,
@@ -53,7 +53,7 @@ export class MultibandSplit extends ToneAudioNode<MultibandSplitOptions> {
 	});
 
 	/**
-	 *  the lower filter of the mid band
+	 * the lower filter of the mid band
 	 */
 	private _lowMidFilter = new Filter({
 		context: this.context,
@@ -62,7 +62,7 @@ export class MultibandSplit extends ToneAudioNode<MultibandSplitOptions> {
 	});
 
 	/**
-	 *  The mid band output.
+	 * The mid band output.
 	 */
 	readonly mid = new Filter({
 		context: this.context,
@@ -71,7 +71,7 @@ export class MultibandSplit extends ToneAudioNode<MultibandSplitOptions> {
 	});
 
 	/**
-	 *  The high band output.
+	 * The high band output.
 	 */
 	readonly high = new Filter({
 		context: this.context,
@@ -80,19 +80,19 @@ export class MultibandSplit extends ToneAudioNode<MultibandSplitOptions> {
 	});
 
 	/**
-	 *  The low/mid crossover frequency.
+	 * The low/mid crossover frequency.
 	 */
 	readonly lowFrequency: Signal<Frequency>;
 
 	/**
-	 *  The mid/high crossover frequency.
+	 * The mid/high crossover frequency.
 	 */
 	readonly highFrequency: Signal<Frequency>;
 
 	protected _internalChannels = [this.low, this.mid, this.high];
 
 	/**
-	 *  The Q or Quality of the filter
+	 * The Q or Quality of the filter
 	 */
 	readonly Q: Signal<Positive>;
 
@@ -147,7 +147,7 @@ export class MultibandSplit extends ToneAudioNode<MultibandSplitOptions> {
 	}
 
 	/**
-	 *  Clean up.
+	 * Clean up.
 	 */
 	dispose(): this {
 		super.dispose();

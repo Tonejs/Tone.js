@@ -45,7 +45,7 @@ export class Ticker {
 	}
 
 	/**
-	 *  Generate a web worker
+	 * Generate a web worker
 	 */
 	private _createWorker(): void {
 

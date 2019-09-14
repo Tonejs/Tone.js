@@ -28,7 +28,7 @@ export class Players extends ToneAudioNode<PlayersOptions> {
 	readonly name: string = "Players";
 
 	/**
-	 *  The output volume node
+	 * The output volume node
 	 */
 	private _volume: Volume;
 
@@ -86,7 +86,7 @@ export class Players extends ToneAudioNode<PlayersOptions> {
 		const options = optionsFromArguments(Players.getDefaults(), arguments, ["urls", "onload"], "urls");
 
 		/**
-		 *  The output volume node
+		 * The output volume node
 		 */
 		this._volume = this.output = new Volume({
 			context: this.context,
@@ -162,16 +162,16 @@ export class Players extends ToneAudioNode<PlayersOptions> {
 	}
 
 	/**
-	 *  True if the buffers object has a buffer by that name.
-	 *  @param name  The key or index of the buffer.
+	 * True if the buffers object has a buffer by that name.
+	 * @param name  The key or index of the buffer.
 	 */
 	has(name: string): boolean {
 		return this._buffers.has(name);
 	}
 
 	/**
-	 *  Get a player by name.
-	 *  @param  name  The players name as defined in the constructor object or `add` method.
+	 * Get a player by name.
+	 * @param  name  The players name as defined in the constructor object or `add` method.
 	 */
 	player(name: string): Player {
 		this.assert(this.has(name), `No Player with the name ${name} exists on this object`);
@@ -195,10 +195,10 @@ export class Players extends ToneAudioNode<PlayersOptions> {
 	}
 
 	/**
-	 *  Add a player by name and url to the Players
-	 *  @param  name A unique name to give the player
-	 *  @param  url  Either the url of the bufer or a buffer which will be added with the given name.
-	 *  @param callback  The callback to invoke when the url is loaded.
+	 * Add a player by name and url to the Players
+	 * @param  name A unique name to give the player
+	 * @param  url  Either the url of the bufer or a buffer which will be added with the given name.
+	 * @param callback  The callback to invoke when the url is loaded.
 	 */
 	add(name: string, url: string | ToneAudioBuffer | AudioBuffer, callback?: () => void): this {
 		this.assert(!this._buffers.has(name), "A buffer with that name already exists on this object");

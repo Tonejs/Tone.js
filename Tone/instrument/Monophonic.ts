@@ -20,7 +20,7 @@ export interface MonophonicOptions extends InstrumentOptions {
 export abstract class Monophonic<Options extends MonophonicOptions> extends Instrument<Options> {
 
 	/**
-	 *  The glide time between notes.
+	 * The glide time between notes.
 	 */
 	portamento: Seconds;
 

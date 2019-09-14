@@ -21,8 +21,8 @@ export interface OneShotSourceOptions extends ToneAudioNodeOptions {
 export abstract class OneShotSource<Options extends ToneAudioNodeOptions> extends ToneAudioNode<Options> {
 
 	/**
-	 *  The callback to invoke after the
-	 *  source is done playing.
+	 * The callback to invoke after the
+	 * source is done playing.
 	 */
 	onended: onEndedCallback = noOp;
 
@@ -32,12 +32,12 @@ export abstract class OneShotSource<Options extends ToneAudioNodeOptions> extend
 	input: undefined;
 
 	/**
-	 *  The start time
+	 * The start time
 	 */
 	protected _startTime: number = -1;
 
 	/**
-	 *  The stop time
+	 * The stop time
 	 */
 	protected _stopTime: number = -1;
 
@@ -55,17 +55,17 @@ export abstract class OneShotSource<Options extends ToneAudioNodeOptions> extend
 	});
 
 	/**
-	 *  The output gain node.
+	 * The output gain node.
 	 */
 	protected _gainNode = this.output;
 
 	/**
-	 *  The fadeIn time of the amplitude envelope.
+	 * The fadeIn time of the amplitude envelope.
 	 */
 	protected _fadeIn: Time;
 
 	/**
-	 *  The fadeOut time of the amplitude envelope.
+	 * The fadeOut time of the amplitude envelope.
 	 */
 	protected _fadeOut: Time;
 
@@ -190,7 +190,7 @@ export abstract class OneShotSource<Options extends ToneAudioNodeOptions> extend
 	}
 
 	/**
-	 *  Get the playback state at the given time
+	 * Get the playback state at the given time
 	 */
 	getStateAtTime = function(time: Time): BasicPlaybackState {
 		const computedTime = this.toSeconds(time);
@@ -210,7 +210,7 @@ export abstract class OneShotSource<Options extends ToneAudioNodeOptions> extend
 	}
 
 	/**
-	 *  Cancel a scheduled stop event
+	 * Cancel a scheduled stop event
 	 */
 	cancelStop(): this {
 		this.log("cancelStop");

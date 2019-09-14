@@ -10,9 +10,9 @@ import { ToneOscillatorNode } from "./ToneOscillatorNode";
 
 export { ToneOscillatorOptions, ToneOscillatorType } from "./OscillatorInterface";
 /**
- *  Oscillator supports a number of features including
- *  phase rotation, multiple oscillator types (see Oscillator.type),
- *  and Transport syncing (see Oscillator.syncFrequency).
+ * Oscillator supports a number of features including
+ * phase rotation, multiple oscillator types (see Oscillator.type),
+ * and Transport syncing (see Oscillator.syncFrequency).
  *
  * @example
  * //make and start a 440hz sine tone
@@ -23,42 +23,42 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 	readonly name: string = "Oscillator";
 
 	/**
-	 *  the main oscillator
+	 * the main oscillator
 	 */
 	private _oscillator: ToneOscillatorNode | null = null;
 
 	/**
-	 *  The frequency control.
+	 * The frequency control.
 	 */
 	frequency: Signal<Frequency>;
 
 	/**
-	 *  The detune control signal.
+	 * The detune control signal.
 	 */
 	detune: Signal<Cents>;
 
 	/**
-	 *  the periodic wave
+	 * the periodic wave
 	 */
 	private _wave?: PeriodicWave;
 
 	/**
-	 *  The partials of the oscillator
+	 * The partials of the oscillator
 	 */
 	private _partials: number[];
 
 	/**
-	 *  The number of partials to limit or extend the periodic wave by
+	 * The number of partials to limit or extend the periodic wave by
 	 */
 	private _partialCount: number;
 
 	/**
-	 *  the phase of the oscillator between 0 - 360
+	 * the phase of the oscillator between 0 - 360
 	 */
 	private _phase!: Radians;
 
 	/**
-	 *  the type of the oscillator
+	 * the type of the oscillator
 	 */
 	private _type: ToneOscillatorType;
 
@@ -109,7 +109,7 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 	}
 
 	/**
-	 *  start the oscillator
+	 * start the oscillator
 	 */
 	protected _start(time?: Time): void {
 		const computedTime = this.toSeconds(time);
@@ -134,7 +134,7 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 	}
 
 	/**
-	 *  stop the oscillator
+	 * stop the oscillator
 	 */
 	protected _stop(time?: Time): void {
 		const computedTime = this.toSeconds(time);
@@ -158,8 +158,8 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 	}
 
 	/**
-	 *  Sync the signal to the Transport's bpm. Any changes to the transports bpm,
-	 *  will also affect the oscillators frequency.
+	 * Sync the signal to the Transport's bpm. Any changes to the transports bpm,
+	 * will also affect the oscillators frequency.
 	 * @example
 	 * Tone.Transport.bpm.value = 120;
 	 * osc.frequency.value = 440;
@@ -174,8 +174,8 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 	}
 
 	/**
-	 *  Unsync the oscillator's frequency from the Transport.
-	 *  See Oscillator.syncFrequency
+	 * Unsync the oscillator's frequency from the Transport.
+	 * See Oscillator.syncFrequency
 	 */
 	unsyncFrequency(): this {
 		this.context.transport.unsyncSignal(this.frequency);
@@ -332,9 +332,9 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 	}
 
 	/**
-	 *  Get the object's attributes. Given no arguments get
-	 *  will return all available object properties and their corresponding
-	 *  values.
+	 * Get the object's attributes. Given no arguments get
+	 * will return all available object properties and their corresponding
+	 * values.
 	 */
 	get(): ToneOscillatorOptions {
 		const values = super.get();
@@ -422,7 +422,7 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 	}
 
 	/**
-	 *  Compute the inverse FFT for a given phase.
+	 * Compute the inverse FFT for a given phase.
 	 */
 	private _inverseFFT(real: Float32Array, imag: Float32Array, phase: Radians): number {
 		let sum = 0;

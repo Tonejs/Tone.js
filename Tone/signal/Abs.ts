@@ -40,7 +40,7 @@ export class Abs extends SignalOperator<ToneAudioNodeOptions> {
 	output = this._abs;
 
 	/**
-	 *  clean up
+	 * clean up
 	 */
 	dispose(): this {
 		super.dispose();

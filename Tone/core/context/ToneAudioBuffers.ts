@@ -22,20 +22,20 @@ interface ToneAudioBuffersOptions {
  * @example
  * //load a whole bank of piano samples
  * var pianoSamples = new ToneAudioBuffers({
- * 	"C4" : "path/to/C4.mp3"
- * 	"C#4" : "path/to/C#4.mp3"
- * 	"D4" : "path/to/D4.mp3"
- * 	"D#4" : "path/to/D#4.mp3"
+ * "C4" : "path/to/C4.mp3"
+ * "C#4" : "path/to/C#4.mp3"
+ * "D4" : "path/to/D4.mp3"
+ * "D#4" : "path/to/D#4.mp3"
  * }, function(){
- * 	//play one of the samples when they all load
- * 	player.buffer = pianoSamples.get("C4");
- * 	player.start();
+ * //play one of the samples when they all load
+ * player.buffer = pianoSamples.get("C4");
+ * player.start();
  * });
  * @example
  * //To pass in additional parameters in the second parameter
  * var buffers = new ToneAudioBuffers(urls, {
- * 	"onload" : callback,
- * 	"baseUrl" : "../path/to/audio/"
+ * "onload" : callback,
+ * "baseUrl" : "../path/to/audio/"
  * })
  * @category Core
  */
@@ -44,12 +44,12 @@ export class ToneAudioBuffers extends Tone {
 	readonly name: string = "ToneAudioBuffers";
 
 	/**
-	 *  All of the buffers
+	 * All of the buffers
 	 */
 	private _buffers: Map<string, ToneAudioBuffer> = new Map();
 
 	/**
-	 *  A path which is prefixed before every url.
+	 * A path which is prefixed before every url.
 	 */
 	baseUrl: string;
 
@@ -96,7 +96,7 @@ export class ToneAudioBuffers extends Tone {
 	}
 
 	/**
-	 *  True if the buffers object has a buffer by that name.
+	 * True if the buffers object has a buffer by that name.
 	 * @param  name  The key or index of the buffer.
 	 */
 	has(name: string | number): boolean {
@@ -104,8 +104,8 @@ export class ToneAudioBuffers extends Tone {
 	}
 
 	/**
-	 *  Get a buffer by name. If an array was loaded,
-	 *  then use the array index.
+	 * Get a buffer by name. If an array was loaded,
+	 * then use the array index.
 	 * @param  name  The key or index of the buffer.
 	 */
 	get(name: string | number): ToneAudioBuffer {
@@ -114,7 +114,7 @@ export class ToneAudioBuffers extends Tone {
 	}
 
 	/**
-	 *  A buffer was loaded. decrement the counter.
+	 * A buffer was loaded. decrement the counter.
 	 */
 	private _bufferLoaded(callback: () => void): void {
 		this._loadingCount--;
@@ -131,7 +131,7 @@ export class ToneAudioBuffers extends Tone {
 	}
 
 	/**
-	 *  Add a buffer by name and url to the Buffers
+	 * Add a buffer by name and url to the Buffers
 	 * @param  name      A unique name to give the buffer
 	 * @param  url  Either the url of the bufer, or a buffer which will be added with the given name.
 	 * @param  callback  The callback to invoke when the url is loaded.

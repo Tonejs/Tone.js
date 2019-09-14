@@ -78,12 +78,12 @@ implements Omit<ToneOscillatorInterface, "type"> {
 	readonly name: string = "OmniOscillator";
 
 	/**
-	 *  The frequency control.
+	 * The frequency control.
 	 */
 	readonly frequency: Signal<Frequency>;
 
 	/**
-	 *  The detune control.
+	 * The detune control.
 	 */
 	readonly detune: Signal<Cents>;
 
@@ -93,7 +93,7 @@ implements Omit<ToneOscillatorInterface, "type"> {
 	private _oscillator!: AnyOscillator;
 
 	/**
-	 *  the type of the oscillator source
+	 * the type of the oscillator source
 	 */
 	private _sourceType!: OmniOscSourceType;
 
@@ -136,14 +136,14 @@ implements Omit<ToneOscillatorInterface, "type"> {
 	}
 
 	/**
-	 *  start the oscillator
+	 * start the oscillator
 	 */
 	protected _start(time: Time): void {
 		this._oscillator.start(time);
 	}
 
 	/**
-	 *  start the oscillator
+	 * start the oscillator
 	 */
 	protected _stop(time: Time): void {
 		this._oscillator.stop(time);
@@ -271,7 +271,7 @@ implements Omit<ToneOscillatorInterface, "type"> {
 	}
 
 	/**
-	 *  connect the oscillator to the frequency and detune signals
+	 * connect the oscillator to the frequency and detune signals
 	 */
 	private _createNewOscillator(oscType: OmniOscSourceType): void {
 		if (oscType !== this._sourceType) {
@@ -451,10 +451,10 @@ implements Omit<ToneOscillatorInterface, "type"> {
 	}
 
 	/**
-	 *  Harmonicity is the frequency ratio between the carrier and the modulator oscillators.
-	 *  A harmonicity of 1 gives both oscillators the same frequency.
-	 *  Harmonicity = 2 means a change of an octave. See Tone.AMOscillator or Tone.FMOscillator
-	 *  for more info.
+	 * Harmonicity is the frequency ratio between the carrier and the modulator oscillators.
+	 * A harmonicity of 1 gives both oscillators the same frequency.
+	 * Harmonicity = 2 means a change of an octave. See Tone.AMOscillator or Tone.FMOscillator
+	 * for more info.
 	 */
 	get harmonicity(): IsAmOrFmOscillator<OscType, Signal<Positive>> {
 		if (this._getOscType(this._oscillator, "fm") || this._getOscType(this._oscillator, "am")) {

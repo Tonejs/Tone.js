@@ -12,7 +12,7 @@ import { FatConstructorOptions, FatOscillatorOptions,
 export { FatOscillatorOptions } from "./OscillatorInterface";
 
 /**
- *  FatOscillator is an array of oscillators with detune spread between the oscillators
+ * FatOscillator is an array of oscillators with detune spread between the oscillators
  * @param frequency The oscillator's frequency.
  * @param type The type of the oscillator.
  * @param spread The detune spread between the oscillators.
@@ -24,42 +24,42 @@ export class FatOscillator extends Source<FatOscillatorOptions> implements ToneO
 	readonly name: string = "FatOscillator";
 
 	/**
-	 *  The oscillator's frequency
+	 * The oscillator's frequency
 	 */
 	readonly frequency: Signal<Frequency>;
 
 	/**
-	 *  The detune control signal.
+	 * The detune control signal.
 	 */
 	readonly detune: Signal<Cents>;
 
 	/**
-	 *  The array of oscillators
+	 * The array of oscillators
 	 */
 	private _oscillators: Oscillator[] = [];
 
 	/**
-	 *  The total spread of the oscillators
+	 * The total spread of the oscillators
 	 */
 	private _spread: Cents;
 
 	/**
-	 *  The type of the oscillator
+	 * The type of the oscillator
 	 */
 	private _type: ToneOscillatorType;
 
 	/**
-	 *  The phase of the oscillators
+	 * The phase of the oscillators
 	 */
 	private _phase: Degrees;
 
 	/**
-	 *  The partials array
+	 * The partials array
 	 */
 	private _partials: number[];
 
 	/**
-	 *  The number of partials to use
+	 * The number of partials to use
 	 */
 	private _partialCount: number;
 
@@ -102,7 +102,7 @@ export class FatOscillator extends Source<FatOscillatorOptions> implements ToneO
 	}
 
 	/**
-	 *  start the oscillator
+	 * start the oscillator
 	 */
 	protected _start(time: Time): void {
 		time = this.toSeconds(time);
@@ -110,7 +110,7 @@ export class FatOscillator extends Source<FatOscillatorOptions> implements ToneO
 	}
 
 	/**
-	 *  stop the oscillator
+	 * stop the oscillator
 	 */
 	protected _stop(time: Time): void {
 		time = this.toSeconds(time);
@@ -118,7 +118,7 @@ export class FatOscillator extends Source<FatOscillatorOptions> implements ToneO
 	}
 
 	/**
-	 *  restart the oscillator
+	 * restart the oscillator
 	 */
 	restart(time): this {
 		time = this.toSeconds(time);
@@ -127,7 +127,7 @@ export class FatOscillator extends Source<FatOscillatorOptions> implements ToneO
 	}
 
 	/**
-	 *  Iterate over all of the oscillators
+	 * Iterate over all of the oscillators
 	 */
 	private _forEach(iterator: (osc: Oscillator, index: number) => void): void {
 		for (let i = 0; i < this._oscillators.length; i++) {
@@ -273,7 +273,7 @@ export class FatOscillator extends Source<FatOscillatorOptions> implements ToneO
 	}
 
 	/**
-	 *  Clean up.
+	 * Clean up.
 	 */
 	dispose(): this {
 		super.dispose();

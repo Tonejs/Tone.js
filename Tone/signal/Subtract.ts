@@ -28,14 +28,14 @@ export class Subtract extends Signal {
 	readonly name: string = "Subtract";
 
 	/**
-	 *  the summing node
+	 * the summing node
 	 */
 	private _sum: Gain = new Gain({ context: this.context });
 	readonly input: Gain = this._sum;
 	readonly output: Gain = this._sum;
 
 	/**
-	 *  Negate the input of the second input before connecting it to the summing node.
+	 * Negate the input of the second input before connecting it to the summing node.
 	 */
 	private _neg: Negate = new Negate({ context : this.context });
 
@@ -46,7 +46,7 @@ export class Subtract extends Signal {
 
 	/**
 	 * @param value The value to subtract from the incoming signal. If the value
-	 *              is omitted, it will subtract the second signal from the first.
+	 *             is omitted, it will subtract the second signal from the first.
 	 */
 	constructor(value?: number);
 	// tslint:disable-next-line: unified-signatures

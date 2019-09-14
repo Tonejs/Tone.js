@@ -43,42 +43,42 @@ export class Player extends Source<PlayerOptions> {
 	autostart: boolean;
 
 	/**
-	 *  The buffer
+	 * The buffer
 	 */
 	private _buffer: ToneAudioBuffer;
 
 	/**
-	 *  if the buffer should loop once it's over
+	 * if the buffer should loop once it's over
 	 */
 	private _loop: boolean;
 
 	/**
-	 *  if 'loop' is true, the loop will start at this position
+	 * if 'loop' is true, the loop will start at this position
 	 */
 	private _loopStart: Time;
 
 	/**
-	 *  if 'loop' is true, the loop will end at this position
+	 * if 'loop' is true, the loop will end at this position
 	 */
 	private _loopEnd: Time;
 
 	/**
-	 *  the playback rate
+	 * the playback rate
 	 */
 	private _playbackRate: Positive;
 
 	/**
-	 *  All of the active buffer source nodes
+	 * All of the active buffer source nodes
 	 */
 	private _activeSources: Set<ToneBufferSource> = new Set();
 
 	/**
-	 *  The fadeIn time of the amplitude envelope.
+	 * The fadeIn time of the amplitude envelope.
 	 */
 	fadeIn: Time;
 
 	/**
-	 *  The fadeOut time of the amplitude envelope.
+	 * The fadeOut time of the amplitude envelope.
 	 */
 	fadeOut: Time;
 
@@ -161,15 +161,15 @@ export class Player extends Source<PlayerOptions> {
 	}
 
 	/**
-	 *  Play the buffer at the given startTime. Optionally add an offset
-	 *  and/or duration which will play the buffer from a position
-	 *  within the buffer for the given duration.
+	 * Play the buffer at the given startTime. Optionally add an offset
+	 * and/or duration which will play the buffer from a position
+	 * within the buffer for the given duration.
 	 *
 	 * @param  time When the player should start.
 	 * @param  offset The offset from the beginning of the sample
-	 *                                 to start at.
+	 *                                to start at.
 	 * @param  duration How long the sample should play. If no duration is given, it will default to the full length
-	 *                   of the sample (minus any offset)
+	 *                  of the sample (minus any offset)
 	 */
 	start(time?: Time, offset?: Time, duration?: Time): this {
 		super.start(time, offset, duration);
@@ -177,7 +177,7 @@ export class Player extends Source<PlayerOptions> {
 	}
 
 	/**
-	 *  Internal start method
+	 * Internal start method
 	 */
 	protected _start(startTime?: Time, offset?: Time, duration?: Time): void {
 		// if it's a loop the default offset is the loopstart point
@@ -241,7 +241,7 @@ export class Player extends Source<PlayerOptions> {
 	}
 
 	/**
-	 *  Stop playback.
+	 * Stop playback.
 	 */
 	protected _stop(time?: Time): void {
 		const computedTime = this.toSeconds(time);
@@ -253,7 +253,7 @@ export class Player extends Source<PlayerOptions> {
 	 * @param  time When the player should start.
 	 * @param  offset The offset from the beginning of the sample to start at.
 	 * @param  duration How long the sample should play. If no duration is given,
-	 * 					it will default to the full length of the sample (minus any offset)
+	 * 				it will default to the full length of the sample (minus any offset)
 	 */
 	restart(time?: Time, offset?: Time, duration?: Time): this {
 		this._stop(time);
@@ -262,9 +262,9 @@ export class Player extends Source<PlayerOptions> {
 	}
 
 	/**
-	 *  Seek to a specific time in the player's buffer. If the
-	 *  source is no longer playing at that time, it will stop.
-	 *  If you seek to a time that
+	 * Seek to a specific time in the player's buffer. If the
+	 * source is no longer playing at that time, it will stop.
+	 * If you seek to a time that
 	 * @param {Time} offset The time to seek to.
 	 * @param {Time=} time The time for the seek event to occur.
 	 * @return {Player} this

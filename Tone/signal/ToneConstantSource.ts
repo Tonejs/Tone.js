@@ -13,19 +13,18 @@ export interface ToneConstantSourceOptions<Type> extends OneShotSourceOptions {
 /**
  * Wrapper around the native fire-and-forget ConstantSource.
  * Adds the ability to reschedule the stop method.
- * ***[[Oscillator]] is better for most use-cases***
  */
 export class ToneConstantSource<Type extends Unit = number> extends OneShotSource<ToneConstantSourceOptions<Type>> {
 
 	readonly name: string = "ToneConstantSource";
 
 	/**
-	 *  The signal generator
+	 * The signal generator
 	 */
 	private _source = this.context.createConstantSource();
 
 	/**
-	 *  The offset of the signal generator
+	 * The offset of the signal generator
 	 */
 	readonly offset: Param<Type>;
 

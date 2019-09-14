@@ -19,14 +19,14 @@ export class Panner extends ToneAudioNode<TonePannerOptions> {
 	readonly name: string = "Panner";
 
 	/**
-	 *  the panner node
+	 * the panner node
 	 */
 	private _panner: StereoPannerNode = this.context.createStereoPanner();
 	readonly input: StereoPannerNode = this._panner;
 	readonly output: StereoPannerNode = this._panner;
 
 	/**
-	 *  The pan control. -1 = hard left, 1 = hard right.
+	 * The pan control. -1 = hard left, 1 = hard right.
 	 */
 	readonly pan: Param<AudioRange>;
 

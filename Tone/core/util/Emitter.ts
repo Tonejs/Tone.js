@@ -22,7 +22,7 @@ export class Emitter<EventType extends string = string> extends Tone {
 	private _events?: EmitterEventObject;
 
 	/**
-	 *  Bind a callback to a specific event.
+	 * Bind a callback to a specific event.
 	 * @param  event     The name of the event to listen for.
 	 * @param  callback  The callback to invoke when the event is emitted
 	 */
@@ -42,7 +42,7 @@ export class Emitter<EventType extends string = string> extends Tone {
 	}
 
 	/**
-	 *  Bind a callback which is only invoked once
+	 * Bind a callback which is only invoked once
 	 * @param  event     The name of the event to listen for.
 	 * @param  callback  The callback to invoke when the event is emitted
 	 */
@@ -58,10 +58,10 @@ export class Emitter<EventType extends string = string> extends Tone {
 	}
 
 	/**
-	 *  Remove the event listener.
+	 * Remove the event listener.
 	 * @param  event     The event to stop listening to.
 	 * @param  callback  The callback which was bound to the event with Emitter.on.
-	 *                    If no callback is given, all callbacks events are removed.
+	 *                   If no callback is given, all callbacks events are removed.
 	 */
 	off(event: EventType, callback?: (...args: any[]) => void): this {
 		const events = event.split(/\W+/);
@@ -86,8 +86,8 @@ export class Emitter<EventType extends string = string> extends Tone {
 	}
 
 	/**
-	 *  Invoke all of the callbacks bound to the event
-	 *  with any arguments passed in.
+	 * Invoke all of the callbacks bound to the event
+	 * with any arguments passed in.
 	 * @param  event  The name of the event.
 	 * @param args The arguments to pass to the functions listening.
 	 */
@@ -104,7 +104,7 @@ export class Emitter<EventType extends string = string> extends Tone {
 	}
 
 	/**
-	 *  Add Emitter functions (on/off/emit) to the object
+	 * Add Emitter functions (on/off/emit) to the object
 	 */
 	static mixin(constr: any): void {
 		// instance._events = {};
@@ -115,7 +115,7 @@ export class Emitter<EventType extends string = string> extends Tone {
 	}
 
 	/**
-	 *  Clean up
+	 * Clean up
 	 */
 	dispose(): this {
 		super.dispose();

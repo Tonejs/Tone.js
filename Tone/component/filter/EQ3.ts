@@ -20,29 +20,29 @@ export class EQ3 extends ToneAudioNode<EQ3Options> {
 	readonly name: string = "EQ3";
 
 	/**
-	 *  the input
+	 * the input
 	 */
 	readonly input: MultibandSplit;
 
 	/**
-	 *  the output
+	 * the output
 	 */
 	readonly output = new Gain({ context: this.context });
 
 	private _multibandSplit: MultibandSplit;
 
 	/**
-	 *  The gain for the lower signals
+	 * The gain for the lower signals
 	 */
 	private _lowGain: Gain<Decibels>;
 
 	/**
-	 *  The gain for the mid signals
+	 * The gain for the mid signals
 	 */
 	private _midGain: Gain<Decibels>;
 
 	/**
-	 *  The gain for the high signals
+	 * The gain for the high signals
 	 */
 	private _highGain: Gain<Decibels>;
 
@@ -62,17 +62,17 @@ export class EQ3 extends ToneAudioNode<EQ3Options> {
 	readonly high: Param<Decibels>;
 
 	/**
-	 *  The Q value for all of the filters.
+	 * The Q value for all of the filters.
 	 */
 	readonly Q: Signal<Positive>;
 
 	/**
-	 *  The low/mid crossover frequency.
+	 * The low/mid crossover frequency.
 	 */
 	readonly lowFrequency: Signal<Frequency>;
 
 	/**
-	 *  The mid/high crossover frequency.
+	 * The mid/high crossover frequency.
 	 */
 	readonly highFrequency: Signal<Frequency>;
 
@@ -135,7 +135,7 @@ export class EQ3 extends ToneAudioNode<EQ3Options> {
 	}
 
 	/**
-	 *  Clean up.
+	 * Clean up.
 	 */
 	dispose(): this {
 		super.dispose();

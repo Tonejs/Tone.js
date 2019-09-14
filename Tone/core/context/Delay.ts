@@ -24,7 +24,7 @@ export class Delay extends ToneAudioNode<DelayOptions> {
 	readonly maxDelay: Time;
 
 	/**
-	 *  The amount of time the incoming signal is delayed.
+	 * The amount of time the incoming signal is delayed.
 	 */
 	readonly delayTime: Param<Time>;
 
@@ -69,7 +69,7 @@ export class Delay extends ToneAudioNode<DelayOptions> {
 	}
 
 	/**
-	 *  Clean up.
+	 * Clean up.
 	 */
 	dispose(): this {
 		super.dispose();

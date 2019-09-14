@@ -10,7 +10,7 @@ export interface WaveformOptions extends MeterBaseOptions {
 }
 
 /**
- *  Get the current waveform data of the connected audio source.
+ * Get the current waveform data of the connected audio source.
  */
 export class Waveform extends MeterBase<WaveformOptions> {
 
@@ -45,8 +45,8 @@ export class Waveform extends MeterBase<WaveformOptions> {
 	}
 
 	/**
-	 *  The size of analysis. This must be a power of two in the range 16 to 16384.
-	 *  Determines the size of the array returned by [[getValue]].
+	 * The size of analysis. This must be a power of two in the range 16 to 16384.
+	 * Determines the size of the array returned by [[getValue]].
 	 */
 	get size(): PowerOfTwo {
 		return this._analyser.size;

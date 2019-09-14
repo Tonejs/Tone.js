@@ -71,17 +71,17 @@ implements AbstractParam<Type> {
 	protected _events: Timeline<AutomationEvent>;
 
 	/**
-	 *  The native parameter to control
+	 * The native parameter to control
 	 */
 	protected _param: AudioParam;
 
 	/**
-	 *  The default value before anything is assigned
+	 * The default value before anything is assigned
 	 */
 	protected _initialValue: number;
 
 	/**
-	 *  The minimum output value
+	 * The minimum output value
 	 */
 	private _minOutput = 1e-7;
 
@@ -158,8 +158,8 @@ implements AbstractParam<Type> {
 	}
 
 	/**
-	 *  Convert the given value from the type specified by Param.units
-	 *  into the destination value (such as Gain or Frequency).
+	 * Convert the given value from the type specified by Param.units
+	 * into the destination value (such as Gain or Frequency).
 	 */
 	protected _fromType(val: Type): number {
 		if (this.convert && !this.overridden) {

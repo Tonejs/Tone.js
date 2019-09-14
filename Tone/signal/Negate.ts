@@ -16,7 +16,7 @@ export class Negate extends SignalOperator<ToneAudioNodeOptions> {
 	readonly name: string = "Negate";
 
 	/**
-	 *  negation is done by multiplying by -1
+	 * negation is done by multiplying by -1
 	 */
 	private _multiply: Multiply = new Multiply({
 		context: this.context,
@@ -30,7 +30,7 @@ export class Negate extends SignalOperator<ToneAudioNodeOptions> {
 	output = this._multiply;
 
 	/**
-	 *  clean up
+	 * clean up
 	 * @returns {Negate} this
 	 */
 	dispose(): this {

@@ -37,7 +37,7 @@ export class Volume extends ToneAudioNode<VolumeOptions> {
 	private _unmutedVolume: Decibels;
 
 	/**
-	 *  The volume control in decibels.
+	 * The volume control in decibels.
 	 */
 	volume: Param<Decibels>;
 
@@ -92,7 +92,7 @@ export class Volume extends ToneAudioNode<VolumeOptions> {
 	}
 
 	/**
-	 *  clean up
+	 * clean up
 	 */
 	dispose(): this {
 		super.dispose();

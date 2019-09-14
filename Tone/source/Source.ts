@@ -39,7 +39,7 @@ export interface SourceOptions extends ToneAudioNodeOptions {
 export abstract class Source<Options extends SourceOptions> extends ToneAudioNode<Options> {
 
 	/**
-	 *  The output volume node
+	 * The output volume node
 	 */
 	private _volume: Volume;
 
@@ -66,7 +66,7 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 	onstop: onStopCallback;
 
 	/**
-	 * 	Keep track of the scheduled state.
+	 * Keep track of the scheduled state.
 	 */
 	protected _state: StateTimeline<{
 		duration?: Seconds;
@@ -84,7 +84,7 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 	protected _synced: boolean = false;
 
 	/**
-	 *  Keep track of all of the scheduled event ids
+	 * Keep track of all of the scheduled event ids
 	 */
 	private _scheduled: number[] = [];
 
@@ -117,7 +117,7 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 	}
 
 	/**
-	 *  Returns the playback state of the source, either "started" or "stopped".
+	 * Returns the playback state of the source, either "started" or "stopped".
 	 */
 	get state(): BasicPlaybackState {
 		if (this._synced) {
@@ -162,8 +162,8 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 	}
 
 	/**
-	 *  Start the source at the specified time. If no time is given,
-	 *  start the source now.
+	 * Start the source at the specified time. If no time is given,
+	 * start the source now.
 	 * @param  time When the source should be started.
 	 * @example
 	 * source.start("+0.5"); //starts the source 0.5 seconds from now
@@ -203,8 +203,8 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 	}
 
 	/**
-	 *  Stop the source at the specified time. If no time is given,
-	 *  stop the source now.
+	 * Stop the source at the specified time. If no time is given,
+	 * stop the source now.
 	 * @param  time When the source should be stopped.
 	 * @example
 	 * source.stop(); // stops the source immediately
@@ -225,9 +225,9 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 	}
 
 	/**
-	 *  Sync the source to the Transport so that all subsequent
-	 *  calls to `start` and `stop` are synced to the TransportTime
-	 *  instead of the AudioContext time.
+	 * Sync the source to the Transport so that all subsequent
+	 * calls to `start` and `stop` are synced to the TransportTime
+	 * instead of the AudioContext time.
 	 *
 	 * @example
 	 * //sync the source so that it plays between 0 and 0.3 on the Transport's timeline
@@ -277,7 +277,7 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 	}
 
 	/**
-	 *  Unsync the source to the Transport. See Source.sync
+	 * Unsync the source to the Transport. See Source.sync
 	 */
 	unsync(): this {
 		if (this._synced) {

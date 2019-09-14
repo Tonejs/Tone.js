@@ -24,12 +24,12 @@ export class Convolver extends Effect<ToneConvolverOptions> {
 	readonly name: string = "Convolver";
 
 	/**
-	 *  The native ConvolverNode
+	 * The native ConvolverNode
 	 */
 	private _convolver: ConvolverNode = this.context.createConvolver();
 
 	/**
-	 *  The Buffer belonging to the convolver
+	 * The Buffer belonging to the convolver
 	 */
 	private _buffer: ToneAudioBuffer;
 
@@ -79,7 +79,7 @@ export class Convolver extends Effect<ToneConvolverOptions> {
 	}
 
 	/**
-	 *  The convolver's buffer
+	 * The convolver's buffer
 	 */
 	get buffer(): ToneAudioBuffer | null {
 		if (this._buffer.length) {

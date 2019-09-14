@@ -20,8 +20,8 @@ export interface MetalSynthOptions extends MonophonicOptions {
 }
 
 /**
- *  Inharmonic ratio of frequencies based on the Roland TR-808
- *  Taken from https://ccrma.stanford.edu/papers/tr-808-cymbal-physically-informed-circuit-bendable-digital-model
+ * Inharmonic ratio of frequencies based on the Roland TR-808
+ * Taken from https://ccrma.stanford.edu/papers/tr-808-cymbal-physically-informed-circuit-bendable-digital-model
  */
 const inharmRatios: number[] = [1.0, 1.483, 1.932, 2.546, 2.630, 3.897];
 
@@ -171,9 +171,9 @@ export class MetalSynth extends Monophonic<MetalSynthOptions> {
 	}
 
 	/**
-	 *  Trigger the attack.
-	 *  @param time When the attack should be triggered.
-	 *  @param velocity The velocity that the envelope should be triggered at.
+	 * Trigger the attack.
+	 * @param time When the attack should be triggered.
+	 * @param velocity The velocity that the envelope should be triggered at.
 	 */
 	protected _triggerEnvelopeAttack(time: Time, velocity: NormalRange = 1): this {
 		this.envelope.triggerAttack(time, velocity);
@@ -187,8 +187,8 @@ export class MetalSynth extends Monophonic<MetalSynthOptions> {
 	}
 
 	/**
-	 *  Trigger the release of the envelope.
-	 *  @param time When the release should be triggered.
+	 * Trigger the release of the envelope.
+	 * @param time When the release should be triggered.
 	 */
 	protected _triggerEnvelopeRelease(time: Time): this {
 		this.envelope.triggerRelease(time);
@@ -197,8 +197,8 @@ export class MetalSynth extends Monophonic<MetalSynthOptions> {
 	}
 
 	/**
-	 *  The modulationIndex of the oscillators which make up the source.
-	 *  see [[FMOscillator.modulationIndex]]
+	 * The modulationIndex of the oscillators which make up the source.
+	 * see [[FMOscillator.modulationIndex]]
 	 */
 	get modulationIndex(): number {
 		return this._oscillators[0].modulationIndex.value;
@@ -208,8 +208,8 @@ export class MetalSynth extends Monophonic<MetalSynthOptions> {
 	}
 
 	/**
-	 *  The harmonicity of the oscillators which make up the source.
-	 *  see Tone.FMOscillator.harmonicity
+	 * The harmonicity of the oscillators which make up the source.
+	 * see Tone.FMOscillator.harmonicity
 	 */
 	get harmonicity(): number {
 		return this._oscillators[0].harmonicity.value;
@@ -233,8 +233,8 @@ export class MetalSynth extends Monophonic<MetalSynthOptions> {
 	}
 
 	/**
-	 *  The number of octaves above the "resonance" frequency
-	 *  that the filter ramps during the attack/decay envelope
+	 * The number of octaves above the "resonance" frequency
+	 * that the filter ramps during the attack/decay envelope
 	 */
 	get octaves(): number {
 		return this._octaves;

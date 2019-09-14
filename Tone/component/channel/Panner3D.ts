@@ -21,7 +21,7 @@ export interface Panner3DOptions extends ToneAudioNodeOptions {
 }
 
 /**
- *  A spatialized panner node which supports equalpower or HRTF panning.
+ * A spatialized panner node which supports equalpower or HRTF panning.
  */
 export class Panner3D extends ToneAudioNode<Panner3DOptions> {
 
@@ -117,7 +117,7 @@ export class Panner3D extends ToneAudioNode<Panner3DOptions> {
 	}
 
 	/**
-	 *  Sets the position of the source in 3d space.
+	 * Sets the position of the source in 3d space.
 	 */
 	setPosition(x: number, y: number, z: number): this {
 		this.positionX.value = x;
@@ -127,7 +127,7 @@ export class Panner3D extends ToneAudioNode<Panner3DOptions> {
 	}
 
 	/**
-	 *  Sets the orientation of the source in 3d space.
+	 * Sets the orientation of the source in 3d space.
 	 */
 	setOrientation(x: number, y: number, z: number): this {
 		this.orientationX.value = x;
@@ -137,7 +137,7 @@ export class Panner3D extends ToneAudioNode<Panner3DOptions> {
 	}
 
 	/**
-	 *  The panning model. Either "equalpower" or "HRTF".
+	 * The panning model. Either "equalpower" or "HRTF".
 	 */
 	get panningModel(): PanningModelType {
 		return this._panner.panningModel;
@@ -147,7 +147,7 @@ export class Panner3D extends ToneAudioNode<Panner3DOptions> {
 	}
 
 	/**
-	 *  A reference distance for reducing volume as source move further from the listener
+	 * A reference distance for reducing volume as source move further from the listener
 	 */
 	get refDistance(): number {
 		return this._panner.refDistance;
@@ -157,7 +157,7 @@ export class Panner3D extends ToneAudioNode<Panner3DOptions> {
 	}
 
 	/**
-	 *  Describes how quickly the volume is reduced as source moves away from listener.
+	 * Describes how quickly the volume is reduced as source moves away from listener.
 	 */
 	get rolloffFactor(): number {
 		return this._panner.rolloffFactor;
@@ -167,7 +167,7 @@ export class Panner3D extends ToneAudioNode<Panner3DOptions> {
 	}
 
 	/**
-	 *  The distance model used by,  "linear", "inverse", or "exponential".
+	 * The distance model used by,  "linear", "inverse", or "exponential".
 	 */
 	get distanceModel(): DistanceModelType {
 		return this._panner.distanceModel;
@@ -177,7 +177,7 @@ export class Panner3D extends ToneAudioNode<Panner3DOptions> {
 	}
 
 	/**
-	 *  The angle, in degrees, inside of which there will be no volume reduction
+	 * The angle, in degrees, inside of which there will be no volume reduction
 	 */
 	get coneInnerAngle(): Degrees {
 		return this._panner.coneInnerAngle;
@@ -187,8 +187,8 @@ export class Panner3D extends ToneAudioNode<Panner3DOptions> {
 	}
 
 	/**
-	 *  The angle, in degrees, outside of which the volume will be reduced
-	 *  to a constant value of coneOuterGain
+	 * The angle, in degrees, outside of which the volume will be reduced
+	 * to a constant value of coneOuterGain
 	 */
 	get coneOuterAngle(): Degrees {
 		return this._panner.coneOuterAngle;
@@ -198,7 +198,7 @@ export class Panner3D extends ToneAudioNode<Panner3DOptions> {
 	}
 
 	/**
-	 *  The gain outside of the coneOuterAngle
+	 * The gain outside of the coneOuterAngle
 	 */
 	get coneOuterGain(): GainFactor {
 		return this._panner.coneOuterGain;
@@ -208,8 +208,8 @@ export class Panner3D extends ToneAudioNode<Panner3DOptions> {
 	}
 
 	/**
-	 *  The maximum distance between source and listener,
-	 *  after which the volume will not be reduced any further.
+	 * The maximum distance between source and listener,
+	 * after which the volume will not be reduced any further.
 	 */
 	get maxDistance(): number {
 		return this._panner.maxDistance;

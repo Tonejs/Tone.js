@@ -27,12 +27,12 @@ export class TickSource<Type extends BPM | Hertz> extends ToneWithContext<TickSo
 	readonly name: string = "TickSource";
 
 	/**
-	 *  The frequency the callback function should be invoked.
+	 * The frequency the callback function should be invoked.
 	 */
 	readonly frequency: TickSignal<Type>;
 
 	/**
-	 *  The state timeline
+	 * The state timeline
 	 */
 	private _state: StateTimeline = new StateTimeline();
 
@@ -72,15 +72,15 @@ export class TickSource<Type extends BPM | Hertz> extends ToneWithContext<TickSo
 	}
 
 	/**
-	 *  Returns the playback state of the source, either "started", "stopped" or "paused".
+	 * Returns the playback state of the source, either "started", "stopped" or "paused".
 	 */
 	get state(): PlaybackState {
 		return this._state.getValueAtTime(this.now());
 	}
 
 	/**
-	 *  Start the clock at the given time. Optionally pass in an offset
-	 *  of where to start the tick counter from.
+	 * Start the clock at the given time. Optionally pass in an offset
+	 * of where to start the tick counter from.
 	 * @param  time    The time the clock should start
 	 * @param offset The number of ticks to start the source at
 	 */
@@ -116,7 +116,7 @@ export class TickSource<Type extends BPM | Hertz> extends ToneWithContext<TickSo
 	}
 
 	/**
-	 *  Pause the clock. Pausing does not reset the tick counter.
+	 * Pause the clock. Pausing does not reset the tick counter.
 	 * @param time The time when the clock should stop.
 	 */
 	pause(time: Time): this {
@@ -128,7 +128,7 @@ export class TickSource<Type extends BPM | Hertz> extends ToneWithContext<TickSo
 	}
 
 	/**
-	 *  Cancel start/stop/pause and setTickAtTime events scheduled after the given time.
+	 * Cancel start/stop/pause and setTickAtTime events scheduled after the given time.
 	 * @param time When to clear the events after
 	 */
 	cancel(time: Time): this {
@@ -180,8 +180,8 @@ export class TickSource<Type extends BPM | Hertz> extends ToneWithContext<TickSo
 	}
 
 	/**
-	 *  The number of times the callback was invoked. Starts counting at 0
-	 *  and increments after the callback was invoked. Returns -1 when stopped.
+	 * The number of times the callback was invoked. Starts counting at 0
+	 * and increments after the callback was invoked. Returns -1 when stopped.
 	 */
 	get ticks(): Ticks {
 		return this.getTicksAtTime(this.now());
@@ -192,8 +192,8 @@ export class TickSource<Type extends BPM | Hertz> extends ToneWithContext<TickSo
 	}
 
 	/**
-	 *  The time since ticks=0 that the TickSource has been running. Accounts
-	 *  for tempo curves
+	 * The time since ticks=0 that the TickSource has been running. Accounts
+	 * for tempo curves
 	 */
 	get seconds(): Seconds {
 		return this.getSecondsAtTime(this.now());
@@ -206,7 +206,7 @@ export class TickSource<Type extends BPM | Hertz> extends ToneWithContext<TickSo
 	}
 
 	/**
-	 *  Return the elapsed seconds at the given time.
+	 * Return the elapsed seconds at the given time.
 	 * @param  time  When to get the elapsed seconds
 	 * @return  The number of elapsed seconds
 	 */
@@ -263,7 +263,7 @@ export class TickSource<Type extends BPM | Hertz> extends ToneWithContext<TickSo
 	}
 
 	/**
-	 *  Returns the scheduled state at the given time.
+	 * Returns the scheduled state at the given time.
 	 * @param  time  The time to query.
 	 * @example
 	 * source.start("+0.1");
@@ -291,8 +291,8 @@ export class TickSource<Type extends BPM | Hertz> extends ToneWithContext<TickSo
 	}
 
 	/**
-	 *  Invoke the callback event at all scheduled ticks between the
-	 *  start time and the end time
+	 * Invoke the callback event at all scheduled ticks between the
+	 * start time and the end time
 	 * @param  startTime  The beginning of the search range
 	 * @param  endTime    The end of the search range
 	 * @param  callback   The callback to invoke with each tick
@@ -343,7 +343,7 @@ export class TickSource<Type extends BPM | Hertz> extends ToneWithContext<TickSo
 	}
 
 	/**
-	 *  Clean up
+	 * Clean up
 	 */
 	dispose(): this {
 		super.dispose();

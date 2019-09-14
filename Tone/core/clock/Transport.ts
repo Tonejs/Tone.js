@@ -54,12 +54,12 @@ type TransportCallback = (time: Seconds) => void;
  * @example
  * //repeated event every 8th note
  * Transport.scheduleRepeat(function(time){
- * 	//do something with the time
+ * //do something with the time
  * }, "8n");
  * @example
  * //schedule an event on the 16th measure
  * Transport.schedule(function(time){
- * 	//do something with the time
+ * //do something with the time
  * }, "16:0:0");
  * @category Core
  */
@@ -72,17 +72,17 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 	//////////////////////////////////////////////////////////////////////
 
 	/**
-	 * 	If the transport loops or not.
+	 * If the transport loops or not.
 	 */
 	loop: boolean = false;
 
 	/**
-	 * 	The loop start position in ticks
+	 * The loop start position in ticks
 	 */
 	private _loopStart: Ticks = 0;
 
 	/**
-	 * 	The loop end position in ticks
+	 * The loop end position in ticks
 	 */
 	private _loopEnd: Ticks = 0;
 
@@ -91,13 +91,13 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 	//////////////////////////////////////////////////////////////////////
 
 	/**
-	 *  Pulses per quarter is the number of ticks per quarter note.
+	 * Pulses per quarter is the number of ticks per quarter note.
 	 */
 	private _ppq: number;
 
 	/**
-	 *  watches the main oscillator for timing ticks
-	 *  initially starts at 120bpm
+	 * watches the main oscillator for timing ticks
+	 * initially starts at 120bpm
 	 */
 	private _clock: Clock<BPM>;
 
@@ -111,8 +111,8 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 	bpm: TickParam<BPM>;
 
 	/**
-	 *  The time signature, or more accurately the numerator
-	 *  of the time signature over a denominator of 4.
+	 * The time signature, or more accurately the numerator
+	 * of the time signature over a denominator of 4.
 	 */
 	private _timeSignature: number;
 
@@ -121,22 +121,22 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 	//////////////////////////////////////////////////////////////////////
 
 	/**
-	 *  All the events in an object to keep track by ID
+	 * All the events in an object to keep track by ID
 	 */
 	private _scheduledEvents = {};
 
 	/**
-	 * 	The scheduled events.
+	 * The scheduled events.
 	 */
 	private _timeline: Timeline<TransportEvent> = new Timeline();
 
 	/**
-	 *  Repeated events
+	 * Repeated events
 	 */
 	private _repeatedEvents: IntervalTimeline = new IntervalTimeline();
 
 	/**
-	 *  All of the synced Signals
+	 * All of the synced Signals
 	 */
 	private _syncedSignals: SyncedSignalEvent[] = [];
 
@@ -145,12 +145,12 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 	//////////////////////////////////////////////////////////////////////
 
 	/**
-	 *  The subdivision of the swing
+	 * The subdivision of the swing
 	 */
 	private _swingTicks: Ticks;
 
 	/**
-	 *  The swing amount
+	 * The swing amount
 	 */
 	private _swingAmount: NormalRange = 0;
 
@@ -196,7 +196,7 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 	///////////////////////////////////////////////////////////////////////////////
 
 	/**
-	 *  called on every tick
+	 * called on every tick
 	 * @param  tickTime clock relative tick time
 	 */
 	private _processTick(tickTime: Seconds, ticks: Ticks): void {
@@ -235,7 +235,7 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 	 * @example
 	 * //trigger the callback when the Transport reaches the desired time
 	 * Transport.schedule(function(time){
-	 * 	envelope.triggerAttack(time);
+	 * envelope.triggerAttack(time);
 	 * }, "128i");
 	 */
 	schedule(callback: TransportCallback, time: TransportTime | TransportTimeClass): number {
@@ -277,7 +277,7 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 	}
 
 	/**
-	 *  Schedule an event that will be removed after it is invoked.
+	 * Schedule an event that will be removed after it is invoked.
 	 * @param callback The callback to invoke once.
 	 * @param time The time the callback should be invoked.
 	 * @returns The ID of the scheduled event.
@@ -337,7 +337,7 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 	///////////////////////////////////////////////////////////////////////////////
 
 	/**
-	 *  Bind start/stop/pause events from the clock and emit them.
+	 * Bind start/stop/pause events from the clock and emit them.
 	 */
 	private _bindClockEvents(): void {
 		this._clock.on("start", (time, offset) => {
@@ -355,7 +355,7 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 	}
 
 	/**
-	 *  Returns the playback state of the source, either "started", "stopped", or "paused"
+	 * Returns the playback state of the source, either "started", "stopped", or "paused"
 	 */
 	get state(): PlaybackState {
 		return this._clock.getStateAtTime(this.now());
@@ -495,8 +495,8 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 	}
 
 	/**
-	 *  The Transport's position in Bars:Beats:Sixteenths.
-	 *  Setting the value will jump to that position right away.
+	 * The Transport's position in Bars:Beats:Sixteenths.
+	 * Setting the value will jump to that position right away.
 	 */
 	get position(): BarsBeatsSixteenths | Time {
 		const now = this.now();
@@ -509,8 +509,8 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 	}
 
 	/**
-	 *  The Transport's position in seconds
-	 *  Setting the value will jump to that position right away.
+	 * The Transport's position in seconds
+	 * Setting the value will jump to that position right away.
 	 */
 	get seconds(): Seconds {
 		return this._clock.seconds;
@@ -523,8 +523,8 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 	}
 
 	/**
-	 *  The Transport's loop position as a normalized value. Always
-	 *  returns 0 if the transport if loop is not true.
+	 * The Transport's loop position as a normalized value. Always
+	 * returns 0 if the transport if loop is not true.
 	 */
 	get progress(): NormalRange {
 		if (this.loop) {
@@ -537,7 +537,7 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 	}
 
 	/**
-	 *  The transports current tick position.
+	 * The transports current tick position.
 	 */
 	get ticks(): Ticks {
 		return this._clock.ticks;
@@ -567,7 +567,7 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 	}
 
 	/**
-	 *  Return the elapsed seconds at the given time.
+	 * Return the elapsed seconds at the given time.
 	 * @param  time  When to get the elapsed seconds
 	 * @return  The number of elapsed seconds
 	 */
@@ -576,10 +576,10 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 	}
 
 	/**
-	 *  Pulses Per Quarter note. This is the smallest resolution
-	 *  the Transport timing supports. This should be set once
-	 *  on initialization and not set again. Changing this value
-	 *  after other objects have been created can cause problems.
+	 * Pulses Per Quarter note. This is the smallest resolution
+	 * the Transport timing supports. This should be set once
+	 * on initialization and not set again. Changing this value
+	 * after other objects have been created can cause problems.
 	 */
 	get PPQ(): number {
 		return this._clock.frequency.multiplier;
@@ -618,13 +618,13 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 	}
 
 	/**
-	 *  Attaches the signal to the tempo control signal so that
-	 *  any changes in the tempo will change the signal in the same
-	 *  ratio.
+	 * Attaches the signal to the tempo control signal so that
+	 * any changes in the tempo will change the signal in the same
+	 * ratio.
 	 *
 	 * @param signal
 	 * @param ratio Optionally pass in the ratio between the two signals.
-	 * 				Otherwise it will be computed based on their current values.
+	 * 			Otherwise it will be computed based on their current values.
 	 */
 	syncSignal(signal: Signal<any>, ratio?: number): this {
 		if (!ratio) {
@@ -653,8 +653,8 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 	}
 
 	/**
-	 *  Unsyncs a previously synced signal from the transport's control.
-	 *  See Transport.syncSignal.
+	 * Unsyncs a previously synced signal from the transport's control.
+	 * See Transport.syncSignal.
 	 */
 	unsyncSignal(signal: Signal<any>): this {
 		for (let i = this._syncedSignals.length - 1; i >= 0; i--) {
@@ -669,7 +669,7 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 	}
 
 	/**
-	 *  Clean up.
+	 * Clean up.
 	 */
 	dispose(): this {
 		super.dispose();

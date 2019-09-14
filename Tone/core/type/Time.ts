@@ -58,8 +58,8 @@ extends TimeBaseClass<Type, Unit> {
 	// CONVERSIONS
 	///////////////////////////////////////////////////////////////////////////
 	/**
-	 *  Convert a Time to Notation. The notation values are will be the
-	 *  closest representation between 1m to 128th note.
+	 * Convert a Time to Notation. The notation values are will be the
+	 * closest representation between 1m to 128th note.
 	 * @return {Notation}
 	 * @example
 	 * //if the Transport is at 120bpm:
@@ -89,7 +89,7 @@ extends TimeBaseClass<Type, Unit> {
 	}
 
 	/**
-	 *  Return the time encoded as Bars:Beats:Sixteenths.
+	 * Return the time encoded as Bars:Beats:Sixteenths.
 	 */
 	toBarsBeatsSixteenths(): BarsBeatsSixteenths {
 		const quarterTime = this._beatsToUnits(1);
@@ -108,7 +108,7 @@ extends TimeBaseClass<Type, Unit> {
 	}
 
 	/**
-	 *  Return the time in ticks.
+	 * Return the time in ticks.
 	 */
 	toTicks(): Ticks {
 		const quarterTime = this._beatsToUnits(1);
@@ -117,14 +117,14 @@ extends TimeBaseClass<Type, Unit> {
 	}
 
 	/**
-	 *  Return the time in seconds.
+	 * Return the time in seconds.
 	 */
 	toSeconds(): Seconds {
 		return this.valueOf();
 	}
 
 	/**
-	 *  Return the value as a midi note.
+	 * Return the value as a midi note.
 	 */
 	toMidi(): MidiNote {
 		return ftom(this.toFrequency());

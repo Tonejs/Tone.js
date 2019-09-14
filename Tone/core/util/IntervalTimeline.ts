@@ -26,18 +26,18 @@ export class IntervalTimeline extends Tone {
 	readonly name: string = "IntervalTimeline";
 
 	/**
-	 *  The root node of the inteval tree
+	 * The root node of the inteval tree
 	 */
 	private _root: IntervalNode | null = null;
 
 	/**
-	 *  Keep track of the length of the timeline.
+	 * Keep track of the length of the timeline.
 	 */
 	private _length: number = 0;
 
 	/**
-	 *  The event to add to the timeline. All events must
-	 *  have a time and duration value
+	 * The event to add to the timeline. All events must
+	 * have a time and duration value
 	 * @param  event  The event to add to the timeline
 	 */
 	add(event: IntervalTimelineEvent): this {
@@ -63,7 +63,7 @@ export class IntervalTimeline extends Tone {
 	}
 
 	/**
-	 *  Remove an event from the timeline.
+	 * Remove an event from the timeline.
 	 * @param  event  The event to remove from the timeline
 	 */
 	remove(event: IntervalTimelineEvent): this {
@@ -82,7 +82,7 @@ export class IntervalTimeline extends Tone {
 	}
 
 	/**
-	 *  The number of items in the timeline.
+	 * The number of items in the timeline.
 	 * @readOnly
 	 */
 	get length(): number {
@@ -90,7 +90,7 @@ export class IntervalTimeline extends Tone {
 	}
 
 	/**
-	 *  Remove events whose time time is after the given time
+	 * Remove events whose time time is after the given time
 	 * @param  time  The time to query.
 	 */
 	cancel(after: number): this {
@@ -99,7 +99,7 @@ export class IntervalTimeline extends Tone {
 	}
 
 	/**
-	 *  Set the root node as the given node
+	 * Set the root node as the given node
 	 */
 	private _setRoot(node: IntervalNode | null): void {
 		this._root = node;
@@ -109,8 +109,8 @@ export class IntervalTimeline extends Tone {
 	}
 
 	/**
-	 *  Replace the references to the node in the node's parent
-	 *  with the replacement node.
+	 * Replace the references to the node in the node's parent
+	 * with the replacement node.
 	 */
 	private _replaceNodeInParent(node: IntervalNode, replacement: IntervalNode | null): void {
 		if (node.parent !== null) {
@@ -126,8 +126,8 @@ export class IntervalTimeline extends Tone {
 	}
 
 	/**
-	 *  Remove the node from the tree and replace it with
-	 *  a successor which follows the schema.
+	 * Remove the node from the tree and replace it with
+	 * a successor which follows the schema.
 	 */
 	private _removeNode(node: IntervalNode): void {
 		if (node.left === null && node.right === null) {
@@ -190,7 +190,7 @@ export class IntervalTimeline extends Tone {
 	}
 
 	/**
-	 *  Rotate the tree to the left
+	 * Rotate the tree to the left
 	 */
 	private _rotateLeft(node: IntervalNode): void {
 		const parent = node.parent;
@@ -215,7 +215,7 @@ export class IntervalTimeline extends Tone {
 	}
 
 	/**
-	 *  Rotate the tree to the right
+	 * Rotate the tree to the right
 	 */
 	private _rotateRight(node: IntervalNode): void {
 		const parent = node.parent;
@@ -240,7 +240,7 @@ export class IntervalTimeline extends Tone {
 	}
 
 	/**
-	 *  Balance the BST
+	 * Balance the BST
 	 */
 	private _rebalance(node: IntervalNode): void {
 		const balance = node.getBalance();
@@ -260,8 +260,8 @@ export class IntervalTimeline extends Tone {
 	}
 
 	/**
-	 *  Get an event whose time and duration span the give time. Will
-	 *  return the match whose "time" value is closest to the given time.
+	 * Get an event whose time and duration span the give time. Will
+	 * return the match whose "time" value is closest to the given time.
 	 * @return  The event which spans the desired time
 	 */
 	get(time: number): IntervalTimelineEvent | null {
@@ -282,7 +282,7 @@ export class IntervalTimeline extends Tone {
 	}
 
 	/**
-	 *  Iterate over everything in the timeline.
+	 * Iterate over everything in the timeline.
 	 * @param  callback The callback to invoke with every item
 	 */
 	forEach(callback: IteratorCallback): this {
@@ -299,8 +299,8 @@ export class IntervalTimeline extends Tone {
 	}
 
 	/**
-	 *  Iterate over everything in the array in which the given time
-	 *  overlaps with the time and duration time of the event.
+	 * Iterate over everything in the array in which the given time
+	 * overlaps with the time and duration time of the event.
 	 * @param  time The time to check if items are overlapping
 	 * @param  callback The callback to invoke with every item
 	 */
@@ -318,8 +318,8 @@ export class IntervalTimeline extends Tone {
 	}
 
 	/**
-	 *  Iterate over everything in the array in which the time is greater
-	 *  than or equal to the given time.
+	 * Iterate over everything in the array in which the time is greater
+	 * than or equal to the given time.
 	 * @param  time The time to check if items are before
 	 * @param  callback The callback to invoke with every item
 	 */
@@ -337,7 +337,7 @@ export class IntervalTimeline extends Tone {
 	}
 
 	/**
-	 *  Clean up
+	 * Clean up
 	 */
 	dispose(): this {
 		super.dispose();
@@ -354,12 +354,12 @@ export class IntervalTimeline extends Tone {
 ///////////////////////////////////////////////////////////////////////////
 
 /**
- *  Represents a node in the binary search tree, with the addition
- *  of a "high" value which keeps track of the highest value of
- *  its children.
- *  References:
- *  https://brooknovak.wordpress.com/2013/12/07/augmented-interval-tree-in-c/
- *  http://www.mif.vu.lt/~valdas/ALGORITMAI/LITERATURA/Cormen/Cormen.pdf
+ * Represents a node in the binary search tree, with the addition
+ * of a "high" value which keeps track of the highest value of
+ * its children.
+ * References:
+ * https://brooknovak.wordpress.com/2013/12/07/augmented-interval-tree-in-c/
+ * http://www.mif.vu.lt/~valdas/ALGORITMAI/LITERATURA/Cormen/Cormen.pdf
  * @param low
  * @param high
  */
@@ -394,7 +394,7 @@ class IntervalNode {
 	}
 
 	/**
-	 *  Insert a node into the correct spot in the tree
+	 * Insert a node into the correct spot in the tree
 	 */
 	insert(node: IntervalNode): void {
 		if (node.low <= this.low) {
@@ -411,8 +411,8 @@ class IntervalNode {
 	}
 
 	/**
-	 *  Search the tree for nodes which overlap
-	 *  with the given point
+	 * Search the tree for nodes which overlap
+	 * with the given point
 	 * @param  point  The point to query
 	 * @param  results  The array to put the results
 	 */
@@ -442,8 +442,8 @@ class IntervalNode {
 	}
 
 	/**
-	 *  Search the tree for nodes which are less
-	 *  than the given point
+	 * Search the tree for nodes which are less
+	 * than the given point
 	 * @param  point  The point to query
 	 * @param  results  The array to put the results
 	 */
@@ -462,7 +462,7 @@ class IntervalNode {
 	}
 
 	/**
-	 *  Invoke the callback on this element and both it's branches
+	 * Invoke the callback on this element and both it's branches
 	 * @param  {Function}  callback
 	 */
 	traverse(callback: (self: IntervalNode) => void): void {
@@ -476,7 +476,7 @@ class IntervalNode {
 	}
 
 	/**
-	 *  Update the height of the node
+	 * Update the height of the node
 	 */
 	updateHeight(): void {
 		if (this.left !== null && this.right !== null) {
@@ -491,7 +491,7 @@ class IntervalNode {
 	}
 
 	/**
-	 *  Update the height of the node
+	 * Update the height of the node
 	 */
 	updateMax(): void {
 		this.max = this.high;
@@ -504,7 +504,7 @@ class IntervalNode {
 	}
 
 	/**
-	 *  The balance is how the leafs are distributed on the node
+	 * The balance is how the leafs are distributed on the node
 	 * @return  Negative numbers are balanced to the right
 	 */
 	getBalance(): number {
@@ -527,7 +527,7 @@ class IntervalNode {
 	}
 
 	/**
-	 *  get/set the left node
+	 * get/set the left node
 	 */
 	get left(): IntervalNode | null {
 		return this._left;
@@ -543,7 +543,7 @@ class IntervalNode {
 	}
 
 	/**
-	 *  get/set the right node
+	 * get/set the right node
 	 */
 	get right(): IntervalNode | null {
 		return this._right;
@@ -559,7 +559,7 @@ class IntervalNode {
 	}
 
 	/**
-	 *  null out references.
+	 * null out references.
 	 */
 	dispose(): void {
 		this.parent = null;

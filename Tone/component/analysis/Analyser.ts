@@ -23,17 +23,17 @@ export class Analyser extends ToneAudioNode<AnalyserOptions> {
 	readonly output: AnalyserNode;
 
 	/**
-	 *  The analyser node.
+	 * The analyser node.
 	 */
 	private _analyser = this.context.createAnalyser();
 
 	/**
-	 *  The analysis type
+	 * The analysis type
 	 */
 	private _type!: AnalyserType;
 
 	/**
-	 *  The buffer that the FFT data is written to
+	 * The buffer that the FFT data is written to
 	 */
 	private _buffer!: Float32Array;
 
@@ -61,7 +61,7 @@ export class Analyser extends ToneAudioNode<AnalyserOptions> {
 	}
 
 	/**
-	 *  Run the analysis given the current settings and return the
+	 * Run the analysis given the current settings and return the
 	 */
 	getValue(): Float32Array {
 		if (this._type === "fft") {
@@ -73,7 +73,7 @@ export class Analyser extends ToneAudioNode<AnalyserOptions> {
 	}
 
 	/**
-	 *  The size of analysis. This must be a power of two in the range 16 to 16384.
+	 * The size of analysis. This must be a power of two in the range 16 to 16384.
 	 */
 	get size(): PowerOfTwo {
 		return this._analyser.frequencyBinCount;
@@ -84,7 +84,7 @@ export class Analyser extends ToneAudioNode<AnalyserOptions> {
 	}
 
 	/**
-	 *  The analysis function returned by analyser.getValue(), either "fft" or "waveform".
+	 * The analysis function returned by analyser.getValue(), either "fft" or "waveform".
 	 */
 	get type(): AnalyserType {
 		return this._type;
@@ -95,7 +95,7 @@ export class Analyser extends ToneAudioNode<AnalyserOptions> {
 	}
 
 	/**
-	 *  0 represents no time averaging with the last analysis frame.
+	 * 0 represents no time averaging with the last analysis frame.
 	 */
 	get smoothing(): NormalRange {
 		return this._analyser.smoothingTimeConstant;
@@ -106,7 +106,7 @@ export class Analyser extends ToneAudioNode<AnalyserOptions> {
 	}
 
 	/**
-	 *  Clean up.
+	 * Clean up.
 	 */
 	dispose(): this {
 		super.dispose();

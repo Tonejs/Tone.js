@@ -63,22 +63,22 @@ export class Context extends Emitter<"statechange" | "tick"> implements BaseAudi
 	private readonly _ticker: Ticker;
 
 	/**
-	 *  The default latency hint
+	 * The default latency hint
 	 */
 	private _latencyHint: ContextLatencyHint | Seconds;
 
 	/**
-	 *  An object containing all of the constants AudioBufferSourceNodes
+	 * An object containing all of the constants AudioBufferSourceNodes
 	 */
 	private _constants = new Map<number, AudioBufferSourceNode>();
 
 	/**
-	 *  All of the setTimeout events.
+	 * All of the setTimeout events.
 	 */
 	private _timeouts: Timeline<ContextTimeoutEvent> = new Timeline();
 
 	/**
-	 *  The timeout id counter
+	 * The timeout id counter
 	 */
 	private _timeoutIds = 0;
 
@@ -204,32 +204,32 @@ export class Context extends Emitter<"statechange" | "tick"> implements BaseAudi
 	}
 
 	/**
-	 *  The current time in seconds of the AudioContext.
+	 * The current time in seconds of the AudioContext.
 	 */
 	get currentTime(): Seconds {
 		return this._context.currentTime;
 	}
 	/**
-	 *  The current time in seconds of the AudioContext.
+	 * The current time in seconds of the AudioContext.
 	 */
 	get state(): AudioContextState {
 		return this._context.state;
 	}
 	/**
-	 *  The current time in seconds of the AudioContext.
+	 * The current time in seconds of the AudioContext.
 	 */
 	get sampleRate(): number {
 		return this._context.sampleRate;
 	}
 	/**
-	 *  The listener
+	 * The listener
 	 */
 	get listener(): AudioListener {
 		return this._context.listener;
 	}
 
 	/**
-	 *  There is only one Transport per Context. It is created on initialization.
+	 * There is only one Transport per Context. It is created on initialization.
 	 */
 	get transport(): Transport {
 		this.assert(this._initialized, "The context must be initialized before being used by invoking context.initialize()");
@@ -241,7 +241,7 @@ export class Context extends Emitter<"statechange" | "tick"> implements BaseAudi
 	}
 
 	/**
-	 *  A reference to the Context's destination node.
+	 * A reference to the Context's destination node.
 	 */
 	get destination(): Destination {
 		this.assert(this._initialized, "The context must be initialized before being used by invoking context.initialize()");
@@ -257,10 +257,10 @@ export class Context extends Emitter<"statechange" | "tick"> implements BaseAudi
 	///////////////////////////////////////////////////////////////////////
 
 	/**
-	 *  How often the interval callback is invoked.
-	 *  This number corresponds to how responsive the scheduling
-	 *  can be. context.updateInterval + context.lookAhead gives you the
-	 *  total latency between scheduling an event and hearing it.
+	 * How often the interval callback is invoked.
+	 * This number corresponds to how responsive the scheduling
+	 * can be. context.updateInterval + context.lookAhead gives you the
+	 * total latency between scheduling an event and hearing it.
 	 */
 	get updateInterval(): Seconds {
 		return this._ticker.updateInterval;
@@ -270,8 +270,8 @@ export class Context extends Emitter<"statechange" | "tick"> implements BaseAudi
 	}
 
 	/**
-	 *  What the source of the clock is, either "worker" (default),
-	 *  "timeout", or "offline" (none).
+	 * What the source of the clock is, either "worker" (default),
+	 * "timeout", or "offline" (none).
 	 */
 	get clockSource(): TickerClockSource {
 		return this._ticker.type;
@@ -318,7 +318,7 @@ export class Context extends Emitter<"statechange" | "tick"> implements BaseAudi
 	}
 
 	/**
-	 *  The unwrapped AudioContext.
+	 * The unwrapped AudioContext.
 	 */
 	get rawContext(): AnyAudioContext {
 		return this._context;
@@ -332,8 +332,8 @@ export class Context extends Emitter<"statechange" | "tick"> implements BaseAudi
 	}
 
 	/**
-	 *  Starts the audio context from a suspended state. This is required
-	 *  to initially start the AudioContext.
+	 * Starts the audio context from a suspended state. This is required
+	 * to initially start the AudioContext.
 	 */
 	resume(): Promise<void> {
 		if (this._context.state === "suspended" && isAudioContext(this._context)) {
@@ -344,8 +344,8 @@ export class Context extends Emitter<"statechange" | "tick"> implements BaseAudi
 	}
 
 	/**
-	 *  Promise which is invoked when the context is running.
-	 *  Tries to resume the context if it's not started.
+	 * Promise which is invoked when the context is running.
+	 * Tries to resume the context if it's not started.
 	 */
 	async close(): Promise<void> {
 		if (isAudioContext(this._context)) {
@@ -357,7 +357,7 @@ export class Context extends Emitter<"statechange" | "tick"> implements BaseAudi
 	}
 
 	/**
-	 *  Generate a looped buffer at some constant value.
+	 * Generate a looped buffer at some constant value.
 	 */
 	getConstant(val: number): AudioBufferSourceNode {
 		if (this._constants.has(val)) {
@@ -380,7 +380,7 @@ export class Context extends Emitter<"statechange" | "tick"> implements BaseAudi
 	}
 
 	/**
-	 *  Clean up. Also closes the audio context.
+	 * Clean up. Also closes the audio context.
 	 */
 	dispose(): this {
 		super.dispose();
@@ -395,8 +395,8 @@ export class Context extends Emitter<"statechange" | "tick"> implements BaseAudi
 	///////////////////////////////////////////////////////////////////////
 
 	/**
-	 *  The private loop which keeps track of the context scheduled timeouts
-	 *  Is invoked from the clock source
+	 * The private loop which keeps track of the context scheduled timeouts
+	 * Is invoked from the clock source
 	 */
 	private _timeoutLoop(): void  {
 		const now = this.now();
@@ -412,8 +412,8 @@ export class Context extends Emitter<"statechange" | "tick"> implements BaseAudi
 	}
 
 	/**
-	 *  A setTimeout which is guaranteed by the clock source.
-	 *  Also runs in the offline context.
+	 * A setTimeout which is guaranteed by the clock source.
+	 * Also runs in the offline context.
 	 * @param  fn       The callback to invoke
 	 * @param  timeout  The timeout in seconds
 	 * @returns ID to use when invoking Context.clearTimeout
@@ -430,7 +430,7 @@ export class Context extends Emitter<"statechange" | "tick"> implements BaseAudi
 	}
 
 	/**
-	 *  Clears a previously scheduled timeout with Tone.context.setTimeout
+	 * Clears a previously scheduled timeout with Tone.context.setTimeout
 	 * @param  id  The ID returned from setTimeout
 	 */
 	clearTimeout(id: number): this {

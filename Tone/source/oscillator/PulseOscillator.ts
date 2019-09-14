@@ -47,12 +47,12 @@ export class PulseOscillator extends Source<PulseOscillatorOptions> implements T
 	readonly name: string = "PulseOscillator";
 
 	/**
-	 *  The width of the pulse.
+	 * The width of the pulse.
 	 */
 	width: Signal<AudioRange>;
 
 	/**
-	 *  gate the width amount
+	 * gate the width amount
 	 */
 	private _widthGate: Gain = new Gain({
 		context: this.context,
@@ -60,22 +60,22 @@ export class PulseOscillator extends Source<PulseOscillatorOptions> implements T
 	});
 
 	/**
-	 *  the sawtooth oscillator
+	 * the sawtooth oscillator
 	 */
 	private _sawtooth: Oscillator;
 
 	/**
-	 *  The frequency control.
+	 * The frequency control.
 	 */
 	frequency: Signal<Frequency>;
 
 	/**
-	 *  The detune in cents.
+	 * The detune in cents.
 	 */
 	detune: Signal<Cents>;
 
 	/**
-	 *  Threshold the signal to turn it into a square
+	 * Threshold the signal to turn it into a square
 	 */
 	private _thresh = new WaveShaper({
 		context: this.context,
@@ -127,7 +127,7 @@ export class PulseOscillator extends Source<PulseOscillatorOptions> implements T
 	}
 
 	/**
-	 *  start the oscillator
+	 * start the oscillator
 	 */
 	protected _start(time: Time): void {
 		time = this.toSeconds(time);
@@ -136,7 +136,7 @@ export class PulseOscillator extends Source<PulseOscillatorOptions> implements T
 	}
 
 	/**
-	 *  stop the oscillator
+	 * stop the oscillator
 	 */
 	protected _stop(time: Time): void {
 		time = this.toSeconds(time);
@@ -148,7 +148,7 @@ export class PulseOscillator extends Source<PulseOscillatorOptions> implements T
 	}
 
 	/**
-	 *  Restart the oscillator
+	 * Restart the oscillator
 	 */
 	restart(time?: Time): this {
 		const computedTime = this.toSeconds(time);
@@ -197,7 +197,7 @@ export class PulseOscillator extends Source<PulseOscillatorOptions> implements T
 	}
 
 	/**
-	 *  Clean up method.
+	 * Clean up method.
 	 */
 	dispose(): this {
 		super.dispose();

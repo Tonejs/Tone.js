@@ -155,7 +155,7 @@ export abstract class TimeBaseClass<Type extends number, Unit extends string> ex
 	///////////////////////////////////////////////////////////////////////////
 
 	/**
-	 *  Evaluate the time value. Returns the time in seconds.
+	 * Evaluate the time value. Returns the time in seconds.
 	 */
 	valueOf(): Type {
 		if (this._val instanceof TimeBaseClass) {
@@ -202,35 +202,35 @@ export abstract class TimeBaseClass<Type extends number, Unit extends string> ex
 	///////////////////////////////////////////////////////////////////////////
 
 	/**
-	 *  Returns the value of a frequency in the current units
+	 * Returns the value of a frequency in the current units
 	 */
 	protected _frequencyToUnits(freq: Hertz): Type {
 		return 1 / freq as Type;
 	}
 
 	/**
-	 *  Return the value of the beats in the current units
+	 * Return the value of the beats in the current units
 	 */
 	protected _beatsToUnits(beats: number): Type {
 		return (60 / this._getBpm()) * beats as Type;
 	}
 
 	/**
-	 *  Returns the value of a second in the current units
+	 * Returns the value of a second in the current units
 	 */
 	protected _secondsToUnits(seconds: Seconds): Type {
 		return seconds as Type;
 	}
 
 	/**
-	 *  Returns the value of a tick in the current time units
+	 * Returns the value of a tick in the current time units
 	 */
 	protected _ticksToUnits(ticks: Ticks): Type {
 		return (ticks * (this._beatsToUnits(1)) / this._getPPQ()) as Type;
 	}
 
 	/**
-	 *  With no arguments, return 'now'
+	 * With no arguments, return 'now'
 	 */
 	protected _noArg(): Type {
 		return this._now();
@@ -294,12 +294,12 @@ export abstract class TimeBaseClass<Type extends number, Unit extends string> ex
 	}
 
 	/**
-	 *  Return the value in seconds
+	 * Return the value in seconds
 	 */
 	abstract toSeconds(): Seconds;
 
 	/**
-	 *  Return the value as a Midi note
+	 * Return the value as a Midi note
 	 */
 	abstract toMidi(): MidiNote;
 
@@ -309,21 +309,21 @@ export abstract class TimeBaseClass<Type extends number, Unit extends string> ex
 	abstract toTicks(): Ticks;
 
 	/**
-	 *  Return the value in hertz
+	 * Return the value in hertz
 	 */
 	toFrequency(): Hertz {
 		return 1 / this.toSeconds();
 	}
 
 	/**
-	 *  Return the time in samples
+	 * Return the time in samples
 	 */
 	toSamples(): Samples {
 		return this.toSeconds() * this.context.sampleRate;
 	}
 
 	/**
-	 *  Return the time in milliseconds.
+	 * Return the time in milliseconds.
 	 */
 	toMilliseconds(): Milliseconds {
 		return this.toSeconds() * 1000;

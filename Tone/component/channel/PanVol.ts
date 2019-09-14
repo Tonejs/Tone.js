@@ -31,17 +31,17 @@ export class PanVol extends ToneAudioNode<PanVolOptions> {
 	private _panner: Panner;
 
 	/**
-	 *  The L/R panning control.
+	 * The L/R panning control.
 	 */
 	readonly pan: Param<AudioRange>;
 
 	/**
-	 *  The volume node
+	 * The volume node
 	 */
 	private _volume: Volume;
 
 	/**
-	 *  The volume control in decibels.
+	 * The volume control in decibels.
 	 */
 	readonly volume: Param<Decibels>;
 

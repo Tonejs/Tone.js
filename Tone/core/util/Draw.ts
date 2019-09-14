@@ -27,24 +27,24 @@ export class Draw extends ToneWithContext<ToneWithContextOptions> {
 	readonly name: string = "Draw";
 
 	/**
-	 *  The duration after which events are not invoked.
+	 * The duration after which events are not invoked.
 	 */
 	expiration: Seconds = 0.25;
 
 	/**
-	 *  The amount of time before the scheduled time
-	 *  that the callback can be invoked. Default is
-	 *  half the time of an animation frame (0.008 seconds).
+	 * The amount of time before the scheduled time
+	 * that the callback can be invoked. Default is
+	 * half the time of an animation frame (0.008 seconds).
 	 */
 	anticipation: Seconds = 0.008;
 
 	/**
-	 *  All of the events.
+	 * All of the events.
 	 */
 	private _events: Timeline<DrawEvent> = new Timeline();
 
 	/**
-	 *  The draw loop
+	 * The draw loop
 	 */
 	private _boundDrawLoop = this._drawLoop.bind(this);
 
@@ -54,8 +54,8 @@ export class Draw extends ToneWithContext<ToneWithContextOptions> {
 	private _animationFrame: number = -1;
 
 	/**
-	 *  Schedule a function at the given time to be invoked
-	 *  on the nearest animation frame.
+	 * Schedule a function at the given time to be invoked
+	 * on the nearest animation frame.
 	 * @param  callback  Callback is invoked at the given time.
 	 * @param  time      The time relative to the AudioContext time to invoke the callback.
 	 */
@@ -72,7 +72,7 @@ export class Draw extends ToneWithContext<ToneWithContextOptions> {
 	}
 
 	/**
-	 *  Cancel events scheduled after the given time
+	 * Cancel events scheduled after the given time
 	 * @param  after  Time after which scheduled events will be removed from the scheduling timeline.
 	 */
 	cancel(after?: Time): this {
@@ -81,7 +81,7 @@ export class Draw extends ToneWithContext<ToneWithContextOptions> {
 	}
 
 	/**
-	 *  The draw loop
+	 * The draw loop
 	 */
 	private _drawLoop(): void {
 		const now = this.context.currentTime;

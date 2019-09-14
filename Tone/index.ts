@@ -4,7 +4,7 @@ import { getContext } from "./core/Global";
 export { start } from "./core/Global";
 
 /**
- *  The current audio context time
+ * The current audio context time
  */
 export function now(): import("./core/type/Units").Seconds {
 	return getContext().now();

@@ -372,7 +372,7 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 	}
 
 	/**
-	 *  Get the synth's attributes.
+	 * Get the synth's attributes.
 	 */
 	get(): VoiceOptions<Voice> {
 		// return a clone of the options

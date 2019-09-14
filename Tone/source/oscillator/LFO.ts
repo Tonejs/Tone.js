@@ -37,7 +37,7 @@ export class LFO extends ToneAudioNode<LFOOptions> {
 	readonly name: string = "LFO";
 
 	/**
-	 *  The oscillator.
+	 * The oscillator.
 	 */
 	private _oscillator: Oscillator;
 
@@ -55,7 +55,7 @@ export class LFO extends ToneAudioNode<LFOOptions> {
 	readonly amplitude: Param<NormalRange>;
 
 	/**
-	 *  The signal which is output when the LFO is stopped
+	 * The signal which is output when the LFO is stopped
 	 */
 	private _stoppedSignal: Signal<AudioRange>;
 
@@ -66,7 +66,7 @@ export class LFO extends ToneAudioNode<LFOOptions> {
 	private _zeros: Zero;
 
 	/**
-	 *  The value that the LFO outputs when it's stopped
+	 * The value that the LFO outputs when it's stopped
 	 */
 	private _stoppedValue: number = 0;
 
@@ -170,8 +170,8 @@ export class LFO extends ToneAudioNode<LFOOptions> {
 	}
 
 	/**
-	 *  Start the LFO.
-	 *  @param time The time the LFO will start
+	 * Start the LFO.
+	 * @param time The time the LFO will start
 	 */
 	start(time?: Time): this {
 		time = this.toSeconds(time);
@@ -181,8 +181,8 @@ export class LFO extends ToneAudioNode<LFOOptions> {
 	}
 
 	/**
-	 *  Stop the LFO.
-	 *  @param  time The time the LFO will stop
+	 * Stop the LFO.
+	 * @param  time The time the LFO will stop
 	 */
 	stop(time?: Time): this {
 		time = this.toSeconds(time);
@@ -277,7 +277,7 @@ export class LFO extends ToneAudioNode<LFOOptions> {
 	}
 
 	/**
-	 *  Returns the playback state of the source, either "started" or "stopped".
+	 * Returns the playback state of the source, either "started" or "stopped".
 	 */
 	get state(): BasicPlaybackState {
 		return this._oscillator.state;

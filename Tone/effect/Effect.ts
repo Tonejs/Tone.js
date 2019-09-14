@@ -19,24 +19,24 @@ extends ToneAudioNode<Options> {
 	readonly name: string = "Effect";
 
 	/**
-	 *  the drywet knob to control the amount of effect
+	 * the drywet knob to control the amount of effect
 	 */
 	private _dryWet: CrossFade = new CrossFade({ context : this.context });
 
 	/**
-	 *  The wet control is how much of the effected
-	 *  will pass through to the output. 1 = 100% effected
-	 *  signal, 0 = 100% dry signal.
+	 * The wet control is how much of the effected
+	 * will pass through to the output. 1 = 100% effected
+	 * signal, 0 = 100% dry signal.
 	 */
 	wet: Signal<NormalRange> = this._dryWet.fade;
 
 	/**
-	 *  connect the effectSend to the input of hte effect
+	 * connect the effectSend to the input of hte effect
 	 */
 	protected effectSend: Gain = new Gain({ context : this.context });
 
 	/**
-	 *  connect the output of the effect to the effectReturn
+	 * connect the output of the effect to the effectReturn
 	 */
 	protected effectReturn: Gain = new Gain({ context : this.context });
 
@@ -68,7 +68,7 @@ extends ToneAudioNode<Options> {
 	}
 
 	/**
-	 *  chains the effect in between the effectSend and effectReturn
+	 * chains the effect in between the effectSend and effectReturn
 	 */
 	protected connectEffect(effect: ToneAudioNode | AudioNode): this {
 		// add it to the internal channels

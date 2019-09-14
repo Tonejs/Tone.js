@@ -26,7 +26,10 @@ export type ToneAudioNodeOptions = ToneWithContextOptions;
 export abstract class ToneAudioNode<Options extends ToneAudioNodeOptions = ToneAudioNodeOptions>
 extends ToneWithContext<Options> {
 
-	abstract name = "AudioNode";
+	/**
+	 * The name of the class
+	 */
+	abstract readonly name: string = "AudioNode";
 
 	/**
 	 * The input node or nodes. If the object is a source,
@@ -41,8 +44,8 @@ extends ToneWithContext<Options> {
 	abstract output: OutputNode | undefined;
 
 	/**
-	 *  The number of inputs feeding into the AudioNode.
-	 *  For source nodes, this will be 0.
+	 * The number of inputs feeding into the AudioNode.
+	 * For source nodes, this will be 0.
 	 */
 	get numberOfInputs(): number {
 		if (isDefined(this.input)) {
@@ -57,7 +60,7 @@ extends ToneWithContext<Options> {
 	}
 
 	/**
-	 *  The number of outputs of the AudioNode.
+	 * The number of outputs of the AudioNode.
 	 */
 	get numberOfOutputs(): number {
 		if (isDefined(this.output)) {
@@ -132,9 +135,9 @@ extends ToneWithContext<Options> {
 	}
 
 	/**
-	 *  channelCount is the number of channels used when up-mixing and down-mixing
-	 *  connections to any inputs to the node. The default value is 2 except for
-	 *  specific nodes where its value is specially determined.
+	 * channelCount is the number of channels used when up-mixing and down-mixing
+	 * connections to any inputs to the node. The default value is 2 except for
+	 * specific nodes where its value is specially determined.
 	 */
 	get channelCount(): number {
 		return this._getChannelProperties().channelCount;
@@ -147,9 +150,9 @@ extends ToneWithContext<Options> {
 
 	// tslint:disable: max-line-length
 	/**
-	 *  channelCountMode determines how channels will be counted when up-mixing and
-	 *  down-mixing connections to any inputs to the node.
-	 *  The default value is "max". This attribute has no effect for nodes with no inputs.
+	 * channelCountMode determines how channels will be counted when up-mixing and
+	 * down-mixing connections to any inputs to the node.
+	 * The default value is "max". This attribute has no effect for nodes with no inputs.
 	 * * "max" - computedNumberOfChannels is the maximum of the number of channels of all connections to an input. In this mode channelCount is ignored.
 	 * * "clamped-max" - computedNumberOfChannels is determined as for "max" and then clamped to a maximum value of the given channelCount.
 	 * * "explicit" - computedNumberOfChannels is the exact value as specified by the channelCount.
@@ -165,9 +168,9 @@ extends ToneWithContext<Options> {
 	}
 
 	/**
-	 *  channelInterpretation determines how individual channels will be treated
-	 *  when up-mixing and down-mixing connections to any inputs to the node.
-	 *  The default value is "speakers".
+	 * channelInterpretation determines how individual channels will be treated
+	 * when up-mixing and down-mixing connections to any inputs to the node.
+	 * The default value is "speakers".
 	 */
 	get channelInterpretation(): ChannelInterpretation {
 		return this._getChannelProperties().channelInterpretation;
@@ -220,10 +223,10 @@ extends ToneWithContext<Options> {
 	}
 
 	/**
-	 *  Connect the output of this node to the rest of the nodes in series.
+	 * Connect the output of this node to the rest of the nodes in series.
 	 * @example
-	 *  //connect a node to an effect, panVol and then to the master output
-	 *  node.chain(effect, panVol, Tone.Destination);
+	 * //connect a node to an effect, panVol and then to the master output
+	 * node.chain(effect, panVol, Tone.Destination);
 	 */
 	chain(...nodes: InputNode[]): this {
 		connectSeries(this, ...nodes);
@@ -231,7 +234,7 @@ extends ToneWithContext<Options> {
 	}
 
 	/**
-	 *  connect the output of this node to the rest of the nodes in parallel.
+	 * connect the output of this node to the rest of the nodes in parallel.
 	 */
 	fan(...nodes: InputNode[]): this {
 		nodes.forEach(node => this.connect(node));
@@ -267,7 +270,7 @@ extends ToneWithContext<Options> {
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
- *  connect together all of the arguments in series
+ * connect together all of the arguments in series
  * @param nodes
  */
 export function connectSeries(...nodes: InputNode[]): void {

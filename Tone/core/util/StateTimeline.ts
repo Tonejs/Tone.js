@@ -9,7 +9,7 @@ export interface StateTimelineEvent extends TimelineEvent {
 }
 
 /**
- *  A Timeline State. Provides the methods: `setStateAtTime("state", time)` and `getValueAtTime(time)`
+ * A Timeline State. Provides the methods: `setStateAtTime("state", time)` and `getValueAtTime(time)`
  * @param initial The initial state of the StateTimeline.  Defaults to `undefined`
  * @category Core
  */
@@ -18,7 +18,7 @@ export class StateTimeline<AdditionalOptions extends {} = {}> extends Timeline<S
 	readonly name: string = "StateTimeline";
 
 	/**
-	 *  The initial state
+	 * The initial state
 	 */
 	private _initial: PlaybackState;
 
@@ -28,8 +28,8 @@ export class StateTimeline<AdditionalOptions extends {} = {}> extends Timeline<S
 	}
 
 	/**
-	 *  Returns the scheduled state scheduled before or at
-	 *  the given time.
+	 * Returns the scheduled state scheduled before or at
+	 * the given time.
 	 * @param  time  The time to query.
 	 * @return  The name of the state input in setStateAtTime.
 	 */
@@ -43,7 +43,7 @@ export class StateTimeline<AdditionalOptions extends {} = {}> extends Timeline<S
 	}
 
 	/**
-	 *  Add a state to the timeline.
+	 * Add a state to the timeline.
 	 * @param  state The name of the state to set.
 	 * @param  time  The time to query.
 	 * @param options Any additional options that are needed in the timeline.
@@ -59,7 +59,7 @@ export class StateTimeline<AdditionalOptions extends {} = {}> extends Timeline<S
 	}
 
 	/**
-	 *  Return the event before the time with the given state
+	 * Return the event before the time with the given state
 	 * @param  state The state to look for
 	 * @param  time  When to check before
 	 * @return  The event with the given state before the time
@@ -76,7 +76,7 @@ export class StateTimeline<AdditionalOptions extends {} = {}> extends Timeline<S
 	}
 
 	/**
-	 *  Return the event after the time with the given state
+	 * Return the event after the time with the given state
 	 * @param  state The state to look for
 	 * @param  time  When to check from
 	 * @return  The event with the given state after the time

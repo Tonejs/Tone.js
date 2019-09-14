@@ -32,28 +32,28 @@ export class Filter extends ToneAudioNode<FilterOptions> {
 	private _filters: BiquadFilterNode[] = [];
 
 	/**
-	 *  the rolloff value of the filter
+	 * the rolloff value of the filter
 	 */
 	private _rolloff!: number;
 	private _type: BiquadFilterType;
 
 	/**
-	 *  The Q or Quality of the filter
+	 * The Q or Quality of the filter
 	 */
 	readonly Q: Signal<Positive>;
 
 	/**
-	 *  The cutoff frequency of the filter.
+	 * The cutoff frequency of the filter.
 	 */
 	readonly frequency: Signal<Frequency>;
 
 	/**
-	 *  The detune parameter
+	 * The detune parameter
 	 */
 	readonly detune: Signal<Cents>;
 
 	/**
-	 *  The gain of the filter, only used in certain filter types
+	 * The gain of the filter, only used in certain filter types
 	 */
 	readonly gain: Signal<Decibels>;
 
@@ -187,7 +187,7 @@ export class Filter extends ToneAudioNode<FilterOptions> {
 	}
 
 	/**
-	 *  Clean up.
+	 * Clean up.
 	 */
 	dispose(): this {
 		super.dispose();

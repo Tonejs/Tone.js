@@ -138,14 +138,14 @@ export class FrequencyClass<Type extends number = Hertz> extends TimeClass<Type,
 	}
 
 	/**
-	 *  Return the duration of one cycle in seconds.
+	 * Return the duration of one cycle in seconds.
 	 */
 	toSeconds(): Seconds {
 		return 1 / super.toSeconds();
 	}
 
 	/**
-	 *  Return the duration of one cycle in ticks
+	 * Return the duration of one cycle in ticks
 	 */
 	toTicks(): Ticks {
 		const quarterTime = this._beatsToUnits(1);
@@ -158,35 +158,35 @@ export class FrequencyClass<Type extends number = Hertz> extends TimeClass<Type,
 	///////////////////////////////////////////////////////////////////////////
 
 	/**
-	 *  With no arguments, return 0
+	 * With no arguments, return 0
 	 */
 	protected _noArg(): Type {
 		return 0 as Type;
 	}
 
 	/**
-	 *  Returns the value of a frequency in the current units
+	 * Returns the value of a frequency in the current units
 	 */
 	protected _frequencyToUnits(freq: Hertz): Type {
 		return freq as Type;
 	}
 
 	/**
-	 *  Returns the value of a tick in the current time units
+	 * Returns the value of a tick in the current time units
 	 */
 	protected _ticksToUnits(ticks: Ticks): Type {
 		return 1 / ((ticks * 60) / (this._getBpm() * this._getPPQ())) as Type;
 	}
 
 	/**
-	 *  Return the value of the beats in the current units
+	 * Return the value of the beats in the current units
 	 */
 	protected _beatsToUnits(beats: number): Type {
 		return 1 / super._beatsToUnits(beats) as Type;
 	}
 
 	/**
-	 *  Returns the value of a second in the current units
+	 * Returns the value of a second in the current units
 	 */
 	protected _secondsToUnits(seconds: Seconds): Type {
 		return 1 / seconds as Type;

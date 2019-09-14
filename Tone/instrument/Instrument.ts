@@ -10,12 +10,12 @@ export interface InstrumentOptions extends ToneAudioNodeOptions {
 }
 
 /**
- *  Base-class for all instruments
+ * Base-class for all instruments
  */
 export abstract class Instrument<Options extends InstrumentOptions> extends ToneAudioNode<Options> {
 
 	/**
-	 *  The output and volume triming node
+	 * The output and volume triming node
 	 */
 	private _volume: Volume;
 	output: OutputNode;
@@ -118,10 +118,10 @@ export abstract class Instrument<Options extends InstrumentOptions> extends Tone
 	}
 
 	/**
-	 *  Trigger the attack and then the release after the duration.
+	 * Trigger the attack and then the release after the duration.
 	 * @param  note     The note to trigger.
 	 * @param  duration How long the note should be held for before
-	 *                          triggering the release. This value must be greater than 0.
+	 *                         triggering the release. This value must be greater than 0.
 	 * @param time  When the note should be triggered.
 	 * @param  velocity The velocity the note should be triggered at.
 	 * @example
@@ -155,7 +155,7 @@ export abstract class Instrument<Options extends InstrumentOptions> extends Tone
 	private _original_triggerRelease = this.triggerRelease;
 
 	/**
-	 *  clean up
+	 * clean up
 	 * @returns {Instrument} this
 	 */
 	dispose(): this {

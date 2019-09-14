@@ -25,35 +25,35 @@ export class TicksClass extends TransportTimeClass<Ticks> {
 	}
 
 	/**
-	 *  Return the value of the beats in the current units
+	 * Return the value of the beats in the current units
 	 */
 	protected _beatsToUnits(beats: number): Ticks {
 		return this._getPPQ() * beats;
 	}
 
 	/**
-	 *  Returns the value of a second in the current units
+	 * Returns the value of a second in the current units
 	 */
 	protected _secondsToUnits(seconds: Seconds): Ticks {
 		return Math.floor(seconds / (60 / this._getBpm()) * this._getPPQ());
 	}
 
 	/**
-	 *  Returns the value of a tick in the current time units
+	 * Returns the value of a tick in the current time units
 	 */
 	protected _ticksToUnits(ticks: Ticks): Ticks {
 		return ticks;
 	}
 
 	/**
-	 *  Return the time in ticks
+	 * Return the time in ticks
 	 */
 	toTicks(): Ticks {
 		return this.valueOf() as Ticks;
 	}
 
 	/**
-	 *  Return the time in seconds
+	 * Return the time in seconds
 	 */
 	toSeconds(): Seconds {
 		return (this.valueOf() / this._getPPQ()) * (60 / this._getBpm());

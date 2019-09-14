@@ -12,12 +12,12 @@ export class OfflineContext extends Context {
 	readonly name: string = "OfflineContext";
 
 	/**
-	 *  A private reference to the duration
+	 * A private reference to the duration
 	 */
 	private readonly _duration: Seconds;
 
 	/**
-	 *  An artificial clock source
+	 * An artificial clock source
 	 */
 	private _currentTime: Seconds = 0;
 
@@ -52,7 +52,7 @@ export class OfflineContext extends Context {
 	}
 
 	/**
-	 *  Override the now method to point to the internal clock time
+	 * Override the now method to point to the internal clock time
 	 */
 	now(): Seconds {
 		return this._currentTime;
@@ -66,7 +66,7 @@ export class OfflineContext extends Context {
 	}
 
 	/**
-	 *  Render the output of the OfflineContext
+	 * Render the output of the OfflineContext
 	 */
 	render(): Promise<AudioBuffer> {
 		while (this._duration - this._currentTime >= 0) {
@@ -80,7 +80,7 @@ export class OfflineContext extends Context {
 	}
 
 	/**
-	 *  Close the context
+	 * Close the context
 	 */
 	close(): Promise<void> {
 		return Promise.resolve();

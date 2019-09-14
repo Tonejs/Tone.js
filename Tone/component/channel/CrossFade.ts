@@ -89,9 +89,9 @@ export class CrossFade extends ToneAudioNode<CrossFadeOptions> {
 	readonly input: undefined;
 
 	/**
-	 * 	The mix between the two inputs. A fade value of 0
-	 * 	will output 100% crossFade.a and
-	 * 	a value of 1 will output 100% crossFade.b.
+	 * The mix between the two inputs. A fade value of 0
+	 * will output 100% crossFade.a and
+	 * a value of 1 will output 100% crossFade.b.
 	 */
 	readonly fade: Signal<NormalRange>;
 
