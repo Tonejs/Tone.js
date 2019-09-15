@@ -10,10 +10,9 @@ export interface TransportEventOptions {
 }
 
 /**
- * TransportEvent is an internal class used by (Tone.Transport)[Transport]
+ * TransportEvent is an internal class used by [[Transport]]
  * to schedule events. Do no invoke this class directly, it is
  * handled from within Tone.Transport.
- * @category Core
  */
 export class TransportEvent {
 
