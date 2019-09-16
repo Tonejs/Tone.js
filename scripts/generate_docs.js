@@ -13,7 +13,7 @@ function generateDocs() {
 	execSync(`npm run docs:json --docs_json=${tmpFile}`);
 	// add the version and commit to the file
 	const json = JSON.parse(readFileSync(tmpFile, "utf-8"));
-	console.log(`json children ${json.children.length}`);
+	console.log(`doc files: ${json.children.length}`);
 	json.commit = commitHash;
 	const package = JSON.parse(readFileSync(resolve(__dirname, "../package.json"), "utf-8"));
 	json.version = package.version;
