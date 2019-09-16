@@ -20,7 +20,8 @@ const dummyContext: Context = {
 let globalContext: Context = dummyContext;
 
 /**
- * Returns the default system-wide AudioContext
+ * Returns the default system-wide [[Context]]
+ * @category Core
  */
 export function getContext(): Context {
 	if (globalContext === dummyContext && hasAudioContext) {
@@ -31,6 +32,7 @@ export function getContext(): Context {
 
 /**
  * Set the default audio context
+ * @category Core
  */
 export function setContext(context: Context | AudioContext | OfflineAudioContext): void {
 	if (isAudioContext(context)) {
@@ -54,6 +56,7 @@ export function setContext(context: Context | AudioContext | OfflineAudioContext
  * 	await Tone.start()
  * 	console.log('audio ready')
  * })
+ * @category Core
  */
 export function start(): Promise <void> {
 	return globalContext.resume();
