@@ -4,7 +4,7 @@ import { isArray, isFunction, isUndef } from "../core/util/TypeCheck";
 import { Signal, SignalOptions } from "./Signal";
 import { SignalOperator } from "./SignalOperator";
 
-type WaveShaperMappingFn = (value: number, index?: number) => number;
+export type WaveShaperMappingFn = (value: number, index?: number) => number;
 
 type WaveShaperMapping = WaveShaperMappingFn | number[] | Float32Array;
 
