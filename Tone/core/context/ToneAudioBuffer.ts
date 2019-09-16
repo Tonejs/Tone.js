@@ -23,8 +23,8 @@ interface ToneAudioBufferOptions {
  * of _all_ of the buffers. These are ToneAudioBuffer.on("load" / "progress" / "error")
  * @example
  * var buffer = new ToneAudioBuffer("path/to/sound.mp3", function(){
- * //the buffer is now available.
- * var buff = buffer.get();
+ * 	//the buffer is now available.
+ * 	var buff = buffer.get();
  * });
  * @example
  * //can load provide fallback extension types if the first type is not supported.

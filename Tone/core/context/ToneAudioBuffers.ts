@@ -22,20 +22,20 @@ interface ToneAudioBuffersOptions {
  * @example
  * //load a whole bank of piano samples
  * var pianoSamples = new ToneAudioBuffers({
- * "C4" : "path/to/C4.mp3"
- * "C#4" : "path/to/C#4.mp3"
- * "D4" : "path/to/D4.mp3"
- * "D#4" : "path/to/D#4.mp3"
+ * 	"C4" : "path/to/C4.mp3"
+ * 	"C#4" : "path/to/C#4.mp3"
+ * 	"D4" : "path/to/D4.mp3"
+ * 	"D#4" : "path/to/D#4.mp3"
  * }, function(){
- * //play one of the samples when they all load
- * player.buffer = pianoSamples.get("C4");
- * player.start();
+ * 	//play one of the samples when they all load
+ * 	player.buffer = pianoSamples.get("C4");
+ * 	player.start();
  * });
  * @example
  * //To pass in additional parameters in the second parameter
  * var buffers = new ToneAudioBuffers(urls, {
- * "onload" : callback,
- * "baseUrl" : "../path/to/audio/"
+ * 	"onload" : callback,
+ * 	"baseUrl" : "../path/to/audio/"
  * })
  * @category Core
  */
