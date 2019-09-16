@@ -3,7 +3,7 @@
 	"mode": "file",
 	"defaultCategory" : "Global",
 	"categorizeByGroup" : true,
-	"categoryOrder" : ["Global", "Core"],
+	"categoryOrder" : ["Core", "Source", "Instrument", "Effect", "Component", "Signal"],
 	"exclude" : ["./Tone/**/*.test.ts", "./test/**/*.ts"],
 	"excludeProtected" : true,
 	"excludePrivate" : true,
