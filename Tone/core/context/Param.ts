@@ -41,7 +41,6 @@ export type AutomationEvent = NormalAutomationEvent | TargetAutomationEvent;
  * additional unit conversion functionality. It also
  * serves as a base-class for classes which have a single,
  * automatable parameter.
- * @category Core
  */
 export class Param<Type extends Unit = number>
 	extends ToneWithContext<ParamOptions<Type>>

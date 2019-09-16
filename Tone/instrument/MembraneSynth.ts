@@ -21,6 +21,7 @@ export interface MembraneSynthOptions extends SynthOptions {
  * @example
  * var synth = new MembraneSynth().toMaster();
  * synth.triggerAttackRelease("C2", "8n");
+ * @category Instrument
  */
 export class MembraneSynth extends Synth<MembraneSynthOptions> {
 

@@ -25,6 +25,7 @@ export interface PlayerOptions extends SourceOptions {
  * var player = new Player("./path/to/sample.mp3").toDestination();
  * //play as soon as the buffer is loaded
  * player.autostart = true;
+ * @category Source
  */
 export class Player extends Source<PlayerOptions> {
 

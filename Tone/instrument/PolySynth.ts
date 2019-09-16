@@ -24,11 +24,7 @@ type VoiceOptions<T> =
 /**
  * The settable synth options. excludes monophonic options.
  */
-type PartialVoiceOptions<T> = RecursivePartial<
-OmitMonophonicOptions<
-VoiceOptions<T>
->
->;
+type PartialVoiceOptions<T> = RecursivePartial<OmitMonophonicOptions<VoiceOptions<T>>>;
 
 export interface PolySynthOptions<Voice> extends InstrumentOptions {
 	maxPolyphony: number;
@@ -53,6 +49,7 @@ export interface PolySynthOptions<Voice> extends InstrumentOptions {
  * synth.set("detune", -1200);
  * //play a chord
  * synth.triggerAttackRelease(["C4", "E4", "A4"], "4n");
+ * @category Instrument
  */
 export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument<VoiceOptions<Voice>> {
 

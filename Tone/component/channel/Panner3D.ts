@@ -22,6 +22,7 @@ export interface Panner3DOptions extends ToneAudioNodeOptions {
 
 /**
  * A spatialized panner node which supports equalpower or HRTF panning.
+ * @category Component
  */
 export class Panner3D extends ToneAudioNode<Panner3DOptions> {
 

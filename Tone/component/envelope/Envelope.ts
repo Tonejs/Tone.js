@@ -45,6 +45,7 @@ export interface EnvelopeOptions extends ToneAudioNodeOptions {
  * 	"release" : 0.8,
  * });
  * env.connect(gainNode.gain);
+ * @category Component
  */
 export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 

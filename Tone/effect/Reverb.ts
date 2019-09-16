@@ -20,7 +20,8 @@ interface ReverbOptions extends EffectOptions {
  *
  * Inspiration from [ReverbGen](https://github.com/adelespinasse/reverbGen).
  * Copyright (c) 2014 Alan deLespinasse Apache 2.0 License.
- *
+ * 
+ * @category Effect
  */
 export class Reverb extends Effect<ReverbOptions> {
 

@@ -11,6 +11,7 @@ export interface WaveformOptions extends MeterBaseOptions {
 
 /**
  * Get the current waveform data of the connected audio source.
+ * @category Component
  */
 export class Waveform extends MeterBase<WaveformOptions> {
 

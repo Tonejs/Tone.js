@@ -69,6 +69,7 @@ const OmniOscillatorSourceMap: {
  * to a FatOscillator of type "sawtooth".
  * @example
  * var omniOsc = new OmniOscillator("C#4", "pwm");
+ * @category Source
  */
 export class OmniOscillator<OscType extends AnyOscillator>
 	extends Source<OmniOscillatorConstructorOptions>

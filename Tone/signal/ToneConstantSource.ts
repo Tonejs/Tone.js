@@ -13,6 +13,7 @@ export interface ToneConstantSourceOptions<Type> extends OneShotSourceOptions {
 /**
  * Wrapper around the native fire-and-forget ConstantSource.
  * Adds the ability to reschedule the stop method.
+ * @category Signal
  */
 export class ToneConstantSource<Type extends Unit = number> extends OneShotSource<ToneConstantSourceOptions<Type>> {
 

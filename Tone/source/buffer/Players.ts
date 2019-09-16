@@ -22,6 +22,7 @@ export interface PlayersOptions extends SourceOptions {
 
 /**
  * Players combines multiple [[Player]] objects.
+ * @category Source
  */
 export class Players extends ToneAudioNode<PlayersOptions> {
 

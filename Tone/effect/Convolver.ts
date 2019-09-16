@@ -18,6 +18,7 @@ interface ToneConvolverOptions extends EffectOptions {
  * @example
  * //initializing the convolver with an impulse response
  * var convolver = new Convolver("./path/to/ir.wav").toDestination();
+ * @category Effect
  */
 export class Convolver extends Effect<ToneConvolverOptions> {
 

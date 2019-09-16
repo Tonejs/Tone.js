@@ -23,6 +23,7 @@ export interface ToneBufferSourceOptions extends OneShotSourceOptions {
 
 /**
  * Wrapper around the native BufferSourceNode.
+ * @category Source
  */
 export class ToneBufferSource extends OneShotSource<ToneBufferSourceOptions> {
 

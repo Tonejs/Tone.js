@@ -10,6 +10,7 @@ import { SignalOperator } from "./SignalOperator";
  * var neg = new Negate();
  * var sig = new Signal(-2).connect(neg);
  * //output of neg is positive 2.
+ * @category Signal
  */
 export class Negate extends SignalOperator<ToneAudioNodeOptions> {
 

@@ -19,6 +19,7 @@ export interface ScaleOptions extends ToneAudioNodeOptions {
  * var scale = new Scale(50, 100);
  * var signal = new Signal(0.5).connect(scale);
  * //the output of scale equals 75
+ * @category Signal
  */
 export class Scale extends SignalOperator<ScaleOptions> {
 

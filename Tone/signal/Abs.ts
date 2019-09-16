@@ -10,6 +10,7 @@ import { WaveShaper } from "./WaveShaper";
  * var abs = new Tone.Abs();
  * signal.connect(abs);
  * //the output of abs is 1.
+ * @category Signal
  */
 export class Abs extends SignalOperator<ToneAudioNodeOptions> {
 

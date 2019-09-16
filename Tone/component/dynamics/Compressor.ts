@@ -20,6 +20,7 @@ interface CompressorOptions extends ToneAudioNodeOptions {
  * Read more on [Wikipedia](https://en.wikipedia.org/wiki/Dynamic_range_compression).
  * @example
  * var comp = new Compressor(-30, 3);
+ * @category Component
  */
 export class Compressor extends ToneAudioNode<CompressorOptions> {
 

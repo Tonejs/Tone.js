@@ -29,6 +29,7 @@ interface FrequencyShifterOptions extends EffectOptions {
  * let input = new Tone.Oscillator(230, "sawtooth").start();
  * let shift = new FrequencyShifter(42).toDestination();
  * input.connect(shift).
+ * @category Effect
  */
 export class FrequencyShifter extends Effect<FrequencyShifterOptions> {
 

@@ -31,6 +31,7 @@ export interface LFOOptions extends ToneAudioNodeOptions {
  * @example
  * var lfo = new LFO("4n", 400, 4000);
  * lfo.connect(filter.frequency);
+ * @category Source
  */
 export class LFO extends ToneAudioNode<LFOOptions> {
 

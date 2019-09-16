@@ -20,7 +20,6 @@ interface TickSourceOffsetEvent {
 
 /**
  * Uses [TickSignal](TickSignal) to track elapsed ticks with complex automation curves.
- * @category Core
  */
 export class TickSource<Type extends BPM | Hertz> extends ToneWithContext<TickSourceOptions> {
 

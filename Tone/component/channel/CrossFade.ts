@@ -41,6 +41,7 @@ interface CrossFadeOptions extends ToneAudioNodeOptions {
  * // ^ only effectB is output
  * crossFade.fade.value = 0.5;
  * // ^ the two signals are mixed equally.
+ * @category Component
  */
 export class CrossFade extends ToneAudioNode<CrossFadeOptions> {
 

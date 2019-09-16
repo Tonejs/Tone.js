@@ -27,6 +27,7 @@ export { FMOscillatorOptions } from "./OscillatorInterface";
  * @example
  * //a sine oscillator frequency-modulated by a square wave
  * var fmOsc = new FMOscillator("Ab3", "sine", "square").toDestination().start();
+ * @category Source
  */
 export class FMOscillator extends Source<FMOscillatorOptions> implements ToneOscillatorInterface {
 

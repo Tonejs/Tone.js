@@ -5,7 +5,7 @@ import { FrequencyClass } from "../core/type/Frequency";
 import { Frequency, Interval, MidiNote, NormalRange, Note, Time } from "../core/type/Units";
 import { optionsFromArguments } from "../core/util/Defaults";
 import { noOp } from "../core/util/Interface";
-import { isArray, isNote, isNumber, isString } from "../core/util/TypeCheck";
+import { isArray, isNote, isNumber } from "../core/util/TypeCheck";
 import { Instrument, InstrumentOptions } from "../instrument/Instrument";
 import { ToneBufferSource, ToneBufferSourceCurve } from "../source/buffer/ToneBufferSource";
 
@@ -41,6 +41,7 @@ export interface SamplerOptions extends InstrumentOptions {
  * 	//sampler will repitch the closest sample
  * 	sampler.triggerAttack("D3")
  * })
+ * @category Instrument
  */
 export class Sampler extends Instrument<SamplerOptions> {
 
@@ -284,7 +285,7 @@ export class Sampler extends Instrument<SamplerOptions> {
 	/**
 	 * Add a note to the sampler.
 	 * @param  note      The buffer's pitch.
-	 * @param  url  Either the url of the bufer, or a buffer which will be added with the given name.
+	 * @param  url  Either the url of the buffer, or a buffer which will be added with the given name.
 	 * @param  callback  The callback to invoke when the url is loaded.
 	 */
 	add(note: Note | MidiNote, url: string | ToneAudioBuffer | AudioBuffer, callback?: () => void): this {

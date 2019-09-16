@@ -25,6 +25,7 @@ interface WaveShaperOptions extends ToneAudioNodeOptions {
  * @example
  * //a waveshaper can also be constructed with an array of values
  * var invert = new WaveShaper([1, -1]);
+ * @category Signal
  */
 export class WaveShaper extends SignalOperator<WaveShaperOptions> {
 

@@ -30,7 +30,6 @@ export interface TimeExpression<Type extends number> {
  * new TimeBase("2t")
  * new TimeBase({"2t" : 2})
  * new TimeBase("2t") + new TimeBase("4n");
- * @category Unit
  */
 export abstract class TimeBaseClass<Type extends number, Unit extends string> extends Tone {
 

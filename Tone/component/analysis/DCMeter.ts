@@ -13,6 +13,7 @@ export type DCMeterOptions = MeterBaseOptions;
  * signal.connect(meter);
  * //the current level of the signal
  * var level = meter.getValue();
+ * @category Component
  */
 export class DCMeter extends MeterBase<DCMeterOptions> {
 

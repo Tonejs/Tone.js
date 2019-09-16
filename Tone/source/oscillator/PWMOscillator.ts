@@ -17,6 +17,7 @@ export { PWMOscillatorOptions } from "./OscillatorInterface";
  * generated.
  * @example
  * var pwm = new PWMOscillator("Ab3", 0.3).toDestination().start();
+ * @category Source
  */
 export class PWMOscillator extends Source<PWMOscillatorOptions> implements ToneOscillatorInterface {
 

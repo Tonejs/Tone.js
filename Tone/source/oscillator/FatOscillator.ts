@@ -18,6 +18,7 @@ export { FatOscillatorOptions } from "./OscillatorInterface";
  * @param spread The detune spread between the oscillators.
  * @example
  * var fatOsc = new FatOscillator("Ab3", "sine", 40).toDestination().start();
+ * @category Source
  */
 export class FatOscillator extends Source<FatOscillatorOptions> implements ToneOscillatorInterface {
 

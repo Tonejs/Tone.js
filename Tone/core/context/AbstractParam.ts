@@ -2,7 +2,6 @@ import { Time, Unit, UnitName } from "../type/Units";
 
 /**
  * Abstract base class for [[Param]] and [[Signal]]
- * @category Core
  */
 export abstract class AbstractParam<Type extends Unit> {
 

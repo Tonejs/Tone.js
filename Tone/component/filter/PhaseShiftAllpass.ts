@@ -8,6 +8,7 @@ import { ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudi
  * Here the `offset90` phase is offset by +90° in relation to `output`.
  * Coefficients and structure was developed by Olli Niemitalo.
  * For more details see: http://yehar.com/blog/?p=368
+ * @category Component
  */
 export class PhaseShiftAllpass extends ToneAudioNode<ToneAudioNodeOptions> {
 

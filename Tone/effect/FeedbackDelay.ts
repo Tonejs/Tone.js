@@ -22,6 +22,7 @@ interface FeedbackDelayOptions extends FeedbackEffectOptions {
  * "pitchDecay" : 0.1
  * }).connect(feedbackDelay);
  * tom.triggerAttackRelease("A2","32n");
+ * @category Effect
  */
 export class FeedbackDelay extends FeedbackEffect<FeedbackDelayOptions> {
 

@@ -17,6 +17,7 @@ export { ToneOscillatorOptions, ToneOscillatorType } from "./OscillatorInterface
  * @example
  * //make and start a 440hz sine tone
  * var osc = new Oscillator(440, "sine").toDestination().start();
+ * @category Source
  */
 export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOscillatorInterface {
 

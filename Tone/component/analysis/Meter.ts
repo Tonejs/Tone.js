@@ -18,6 +18,7 @@ export interface MeterOptions extends MeterBaseOptions {
  * mic.connect(meter);
  * //the current level of the mic input in decibels
  * var level = meter.getLevel();
+ * @category Component
  */
 export class Meter extends MeterBase<MeterOptions> {
 

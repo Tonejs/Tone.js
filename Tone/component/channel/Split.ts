@@ -11,6 +11,7 @@ interface SplitOptions extends ToneAudioNodeOptions {
  * @example
  * var split = new Split();
  * stereoSignal.connect(split);
+ * @category Component
  */
 export class Split extends ToneAudioNode<SplitOptions> {
 	readonly name: string = "Split";

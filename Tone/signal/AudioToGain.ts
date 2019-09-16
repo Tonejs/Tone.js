@@ -8,6 +8,7 @@ import { WaveShaper } from "./WaveShaper";
  *
  * @example
  * var a2g = new AudioToGain();
+ * @category Signal
  */
 export class AudioToGain extends SignalOperator<ToneAudioNodeOptions> {
 

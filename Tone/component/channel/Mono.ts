@@ -9,6 +9,7 @@ export type MonoOptions = ToneAudioNodeOptions;
  * Mono coerces the incoming mono or stereo signal into a mono signal
  * where both left and right channels have the same value. This can be useful
  * for [stereo imaging](https://en.wikipedia.org/wiki/Stereo_imaging).
+ * @category Component
  */
 export class Mono extends ToneAudioNode<MonoOptions> {
 
