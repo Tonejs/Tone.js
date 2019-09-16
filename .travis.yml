@@ -12,6 +12,7 @@ script:
   - npm run codecov
 before_deploy: 
   - npm run increment
+  - npm run docs
 jobs:
   include:
     - stage: test
