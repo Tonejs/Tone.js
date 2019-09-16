@@ -31,6 +31,7 @@ interface SequenceOptions<T> extends Omit<ToneEventOptions<T>, "value"> {
  * 	console.log(note);
  * //subdivisions are given as subarrays
  * }, ["C4", ["E4", "D4", "E4"], "G4", ["A4", "G4"]]);
+ * @category Event
  */
 export class Sequence<ValueType = any> extends ToneEvent<ValueType> {
 

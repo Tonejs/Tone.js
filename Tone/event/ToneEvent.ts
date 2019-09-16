@@ -36,6 +36,7 @@ export interface ToneEventOptions<T> extends ToneWithContextOptions {
  * //loop it every measure for 8 measures
  * chord.loop = 8;
  * chord.loopEnd = "1m";
+ * @category Event
  */
 export class ToneEvent<ValueType = any> extends ToneWithContext<ToneEventOptions<ValueType>> {
 

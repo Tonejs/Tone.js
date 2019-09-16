@@ -35,6 +35,7 @@ interface PartOptions<T> extends Omit<ToneEventOptions<CallbackType<T>>, "value"
  * }, [{"time" : 0, "note" : "C3", "velocity": 0.9},
  * {"time" : "0:2", "note" : "C4", "velocity": 0.5}
  * ]).start(0);
+ * @category Event
  */
 export class Part<ValueType = any> extends ToneEvent<ValueType> {
 
