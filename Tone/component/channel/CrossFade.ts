@@ -41,6 +41,7 @@ interface CrossFadeOptions extends ToneAudioNodeOptions {
  * // ^ only effectB is output
  * crossFade.fade.value = 0.5;
  * // ^ the two signals are mixed equally.
+ * @category Component
  */
 export class CrossFade extends ToneAudioNode<CrossFadeOptions> {
 
@@ -60,13 +61,13 @@ export class CrossFade extends ToneAudioNode<CrossFadeOptions> {
 	 * Convert the fade value into an audio range value so it can be connected
 	 * to the panner.pan AudioParam
 	 */
-	private _g2a: GainToAudio = new GainToAudio({ context : this.context });
+	private _g2a: GainToAudio = new GainToAudio({ context: this.context });
 
 	/**
 	 * The input which is at full level when fade = 0
 	 */
 	readonly a: Gain = new Gain({
-		context : this.context,
+		context: this.context,
 		gain: 0,
 	});
 
@@ -74,14 +75,14 @@ export class CrossFade extends ToneAudioNode<CrossFadeOptions> {
 	 * The input which is at full level when fade = 1
 	 */
 	readonly b: Gain = new Gain({
-		context : this.context,
+		context: this.context,
 		gain: 0,
 	});
 
 	/**
 	 * The output is a mix between `a` and `b` at the ratio of `fade`
 	 */
-	readonly output: Gain = new Gain({ context : this.context });
+	readonly output: Gain = new Gain({ context: this.context });
 
 	/**
 	 * CrossFade has no input, you must choose either `a` or `b`

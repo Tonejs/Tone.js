@@ -15,7 +15,8 @@ interface VolumeOptions extends ToneAudioNodeOptions {
  *
  * @example
  * var vol = new Volume(-12);
- * instrument.chain(vol, Tone.Master);
+ * instrument.chain(vol, Tone.Destination);
+ * @category Component
  */
 export class Volume extends ToneAudioNode<VolumeOptions> {
 

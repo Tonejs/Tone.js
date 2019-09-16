@@ -22,6 +22,7 @@ interface FilterOptions extends ToneAudioNodeOptions {
  * (default), -24 and -48.
  * @example
  * var filter = new Filter(200, "highpass");
+ * @category Component
  */
 export class Filter extends ToneAudioNode<FilterOptions> {
 

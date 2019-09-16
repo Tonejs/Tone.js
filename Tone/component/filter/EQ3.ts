@@ -15,6 +15,10 @@ interface EQ3Options extends ToneAudioNodeOptions {
 	highFrequency: Frequency;
 }
 
+/**
+ * EQ3 provides 3 equalizer bins: Low/Mid/High. 
+ * @category Component
+ */
 export class EQ3 extends ToneAudioNode<EQ3Options> {
 
 	readonly name: string = "EQ3";
@@ -29,6 +33,9 @@ export class EQ3 extends ToneAudioNode<EQ3Options> {
 	 */
 	readonly output = new Gain({ context: this.context });
 
+	/**
+	 * Splits the input into three outputs
+	 */
 	private _multibandSplit: MultibandSplit;
 
 	/**
@@ -126,11 +133,11 @@ export class EQ3 extends ToneAudioNode<EQ3Options> {
 
 	static getDefaults(): EQ3Options {
 		return Object.assign(ToneAudioNode.getDefaults(), {
-			high : 0,
-			highFrequency : 2500,
-			low : 0,
-			lowFrequency : 400,
-			mid : 0,
+			high: 0,
+			highFrequency: 2500,
+			low: 0,
+			lowFrequency: 400,
+			mid: 0,
 		});
 	}
 

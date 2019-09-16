@@ -30,6 +30,7 @@ const inharmRatios: number[] = [1.0, 1.483, 1.932, 2.546, 2.630, 3.897];
  * and amplitude envelope which is good for making metallophone sounds.
  * Based on CymbalSynth by [@polyrhythmatic](https://github.com/polyrhythmatic).
  * Inspiration from [Sound on Sound](https://shorturl.at/rSZ12).
+ * @category Instrument
  */
 export class MetalSynth extends Monophonic<MetalSynthOptions> {
 

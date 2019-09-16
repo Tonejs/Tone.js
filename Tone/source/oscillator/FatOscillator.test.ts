@@ -24,8 +24,8 @@ describe("FatOscillator", () => {
 
 		it("can pass in parameters in the constructor", () => {
 			const fatOsc = new FatOscillator({
-				count : 4,
-				spread : 25,
+				count: 4,
+				spread: 25,
 			});
 			expect(fatOsc.spread).to.be.equal(25);
 			expect(fatOsc.count).to.equal(4);
@@ -34,7 +34,7 @@ describe("FatOscillator", () => {
 
 		it("can set the partials and the count", () => {
 			const fatOsc = new FatOscillator({
-				count : 3,
+				count: 3,
 			});
 			fatOsc.partials = [0, 2, 3, 4];
 			expect(fatOsc.partials).to.deep.equal([0, 2, 3, 4]);
@@ -47,7 +47,7 @@ describe("FatOscillator", () => {
 
 		it("can set the count after starting", () => {
 			const fatOsc = new FatOscillator({
-				count : 3,
+				count: 3,
 			});
 			fatOsc.start();
 			fatOsc.count = 4;
@@ -57,8 +57,8 @@ describe("FatOscillator", () => {
 
 		it("correctly distributes the detune spread", () => {
 			const fatOsc = new FatOscillator({
-				count : 2,
-				spread : 20,
+				count: 2,
+				spread: 20,
 			});
 			// @ts-ignore
 			expect(fatOsc._oscillators.length).to.equal(2);

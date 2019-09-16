@@ -14,7 +14,7 @@ function createAudioContext(): AudioContext {
  * Create a new OfflineAudioContext
  */
 export function createOfflineAudioContext(channels: number, length: number, sampleRate: number): OfflineAudioContext {
-	return new stdOfflineAudioContext(channels, length, sampleRate)  as unknown as OfflineAudioContext;
+	return new stdOfflineAudioContext(channels, length, sampleRate) as unknown as OfflineAudioContext;
 }
 
 /**

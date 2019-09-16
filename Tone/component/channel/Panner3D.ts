@@ -22,6 +22,7 @@ export interface Panner3DOptions extends ToneAudioNodeOptions {
 
 /**
  * A spatialized panner node which supports equalpower or HRTF panning.
+ * @category Component
  */
 export class Panner3D extends ToneAudioNode<Panner3DOptions> {
 
@@ -99,20 +100,20 @@ export class Panner3D extends ToneAudioNode<Panner3DOptions> {
 
 	static getDefaults(): Panner3DOptions {
 		return Object.assign(ToneAudioNode.getDefaults(), {
-			coneInnerAngle : 360,
-			coneOuterAngle : 360,
-			coneOuterGain : 0,
-			distanceModel : "inverse" as DistanceModelType,
-			maxDistance : 10000,
-			orientationX : 0,
-			orientationY : 0,
-			orientationZ : 0,
-			panningModel : "equalpower" as PanningModelType,
-			positionX : 0,
-			positionY : 0,
-			positionZ : 0,
-			refDistance : 1,
-			rolloffFactor : 1,
+			coneInnerAngle: 360,
+			coneOuterAngle: 360,
+			coneOuterGain: 0,
+			distanceModel: "inverse" as DistanceModelType,
+			maxDistance: 10000,
+			orientationX: 0,
+			orientationY: 0,
+			orientationZ: 0,
+			panningModel: "equalpower" as PanningModelType,
+			positionX: 0,
+			positionY: 0,
+			positionZ: 0,
+			refDistance: 1,
+			rolloffFactor: 1,
 		});
 	}
 

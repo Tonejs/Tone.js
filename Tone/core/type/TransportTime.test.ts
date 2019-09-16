@@ -97,8 +97,8 @@ describe("TransportTimeClass", () => {
 
 		it("can convert from an Object", () => {
 			return Offline(() => {
-				expect(TransportTime({ "4n" : 2 }).valueOf()).to.equal(1);
-				expect(TransportTime({ "1n" : 1, "8t" : 2 }).valueOf()).to.be.closeTo(2.333, 0.01);
+				expect(TransportTime({ "4n": 2 }).valueOf()).to.equal(1);
+				expect(TransportTime({ "1n": 1, "8t": 2 }).valueOf()).to.be.closeTo(2.333, 0.01);
 			});
 		});
 	});

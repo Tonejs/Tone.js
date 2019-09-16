@@ -13,7 +13,6 @@ interface TransportRepeatEventOptions extends TransportEventOptions {
 /**
  * TransportRepeatEvent is an internal class used by Tone.Transport
  * to schedule repeat events. This class should not be instantiated directly.
- * @category Core
  */
 export class TransportRepeatEvent extends TransportEvent {
 
@@ -61,8 +60,8 @@ export class TransportRepeatEvent extends TransportEvent {
 
 		const options = Object.assign(TransportRepeatEvent.getDefaults(), opts);
 
-		this.duration =  new TicksClass(transport.context, options.duration).valueOf();
-		this._interval = new  TicksClass(transport.context, options.interval).valueOf();
+		this.duration = new TicksClass(transport.context, options.duration).valueOf();
+		this._interval = new TicksClass(transport.context, options.interval).valueOf();
 		this._nextTick = options.time;
 		this.transport.on("start", this._boundRestart);
 		this.transport.on("loopStart", this._boundRestart);

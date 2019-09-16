@@ -23,6 +23,7 @@ export interface SignalOptions<Type> extends ToneAudioNodeOptions {
  *
  * @example
  * const signal = new Tone.Signal(10);
+ * @category Signal
  */
 export class Signal<Type extends Unit = number> extends ToneAudioNode<SignalOptions<any>>
 	implements AbstractParam<Type> {

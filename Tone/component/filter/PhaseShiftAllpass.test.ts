@@ -26,13 +26,13 @@ describe("PhaseShiftAllpass", () => {
 			});
 		});
 
-		it ("generates correct values with the phase shifted channel", () => {
+		it("generates correct values with the phase shifted channel", () => {
 			return CompareToFile((context) => {
 				// create impulse with 5 samples offset
 				const constantNode = context.createConstantSource();
 				constantNode.start(0);
-				const oneSampleDelay = context.createIIRFilter([ 0.0, 1.0 ], [ 1.0, 0.0 ]);
-				const fiveSampleDelay = context.createIIRFilter([ 0.0, 0.0, 0.0, 0.0, 0.0, 1.0 ], [ 1.0, 0.0, 0.0, 0.0, 0.0, 0.0 ]);
+				const oneSampleDelay = context.createIIRFilter([0.0, 1.0], [1.0, 0.0]);
+				const fiveSampleDelay = context.createIIRFilter([0.0, 0.0, 0.0, 0.0, 0.0, 1.0], [1.0, 0.0, 0.0, 0.0, 0.0, 0.0]);
 				const sub = new Subtract();
 
 				connect(constantNode, oneSampleDelay);
@@ -47,13 +47,13 @@ describe("PhaseShiftAllpass", () => {
 			}, "phaseShiftAllpass.wav", 0.001);
 		});
 
-		it ("generates correct values with the offset90 channel", () => {
+		it("generates correct values with the offset90 channel", () => {
 			return CompareToFile((context) => {
 				// create impulse with 5 samples offset
 				const constantNode = context.createConstantSource();
 				constantNode.start(0);
-				const oneSampleDelay = context.createIIRFilter([ 0.0, 1.0 ], [ 1.0, 0.0 ]);
-				const fiveSampleDelay = context.createIIRFilter([ 0.0, 0.0, 0.0, 0.0, 0.0, 1.0 ], [ 1.0, 0.0, 0.0, 0.0, 0.0, 0.0 ]);
+				const oneSampleDelay = context.createIIRFilter([0.0, 1.0], [1.0, 0.0]);
+				const fiveSampleDelay = context.createIIRFilter([0.0, 0.0, 0.0, 0.0, 0.0, 1.0], [1.0, 0.0, 0.0, 0.0, 0.0, 0.0]);
 				const sub = new Subtract();
 
 				connect(constantNode, oneSampleDelay);

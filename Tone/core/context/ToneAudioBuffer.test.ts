@@ -61,7 +61,7 @@ describe("ToneAudioBuffer", () => {
 					buffer.dispose();
 					done();
 				},
-				reverse : true,
+				reverse: true,
 				url: testFile,
 			});
 			expect(buffer.reverse).to.equal(true);

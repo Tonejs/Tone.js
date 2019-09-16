@@ -5,7 +5,6 @@ export type TickerClockSource = "worker" | "timeout" | "offline";
 /**
  * A class which provides a reliable callback using either
  * a Web Worker, or if that isn't supported, falls back to setTimeout.
- * @category Core
  */
 export class Ticker {
 
@@ -77,7 +76,7 @@ export class Ticker {
 	 * Create a timeout loop
 	 */
 	private _createTimeout(): void {
-		this._timeout = setTimeout(()  => {
+		this._timeout = setTimeout(() => {
 			this._createTimeout();
 			this._callback();
 		}, this._updateInterval * 1000);

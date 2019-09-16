@@ -28,6 +28,7 @@ interface MultibandSplitOptions extends ToneAudioNodeOptions {
  *          +-> highFrequency < input +-----------------> high
  *            +-----------------------+
  * ```
+ * @category Component
  */
 export class MultibandSplit extends ToneAudioNode<MultibandSplitOptions> {
 

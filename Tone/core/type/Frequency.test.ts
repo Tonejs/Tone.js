@@ -79,7 +79,7 @@ describe("FrequencyClass", () => {
 		});
 
 		it("can convert from Ticks", () => {
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				expect(Frequency(Ticks(transport.PPQ)).valueOf()).to.equal(2);
 				expect(Frequency(Ticks("4n")).valueOf()).to.equal(2);
 			});
@@ -95,7 +95,7 @@ describe("FrequencyClass", () => {
 		});
 
 		it("evaluates notation", () => {
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				transport.bpm.value = 120;
 				transport.timeSignature = 4;
 				expect(Frequency("4n").valueOf()).to.equal(2);
@@ -117,7 +117,7 @@ describe("FrequencyClass", () => {
 		});
 
 		it("evalutes ticks", () => {
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				expect(Frequency(transport.PPQ, "i").valueOf()).to.equal(2);
 				expect(Frequency(1, "i").valueOf()).to.equal(transport.PPQ * 2);
 			});

@@ -12,11 +12,11 @@ describe("EQ3", () => {
 
 		it("can be constructed with an object", () => {
 			const eq3 = new EQ3({
-				high : -10,
-				highFrequency : 2700,
-				low : -8,
-				lowFrequency : 500,
-				mid : -9,
+				high: -10,
+				highFrequency: 2700,
+				low: -8,
+				lowFrequency: 500,
+				mid: -9,
 			});
 			expect(eq3.low.value).to.be.closeTo(-8, 0.1);
 			expect(eq3.mid.value).to.be.closeTo(-9, 0.1);
@@ -29,8 +29,8 @@ describe("EQ3", () => {
 		it("can be get and set through object", () => {
 			const eq3 = new EQ3();
 			eq3.set({
-				high : -4,
-				lowFrequency : 250,
+				high: -4,
+				lowFrequency: 250,
 			});
 			expect(eq3.get().high).to.be.closeTo(-4, 0.1);
 			expect(eq3.get().lowFrequency).to.be.closeTo(250, 0.01);
@@ -40,8 +40,8 @@ describe("EQ3", () => {
 		it("passes the incoming signal through", () => {
 			return PassAudio(input => {
 				const eq3 = new EQ3({
-					high : 12,
-					low : -20,
+					high: 12,
+					low: -20,
 				}).toDestination();
 				input.connect(eq3);
 			});

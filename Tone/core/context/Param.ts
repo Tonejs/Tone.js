@@ -17,8 +17,7 @@ export interface ParamOptions<Type> extends ToneWithContextOptions {
 /**
  * the possible automation types
  */
-type AutomationType = "linearRampToValueAtTime" | "exponentialRampToValueAtTime" |
-	"setValueAtTime" | "setTargetAtTime" | "cancelScheduledValues";
+type AutomationType = "linearRampToValueAtTime" | "exponentialRampToValueAtTime" | "setValueAtTime" | "setTargetAtTime" | "cancelScheduledValues";
 
 interface TargetAutomationEvent {
 	type: "setTargetAtTime";
@@ -42,11 +41,10 @@ export type AutomationEvent = NormalAutomationEvent | TargetAutomationEvent;
  * additional unit conversion functionality. It also
  * serves as a base-class for classes which have a single,
  * automatable parameter.
- * @category Core
  */
 export class Param<Type extends Unit = number>
-extends ToneWithContext<ParamOptions<Type>>
-implements AbstractParam<Type> {
+	extends ToneWithContext<ParamOptions<Type>>
+	implements AbstractParam<Type> {
 
 	readonly name: string = "Param";
 
@@ -278,7 +276,7 @@ implements AbstractParam<Type> {
 		this._events.add({
 			time: computedTime,
 			type: "linearRampToValueAtTime",
-			value : numericValue,
+			value: numericValue,
 		});
 		this.log(this.units, "linearRampToValueAtTime", value, computedTime);
 		this._param.linearRampToValueAtTime(numericValue, computedTime);
@@ -295,7 +293,7 @@ implements AbstractParam<Type> {
 		this._events.add({
 			time: computedTime,
 			type: "exponentialRampToValueAtTime",
-			value : numericValue,
+			value: numericValue,
 		});
 		this.log(this.units, "exponentialRampToValueAtTime", value, computedTime);
 		this._param.exponentialRampToValueAtTime(numericValue, computedTime);

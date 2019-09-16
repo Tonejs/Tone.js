@@ -1,6 +1,6 @@
 import { Context } from "../context/Context";
 import { Tone } from "../Tone";
-import { isDefined, isObject , isString, isUndef } from "../util/TypeCheck";
+import { isDefined, isObject, isString, isUndef } from "../util/TypeCheck";
 import { BPM, Hertz, MidiNote, Milliseconds, Samples, Seconds, Ticks, Time } from "./Units";
 
 export type TimeValue = Time | TimeBaseClass<any, any>;
@@ -30,7 +30,6 @@ export interface TimeExpression<Type extends number> {
  * new TimeBase("2t")
  * new TimeBase({"2t" : 2})
  * new TimeBase("2t") + new TimeBase("4n");
- * @category Unit
  */
 export abstract class TimeBaseClass<Type extends number, Unit extends string> extends Tone {
 

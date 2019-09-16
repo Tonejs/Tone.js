@@ -53,9 +53,9 @@ export class Delay extends ToneAudioNode<DelayOptions> {
 
 		this.delayTime = new Param({
 			context: this.context,
-			param : this._delayNode.delayTime,
-			units : "time",
-			value : options.delayTime,
+			param: this._delayNode.delayTime,
+			units: "time",
+			value: options.delayTime,
 		});
 
 		readOnly(this, "delayTime");
@@ -63,7 +63,7 @@ export class Delay extends ToneAudioNode<DelayOptions> {
 
 	static getDefaults(): DelayOptions {
 		return Object.assign(ToneAudioNode.getDefaults(), {
-			delayTime : 0,
+			delayTime: 0,
 			maxDelay: 1,
 		});
 	}

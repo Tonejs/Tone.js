@@ -16,6 +16,8 @@ module.exports = {
 		"quote-props" : [ "error", "consistent" ],
 		"quotes": [ "error","double" ],
 		"no-console": ["error", { "allow": ["warn"] }],
+		"@typescript-eslint/no-object-literal-type-assertion" : "off",
+		"@typescript-eslint/no-unused-vars": "off",
 		"sort-imports": ["error", {
 			"ignoreCase": true,
 			"ignoreDeclarationSort": true,

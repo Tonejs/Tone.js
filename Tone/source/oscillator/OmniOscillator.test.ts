@@ -97,7 +97,7 @@ describe("OmniOscillator", () => {
 
 		it("can get and set the type", () => {
 			const osc = new OmniOscillator({
-				type : "sawtooth",
+				type: "sawtooth",
 			});
 			expect(osc.type).to.equal("sawtooth");
 			osc.dispose();
@@ -160,8 +160,8 @@ describe("OmniOscillator", () => {
 		it("can be set to an FM oscillator", () => {
 			const omni = new OmniOscillator<FMOscillator>();
 			omni.set({
-				modulationIndex : 2,
-				type : "fmsquare2",
+				modulationIndex: 2,
+				type: "fmsquare2",
 			});
 			expect(omni.type).to.equal("fmsquare2");
 			expect(omni.modulationIndex.value).to.equal(2);
@@ -182,8 +182,8 @@ describe("OmniOscillator", () => {
 		it("can be set to an FatOscillator", () => {
 			const omni = new OmniOscillator({
 				count: 4,
-				spread : 25,
-				type : "fatsquare2",
+				spread: 25,
+				type: "fatsquare2",
 			});
 			expect(omni.type).to.equal("fatsquare2");
 			expect(omni.count).to.equal(4);
@@ -193,7 +193,7 @@ describe("OmniOscillator", () => {
 
 		it("can get/set the partialCount", () => {
 			const omni = new OmniOscillator({
-				type : "square2",
+				type: "square2",
 			});
 			expect(omni.partialCount).to.equal(2);
 			omni.partialCount = 3;
@@ -204,7 +204,7 @@ describe("OmniOscillator", () => {
 
 		it("can get/set the sourceType", () => {
 			const omni = new OmniOscillator({
-				type : "fatsquare3",
+				type: "fatsquare3",
 			});
 			expect(omni.type).to.equal("fatsquare3");
 			expect(omni.sourceType).to.equal("fat");
@@ -230,7 +230,7 @@ describe("OmniOscillator", () => {
 
 		it("can get/set the baseType", () => {
 			const omni = new OmniOscillator({
-				type : "fatsquare3",
+				type: "fatsquare3",
 			});
 			expect(omni.type).to.equal("fatsquare3");
 			expect(omni.sourceType).to.equal("fat");
@@ -253,12 +253,12 @@ describe("OmniOscillator", () => {
 
 		it("can set a FM oscillator with partials", () => {
 			const omni = new OmniOscillator<FMOscillator>({
-				detune : 4,
-				harmonicity : 2,
-				partials : [2, 1, 2, 2],
-				phase : 120,
-				type : "fmcustom",
-				volume : -2,
+				detune: 4,
+				harmonicity: 2,
+				partials: [2, 1, 2, 2],
+				phase: 120,
+				type: "fmcustom",
+				volume: -2,
 			});
 			expect(omni.volume.value).to.be.closeTo(-2, 0.01);
 			expect(omni.detune.value).to.be.closeTo(4, 0.01);
@@ -272,8 +272,8 @@ describe("OmniOscillator", () => {
 		it("setting/getting values when the wrong type is set has no effect", () => {
 			const omni = new OmniOscillator(440, "sine");
 			omni.set({
-				harmonicity : 3,
-				modulationIndex : 4,
+				harmonicity: 3,
+				modulationIndex: 4,
 			});
 			omni.spread = 40;
 			expect(omni.spread).to.be.undefined;

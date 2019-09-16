@@ -17,6 +17,7 @@ export { PWMOscillatorOptions } from "./OscillatorInterface";
  * generated.
  * @example
  * var pwm = new PWMOscillator("Ab3", 0.3).toDestination().start();
+ * @category Source
  */
 export class PWMOscillator extends Source<PWMOscillatorOptions> implements ToneOscillatorInterface {
 
@@ -75,7 +76,7 @@ export class PWMOscillator extends Source<PWMOscillatorOptions> implements ToneO
 		// @ts-ignore
 		this._pulse._sawtooth.type = "sine";
 
-		this.modulationFrequency  = this._pulse.frequency;
+		this.modulationFrequency = this._pulse.frequency;
 
 		this._modulator = new Oscillator({
 			context: this.context,

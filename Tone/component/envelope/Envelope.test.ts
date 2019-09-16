@@ -19,10 +19,10 @@ describe("Envelope", () => {
 		it("can get and set values an Objects", () => {
 			const env = new Envelope();
 			const values = {
-				attack : 0,
-				decay : 0.5,
-				release : "4n",
-				sustain : 1,
+				attack: 0,
+				decay: 0.5,
+				release: "4n",
+				sustain: 1,
 			};
 			env.set(values);
 			expect(env.get()).to.contain.keys(Object.keys(values));
@@ -48,9 +48,9 @@ describe("Envelope", () => {
 
 		it("can take parameters as both an object and as arguments", () => {
 			const env0 = new Envelope({
-				attack : 0,
-				decay : 0.5,
-				sustain : 1,
+				attack: 0,
+				decay: 0.5,
+				sustain: 1,
 			});
 			expect(env0.attack).to.equal(0);
 			expect(env0.decay).to.equal(0.5);
@@ -122,10 +122,10 @@ describe("Envelope", () => {
 
 		it("correctly schedules an exponential attack", () => {
 			const e = {
-				attack : 0.01,
-				decay : 0.4,
-				release : 0.1,
-				sustain : 0.5,
+				attack: 0.01,
+				decay: 0.4,
+				release: 0.1,
+				sustain: 0.5,
 			};
 			return Offline(() => {
 				const env = new Envelope(e.attack, e.decay, e.sustain, e.release);
@@ -147,10 +147,10 @@ describe("Envelope", () => {
 
 		it("correctly schedules a linear release", () => {
 			const e = {
-				attack : 0.01,
-				decay : 0.4,
-				release : 0.1,
-				sustain : 0.5,
+				attack: 0.01,
+				decay: 0.4,
+				release: 0.1,
+				sustain: 0.5,
 			};
 			return Offline(() => {
 				const env = new Envelope(e.attack, e.decay, e.sustain, e.release);
@@ -167,10 +167,10 @@ describe("Envelope", () => {
 
 		it("correctly schedules a linear decay", () => {
 			const e = {
-				attack : 0.1,
-				decay : 0.5,
-				release : 0.1,
-				sustain : 0,
+				attack: 0.1,
+				decay: 0.5,
+				release: 0.1,
+				sustain: 0,
 			};
 			return Offline(() => {
 				const env = new Envelope(e.attack, e.decay, e.sustain, e.release);
@@ -190,10 +190,10 @@ describe("Envelope", () => {
 
 		it("correctly schedules an exponential decay", () => {
 			const e = {
-				attack : 0.1,
-				decay : 0.5,
-				release : 0.1,
-				sustain : 0,
+				attack: 0.1,
+				decay: 0.5,
+				release: 0.1,
+				sustain: 0,
 			};
 			return Offline(() => {
 				const env = new Envelope(e.attack, e.decay, e.sustain, e.release);
@@ -212,10 +212,10 @@ describe("Envelope", () => {
 
 		it("can schedule a very short attack", () => {
 			const e = {
-				attack : 0.001,
-				decay : 0.01,
-				release : 0.1,
-				sustain : 0.1,
+				attack: 0.001,
+				decay: 0.01,
+				release: 0.1,
+				sustain: 0.1,
 			};
 			return Offline(() => {
 				const env = new Envelope(e.attack, e.decay, e.sustain, e.release);
@@ -249,10 +249,10 @@ describe("Envelope", () => {
 
 		it("correctly schedule a release", () => {
 			const e = {
-				attack : 0.001,
-				decay : 0.01,
-				release : 0.3,
-				sustain : 0.5,
+				attack: 0.001,
+				decay: 0.01,
+				release: 0.3,
+				sustain: 0.5,
 			};
 			const releaseTime = 0.2;
 			return Offline(() => {
@@ -289,10 +289,10 @@ describe("Envelope", () => {
 
 		it("is silent before and after triggering", () => {
 			const e = {
-				attack : 0.001,
-				decay : 0.01,
-				release : 0.3,
-				sustain : 0.5,
+				attack: 0.001,
+				decay: 0.01,
+				release: 0.3,
+				sustain: 0.5,
 			};
 			const releaseTime = 0.2;
 			const attackTime = 0.1;
@@ -310,9 +310,9 @@ describe("Envelope", () => {
 
 		it("is silent after decay if sustain is 0", () => {
 			const e = {
-				attack : 0.01,
-				decay : 0.04,
-				sustain : 0,
+				attack: 0.01,
+				decay: 0.04,
+				sustain: 0,
 			};
 			const attackTime = 0.1;
 			return Offline(() => {
@@ -329,10 +329,10 @@ describe("Envelope", () => {
 
 		it("correctly schedule an attack release envelope", () => {
 			const e = {
-				attack : 0.08,
-				decay : 0.2,
-				release : 0.2,
-				sustain : 0.1,
+				attack: 0.08,
+				decay: 0.2,
+				release: 0.2,
+				sustain: 0.1,
 			};
 			const releaseTime = 0.4;
 			return Offline(() => {
@@ -359,10 +359,10 @@ describe("Envelope", () => {
 
 		it("can schedule a combined AttackRelease", () => {
 			const e = {
-				attack : 0.1,
-				decay : 0.2,
-				release : 0.1,
-				sustain : 0.35,
+				attack: 0.1,
+				decay: 0.2,
+				release: 0.1,
+				sustain: 0.35,
 			};
 			const releaseTime = 0.4;
 			const duration = 0.4;
@@ -390,10 +390,10 @@ describe("Envelope", () => {
 
 		it("can schedule a combined AttackRelease with velocity", () => {
 			const e = {
-				attack : 0.1,
-				decay : 0.2,
-				release : 0.1,
-				sustain : 0.35,
+				attack: 0.1,
+				decay: 0.2,
+				release: 0.1,
+				sustain: 0.35,
 			};
 			const releaseTime = 0.4;
 			const duration = 0.4;
@@ -422,10 +422,10 @@ describe("Envelope", () => {
 
 		it("can schedule multiple envelopes", () => {
 			const e = {
-				attack : 0.1,
-				decay : 0.2,
-				release : 0.1,
-				sustain : 0.0,
+				attack: 0.1,
+				decay: 0.2,
+				release: 0.1,
+				sustain: 0.0,
 			};
 			return Offline(() => {
 				const env = new Envelope(e.attack, e.decay, e.sustain, e.release);
@@ -605,12 +605,12 @@ describe("Envelope", () => {
 		it("outputs a signal when the attack/release curves are set to 'bounce'", () => {
 			return Offline(() => {
 				const env = new Envelope({
-					attack : 0.3,
-					attackCurve : "bounce",
-					decay : 0,
-					release : 0.3,
-					releaseCurve : "bounce",
-					sustain : 1,
+					attack: 0.3,
+					attackCurve: "bounce",
+					decay: 0,
+					release: 0.3,
+					releaseCurve: "bounce",
+					sustain: 1,
 				}).toDestination();
 				env.triggerAttackRelease(0.3, 0.1);
 			}, 0.8).then((buffer) => {
@@ -623,12 +623,12 @@ describe("Envelope", () => {
 		it("outputs a signal when the attack/release curves are set to 'ripple'", () => {
 			return Offline(() => {
 				const env = new Envelope({
-					attack : 0.3,
-					attackCurve : "ripple",
-					decay : 0,
-					release : 0.3,
-					releaseCurve : "ripple",
-					sustain : 1,
+					attack: 0.3,
+					attackCurve: "ripple",
+					decay: 0,
+					release: 0.3,
+					releaseCurve: "ripple",
+					sustain: 1,
 				}).toDestination();
 				env.triggerAttackRelease(0.3, 0.1);
 			}, 0.8).then((buffer) => {
@@ -641,12 +641,12 @@ describe("Envelope", () => {
 		it("outputs a signal when the attack/release curves are set to 'sine'", () => {
 			return Offline(() => {
 				const env = new Envelope({
-					attack : 0.3,
-					attackCurve : "sine",
-					decay : 0,
-					release : 0.3,
-					releaseCurve : "sine",
-					sustain : 1,
+					attack: 0.3,
+					attackCurve: "sine",
+					decay: 0,
+					release: 0.3,
+					releaseCurve: "sine",
+					sustain: 1,
 				}).toDestination();
 				env.triggerAttackRelease(0.3, 0.1);
 			}, 0.8).then((buffer) => {
@@ -659,12 +659,12 @@ describe("Envelope", () => {
 		it("outputs a signal when the attack/release curves are set to 'cosine'", () => {
 			return Offline(() => {
 				const env = new Envelope({
-					attack : 0.3,
-					attackCurve : "cosine",
-					decay : 0,
-					release : 0.3,
-					releaseCurve : "cosine",
-					sustain : 1,
+					attack: 0.3,
+					attackCurve: "cosine",
+					decay: 0,
+					release: 0.3,
+					releaseCurve: "cosine",
+					sustain: 1,
 				}).toDestination();
 				env.triggerAttackRelease(0.3, 0.1);
 			}, 0.8).then((buffer) => {
@@ -677,12 +677,12 @@ describe("Envelope", () => {
 		it("outputs a signal when the attack/release curves are set to 'step'", () => {
 			return Offline(() => {
 				const env = new Envelope({
-					attack : 0.3,
-					attackCurve : "step",
-					decay : 0,
-					release : 0.3,
-					releaseCurve : "step",
-					sustain : 1,
+					attack: 0.3,
+					attackCurve: "step",
+					decay: 0,
+					release: 0.3,
+					releaseCurve: "step",
+					sustain: 1,
 				}).toDestination();
 				env.triggerAttackRelease(0.3, 0.1);
 			}, 0.8).then((buffer) => {
@@ -699,12 +699,12 @@ describe("Envelope", () => {
 		it("outputs a signal when the attack/release curves are set to an array", () => {
 			return Offline(() => {
 				const env = new Envelope({
-					attack : 0.3,
-					attackCurve : [0, 1, 0, 1],
-					decay : 0,
-					release : 0.3,
-					releaseCurve : [1, 0, 1, 0],
-					sustain : 1,
+					attack: 0.3,
+					attackCurve: [0, 1, 0, 1],
+					decay: 0,
+					release: 0.3,
+					releaseCurve: [1, 0, 1, 0],
+					sustain: 1,
 				}).toDestination();
 				expect(env.attackCurve).to.deep.equal([0, 1, 0, 1]);
 				env.triggerAttackRelease(0.3, 0.1);
@@ -722,12 +722,12 @@ describe("Envelope", () => {
 		it("can scale a velocity with a custom curve", () => {
 			return Offline(() => {
 				const env = new Envelope({
-					attack : 0.3,
-					attackCurve : [0, 1, 0, 1],
-					decay : 0,
-					release : 0.3,
-					releaseCurve : [1, 0, 1, 0],
-					sustain : 1,
+					attack: 0.3,
+					attackCurve: [0, 1, 0, 1],
+					decay: 0,
+					release: 0.3,
+					releaseCurve: [1, 0, 1, 0],
+					sustain: 1,
 				}).toDestination();
 				env.triggerAttackRelease(0.4, 0.1, 0.5);
 			}, 0.8).then((buffer) => {
@@ -740,12 +740,12 @@ describe("Envelope", () => {
 		it("can retrigger partial envelope with custom type", () => {
 			return Offline(() => {
 				const env = new Envelope({
-					attack : 0.5,
-					attackCurve : "cosine",
-					decay : 0,
-					release : 0.5,
-					releaseCurve : "sine",
-					sustain : 1,
+					attack: 0.5,
+					attackCurve: "cosine",
+					decay: 0,
+					release: 0.5,
+					releaseCurve: "sine",
+					sustain: 1,
 				}).toDestination();
 				env.triggerAttack(0);
 				env.triggerRelease(0.2);

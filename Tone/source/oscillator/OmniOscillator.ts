@@ -1,5 +1,5 @@
 import { AudioRange, Cents, Degrees, Frequency, Positive, Time } from "../../core/type/Units";
-import { optionsFromArguments  } from "../../core/util/Defaults";
+import { optionsFromArguments } from "../../core/util/Defaults";
 import { readOnly } from "../../core/util/Interface";
 import { isNumber, isString } from "../../core/util/TypeCheck";
 import { Signal } from "../../signal/Signal";
@@ -48,7 +48,7 @@ type IsFMOscillator<Osc, Ret> = Osc extends FMOscillator ? Ret : undefined;
 type AnyOscillatorConstructor = new (...args: any[]) => AnyOscillator;
 
 const OmniOscillatorSourceMap: {
-	[key in OmniOscSourceType] : AnyOscillatorConstructor
+	[key in OmniOscSourceType]: AnyOscillatorConstructor
 } = {
 	am: AMOscillator,
 	fat: FatOscillator,
@@ -69,10 +69,11 @@ const OmniOscillatorSourceMap: {
  * to a FatOscillator of type "sawtooth".
  * @example
  * var omniOsc = new OmniOscillator("C#4", "pwm");
+ * @category Source
  */
 export class OmniOscillator<OscType extends AnyOscillator>
-extends Source<OmniOscillatorConstructorOptions>
-implements Omit<ToneOscillatorInterface, "type"> {
+	extends Source<OmniOscillatorConstructorOptions>
+	implements Omit<ToneOscillatorInterface, "type"> {
 
 	readonly name: string = "OmniOscillator";
 
@@ -184,11 +185,11 @@ implements Omit<ToneOscillatorInterface, "type"> {
 		} else if (type.substr(0, 2) === "am") {
 			this._createNewOscillator("am");
 			this._oscillator = this._oscillator as AMOscillator;
-			this._oscillator.type = type.substr(2)  as ToneOscillatorType;
+			this._oscillator.type = type.substr(2) as ToneOscillatorType;
 		} else if (type.substr(0, 3) === "fat") {
 			this._createNewOscillator("fat");
 			this._oscillator = this._oscillator as FatOscillator;
-			this._oscillator.type = type.substr(3)  as ToneOscillatorType;
+			this._oscillator.type = type.substr(3) as ToneOscillatorType;
 		} else if (type === "pwm") {
 			this._createNewOscillator("pwm");
 			this._oscillator = this._oscillator as PWMOscillator;
@@ -285,7 +286,7 @@ implements Omit<ToneOscillatorInterface, "type"> {
 				this.context.setTimeout(() => oldOsc.dispose(), this.blockTime);
 			}
 			this._oscillator = new OscConstructor({
-				context : this.context,
+				context: this.context,
 			});
 			this.frequency.connect(this._oscillator.frequency);
 			this.detune.connect(this._oscillator.detune);

@@ -68,7 +68,7 @@ describe("TimeClass", () => {
 		});
 
 		it("can convert from Ticks", () => {
-			return Offline(({ transport}) => {
+			return Offline(({ transport }) => {
 				expect(Time(Ticks(transport.PPQ)).valueOf()).to.equal(0.5);
 				expect(Time(Ticks("4n")).valueOf()).to.equal(0.5);
 			});

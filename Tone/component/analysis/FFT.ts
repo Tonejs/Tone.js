@@ -12,6 +12,7 @@ export interface FFTOptions extends MeterBaseOptions {
 
 /**
  * Get the current frequency data of the connected audio source using a fast Fourier transform.
+ * @category Component
  */
 export class FFT extends MeterBase<FFTOptions> {
 

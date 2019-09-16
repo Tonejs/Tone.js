@@ -19,7 +19,7 @@ describe("MultibandSplit", () => {
 
 	it("can be constructed with an object", () => {
 		const split = new MultibandSplit({
-			Q : 8,
+			Q: 8,
 			highFrequency: 2700,
 			lowFrequency: 500,
 		});

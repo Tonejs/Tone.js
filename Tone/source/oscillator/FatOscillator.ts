@@ -18,6 +18,7 @@ export { FatOscillatorOptions } from "./OscillatorInterface";
  * @param spread The detune spread between the oscillators.
  * @example
  * var fatOsc = new FatOscillator("Ab3", "sine", 40).toDestination().start();
+ * @category Source
  */
 export class FatOscillator extends Source<FatOscillatorOptions> implements ToneOscillatorInterface {
 
@@ -95,9 +96,9 @@ export class FatOscillator extends Source<FatOscillatorOptions> implements ToneO
 
 	static getDefaults(): FatOscillatorOptions {
 		return Object.assign(Oscillator.getDefaults(), {
-			count : 3,
-			spread : 20,
-			type : "sawtooth",
+			count: 3,
+			spread: 20,
+			type: "sawtooth",
 		});
 	}
 
@@ -180,7 +181,7 @@ export class FatOscillator extends Source<FatOscillatorOptions> implements ToneO
 			this._oscillators = [];
 			for (let i = 0; i < count; i++) {
 				const osc = new Oscillator({
-					context : this.context,
+					context: this.context,
 					onstop: i === 0 ? () => this.onstop(this) : noOp,
 				});
 				if (this.type === "custom") {

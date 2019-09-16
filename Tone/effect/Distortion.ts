@@ -16,6 +16,7 @@ export interface DistortionOptions extends EffectOptions {
  * var fm = new Tone.SimpleFM().connect(dist);
  * //this sounds good on bass notes
  * fm.triggerAttackRelease("A1", "8n");
+ * @category Effect
  */
 export class Distortion extends Effect<DistortionOptions> {
 

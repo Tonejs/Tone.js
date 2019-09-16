@@ -45,6 +45,7 @@ export interface EnvelopeOptions extends ToneAudioNodeOptions {
  * 	"release" : 0.8,
  * });
  * env.connect(gainNode.gain);
+ * @category Component
  */
 export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 
@@ -181,13 +182,13 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 
 	static getDefaults(): EnvelopeOptions {
 		return Object.assign(ToneAudioNode.getDefaults(), {
-			attack : 0.01,
-			attackCurve : "linear" as EnvelopeCurveName,
-			decay : 0.1,
-			decayCurve : "exponential" as BasicEnvelopeCurve,
-			release : 1,
-			releaseCurve : "exponential" as EnvelopeCurveName,
-			sustain : 0.5,
+			attack: 0.01,
+			attackCurve: "linear" as EnvelopeCurveName,
+			decay: 0.1,
+			decayCurve: "exponential" as BasicEnvelopeCurve,
+			release: 1,
+			releaseCurve: "exponential" as EnvelopeCurveName,
+			sustain: 0.5,
 		});
 	}
 
@@ -455,7 +456,7 @@ interface EnvelopeCurveMap {
 	step: EnvelopeCurveObject;
 }
 
-type EnvelopeCurveName =  keyof EnvelopeCurveMap;
+type EnvelopeCurveName = keyof EnvelopeCurveMap;
 
 /**
  * Generate some complex envelope curves.
@@ -528,27 +529,27 @@ const EnvelopeCurves: EnvelopeCurveMap = (() => {
 	 * attack and release curve arrays
 	 */
 	return {
-		bounce : {
-			In : invertCurve(bounceCurve),
-			Out : bounceCurve,
+		bounce: {
+			In: invertCurve(bounceCurve),
+			Out: bounceCurve,
 		},
-		cosine : {
-			In : cosineCurve,
-			Out : reverseCurve(cosineCurve),
+		cosine: {
+			In: cosineCurve,
+			Out: reverseCurve(cosineCurve),
 		},
-		exponential : "exponential" as "exponential",
-		linear : "linear" as "linear",
-		ripple : {
-			In : rippleCurve,
-			Out : invertCurve(rippleCurve),
+		exponential: "exponential" as "exponential",
+		linear: "linear" as "linear",
+		ripple: {
+			In: rippleCurve,
+			Out: invertCurve(rippleCurve),
 		},
-		sine : {
-			In : sineCurve,
-			Out : invertCurve(sineCurve),
+		sine: {
+			In: sineCurve,
+			Out: invertCurve(sineCurve),
 		},
-		step : {
-			In : stairsCurve,
-			Out : invertCurve(stairsCurve),
+		step: {
+			In: stairsCurve,
+			Out: invertCurve(stairsCurve),
 		},
 	};
 })();

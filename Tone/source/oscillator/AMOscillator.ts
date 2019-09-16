@@ -30,6 +30,7 @@ export { AMOscillatorOptions } from "./OscillatorInterface";
  * @example
  * //a sine oscillator amplitude-modulated by a square wave
  * var amOsc = new AMOscillator("Ab3", "sine", "square").toDestination().start();
+ * @category Source
  */
 export class AMOscillator extends Source<AMOscillatorOptions> implements ToneOscillatorInterface {
 
@@ -89,8 +90,8 @@ export class AMOscillator extends Source<AMOscillatorOptions> implements ToneOsc
 		super(optionsFromArguments(AMOscillator.getDefaults(), arguments, ["frequency", "type", "modulationType"]));
 		const options = optionsFromArguments(AMOscillator.getDefaults(), arguments, ["frequency", "type", "modulationType"]);
 
-		this._carrier  = new Oscillator({
-			context : this.context,
+		this._carrier = new Oscillator({
+			context: this.context,
 			detune: options.detune,
 			frequency: options.frequency,
 			onstop: () => this.onstop(this),
@@ -101,7 +102,7 @@ export class AMOscillator extends Source<AMOscillatorOptions> implements ToneOsc
 		this.detune = this._carrier.detune;
 
 		this._modulator = new Oscillator({
-			context : this.context,
+			context: this.context,
 			phase: options.phase,
 			type: options.modulationType,
 		} as OscillatorOptions);

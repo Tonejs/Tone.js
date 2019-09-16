@@ -19,11 +19,11 @@ describe("Compressor", () => {
 		it("can be get and set through object", () => {
 			const comp = new Compressor();
 			const values = {
-				attack : 0.03,
-				knee : 20,
-				ratio : 12,
-				release : 0.5,
-				threshold : -30,
+				attack: 0.03,
+				knee: 20,
+				ratio: 12,
+				release: 0.5,
+				threshold: -30,
 			};
 			comp.set(values);
 			expect(comp.get()).to.have.keys(["ratio", "threshold", "release", "attack", "ratio"]);
@@ -32,11 +32,11 @@ describe("Compressor", () => {
 
 		it("can be get and constructed with an object", () => {
 			const comp = new Compressor({
-				attack : 0.03,
-				knee : 20,
-				ratio : 12,
-				release : 0.5,
-				threshold : -30,
+				attack: 0.03,
+				knee: 20,
+				ratio: 12,
+				release: 0.5,
+				threshold: -30,
 			});
 			expect(comp.threshold.value).to.have.be.closeTo(-30, 1);
 			comp.dispose();
@@ -52,11 +52,11 @@ describe("Compressor", () => {
 		it("can get/set all interfaces", () => {
 			const comp = new Compressor();
 			const values = {
-				attack : 0.03,
-				knee : 18,
-				ratio : 12,
-				release : 0.5,
-				threshold : -30,
+				attack: 0.03,
+				knee: 18,
+				ratio: 12,
+				release: 0.5,
+				threshold: -30,
 			};
 			comp.ratio.value = values.ratio;
 			comp.threshold.value = values.threshold;

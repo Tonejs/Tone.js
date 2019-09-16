@@ -54,8 +54,8 @@ export class TickParam<Type extends Hertz | BPM> extends Param<Type> {
 		// set an initial event
 		this._events.add({
 			ticks: 0,
-			time : 0,
-			type : "setValueAtTime",
+			time: 0,
+			type: "setValueAtTime",
 			value: this._fromType(options.value),
 		});
 		this.setValueAtTime(options.value, 0);
@@ -133,8 +133,8 @@ export class TickParam<Type extends Hertz | BPM> extends Param<Type> {
 	private _getTicksUntilEvent(event: TickAutomationEvent | null, time: number): Ticks {
 		if (event === null) {
 			event = {
-				ticks : 0,
-				time : 0,
+				ticks: 0,
+				time: 0,
 				type: "setValueAtTime",
 				value: 0,
 			};
@@ -218,7 +218,7 @@ export class TickParam<Type extends Hertz | BPM> extends Param<Type> {
 	}
 
 	/**
-	 * The inverse of [ticksToTime](#tickstotime). Convert a duration in
+	 * The inverse of [[ticksToTime]]. Convert a duration in
 	 * seconds to the corresponding number of ticks accounting for any
 	 * automation curves starting at the given time.
 	 * @param  duration The time interval to convert to ticks.

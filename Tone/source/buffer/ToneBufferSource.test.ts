@@ -54,10 +54,10 @@ describe("ToneBufferSource", () => {
 		it("can be created with an options object", () => {
 			const source = new ToneBufferSource({
 				buffer,
-				loop : true,
-				loopEnd : 0.2,
-				loopStart : 0.1,
-				playbackRate : 0.5,
+				loop: true,
+				loopEnd: 0.2,
+				loopStart: 0.1,
+				playbackRate: 0.5,
 			});
 			expect(source.loop).to.equal(true);
 			expect(source.loopEnd).to.equal(0.2);
@@ -204,9 +204,9 @@ describe("ToneBufferSource", () => {
 			const player = new ToneBufferSource();
 			expect(player.loop).is.equal(false);
 			player.set({
-				loop : true,
-				loopEnd : 0.5,
-				loopStart : 0.4,
+				loop: true,
+				loopEnd: 0.5,
+				loopStart: 0.4,
 			});
 			expect(player.loop).is.equal(true);
 			expect(player.loopStart).to.equal(0.4);

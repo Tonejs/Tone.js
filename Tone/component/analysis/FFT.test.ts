@@ -11,7 +11,7 @@ describe("FFT", () => {
 	it("can get and set properties", () => {
 		const fft = new FFT();
 		fft.set({
-			size : 128,
+			size: 128,
 			smoothing: 0.4,
 		});
 		const values = fft.get();
@@ -57,7 +57,7 @@ describe("FFT", () => {
 		it("outputs a normal range", (done) => {
 			const noise = new Noise();
 			const fft = new FFT({
-				normalRange : true,
+				normalRange: true,
 			});
 			noise.connect(fft);
 			noise.start();

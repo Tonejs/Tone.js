@@ -17,7 +17,6 @@ interface TickSignalOptions<T> extends SignalOptions<T> {
  * Thank you Bruno Dias, H. Sofia Pinto, and David M. Matos,
  * for your [WAC paper](https://smartech.gatech.edu/bitstream/handle/1853/54588/WAC2016-49.pdf)
  * describing integrating timing functions for tempo calculations.
- * @category Core
  */
 export class TickSignal<Type extends Hertz | BPM> extends Signal<Type> {
 
@@ -42,7 +41,7 @@ export class TickSignal<Type extends Hertz | BPM> extends Signal<Type> {
 		this.input = this._param = new TickParam({
 			context: this.context,
 			convert: options.convert,
-			multiplier : options.multiplier,
+			multiplier: options.multiplier,
 			param: this._constantSource.offset,
 			units: options.units,
 			value: options.value,

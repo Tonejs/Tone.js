@@ -65,7 +65,7 @@ export abstract class Instrument<Options extends InstrumentOptions> extends Tone
 
 	/**
 	 * Sync the instrument to the Transport. All subsequent calls of
-	 * [triggerAttack](#triggerattack) and [triggerRelease](#triggerrelease)
+	 * [[triggerAttack]] and [[triggerRelease]]
 	 * will be scheduled along the transport.
 	 * @example
 	 * instrument.sync()

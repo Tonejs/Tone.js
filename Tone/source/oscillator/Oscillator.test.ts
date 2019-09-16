@@ -217,7 +217,7 @@ describe("Oscillator", () => {
 
 	context("Synchronization", () => {
 		it("can sync the frequency to the Transport", () => {
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				transport.bpm.value = 120;
 				const osc = new Oscillator(2);
 				osc.frequency.toDestination();
@@ -229,7 +229,7 @@ describe("Oscillator", () => {
 		});
 
 		it("can unsync the frequency from the Transport", () => {
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				transport.bpm.value = 120;
 				const osc = new Oscillator(2);
 				osc.frequency.toDestination();
@@ -243,13 +243,13 @@ describe("Oscillator", () => {
 	});
 
 	context("initialValue", () => {
-		it ("can get the initial value of a basic oscillator type", () => {
+		it("can get the initial value of a basic oscillator type", () => {
 			const osc = new Oscillator(10, "sine");
 			expect(osc.getInitialValue()).to.be.closeTo(0, 0.01);
 			osc.dispose();
 		});
 
-		it ("can get the initial value when the phase is rotated", () => {
+		it("can get the initial value when the phase is rotated", () => {
 			const osc = new Oscillator({
 				phase: 90,
 				type: "sine",
@@ -258,7 +258,7 @@ describe("Oscillator", () => {
 			osc.dispose();
 		});
 
-		it ("can get the initial value of more complex types", () => {
+		it("can get the initial value of more complex types", () => {
 			const osc = new Oscillator({
 				partials: [0, 2, 4, 1, 3],
 				phase: 145,

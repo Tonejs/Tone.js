@@ -17,6 +17,7 @@ export interface PanVolOptions extends ToneAudioNodeOptions {
  * @example
  * //pan the incoming signal left and drop the volume
  * var panVol = new PanVol(-0.25, -12);
+ * @category Component
  */
 export class PanVol extends ToneAudioNode<PanVolOptions> {
 

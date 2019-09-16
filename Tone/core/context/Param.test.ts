@@ -36,14 +36,14 @@ describe("Param", () => {
 				const param = new Param({
 					context,
 					param: context.createConstantSource().offset,
-					value : 1.1,
+					value: 1.1,
 				});
 				expect(param.getValueAtTime(0)).to.equal(1.1);
 				param.dispose();
 			});
 		});
 
-		it ("requires a param in the constructor", () => {
+		it("requires a param in the constructor", () => {
 			expect(() => {
 				const param = new Param({
 					value: 1.1,
@@ -97,7 +97,7 @@ describe("Param", () => {
 						context,
 						param: source.offset,
 						units: "number",
-						value : 0,
+						value: 0,
 					});
 					param.setValueCurveAtTime([0, 0.5, 0, 1, 1.5], 0.1, 0.8, 0.5);
 					expect(param.getValueAtTime(0.91)).to.be.closeTo(0.75, 0.01);
@@ -106,7 +106,7 @@ describe("Param", () => {
 				matchesOutputCurve(param, testBuffer);
 			});
 
-			it ("a mixture of scheduling curves", async () => {
+			it("a mixture of scheduling curves", async () => {
 				let param;
 				const testBuffer = await Offline(context => {
 					const source = context.createConstantSource();
@@ -115,7 +115,7 @@ describe("Param", () => {
 					param = new Param({
 						context,
 						param: source.offset,
-						value : 0.1,
+						value: 0.1,
 					});
 					param.setValueAtTime(0, 0);
 					param.setValueAtTime(1, 0.1);
@@ -199,8 +199,8 @@ describe("Param", () => {
 			const osc = audioContext.createOscillator();
 			const param = new Param<Frequency>({
 				context: audioContext,
-				param : osc.frequency,
-				units : "frequency",
+				param: osc.frequency,
+				units: "frequency",
 			});
 			expect(() => {
 				// @ts-ignore
@@ -229,8 +229,8 @@ describe("Param", () => {
 			const gain = audioContext.createGain();
 			const param = new Param<BPM>({
 				context: audioContext,
-				param : gain.gain,
-				units : "bpm",
+				param: gain.gain,
+				units: "bpm",
 			});
 			expect(param.units).to.equal("bpm");
 			param.dispose();
@@ -255,9 +255,9 @@ describe("Param", () => {
 				source.start(0);
 				const param = new Param({
 					context,
-					convert : false,
+					convert: false,
 					param: source.offset,
-					units : "decibels",
+					units: "decibels",
 				});
 				param.value = -10;
 				expect(param.value).to.be.closeTo(-10, 0.01);
@@ -268,7 +268,7 @@ describe("Param", () => {
 	});
 
 	context("apply", () => {
-		it ("can apply a scheduled curve", () => {
+		it("can apply a scheduled curve", () => {
 			let sig;
 			return Offline(context => {
 				const signal = new Signal();
@@ -293,7 +293,7 @@ describe("Param", () => {
 			});
 		});
 
-		it ("can apply a scheduled curve that starts with a setTargetAtTime", () => {
+		it("can apply a scheduled curve that starts with a setTargetAtTime", () => {
 			let sig;
 			return Offline(context => {
 				const signal = new Signal();
@@ -313,7 +313,7 @@ describe("Param", () => {
 			});
 		});
 
-		it ("can apply a scheduled curve that starts with a setTargetAtTime and then schedules other things", () => {
+		it("can apply a scheduled curve that starts with a setTargetAtTime and then schedules other things", () => {
 			let sig;
 			return Offline(context => {
 				const signal = new Signal();
@@ -380,7 +380,7 @@ describe("Param", () => {
 				const source = audioContext.createConstantSource();
 				source.connect(audioContext.rawContext.destination);
 				const param = new Param({
-					context : audioContext,
+					context: audioContext,
 					param: source.offset,
 					units,
 				});
@@ -408,21 +408,21 @@ describe("Param", () => {
 	});
 
 	context("defaultValue", () => {
-		it ("has the right default value for default units", () => {
+		it("has the right default value for default units", () => {
 			const source = audioContext.createConstantSource();
 			source.connect(audioContext.rawContext.destination);
 			const param = new Param({
-				context : audioContext,
+				context: audioContext,
 				param: source.offset,
 			});
 			expect(param.defaultValue).to.be.equal(1);
 		});
 
-		it ("has the right default value for default decibels", () => {
+		it("has the right default value for default decibels", () => {
 			const source = audioContext.createConstantSource();
 			source.connect(audioContext.rawContext.destination);
 			const param = new Param({
-				context : audioContext,
+				context: audioContext,
 				param: source.offset,
 				units: "decibels",
 			});
@@ -460,7 +460,7 @@ describe("Param", () => {
 		}
 
 		const allUnits: UnitName[] = ["number", "decibels", "normalRange", "audioRange", "gain",
-		"positive", "time", "frequency", "transportTime", "ticks", "bpm", "degrees", "samples", "hertz"];
+			"positive", "time", "frequency", "transportTime", "ticks", "bpm", "degrees", "samples", "hertz"];
 
 		allUnits.forEach(unit => {
 			if (unit === "decibels") {

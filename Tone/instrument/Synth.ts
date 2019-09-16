@@ -26,6 +26,7 @@ export interface SynthOptions extends MonophonicOptions {
  * @example
  * var synth = new Synth().toDestination();
  * synth.triggerAttackRelease("C4", "8n");
+ * @category Instrument
  */
 export class Synth<Options extends SynthOptions = SynthOptions> extends Monophonic<Options> {
 

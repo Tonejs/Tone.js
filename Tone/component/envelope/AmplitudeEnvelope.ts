@@ -21,6 +21,7 @@ import { Envelope, EnvelopeOptions } from "./Envelope";
  * var osc = new Tone.Oscillator().connect(ampEnv).start();
  * //trigger the envelopes attack and release "8t" apart
  * ampEnv.triggerAttackRelease("8t");
+ * @category Component
  */
 export class AmplitudeEnvelope extends Envelope {
 

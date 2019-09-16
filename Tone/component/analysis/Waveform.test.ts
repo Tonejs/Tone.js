@@ -11,7 +11,7 @@ describe("Waveform", () => {
 	it("can get and set properties", () => {
 		const anl = new Waveform();
 		anl.set({
-			size : 128,
+			size: 128,
 		});
 		const values = anl.get();
 		expect(values.size).to.equal(128);

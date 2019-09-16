@@ -20,6 +20,7 @@ import { Signal, SignalOptions } from "../signal/Signal";
  * sigA.connect(sub);
  * sigB.connect(sub.subtrahend);
  * //output of sub is 7.5
+ * @category Signal
  */
 export class Subtract extends Signal {
 

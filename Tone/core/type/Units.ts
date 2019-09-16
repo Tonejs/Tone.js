@@ -51,7 +51,7 @@ export type Positive = number;
  * @category Unit
  */
 export type Subdivision = "1m" | "1n" | "2n" | "2t" | "4n" | "4t" | "8n" | "8t" | "16n" | "16t" |
-					"32n" | "32t" | "64n" | "64t" | "128n" | "128t" | "256n" | "256t" | "0";
+"32n" | "32t" | "64n" | "64t" | "128n" | "128t" | "256n" | "256t" | "0";
 
 /**
  * A time object has a subdivision as the keys and a number as the values.
@@ -140,7 +140,7 @@ export type Radians = number;
  * Bars:Beats:Sixteenths.
  * @category Unit
  */
-export type BarsBeatsSixteenths  = string;
+export type BarsBeatsSixteenths = string;
 /**
  * Sampling is the reduction of a continuous signal to a discrete signal.
  * Audio is typically sampled 44100 times per second.

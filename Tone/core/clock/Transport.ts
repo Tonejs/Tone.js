@@ -163,9 +163,9 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 		// CLOCK/TEMPO
 		this._ppq = options.ppq;
 		this._clock = new Clock({
-			callback : this._processTick.bind(this),
+			callback: this._processTick.bind(this),
 			context: this.context,
-			frequency : 0,
+			frequency: 0,
 			units: "bpm",
 		});
 		this._bindClockEvents();
@@ -241,7 +241,7 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 	schedule(callback: TransportCallback, time: TransportTime | TransportTimeClass): number {
 		const event = new TransportEvent(this, {
 			callback,
-			time : new TransportTimeClass(this.context, time).toTicks(),
+			time: new TransportTimeClass(this.context, time).toTicks(),
 		});
 		return this._addEvent(event, this._timeline);
 	}
@@ -267,9 +267,9 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 	): number {
 		const event = new TransportRepeatEvent(this, {
 			callback,
-			duration : new TimeClass(this.context, duration).toTicks(),
+			duration: new TimeClass(this.context, duration).toTicks(),
 			interval: new TimeClass(this.context, interval).toTicks(),
-			time : new TransportTimeClass(this.context, startTime).toTicks(),
+			time: new TransportTimeClass(this.context, startTime).toTicks(),
 		});
 		// kick it off if the Transport is started
 		// @ts-ignore
@@ -285,8 +285,8 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 	scheduleOnce(callback: TransportCallback, time: TransportTime | TransportTimeClass): number {
 		const event = new TransportEvent(this, {
 			callback,
-			once : true,
-			time : new TransportTimeClass(this.context, time).toTicks(),
+			once: true,
+			time: new TransportTimeClass(this.context, time).toTicks(),
 		});
 		return this._addEvent(event, this._timeline);
 	}
@@ -644,8 +644,8 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 		// @ts-ignore
 		ratioSignal.connect(signal._param);
 		this._syncedSignals.push({
-			initial : signal.value,
-			ratio : ratioSignal,
+			initial: signal.value,
+			ratio: ratioSignal,
 			signal,
 		});
 		signal.value = 0;

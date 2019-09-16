@@ -24,9 +24,9 @@ describe("AMOscillator", () => {
 
 		it("can pass in parameters in the constructor", () => {
 			const amOsc = new AMOscillator({
-				harmonicity : 3,
-				modulationType : "square3",
-				type : "triangle2",
+				harmonicity: 3,
+				modulationType: "square3",
+				type: "triangle2",
 			});
 			expect(amOsc.type).to.equal("triangle2");
 			expect(amOsc.harmonicity.value).to.be.closeTo(3, 0.001);

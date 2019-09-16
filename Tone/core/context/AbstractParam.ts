@@ -2,7 +2,6 @@ import { Time, Unit, UnitName } from "../type/Units";
 
 /**
  * Abstract base class for [[Param]] and [[Signal]]
- * @category Core
  */
 export abstract class AbstractParam<Type extends Unit> {
 
@@ -131,7 +130,7 @@ export abstract class AbstractParam<Type extends Unit> {
 	abstract cancelScheduledValues(time: Time): this;
 
 	/**
-	 * This is similar to [cancelScheduledValues](#cancelScheduledValues) except
+	 * This is similar to [[cancelScheduledValues]] except
 	 * it holds the automated value at time until the next automated event.
 	 */
 	abstract cancelAndHoldAtTime(time: Time): this;

@@ -18,6 +18,7 @@ interface MergeOptions extends ToneAudioNodeOptions {
  * //starting our oscillators
  * noise.start();
  * osc.start();
+ * @category Component
  */
 export class Merge extends ToneAudioNode<MergeOptions> {
 

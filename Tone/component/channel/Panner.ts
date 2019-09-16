@@ -13,6 +13,7 @@ interface TonePannerOptions extends ToneAudioNodeOptions {
  * @example
  * //pan the input signal hard right.
  * var panner = new Panner(1);
+ * @category Component
  */
 export class Panner extends ToneAudioNode<TonePannerOptions> {
 

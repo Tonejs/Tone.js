@@ -14,6 +14,7 @@ export interface ToneOscillatorNodeOptions extends OneShotSourceOptions {
  * Wrapper around the native fire-and-forget OscillatorNode.
  * Adds the ability to reschedule the stop method.
  * ***[[Oscillator]] is better for most use-cases***
+ * @category Source
  */
 export class ToneOscillatorNode extends OneShotSource<ToneOscillatorNodeOptions> {
 
@@ -55,16 +56,16 @@ export class ToneOscillatorNode extends OneShotSource<ToneOscillatorNodeOptions>
 
 		this.frequency = new Param({
 			context: this.context,
-			param : this._oscillator.frequency,
-			units : "frequency",
-			value : options.frequency,
+			param: this._oscillator.frequency,
+			units: "frequency",
+			value: options.frequency,
 		});
 
 		this.detune = new Param({
 			context: this.context,
-			param : this._oscillator.detune,
-			units : "cents",
-			value : options.detune,
+			param: this._oscillator.detune,
+			units: "cents",
+			value: options.detune,
 		});
 	}
 

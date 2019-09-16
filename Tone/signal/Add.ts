@@ -21,6 +21,7 @@ import { Signal, SignalOptions } from "./Signal";
  * var sig0 = new Signal(3).connect(add);
  * var sig1 = new Signal(4).connect(add.addend);
  * //the output of add equals 7.
+ * @category Signal
  */
 export class Add extends Signal {
 

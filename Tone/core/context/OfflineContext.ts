@@ -44,7 +44,7 @@ export class OfflineContext extends Context {
 				arguments[0] : createOfflineAudioContext(arguments[0], arguments[1] * arguments[2], arguments[2]),
 			lookAhead: 0,
 			updateInterval: isOfflineAudioContext(arguments[0]) ?
-					128 / arguments[0].sampleRate : 128 / arguments[2],
+				128 / arguments[0].sampleRate : 128 / arguments[2],
 		});
 
 		this._duration = isOfflineAudioContext(arguments[0]) ?

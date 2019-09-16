@@ -17,10 +17,10 @@ describe("AmplitudeEnvelope", () => {
 		it("matches a file", () => {
 			return CompareToFile(() => {
 				const ampEnv = new AmplitudeEnvelope({
-					attack : 0.1,
-					decay : 0.2,
-					release : 0.2,
-					sustain : 0.1,
+					attack: 0.1,
+					decay: 0.2,
+					release: 0.2,
+					sustain: 0.1,
 				}).toDestination();
 				const osc = new Oscillator().start(0).connect(ampEnv);
 				ampEnv.triggerAttack(0);
@@ -31,10 +31,10 @@ describe("AmplitudeEnvelope", () => {
 		it("matches a file with multiple retriggers", () => {
 			return CompareToFile(() => {
 				const ampEnv = new AmplitudeEnvelope({
-					attack : 0.1,
-					decay : 0.2,
-					release : 0.2,
-					sustain : 0.1,
+					attack: 0.1,
+					decay: 0.2,
+					release: 0.2,
+					sustain: 0.1,
 				}).toDestination();
 				const osc = new Oscillator().start(0).connect(ampEnv);
 				ampEnv.triggerAttack(0);
@@ -45,12 +45,12 @@ describe("AmplitudeEnvelope", () => {
 		it("matches a file with ripple attack/release", () => {
 			return CompareToFile(() => {
 				const ampEnv = new AmplitudeEnvelope({
-					attack : 0.5,
-					attackCurve : "ripple",
-					decay : 0.2,
-					release : 0.3,
-					releaseCurve : "ripple",
-					sustain : 0.1,
+					attack: 0.5,
+					attackCurve: "ripple",
+					decay: 0.2,
+					release: 0.3,
+					releaseCurve: "ripple",
+					sustain: 0.1,
 				}).toDestination();
 				const osc = new Oscillator().start(0).connect(ampEnv);
 				ampEnv.triggerAttack(0);

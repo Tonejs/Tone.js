@@ -15,6 +15,7 @@ export interface SoloOptions extends ToneAudioNodeOptions {
  * var soloB = new Solo()
  * soloA.solo = true
  * //no audio will pass through soloB
+ * @category Component
  */
 export class Solo extends ToneAudioNode<SoloOptions> {
 

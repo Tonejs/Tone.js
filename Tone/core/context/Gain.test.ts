@@ -31,7 +31,7 @@ describe("Gain", () => {
 
 	it("can be constructed with options object", () => {
 		const gainNode = new Gain({
-			gain : 0.4,
+			gain: 0.4,
 		});
 		expect(gainNode.gain.value).to.be.closeTo(0.4, 0.001);
 		gainNode.dispose();

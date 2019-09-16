@@ -14,7 +14,7 @@ describe("ToneAudioBuffers", () => {
 
 	it("loads a file from an object string", done => {
 		const buffer = new ToneAudioBuffers({
-			sine : testFile,
+			sine: testFile,
 		}, () => {
 			expect(buffer).to.be.instanceof(ToneAudioBuffers);
 			buffer.dispose();
@@ -24,8 +24,8 @@ describe("ToneAudioBuffers", () => {
 
 	it("can get a buffer loaded from an object", done => {
 		const buffer = new ToneAudioBuffers({
-			kick : testFile2,
-			sine : testFile,
+			kick: testFile2,
+			sine: testFile,
 		}, () => {
 			expect(buffer.get("kick")).to.be.instanceof(ToneAudioBuffer);
 			buffer.dispose();
@@ -35,7 +35,7 @@ describe("ToneAudioBuffers", () => {
 
 	it("throws an error when it tries to get an object that doesnt exist", done => {
 		const buffer = new ToneAudioBuffers({
-			sine : testFile,
+			sine: testFile,
 		}, () => {
 			expect(() => {
 				buffer.get("nope");
@@ -47,8 +47,8 @@ describe("ToneAudioBuffers", () => {
 
 	it("tests if it has a buffer", done => {
 		const buffer = new ToneAudioBuffers({
-			kick : testFile2,
-			sine : testFile,
+			kick: testFile2,
+			sine: testFile,
 		}, () => {
 			expect(buffer.has("kick")).to.be.true;
 			expect(buffer.has("sine")).to.be.true;
@@ -60,22 +60,22 @@ describe("ToneAudioBuffers", () => {
 
 	it("can pass in buffers as object and options object in second arg", done => {
 		const buffer = new ToneAudioBuffers({
-			baseUrl : "./audio/",
+			baseUrl: "./audio/",
 			onload(): void {
 				expect(buffer.has("sine")).to.be.true;
 				buffer.dispose();
 				done();
 			},
 			urls: {
-				sine : "sine.wav",
+				sine: "sine.wav",
 			},
 		});
 	});
 
 	it("reports itself as loaded", done => {
 		const buffer = new ToneAudioBuffers({
-			kick : testFile2,
-			sine : testFile,
+			kick: testFile2,
+			sine: testFile,
 		}, () => {
 			expect(buffer.loaded).to.be.true;
 			buffer.dispose();
@@ -86,7 +86,7 @@ describe("ToneAudioBuffers", () => {
 
 	it("can load from a base url", done => {
 		const buffer = new ToneAudioBuffers({
-			hat : "hh.wav",
+			hat: "hh.wav",
 		}, () => {
 			expect(buffer.get("hat")).to.be.instanceof(ToneAudioBuffer);
 			buffer.dispose();

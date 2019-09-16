@@ -41,6 +41,7 @@ export { PulseOscillatorOptions } from "./OscillatorInterface";
  * ```
  * @example
  * var pulse = new PulseOscillator("E5", 0.4).toDestination().start();
+ * @category Source
  */
 export class PulseOscillator extends Source<PulseOscillatorOptions> implements ToneOscillatorInterface {
 
@@ -105,7 +106,7 @@ export class PulseOscillator extends Source<PulseOscillatorOptions> implements T
 			frequency: options.frequency,
 			onstop: () => this.onstop(this),
 			phase: options.phase,
-			type : "sawtooth",
+			type: "sawtooth",
 		});
 		this.frequency = this._sawtooth.frequency;
 		this.detune = this._sawtooth.detune;

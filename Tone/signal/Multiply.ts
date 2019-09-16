@@ -18,6 +18,7 @@ import { Signal, SignalOptions } from "./Signal";
  * const mult = new Multiply(10);
  * const sig = new Tone.Signal(2).connect(mult);
  * //the output of mult is 20.
+ * @category Signal
  */
 export class Multiply extends Signal<number> {
 
