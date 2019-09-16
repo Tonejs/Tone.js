@@ -149,7 +149,7 @@ export class TickSource<Type extends BPM | Hertz> extends ToneWithContext<TickSo
 			return 0;
 		}
 		// this event allows forEachBetween to iterate until the current time
-		const tmpEvent: StateTimelineEvent = { state: "paused", time: computedTime};
+		const tmpEvent: StateTimelineEvent = { state: "paused", time: computedTime };
 		this._state.add(tmpEvent);
 
 		// keep track of the previous offset event
@@ -216,7 +216,7 @@ export class TickSource<Type extends BPM | Hertz> extends ToneWithContext<TickSo
 			return 0;
 		}
 		// this event allows forEachBetween to iterate until the current time
-		const tmpEvent: StateTimelineEvent = { state : "paused", time };
+		const tmpEvent: StateTimelineEvent = { state: "paused", time };
 		this._state.add(tmpEvent);
 
 		// keep track of the previous offset event
@@ -254,7 +254,7 @@ export class TickSource<Type extends BPM | Hertz> extends ToneWithContext<TickSo
 		time = this.toSeconds(time);
 		this._tickOffset.cancel(time);
 		this._tickOffset.add({
-			seconds : this.frequency.getDurationOfTicks(ticks, time),
+			seconds: this.frequency.getDurationOfTicks(ticks, time),
 			ticks,
 			time,
 		});

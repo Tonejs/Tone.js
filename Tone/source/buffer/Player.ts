@@ -109,15 +109,15 @@ export class Player extends Source<PlayerOptions> {
 
 	static getDefaults(): PlayerOptions {
 		return Object.assign(Source.getDefaults(), {
-			autostart : false,
-			fadeIn : 0,
-			fadeOut : 0,
-			loop : false,
-			loopEnd : 0,
-			loopStart : 0,
-			onload : noOp,
-			playbackRate : 1,
-			reverse : false,
+			autostart: false,
+			fadeIn: 0,
+			fadeOut: 0,
+			loop: false,
+			loopEnd: 0,
+			loopStart: 0,
+			onload: noOp,
+			playbackRate: 1,
+			reverse: false,
 		});
 	}
 
@@ -209,15 +209,15 @@ export class Player extends Source<PlayerOptions> {
 
 		// make the source
 		const source = new ToneBufferSource({
-			buffer : this._buffer,
+			buffer: this._buffer,
 			context: this.context,
-			fadeIn : this.fadeIn,
-			fadeOut : this.fadeOut,
-			loop : this._loop,
-			loopEnd : this._loopEnd,
-			loopStart : this._loopStart,
-			onended : this._onSourceEnd.bind(this),
-			playbackRate : this._playbackRate,
+			fadeIn: this.fadeIn,
+			fadeOut: this.fadeOut,
+			loop: this._loop,
+			loopEnd: this._loopEnd,
+			loopStart: this._loopStart,
+			onended: this._onSourceEnd.bind(this),
+			playbackRate: this._playbackRate,
 		}).connect(this.output);
 
 		// set the looping properties

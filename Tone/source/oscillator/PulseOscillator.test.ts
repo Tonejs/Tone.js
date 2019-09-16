@@ -26,8 +26,8 @@ describe("PulseOscillator", () => {
 		it("can change the phase to 90", () => {
 			return Offline(() => {
 				const osc = new PulseOscillator({
-					frequency : 1,
-					phase : 90,
+					frequency: 1,
+					phase: 90,
 					width: 0,
 				});
 				osc.toDestination();
@@ -46,8 +46,8 @@ describe("PulseOscillator", () => {
 		it("can change the phase to -90", () => {
 			return Offline(() => {
 				const osc = new PulseOscillator({
-					frequency : 1,
-					phase : 270,
+					frequency: 1,
+					phase: 270,
 					width: 0,
 				});
 				osc.toDestination();
@@ -69,7 +69,7 @@ describe("PulseOscillator", () => {
 
 		it("can set the width", () => {
 			const osc = new PulseOscillator({
-				width : 0.2,
+				width: 0.2,
 			});
 			expect(osc.width.value).to.be.closeTo(0.2, 0.001);
 			osc.dispose();
@@ -78,8 +78,8 @@ describe("PulseOscillator", () => {
 		it("outputs correctly with a width of 0", () => {
 			return Offline(() => {
 				const osc = new PulseOscillator({
-					frequency : 1,
-					width : 0,
+					frequency: 1,
+					width: 0,
 				});
 				osc.toDestination();
 				osc.start(0);
@@ -95,8 +95,8 @@ describe("PulseOscillator", () => {
 		it("outputs correctly with a width of 0.5", () => {
 			return Offline(() => {
 				const osc = new PulseOscillator({
-					frequency : 1,
-					width : 0.5,
+					frequency: 1,
+					width: 0.5,
 				});
 				osc.toDestination();
 				osc.start(0);

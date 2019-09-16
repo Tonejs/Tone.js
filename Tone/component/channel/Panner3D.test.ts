@@ -56,14 +56,14 @@ describe("Panner3D", () => {
 
 	it("can get/set all of the other attributes", () => {
 		const values = {
-			coneInnerAngle : 120,
-			coneOuterAngle : 280,
-			coneOuterGain : 0.3,
-			distanceModel : "exponential",
-			maxDistance : 10002,
-			panningModel : "HRTF",
-			refDistance : 0.3,
-			rolloffFactor : 3,
+			coneInnerAngle: 120,
+			coneOuterAngle: 280,
+			coneOuterGain: 0.3,
+			distanceModel: "exponential",
+			maxDistance: 10002,
+			panningModel: "HRTF",
+			refDistance: 0.3,
+			rolloffFactor: 3,
 		};
 		const panner = new Panner3D();
 		for (const v in values) {

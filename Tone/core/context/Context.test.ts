@@ -12,9 +12,9 @@ import { connect } from "./ToneAudioNode";
 
 describe("Context", () => {
 
-// 	if (!Supports.AUDIO_CONTEXT_CLOSE_RESOLVES) {
-// 		return;
-// 	}
+	// 	if (!Supports.AUDIO_CONTEXT_CLOSE_RESOLVES) {
+	// 		return;
+	// 	}
 
 	context("AudioContext", () => {
 
@@ -63,7 +63,7 @@ describe("Context", () => {
 
 	context("state", () => {
 
-		it ("can suspend and resume the state", async () => {
+		it("can suspend and resume the state", async () => {
 			const ac = new AudioContext();
 			const context = new Context(ac);
 			expect(context.rawContext).to.equal(ac);
@@ -189,7 +189,7 @@ describe("Context", () => {
 
 		it("is invoked in the offline context", () => {
 			return Offline(context => {
-				const transport = new Transport({context});
+				const transport = new Transport({ context });
 				transport.context.setTimeout(() => {
 					expect(transport.now()).to.be.closeTo(0.01, 0.005);
 				}, 0.01);
@@ -271,59 +271,59 @@ describe("Context", () => {
 		});
 	});
 
-// 	context("Tone", () => {
+	// 	context("Tone", () => {
 
-// 		it("has a context", () => {
-// 			expect(Tone.context).to.exist;
-// 			expect(Tone.context).to.be.instanceOf(Context);
-// 		});
+	// 		it("has a context", () => {
+	// 			expect(Tone.context).to.exist;
+	// 			expect(Tone.context).to.be.instanceOf(Context);
+	// 		});
 
-// 		it("can set a new context", () => {
-// 			const originalContext = Tone.context;
-// 			Tone.context = new Context();
-// 			return Tone.context.dispose().then(() => {
-// 				Tone.context = originalContext;
-// 			});
-// 		});
+	// 		it("can set a new context", () => {
+	// 			const originalContext = Tone.context;
+	// 			Tone.context = new Context();
+	// 			return Tone.context.dispose().then(() => {
+	// 				Tone.context = originalContext;
+	// 			});
+	// 		});
 
-// 		it("has a consistent context after offline rendering", () => {
-// 			const initialContext = Tone.context;
-// 			const initialTransport = Tone.Transport;
-// 			return Offline(() => { }).then(() => {
-// 				expect(Tone.context).to.equal(initialContext);
-// 				expect(Tone.Transport).to.equal(initialTransport);
-// 			});
-// 		});
+	// 		it("has a consistent context after offline rendering", () => {
+	// 			const initialContext = Tone.context;
+	// 			const initialTransport = Tone.Transport;
+	// 			return Offline(() => { }).then(() => {
+	// 				expect(Tone.context).to.equal(initialContext);
+	// 				expect(Tone.Transport).to.equal(initialTransport);
+	// 			});
+	// 		});
 
-// 		it("invokes the resume promise", () => {
-// 			return Tone.context.resume();
-// 		});
+	// 		it("invokes the resume promise", () => {
+	// 			return Tone.context.resume();
+	// 		});
 
-// 		it("invokes init when a new context is set", done => {
-// 			this.timeout(200);
-// 			const initFn = function(context) {
-// 				expect(Tone.context).to.equal(context);
-// 				Context.off("init", initFn);
-// 				done();
-// 			};
-// 			Context.on("init", initFn);
-// 			Tone.context = new Context();
-// 		});
+	// 		it("invokes init when a new context is set", done => {
+	// 			this.timeout(200);
+	// 			const initFn = function(context) {
+	// 				expect(Tone.context).to.equal(context);
+	// 				Context.off("init", initFn);
+	// 				done();
+	// 			};
+	// 			Context.on("init", initFn);
+	// 			Tone.context = new Context();
+	// 		});
 
-// 		it("invokes close when a context is disposed", done => {
-// 			this.timeout(200);
-// 			const closeFn = function(context) {
-// 				expect(context).to.be.instanceOf(Context);
-// 				Context.off("close", closeFn);
-// 				// set a new context
-// 				Tone.context = new Context();
-// 				done();
-// 			};
-// 			Context.on("close", closeFn);
-// 			Tone.context.dispose();
-// 		});
+	// 		it("invokes close when a context is disposed", done => {
+	// 			this.timeout(200);
+	// 			const closeFn = function(context) {
+	// 				expect(context).to.be.instanceOf(Context);
+	// 				Context.off("close", closeFn);
+	// 				// set a new context
+	// 				Tone.context = new Context();
+	// 				done();
+	// 			};
+	// 			Context.on("close", closeFn);
+	// 			Tone.context.dispose();
+	// 		});
 
-// 	});
+	// 	});
 
 	context("get/set", () => {
 

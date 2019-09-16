@@ -69,9 +69,9 @@ export class ToneBufferSource extends OneShotSource<ToneBufferSourceOptions> {
 		 */
 		this.playbackRate = new Param({
 			context: this.context,
-			param : this._source.playbackRate,
-			units : "positive",
-			value : options.playbackRate,
+			param: this._source.playbackRate,
+			units: "positive",
+			value: options.playbackRate,
 		});
 
 		// set some values initially
@@ -87,10 +87,10 @@ export class ToneBufferSource extends OneShotSource<ToneBufferSourceOptions> {
 		return Object.assign(OneShotSource.getDefaults(), {
 			buffer: new ToneAudioBuffer(),
 			loop: false,
-			loopEnd : 0,
-			loopStart : 0,
+			loopEnd: 0,
+			loopStart: 0,
 			onload: noOp,
-			playbackRate : 1,
+			playbackRate: 1,
 		});
 	}
 

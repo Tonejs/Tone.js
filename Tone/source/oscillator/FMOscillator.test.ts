@@ -24,9 +24,9 @@ describe("FMOscillator", () => {
 
 		it("can pass in parameters in the constructor", () => {
 			const fmOsc = new FMOscillator({
-				harmonicity : 3,
-				modulationType : "square3",
-				type : "triangle2",
+				harmonicity: 3,
+				modulationType: "square3",
+				type: "triangle2",
 			});
 			expect(fmOsc.type).to.equal("triangle2");
 			expect(fmOsc.harmonicity.value).to.be.closeTo(3, 0.001);
@@ -43,7 +43,7 @@ describe("FMOscillator", () => {
 
 		it("can set the modulationIndex", () => {
 			const fmOsc = new FMOscillator({
-				modulationIndex : 3,
+				modulationIndex: 3,
 			});
 			expect(fmOsc.modulationIndex.value).to.be.closeTo(3, 0.001);
 			fmOsc.modulationIndex.value = 0.2;

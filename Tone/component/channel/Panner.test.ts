@@ -19,7 +19,7 @@ describe("Panner", () => {
 
 		it("can be constructed with an options object", () => {
 			const panner = new Panner({
-				pan : 0.5,
+				pan: 0.5,
 			});
 			expect(panner.pan.value).to.be.closeTo(0.5, 0.001);
 			panner.dispose();

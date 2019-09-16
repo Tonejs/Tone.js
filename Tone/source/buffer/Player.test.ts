@@ -61,7 +61,7 @@ describe("Player", () => {
 
 	context("onstop", () => {
 
-		it ("invokes the onstop method when the player is explicitly stopped", () => {
+		it("invokes the onstop method when the player is explicitly stopped", () => {
 			let wasInvoked = false;
 			return Offline(() => {
 				const player = new Player({
@@ -76,7 +76,7 @@ describe("Player", () => {
 			});
 		});
 
-		it ("invokes the onstop method when the file is naturally over", () => {
+		it("invokes the onstop method when the file is naturally over", () => {
 			let wasInvoked = false;
 			return Offline(() => {
 				const player = new Player(buffer);
@@ -90,7 +90,7 @@ describe("Player", () => {
 			});
 		});
 
-		it ("invokes the onstop method on restart", () => {
+		it("invokes the onstop method on restart", () => {
 			let wasInvoked = 0;
 			return Offline(() => {
 				const player = new Player(buffer);
@@ -123,22 +123,22 @@ describe("Player", () => {
 
 		it("can be created with an options object", () => {
 			const player = new Player({
-				loop : true,
-				url : "./audio/sine.wav",
+				loop: true,
+				url: "./audio/sine.wav",
 			});
 			player.dispose();
 		});
 
 		it("can autostart after loading", (done) => {
 			const player = new Player({
-				autostart : true,
+				autostart: true,
 				onload(): void {
 					setTimeout(() => {
 						expect(player.state).to.be.equal("started");
 						done();
 					}, 10);
 				},
-				url : "./audio/sine.wav",
+				url: "./audio/sine.wav",
 			});
 		});
 
@@ -146,7 +146,7 @@ describe("Player", () => {
 
 	context("Reverse", () => {
 
-		it ("can get/set reverse", () => {
+		it("can get/set reverse", () => {
 			const player = new Player();
 			player.reverse = true;
 			expect(player.reverse).to.equal(true);
@@ -159,8 +159,8 @@ describe("Player", () => {
 			const lastSample = audioBuffer[audioBuffer.length - 1 - jump];
 			return Offline(() => {
 				const player = new Player({
-					reverse : true,
-					url : buffer.get(),
+					reverse: true,
+					url: buffer.get(),
 				}).toDestination();
 				player.start(0);
 			}).then((buff) => {
@@ -298,7 +298,7 @@ describe("Player", () => {
 	});
 
 	context("PlaybackRate", () => {
-		it ("reports itself as completed after the stop time when playbackRate = 1", () => {
+		it("reports itself as completed after the stop time when playbackRate = 1", () => {
 			return Offline(() => {
 				const player = new Player(buffer);
 				player.start(0);
@@ -308,7 +308,7 @@ describe("Player", () => {
 			}, buffer.duration * 1.1);
 		});
 
-		it ("no longer reports itself as stopped when playback rate is changed to < 1", () => {
+		it("no longer reports itself as stopped when playback rate is changed to < 1", () => {
 			return Offline(() => {
 				const player = new Player(buffer);
 				player.start(0);
@@ -319,7 +319,7 @@ describe("Player", () => {
 			}, buffer.duration * 1.1);
 		});
 
-		it ("when end is explicitly scheduled, it does not matter if playbackRate is changed", () => {
+		it("when end is explicitly scheduled, it does not matter if playbackRate is changed", () => {
 			return Offline(() => {
 				const player = new Player(buffer);
 				player.start(0).stop(0.1);
@@ -337,10 +337,10 @@ describe("Player", () => {
 			const player = new Player();
 			expect(player.loop).to.be.false;
 			player.set({
-				fadeIn : 0.1,
-				fadeOut : 0.2,
-				loop : true,
-				loopStart : 0.4,
+				fadeIn: 0.1,
+				fadeOut: 0.2,
+				loop: true,
+				loopStart: 0.4,
 			});
 			expect(player.loop).to.be.true;
 			expect(player.loopStart).to.equal(0.4);
@@ -354,10 +354,10 @@ describe("Player", () => {
 			expect(player.loop).to.be.false;
 			player.start();
 			player.set({
-				loop : true,
-				loopEnd : 0.3,
-				loopStart : 0.2,
-				playbackRate : 0.9,
+				loop: true,
+				loopEnd: 0.3,
+				loopStart: 0.2,
+				playbackRate: 0.9,
 			});
 			expect(player.loop).to.be.true;
 			expect(player.loopStart).to.equal(0.2);
@@ -368,11 +368,11 @@ describe("Player", () => {
 
 		it("can get an options object", () => {
 			const player = new Player({
-				loop : true,
-				loopEnd : 0.3,
-				loopStart : 0.2,
-				reverse : true,
-				url : "./audio/sine.wav",
+				loop: true,
+				loopEnd: 0.3,
+				loopStart: 0.2,
+				reverse: true,
+				url: "./audio/sine.wav",
 			});
 			expect(player.get().loopStart).to.equal(0.2);
 			expect(player.get().loopEnd).to.equal(0.3);
@@ -536,7 +536,7 @@ describe("Player", () => {
 		});
 
 		it("plays synced to the Transport", () => {
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				const player = new Player(buffer).sync().start(0).toDestination();
 				transport.start(0);
 			}, 0.05).then((buff) => {
@@ -546,7 +546,7 @@ describe("Player", () => {
 
 		it("offsets correctly when started by the Transport", () => {
 			const testSample = buffer.toArray(0)[Math.floor(0.13125 * getContext().sampleRate)];
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				const player = new Player(buffer).sync().start(0, 0.1).toDestination();
 				transport.start(0, 0.03125);
 			}, 0.05).then((buff) => {
@@ -555,7 +555,7 @@ describe("Player", () => {
 		});
 
 		it("starts at the correct position when Transport is offset and playbackRate is not 1", () => {
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				// make a ramp between 0-1
 				const ramp = new Float32Array(Math.floor(getContext().sampleRate * 0.3));
 				for (let i = 0; i < ramp.length; i++) {
@@ -573,7 +573,7 @@ describe("Player", () => {
 		});
 
 		it("starts with an offset when synced and started after Transport is running", () => {
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				const ramp = new Float32Array(Math.floor(getContext().sampleRate * 0.3));
 				for (let i = 0; i < ramp.length; i++) {
 					ramp[i] = (i / (ramp.length)) * 0.3;
@@ -593,7 +593,7 @@ describe("Player", () => {
 		});
 
 		it("can pass in an offset when synced and started after Transport is running", () => {
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				const ramp = new Float32Array(Math.floor(getContext().sampleRate * 0.3));
 				for (let i = 0; i < ramp.length; i++) {
 					ramp[i] = (i / (ramp.length)) * 0.3;
@@ -623,7 +623,7 @@ describe("Player", () => {
 					onesArray[index] = 1;
 				});
 				const onesBuffer = ToneAudioBuffer.fromArray(onesArray);
-				const player = new Player({ url : onesBuffer, fadeOut : 0.1, fadeIn : 0.1 }).toDestination();
+				const player = new Player({ url: onesBuffer, fadeOut: 0.1, fadeIn: 0.1 }).toDestination();
 				player.start(0);
 			}, 0.6).then((buff) => {
 				expect(buff.getRmsAtTime(0)).to.be.closeTo(0, 0.1);

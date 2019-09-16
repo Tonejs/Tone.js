@@ -90,7 +90,7 @@ export class FMOscillator extends Source<FMOscillatorOptions> implements ToneOsc
 		const options = optionsFromArguments(FMOscillator.getDefaults(), arguments, ["frequency", "type", "modulationType"]);
 
 		this._carrier = new Oscillator({
-			context : this.context,
+			context: this.context,
 			detune: options.detune,
 			frequency: 0,
 			onstop: () => this.onstop(this),
@@ -107,7 +107,7 @@ export class FMOscillator extends Source<FMOscillatorOptions> implements ToneOsc
 		});
 
 		this._modulator = new Oscillator({
-			context : this.context,
+			context: this.context,
 			phase: options.phase,
 			type: options.modulationType,
 		} as OscillatorOptions);

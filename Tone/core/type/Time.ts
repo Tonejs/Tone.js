@@ -13,7 +13,7 @@ import { BarsBeatsSixteenths, MidiNote, Seconds, Subdivision, Ticks, Time } from
  * @category Unit
  */
 export class TimeClass<Type extends Seconds | Ticks = Seconds, Unit extends string = TimeBaseUnit>
-extends TimeBaseClass<Type, Unit> {
+	extends TimeBaseClass<Type, Unit> {
 
 	readonly name: string = "Time";
 

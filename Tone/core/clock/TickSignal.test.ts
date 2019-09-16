@@ -260,7 +260,7 @@ describe("TickSignal", () => {
 	});
 
 	context("BPM / PPQ", () => {
-		it ("can be set as PPQ", () => {
+		it("can be set as PPQ", () => {
 			const tickSignal = new TickSignal<number>({
 				multiplier: 10,
 				units: "bpm",
@@ -308,7 +308,7 @@ describe("TickSignal", () => {
 		return Offline((context) => {
 			const sched = new TickSignal<number>({
 				units: "bpm",
-				value : 120,
+				value: 120,
 			}).connect(context.destination);
 			sched.linearRampTo(60, 1, 0);
 		}, 1.01).then(buffer => {
@@ -321,9 +321,9 @@ describe("TickSignal", () => {
 	it("outputs a signal with bpm units and a multiplier", () => {
 		return Offline((context) => {
 			const sched = new TickSignal<number>({
-				multiplier : 10,
+				multiplier: 10,
 				units: "bpm",
-				value : 60,
+				value: 60,
 			}).connect(context.destination);
 			sched.linearRampTo(120, 1, 0);
 		}, 1.01).then(buffer => {

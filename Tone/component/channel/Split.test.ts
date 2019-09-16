@@ -28,7 +28,7 @@ describe("Split", () => {
 		});
 
 		it("passes the incoming signal through on the left side", () => {
-			return ConstantOutput(({destination}) => {
+			return ConstantOutput(({ destination }) => {
 				const split = new Split();
 				const signal = StereoSignal(1, 2).connect(split);
 				split.connect(destination, 0, 0);
@@ -36,7 +36,7 @@ describe("Split", () => {
 		});
 
 		it("passes the incoming signal through on the right side", () => {
-			return ConstantOutput(({destination}) => {
+			return ConstantOutput(({ destination }) => {
 				const split = new Split();
 				const signal = StereoSignal(1, 2).connect(split);
 				split.connect(destination, 1, 0);

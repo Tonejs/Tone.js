@@ -30,8 +30,8 @@ describe("LFO", () => {
 
 		it("can be constructed with an object", () => {
 			const lfo = new LFO({
-				frequency : 0.3,
-				type : "triangle2",
+				frequency: 0.3,
+				type: "triangle2",
 			});
 			expect(lfo.type).to.equal("triangle2");
 			expect(lfo.frequency.value).to.be.closeTo(0.3, 0.001);
@@ -42,11 +42,11 @@ describe("LFO", () => {
 			return Offline(() => {
 				const lfo = new LFO();
 				const values = {
-					frequency : "8n",
-					max : 2,
-					min : -1,
-					phase : 180,
-					type : "square",
+					frequency: "8n",
+					max: 2,
+					min: -1,
+					phase: 180,
+					type: "square",
 				} as Partial<LFOOptions>;
 				lfo.set(values);
 				expect(lfo.get()).to.contain.keys(Object.keys(values));
@@ -100,8 +100,8 @@ describe("LFO", () => {
 		it("outputs a signal at the correct phase angle", () => {
 			return Offline(() => {
 				new LFO({
-					min : 0,
-					phase : 90,
+					min: 0,
+					phase: 90,
 				}).toDestination();
 			}).then((buffer) => {
 				expect(buffer.value()).to.be.closeTo(0, 0.1);
@@ -111,9 +111,9 @@ describe("LFO", () => {
 		it("outputs the right phase when setting a new phase", () => {
 			return Offline(() => {
 				const lfo = new LFO({
-					max : 1,
-					min : -1,
-					phase : 0,
+					max: 1,
+					min: -1,
+					phase: 0,
 				}).toDestination();
 				lfo.phase = 270;
 			}).then((buffer) => {
@@ -124,10 +124,10 @@ describe("LFO", () => {
 		it("can convert to other units", () => {
 			return Offline(() => {
 				const lfo = new LFO({
-					frequency : 20,
-					max : 5,
-					min : -20,
-					units : "decibels",
+					frequency: 20,
+					max: 5,
+					min: -20,
+					units: "decibels",
 				}).toDestination();
 				lfo.start();
 			}).then((buffer) => {
@@ -171,7 +171,7 @@ describe("LFO", () => {
 		});
 
 		it("can sync the frequency to the Transport", () => {
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				const lfo = new LFO(2);
 				lfo.sync();
 				lfo.frequency.toDestination();
@@ -184,7 +184,7 @@ describe("LFO", () => {
 		});
 
 		it("can unsync the frequency to the transport", () => {
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				const lfo = new LFO(2);
 				lfo.sync();
 				lfo.frequency.toDestination();

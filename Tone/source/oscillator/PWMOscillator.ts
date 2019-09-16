@@ -75,7 +75,7 @@ export class PWMOscillator extends Source<PWMOscillatorOptions> implements ToneO
 		// @ts-ignore
 		this._pulse._sawtooth.type = "sine";
 
-		this.modulationFrequency  = this._pulse.frequency;
+		this.modulationFrequency = this._pulse.frequency;
 
 		this._modulator = new Oscillator({
 			context: this.context,

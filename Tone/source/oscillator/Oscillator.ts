@@ -360,7 +360,7 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 			this._partialCount = this._partials.length;
 			periodicWaveSize = partialCount;
 			// if the partial count is 0, don't bother doing any computation
-			if (this._partials.length === 0 ) {
+			if (this._partials.length === 0) {
 				return [real, imag];
 			}
 		} else {

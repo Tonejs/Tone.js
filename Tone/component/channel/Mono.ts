@@ -35,7 +35,7 @@ export class Mono extends ToneAudioNode<MonoOptions> {
 		super(optionsFromArguments(Mono.getDefaults(), arguments));
 		const options = optionsFromArguments(Mono.getDefaults(), arguments);
 
-		this.input = new Gain({context: this.context});
+		this.input = new Gain({ context: this.context });
 
 		this._merge = this.output = new Merge({
 			channels: 2,

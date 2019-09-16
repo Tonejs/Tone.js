@@ -85,7 +85,7 @@ describe("MidiClass", () => {
 		});
 
 		it("can convert from Ticks", () => {
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				expect(Midi(Ticks(transport.PPQ)).valueOf()).to.equal(-24);
 				expect(Midi(Ticks("4n")).valueOf()).to.equal(-24);
 			});

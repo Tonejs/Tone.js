@@ -62,7 +62,7 @@ export class Draw extends ToneWithContext<ToneWithContextOptions> {
 	schedule(callback: () => void, time: Time): this {
 		this._events.add({
 			callback,
-			time : this.toSeconds(time),
+			time: this.toSeconds(time),
 		});
 		// start the draw loop on the first event
 		if (this._events.length === 1) {

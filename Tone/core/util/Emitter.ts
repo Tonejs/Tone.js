@@ -47,7 +47,7 @@ export class Emitter<EventType extends string = string> extends Tone {
 	 * @param  callback  The callback to invoke when the event is emitted
 	 */
 	once(event: EventType, callback: (...args: any[]) => void): this {
-		const boundCallback = (...args: any[])  => {
+		const boundCallback = (...args: any[]) => {
 			// invoke the callback
 			callback(...args);
 			// remove the event

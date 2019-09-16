@@ -105,7 +105,7 @@ export class PulseOscillator extends Source<PulseOscillatorOptions> implements T
 			frequency: options.frequency,
 			onstop: () => this.onstop(this),
 			phase: options.phase,
-			type : "sawtooth",
+			type: "sawtooth",
 		});
 		this.frequency = this._sawtooth.frequency;
 		this.detune = this._sawtooth.detune;

@@ -20,8 +20,8 @@ describe("PanVol", () => {
 
 		it("can be constructed with an options object", () => {
 			const panVol = new PanVol({
-				mute : true,
-				pan : 0.2,
+				mute: true,
+				pan: 0.2,
 			});
 			expect(panVol.pan.value).to.be.closeTo(0.2, 0.001);
 			expect(panVol.mute).to.be.true;
@@ -31,7 +31,7 @@ describe("PanVol", () => {
 		it("can set/get with an object", () => {
 			const panVol = new PanVol();
 			panVol.set({
-				volume : -10,
+				volume: -10,
 			});
 			expect(panVol.get().volume).to.be.closeTo(-10, 0.1);
 			panVol.dispose();

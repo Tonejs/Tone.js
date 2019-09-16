@@ -20,7 +20,9 @@ export function deepMerge<T, U>(target: T, source1: U): T & U;
 export function deepMerge<T, U, V>(target: T, source1: U, source2: V): T & U & V;
 export function deepMerge<T, U, V, W>(target: T, source1: U, source2: V, source3: W): T & U & V & W;
 export function deepMerge(target: any, ...sources: any[]): any {
-	if (!sources.length) { return target; }
+	if (!sources.length) {
+		return target; 
+	}
 	const source = sources.shift();
 
 	if (isObject(target) && isObject(source)) {
@@ -28,7 +30,9 @@ export function deepMerge(target: any, ...sources: any[]): any {
 			if (noCopy(key, source[key])) {
 				target[key] = source[key];
 			} else if (isObject(source[key])) {
-				if (!target[key]) { Object.assign(target, { [key]: {} }); }
+				if (!target[key]) {
+					Object.assign(target, { [key]: {} }); 
+				}
 				deepMerge(target[key], source[key] as any);
 			} else {
 				Object.assign(target, { [key]: source[key] as any });
@@ -63,7 +67,7 @@ export function optionsFromArguments<T extends object>(
 		const partOfDefaults = Object.keys(args[0]).some(key => Reflect.has(defaults, key));
 		if (!partOfDefaults) {
 			// merge that key
-			deepMerge(opts, {[objKey] : args[0]});
+			deepMerge(opts, { [objKey]: args[0] });
 			// remove the obj key from the keys
 			keys.splice(keys.indexOf(objKey), 1);
 			// shift the first argument off

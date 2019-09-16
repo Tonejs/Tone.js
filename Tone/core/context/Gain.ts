@@ -45,20 +45,20 @@ export class Gain<Type extends Unit = GainFactor> extends ToneAudioNode<GainOpti
 		const options = optionsFromArguments(Gain.getDefaults(), arguments, ["gain", "units"]);
 
 		this.gain = new Param({
-			context : this.context,
-			convert : options.convert,
-			param : this._gainNode.gain,
-			units : options.units,
-			value : options.gain as Type,
+			context: this.context,
+			convert: options.convert,
+			param: this._gainNode.gain,
+			units: options.units,
+			value: options.gain as Type,
 		});
 		readOnly(this, "gain");
 	}
 
 	static getDefaults(): GainOptions {
 		return Object.assign(ToneAudioNode.getDefaults(), {
-			convert : true,
-			gain : 1,
-			units : "gain" as UnitName,
+			convert: true,
+			gain: 1,
+			units: "gain" as UnitName,
 		});
 	}
 

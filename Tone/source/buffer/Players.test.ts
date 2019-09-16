@@ -16,13 +16,13 @@ describe("Players", () => {
 		return buffer.load("./audio/sine.wav");
 	});
 
-	BasicTests(Players, { test : buffer });
+	BasicTests(Players, { test: buffer });
 
 	context("Constructor", () => {
 
 		it("can be constructed with an object containing a ToneAudioBuffer", () => {
 			const players = new Players({
-				test : buffer,
+				test: buffer,
 			});
 			expect(players.player("test").buffer.get()).to.equal(buffer.get());
 			players.dispose();
@@ -30,7 +30,7 @@ describe("Players", () => {
 
 		it("can be constructed with an AudioBuffer", () => {
 			const players = new Players({
-				test : buffer.get() as AudioBuffer,
+				test: buffer.get() as AudioBuffer,
 			});
 			expect(players.player("test").buffer.get()).to.equal(buffer.get());
 			players.dispose();
@@ -38,8 +38,8 @@ describe("Players", () => {
 
 		it("can be constructed with a url", (done) => {
 			const players = new Players({
-				test0 : "./audio/sine.wav",
-				test1 : "./audio/sine.wav",
+				test0: "./audio/sine.wav",
+				test1: "./audio/sine.wav",
 			}, () => {
 				expect(players.player("test0")).to.be.instanceOf(Player);
 				expect(players.player("test0").buffer.loaded).to.be.true;
@@ -53,24 +53,24 @@ describe("Players", () => {
 
 		it("can pass in additional args in the second parameters", (done) => {
 			const players = new Players({
-				test : "./audio/sine.wav",
+				test: "./audio/sine.wav",
 			}, {
-				onload : () => {
+				onload: () => {
 					expect(players.player("test").buffer.loaded).to.be.true;
 					expect(players.volume.value).to.be.closeTo(-12, 0.1);
 					players.dispose();
 					done();
 				},
-				volume : -12,
+				volume: -12,
 			});
 		});
 
 		it("can get and set fadeIn/Out", () => {
 			const players = new Players({
-				test : "./audio/sine.wav",
+				test: "./audio/sine.wav",
 			}, {
-				fadeIn : 0.1,
-				fadeOut : 0.2,
+				fadeIn: 0.1,
+				fadeOut: 0.2,
 			});
 			expect(players.fadeIn).to.equal(0.1);
 			expect(players.fadeOut).to.equal(0.2);
@@ -88,7 +88,7 @@ describe("Players", () => {
 
 		it("says it 'has' a sample", () => {
 			const players = new Players({
-				test : buffer,
+				test: buffer,
 			});
 			expect(players.has("test")).to.be.true;
 			expect(players.has("nope")).to.be.false;
@@ -97,7 +97,7 @@ describe("Players", () => {
 
 		it("can get a sample", () => {
 			const players = new Players({
-				test : buffer,
+				test: buffer,
 			});
 			expect(players.player("test")).to.be.instanceOf(Player);
 			players.dispose();
@@ -105,7 +105,7 @@ describe("Players", () => {
 
 		it("throws an error if it tries to get a sample which is not there", () => {
 			const players = new Players({
-				test : buffer,
+				test: buffer,
 			});
 			expect(() => {
 				players.player("nope");
@@ -148,7 +148,7 @@ describe("Players", () => {
 		it("makes a sound", () => {
 			return OutputAudio(() => {
 				const players = new Players({
-					test : buffer,
+					test: buffer,
 				}).toDestination();
 				players.player("test").start(0);
 			});
@@ -157,7 +157,7 @@ describe("Players", () => {
 		it("can be muted", () => {
 			return Offline(() => {
 				const players = new Players({
-					test : buffer,
+					test: buffer,
 				}).toDestination();
 				players.player("test").start(0);
 				players.mute = true;
@@ -170,7 +170,7 @@ describe("Players", () => {
 		it("be scheduled to start in the future", () => {
 			return Offline(() => {
 				const players = new Players({
-					test : buffer,
+					test: buffer,
 				}).toDestination();
 				players.player("test").start(0.1);
 			}, 0.3).then((buffer2) => {
@@ -185,7 +185,7 @@ describe("Players", () => {
 		it("be scheduled to stop in the future", () => {
 			return Offline(() => {
 				const players = new Players({
-					test : buffer,
+					test: buffer,
 				}).toDestination();
 				players.player("test").start(0).stop(0.2);
 			}, 0.3).then((buffer2) => {
@@ -200,8 +200,8 @@ describe("Players", () => {
 		it("if any of the players are playing, reports state as 'started'", () => {
 			return Offline(() => {
 				const players = new Players({
-					test0 : buffer,
-					test1 : buffer,
+					test0: buffer,
+					test1: buffer,
 				}).toDestination();
 				players.player("test0").start(0).stop(0.05);
 				players.player("test1").start(0).stop(0.1);
@@ -218,8 +218,8 @@ describe("Players", () => {
 		it("can start multiple samples", () => {
 			return OutputAudio(() => {
 				const players = new Players({
-					test0 : buffer,
-					test1 : buffer,
+					test0: buffer,
+					test1: buffer,
 				}).toDestination();
 				players.player("test0").start(0).stop(0.01);
 				players.player("test1").start(0);
@@ -229,8 +229,8 @@ describe("Players", () => {
 		it("can stop all of the samples in the future", () => {
 			return Offline(() => {
 				const players = new Players({
-					test0 : buffer,
-					test1 : buffer,
+					test0: buffer,
+					test1: buffer,
 				}).toDestination();
 				players.player("test0").start(0);
 				players.player("test1").start(0);
@@ -252,10 +252,10 @@ describe("Players", () => {
 				});
 				const onesBuffer = ToneAudioBuffer.fromArray(onesArray);
 				const players = new Players({
-					test : onesBuffer,
+					test: onesBuffer,
 				}, {
-					fadeIn : 0.1,
-					fadeOut : 0.1,
+					fadeIn: 0.1,
+					fadeOut: 0.1,
 				}).toDestination();
 				players.player("test").start(0);
 			}, 0.6).then((buffer2) => {

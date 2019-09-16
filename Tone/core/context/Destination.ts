@@ -32,7 +32,7 @@ export class Destination extends ToneAudioNode<DestinationOptions> {
 	readonly name: string = "Destination";
 
 	input: Volume = new Volume({ context: this.context });
-	output: Gain = new Gain({ context : this.context });
+	output: Gain = new Gain({ context: this.context });
 
 	/**
 	 * The volume of the master output.

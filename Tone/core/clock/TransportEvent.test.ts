@@ -7,7 +7,7 @@ describe("TransportEvent", () => {
 
 	it("can be created and disposed", () => {
 		return Offline((context) => {
-			const transport = new Transport({context});
+			const transport = new Transport({ context });
 			const event = new TransportEvent(transport, {
 				time: 0,
 			});
@@ -17,7 +17,7 @@ describe("TransportEvent", () => {
 
 	it("has a unique id", () => {
 		return Offline((context) => {
-			const transport = new Transport({context});
+			const transport = new Transport({ context });
 			const event = new TransportEvent(transport, {
 				time: 0,
 			});
@@ -29,7 +29,7 @@ describe("TransportEvent", () => {
 	it("can invoke the callback", () => {
 		let wasInvoked = false;
 		return Offline((context) => {
-			const transport = new Transport({context});
+			const transport = new Transport({ context });
 			const event = new TransportEvent(transport, {
 				callback: (time) => {
 					expect(time).to.equal(100);

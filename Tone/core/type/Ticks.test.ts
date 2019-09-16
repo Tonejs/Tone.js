@@ -23,7 +23,7 @@ describe("TicksClass", () => {
 		});
 
 		it("can pass in a number in the constructor", () => {
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				const time = Ticks(1);
 				expect(time).to.be.instanceOf(TicksClass);
 				expect(time.valueOf()).to.equal(1);
@@ -32,7 +32,7 @@ describe("TicksClass", () => {
 		});
 
 		it("can pass in a string in the constructor", () => {
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				const time = Ticks("1");
 				expect(time).to.be.instanceOf(TicksClass);
 				expect(time.valueOf()).to.equal(1);
@@ -41,7 +41,7 @@ describe("TicksClass", () => {
 		});
 
 		it("can pass in a value and a type", () => {
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				expect(Ticks(4, "m").valueOf()).to.equal(transport.PPQ * 16);
 			});
 		});
@@ -72,7 +72,7 @@ describe("TicksClass", () => {
 		});
 
 		it("can convert from Time", () => {
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				expect(Ticks(Time(2)).valueOf()).to.equal(transport.PPQ * 4);
 				expect(Ticks(Time("4n")).valueOf()).to.equal(transport.PPQ);
 				expect(Ticks(Time(4, "n")).valueOf()).to.equal(transport.PPQ);
@@ -80,7 +80,7 @@ describe("TicksClass", () => {
 		});
 
 		it("can convert from Frequency", () => {
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				expect(Ticks(Frequency(2)).valueOf()).to.equal(transport.PPQ);
 				expect(Ticks(Frequency("4n")).valueOf()).to.equal(transport.PPQ);
 				expect(Ticks(Frequency(4, "n")).valueOf()).to.equal(transport.PPQ);
@@ -88,23 +88,23 @@ describe("TicksClass", () => {
 		});
 
 		it("can convert from TransportTime", () => {
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				expect(Ticks(TransportTime(2)).valueOf()).to.equal(transport.PPQ * 4);
 				expect(Ticks(TransportTime("4n")).valueOf()).to.equal(transport.PPQ);
 			});
 		});
 
 		it("can convert from Ticks", () => {
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				expect(Ticks(Ticks(transport.PPQ)).valueOf()).to.equal(transport.PPQ);
 				expect(Ticks(Ticks("4n")).valueOf()).to.equal(transport.PPQ);
 			});
 		});
 
 		it("can convert from an Object", () => {
-			return Offline(({transport}) => {
-				expect(Ticks({ "4n" : 2 }).valueOf()).to.equal(transport.PPQ * 2);
-				expect(Ticks({ "1n" : 1, "8t" : 2 }).valueOf()).to.equal(transport.PPQ * 4 + transport.PPQ * (2 / 3));
+			return Offline(({ transport }) => {
+				expect(Ticks({ "4n": 2 }).valueOf()).to.equal(transport.PPQ * 2);
+				expect(Ticks({ "1n": 1, "8t": 2 }).valueOf()).to.equal(transport.PPQ * 4 + transport.PPQ * (2 / 3));
 			});
 		});
 	});
@@ -112,7 +112,7 @@ describe("TicksClass", () => {
 	context("Quantizes values", () => {
 
 		it("can quantize values", () => {
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				expect(Ticks("4t").quantize("4n").valueOf()).to.be.closeTo(transport.PPQ, 0.01);
 			});
 		});
@@ -149,7 +149,7 @@ describe("TicksClass", () => {
 	context("Conversions", () => {
 
 		it("converts time into notation", () => {
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				transport.bpm.value = 120;
 				transport.timeSignature = 4;
 				expect(Ticks("4n").toNotation()).to.equal("4n");
@@ -160,13 +160,13 @@ describe("TicksClass", () => {
 		});
 
 		it("converts time into samples", () => {
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				expect(Ticks(transport.PPQ).toSamples()).to.equal(0.5 * getContext().sampleRate);
 			});
 		});
 
 		it("converts time into frequency", () => {
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				expect(Ticks(transport.PPQ * 4).toFrequency()).to.equal(0.5);
 				expect(Ticks("2n").toFrequency()).to.equal(1);
 			});
@@ -179,7 +179,7 @@ describe("TicksClass", () => {
 		});
 
 		it("converts time into BarsBeatsSixteenths", () => {
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				expect(Ticks("3:1:3").toBarsBeatsSixteenths()).to.equal("3:1:3");
 				expect(Ticks(4 * transport.PPQ).toBarsBeatsSixteenths()).to.equal("1:0:0");
 			});

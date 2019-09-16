@@ -26,7 +26,7 @@ describe("Solo", () => {
 		});
 
 		it("can be passed into the constructor with an object", () => {
-			const sol = new Solo({ solo : true });
+			const sol = new Solo({ solo: true });
 			expect(sol.solo).to.be.true;
 			sol.dispose();
 		});

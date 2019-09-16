@@ -129,7 +129,7 @@ describe("ToneAudioNode", () => {
 	});
 
 	context("connections", () => {
-		it("can connect with args",  () => {
+		it("can connect with args", () => {
 			const nodeA = new Gain();
 			const nodeB = new Gain();
 			nodeA.connect(nodeB, 0, 0);
@@ -153,7 +153,7 @@ describe("ToneAudioNode", () => {
 			nodeB.dispose();
 		});
 
-		it("Tone nodes can disconnect from everything with no args",  () => {
+		it("Tone nodes can disconnect from everything with no args", () => {
 			const nodeA = new Gain();
 			const nodeB = new Gain();
 			nodeA.connect(nodeB);

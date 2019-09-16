@@ -15,7 +15,7 @@ describe("Meter", () => {
 		it("handles getter/setter as Object", () => {
 			const meter = new Meter();
 			const values = {
-				smoothing : 0.2,
+				smoothing: 0.2,
 			};
 			meter.set(values);
 			expect(meter.get().smoothing).to.equal(0.2);
@@ -30,7 +30,7 @@ describe("Meter", () => {
 
 		it("can be constructed with an object", () => {
 			const meter = new Meter({
-				smoothing : 0.3,
+				smoothing: 0.3,
 			});
 			expect(meter.smoothing).to.equal(0.3);
 			meter.dispose();
@@ -43,7 +43,7 @@ describe("Meter", () => {
 			});
 		});
 
-		it ("warns of deprecated method", () => {
+		it("warns of deprecated method", () => {
 			warns(() => {
 				const meter = new Meter().toDestination();
 				meter.getLevel();

@@ -71,9 +71,9 @@ export class Compressor extends ToneAudioNode<CompressorOptions> {
 
 		this.threshold = new Param({
 			context: this.context,
-			convert : false,
-			param : this._compressor.threshold,
-			units : "decibels",
+			convert: false,
+			param: this._compressor.threshold,
+			units: "decibels",
 			value: options.threshold,
 		});
 
@@ -93,17 +93,17 @@ export class Compressor extends ToneAudioNode<CompressorOptions> {
 
 		this.knee = new Param({
 			context: this.context,
-			convert : false,
-			param : this._compressor.knee,
-			units : "decibels",
+			convert: false,
+			param: this._compressor.knee,
+			units: "decibels",
 			value: options.knee,
 		});
 
 		this.ratio = new Param({
 			context: this.context,
-			convert : false,
-			param : this._compressor.ratio,
-			units : "positive",
+			convert: false,
+			param: this._compressor.ratio,
+			units: "positive",
 			value: options.ratio,
 		});
 
@@ -113,11 +113,11 @@ export class Compressor extends ToneAudioNode<CompressorOptions> {
 
 	static getDefaults(): CompressorOptions {
 		return Object.assign(ToneAudioNode.getDefaults(), {
-			attack : 0.003,
-			knee : 30,
-			ratio : 12,
-			release : 0.25,
-			threshold : -24,
+			attack: 0.003,
+			knee: 30,
+			ratio: 12,
+			release: 0.25,
+			threshold: -24,
 		});
 	}
 

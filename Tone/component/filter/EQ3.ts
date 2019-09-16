@@ -126,11 +126,11 @@ export class EQ3 extends ToneAudioNode<EQ3Options> {
 
 	static getDefaults(): EQ3Options {
 		return Object.assign(ToneAudioNode.getDefaults(), {
-			high : 0,
-			highFrequency : 2500,
-			low : 0,
-			lowFrequency : 400,
-			mid : 0,
+			high: 0,
+			highFrequency: 2500,
+			low: 0,
+			lowFrequency: 400,
+			mid: 0,
 		});
 	}
 

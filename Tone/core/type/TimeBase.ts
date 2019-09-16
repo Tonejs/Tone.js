@@ -1,6 +1,6 @@
 import { Context } from "../context/Context";
 import { Tone } from "../Tone";
-import { isDefined, isObject , isString, isUndef } from "../util/TypeCheck";
+import { isDefined, isObject, isString, isUndef } from "../util/TypeCheck";
 import { BPM, Hertz, MidiNote, Milliseconds, Samples, Seconds, Ticks, Time } from "./Units";
 
 export type TimeValue = Time | TimeBaseClass<any, any>;

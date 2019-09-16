@@ -42,7 +42,7 @@ export class TickSignal<Type extends Hertz | BPM> extends Signal<Type> {
 		this.input = this._param = new TickParam({
 			context: this.context,
 			convert: options.convert,
-			multiplier : options.multiplier,
+			multiplier: options.multiplier,
 			param: this._constantSource.offset,
 			units: options.units,
 			value: options.value,

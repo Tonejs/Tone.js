@@ -21,8 +21,8 @@ describe("Filter", () => {
 
 		it("can be constructed with an object", () => {
 			const filter = new Filter({
-				frequency : 340,
-				type : "bandpass",
+				frequency: 340,
+				type: "bandpass",
 			});
 			expect(filter.frequency.value).to.be.closeTo(340, 0.001);
 			expect(filter.type).to.equal("bandpass");
@@ -32,11 +32,11 @@ describe("Filter", () => {
 		it("can set/get values as an Object", () => {
 			const filter = new Filter();
 			const values = {
-				Q : 2,
-				frequency : 440,
-				gain : -6,
-				rolloff : -24,
-				type : "highpass" as BiquadFilterType,
+				Q: 2,
+				frequency: 440,
+				gain: -6,
+				rolloff: -24,
+				type: "highpass" as BiquadFilterType,
 			};
 			filter.set(values);
 			expect(filter.get()).to.include.keys(["type", "frequency", "rolloff", "Q", "gain"]);

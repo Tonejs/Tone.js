@@ -5,7 +5,7 @@ import { isDefined } from "../util/TypeCheck";
 import { Param } from "./Param";
 import { ToneWithContext, ToneWithContextOptions } from "./ToneWithContext";
 
-export type InputNode = ToneAudioNode | AudioNode |  Param<any> | AudioParam;
+export type InputNode = ToneAudioNode | AudioNode | Param<any> | AudioParam;
 export type OutputNode = ToneAudioNode | AudioNode;
 
 interface ChannelProperties {
@@ -24,7 +24,7 @@ export type ToneAudioNodeOptions = ToneWithContextOptions;
  * @category Core
  */
 export abstract class ToneAudioNode<Options extends ToneAudioNodeOptions = ToneAudioNodeOptions>
-extends ToneWithContext<Options> {
+	extends ToneWithContext<Options> {
 
 	/**
 	 * The name of the class
