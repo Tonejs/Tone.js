@@ -27,7 +27,7 @@ export interface NoiseOptions extends SourceOptions {
  * 	"frequency" : "8m",
  * 	"min" : 800,
  * 	"max" : 15000
- * }).connect(Tone.Master);
+ * }).connect(Tone.Destination);
  *
  * //connect the noise
  * noise.connect(autoFilter);
