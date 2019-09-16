@@ -4,7 +4,7 @@ const { execSync } = require("child_process");
 const { writeFileSync, readFileSync, unlinkSync } = require("fs");
 
 function generateDocs() {
-	const commitHash = execSync("git rev-parse --short HEAD").toString();
+	const commitHash = execSync("git rev-parse --short HEAD").toString().trim();
 	console.log(`commit hash ${commitHash}`);
 	const outputDir = resolve(__dirname, "../docs");
 	const tmpFile = resolve(outputDir, "tmp.json");
