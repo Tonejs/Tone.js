@@ -256,18 +256,10 @@ export class OmniOscillator<OscType extends AnyOscillator>
 		// make sure the type is set first
 		if (Reflect.has(props, "type") && props.type) {
 			this.type = props.type;
-			// delete props.type;
 		}
 		// then set the rest
 		super.set(props);
 		return this;
-	}
-
-	get(): OmniOscillatorConstructorOptions {
-		const options = this._oscillator.get();
-		// @ts-ignore
-		options.type = this.type;
-		return options as OmniOscillatorOptions;
 	}
 
 	/**

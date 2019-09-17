@@ -202,6 +202,20 @@ describe("OmniOscillator", () => {
 			omni.dispose();
 		});
 
+		it("can get/set the basic parameters", () => {
+			const omni = new OmniOscillator({
+				type: "square",
+				detune: 20,
+				volume: -20,
+				frequency: 200,
+			});
+			expect(omni.get().detune).to.be.closeTo(20, 0.1);
+			expect(omni.get().volume).to.be.closeTo(-20, 0.1);
+			expect(omni.get().type).to.equal("square");
+			expect(omni.get().frequency).to.be.closeTo(200, 1);
+			omni.dispose();
+		});
+
 		it("can get/set the sourceType", () => {
 			const omni = new OmniOscillator({
 				type: "fatsquare3",
