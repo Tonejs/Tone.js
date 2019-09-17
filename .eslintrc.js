@@ -29,6 +29,7 @@ module.exports = {
 		"no-cond-assign" : ["error", "always"],
 		"indent": "off",
 		"no-var": "error",
+		"prefer-arrow-callback": "error",
 		"@typescript-eslint/indent":  [ "error", "tab", { "SwitchCase": 1 } ],
 		"@typescript-eslint/explicit-member-accessibility": "off",
 		"@typescript-eslint/explicit-function-return-type" : "off",
