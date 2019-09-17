@@ -7,8 +7,8 @@ import { readOnly } from "../core/util/Interface";
 import { RecursivePartial } from "../core/util/Interface";
 import { Signal } from "../signal/Signal";
 import { OmniOscillator } from "../source/oscillator/OmniOscillator";
-import { OmniOscillatorConstructorOptions, OmniOscillatorSynthOptions } from "../source/oscillator/OscillatorInterface";
-import { Source, SourceOptions } from "../source/Source";
+import { OmniOscillatorSynthOptions } from "../source/oscillator/OscillatorInterface";
+import { Source } from "../source/Source";
 import { Monophonic, MonophonicOptions } from "./Monophonic";
 
 export interface SynthOptions extends MonophonicOptions {
