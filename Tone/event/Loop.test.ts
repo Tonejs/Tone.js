@@ -16,7 +16,7 @@ describe("Loop", () => {
 				const callback = noOp;
 				const loop = new Loop(callback, "8n");
 				expect(loop.callback).to.equal(callback);
-				expect(loop.interval.valueOf()).to.equal(Time("8n").valueOf());
+				expect(loop.interval).to.equal(Time("8n").valueOf());
 				loop.dispose();
 			});
 		});
@@ -63,12 +63,13 @@ describe("Loop", () => {
 			});
 		});
 
-		it("can get/set the humanize values", () => {
+		it("can get/set the humanize and interval values", () => {
 			return Offline(() => {
-				const callback = noOp;
 				const loop = new Loop();
 				loop.humanize = true;
+				loop.interval = 0.4;
 				expect(loop.humanize).to.be.true;
+				expect(loop.interval).to.be.closeTo(0.4, 0.002);
 				loop.dispose();
 			});
 		});
