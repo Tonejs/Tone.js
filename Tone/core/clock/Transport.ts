@@ -40,6 +40,11 @@ interface SyncedSignalEvent {
 
 type TransportCallback = (time: Seconds) => void;
 
+interface TransportLoopEvent {
+	looping: boolean;
+	time: Seconds;
+}
+
 /**
  * Transport for timing musical events.
  * Supports tempo curves and time changes. Unlike browser-based timing (setInterval, requestAnimationFrame)
@@ -74,7 +79,7 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 	/**
 	 * If the transport loops or not.
 	 */
-	loop: boolean = false;
+	private _loop: Timeline<TransportLoopEvent> = new Timeline({ memory: 10 });
 
 	/**
 	 * The loop start position in ticks
@@ -210,7 +215,7 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 			tickTime += new TicksClass(this.context, this._swingTicks * 2 / 3).toSeconds() * amount;
 		}
 		// do the loop test
-		if (this.loop) {
+		if (this._loop.get(tickTime) && (this._loop.get(tickTime) as TransportLoopEvent).looping) {
 			if (ticks >= this._loopEnd) {
 				this.emit("loopEnd", tickTime);
 				this._clock.setTicksAtTime(this._loopStart, tickTime);
@@ -456,6 +461,24 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 	}
 	set loopEnd(endPosition: Time) {
 		this._loopEnd = this.toTicks(endPosition);
+	}
+	
+	/**
+	 * If the transport loops or not.
+	 */
+	get loop(): boolean {
+		const event = this._loop.get(this.now());
+		if (event) {
+			return event.looping;
+		} else {
+			return false;
+		}
+	}
+	set loop(loop) {
+		this._loop.add({
+			looping: loop,
+			time: this.now()
+		});
 	}
 
 	/**
