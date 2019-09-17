@@ -13,7 +13,7 @@ module.exports = {
 		"no-throw-literal" : [ "error" ],
 		"no-useless-call" : [ "error" ],
 		"no-unmodified-loop-condition": [ "error" ],
-		"quote-props" : [ "error", "consistent" ],
+		"quote-props" : [ "error", "as-needed" ],
 		"quotes": [ "error","double" ],
 		"no-console": ["error", { "allow": ["warn"] }],
 		"@typescript-eslint/no-object-literal-type-assertion" : "off",
