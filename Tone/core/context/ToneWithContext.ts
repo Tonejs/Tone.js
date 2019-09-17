@@ -108,6 +108,20 @@ export abstract class ToneWithContext<Options extends ToneWithContextOptions> ex
 	//-------------------------------------
 
 	/**
+	 * Get a subset of the properties which are in the partial props
+	 */
+	protected _getPartialProperties(props: Options): Partial<Options> {
+		const options = this.get();
+		// remove attributes from the prop that are not in the partial
+		Object.keys(options).forEach(name => {
+			if (isUndef(props[name])) {
+				delete options[name];
+			}
+		});
+		return options;
+	}
+
+	/**
 	 * Get the object's attributes.
 	 * @example
 	 * osc.get();
@@ -121,7 +135,7 @@ export abstract class ToneWithContext<Options extends ToneWithContextOptions> ex
 				if (isDefined(member) && isDefined(member.value) && isDefined(member.setValueAtTime)) {
 					defaults[attribute] = member.value;
 				} else if (member instanceof ToneWithContext) {
-					defaults[attribute] = member.get();
+					defaults[attribute] = member._getPartialProperties(defaults[attribute]);
 				// otherwise make sure it's a serializable type
 				} else if (isArray(member) || isNumber(member) || isString(member) || isBoolean(member)) {
 					defaults[attribute] = member;
