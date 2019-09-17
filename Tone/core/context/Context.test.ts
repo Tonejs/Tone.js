@@ -66,6 +66,7 @@ describe("Context", () => {
 		it("can suspend and resume the state", async () => {
 			const ac = new AudioContext();
 			const context = new Context(ac);
+			context.initialize();
 			expect(context.rawContext).to.equal(ac);
 			await ac.suspend();
 			expect(context.state).to.equal("suspended");
