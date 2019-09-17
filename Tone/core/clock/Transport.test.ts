@@ -5,6 +5,8 @@ import { noOp } from "Tone/core/util/Interface";
 import { Signal } from "../../signal/Signal";
 import { TransportTime } from "../type/TransportTime";
 import { Transport } from "./Transport";
+// importing for side affects
+import "../context/Destination";
 
 describe("Transport", () => {
 
@@ -247,13 +249,22 @@ describe("Transport", () => {
 			});
 		});
 
+		it("progress is always 0 when not looping", () => {
+			return Offline(({ transport }) => {
+				transport.loop = false;
+				transport.start();
+				return atTime(0.1, () => {
+					expect(transport.progress).to.be.equal(0);
+				});
+			}, 0.2);
+		});
+
 	});
 
 	context("state", () => {
 
 		it("can start, pause, and restart", () => {
-			return Offline(context => {
-				const transport = new Transport({ context });
+			return Offline(({ transport }) => {
 				transport.start(0).pause(0.2).start(0.4);
 
 				const pulse = new Signal<number>(0).toDestination();
