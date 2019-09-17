@@ -19,9 +19,9 @@ describe("NoiseSynth", () => {
 	it("matches a file", () => {
 		return CompareToFile(() => {
 			const synth = new NoiseSynth({
-				envelope : {
-					attack : 0.01,
-					decay : 0.4,
+				envelope: {
+					attack: 0.01,
+					decay: 0.4,
 				},
 			}).toDestination();
 			synth.triggerAttack(0);
@@ -32,9 +32,9 @@ describe("NoiseSynth", () => {
 	it("matches another file", () => {
 		return CompareToFile(() => {
 			const synth = new NoiseSynth({
-				envelope : {
-					attack : 0.01,
-					decay : 0.4,
+				envelope: {
+					attack: 0.01,
+					decay: 0.4,
 				},
 			}).toDestination();
 			synth.triggerAttackRelease(0.1, 0);
@@ -59,7 +59,7 @@ describe("NoiseSynth", () => {
 
 		it("can be constructed with an options object", () => {
 			const noiseSynth = new NoiseSynth({
-				envelope : {
+				envelope: {
 					sustain: 0.3,
 				},
 			});

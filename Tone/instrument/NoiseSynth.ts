@@ -1,13 +1,12 @@
-
 import { AmplitudeEnvelope } from "../component/envelope/AmplitudeEnvelope";
 import { NormalRange, Time } from "../core/type/Units";
-import { optionsFromArguments, omitFromObject } from "../core/util/Defaults";
+import { omitFromObject, optionsFromArguments } from "../core/util/Defaults";
 import { RecursivePartial } from "../core/util/Interface";
 import { Noise, NoiseOptions } from "../source/Noise";
 import { Instrument, InstrumentOptions } from "./Instrument";
-import { ToneAudioNodeOptions, ToneAudioNode } from "../core/context/ToneAudioNode";
-import { EnvelopeOptions, Envelope } from "../component/envelope/Envelope";
-import { Source } from "Tone/source/Source";
+import { ToneAudioNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
+import { Envelope, EnvelopeOptions } from "../component/envelope/Envelope";
+import { Source } from "../source/Source";
 
 export interface NoiseSynthOptions extends InstrumentOptions {
 	envelope: Omit<EnvelopeOptions, keyof ToneAudioNodeOptions>;
@@ -46,7 +45,7 @@ export class NoiseSynth extends Instrument<NoiseSynthOptions> {
 		this.noise = new Noise(Object.assign({
 			context: this.context,
 		}, options.noise));
-		
+
 		this.envelope = new AmplitudeEnvelope(Object.assign({
 			context: this.context,
 		}, options.envelope));
@@ -60,8 +59,8 @@ export class NoiseSynth extends Instrument<NoiseSynthOptions> {
 			envelope: Object.assign(
 				omitFromObject(Envelope.getDefaults(), Object.keys(ToneAudioNode.getDefaults())),
 				{
-					decay : 0.1,
-					sustain : 0.0,
+					decay: 0.1,
+					sustain: 0.0,
 				},
 			),
 			noise: Object.assign(
@@ -86,7 +85,7 @@ export class NoiseSynth extends Instrument<NoiseSynthOptions> {
 		// start the noise
 		this.noise.start(time);
 		if (this.envelope.sustain === 0) {
-			this.noise.stop(time + this.toSeconds(this.envelope.attack) + this.toSeconds(this.envelope.decay))
+			this.noise.stop(time + this.toSeconds(this.envelope.attack) + this.toSeconds(this.envelope.decay));
 		}
 		return this;
 	}
