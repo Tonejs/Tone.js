@@ -2,7 +2,6 @@ import { expect } from "chai";
 import { BasicTests } from "test/helper/Basic";
 import { CompareToFile } from "test/helper/CompareToFile";
 import { InstrumentTest } from "test/helper/InstrumentTests";
-import * as Supports from "test/helper/Supports";
 import { PluckSynth } from "./PluckSynth";
 
 describe("PluckSynth", () => {
@@ -10,15 +9,13 @@ describe("PluckSynth", () => {
 	BasicTests(PluckSynth);
 	InstrumentTest(PluckSynth, "C3");
 
-	if (Supports.CHROME_AUDIO_RENDERING) {
-		it("matches a file", () => {
-			return CompareToFile(() => {
-				const synth = new PluckSynth().toMaster();
-				synth.triggerAttack("C4");
-			}, "pluckSynth.wav", 0.26);
-		});
-	}
-
+	it("matches a file", () => {
+		return CompareToFile(() => {
+			const synth = new PluckSynth().toDestination();
+			synth.triggerAttack("C4");
+		}, "pluckSynth.wav", 0.26);
+	});
+	
 	context("API", () => {
 
 		it("can get and set resonance", () => {
@@ -45,18 +42,11 @@ describe("PluckSynth", () => {
 		it("can be constructed with an options object", () => {
 			const pluck = new PluckSynth({
 				dampening: 300,
-			});
-			expect(pluck.dampening.value).to.be.closeTo(300, 0.1);
-			pluck.dispose();
-		});
-
-		it("can be constructed with an options object", () => {
-			const pluck = new PluckSynth({
 				resonance: 0.5,
 			});
+			expect(pluck.dampening.value).to.be.closeTo(300, 0.1);
 			expect(pluck.resonance.value).to.be.closeTo(0.5, 0.001);
 			pluck.dispose();
 		});
-
 	});
 });

@@ -14,10 +14,10 @@ interface LowpassCombFilterOptions extends ToneAudioNodeOptions {
 }
 
 /**
- *  Tone.Lowpass is a lowpass feedback comb filter. It is similar to
- *  Tone.FeedbackCombFilter, but includes a lowpass filter.
+ * A lowpass feedback comb filter. It is similar to
+ * [[FeedbackCombFilter]], but includes a lowpass filter.
  */
-export class LowpassCombFilter extends ToneAudioNode<ToneAudioNodeOptions> {
+export class LowpassCombFilter extends ToneAudioNode<LowpassCombFilterOptions> {
 
 	readonly name = "LowpassCombFilter";
 
@@ -46,15 +46,22 @@ export class LowpassCombFilter extends ToneAudioNode<ToneAudioNodeOptions> {
 	 */
 	readonly resonance: Param<NormalRange>;
 
-	input: InputNode;
-	output: OutputNode;
+	readonly input: InputNode;
+	readonly output: OutputNode;
 
-	constructor(options?: RecursivePartial<LowpassCombFilterOptions>)
+	/**
+	 * @param delayTime The delay time of the comb filter
+	 * @param resonance The resonance (feedback) of the comb filter
+	 * @param dampening The cutoff of the lowpass filter dampens the signal as it is fedback.
+	 */
+	constructor(delayTime?: Time, resonance?: NormalRange, dampening?: Frequency);
+	constructor(options?: RecursivePartial<LowpassCombFilterOptions>);
 	constructor() {
-		super(optionsFromArguments(LowpassCombFilter.getDefaults(), arguments));
-		const options = optionsFromArguments(LowpassCombFilter.getDefaults(), arguments);
+		super(optionsFromArguments(LowpassCombFilter.getDefaults(), arguments, ["delayTime", "resonance", "dampening"]));
+		const options = optionsFromArguments(LowpassCombFilter.getDefaults(), arguments, ["delayTime", "resonance", "dampening"]);
 
 		this._combFilter = this.output = new FeedbackCombFilter({
+			context: this.context,
 			delayTime: options.delayTime,
 			resonance: options.resonance,
 		});
@@ -62,6 +69,7 @@ export class LowpassCombFilter extends ToneAudioNode<ToneAudioNodeOptions> {
 		this.resonance = this._combFilter.resonance;
 
 		this._lowpass = this.input = new Filter({
+			context: this.context,
 			Q: 0,
 			frequency: options.dampening,
 			rolloff: -12,
@@ -74,12 +82,11 @@ export class LowpassCombFilter extends ToneAudioNode<ToneAudioNodeOptions> {
 	}
 
 	static getDefaults(): LowpassCombFilterOptions {
-		return {
-			...ToneAudioNode.getDefaults(),
+		return Object.assign(ToneAudioNode.getDefaults(), {
 			dampening: 3000,
 			delayTime: 0.1,
 			resonance: 0.5,
-		};
+		});
 	}
 
 	dispose(): this {

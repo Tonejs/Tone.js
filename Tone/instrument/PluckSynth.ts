@@ -1,43 +1,53 @@
-import { Param } from "Tone/core/context/Param";
-import { Frequency, NormalRange, Note, Time } from "Tone/core/type/Units";
+import { Param } from "../core/context/Param";
+import { Frequency, NormalRange, Time } from "../core/type/Units";
 import { LowpassCombFilter } from "../component/filter/LowpassCombFilter";
 import { deepMerge } from "../core/util/Defaults";
 import { optionsFromArguments } from "../core/util/Defaults";
 import { RecursivePartial } from "../core/util/Interface";
 import { Signal } from "../signal/Signal";
 import { Noise } from "../source/Noise";
-import { Synth, SynthOptions } from "./Synth";
+import { InstrumentOptions, Instrument } from "./Instrument";
 
-export interface PluckSynthOptions extends SynthOptions {
+export interface PluckSynthOptions extends InstrumentOptions {
 	attackNoise: number;
 	dampening: Frequency;
 	resonance: NormalRange;
 }
 
 /**
- *  Karplus-String string synthesis. Often out of tune.
- *  Will change when the AudioWorkerNode is available across
- *  browsers.
+ * Karplus-String string synthesis. Often out of tune.
  *
  * @example
- * var plucky = new Tone.PluckSynth().toMaster();
+ * var plucky = new Tone.PluckSynth().toDestination();
  * plucky.triggerAttack("C4");
  */
 
-export class PluckSynth extends Synth<PluckSynthOptions> {
+export class PluckSynth extends Instrument<PluckSynthOptions> {
 
 	readonly name = "PluckSynth";
 
+	/**
+	 * Noise burst at the beginning
+	 */
 	private _noise: Noise;
 	private _lfcf: LowpassCombFilter;
 
 	/**
-	 *  The amount of noise at the attack.
-	 *  Nominal range of [0.1, 20]
+	 * The amount of noise at the attack.
+	 * Nominal range of [0.1, 20]
+	 * @min 0.1
+	 * @max 20
 	 */
 	attackNoise: number;
 
+	/**
+	 * The resonance control.
+	 */
 	readonly resonance: Param<NormalRange>;
+
+	/**
+	 * The dampening control. i.e. the lowpass filter frequency of the comb filter
+	 */
 	readonly dampening: Signal<Frequency>;
 
 	constructor(options?: RecursivePartial<PluckSynthOptions>)
@@ -46,11 +56,15 @@ export class PluckSynth extends Synth<PluckSynthOptions> {
 		super(optionsFromArguments(PluckSynth.getDefaults(), arguments));
 		const options = optionsFromArguments(PluckSynth.getDefaults(), arguments);
 
-		this._noise = new Noise("pink");
+		this._noise = new Noise({
+			context: this.context,
+			type: "pink"
+		});
 
 		this.attackNoise = options.attackNoise;
 
 		this._lfcf = new LowpassCombFilter({
+			context: this.context,
 			dampening: options.dampening,
 			resonance: options.resonance,
 		});
@@ -63,20 +77,28 @@ export class PluckSynth extends Synth<PluckSynthOptions> {
 	}
 
 	static getDefaults(): PluckSynthOptions {
-		return deepMerge(Synth.getDefaults(), {
+		return deepMerge(Instrument.getDefaults(), {
 			attackNoise : 1,
 			dampening : 4000,
 			resonance : 0.7,
 		});
 	}
 
-	triggerAttack(note: Note, time: Time = "now"): this {
+	triggerAttack(note: Frequency, time?: Time): this {
 		const freq = this.toFrequency(note);
 		time = this.toSeconds(time);
 		const delayAmount = 1 / freq;
 		this._lfcf.delayTime.setValueAtTime(delayAmount, time);
 		this._noise.start(time);
 		this._noise.stop(time + delayAmount * this.attackNoise);
+		return this;
+	}
+
+	/**
+	 * PluckSynths' trigger release method doesn't do anything.
+	 */
+	triggerRelease(): this{
+		//does nothing
 		return this;
 	}
 
