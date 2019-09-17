@@ -1,4 +1,3 @@
-
 import { expect } from "chai";
 import { FeedbackCombFilter } from "./FeedbackCombFilter";
 import { BasicTests } from "test/helper/Basic";
@@ -25,8 +24,8 @@ describe("FeedbackCombFilter", () => {
 			fbcf.set({
 				delayTime: 0.2,
 				resonance: 0.3,
-            });
-            const values = fbcf.get();
+			});
+			const values = fbcf.get();
 			expect(values.delayTime).to.be.closeTo(0.2, 0.001);
 			expect(values.resonance).to.be.closeTo(0.3, 0.001);
 			fbcf.dispose();
@@ -35,8 +34,8 @@ describe("FeedbackCombFilter", () => {
 		it("passes the incoming signal through", () => {
 			return PassAudio(input => {
 				const fbcf = new FeedbackCombFilter({
-                    delayTime: 0,
-                }).toDestination();
+					delayTime: 0,
+				}).toDestination();
 				input.connect(fbcf);
 			});
 		});

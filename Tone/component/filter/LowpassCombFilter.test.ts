@@ -1,9 +1,9 @@
-import {LowpassCombFilter} from "./LowpassCombFilter";
-import {BasicTests} from "test/helper/Basic";
-import {Offline} from "test/helper/Offline";
-import {PassAudio} from "test/helper/PassAudio";
-import {Oscillator} from "Tone/source/oscillator/Oscillator";
-import {expect} from 'chai';
+import { LowpassCombFilter } from "./LowpassCombFilter";
+import { BasicTests } from "test/helper/Basic";
+import { Offline } from "test/helper/Offline";
+import { PassAudio } from "test/helper/PassAudio";
+import { Oscillator } from "Tone/source/oscillator/Oscillator";
+import { expect } from "chai";
 
 describe("LowpassCombFilter", () => {
 
@@ -13,9 +13,9 @@ describe("LowpassCombFilter", () => {
 
 		it("can be constructed with an object", () => {
 			const lpcf = new LowpassCombFilter({
-				delayTime : 0.2,
-				resonance : 0.3,
-				dampening : 2400
+				delayTime: 0.2,
+				resonance: 0.3,
+				dampening: 2400
 			});
 			expect(lpcf.delayTime.value).to.be.closeTo(0.2, 0.001);
 			expect(lpcf.resonance.value).to.be.closeTo(0.3, 0.001);
@@ -26,9 +26,9 @@ describe("LowpassCombFilter", () => {
 		it("can be get and set through object", () => {
 			const lpcf = new LowpassCombFilter();
 			lpcf.set({
-				delayTime : 0.2,
-				resonance : 0.3,
-				dampening : 2000
+				delayTime: 0.2,
+				resonance: 0.3,
+				dampening: 2000
 			});
 			expect(lpcf.get().delayTime).to.be.closeTo(0.2, 0.001);
 			expect(lpcf.get().resonance).to.be.closeTo(0.3, 0.001);
@@ -37,7 +37,7 @@ describe("LowpassCombFilter", () => {
 		});
 
 		it("passes the incoming signal through", () => {
-			return PassAudio(function(input){
+			return PassAudio(function(input) {
 				const lpcf = new LowpassCombFilter(0).toDestination();
 				input.connect(lpcf);
 			});

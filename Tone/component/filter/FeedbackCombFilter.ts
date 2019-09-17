@@ -54,7 +54,7 @@ export class FeedbackCombFilter extends ToneAudioNode<FeedbackCombFilterOptions>
 
 		this._delay = this.input = this.output = new Delay({
 			context: this.context,
-			delayTime : options.delayTime
+			delayTime: options.delayTime
 		});
 		this.delayTime = this._delay.delayTime;
 

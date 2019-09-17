@@ -73,7 +73,7 @@ export class LowpassCombFilter extends ToneAudioNode<LowpassCombFilterOptions> {
 			Q: 0,
 			frequency: options.dampening,
 			rolloff: -12,
-			type : "lowpass",
+			type: "lowpass",
 		});
 		this.dampening = this._lowpass.frequency;
 

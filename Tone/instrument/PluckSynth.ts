@@ -6,7 +6,7 @@ import { optionsFromArguments } from "../core/util/Defaults";
 import { RecursivePartial } from "../core/util/Interface";
 import { Signal } from "../signal/Signal";
 import { Noise } from "../source/Noise";
-import { InstrumentOptions, Instrument } from "./Instrument";
+import { Instrument, InstrumentOptions } from "./Instrument";
 
 export interface PluckSynthOptions extends InstrumentOptions {
 	attackNoise: number;
@@ -78,9 +78,9 @@ export class PluckSynth extends Instrument<PluckSynthOptions> {
 
 	static getDefaults(): PluckSynthOptions {
 		return deepMerge(Instrument.getDefaults(), {
-			attackNoise : 1,
-			dampening : 4000,
-			resonance : 0.7,
+			attackNoise: 1,
+			dampening: 4000,
+			resonance: 0.7,
 		});
 	}
 
@@ -98,7 +98,7 @@ export class PluckSynth extends Instrument<PluckSynthOptions> {
 	 * PluckSynths' trigger release method doesn't do anything.
 	 */
 	triggerRelease(): this{
-		//does nothing
+		// does nothing
 		return this;
 	}
 
