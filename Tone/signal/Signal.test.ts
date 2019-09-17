@@ -443,50 +443,58 @@ describe("Signal", () => {
 
 	});
 
-	// context("Transport Syncing", () => {
+	context("Transport Syncing", () => {
 
-	// 	it("maintains its original value after being synced to the transport", () => {
-	// 		return ConstantOutput(function(Transport) {
-	// 			const sig = new Signal<number>(3).toDestination();
-	// 			Transport.syncSignal(sig);
-	// 		}, 3);
-	// 	});
+		it("maintains its original value after being synced to the transport", () => {
+			return ConstantOutput(({ transport }) => {
+				const sig = new Signal<number>(3).toDestination();
+				transport.syncSignal(sig);
+			}, 3);
+		});
 
-	// 	it("keeps the ratio when the bpm changes", () => {
-	// 		return ConstantOutput(function(Transport) {
-	// 			Transport.bpm.value = 120;
-	// 			const sig = new Signal<number>(5).toDestination();
-	// 			Transport.syncSignal(sig);
-	// 			Transport.bpm.value = 240;
-	// 		}, 10);
-	// 	});
+		it("keeps the ratio when the bpm changes", () => {
+			return ConstantOutput(({ transport }) => {
+				transport.bpm.value = 120;
+				const sig = new Signal<number>(5).toDestination();
+				transport.syncSignal(sig);
+				transport.bpm.value = 240;
+			}, 10);
+		});
 
-	// 	it("can ramp along with the bpm", () => {
-	// 		return Offline(function(Transport) {
-	// 			Transport.bpm.value = 120;
-	// 			const sig = new Signal<number>(2).toDestination();
-	// 			Transport.syncSignal(sig);
-	// 			Transport.bpm.rampTo(240, 0.5);
-	// 		}).then((buffer) => {
-	// 			buffer.forEach((sample, time)  => {
-	// 				if (time >= 0.5) {
-	// 					expect(sample).to.be.closeTo(4, 0.04);
-	// 				} else if (time < 0.4) {
-	// 					expect(sample).to.be.within(1.95, 3);
-	// 				}
-	// 			});
-	// 		});
-	// 	});
+		it("outputs 0 when the signal is 0", () => {
+			return ConstantOutput(({ transport }) => {
+				transport.bpm.value = 120;
+				const sig = new Signal<number>(0).toDestination();
+				transport.syncSignal(sig);
+				transport.bpm.value = 240;
+			}, 0);
+		});
 
-	// 	it("returns to the original value when unsynced", () => {
-	// 		return ConstantOutput(function(Transport) {
-	// 			Transport.bpm.value = 120;
-	// 			const sig = new Signal<number>(5).toDestination();
-	// 			Transport.syncSignal(sig);
-	// 			Transport.bpm.value = 240;
-	// 			Transport.unsyncSignal(sig);
-	// 		}, 5);
-	// 	});
-	// });
+		it("can ramp along with the bpm", () => {
+			return Offline(({ transport }) => {
+				transport.bpm.value = 120;
+				const sig = new Signal<number>(2).toDestination();
+				transport.syncSignal(sig);
+				transport.bpm.rampTo(240, 0.5);
+			}).then((buffer) => {
+				buffer.forEach((sample, time) => {
+					if (time >= 0.5) {
+						expect(sample).to.be.closeTo(4, 0.04);
+					} else if (time < 0.4) {
+						expect(sample).to.be.within(1.95, 3);
+					}
+				});
+			});
+		});
 
+		it("returns to the original value when unsynced", () => {
+			return ConstantOutput(({ transport }) => {
+				transport.bpm.value = 120;
+				const sig = new Signal<number>(5).toDestination();
+				transport.syncSignal(sig);
+				transport.bpm.value = 240;
+				transport.unsyncSignal(sig);
+			}, 5);
+		});
+	});
 });
