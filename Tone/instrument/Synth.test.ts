@@ -73,6 +73,14 @@ describe("Synth", () => {
 			simple.dispose();
 		});
 
+		it("can get does not include omited oscillator attributes", () => {
+			const simple = new Synth();
+			expect(simple.get().oscillator).to.not.have.key("frequency");
+			expect(simple.get().oscillator).to.not.have.key("detune");
+			expect(Object.keys(simple.get().oscillator)).to.include("type");
+			simple.dispose();
+		});
+
 		it("can be trigged with a Tone.Frequency", () => {
 			return Offline(() => {
 				const synth = new Synth().toDestination();
