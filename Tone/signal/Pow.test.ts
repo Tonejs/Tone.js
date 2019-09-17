@@ -39,7 +39,7 @@ describe("Pow", () => {
 			return ConstantOutput(() => {
 				var signal = new Signal(0.5);
 				var pow = new Pow(1);
-				pow.value = 3;
+				pow.exponent = 3;
 				signal.connect(pow);
 				pow.toDestination();
 			}, 0.125); 
