@@ -20,8 +20,8 @@ export interface PluckSynthOptions extends InstrumentOptions {
  * @example
  * var plucky = new Tone.PluckSynth().toDestination();
  * plucky.triggerAttack("C4");
+ * @category Instrument
  */
-
 export class PluckSynth extends Instrument<PluckSynthOptions> {
 
 	readonly name = "PluckSynth";

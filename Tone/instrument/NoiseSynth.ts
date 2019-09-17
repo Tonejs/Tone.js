@@ -23,6 +23,7 @@ export interface NoiseSynthOptions extends InstrumentOptions {
  * @example
  * var noiseSynth = new Tone.NoiseSynth().toMaster();
  * noiseSynth.triggerAttackRelease("8n");
+ * @category Instrument
  */
 export class NoiseSynth extends Instrument<NoiseSynthOptions> {
 
