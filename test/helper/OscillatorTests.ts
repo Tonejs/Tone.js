@@ -60,7 +60,5 @@ export function OscillatorTests(Constr, args?): void {
 				expect(buffer.max()).to.be.at.most(1);
 			});
 		});
-
 	});
-
 }
