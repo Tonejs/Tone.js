@@ -1,24 +1,26 @@
 
 import { AmplitudeEnvelope } from "../component/envelope/AmplitudeEnvelope";
 import { NormalRange, Time } from "../core/type/Units";
-import { deepMerge, optionsFromArguments } from "../core/util/Defaults";
+import { optionsFromArguments, omitFromObject } from "../core/util/Defaults";
 import { RecursivePartial } from "../core/util/Interface";
-import { Noise, NoiseType } from "../source/Noise";
-import { Instrument } from "./Instrument";
-import { Synth, SynthOptions } from "./Synth";
+import { Noise, NoiseOptions } from "../source/Noise";
+import { Instrument, InstrumentOptions } from "./Instrument";
+import { ToneAudioNodeOptions, ToneAudioNode } from "../core/context/ToneAudioNode";
+import { EnvelopeOptions, Envelope } from "../component/envelope/Envelope";
+import { Source } from "Tone/source/Source";
 
-interface NoiseSynthOptions extends SynthOptions {
-	noise: {
-		type: NoiseType,
-	};
+export interface NoiseSynthOptions extends InstrumentOptions {
+	envelope: Omit<EnvelopeOptions, keyof ToneAudioNodeOptions>;
+	noise: Omit<NoiseOptions, keyof ToneAudioNodeOptions>;
 }
 
 /**
- * Tone.NoiseSynth is composed of a noise generator (Tone.Noise), one filter (Tone.Filter),
- * and two envelopes (Tone.Envelop). One envelope controls the amplitude
- * of the noise and the other is controls the cutoff frequency of the filter.
- * <img src="https://docs.google.com/drawings/d/1rqzuX9rBlhT50MRvD2TKml9bnZhcZmzXF1rf_o7vdnE/pub?w=918&h=242">
- *
+ * Tone.NoiseSynth is composed of [[Noise]] through an [[AmplitudeEnvelope]]. 
+  * ```
+ * +-------+   +-------------------+
+ * | Noise +>--> AmplitudeEnvelope +>--> Output
+ * +-------+   +-------------------+
+ * ```
  * @example
  * var noiseSynth = new Tone.NoiseSynth().toMaster();
  * noiseSynth.triggerAttackRelease("8n");
@@ -41,26 +43,34 @@ export class NoiseSynth extends Instrument<NoiseSynthOptions> {
 	constructor() {
 		super(optionsFromArguments(NoiseSynth.getDefaults(), arguments));
 		const options = optionsFromArguments(NoiseSynth.getDefaults(), arguments);
-		this.noise = new Noise(options.noise);
-		this.envelope = new AmplitudeEnvelope(options.envelope);
+		this.noise = new Noise(Object.assign({
+			context: this.context,
+		}, options.noise));
+		
+		this.envelope = new AmplitudeEnvelope(Object.assign({
+			context: this.context,
+		}, options.envelope));
 
 		// connect the noise to the output
 		this.noise.chain(this.envelope, this.output);
 	}
 
 	static getDefaults(): NoiseSynthOptions {
-		return {
-			...deepMerge(Synth.getDefaults(), {
-				envelope: {
-					attack : 0.005,
+		return Object.assign(Instrument.getDefaults(), {
+			envelope: Object.assign(
+				omitFromObject(Envelope.getDefaults(), Object.keys(ToneAudioNode.getDefaults())),
+				{
 					decay : 0.1,
 					sustain : 0.0,
 				},
-			}),
-			noise : {
-				type : "white",
-			},
-		};
+			),
+			noise: Object.assign(
+				omitFromObject(Noise.getDefaults(), Object.keys(Source.getDefaults())),
+				{
+					type: "white",
+				},
+			),
+		});
 	}
 
 	/**

@@ -1,12 +1,13 @@
 import { expect } from "chai";
-import { BasicTests } from "../../test/helper/Basic";
-import { CompareToFile } from "../../test/helper/CompareToFile";
-import { InstrumentTest } from "../../test/helper/InstrumentTests";
+import { BasicTests } from "test/helper/Basic";
+import { CompareToFile } from "test/helper/CompareToFile";
+import { InstrumentTest } from "test/helper/InstrumentTests";
 import { NoiseSynth } from "./NoiseSynth";
 
 describe("NoiseSynth", () => {
 
 	BasicTests(NoiseSynth);
+
 	InstrumentTest(NoiseSynth, undefined, {
 		envelope: {
 			decay: 0.1,
@@ -22,7 +23,7 @@ describe("NoiseSynth", () => {
 					attack : 0.01,
 					decay : 0.4,
 				},
-			}).toMaster();
+			}).toDestination();
 			synth.triggerAttack(0);
 			synth.triggerAttack(0.3);
 		}, "noiseSynth.wav", 4);
@@ -35,7 +36,7 @@ describe("NoiseSynth", () => {
 					attack : 0.01,
 					decay : 0.4,
 				},
-			}).toMaster();
+			}).toDestination();
 			synth.triggerAttackRelease(0.1, 0);
 		}, "noiseSynthRelease.wav", 4);
 	});
