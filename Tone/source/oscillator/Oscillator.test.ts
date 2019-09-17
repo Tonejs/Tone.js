@@ -95,6 +95,14 @@ describe("Oscillator", () => {
 			});
 		});
 
+		it("can go past the cache max size of 100", () => {
+			const osc = new Oscillator();
+			for (let i = 0; i < 110; i++) {
+				osc.phase = i;
+			}
+			osc.dispose();
+		});
+
 	});
 
 	context("Type", () => {
