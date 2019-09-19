@@ -10,7 +10,7 @@ import { TickSource } from "./TickSource";
 type ClockCallback = (time: Time, ticks?: Ticks) => void;
 
 interface ClockOptions extends ToneWithContextOptions {
-	frequency: number;
+	frequency: Hertz;
 	callback: ClockCallback;
 	units: "hertz" | "bpm";
 }
@@ -118,9 +118,10 @@ export class Clock<Type extends BPM | Hertz = Hertz>
 	 */
 	start(time?: Time, offset?: Ticks): this {
 		// make sure the context is started
-		this.context.resume();
+		// this.context.resume();
 		// start the loop
 		const computedTime = this.toSeconds(time);
+		this.log("start", computedTime);
 		if (this._state.getValueAtTime(computedTime) !== "started") {
 			this._state.setStateAtTime("started", computedTime);
 			this._tickSource.start(computedTime, offset);
@@ -139,6 +140,7 @@ export class Clock<Type extends BPM | Hertz = Hertz>
 	 */
 	stop(time?: Time): this {
 		const computedTime = this.toSeconds(time);
+		this.log("stop", computedTime);
 		this._state.cancel(computedTime);
 		this._state.setStateAtTime("stopped", computedTime);
 		this._tickSource.stop(computedTime);
@@ -231,6 +233,7 @@ export class Clock<Type extends BPM | Hertz = Hertz>
 		const startTime = this._lastUpdate;
 		const endTime = this.now();
 		this._lastUpdate = endTime;
+		this.log("loop", startTime, endTime);
 
 		if (startTime !== endTime) {
 			// the state change events
