@@ -18,6 +18,8 @@ export async function CompareToFile(
 			const offlineContext = new OfflineContext(context);
 			setContext(offlineContext);
 			callback(offlineContext);
+			// @ts-ignore
+			offlineContext._renderClock();
 		}, prefix + "audio/compare/" + url, threshold, RENDER_NEW, duration, channels, 44100);
 	} finally {
 		setContext(origContext);

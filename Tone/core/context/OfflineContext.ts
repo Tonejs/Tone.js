@@ -66,16 +66,22 @@ export class OfflineContext extends Context {
 	}
 
 	/**
-	 * Render the output of the OfflineContext
+	 * Render just the clock portion of the audiocontext.
 	 */
-	render(): Promise<AudioBuffer> {
+	private _renderClock(): void {
 		while (this._duration - this._currentTime >= 0) {
 			// invoke all the callbacks on that time
 			this.emit("tick");
 			// increment the clock in 5ms chunks
 			this._currentTime += 128 / this.sampleRate;
 		}
+	}
 
+	/**
+	 * Render the output of the OfflineContext
+	 */
+	render(): Promise<AudioBuffer> {
+		this._renderClock();
 		return this._context.startRendering();
 	}
 
