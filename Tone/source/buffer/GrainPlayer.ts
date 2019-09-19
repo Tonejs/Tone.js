@@ -154,9 +154,15 @@ export class GrainPlayer extends Source<GrainPlayerOptions> {
 	}
 
 	/**
-	 * TODO: not implemented
+	 * Stop and then restart the player from the beginning (or offset)
+	 * @param  time When the player should start.
+	 * @param  offset The offset from the beginning of the sample to start at.
+	 * @param  duration How long the sample should play. If no duration is given, 
+	 * 					it will default to the full length of the sample (minus any offset)
 	 */
-	restart(): this {
+	restart(time?: Time, offset?: Time, duration?: Time): this {
+		this._stop(time);
+		this._start(time, offset, duration);
 		return this;
 	}
 

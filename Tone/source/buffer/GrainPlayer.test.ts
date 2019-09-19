@@ -146,6 +146,19 @@ describe("GrainPlayer", () => {
 			});
 		});
 
+		it("invokes the onstop method on restart", () => {
+			let wasInvoked = 0;
+			return Offline(() => {
+				const player = new GrainPlayer(buffer);
+				player.start(0).restart(0.1).stop(0.2);
+				player.onstop = () => {
+					wasInvoked++;
+				};
+			}, 0.3).then(() => {
+				expect(wasInvoked).to.equal(2);
+			});
+		});
+
 	});
 
 	context("Get/Set", () => {
