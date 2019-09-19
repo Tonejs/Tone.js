@@ -305,6 +305,27 @@ describe("Timeline", () => {
 		sched.dispose();
 	});
 
+	it("inforces increasing time", () => {
+		const sched = new Timeline({
+			increasing: true,
+		});
+		expect(() => {
+			sched.add({ time: 1 });
+			sched.add({ time: 0 });
+		}).to.throw(Error);
+		sched.dispose();
+	});
+
+	it("the same time value is allowed to be added", () => {
+		const sched = new Timeline({
+			increasing: true,
+		});
+		sched.add({ time: 1 });
+		sched.add({ time: 1 });
+		sched.add({ time: 1 });
+		sched.dispose();
+	});
+
 	it("can constrain the length of the timeline", () => {
 		const sched = new Timeline(4);
 		for (let i = 0; i < 10000; i++) {
@@ -581,6 +602,5 @@ describe("Timeline", () => {
 			expect(count).to.equal(0);
 			sched.dispose();
 		});
-
 	});
 });

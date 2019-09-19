@@ -9,6 +9,7 @@ type TimelineSearchParam = "ticks" | "time";
  */
 interface TimelineOptions {
 	memory: number;
+	increasing: boolean;
 }
 
 /**
@@ -40,6 +41,12 @@ export class Timeline<GenericEvent extends TimelineEvent> extends Tone {
 	protected _timeline: GenericEvent[] = [];
 
 	/**
+	 * If the time value must always be greater than or equal to the last 
+	 * element on the list. 
+	 */
+	increasing: boolean;
+
+	/**
 	 * @param memory The number of previous events that are retained.
 	 */
 	constructor(memory?: number);
@@ -49,11 +56,13 @@ export class Timeline<GenericEvent extends TimelineEvent> extends Tone {
 		const options = optionsFromArguments(Timeline.getDefaults(), arguments, ["memory"]);
 
 		this.memory = options.memory;
+		this.increasing = options.increasing;
 	}
 
 	static getDefaults(): TimelineOptions {
 		return {
 			memory: Infinity,
+			increasing: false,
 		};
 	}
 
@@ -72,8 +81,14 @@ export class Timeline<GenericEvent extends TimelineEvent> extends Tone {
 		// the event needs to have a time attribute
 		this.assert(Reflect.has(event, "time"), "Timeline: events must have a time attribute");
 		event.time = event.time.valueOf();
-		const index = this._search(event.time);
-		this._timeline.splice(index + 1, 0, event);
+		if (this.increasing && this.length) {
+			const lastValue = this._timeline[this.length - 1] as GenericEvent;
+			this.assert(lastValue.time <= event.time, "The time must be greater than or equal to the last scheduled time");
+			this._timeline.push(event);
+		} else {
+			const index = this._search(event.time);
+			this._timeline.splice(index + 1, 0, event);
+		}
 		// if the length is more than the memory, remove the previous ones
 		if (this.length > this.memory) {
 			const diff = this.length - this.memory;
