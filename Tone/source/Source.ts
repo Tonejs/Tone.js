@@ -1,5 +1,6 @@
 import { Volume } from "../component/channel/Volume";
 import "../core/context/Destination";
+import "../core/clock/Transport";
 import { Param } from "../core/context/Param";
 import { OutputNode, ToneAudioNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
 import { Decibels, Seconds, Time } from "../core/type/Units";
