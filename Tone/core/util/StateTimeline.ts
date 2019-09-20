@@ -48,8 +48,6 @@ export class StateTimeline<AdditionalOptions extends {} = {}> extends Timeline<S
 	 * @param options Any additional options that are needed in the timeline.
 	 */
 	setStateAtTime(state: PlaybackState, time: Seconds, options?: AdditionalOptions): this {
-		// all state changes need to be >= the previous state time
-		// TODO throw error if time < the previous event time
 		this.add(Object.assign({}, options, {
 			state,
 			time,
