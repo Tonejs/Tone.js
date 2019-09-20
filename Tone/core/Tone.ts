@@ -57,11 +57,12 @@ export abstract class Tone {
 	 * Tone.global.TONE_DEBUG_CLASS = "OscillatorNode"
 	 */
 	protected log(...args: any[]): void {
+		
 		// if the object is either set to debug = true
 		// or if there is a string on the Tone.global.with the class name
 		if (this.debug || (theWindow && this.toString() === theWindow.TONE_DEBUG_CLASS)) {
-			args.unshift(this.toString() + ":");
-			log(...args);
+			log(this, ...args);
+			// args.unshift(this.toString() + ":");
 		}
 	}
 

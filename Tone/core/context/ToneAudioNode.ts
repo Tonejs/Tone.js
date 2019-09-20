@@ -4,6 +4,7 @@ import { assert } from "../util/Debug";
 import { isDefined } from "../util/TypeCheck";
 import { Param } from "./Param";
 import { ToneWithContext, ToneWithContextOptions } from "./ToneWithContext";
+import { warn } from "../util/Debug";
 
 export type InputNode = ToneAudioNode | AudioNode | Param<any> | AudioParam;
 export type OutputNode = ToneAudioNode | AudioNode;
@@ -207,7 +208,7 @@ export abstract class ToneAudioNode<Options extends ToneAudioNodeOptions = ToneA
 	 * @deprecated
 	 */
 	toMaster(): this {
-		console.warn("toMaster() has been renamed toDestination()");
+		warn("toMaster() has been renamed toDestination()");
 		return this.toDestination();
 	}
 

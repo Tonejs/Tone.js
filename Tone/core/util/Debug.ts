@@ -7,7 +7,36 @@ export function assert(statement: boolean, error: string): void {
 	}
 }
 
+/**
+ * A basic logging interface
+ */
+interface Logger {
+	log: (args?: any[]) => void;
+	warn: (args?: any[]) => void;
+}
+
+/**
+ * The default logger is the console
+ */
+let defaultLogger: Logger = console;
+
+/**
+ * Set the logging interface
+ */
+export function setLogger(log: Logger): void {
+	defaultLogger = log;
+}
+
+/**
+ * Log anything
+ */
 export function log(...args: any[]): void {
-	// eslint-disable-next-line no-console
-	console.log(...args);
+	defaultLogger.log(...args);
+}
+
+/**
+ * Warn anything
+ */
+export function warn(...args: any[]): void {
+	defaultLogger.warn(...args);
 }

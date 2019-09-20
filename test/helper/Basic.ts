@@ -5,6 +5,7 @@ import { OfflineContext } from "Tone/core/context/OfflineContext";
 import { ToneWithContext } from "Tone/core/context/ToneWithContext";
 import { Tone } from "Tone/core/Tone";
 import { ConnectTest } from "./Connect";
+import { setLogger } from "Tone/core/util/Debug";
 
 export const testAudioContext = new OfflineContext(1, 1, 11025);
 testAudioContext.initialize();
@@ -57,12 +58,15 @@ export function BasicTests(Constr, ...args: any[]): void {
  */
 export async function warns(fn: (...args: any[]) => any): Promise<void> {
 	let wasInvoked = false;
-	const originalWarn = console.warn;
-	console.warn = () => wasInvoked = true;
+	setLogger({
+		log: () => {},
+		warn: () => wasInvoked = true,
+	});
 	const ret = fn();
 	if (ret instanceof Promise) {
 		await ret;
 	}
 	expect(wasInvoked).to.equal(true);
-	console.warn = originalWarn;
+	// return to the original logger
+	setLogger(console);
 }

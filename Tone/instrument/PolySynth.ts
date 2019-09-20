@@ -5,9 +5,11 @@ import { RecursivePartial } from "../core/util/Interface";
 import { isArray, isNumber } from "../core/util/TypeCheck";
 import { Instrument, InstrumentOptions } from "./Instrument";
 import { MembraneSynth, MembraneSynthOptions } from "./MembraneSynth";
+import { PluckSynth, PluckSynthOptions } from "./PluckSynth";
 import { MetalSynth, MetalSynthOptions } from "./MetalSynth";
 import { Monophonic } from "./Monophonic";
 import { Synth, SynthOptions } from "./Synth";
+import { warn } from "../core/util/Debug";
 
 type VoiceConstructor<V> = {
 	getDefaults: () => VoiceOptions<V>;
@@ -17,9 +19,10 @@ type OmitMonophonicOptions<T> = Omit<T, "context" | "onsilence">;
 
 type VoiceOptions<T> =
 	T extends MembraneSynth ? MembraneSynthOptions :
-		T extends MetalSynth ? MetalSynthOptions :
-			T extends Synth ? SynthOptions :
-				never;
+		T extends PluckSynth ? PluckSynthOptions :
+			T extends MetalSynth ? MetalSynthOptions :
+				T extends Synth ? SynthOptions :
+					never;
 
 /**
  * The settable synth options. excludes monophonic options.
@@ -176,7 +179,7 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 			this._voices.push(voice);
 			return voice;
 		} else {
-			console.warn("Max polyphony exceeded. Note dropped.");
+			warn("Max polyphony exceeded. Note dropped.");
 		}
 	}
 
