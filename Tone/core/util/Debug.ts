@@ -23,8 +23,8 @@ let defaultLogger: Logger = console;
 /**
  * Set the logging interface
  */
-export function setLogger(log: Logger): void {
-	defaultLogger = log;
+export function setLogger(logger: Logger): void {
+	defaultLogger = logger;
 }
 
 /**

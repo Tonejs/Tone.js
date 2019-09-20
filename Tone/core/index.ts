@@ -29,3 +29,7 @@ export * from "./util/TypeCheck";
 // get the units and export them under the "Unit" namespace
 import * as Unit from "./type/Units";
 export { Unit };
+
+// export the debug stuff as Debug
+import * as debug from "./util/Debug";
+export { debug };
