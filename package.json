@@ -8,8 +8,8 @@
   "files": [
     "README.md",
     "LICENSE.md",
-	"build",
-	"docs",
+    "build",
+    "docs",
     "Tone"
   ],
   "scripts": {
@@ -60,7 +60,7 @@
     "url": "https://github.com/Tonejs/Tone.js/issues"
   },
   "devDependencies": {
-    "@tonejs/plot": "0.0.26",
+    "@tonejs/plot": "0.0.27",
     "@types/chai": "^4.1.7",
     "@types/mocha": "^5.2.6",
     "@types/ua-parser-js": "^0.7.32",
