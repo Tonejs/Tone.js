@@ -22,6 +22,7 @@ export interface UserMediaOptions extends ToneAudioNodeOptions {
  * motu.open().then(() => {
  * 	//promise resolves when input is available
  * });
+ * @category Source
  */
 
 export class UserMedia extends ToneAudioNode<UserMediaOptions> {

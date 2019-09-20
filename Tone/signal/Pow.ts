@@ -14,6 +14,7 @@ export interface PowOptions extends ToneAudioNodeOptions {
  * var pow = new Pow(2);
  * var sig = new Signal(0.5).connect(pow);
  * //output of pow is 0.25. 
+ * @category Signal
  */
 export class Pow extends SignalOperator<PowOptions> {
 	
