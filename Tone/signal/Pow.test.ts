@@ -11,8 +11,8 @@ describe("Pow", () => {
 
 		it("can do powers of 2", () => {
 			return ConstantOutput(() => {
-				var signal = new Signal(0.3);
-				var pow = new Pow(2);
+				const signal = new Signal(0.3);
+				const pow = new Pow(2);
 				signal.connect(pow);
 				pow.toDestination();
 			}, 0.09); 
@@ -20,8 +20,8 @@ describe("Pow", () => {
 
 		it("can compute negative values and powers less than 1", () => {
 			return ConstantOutput(() => {
-				var signal = new Signal(-0.49);
-				var pow = new Pow(0.5);
+				const signal = new Signal(-0.49);
+				const pow = new Pow(0.5);
 				signal.connect(pow);
 				pow.toDestination();
 			}, 0.7); 
@@ -29,8 +29,8 @@ describe("Pow", () => {
 
 		it("can set a new exponent", () => {
 			return ConstantOutput(() => {
-				var signal = new Signal(0.5);
-				var pow = new Pow(1);
+				const signal = new Signal(0.5);
+				const pow = new Pow(1);
 				pow.value = 3;
 				signal.connect(pow);
 				pow.toDestination();
