@@ -6,6 +6,7 @@ import { defaultArg, optionsFromArguments } from "../../core/util/Defaults";
 import { noOp } from "../../core/util/Interface";
 import { isDefined } from "../../core/util/TypeCheck";
 import { OneShotSource, OneShotSourceCurve, OneShotSourceOptions } from "../OneShotSource";
+import { EQ, GTE, LT } from "../../core/util/Math";
 
 export type ToneBufferSourceCurve = OneShotSourceCurve;
 
@@ -158,7 +159,7 @@ export class ToneBufferSource extends OneShotSource<ToneBufferSourceOptions> {
 			const loopStart = this.toSeconds(this.loopStart);
 			const loopDuration = loopEnd - loopStart;
 			// move the offset back
-			if (computedOffset >= loopEnd) {
+			if (GTE(computedOffset, loopEnd)) {
 				computedOffset = ((computedOffset - loopStart) % loopDuration) + loopStart;
 			}
 		}
@@ -166,7 +167,7 @@ export class ToneBufferSource extends OneShotSource<ToneBufferSourceOptions> {
 		// this.buffer.loaded would have return false if the AudioBuffer was undefined
 		this._source.buffer = this.buffer.get() as AudioBuffer;
 		this._source.loopEnd = this.toSeconds(this.loopEnd) || this.buffer.duration;
-		if (computedOffset < this.buffer.duration) {
+		if (LT(computedOffset, this.buffer.duration)) {
 			this._sourceStarted = true;
 			this._source.start(computedTime, computedOffset);
 		}
@@ -183,7 +184,7 @@ export class ToneBufferSource extends OneShotSource<ToneBufferSourceOptions> {
 	}
 
 	protected _stopSource(time?: Seconds): void {
-		if (!this._sourceStopped) {
+		if (!this._sourceStopped && this._sourceStarted) {
 			this._sourceStopped = true;
 			this._source.stop(this.toSeconds(time));
 			this._onended();
