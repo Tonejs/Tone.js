@@ -1,6 +1,7 @@
 import { Tone } from "../Tone";
 import { Seconds } from "../type/Units";
 import { optionsFromArguments } from "./Defaults";
+import { EQ, GT, LT } from "./Math";
 
 type TimelineSearchParam = "ticks" | "time";
 
@@ -273,18 +274,18 @@ export class Timeline<GenericEvent extends TimelineEvent> extends Tone {
 			let midPoint = Math.floor(beginning + (end - beginning) / 2);
 			const event = this._timeline[midPoint];
 			const nextEvent = this._timeline[midPoint + 1];
-			if (this._eq(event[param], time)) {
+			if (EQ(event[param], time)) {
 				// choose the last one that has the same time
 				for (let i = midPoint; i < this._timeline.length; i++) {
 					const testEvent = this._timeline[i];
-					if (this._eq(testEvent[param], time)) {
+					if (EQ(testEvent[param], time)) {
 						midPoint = i;
 					}
 				}
 				return midPoint;
-			} else if (this._lt(event[param], time) && this._gt(nextEvent[param], time)) {
+			} else if (LT(event[param], time) && GT(nextEvent[param], time)) {
 				return midPoint;
-			} else if (this._gt(event[param], time)) {
+			} else if (GT(event[param], time)) {
 				// search lower
 				end = midPoint;
 			} else {
