@@ -1,21 +1,13 @@
 import { BasicTests } from "test/helper/Basic";
 import { Pow } from "./Pow";
 import { ConstantOutput } from "test/helper/ConstantOutput";
-import { Signal } from ".";
-import { connectFrom, connectTo } from "test/helper/Connect";
+import { Signal } from "./Signal";
 
 describe("Pow", () => {
 
 	BasicTests(Pow);
 
 	context("Exponential Scaling", () => {
-
-		it("handles input and output connections", () => {
-			var pow = new Pow();
-			connectFrom().connect(pow);
-			pow.connect(connectTo())
-			pow.dispose();
-		});
 
 		it("can do powers of 2", () => {
 			return ConstantOutput(() => {
@@ -46,4 +38,3 @@ describe("Pow", () => {
 		});
 	});
 });
-

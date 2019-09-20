@@ -8,12 +8,9 @@ export interface PowOptions extends ToneAudioNodeOptions {
 }
 
 /**
- *  @class Pow applies an exponent to the incoming signal. The incoming signal
- *         must be AudioRange.
+ * Pow applies an exponent to the incoming signal. The incoming signal must be AudioRange [-1, 1]
  *
- *  @constructor
- *  @param exponent The exponent to apply to the incoming signal, must be at least 2. 
- *  @example
+ * @example
  * var pow = new Pow(2);
  * var sig = new Signal(0.5).connect(pow);
  * //output of pow is 0.25. 
@@ -64,10 +61,12 @@ export class Pow extends SignalOperator<PowOptions> {
 		};
 	}
 
+	/**
+ 	 * The value of the exponent.
+ 	 */
 	get value(): number {
 		return this._exponent;
 	}
-
 	set value(exponent: number) {
 		this._exponent = exponent;
 		this._exponentScaler.setMap(this._expFunc(this._exponent));
