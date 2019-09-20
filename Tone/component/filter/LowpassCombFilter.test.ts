@@ -37,7 +37,7 @@ describe("LowpassCombFilter", () => {
 		});
 
 		it("passes the incoming signal through", () => {
-			return PassAudio(function(input) {
+			return PassAudio((input) => {
 				const lpcf = new LowpassCombFilter(0).toDestination();
 				input.connect(lpcf);
 			});
