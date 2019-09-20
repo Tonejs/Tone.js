@@ -59,8 +59,8 @@ describe("GrainPlayer", () => {
 			return Offline(() => {
 				const player = new GrainPlayer(buffer).toDestination();
 				player.start();
-			}).then((buffer) => {
-				expect(buffer.isSilent()).to.be.false;
+			}).then((output) => {
+				expect(output.isSilent()).to.be.false;
 			});
 		});
 	});
@@ -123,8 +123,8 @@ describe("GrainPlayer", () => {
 						expect(player.state).to.equal("started");
 					});
 				};
-			}, 0.3).then((buffer) => {
-				expect(buffer.getTimeOfLastSound()).to.be.closeTo(0.1, 0.02);
+			}, 0.3).then((output) => {
+				expect(output.getTimeOfLastSound()).to.be.closeTo(0.1, 0.02);
 			});
 		});
 
@@ -141,8 +141,8 @@ describe("GrainPlayer", () => {
 						expect(player.state).to.equal("started");
 					});
 				};
-			}, 0.3).then((buffer) => {
-				expect(buffer.getTimeOfLastSound()).to.be.closeTo(0.1, 0.02);
+			}, 0.3).then((output) => {
+				expect(output.getTimeOfLastSound()).to.be.closeTo(0.1, 0.02);
 			});
 		});
 
@@ -156,6 +156,28 @@ describe("GrainPlayer", () => {
 				};
 			}, 0.3).then(() => {
 				expect(wasInvoked).to.equal(2);
+			});
+		});
+
+		it("can play to the end of the file", () => {
+			const bufferDuration = buffer.duration;
+			return Offline(() => {
+				const player = new GrainPlayer(buffer).toDestination();
+				player.grainSize = 0.1;
+				player.start(0);
+			}, bufferDuration * 1.2).then((output) => {
+				expect(output.getTimeOfLastSound()).to.be.closeTo(bufferDuration, 0.1);
+			});
+		});
+
+		it("plays for the right time when playbackRate = 2", () => {
+			const bufferDuration = buffer.duration;
+			return Offline(() => {
+				const player = new GrainPlayer(buffer).toDestination();
+				player.playbackRate = 2;
+				player.start(0);
+			}, bufferDuration).then((output) => {
+				expect(output.getTimeOfLastSound()).to.be.closeTo(bufferDuration * 0.5, 0.1);
 			});
 		});
 

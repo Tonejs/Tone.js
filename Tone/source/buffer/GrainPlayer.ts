@@ -301,9 +301,7 @@ export class GrainPlayer extends Source<GrainPlayerOptions> {
 		super.dispose();
 		this.buffer.dispose();
 		this._clock.dispose();
-		this._activeSources.forEach((source) => {
-			source.dispose();
-		});
+		this._activeSources.forEach((source) => source.dispose());
 		return this;
 	}
 }
