@@ -80,11 +80,6 @@ export class GrainPlayer extends Source<GrainPlayerOptions> {
 	 * If the buffer should loop back to the loopStart when completed
 	 */
 	loop: boolean;
-
-	/**
-	 * The current offset within the buffer
-	 */
-	private _offset: Seconds = 0;
 		
 	/**
 	 * @param url Either the AudioBuffer or the url from which to load the AudioBuffer
@@ -145,8 +140,8 @@ export class GrainPlayer extends Source<GrainPlayerOptions> {
 		offset = this.toSeconds(offset);
 		time = this.toSeconds(time);
 
-		this._offset = offset;
-		this._clock.start(time);
+		const grainSize = 1 / this._clock.frequency.getValueAtTime(time);
+		this._clock.start(time, offset / grainSize);
 
 		if (duration) {
 			this.stop(time + this.toSeconds(duration));
@@ -190,13 +185,18 @@ export class GrainPlayer extends Source<GrainPlayerOptions> {
      */
 	private _tick(time: Seconds): void {
 		// check if it should stop looping
-		if (!this.loop && this._offset > this.buffer.duration) {
+		const ticks = this._clock.getTicksAtTime(time);
+		const grainSize = 1 / this._clock.frequency.getValueAtTime(time);
+		const offset = ticks * grainSize;
+		this.log("offset", offset);
+
+		if (!this.loop && offset > this.buffer.duration) {
 			this.stop(time);
 			return;
 		}
 
 		// at the beginning of the file, the fade in should be 0
-		const fadeIn = this._offset < this._overlap ? 0 : this._overlap;
+		const fadeIn = offset < this._overlap ? 0 : this._overlap;
 
 		// create a buffer source
 		const source = new ToneBufferSource({
@@ -211,8 +211,7 @@ export class GrainPlayer extends Source<GrainPlayerOptions> {
 			playbackRate: intervalToFrequencyRatio(this.detune / 100)
 		}).connect(this.output);
 
-		source.start(time, this._offset);
-		this._offset += this._grainSize;
+		source.start(time, this._grainSize * ticks);
 		source.stop(time + this._grainSize / this.playbackRate);
 
 		// add it to the active sources
@@ -277,7 +276,7 @@ export class GrainPlayer extends Source<GrainPlayerOptions> {
 	}
 	set grainSize(size) {
 		this._grainSize = this.toSeconds(size);
-		this._clock.frequency.value = this._playbackRate / this._grainSize;
+		this._clock.frequency.setValueAtTime(this._playbackRate / this._grainSize, this.now());
 	}
 
 	/**
