@@ -15,6 +15,7 @@ module.exports = {
 		"no-unmodified-loop-condition": [ "error" ],
 		"quote-props" : [ "error", "as-needed" ],
 		"quotes": [ "error","double" ],
+		"no-shadow" : "error",
 		"no-console": ["error", { "allow": ["warn"] }],
 		"@typescript-eslint/no-object-literal-type-assertion" : "off",
 		"@typescript-eslint/no-unused-vars": "off",
