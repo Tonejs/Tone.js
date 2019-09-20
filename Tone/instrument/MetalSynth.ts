@@ -2,7 +2,7 @@ import { Envelope, EnvelopeOptions } from "../component/envelope/Envelope";
 import { Filter } from "../component/filter/Filter";
 import { Gain } from "../core/context/Gain";
 import { ToneAudioNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
-import { Cents, Frequency, NormalRange, Positive, Time } from "../core/type/Units";
+import { Cents, Frequency, NormalRange, Positive, Seconds, Time } from "../core/type/Units";
 import { deepMerge, omitFromObject, optionsFromArguments } from "../core/util/Defaults";
 import { noOp, RecursivePartial } from "../core/util/Interface";
 import { Multiply } from "../signal/Multiply";
@@ -176,24 +176,24 @@ export class MetalSynth extends Monophonic<MetalSynthOptions> {
 	 * @param time When the attack should be triggered.
 	 * @param velocity The velocity that the envelope should be triggered at.
 	 */
-	protected _triggerEnvelopeAttack(time: Time, velocity: NormalRange = 1): this {
+	protected _triggerEnvelopeAttack(time: Seconds, velocity: NormalRange = 1): this {
 		this.envelope.triggerAttack(time, velocity);
 		this._oscillators.forEach(osc => osc.start(time));
 		if (this.envelope.sustain === 0) {
 			this._oscillators.forEach(osc => {
-				osc.stop(this.toSeconds(time) + this.toSeconds(this.envelope.attack) + this.toSeconds(this.envelope.decay));
+				osc.stop(time + this.toSeconds(this.envelope.attack) + this.toSeconds(this.envelope.decay));
 			});
 		}
 		return this;
 	}
-
+	
 	/**
 	 * Trigger the release of the envelope.
 	 * @param time When the release should be triggered.
 	 */
-	protected _triggerEnvelopeRelease(time: Time): this {
+	protected _triggerEnvelopeRelease(time: Seconds): this {
 		this.envelope.triggerRelease(time);
-		this._oscillators.forEach(osc => osc.stop(this.toSeconds(time) + this.toSeconds(this.envelope.release)));
+		this._oscillators.forEach(osc => osc.stop(time + this.toSeconds(this.envelope.release)));
 		return this;
 	}
 
