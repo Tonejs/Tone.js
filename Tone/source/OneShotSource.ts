@@ -172,8 +172,7 @@ export abstract class OneShotSource<Options extends ToneAudioNodeOptions> extend
 			const additionalTail = this._curve === "exponential" ? fadeOutTime * 2 : 0;
 			this._stopSource(this.now() + additionalTail);
 			this._onended();
-		// add an additional lookAhead to make sure that it's not unscheduled in the upcoming lookAhead interval
-		}, this._stopTime - this.context.now() + this.context.lookAhead);
+		}, this._stopTime - this.context.now());
 		return this;
 	}
 

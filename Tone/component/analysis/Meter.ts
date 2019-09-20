@@ -2,6 +2,7 @@ import { gainToDb } from "../../core/type/Conversions";
 import { Decibels, NormalRange } from "../../core/type/Units";
 import { optionsFromArguments } from "../../core/util/Defaults";
 import { MeterBase, MeterBaseOptions } from "./MeterBase";
+import { warn } from "../../core/util/Debug";
 
 export interface MeterOptions extends MeterBaseOptions {
 	smoothing: NormalRange;
@@ -59,7 +60,7 @@ export class Meter extends MeterBase<MeterOptions> {
 	 * @deprecated
 	 */
 	getLevel(): Decibels {
-		console.warn("'getLevel' has been changed to 'getValue'");
+		warn("'getLevel' has been changed to 'getValue'");
 		return this.getValue();
 	}
 
