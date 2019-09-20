@@ -35,6 +35,14 @@ describe("StateTimeline", () => {
 		sched.dispose();
 	});
 
+	it("returns the last event inserted if the timing is very close", () => {
+		const sched = new StateTimeline();
+		sched.setStateAtTime("stopped", 1 + 1e-7);
+		sched.setStateAtTime("started", 1 - 1e-7);
+		expect(sched.getValueAtTime(1 - 1e-7)).to.equal("started");
+		sched.dispose();
+	});
+
 	it("returns initial state if defined and query time is before any scheduled states", () => {
 		const sched = new StateTimeline("started");
 		sched.setStateAtTime("started", 20);
@@ -50,7 +58,6 @@ describe("StateTimeline", () => {
 		sched.setStateAtTime("stopped", 1);
 		sched.setStateAtTime("started", 2);
 		sched.setStateAtTime("stopped", 3);
-		// @ts-ignore
 		expect(sched.getLastState("stopped", 1)).to.exist;
 		// @ts-ignore
 		expect(sched.getLastState("stopped", 1).state).is.equal("stopped");
