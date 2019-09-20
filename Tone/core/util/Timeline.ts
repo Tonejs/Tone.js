@@ -228,6 +228,29 @@ export class Timeline<GenericEvent extends TimelineEvent> extends Tone {
 		}
 	}
 
+	private readonly _epsilon = 1e-6;
+
+	/**
+	 * Test if a value is the same (by some small epsilon)
+	 */
+	private _eq(a: number, b: number): boolean {
+		return Math.abs(a - b) < this._epsilon;
+	}
+
+	/**
+	 * Test if a is greater than b
+	 */
+	private _gt(a: number, b: number): boolean {
+		return a > b + this._epsilon;
+	}
+
+	/**
+	 * Test if a is greater than b
+	 */
+	private _lt(a: number, b: number): boolean {
+		return a < b + this._epsilon;
+	}
+
 	/**
 	 * Does a binary search on the timeline array and returns the
 	 * nearest event index whose time is after or equal to the given time.
@@ -250,18 +273,18 @@ export class Timeline<GenericEvent extends TimelineEvent> extends Tone {
 			let midPoint = Math.floor(beginning + (end - beginning) / 2);
 			const event = this._timeline[midPoint];
 			const nextEvent = this._timeline[midPoint + 1];
-			if (event[param] === time) {
+			if (this._eq(event[param], time)) {
 				// choose the last one that has the same time
 				for (let i = midPoint; i < this._timeline.length; i++) {
 					const testEvent = this._timeline[i];
-					if (testEvent[param] === time) {
+					if (this._eq(testEvent[param], time)) {
 						midPoint = i;
 					}
 				}
 				return midPoint;
-			} else if (event[param] < time && nextEvent[param] > time) {
+			} else if (this._lt(event[param], time) && this._gt(nextEvent[param], time)) {
 				return midPoint;
-			} else if (event[param] > time) {
+			} else if (this._gt(event[param], time)) {
 				// search lower
 				end = midPoint;
 			} else {
