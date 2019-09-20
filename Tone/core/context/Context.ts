@@ -198,6 +198,11 @@ export class Context extends Emitter<"statechange" | "tick"> implements BaseAudi
 	createWaveShaper(): WaveShaperNode {
 		return this._context.createWaveShaper();
 	}
+	createMediaStreamSource(stream: MediaStream): MediaStreamAudioSourceNode {
+		this.assert(isAudioContext(this._context), "Only available on online audio context");
+		// @ts-ignore
+		return this._context.createMediaStreamSource(stream);
+	}
 	decodeAudioData(audioData: ArrayBuffer): Promise<AudioBuffer> {
 		return this._context.decodeAudioData(audioData);
 	}
