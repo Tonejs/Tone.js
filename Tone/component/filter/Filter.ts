@@ -6,10 +6,12 @@ import { readOnly, writable } from "../../core/util/Interface";
 import { isNumber } from "../../core/util/TypeCheck";
 import { Signal } from "../../signal/Signal";
 
-interface FilterOptions extends ToneAudioNodeOptions {
+type FilterRollOff = -12 | -24 | -48 | -96;
+
+export interface FilterOptions extends ToneAudioNodeOptions {
 	type: BiquadFilterType;
 	frequency: Frequency;
-	rolloff: number;
+	rolloff: FilterRollOff;
 	Q: Positive;
 	detune: Cents;
 	gain: GainFactor;
@@ -35,7 +37,7 @@ export class Filter extends ToneAudioNode<FilterOptions> {
 	/**
 	 * the rolloff value of the filter
 	 */
-	private _rolloff!: number;
+	private _rolloff!: FilterRollOff;
 	private _type: BiquadFilterType;
 
 	/**
@@ -63,7 +65,7 @@ export class Filter extends ToneAudioNode<FilterOptions> {
 	 * @param type The type of filter.
 	 * @param rolloff The drop in decibels per octave after the cutoff frequency
 	 */
-	constructor(frequency?: Frequency, type?: BiquadFilterType, rolloff?: number);
+	constructor(frequency?: Frequency, type?: BiquadFilterType, rolloff?: FilterRollOff);
 	constructor(options?: Partial<FilterOptions>);
 	constructor() {
 		super(optionsFromArguments(Filter.getDefaults(), arguments, ["frequency", "type", "rolloff"]));
@@ -102,7 +104,7 @@ export class Filter extends ToneAudioNode<FilterOptions> {
 			detune: 0,
 			frequency: 350,
 			gain: 0,
-			rolloff: -12,
+			rolloff: -12 as FilterRollOff,
 			type: "lowpass" as BiquadFilterType,
 		});
 	}
@@ -127,11 +129,11 @@ export class Filter extends ToneAudioNode<FilterOptions> {
 	 * per octave. Implemented internally by cascading filters.
 	 * Only accepts the values -12, -24, -48 and -96.
 	 */
-	get rolloff(): number | string {
+	get rolloff(): FilterRollOff {
 		return this._rolloff;
 	}
-	set rolloff(rolloff: number | string) {
-		const rolloffNum = isNumber(rolloff) ? rolloff : parseInt(rolloff, 10);
+	set rolloff(rolloff) {
+		const rolloffNum = isNumber(rolloff) ? rolloff : parseInt(rolloff, 10) as FilterRollOff;
 		const possibilities = [-12, -24, -48, -96];
 		let cascadingCount = possibilities.indexOf(rolloffNum);
 		// check the rolloff is valid
