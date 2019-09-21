@@ -57,12 +57,10 @@ export abstract class Tone {
 	 * Tone.global.TONE_DEBUG_CLASS = "OscillatorNode"
 	 */
 	protected log(...args: any[]): void {
-		
 		// if the object is either set to debug = true
 		// or if there is a string on the Tone.global.with the class name
 		if (this.debug || (theWindow && this.toString() === theWindow.TONE_DEBUG_CLASS)) {
 			log(this, ...args);
-			// args.unshift(this.toString() + ":");
 		}
 	}
 
@@ -101,58 +99,6 @@ export abstract class Tone {
 		return this._wasDisposed;
 	}
 
-	//-------------------------------------
-	// 	DEFAULTS
-	//-------------------------------------
-
-	/**
-	 * If the `given` parameter is undefined, use the `fallback`.
-	 * If both `given` and `fallback` are object literals, it will
-	 * return a deep copy which includes all of the parameters from both
-	 * objects. If a parameter is undefined in given, it will return
-	 * the fallback property.
-	 * <br><br>
-	 * WARNING: if object is self referential, it will go into an an
-	 * infinite recursive loop.
-	 * @memberOf Tone
-	 * @param  {*} given
-	 * @param  {*} fallback
-	 * @return {*}
-	 */
-	// static defaultArg(given, fallback) {
-	// if (isObject(given) && isObject(fallback)) {
-	// 	const ret = {};
-	// 	// make a deep copy of the given object
-	// 	for (const givenProp in given) {
-	// 		ret[givenProp] = Tone.defaultArg(fallback[givenProp], given[givenProp]);
-	// 	}
-	// 	for (const fallbackProp in fallback) {
-	// 		ret[fallbackProp] = Tone.defaultArg(given[fallbackProp], fallback[fallbackProp]);
-	// 	}
-	// 	return ret;
-	// } else {
-	// 	return isUndef(given) ? fallback : given;
-	// }
-	// }
-
-	// protected options(argsArray: IArguments, keys: string[]): object {
-	// 	let options: any = {};
-	// 	const args = Array.from(argsArray);
-	// 	if (args[0] instanceof BaseAudioContext) {
-	// 		options.context = args.shift();
-	// 	}
-	// 	if (args.length === 1 && isObject(args[0])) {
-	// 		options = Object.assign(options, args[0]);
-	// 	} else {
-	// 		for (let i = 0; i < keys.length; i++) {
-	// 			if (isDefined(args[i])) {
-	// 				options[keys[i]] = args[i];
-	// 			}
-	// 		}
-	// 	}
-	// 	return deepMerge(this.getDefaults(), options);
-	// }
-
 	/**
 	 * Convert the class to a string
 	 * @example
@@ -162,16 +108,4 @@ export abstract class Tone {
 	toString(): string {
 		return this.name;
 	}
-
-	//-------------------------------------
-	// 	STATIC
-	//-------------------------------------
-
-	// static get context(): import("./context/Context").Context {
-	// 	return getContext();
-	// }
-
-	// static now(): Seconds {
-	// 	return Tone.context.now();
-	// }
 }
