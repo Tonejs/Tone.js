@@ -57,7 +57,7 @@ export class Compressor extends ToneAudioNode<CompressorOptions> {
 	/**
 	 * The amount of dB change in input for a 1 dB change in output.
 	 */
-	readonly ratio: Param<Decibels>;
+	readonly ratio: Param<Positive>;
 
 	/**
 	 * @param threshold The value above which the compression starts to be applied.
@@ -104,7 +104,7 @@ export class Compressor extends ToneAudioNode<CompressorOptions> {
 			context: this.context,
 			convert: false,
 			param: this._compressor.ratio,
-			units: "positive",
+			units: "number",
 			value: options.ratio,
 		});
 
