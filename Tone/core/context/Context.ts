@@ -179,7 +179,8 @@ export class Context extends Emitter<"statechange" | "tick"> implements BaseAudi
 	createGain(): GainNode {
 		return this._context.createGain();
 	}
-	createIIRFilter(feedForward: number[], feedback: number[]): IIRFilterNode {
+	createIIRFilter(feedForward: number[] | Float32Array, feedback: number[] | Float32Array): IIRFilterNode {
+		// @ts-ignore
 		return this._context.createIIRFilter(feedForward, feedback);
 	}
 	createPanner(): PannerNode {
