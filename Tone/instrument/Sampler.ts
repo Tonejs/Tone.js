@@ -59,11 +59,15 @@ export class Sampler extends Instrument<SamplerOptions> {
 
 	/**
 	 * The envelope applied to the beginning of the sample.
+	 * @min 0
+	 * @max 1
 	 */
 	attack: Time;
-
+	
 	/**
 	 * The envelope applied to the end of the envelope.
+	 * @min 0
+	 * @max 1
 	 */
 	release: Time;
 

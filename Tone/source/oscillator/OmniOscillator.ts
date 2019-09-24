@@ -463,6 +463,8 @@ export class OmniOscillator<OscType extends AnyOscillator>
 	 * var omniOsc = new OmniOscillator(440, "pwm");
 	 * //can access the modulationFrequency attribute only if type === "pwm"
 	 * omniOsc.modulationFrequency.value = 0.2;
+	 * @min 0.1
+	 * @max 5
 	 */
 	get modulationFrequency(): IsPWMOscillator<OscType, Signal<Frequency>> {
 		if (this._getOscType(this._oscillator, "pwm")) {

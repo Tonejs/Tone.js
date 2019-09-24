@@ -65,6 +65,8 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	 *    /XXXXXXX                  \
 	 *   /XXXXXXXX                   \
 	 * ```
+	 * @min 0
+	 * @max 2
 	 */
 	attack: Time;
 
@@ -82,6 +84,8 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	 *    /       XXXXX             \
 	 *   /        XXXXX              \
 	 * ```
+	 * @min 0
+	 * @max 2
 	 */
 	decay: Time;
 
@@ -118,6 +122,8 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	 *    /                      XXX\
 	 *   /                       XXXX\
 	 * ```
+	 * @min 0
+	 * @max 5
 	 */
 	release: Time;
 

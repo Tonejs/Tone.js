@@ -47,6 +47,8 @@ export class PluckSynth extends Instrument<PluckSynthOptions> {
 
 	/**
 	 * The dampening control. i.e. the lowpass filter frequency of the comb filter
+	 * @min 0
+	 * @max 7000
 	 */
 	readonly dampening: Signal<Frequency>;
 

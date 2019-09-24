@@ -200,6 +200,8 @@ export class MetalSynth extends Monophonic<MetalSynthOptions> {
 	/**
 	 * The modulationIndex of the oscillators which make up the source.
 	 * see [[FMOscillator.modulationIndex]]
+	 * @min 1
+	 * @max 100
 	 */
 	get modulationIndex(): number {
 		return this._oscillators[0].modulationIndex.value;
@@ -211,6 +213,8 @@ export class MetalSynth extends Monophonic<MetalSynthOptions> {
 	/**
 	 * The harmonicity of the oscillators which make up the source.
 	 * see Tone.FMOscillator.harmonicity
+	 * @min 0.1
+	 * @max 10
 	 */
 	get harmonicity(): number {
 		return this._oscillators[0].harmonicity.value;
@@ -236,6 +240,8 @@ export class MetalSynth extends Monophonic<MetalSynthOptions> {
 	/**
 	 * The number of octaves above the "resonance" frequency
 	 * that the filter ramps during the attack/decay envelope
+	 * @min 0
+	 * @max 8
 	 */
 	get octaves(): number {
 		return this._octaves;
