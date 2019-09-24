@@ -40,22 +40,30 @@ export class Compressor extends ToneAudioNode<CompressorOptions> {
 
 	/**
 	 * The amount of time (in seconds) to reduce the gain by 10dB.
+	 * @min 0
+	 * @max 1
 	 */
 	readonly attack: Param<Time>;
-
+	
 	/**
 	 * The amount of time (in seconds) to increase the gain by 10dB.
+	 * @min 0
+	 * @max 1
 	 */
 	readonly release: Param<Time>;
 
 	/**
 	 * A decibel value representing the range above the threshold where the
 	 * curve smoothly transitions to the "ratio" portion.
+	 * @min 0
+	 * @max 40
 	 */
 	readonly knee: Param<Decibels>;
 
 	/**
 	 * The amount of dB change in input for a 1 dB change in output.
+	 * @min 1
+	 * @max 20
 	 */
 	readonly ratio: Param<Positive>;
 
@@ -71,36 +79,46 @@ export class Compressor extends ToneAudioNode<CompressorOptions> {
 		const options = optionsFromArguments(Compressor.getDefaults(), arguments, ["threshold", "ratio"]);
 
 		this.threshold = new Param({
+			minValue: this._compressor.threshold.minValue,
+			maxValue: this._compressor.threshold.maxValue,
 			context: this.context,
 			convert: false,
 			param: this._compressor.threshold,
 			units: "decibels",
 			value: options.threshold,
 		});
-
+		
 		this.attack = new Param({
+			minValue: this._compressor.attack.minValue,
+			maxValue: this._compressor.attack.maxValue,
 			context: this.context,
 			param: this._compressor.attack,
 			units: "time",
 			value: options.attack,
 		});
-
+		
 		this.release = new Param({
+			minValue: this._compressor.release.minValue,
+			maxValue: this._compressor.release.maxValue,
 			context: this.context,
 			param: this._compressor.release,
 			units: "time",
 			value: options.release,
 		});
-
+		
 		this.knee = new Param({
+			minValue: this._compressor.knee.minValue,
+			maxValue: this._compressor.knee.maxValue,
 			context: this.context,
 			convert: false,
 			param: this._compressor.knee,
 			units: "decibels",
 			value: options.knee,
 		});
-
+		
 		this.ratio = new Param({
+			minValue: this._compressor.ratio.minValue,
+			maxValue: this._compressor.ratio.maxValue,
 			context: this.context,
 			convert: false,
 			param: this._compressor.ratio,

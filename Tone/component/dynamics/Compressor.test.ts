@@ -49,6 +49,17 @@ describe("Compressor", () => {
 			comp.dispose();
 		});
 
+		it("params have correct min and max values", () => {
+			const comp = new Compressor(-10, 4);
+			expect(comp.threshold.minValue).to.equal(-100);
+			expect(comp.threshold.maxValue).to.equal(0);
+			expect(comp.attack.minValue).to.equal(0);
+			expect(comp.attack.maxValue).to.equal(1);
+			expect(comp.release.minValue).to.equal(0);
+			expect(comp.release.maxValue).to.equal(1);
+			comp.dispose();
+		});
+
 		it("can get/set all interfaces", () => {
 			const comp = new Compressor();
 			const values = {
