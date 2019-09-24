@@ -12,6 +12,8 @@ export interface ParamOptions<Type> extends ToneWithContextOptions {
 	value?: Type;
 	param: AudioParam | Param<Type>;
 	convert: boolean;
+	minValue?: number;
+	maxValue?: number;
 }
 
 /**
@@ -84,6 +86,12 @@ export class Param<Type extends Unit = number>
 	private _minOutput = 1e-7;
 
 	/**
+	 * Private reference to the min and max values if passed into the constructor
+	 */
+	private readonly _minValue?: number;
+	private readonly _maxValue?: number;
+
+	/**
 	 * @param param The AudioParam to wrap
 	 * @param units The unit name
 	 * @param convert Whether or not to convert the value to the target units
@@ -107,6 +115,8 @@ export class Param<Type extends Unit = number>
 		this._initialValue = this._param.defaultValue;
 		this.units = options.units;
 		this.convert = options.convert;
+		this._minValue = options.minValue;
+		this._maxValue = options.maxValue;
 
 		// if the value is defined, set it immediately
 		if (isDefined(options.value) && options.value !== this._toType(this._initialValue)) {
@@ -125,7 +135,10 @@ export class Param<Type extends Unit = number>
 	}
 
 	get minValue(): number {
-		if (this.units === "time" || this.units === "frequency" ||
+		// if it's not the default minValue, return it
+		if (isDefined(this._minValue)) {
+			return this._minValue;
+		} else if (this.units === "time" || this.units === "frequency" ||
 			this.units === "normalRange" || this.units === "positive" ||
 			this.units === "transportTime" || this.units === "ticks" ||
 			this.units === "bpm" || this.units === "hertz" || this.units === "samples") {
@@ -140,7 +153,9 @@ export class Param<Type extends Unit = number>
 	}
 
 	get maxValue(): number {
-		if (this.units === "normalRange" ||
+		if (isDefined(this._maxValue)) {
+			return this._maxValue;
+		} else if (this.units === "normalRange" ||
 			this.units === "audioRange") {
 			return 1;
 		} else {

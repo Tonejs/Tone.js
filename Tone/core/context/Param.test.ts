@@ -405,6 +405,19 @@ describe("Param", () => {
 		testMinMaxValue("degrees", -rangeMax, rangeMax);
 		testMinMaxValue("samples", 0, rangeMax);
 		testMinMaxValue("hertz", 0, rangeMax);
+
+		it("can pass in a min and max value", () => {
+			const source = audioContext.createConstantSource();
+			source.connect(audioContext.rawContext.destination);
+			const param = new Param({
+				context: audioContext,
+				param: source.offset,
+				minValue: 0.3,
+				maxValue: 0.5,
+			});
+			expect(param.minValue).to.be.equal(0.3);
+			expect(param.maxValue).to.be.equal(0.5);
+		});
 	});
 
 	context("defaultValue", () => {
