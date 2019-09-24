@@ -6,7 +6,7 @@ import { readOnly, writable } from "../../core/util/Interface";
 import { isNumber } from "../../core/util/TypeCheck";
 import { Signal } from "../../signal/Signal";
 
-type FilterRollOff = -12 | -24 | -48 | -96;
+export type FilterRollOff = -12 | -24 | -48 | -96;
 
 export interface FilterOptions extends ToneAudioNodeOptions {
 	type: BiquadFilterType;

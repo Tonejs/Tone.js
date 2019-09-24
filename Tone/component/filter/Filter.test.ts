@@ -1,10 +1,9 @@
 import { expect } from "chai";
 import { BasicTests } from "test/helper/Basic";
-import { connectFrom } from "test/helper/Connect";
 import { Offline } from "test/helper/Offline";
 import { PassAudio } from "test/helper/PassAudio";
 import { Oscillator } from "../../source/oscillator/Oscillator";
-import { Filter } from "./Filter";
+import { Filter, FilterRollOff } from "./Filter";
 
 describe("Filter", () => {
 
@@ -35,7 +34,7 @@ describe("Filter", () => {
 				Q: 2,
 				frequency: 440,
 				gain: -6,
-				rolloff: -24,
+				rolloff: -24 as FilterRollOff,
 				type: "highpass" as BiquadFilterType,
 			};
 			filter.set(values);
@@ -66,17 +65,11 @@ describe("Filter", () => {
 			});
 		});
 
-		it.skip("passes the incoming stereo signal through", () => {
-			// return PassAudioStereo(function(input){
-			// 	var filter = new Filter().toDestination();
-			// 	input.connect(filter);
-			// });
-		});
-
 		it("only accepts filter values -12, -24, -48 and -96", () => {
 			const filter = new Filter();
 			filter.rolloff = -12;
 			expect(filter.rolloff).to.equal(-12);
+			// @ts-ignore
 			filter.rolloff = "-24";
 			expect(filter.rolloff).to.equal(-24);
 			filter.rolloff = -48;
