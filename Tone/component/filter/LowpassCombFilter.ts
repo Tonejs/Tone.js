@@ -3,9 +3,9 @@ import { InputNode, OutputNode, ToneAudioNode, ToneAudioNodeOptions } from "../.
 import { Frequency, NormalRange, Time } from "../../core/type/Units";
 import { optionsFromArguments } from "../../core/util/Defaults";
 import { RecursivePartial } from "../../core/util/Interface";
-import { Signal } from "../../signal/Signal";
 import { FeedbackCombFilter } from "./FeedbackCombFilter";
 import { Filter } from "./Filter";
+import { OnePoleFilter } from "./OnePoleFilter";
 
 interface LowpassCombFilterOptions extends ToneAudioNodeOptions {
 	delayTime: Time;
@@ -29,17 +29,12 @@ export class LowpassCombFilter extends ToneAudioNode<LowpassCombFilterOptions> {
 	/**
 	 * The lowpass filter
 	 */
-	private _lowpass: Filter;
+	private _lowpass: OnePoleFilter;
 
 	/**
 	 * The delayTime of the comb filter.
 	 */
 	readonly delayTime: Param<Time>;
-
-	/**
-	 * The dampening control of the feedback
-	 */
-	readonly dampening: Signal<Frequency>;
 
 	/**
 	 * The amount of feedback of the delayed signal.
@@ -68,11 +63,9 @@ export class LowpassCombFilter extends ToneAudioNode<LowpassCombFilterOptions> {
 		this.delayTime = this._combFilter.delayTime;
 		this.resonance = this._combFilter.resonance;
 
-		this._lowpass = this.input = new Filter({
+		this._lowpass = this.input = new OnePoleFilter({
 			context: this.context,
-			Q: 0,
 			frequency: options.dampening,
-			rolloff: -12,
 			type: "lowpass",
 		});
 		this.dampening = this._lowpass.frequency;
@@ -87,6 +80,16 @@ export class LowpassCombFilter extends ToneAudioNode<LowpassCombFilterOptions> {
 			delayTime: 0.1,
 			resonance: 0.5,
 		});
+	}
+	
+	/**
+	 * The dampening control of the feedback
+	 */
+	get dampening(): Frequency {
+		return this._lowpass.frequency;
+	}
+	set dampening(fq) {
+		this._lowpass.frequency = fq;
 	}
 
 	dispose(): this {

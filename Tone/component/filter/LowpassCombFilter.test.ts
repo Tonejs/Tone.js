@@ -19,7 +19,7 @@ describe("LowpassCombFilter", () => {
 			});
 			expect(lpcf.delayTime.value).to.be.closeTo(0.2, 0.001);
 			expect(lpcf.resonance.value).to.be.closeTo(0.3, 0.001);
-			expect(lpcf.dampening.value).to.be.closeTo(2400, 0.001);
+			expect(lpcf.dampening).to.be.closeTo(2400, 0.001);
 			lpcf.dispose();
 		});
 

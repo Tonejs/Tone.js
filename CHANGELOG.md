@@ -1,4 +1,4 @@
-### 14.3.0
+### 14.4.0
 
 * **Converted to typescript!!! (WIP)**
 * Input/Outputs are no longer arrays.
@@ -9,6 +9,8 @@
 * PolySynth does not require a polyphony value.
 	* Voice allocation and disposing is done automatically based on demand.
 * MetalSynth and MembraneSynth extends Monophonic enabling them to be used in PolySynth
+* OnePoleFilter is a 6b-per-octave lowpass or highpass filter
+	* Using OnePoleFilter in PluckSynth and LowpassCombFilter
 
 ### 13.8.25
 

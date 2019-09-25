@@ -27,8 +27,8 @@ describe("PluckSynth", () => {
 
 		it("can get and set dampening", () => {
 			const pluck = new PluckSynth();
-			pluck.dampening.value = 2000;
-			expect(pluck.dampening.value).to.be.closeTo(2000, 0.1);
+			pluck.dampening = 2000;
+			expect(pluck.dampening).to.be.closeTo(2000, 0.1);
 			pluck.dispose();
 		});
 
@@ -44,7 +44,7 @@ describe("PluckSynth", () => {
 				dampening: 300,
 				resonance: 0.5,
 			});
-			expect(pluck.dampening.value).to.be.closeTo(300, 0.1);
+			expect(pluck.dampening).to.be.closeTo(300, 0.1);
 			expect(pluck.resonance.value).to.be.closeTo(0.5, 0.001);
 			pluck.dispose();
 		});

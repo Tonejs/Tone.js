@@ -45,13 +45,6 @@ export class PluckSynth extends Instrument<PluckSynthOptions> {
 	 */
 	readonly resonance: Param<NormalRange>;
 
-	/**
-	 * The dampening control. i.e. the lowpass filter frequency of the comb filter
-	 * @min 0
-	 * @max 7000
-	 */
-	readonly dampening: Signal<Frequency>;
-
 	constructor(options?: RecursivePartial<PluckSynthOptions>)
 	constructor() {
 
@@ -72,7 +65,6 @@ export class PluckSynth extends Instrument<PluckSynthOptions> {
 		});
 
 		this.resonance = this._lfcf.resonance;
-		this.dampening = this._lfcf.dampening;
 
 		this._noise.connect(this._lfcf);
 		this._lfcf.connect(this.output);
@@ -84,6 +76,18 @@ export class PluckSynth extends Instrument<PluckSynthOptions> {
 			dampening: 4000,
 			resonance: 0.7,
 		});
+	}
+
+	/**
+	 * The dampening control. i.e. the lowpass filter frequency of the comb filter
+	 * @min 0
+	 * @max 7000
+	 */
+	get dampening(): Frequency {
+		return this._lfcf.dampening;
+	}
+	set dampening(fq) {
+		this._lfcf.dampening = fq;
 	}
 
 	triggerAttack(note: Frequency, time?: Time): this {
