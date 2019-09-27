@@ -80,7 +80,8 @@ export class OfflineContext extends Context {
 	/**
 	 * Render the output of the OfflineContext
 	 */
-	render(): Promise<AudioBuffer> {
+	async render(): Promise<AudioBuffer> {
+		await this.workletsAreReady();
 		this._renderClock();
 		return this._context.startRendering();
 	}

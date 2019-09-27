@@ -3,10 +3,10 @@ import { Seconds } from "../type/Units";
 import { isAudioContext } from "../util/AdvancedTypeCheck";
 import { optionsFromArguments } from "../util/Defaults";
 import { Emitter } from "../util/Emitter";
-import { Omit } from "../util/Interface";
+import { noOp, Omit } from "../util/Interface";
 import { Timeline } from "../util/Timeline";
-import { isString } from "../util/TypeCheck";
-import { AnyAudioContext, getAudioContext } from "./AudioContext";
+import { isDefined, isString } from "../util/TypeCheck";
+import { AnyAudioContext, createAudioWorkletNode, getAudioContext } from "./AudioContext";
 import { closeContext, initializeContext } from "./ContextInitialization";
 
 type Transport = import("../clock/Transport").Transport;
@@ -255,6 +255,48 @@ export class Context extends Emitter<"statechange" | "tick"> implements BaseAudi
 	set destination(d: Destination) {
 		this.assert(!this._initialized, "The transport cannot be set after initialization.");
 		this._destination = d;
+	}
+
+	//--------------------------------------------
+	// AUDIO WORKLET
+	//--------------------------------------------
+
+	/**
+	 * Maps a module name to promise of the addModule method
+	 */
+	private _workletModules: Map<string, Promise<void>> = new Map()
+
+	/**
+	 * Create an audio worklet node from a name and options. The module
+	 * must first be loaded using [[addAudioWorkletModule]]. 
+	 */
+	createAudioWorkletNode(
+		name: string, 
+		options?: Partial<AudioWorkletNodeOptions>
+	): AudioWorkletNode {
+		return createAudioWorkletNode(this.rawContext, name, options);
+	}
+	
+	/**
+	 * Add an AudioWorkletProcessor module
+	 * @param url The url of the module
+	 * @param name The name of the module
+	 */
+	async addAudioWorkletModule(url: string, name: string): Promise<void> {
+		this.assert(isDefined(this.rawContext.audioWorklet), "AudioWorkletNode is only available in a secure context (https or localhost)");
+		if (!this._workletModules.has(name)) {
+			this._workletModules.set(name, this.rawContext.audioWorklet.addModule(url));
+		}
+		await this._workletModules.get(name);
+	}
+
+	/**
+	 * Returns a promise which resolves when all of the worklets have been loaded on this context
+	 */
+	protected async workletsAreReady(): Promise<void> {
+		const promises: Promise<void>[] = [];
+		this._workletModules.forEach(promise => promises.push(promise));
+		await Promise.all(promises);
 	}
 
 	//---------------------------

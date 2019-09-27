@@ -1,7 +1,11 @@
 import {
+	IAudioWorkletNodeOptions,
 	AudioContext as stdAudioContext,
+	AudioWorkletNode as stdAudioWorkletNode,
 	OfflineAudioContext as stdOfflineAudioContext,
 } from "standardized-audio-context";
+import { assert } from "../util/Debug";
+import { isDefined } from "../util/TypeCheck";
 
 /**
  * Create a new AudioContext
@@ -74,4 +78,10 @@ export function setAudioContext(context: AnyAudioContext): void {
 	if (theWindow) {
 		theWindow.TONE_AUDIO_CONTEXT = globalContext;
 	}
+}
+
+export function createAudioWorkletNode(context: AnyAudioContext, name: string, options?: Partial<IAudioWorkletNodeOptions>): AudioWorkletNode {
+	assert(isDefined(stdAudioWorkletNode), "This node only works in a secure context (https or localhost)");
+	// @ts-ignore
+	return new stdAudioWorkletNode(context, name, options);
 }
