@@ -7,8 +7,7 @@ import { isArray, isFunction } from "Tone/core/util/TypeCheck";
 type ReturnFunction = (time: Seconds) => void;
 
 export async function Offline(
-	callback: (context: OfflineContext) =>
-		void | ReturnFunction | ReturnFunction[] | Promise<void | ReturnFunction> | void,
+	callback: (context: OfflineContext) => void | ReturnFunction | ReturnFunction[] | Promise<void | ReturnFunction> | void,
 	duration = 0.1, channels = 1, sampleRate: number = 44100,
 ): Promise<TestAudioBuffer> {
 	const originalContext = getContext();
