@@ -57,10 +57,12 @@ export class Param<Type extends Unit = number>
 		} as ParamOptions<any>);
 	}
 
+	readonly input: GainNode;
+
 	/**
 	 * The input connection
 	 */
-	readonly input: AudioParam;
+	// readonly input: AudioParam;
 	readonly units: UnitName;
 	convert: boolean;
 	overridden: boolean = false;
@@ -109,8 +111,11 @@ export class Param<Type extends Unit = number>
 		while (!isAudioParam(options.param)) {
 			options.param = options.param._param;
 		}
+
+		this.input = this.context.createGain();
 		// initialize
-		this._param = this.input = options.param;
+		this._param = options.param;
+		this.input.connect(this._param);
 		this._events = new Timeline<AutomationEvent>(1000);
 		this._initialValue = this._param.defaultValue;
 		this.units = options.units;
@@ -467,6 +472,18 @@ export class Param<Type extends Unit = number>
 				param[event.type](event.value, event.time);
 			}
 		});
+		return this;
+	}
+
+	/**
+	 * Replace the Param's internal AudioParam. Will apply scheduled curves 
+	 * onto the parameter and replace the connections.
+	 */
+	setParam(param: AudioParam): this {
+		this.input.disconnect(this._param);
+		this.apply(param);
+		this._param = param;
+		this.input.connect(this._param);
 		return this;
 	}
 
