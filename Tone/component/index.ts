@@ -9,3 +9,5 @@ export * from "./filter/EQ3";
 export * from "./filter/Filter";
 export * from "./dynamics/Compressor";
 export * from "./filter/OnePoleFilter";
+export * from "./filter/FeedbackCombFilter";
+export * from "./filter/LowpassCombFilter";
