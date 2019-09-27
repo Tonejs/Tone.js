@@ -81,7 +81,7 @@
     "karma-safari-launcher": "^1.0.0",
     "karma-sourcemap-loader": "^0.3.7",
     "karma-spec-reporter": "0.0.32",
-    "karma-typescript": "^4.0.0",
+    "karma-typescript": "^4.1.1",
     "mocha": "^5.1.1",
     "semver": "^5.5.0",
     "teoria": "^2.5.0",
@@ -94,6 +94,6 @@
     "yargs": "^13.2.0"
   },
   "dependencies": {
-    "standardized-audio-context": "^21.2.0"
+    "standardized-audio-context": "^21.2.4"
   }
 }
