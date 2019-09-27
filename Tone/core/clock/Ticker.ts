@@ -49,8 +49,9 @@ export class Ticker {
 	private _createWorker(): void {
 
 		const blob = new Blob([
+			/* javascript */`
 			// the initial timeout time
-			`var timeoutTime =  ${(this._updateInterval * 1000).toFixed(1)};
+			let timeoutTime =  ${(this._updateInterval * 1000).toFixed(1)};
 			// onmessage callback
 			self.onmessage = function(msg){
 				timeoutTime = parseInt(msg.data);
@@ -62,8 +63,9 @@ export class Ticker {
 				self.postMessage('tick');
 			}
 			// call tick initially
-			tick();`,
-		]);
+			tick();
+			`
+		], { type: "text/javascript" });
 		const blobUrl = URL.createObjectURL(blob);
 		const worker = new Worker(blobUrl);
 
