@@ -241,15 +241,15 @@ describe("ToneBufferSource", () => {
 			});
 		}
 
-		it("schedules the onended callback when offline", (done) => {
-
+		it("schedules the onended callback when offline", () => {
+			let wasInvoked = false;
 			return Offline(() => {
 				const player = new ToneBufferSource(buffer).toDestination();
 				player.start(0.2).stop(0.4);
-				player.onended = () => {
-					done();
-				};
-			}, 0.5);
+				player.onended = () => wasInvoked = true;
+			}, 0.5).then(() => {
+				expect(wasInvoked).to.equal(true);
+			});
 		});
 
 		it("invokes the onended callback when a looped buffer is scheduled to stop", () => {
