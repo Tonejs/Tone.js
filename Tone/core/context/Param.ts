@@ -115,7 +115,13 @@ export class Param<Type extends Unit = number>
 		this.input = this.context.createGain();
 		// initialize
 		this._param = options.param;
-		this.input.connect(this._param);
+		try {
+			this.input.connect(this._param);
+		} catch (err) {
+			if (err.name !== 'NotSupportedError') {
+				throw err;
+			}
+		}
 		this._events = new Timeline<AutomationEvent>(1000);
 		this._initialValue = this._param.defaultValue;
 		this.units = options.units;
@@ -480,10 +486,22 @@ export class Param<Type extends Unit = number>
 	 * onto the parameter and replace the connections.
 	 */
 	setParam(param: AudioParam): this {
-		this.input.disconnect(this._param);
+		try {
+			this.input.disconnect(this._param);
+		} catch (err) {
+			if (err.name !== 'InvalidAccessError') {
+				throw err;
+			}
+		}
 		this.apply(param);
 		this._param = param;
-		this.input.connect(this._param);
+		try {
+			this.input.connect(this._param);
+		} catch (err) {
+			if (err.name !== 'NotSupportedError') {
+				throw err;
+			}
+		}
 		return this;
 	}
 
