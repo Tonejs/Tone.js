@@ -1,5 +1,4 @@
 import {
-	IAudioWorkletNodeOptions,
 	AudioContext as stdAudioContext,
 	AudioWorkletNode as stdAudioWorkletNode,
 	OfflineAudioContext as stdOfflineAudioContext,
@@ -80,7 +79,7 @@ export function setAudioContext(context: AnyAudioContext): void {
 	}
 }
 
-export function createAudioWorkletNode(context: AnyAudioContext, name: string, options?: Partial<IAudioWorkletNodeOptions>): AudioWorkletNode {
+export function createAudioWorkletNode(context: AnyAudioContext, name: string, options?: Partial<AudioWorkletNodeOptions>): AudioWorkletNode {
 	assert(isDefined(stdAudioWorkletNode), "This node only works in a secure context (https or localhost)");
 	// @ts-ignore
 	return new stdAudioWorkletNode(context, name, options);
