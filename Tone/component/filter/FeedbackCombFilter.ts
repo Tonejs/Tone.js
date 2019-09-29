@@ -58,7 +58,7 @@ export class FeedbackCombFilter extends ToneAudioWorklet<FeedbackCombFilterOptio
 		this.input = new Gain({ context: this.context });
 		this.output = new Gain({ context: this.context });
 
-		const dummyParam = this.context.createGain();
+		const dummyGain = this.context.createGain();
 
 		this.delayTime = new Param<Time>({
 			context: this.context,
@@ -66,14 +66,16 @@ export class FeedbackCombFilter extends ToneAudioWorklet<FeedbackCombFilterOptio
 			units: "time",
 			minValue: 0,
 			maxValue: 1,
-			param: dummyParam.gain,
+			param: dummyGain.gain,
+			swappable: true,
 		});
 		
 		this.resonance = new Param<NormalRange>({
 			context: this.context,
 			value: options.resonance,
 			units: "normalRange",
-			param: dummyParam.gain,
+			param: dummyGain.gain,
+			swappable: true,
 		});
 
 		readOnly(this, ["resonance", "delayTime"]);
