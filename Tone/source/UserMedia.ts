@@ -4,7 +4,7 @@ import { Volume } from "../component";
 import { optionsFromArguments } from "../core/util/Defaults";
 import { Param } from "../core/context/Param";
 import { readOnly } from "../core/util/Interface";
-import { isDefined, isNumber } from "../core/util/TypeCheck";
+import { isDefined, isNumber, isUndef } from "../core/util/TypeCheck";
 
 export interface UserMediaOptions extends ToneAudioNodeOptions {
 	volume: Decibels;
@@ -109,9 +109,8 @@ export class UserMedia extends ToneAudioNode<UserMediaOptions> {
 			// didn't find a matching device
 			if (!this._device && devices.length > 0) {
 				this._device = devices[0];
-			} else if (!this._device && isDefined(labelOrId)) {
-				throw new Error("UserMedia: no matching device: "+labelOrId);
 			}
+			this.assert(isDefined(this._device), `No matching device ${labelOrId}`);
 		}
 		// do getUserMedia
 		let constraints = {
