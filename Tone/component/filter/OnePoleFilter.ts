@@ -18,6 +18,7 @@ export interface OnePoleFilterOptions extends ToneAudioNodeOptions {
  * * http://www.earlevel.com/main/2012/12/15/a-one-pole-filter/  
  * * http://www.dspguide.com/ch19/2.htm
  * * https://github.com/vitaliy-bobrov/js-rocks/blob/master/src/app/audio/effects/one-pole-filters.ts
+ * @category Component
  */
 export class OnePoleFilter extends ToneAudioNode<OnePoleFilterOptions> {
 	

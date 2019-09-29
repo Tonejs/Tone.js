@@ -14,6 +14,7 @@ export interface FeedbackCombFilterOptions extends ToneAudioNodeOptions {
 /**
  * Comb filters are basic building blocks for physical modeling. Read more
  * about comb filters on [CCRMA's website](https://ccrma.stanford.edu/~jos/pasp/Feedback_Comb_Filters.html).
+ * @category Component
  */
 export class FeedbackCombFilter extends ToneAudioWorklet<FeedbackCombFilterOptions> {
 	

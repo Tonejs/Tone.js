@@ -16,6 +16,7 @@ export interface FollowerOptions extends ToneAudioNodeOptions {
  * Input +--> Abs +----> OnePoleFilter +--> Output
  *          +-----+    +---------------+
  * ```
+ * @category Component
  */
 export class Follower extends ToneAudioNode<FollowerOptions> {
 
