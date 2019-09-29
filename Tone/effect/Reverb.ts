@@ -33,12 +33,14 @@ export class Reverb extends Effect<ReverbOptions> {
 	private _convolver: ConvolverNode = this.context.createConvolver();
 
 	/**
-	 * The duration of the reverb
+	 * The duration of the reverb.
+	 * [[generate]] must be called in order to update the values.
 	 */
 	decay: Seconds;
-
+	
 	/**
 	 * The amount of time before the reverb is fully ramped in.
+	 * [[generate]] must be called in order to update the values.
 	 */
 	preDelay: Seconds;
 
