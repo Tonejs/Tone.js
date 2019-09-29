@@ -14,6 +14,7 @@ export interface ParamOptions<Type> extends ToneWithContextOptions {
 	convert: boolean;
 	minValue?: number;
 	maxValue?: number;
+	swappable?: boolean;
 }
 
 /**
@@ -50,19 +51,8 @@ export class Param<Type extends Unit = number>
 
 	readonly name: string = "Param";
 
-	static getDefaults(): ParamOptions<any> {
-		return Object.assign(ToneWithContext.getDefaults(), {
-			convert: true,
-			units: "number" as UnitName,
-		} as ParamOptions<any>);
-	}
+	readonly input: GainNode | AudioParam;
 
-	readonly input: GainNode;
-
-	/**
-	 * The input connection
-	 */
-	// readonly input: AudioParam;
 	readonly units: UnitName;
 	convert: boolean;
 	overridden: boolean = false;
@@ -94,6 +84,12 @@ export class Param<Type extends Unit = number>
 	private readonly _maxValue?: number;
 
 	/**
+	 * If the underlying AudioParam can be swapped out
+	 * using the setParam method. 
+	 */
+	protected readonly _swappable: boolean;
+
+	/**
 	 * @param param The AudioParam to wrap
 	 * @param units The unit name
 	 * @param convert Whether or not to convert the value to the target units
@@ -112,10 +108,15 @@ export class Param<Type extends Unit = number>
 			options.param = options.param._param;
 		}
 
-		this.input = this.context.createGain();
-		// initialize
-		this._param = options.param;
-		this.input.connect(this._param);
+		this._swappable = isDefined(options.swappable) ? options.swappable : false;
+		if (this._swappable) {
+			this.input = this.context.createGain();
+			// initialize
+			this._param = options.param;
+			this.input.connect(this._param);
+		} else {
+			this._param = this.input = options.param;
+		}
 		this._events = new Timeline<AutomationEvent>(1000);
 		this._initialValue = this._param.defaultValue;
 		this.units = options.units;
@@ -127,6 +128,13 @@ export class Param<Type extends Unit = number>
 		if (isDefined(options.value) && options.value !== this._toType(this._initialValue)) {
 			this.setValueAtTime(options.value, 0);
 		}
+	}
+
+	static getDefaults(): ParamOptions<any> {
+		return Object.assign(ToneWithContext.getDefaults(), {
+			convert: true,
+			units: "number" as UnitName,
+		} as ParamOptions<any>);
 	}
 
 	get value(): Type {
@@ -480,10 +488,12 @@ export class Param<Type extends Unit = number>
 	 * onto the parameter and replace the connections.
 	 */
 	setParam(param: AudioParam): this {
-		this.input.disconnect(this._param);
+		this.assert(this._swappable, "The Param must be assigned as 'swappable' in the constructor");
+		const input = this.input as GainNode;
+		input.disconnect(this._param);
 		this.apply(param);
 		this._param = param;
-		this.input.connect(this._param);
+		input.connect(this._param);
 		return this;
 	}
 

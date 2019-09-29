@@ -334,6 +334,40 @@ describe("Param", () => {
 				// document.body.appendChild(await Plot.signal(buffer));
 			});
 		});
+
+		it("can set the param if the Param is marked as swappable", () => {
+			return Offline(context => {
+				const constSource = context.createConstantSource();
+				const param = new Param({
+					swappable: true,
+					param: constSource.offset,
+				});
+				param.setValueAtTime(0.1, 0.1);
+				param.setValueAtTime(0.2, 0.2);
+				param.setValueAtTime(0.3, 0.3);
+				const constSource2 = context.createConstantSource();
+				constSource2.start(0);
+				param.setParam(constSource2.offset);
+				connect(constSource2, context.destination);
+			}, 0.5).then(buffer => {
+				expect(buffer.getValueAtTime(0.1)).to.be.closeTo(0.1, 0.001);
+				expect(buffer.getValueAtTime(0.2)).to.be.closeTo(0.2, 0.001);
+				expect(buffer.getValueAtTime(0.3)).to.be.closeTo(0.3, 0.001);
+			});
+		});
+
+		it("throws an error if the param is not set to swappable", () => {
+			return Offline(context => {
+				const constSource = context.createConstantSource();
+				const param = new Param({
+					param: constSource.offset,
+				});
+				const constSource2 = context.createConstantSource();
+				expect(() => {
+					param.setParam(constSource2.offset);
+				}).to.throw(Error);
+			}, 0.5);
+		});
 	});
 
 	context("Unit Conversions", () => {
