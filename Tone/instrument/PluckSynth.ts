@@ -1,10 +1,8 @@
-import { Param } from "../core/context/Param";
 import { Frequency, NormalRange, Time } from "../core/type/Units";
 import { LowpassCombFilter } from "../component/filter/LowpassCombFilter";
 import { deepMerge } from "../core/util/Defaults";
 import { optionsFromArguments } from "../core/util/Defaults";
 import { RecursivePartial } from "../core/util/Interface";
-import { Signal } from "../signal/Signal";
 import { Noise } from "../source/Noise";
 import { Instrument, InstrumentOptions } from "./Instrument";
 
@@ -12,11 +10,11 @@ export interface PluckSynthOptions extends InstrumentOptions {
 	attackNoise: number;
 	dampening: Frequency;
 	resonance: NormalRange;
+	release: Time;
 }
 
 /**
- * Karplus-String string synthesis. Often out of tune.
- *
+ * Karplus-String string synthesis.
  * @example
  * var plucky = new Tone.PluckSynth().toDestination();
  * plucky.triggerAttack("C4");
@@ -41,9 +39,14 @@ export class PluckSynth extends Instrument<PluckSynthOptions> {
 	attackNoise: number;
 
 	/**
-	 * The resonance control.
+	 * The amount of resonance of the pluck. Also correlates to the sustain duration.
 	 */
-	readonly resonance: Param<NormalRange>;
+	resonance: NormalRange;
+
+	/**
+	 * The release time which corresponds to a resonance ramp down to 0
+	 */
+	release: Time;
 
 	constructor(options?: RecursivePartial<PluckSynthOptions>)
 	constructor() {
@@ -64,7 +67,8 @@ export class PluckSynth extends Instrument<PluckSynthOptions> {
 			resonance: options.resonance,
 		});
 
-		this.resonance = this._lfcf.resonance;
+		this.resonance = options.resonance;
+		this.release = options.release;
 
 		this._noise.connect(this._lfcf);
 		this._lfcf.connect(this.output);
@@ -75,6 +79,7 @@ export class PluckSynth extends Instrument<PluckSynthOptions> {
 			attackNoise: 1,
 			dampening: 4000,
 			resonance: 0.7,
+			release: 1,
 		});
 	}
 
@@ -97,14 +102,16 @@ export class PluckSynth extends Instrument<PluckSynthOptions> {
 		this._lfcf.delayTime.setValueAtTime(delayAmount, time);
 		this._noise.start(time);
 		this._noise.stop(time + delayAmount * this.attackNoise);
+		this._lfcf.resonance.cancelScheduledValues(time);
+		this._lfcf.resonance.setValueAtTime(this.resonance, time);
 		return this;
 	}
 
 	/**
-	 * PluckSynths' trigger release method doesn't do anything.
+	 * Ramp down the [[resonance]] to 0 over the duration of the release time.
 	 */
-	triggerRelease(): this{
-		// does nothing
+	triggerRelease(time?: Time): this{
+		this._lfcf.resonance.linearRampTo(0, this.release, time);
 		return this;
 	}
 
