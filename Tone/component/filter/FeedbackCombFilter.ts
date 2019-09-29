@@ -14,6 +14,10 @@ export interface FeedbackCombFilterOptions extends ToneAudioNodeOptions {
 /**
  * Comb filters are basic building blocks for physical modeling. Read more
  * about comb filters on [CCRMA's website](https://ccrma.stanford.edu/~jos/pasp/Feedback_Comb_Filters.html).
+ * 
+ * This comb filter is implemented with the AudioWorkletNode which allows it to have feedback delays less than the 
+ * Web Audio processing block of 128 samples. There is a polyfill for browsers that don't yet support the 
+ * AudioWorkletNode, but it will add some latency and have slower performance than the AudioWorkletNode. 
  * @category Component
  */
 export class FeedbackCombFilter extends ToneAudioWorklet<FeedbackCombFilterOptions> {
@@ -54,7 +58,7 @@ export class FeedbackCombFilter extends ToneAudioWorklet<FeedbackCombFilterOptio
 		this.input = new Gain({ context: this.context });
 		this.output = new Gain({ context: this.context });
 
-		const dummyParam = new Gain({ context: this.context });
+		const dummyParam = this.context.createGain();
 
 		this.delayTime = new Param<Time>({
 			context: this.context,
