@@ -43,7 +43,6 @@ export abstract class ToneAudioWorklet<Options extends ToneAudioWorkletOptions> 
 			if (!this.disposed) {
 				this._worklet = this.context.createAudioWorkletNode(name, this.workletOptions);
 				this._worklet.onprocessorerror = e => {
-					console.log(e);
 					// @ts-ignore
 					throw e.error;
 				};
