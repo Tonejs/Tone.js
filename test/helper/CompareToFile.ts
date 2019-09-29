@@ -14,10 +14,12 @@ export async function CompareToFile(
 	const prefix = window.__karma__ ? "/base/test/" : "../test/";
 	const origContext = getContext();
 	try {
-		await Compare.toFile(context => {
+		await Compare.toFile(async context => {
 			const offlineContext = new OfflineContext(context);
 			setContext(offlineContext);
-			callback(offlineContext);
+			await callback(offlineContext);
+			// @ts-ignore
+			await offlineContext.workletsAreReady();
 			// @ts-ignore
 			offlineContext._renderClock();
 		}, prefix + "audio/compare/" + url, threshold, RENDER_NEW, duration, channels, 44100);
