@@ -150,18 +150,13 @@ export abstract class ToneWithContext<Options extends ToneWithContextOptions> ex
 	}
 
 	/**
-	 * Set the parameters at once. Either pass in an
-	 * object mapping parameters to values, or to set a
-	 * single parameter, by passing in a string and value.
-	 * The last argument is an optional ramp time which
-	 * will ramp any signal values to their destination value
-	 * over the duration of the rampTime.
+	 * Set multiple properties at once with an object.
 	 * @param  params
 	 * @example
 	 * //set values using an object
 	 * filter.set({
-	 * "frequency" : 300,
-	 * "type" : "highpass"
+	 * 	"frequency" : 300,
+	 * 	"type" : "highpass"
 	 * });
 	 */
 	set(props: RecursivePartial<Options>): this {
