@@ -1,7 +1,7 @@
 import { AmplitudeEnvelope } from "../component/envelope/AmplitudeEnvelope";
 import { Envelope, EnvelopeOptions } from "../component/envelope/Envelope";
 import { Gain } from "../core/context/Gain";
-import { ToneAudioNode } from "../core/context/ToneAudioNode";
+import { ToneAudioNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
 import { Cents, Frequency, Positive, Seconds } from "../core/type/Units";
 import { omitFromObject, optionsFromArguments } from "../core/util/Defaults";
 import { RecursivePartial } from "../core/util/Interface";
@@ -9,17 +9,15 @@ import { Monophonic } from "./Monophonic";
 import { Multiply } from "../signal/Multiply";
 import { Signal } from "../signal/Signal";
 import { OmniOscillator } from "../source/oscillator/OmniOscillator";
-import { OmniOscillatorConstructorOptions } from "../source/oscillator/OscillatorInterface";
+import { OmniOscillatorSynthOptions } from "../source/oscillator/OscillatorInterface";
 import { Source } from "../source/Source";
 import { Synth, SynthOptions } from "./Synth";
 
 export interface FMSynthOptions extends SynthOptions {
 	harmonicity: Positive;
 	modulationIndex: Positive;
-	modulationEnvelope: EnvelopeOptions;
-	modulation: OmniOscillatorConstructorOptions;
-	carrier: Partial<SynthOptions>;
-	modulator: Partial<SynthOptions>;
+	modulationEnvelope: Omit<EnvelopeOptions, keyof ToneAudioNodeOptions>;
+	modulation: OmniOscillatorSynthOptions;
 }
 
 /**
@@ -27,7 +25,6 @@ export interface FMSynthOptions extends SynthOptions {
  * the frequency of a second Tone.Synth. A lot of spectral content
  * can be explored using the modulationIndex parameter. Read more about
  * frequency modulation synthesis on Sound On Sound: [Part 1](https://web.archive.org/web/20160403123704/http://www.soundonsound.com/sos/apr00/articles/synthsecrets.htm), [Part 2](https://web.archive.org/web/20160403115835/http://www.soundonsound.com/sos/may00/articles/synth.htm).
- * <img src="https://docs.google.com/drawings/d/1h0PUDZXPgi4Ikx6bVT6oncrYPLluFKy7lj53puxj-DM/pub?w=902&h=462">
  *
  *  @example
  * var fmSynth = new Tone.FMSynth().toMaster();
@@ -104,26 +101,45 @@ export class FMSynth extends Monophonic<FMSynthOptions> {
 		super(optionsFromArguments(FMSynth.getDefaults(), arguments));
 		const options = optionsFromArguments(FMSynth.getDefaults(), arguments);
 
-		this._carrier = new Synth(options.carrier);
-		this._carrier.volume.value = -10;
-
+		this._carrier = new Synth({
+			context: this.context,
+			oscillator: options.oscillator,
+			envelope: options.envelope,
+			volume: -10,
+		});
+		this._modulator = new Synth({
+			context: this.context,
+			oscillator: options.modulation,
+			envelope: options.modulationEnvelope,
+			volume: -10,
+		});
+		
 		this.oscillator = this._carrier.oscillator;
-		this.envelope = this._carrier.envelope.set(options.envelope);
+		this.envelope = this._carrier.envelope;
+		this.modulation = this._modulator.oscillator;
+		this.modulationEnvelope = this._modulator.envelope;
 
-		this._modulator = new Synth(options.modulator);
-		this._modulator.volume.value = -10;
-
-		this.modulation = this._modulator.oscillator.set(options.modulation);
-		this.modulationEnvelope = this._modulator.envelope.set(
-			options.modulationEnvelope
-		);
-
-		this.frequency = new Signal<Frequency>(440);
-		this.detune = new Signal<Cents>(options.detune);
-		this.harmonicity = new Multiply(options.harmonicity);
-		this.modulationIndex = new Multiply(options.modulationIndex);
-
-		this._modulationNode = new Gain(0);
+		this.frequency = new Signal({
+			context: this.context,
+			units: "frequency",
+		});
+		this.detune = new Signal({
+			context: this.context,
+			value: options.detune,
+			units: "cents"
+		});
+		this.harmonicity = new Multiply({
+			context: this.context,
+			value: options.harmonicity,
+		});
+		this.modulationIndex = new Multiply({
+			context: this.context,
+			value: options.modulationIndex,
+		});
+		this._modulationNode = new Gain({
+			context: this.context,
+			gain: 0,
+		});
 
 		// control the two voices frequency
 		this.frequency.connect(this._carrier.frequency);
@@ -164,8 +180,9 @@ export class FMSynth extends Monophonic<FMSynthOptions> {
 			),
 			modulation: Object.assign(
 				omitFromObject(OmniOscillator.getDefaults(), [
-					"partialCount",
-					"partials"
+					...Object.keys(Source.getDefaults()),
+					"frequency",
+					"detune"
 				]),
 				{
 					type: "square"
@@ -182,9 +199,7 @@ export class FMSynth extends Monophonic<FMSynthOptions> {
 					sustain: 1,
 					release: 0.5
 				}
-			),
-			carrier: Synth.getDefaults(),
-			modulator: Synth.getDefaults()
+			)
 		});
 	}
 
@@ -192,22 +207,23 @@ export class FMSynth extends Monophonic<FMSynthOptions> {
 	 * Trigger the attack portion of the note
 	 */
 	protected _triggerEnvelopeAttack(time: Seconds, velocity: number): void {
+		// @ts-ignore
 		this._carrier._triggerEnvelopeAttack(time, velocity);
+		// @ts-ignore
 		this._modulator._triggerEnvelopeAttack(time, velocity);
 	}
-
+	
 	/**
 	 * Trigger the release portion of the note
 	 */
 	protected _triggerEnvelopeRelease(time: Seconds) {
+		// @ts-ignore
 		this._carrier._triggerEnvelopeRelease(time);
+		// @ts-ignore
 		this._modulator._triggerEnvelopeRelease(time);
 		return this;
 	}
 
-	/**
-	 * clean up
-	 */
 	dispose(): this {
 		super.dispose();
 		this._carrier.dispose();

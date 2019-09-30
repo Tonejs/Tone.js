@@ -3,24 +3,18 @@ import { FMSynth } from "./FMSynth";
 import { BasicTests } from "test/helper/Basic";
 import { InstrumentTest } from "test/helper/InstrumentTests";
 import { CompareToFile } from "test/helper/CompareToFile";
-import * as Supports from "test/helper/Supports";
 
 describe("FMSynth", () => {
+
 	BasicTests(FMSynth);
 	InstrumentTest(FMSynth, "C4");
 
-	if (Supports.CHROME_AUDIO_RENDERING) {
-		it("matches a file", () => {
-			return CompareToFile(
-				() => {
-					const synth = new FMSynth().toMaster();
-					synth.triggerAttackRelease("G4", 0.1, 0.05);
-				},
-				"fmSynth.wav",
-				0.1
-			);
-		});
-	}
+	it("matches a file", () => {
+		return CompareToFile(() => {
+			const synth = new FMSynth().toDestination();
+			synth.triggerAttackRelease("G4", 0.1, 0.05);
+		}, "fmSynth.wav", 0.01);
+	});
 
 	context("API", () => {
 		it("can get and set carrier attributes", () => {
