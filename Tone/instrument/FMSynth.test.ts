@@ -13,7 +13,7 @@ describe("FMSynth", () => {
 		return CompareToFile(() => {
 			const synth = new FMSynth().toDestination();
 			synth.triggerAttackRelease("G4", 0.1, 0.05);
-		}, "fmSynth.wav", 0.01);
+		}, "fmSynth.wav", 0.06);
 	});
 
 	context("API", () => {
