@@ -28,7 +28,7 @@ export async function Offline(
 	}
 	setContext(originalContext);
 	const buffer = await offline.render();
-	return new TestAudioBuffer(buffer);
+	return new TestAudioBuffer(buffer.get() as AudioBuffer);
 }
 
 export function whenBetween(value: Seconds, start: Seconds, stop: Seconds, callback: () => void): void {
