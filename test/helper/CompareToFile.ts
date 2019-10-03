@@ -21,7 +21,7 @@ export async function CompareToFile(
 			// @ts-ignore
 			await offlineContext.workletsAreReady();
 			// @ts-ignore
-			offlineContext._renderClock();
+			await offlineContext._renderClock();
 		}, prefix + "audio/compare/" + url, threshold, RENDER_NEW, duration, channels, 44100);
 	} finally {
 		setContext(origContext);

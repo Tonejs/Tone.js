@@ -42,7 +42,6 @@ export function setContext(context: Context | AudioContext | OfflineAudioContext
 	} else {
 		globalContext = context;
 	}
-	globalContext.initialize();
 }
 
 /**

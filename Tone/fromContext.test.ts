@@ -8,7 +8,6 @@ describe("fromContext", () => {
 
 	before(() => {
 		context = new OfflineContext(1, 1, 44100);
-		context.initialize();
 	});
 
 	after(() => {

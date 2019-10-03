@@ -8,7 +8,6 @@ import { ConnectTest } from "./Connect";
 import { setLogger } from "Tone/core/util/Debug";
 
 export const testAudioContext = new OfflineContext(1, 1, 11025);
-testAudioContext.initialize();
 
 export function BasicTests(Constr, ...args: any[]): void {
 

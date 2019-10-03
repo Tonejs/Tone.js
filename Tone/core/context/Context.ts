@@ -130,7 +130,7 @@ export class Context extends Emitter<"statechange" | "tick"> implements BaseAudi
 	/**
 	 * Finish setting up the context. **You usually do not need to do this manually.**
 	 */
-	initialize(): this {
+	private initialize(): this {
 		if (!this._initialized) {
 			// add any additional modules
 			initializeContext(this);
@@ -237,7 +237,7 @@ export class Context extends Emitter<"statechange" | "tick"> implements BaseAudi
 	 * There is only one Transport per Context. It is created on initialization.
 	 */
 	get transport(): Transport {
-		this.assert(this._initialized, "The context must be initialized before being used by invoking context.initialize()");
+		this.initialize();
 		return this._transport;
 	}
 	set transport(t: Transport) {
@@ -249,11 +249,11 @@ export class Context extends Emitter<"statechange" | "tick"> implements BaseAudi
 	 * A reference to the Context's destination node.
 	 */
 	get destination(): Destination {
-		this.assert(this._initialized, "The context must be initialized before being used by invoking context.initialize()");
+		this.initialize();
 		return this._destination;
 	}
 	set destination(d: Destination) {
-		this.assert(!this._initialized, "The transport cannot be set after initialization.");
+		this.assert(!this._initialized, "The destination cannot be set after initialization.");
 		this._destination = d;
 	}
 
