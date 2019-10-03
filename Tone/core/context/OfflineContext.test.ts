@@ -38,4 +38,22 @@ context("OfflineContext", () => {
 			}
 		});
 	});
+
+	it("can render audio not async", () => {
+		const ctx = new OfflineContext(1, 0.2, 44100);
+		const osc = ctx.createOscillator();
+		osc.connect(ctx.rawContext.destination);
+		osc.start(0.1);
+		return ctx.render(false).then(buffer => {
+			expect(buffer).to.have.property("length");
+			expect(buffer).to.have.property("sampleRate");
+			const array = buffer.getChannelData(0);
+			for (let i = 0; i < array.length; i++) {
+				if (array[i] !== 0) {
+					expect(i / array.length).to.be.closeTo(0.5, 0.01);
+					break;
+				}
+			}
+		});
+	});
 });

@@ -66,23 +66,34 @@ export class OfflineContext extends Context {
 	}
 
 	/**
-	 * Render just the clock portion of the audiocontext.
+	 * Render just the clock portion of the audio context.
 	 */
-	private _renderClock(): void {
+	private async _renderClock(asynchronous: boolean): Promise<void> {
+		let index = 0;
 		while (this._duration - this._currentTime >= 0) {
+			
 			// invoke all the callbacks on that time
 			this.emit("tick");
-			// increment the clock in 5ms chunks
+			
+			// increment the clock in block-sized chunks
 			this._currentTime += 128 / this.sampleRate;
+			
+			// yield once a second of audio
+			index++;
+			const yieldEvery = Math.floor(this.sampleRate / 128);
+			if (asynchronous && index % yieldEvery === 0) {
+				await new Promise(done => setTimeout(done, 1));
+			}
 		}
 	}
 
 	/**
 	 * Render the output of the OfflineContext
+	 * @param async If the clock should be rendered asynchronously, which will not block the main thread, but be slightly slower.
 	 */
-	async render(): Promise<AudioBuffer> {
+	async render(asynchronous: boolean = true): Promise<AudioBuffer> {
 		await this.workletsAreReady();
-		this._renderClock();
+		await this._renderClock(asynchronous);
 		return this._context.startRendering();
 	}
 
