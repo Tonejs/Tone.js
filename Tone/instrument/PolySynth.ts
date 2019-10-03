@@ -10,6 +10,7 @@ import { MetalSynth, MetalSynthOptions } from "./MetalSynth";
 import { Monophonic } from "./Monophonic";
 import { Synth, SynthOptions } from "./Synth";
 import { warn } from "../core/util/Debug";
+import { OfflineContext } from "../core/context/OfflineContext";
 
 type VoiceConstructor<V> = {
 	getDefaults: () => VoiceOptions<V>;
@@ -193,7 +194,9 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 			const firstAvail = this._availableVoices.shift() as Voice;
 			const index = this._voices.indexOf(firstAvail);
 			this._voices.splice(index, 1);
-			firstAvail.dispose();
+			if (!(this.context instanceof OfflineContext)) {
+				firstAvail.dispose();
+			}
 		}
 	}
 
