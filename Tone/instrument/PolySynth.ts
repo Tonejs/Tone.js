@@ -194,7 +194,7 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 			const firstAvail = this._availableVoices.shift() as Voice;
 			const index = this._voices.indexOf(firstAvail);
 			this._voices.splice(index, 1);
-			if (!(this.context instanceof OfflineContext)) {
+			if (!this.context.isOffline) {
 				firstAvail.dispose();
 			}
 		}

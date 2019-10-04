@@ -3,6 +3,7 @@ import { ToneAudioNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNo
 import { GainFactor, Seconds, Time } from "../core/type/Units";
 import { noOp } from "../core/util/Interface";
 import { BasicPlaybackState } from "../core/util/StateTimeline";
+import { OfflineContext } from "../core/context/OfflineContext";
 
 export type OneShotSourceCurve = "linear" | "exponential";
 
@@ -184,8 +185,10 @@ export abstract class OneShotSource<Options extends ToneAudioNodeOptions> extend
 			this.onended(this);
 			// overwrite onended to make sure it only is called once
 			this.onended = noOp;
-			// dispose when it's ended to free up for garbage collection
-			setTimeout(() => this.dispose(), 1000);
+			// dispose when it's ended to free up for garbage collection only in the online context
+			if (!this.context.isOffline) {
+				setTimeout(() => this.dispose(), 1000);
+			}
 		}
 	}
 
