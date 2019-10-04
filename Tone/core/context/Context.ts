@@ -97,6 +97,11 @@ export class Context extends Emitter<"statechange" | "tick"> implements BaseAudi
 	 */
 	private _initialized: boolean = false;
 
+	/**
+	 * Indicates if the context is an OfflineAudioContext or an AudioContext
+	 */
+	readonly isOffline: boolean = false;
+
 	constructor(context?: AnyAudioContext);
 	constructor(options?: Partial<ContextOptions>);
 	constructor() {

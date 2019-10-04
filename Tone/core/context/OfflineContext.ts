@@ -27,6 +27,8 @@ export class OfflineContext extends Context {
 	 */
 	protected _context!: OfflineAudioContext;
 
+	readonly isOffline: boolean = true;
+
 	/**
 	 * @param  channels  The number of channels to render
 	 * @param  duration  The duration to render in seconds
