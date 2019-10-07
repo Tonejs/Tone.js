@@ -5,12 +5,11 @@ import { RecursivePartial } from "../core/util/Interface";
 import { isArray, isNumber } from "../core/util/TypeCheck";
 import { Instrument, InstrumentOptions } from "./Instrument";
 import { MembraneSynth, MembraneSynthOptions } from "./MembraneSynth";
-import { PluckSynth, PluckSynthOptions } from "./PluckSynth";
+import { FMSynth, FMSynthOptions } from "./FMSynth";
 import { MetalSynth, MetalSynthOptions } from "./MetalSynth";
 import { Monophonic } from "./Monophonic";
 import { Synth, SynthOptions } from "./Synth";
 import { warn } from "../core/util/Debug";
-import { OfflineContext } from "../core/context/OfflineContext";
 
 type VoiceConstructor<V> = {
 	getDefaults: () => VoiceOptions<V>;
@@ -20,8 +19,8 @@ type OmitMonophonicOptions<T> = Omit<T, "context" | "onsilence">;
 
 type VoiceOptions<T> =
 	T extends MembraneSynth ? MembraneSynthOptions :
-		T extends PluckSynth ? PluckSynthOptions :
-			T extends MetalSynth ? MetalSynthOptions :
+		T extends MetalSynth ? MetalSynthOptions :
+			T extends FMSynth ? FMSynthOptions :
 				T extends Synth ? SynthOptions :
 					never;
 
