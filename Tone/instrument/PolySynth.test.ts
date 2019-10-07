@@ -1,11 +1,14 @@
 import { expect } from "chai";
 import { BasicTests, warns } from "test/helper/Basic";
 import { CompareToFile } from "test/helper/CompareToFile";
-import { InstrumentTest } from "test/helper/InstrumentTests";
 import { atTime, Offline } from "test/helper/Offline";
 import { OutputAudio } from "test/helper/OutputAudio";
 import { PolySynth } from "./PolySynth";
 import { Synth } from "./Synth";
+import { FMSynth } from "./FMSynth";
+import { PluckSynth } from "./PluckSynth";
+import { MetalSynth } from "./MetalSynth";
+import { MembraneSynth } from "./MembraneSynth";
 
 describe("PolySynth", () => {
 
@@ -40,6 +43,25 @@ describe("PolySynth", () => {
 			synth.triggerAttackRelease("B4", 0.1, 0.4);
 			synth.triggerAttackRelease("G4", 0.1, 0.6);
 		}, "polySynth3.wav", 0.5);
+	});
+
+	it("can be constructed with monophonic synths", () => {
+		expect(() => {
+			const polySynth = new PolySynth(Synth);
+			polySynth.dispose();
+		}).to.not.throw(Error);
+		expect(() => {
+			const polySynth = new PolySynth(FMSynth);
+			polySynth.dispose();
+		}).to.not.throw(Error);
+		expect(() => {
+			const polySynth = new PolySynth(MetalSynth);
+			polySynth.dispose();
+		}).to.not.throw(Error);
+		expect(() => {
+			const polySynth = new PolySynth(MembraneSynth);
+			polySynth.dispose();
+		}).to.not.throw(Error);
 	});
 
 	context("Playing Notes", () => {
