@@ -1,6 +1,5 @@
 import { expect } from "chai";
 import { BasicTests } from "test/helper/Basic";
-// import { EffectTests } from "test/helper/EffectTests";
 import { ToneAudioBuffer } from "Tone/core/context/ToneAudioBuffer";
 import { Convolver } from "./Convolver";
 
@@ -20,11 +19,6 @@ describe("Convolver", () => {
 	before(() => {
 		return ir.load(testFile);
 	});
-
-	// the buffers are set to 44.1 Khz, but i always get this error:
-	// Error: Failed to set the 'buffer' property on 'ConvolverNode':
-	// The buffer sample rate of 48000 does not match the context rate of 44100 Hz.
-	// EffectTests(Convolver, ir);
 
 	context("API", () => {
 

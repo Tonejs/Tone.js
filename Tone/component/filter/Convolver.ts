@@ -1,9 +1,10 @@
-import { ToneAudioBuffer } from "../core/context/ToneAudioBuffer";
-import { optionsFromArguments } from "../core/util/Defaults";
-import { noOp } from "../core/util/Interface";
-import { Effect, EffectOptions } from "./Effect";
+import { ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
+import { ToneAudioBuffer } from "../../core/context/ToneAudioBuffer";
+import { optionsFromArguments } from "../../core/util/Defaults";
+import { Gain } from "../../core/context/Gain";
+import { noOp } from "../../core/util/Interface";
 
-interface ToneConvolverOptions extends EffectOptions {
+export interface ConvolverOptions extends ToneAudioNodeOptions {
 	onload: () => void;
 	normalize: boolean;
 	url?: string | AudioBuffer | ToneAudioBuffer;
@@ -18,12 +19,12 @@ interface ToneConvolverOptions extends EffectOptions {
  * @example
  * //initializing the convolver with an impulse response
  * var convolver = new Convolver("./path/to/ir.wav").toDestination();
- * @category Effect
+ * @category Component
  */
-export class Convolver extends Effect<ToneConvolverOptions> {
+export class Convolver extends ToneAudioNode<ConvolverOptions> {
 
 	readonly name: string = "Convolver";
-
+	
 	/**
 	 * The native ConvolverNode
 	 */
@@ -34,12 +35,15 @@ export class Convolver extends Effect<ToneConvolverOptions> {
 	 */
 	private _buffer: ToneAudioBuffer;
 
+	readonly input: Gain;
+	readonly output: Gain;
+
 	/**
 	 * @param url The URL of the impulse response or the ToneAudioBuffer containing the impulse response.
 	 * @param onload The callback to invoke when the url is loaded.
 	 */
 	constructor(url?: string | AudioBuffer | ToneAudioBuffer, onload?: () => void);
-	constructor(options?: Partial<ToneConvolverOptions>);
+	constructor(options?: Partial<ConvolverOptions>);
 	constructor() {
 
 		super(optionsFromArguments(Convolver.getDefaults(), arguments, ["url", "onload"]));
@@ -50,7 +54,10 @@ export class Convolver extends Effect<ToneConvolverOptions> {
 			options.onload();
 		});
 
-		// set if it's already loaded
+		this.input = new Gain({ context: this.context });
+		this.output = new Gain({ context: this.context });
+
+		// set if it's already loaded, set it immediately
 		if (this._buffer.loaded) {
 			this.buffer = this._buffer;
 		}
@@ -59,11 +66,11 @@ export class Convolver extends Effect<ToneConvolverOptions> {
 		this.normalize = options.normalize;
 
 		// connect it up
-		this.connectEffect(this._convolver);
+		this.input.chain(this._convolver, this.output);
 	}
 
-	static getDefaults(): ToneConvolverOptions {
-		return Object.assign(Effect.getDefaults(), {
+	static getDefaults(): ConvolverOptions {
+		return Object.assign(ToneAudioNode.getDefaults(), {
 			normalize: true,
 			onload: noOp,
 		});
@@ -96,11 +103,11 @@ export class Convolver extends Effect<ToneConvolverOptions> {
 		// if it's already got a buffer, create a new one
 		if (this._convolver.buffer) {
 			// disconnect the old one
-			this.effectSend.disconnect();
+			this.input.disconnect();
 			this._convolver.disconnect();
 			// create and connect a new one
 			this._convolver = this.context.createConvolver();
-			this.connectEffect(this._convolver);
+			this.input.connect(this._convolver);
 		}
 		const buff = this._buffer.get();
 		this._convolver.buffer = buff ? buff : null;
