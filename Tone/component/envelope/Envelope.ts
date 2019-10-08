@@ -4,6 +4,7 @@ import { NormalRange, Time } from "../../core/type/Units";
 import { optionsFromArguments } from "../../core/util/Defaults";
 import { isArray, isObject, isString } from "../../core/util/TypeCheck";
 import { connectSignal, Signal } from "../../signal/Signal";
+import { OfflineContext } from "../../core/context/OfflineContext";
 
 type BasicEnvelopeCurve = "linear" | "exponential";
 type InternalEnvelopeCurve = BasicEnvelopeCurve | number[];
@@ -436,6 +437,27 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	connect(destination: InputNode, outputNumber: number = 0, inputNumber: number = 0): this {
 		connectSignal(this, destination, outputNumber, inputNumber);
 		return this;
+	}
+
+	/**
+	 * Render the envelope curve to an array of the given length. 
+	 * Good for visualizing the envelope curve
+	 */
+	async asArray(length: number = 1024): Promise<Float32Array> {
+		const duration = length / this.context.sampleRate;
+		const context = new OfflineContext(1, duration, this.context.sampleRate);
+		// normalize the ADSR for the given duration with 20% sustain time
+		const totalDuration = (this.toSeconds(this.attack) + this.toSeconds(this.decay) + this.toSeconds(this.release)) * 1.2;
+		// @ts-ignore
+		const clone = new this.constructor(Object.assign(this.get(), { 
+			attack: duration * this.toSeconds(this.attack) / totalDuration,
+			decay: duration * this.toSeconds(this.decay) / totalDuration,
+			release: duration * this.toSeconds(this.release) / totalDuration,
+			context
+		})).toDestination() as Envelope;
+		clone.triggerAttackRelease(duration * 0.2, 0);
+		const buffer = await context.render();
+		return buffer.getChannelData(0);
 	}
 
 	dispose(): this {

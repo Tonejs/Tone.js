@@ -737,6 +737,20 @@ describe("Envelope", () => {
 			});
 		});
 
+		it("can render the envelope to a curve", async () => {
+			const env = new Envelope();
+			const curve = await env.asArray();
+			curve.forEach(v => expect(v).to.be.within(0, 1));
+			env.dispose();
+		});
+
+		it("can render the envelope to an array with a given length", async () => {
+			const env = new Envelope();
+			const curve = await env.asArray(256);
+			expect(curve.length).to.equal(256);
+			env.dispose();
+		});
+
 		it("can retrigger partial envelope with custom type", () => {
 			return Offline(() => {
 				const env = new Envelope({
