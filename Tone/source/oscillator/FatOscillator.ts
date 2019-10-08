@@ -7,7 +7,7 @@ import { Signal } from "../../signal/Signal";
 import { Source } from "../Source";
 import { Oscillator } from "./Oscillator";
 import { FatConstructorOptions, FatOscillatorOptions,
-	ToneOscillatorInterface, ToneOscillatorType } from "./OscillatorInterface";
+	generateWaveform, ToneOscillatorInterface, ToneOscillatorType } from "./OscillatorInterface";
 
 export { FatOscillatorOptions } from "./OscillatorInterface";
 
@@ -271,6 +271,10 @@ export class FatOscillator extends Source<FatOscillatorOptions> implements ToneO
 		this._partialCount = partialCount;
 		this._forEach(osc => osc.partialCount = partialCount);
 		this._type = this._oscillators[0].type;
+	}
+
+	async asArray(length: number = 1024): Promise<Float32Array> {
+		return generateWaveform(this, length);
 	}
 
 	/**

@@ -5,7 +5,7 @@ import { Multiply } from "../../signal/Multiply";
 import { Signal } from "../../signal/Signal";
 import { Source } from "../Source";
 import { Oscillator } from "./Oscillator";
-import { PWMOscillatorOptions, ToneOscillatorInterface } from "./OscillatorInterface";
+import { generateWaveform, PWMOscillatorOptions, ToneOscillatorInterface } from "./OscillatorInterface";
 import { PulseOscillator } from "./PulseOscillator";
 
 export { PWMOscillatorOptions } from "./OscillatorInterface";
@@ -167,6 +167,10 @@ export class PWMOscillator extends Source<PWMOscillatorOptions> implements ToneO
 	}
 	set phase(phase: Degrees) {
 		this._modulator.phase = phase;
+	}
+
+	async asArray(length: number = 1024): Promise<Float32Array> {
+		return generateWaveform(this, length);
 	}
 
 	/**

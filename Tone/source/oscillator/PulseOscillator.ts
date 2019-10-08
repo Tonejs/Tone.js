@@ -6,7 +6,7 @@ import { Signal } from "../../signal/Signal";
 import { WaveShaper } from "../../signal/WaveShaper";
 import { Source } from "../Source";
 import { Oscillator } from "./Oscillator";
-import { PulseOscillatorOptions, ToneOscillatorInterface } from "./OscillatorInterface";
+import { generateWaveform, PulseOscillatorOptions, ToneOscillatorInterface } from "./OscillatorInterface";
 
 export { PulseOscillatorOptions } from "./OscillatorInterface";
 
@@ -195,6 +195,10 @@ export class PulseOscillator extends Source<PulseOscillatorOptions> implements T
 	 */
 	get partialCount(): number {
 		return 0;
+	}
+
+	async asArray(length: number = 1024): Promise<Float32Array> {
+		return generateWaveform(this, length);
 	}
 
 	/**

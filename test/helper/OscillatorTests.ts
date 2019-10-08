@@ -60,5 +60,19 @@ export function OscillatorTests(Constr, args?): void {
 				expect(buffer.max()).to.be.at.most(1);
 			});
 		});
+
+		it("can generate a waveform", async () => {
+			const osc = new Constr();
+			const waveform = await osc.asArray();
+			waveform.forEach((v: number) => expect(v).to.be.within(-1, 1));
+			osc.dispose();
+		});
+
+		it("can generate a waveform of a specific length", async () => {
+			const osc = new Constr();
+			const waveform = await osc.asArray(256);
+			expect(waveform.length).to.equal(256);
+			osc.dispose();
+		});
 	});
 }

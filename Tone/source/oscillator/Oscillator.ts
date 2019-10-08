@@ -4,10 +4,12 @@ import { noOp, readOnly } from "../../core/util/Interface";
 import { isDefined } from "../../core/util/TypeCheck";
 import { Signal } from "../../signal/Signal";
 import { Source } from "../Source";
-import { ToneOscillatorConstructorOptions, ToneOscillatorInterface,
+import { 
+	generateWaveform,
+	ToneOscillatorConstructorOptions, ToneOscillatorInterface,
 	ToneOscillatorOptions, ToneOscillatorType } from "./OscillatorInterface";
 import { ToneOscillatorNode } from "./ToneOscillatorNode";
-
+import { OfflineContext } from "../../core/context/OfflineContext";
 export { ToneOscillatorOptions, ToneOscillatorType } from "./OscillatorInterface";
 /**
  * Oscillator supports a number of features including
@@ -479,6 +481,10 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 		this._phase = phase * Math.PI / 180;
 		// reset the type
 		this.type = this._type;
+	}
+
+	async asArray(length: number = 1024): Promise<Float32Array> {
+		return generateWaveform(this, length);
 	}
 
 	dispose(): this {

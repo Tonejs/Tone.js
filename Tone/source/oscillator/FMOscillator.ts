@@ -7,7 +7,7 @@ import { Signal } from "../../signal/Signal";
 import { Source } from "../Source";
 import { Oscillator } from "./Oscillator";
 import { FMConstructorOptions, FMOscillatorOptions,
-	NonCustomOscillatorType, ToneOscillatorInterface, ToneOscillatorType } from "./OscillatorInterface";
+	generateWaveform, NonCustomOscillatorType, ToneOscillatorInterface, ToneOscillatorType } from "./OscillatorInterface";
 
 export { FMOscillatorOptions } from "./OscillatorInterface";
 /**
@@ -243,6 +243,10 @@ export class FMOscillator extends Source<FMOscillatorOptions> implements ToneOsc
 	}
 	set partials(partials: number[]) {
 		this._carrier.partials = partials;
+	}
+
+	async asArray(length: number = 1024): Promise<Float32Array> {
+		return generateWaveform(this, length);
 	}
 
 	/**

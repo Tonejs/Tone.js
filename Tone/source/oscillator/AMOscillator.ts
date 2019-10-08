@@ -8,7 +8,8 @@ import { Signal } from "../../signal/Signal";
 import { Source } from "../Source";
 import { Oscillator } from "./Oscillator";
 import { AMConstructorOptions, AMOscillatorOptions,
-	NonCustomOscillatorType, ToneOscillatorInterface,
+	generateWaveform, NonCustomOscillatorType,
+	ToneOscillatorInterface, 
 	ToneOscillatorType } from "./OscillatorInterface";
 
 export { AMOscillatorOptions } from "./OscillatorInterface";
@@ -228,6 +229,10 @@ export class AMOscillator extends Source<AMOscillatorOptions> implements ToneOsc
 	}
 	set partials(partials: number[]) {
 		this._carrier.partials = partials;
+	}
+
+	async asArray(length: number = 1024): Promise<Float32Array> {
+		return generateWaveform(this, length);
 	}
 
 	/**

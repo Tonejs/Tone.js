@@ -8,9 +8,9 @@ import { AMOscillator } from "./AMOscillator";
 import { FatOscillator } from "./FatOscillator";
 import { FMOscillator } from "./FMOscillator";
 import { Oscillator } from "./Oscillator";
-import { OmniOscillatorConstructorOptions,
-	OmniOscillatorOptions, OmniOscillatorType,
-	ToneOscillatorInterface, ToneOscillatorType } from "./OscillatorInterface";
+import { generateWaveform,
+	OmniOscillatorConstructorOptions, OmniOscillatorOptions,
+	OmniOscillatorType, ToneOscillatorInterface, ToneOscillatorType } from "./OscillatorInterface";
 import { PulseOscillator } from "./PulseOscillator";
 import { PWMOscillator } from "./PWMOscillator";
 
@@ -472,6 +472,10 @@ export class OmniOscillator<OscType extends AnyOscillator>
 		} else {
 			return undefined as IsPWMOscillator<OscType, Signal<Frequency>>;
 		}
+	}
+
+	async asArray(length: number = 1024): Promise<Float32Array> {
+		return generateWaveform(this, length);
 	}
 
 	dispose(): this {

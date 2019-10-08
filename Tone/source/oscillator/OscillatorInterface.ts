@@ -2,6 +2,7 @@ import { AudioRange, Cents, Degrees, Frequency, Positive } from "../../core/type
 import { Omit } from "../../core/util/Interface";
 import { Signal } from "../../signal/Signal";
 import { SourceOptions } from "../Source";
+import { OfflineContext } from "../../core/context/OfflineContext";
 
 /**
  * The common interface of all Oscillators
@@ -14,6 +15,29 @@ export interface ToneOscillatorInterface {
 	phase: Degrees;
 	partials: number[];
 	partialCount?: number;
+	/**
+	 * Returns an array of values which represents the waveform.
+	 * @param length The length of the waveform to return
+	 */
+	asArray(length: number): Promise<Float32Array>;
+}
+
+/**
+ * Render a segment of the oscillator to an offline context and return the results as an array
+ */
+export async function generateWaveform(instance: any, length: number): Promise<Float32Array> {
+	const duration = length / instance.context.sampleRate;
+	const context = new OfflineContext(1, duration, instance.context.sampleRate);
+	const clone = new instance.constructor(Object.assign(instance.get(), { 
+		// should do 2 iterations
+		frequency: 2 / duration,
+		// zero out the detune
+		detune: 0,
+		context
+	})).toDestination();
+	clone.start(0);
+	const buffer = await context.render();
+	return buffer.getChannelData(0);
 }
 
 /**
