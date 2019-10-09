@@ -6,6 +6,7 @@ import { isArray, isObject, isString } from "../../core/util/TypeCheck";
 import { connectSignal, Signal } from "../../signal/Signal";
 import { OfflineContext } from "../../core/context/OfflineContext";
 import { assertRange } from "../../core/util/Debug";
+import { EQ } from "../../core/util/Math";
 
 type BasicEnvelopeCurve = "linear" | "exponential";
 type InternalEnvelopeCurve = BasicEnvelopeCurve | number[];
@@ -430,7 +431,7 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 		const currentValue = this.getValueAtTime(time);
 		if (currentValue > 0) {
 			const release = this.toSeconds(this.release);
-			if (release === 0) {
+			if (EQ(release, 0)) {
 				this._sig.setValueAtTime(0, time);
 			} else if (this._releaseCurve === "linear") {
 				this._sig.linearRampTo(0, release, time);
