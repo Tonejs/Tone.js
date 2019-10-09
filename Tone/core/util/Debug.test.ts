@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { ToneOscillatorNode } from "../../source/oscillator/ToneOscillatorNode";
-import { setLogger } from "./Debug";
+import { assertRange, setLogger } from "./Debug";
 import { theWindow } from "../context/AudioContext";
 
 describe("Debug", () => {
@@ -38,5 +38,19 @@ describe("Debug", () => {
 		// @ts-ignore
 		theWindow.TONE_DEBUG_CLASS = undefined;
 		osc.dispose();
+	});
+
+	it("can assert a range", () => {
+		expect(() => {
+			assertRange(-1, 0, 1);
+		}).to.throw(RangeError);
+
+		expect(() => {
+			assertRange(2, 0, 1);
+		}).to.throw(RangeError);
+		
+		expect(() => {
+			assertRange(0, 0);
+		}).to.not.throw(RangeError);
 	});
 });
