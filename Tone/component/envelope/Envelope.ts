@@ -454,7 +454,8 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 			decay: duration * this.toSeconds(this.decay) / totalDuration,
 			release: duration * this.toSeconds(this.release) / totalDuration,
 			context
-		})).toDestination() as Envelope;
+		})) as Envelope;
+		clone._sig.toDestination();
 		clone.triggerAttackRelease(duration * 0.2, 0);
 		const buffer = await context.render();
 		return buffer.getChannelData(0);

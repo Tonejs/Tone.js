@@ -740,6 +740,7 @@ describe("Envelope", () => {
 		it("can render the envelope to a curve", async () => {
 			const env = new Envelope();
 			const curve = await env.asArray();
+			expect(curve.some(v => v > 0)).to.be.true;
 			curve.forEach(v => expect(v).to.be.within(0, 1));
 			env.dispose();
 		});
