@@ -430,7 +430,9 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 		const currentValue = this.getValueAtTime(time);
 		if (currentValue > 0) {
 			const release = this.toSeconds(this.release);
-			if (this._releaseCurve === "linear") {
+			if (release === 0) {
+				this._sig.setValueAtTime(0, time);
+			} else if (this._releaseCurve === "linear") {
 				this._sig.linearRampTo(0, release, time);
 			} else if (this._releaseCurve === "exponential") {
 				this._sig.targetRampTo(0, release, time);

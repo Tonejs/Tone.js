@@ -140,6 +140,19 @@ describe("Envelope", () => {
 			env2.dispose();
 		});
 
+		it("can set release to exponential or linear", () => {
+			return Offline(() => {
+				const env = new Envelope({
+					release: 0
+				});
+				env.toDestination();
+				env.triggerAttackRelease(0.4, 0);
+			}, 0.7).then((buffer) => {
+				expect(buffer.getValueAtTime(0.3)).to.be.above(0);
+				expect(buffer.getValueAtTime(0.401)).to.equal(0);
+			});
+		});
+
 		it("correctly schedules an exponential attack", () => {
 			const e = {
 				attack: 0.01,
