@@ -472,6 +472,7 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 	}
 	set partials(partials) {
 		this._partials = partials;
+		this._partialCount = this._partials.length;
 		if (partials.length) {
 			this.type = "custom";
 		}

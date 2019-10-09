@@ -249,6 +249,7 @@ export class FatOscillator extends Source<FatOscillatorOptions> implements ToneO
 	}
 	set partials(partials: number[]) {
 		this._partials = partials;
+		this._partialCount = this._partials.length;
 		if (partials.length) {
 			this._type = "custom";
 			this._forEach(osc => osc.partials = partials);

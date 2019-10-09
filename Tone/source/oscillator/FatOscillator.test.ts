@@ -38,6 +38,7 @@ describe("FatOscillator", () => {
 			});
 			fatOsc.partials = [0, 2, 3, 4];
 			expect(fatOsc.partials).to.deep.equal([0, 2, 3, 4]);
+			expect(fatOsc.partialCount).to.equal(4);
 			expect(fatOsc.type).to.equal("custom");
 			fatOsc.count = 4;
 			expect(fatOsc.partials).to.deep.equal([0, 2, 3, 4]);
