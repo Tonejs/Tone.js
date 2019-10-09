@@ -63,6 +63,26 @@ describe("Envelope", () => {
 			env1.dispose();
 		});
 
+		it("ensures that none of the values go below 0", () => {
+			const env = new Envelope();
+			expect(() => {
+				env.attack = -1;
+			}).to.throw(RangeError);
+
+			expect(() => {
+				env.decay = -1;
+			}).to.throw(RangeError);
+
+			expect(() => {
+				env.sustain = 2;
+			}).to.throw(RangeError);
+
+			expect(() => {
+				env.release = -1;
+			}).to.throw(RangeError);
+			env.dispose();
+		});
+
 		it("can set attack to exponential or linear", () => {
 			const env = new Envelope(0.01, 0.01, 0.5, 0.3);
 			env.attackCurve = "exponential";

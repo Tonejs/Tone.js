@@ -5,6 +5,7 @@ import { optionsFromArguments } from "../../core/util/Defaults";
 import { isArray, isObject, isString } from "../../core/util/TypeCheck";
 import { connectSignal, Signal } from "../../signal/Signal";
 import { OfflineContext } from "../../core/context/OfflineContext";
+import { assertRange } from "Tone/core/util/Debug";
 
 type BasicEnvelopeCurve = "linear" | "exponential";
 type InternalEnvelopeCurve = BasicEnvelopeCurve | number[];
@@ -51,82 +52,26 @@ export interface EnvelopeOptions extends ToneAudioNodeOptions {
 export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 
 	readonly name: string = "Envelope";
+	
+	/**
+	 * Private container for the attack value
+	 */
+	private _attack!: Time;
 
 	/**
-	 * When triggerAttack is called, the attack time is the amount of
-	 * time it takes for the envelope to reach it's maximum value.
-	 * ```
-	 *           /\
-	 *          /X \
-	 *         /XX  \
-	 *        /XXX   \
-	 *       /XXXX    \___________
-	 *      /XXXXX                \
-	 *     /XXXXXX                 \
-	 *    /XXXXXXX                  \
-	 *   /XXXXXXXX                   \
-	 * ```
-	 * @min 0
-	 * @max 2
+	 * Private holder of the decay time
 	 */
-	attack: Time;
+	private _decay!: Time;
 
 	/**
-	 * After the attack portion of the envelope, the value will fall
-	 * over the duration of the decay time to it's sustain value.
-	 * ```
-	 *           /\
-	 *          / X\
-	 *         /  XX\
-	 *        /   XXX\
-	 *       /    XXXX\___________
-	 *      /     XXXXX           \
-	 *     /      XXXXX            \
-	 *    /       XXXXX             \
-	 *   /        XXXXX              \
-	 * ```
-	 * @min 0
-	 * @max 2
+	 * private holder for the sustain value
 	 */
-	decay: Time;
+	private _sustain!: NormalRange;
 
 	/**
-	 * The sustain value is the value
-	 * which the envelope rests at after triggerAttack is
-	 * called, but before triggerRelease is invoked.
-	 * ```
-	 *           /\
-	 *          /  \
-	 *         /    \
-	 *        /      \
-	 *       /        \___________
-	 *      /          XXXXXXXXXXX\
-	 *     /           XXXXXXXXXXX \
-	 *    /            XXXXXXXXXXX  \
-	 *   /             XXXXXXXXXXX   \
-	 * ```
+	 * private holder for the release value
 	 */
-	sustain: NormalRange;
-
-	/**
-	 * After triggerRelease is called, the envelope's
-	 * value will fall to it's miminum value over the
-	 * duration of the release time.
-	 * ```
-	 *           /\
-	 *          /  \
-	 *         /    \
-	 *        /      \
-	 *       /        \___________
-	 *      /                    X\
-	 *     /                     XX\
-	 *    /                      XXX\
-	 *   /                       XXXX\
-	 * ```
-	 * @min 0
-	 * @max 5
-	 */
-	release: Time;
+	private _release!: Time;
 
 	/**
 	 * The automation curve type for the attack
@@ -201,10 +146,110 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 
 	/**
 	 * Read the current value of the envelope. Useful for
-	 * syncronizing visual output to the envelope.
+	 * synchronizing visual output to the envelope.
 	 */
 	get value(): NormalRange {
 		return this.getValueAtTime(this.now());
+	}
+
+	/**
+	 * When triggerAttack is called, the attack time is the amount of
+	 * time it takes for the envelope to reach it's maximum value.
+	 * ```
+	 *           /\
+	 *          /X \
+	 *         /XX  \
+	 *        /XXX   \
+	 *       /XXXX    \___________
+	 *      /XXXXX                \
+	 *     /XXXXXX                 \
+	 *    /XXXXXXX                  \
+	 *   /XXXXXXXX                   \
+	 * ```
+	 * @min 0
+	 * @max 2
+	 */
+	get attack(): Time {
+		return this._attack;
+	}
+	set attack(time) {
+		assertRange(this.toSeconds(time), 0);
+		this._attack = time;
+	}
+
+	/**
+	 * After the attack portion of the envelope, the value will fall
+	 * over the duration of the decay time to it's sustain value.
+	 * ```
+	 *           /\
+	 *          / X\
+	 *         /  XX\
+	 *        /   XXX\
+	 *       /    XXXX\___________
+	 *      /     XXXXX           \
+	 *     /      XXXXX            \
+	 *    /       XXXXX             \
+	 *   /        XXXXX              \
+	 * ```
+	 * @min 0
+	 * @max 2
+	 */
+	get decay(): Time {
+		return this._decay;
+	}
+	set decay(time) {
+		assertRange(this.toSeconds(time), 0);
+		this._decay = time;
+	}
+
+	/**
+	 * The sustain value is the value
+	 * which the envelope rests at after triggerAttack is
+	 * called, but before triggerRelease is invoked.
+	 * ```
+	 *           /\
+	 *          /  \
+	 *         /    \
+	 *        /      \
+	 *       /        \___________
+	 *      /          XXXXXXXXXXX\
+	 *     /           XXXXXXXXXXX \
+	 *    /            XXXXXXXXXXX  \
+	 *   /             XXXXXXXXXXX   \
+	 * ```
+	 */
+	get sustain(): NormalRange {
+		return this._sustain;
+	}
+	set sustain(val) {
+		assertRange(this.toSeconds(val), 0, 1);
+		this._sustain = val;
+	}
+
+	/**
+	 * After triggerRelease is called, the envelope's
+	 * value will fall to it's miminum value over the
+	 * duration of the release time.
+	 * ```
+	 *           /\
+	 *          /  \
+	 *         /    \
+	 *        /      \
+	 *       /        \___________
+	 *      /                    X\
+	 *     /                     XX\
+	 *    /                      XXX\
+	 *   /                       XXXX\
+	 * ```
+	 * @min 0
+	 * @max 5
+	 */
+	get release(): Time {
+		return this._release;
+	}
+	set release(time) {
+		assertRange(this.toSeconds(time), 0);
+		this._release = time;
 	}
 
 	/**
@@ -447,7 +492,10 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 		const duration = length / this.context.sampleRate;
 		const context = new OfflineContext(1, duration, this.context.sampleRate);
 		// normalize the ADSR for the given duration with 20% sustain time
-		const totalDuration = (this.toSeconds(this.attack) + this.toSeconds(this.decay) + this.toSeconds(this.release)) * 1.2;
+		const attackPortion = this.toSeconds(this.attack) + this.toSeconds(this.decay);
+		const envelopeDuration = attackPortion + this.toSeconds(this.release);
+		const sustainTime = envelopeDuration * 0.1;
+		const totalDuration = envelopeDuration + sustainTime;
 		// @ts-ignore
 		const clone = new this.constructor(Object.assign(this.get(), { 
 			attack: duration * this.toSeconds(this.attack) / totalDuration,
@@ -456,7 +504,7 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 			context
 		})) as Envelope;
 		clone._sig.toDestination();
-		clone.triggerAttackRelease(duration * 0.2, 0);
+		clone.triggerAttackRelease(duration * (attackPortion + sustainTime) / totalDuration, 0);
 		const buffer = await context.render();
 		return buffer.getChannelData(0);
 	}
