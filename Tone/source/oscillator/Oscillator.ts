@@ -330,6 +330,13 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 			} else {
 				this.type = type + p.toString() as ToneOscillatorType;
 			}
+		} else {
+			// extend or shorten the partials array
+			const fullPartials = new Float32Array(p);
+			// copy over the partials array
+			this._partials.forEach((v, i) => fullPartials[i] = v);
+			this._partials = Array.from(fullPartials);
+			this.type = this._type;
 		}
 	}
 
