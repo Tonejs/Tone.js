@@ -202,20 +202,20 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 	 * the oscillator values when they have already been computed
 	 * with the same values.
 	 */
-	private _getCachedPeriodicWave(): [Float32Array, Float32Array] | undefined {
+	private _getCachedPeriodicWave(): {real: Float32Array; imag: Float32Array; partials: number[]} | undefined {
 		if (this._type === "custom") {
 			const oscProps = Oscillator._periodicWaveCache.find(description => {
 				return description.phase === this._phase &&
 					deepEquals(description.partials, this._partials);
 			});
-			return oscProps && [oscProps.real, oscProps.imag];
+			return oscProps;
 		} else {
 			const oscProps = Oscillator._periodicWaveCache.find(description => {
 				return description.type === this._type &&
 					description.phase === this._phase;
 			});
 			this._partialCount = oscProps ? oscProps.partialCount : this._partialCount;
-			return oscProps && [oscProps.real, oscProps.imag];
+			return oscProps;
 		}
 	}
 
@@ -257,8 +257,9 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 			// first check if the value is cached
 			const cache = this._getCachedPeriodicWave();
 			if (isDefined(cache)) {
-				const [real, imag] = cache;
+				const { real, imag, partials } = cache;
 				this._wave = this.context.createPeriodicWave(real, imag);
+				this._partials = partials;
 				if (this._oscillator !== null) {
 					this._oscillator.setPeriodicWave(this._wave);
 				}
@@ -460,7 +461,7 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 	 * osc.partials = [1, 0.2, 0.01];
 	 */
 	get partials(): number[] {
-		return this._partials;
+		return this._partials.slice(0, this.partialCount);
 	}
 	set partials(partials) {
 		this._partials = partials;
