@@ -5,7 +5,7 @@ import { optionsFromArguments } from "../../core/util/Defaults";
 import { isArray, isObject, isString } from "../../core/util/TypeCheck";
 import { connectSignal, Signal } from "../../signal/Signal";
 import { OfflineContext } from "../../core/context/OfflineContext";
-import { assertRange } from "Tone/core/util/Debug";
+import { assertRange } from "../../core/util/Debug";
 
 type BasicEnvelopeCurve = "linear" | "exponential";
 type InternalEnvelopeCurve = BasicEnvelopeCurve | number[];
