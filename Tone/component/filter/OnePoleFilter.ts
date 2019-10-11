@@ -62,7 +62,7 @@ export class OnePoleFilter extends ToneAudioNode<OnePoleFilterOptions> {
 
 	static getDefaults(): OnePoleFilterOptions {
 		return Object.assign(ToneAudioNode.getDefaults(), {
-			frequency: 0.5,
+			frequency: 880,
 			type: "lowpass" as OnePoleFilterType
 		});
 	}
