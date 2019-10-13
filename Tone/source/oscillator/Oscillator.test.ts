@@ -44,16 +44,6 @@ describe("Oscillator", () => {
 			expect(osc.get().type).to.equal("square");
 			osc.dispose();
 		});
-
-		it("only returns partials when type is 'custom'", () => {
-			const osc = new Oscillator(450, "square");
-			expect(osc.get().partials).to.equal(undefined);
-			osc.partials = [0, 1, 2, 3];
-			expect(osc.get().type).to.equal("custom");
-			expect(osc.get().partials).to.deep.equal([0, 1, 2, 3]);
-			osc.dispose();
-		});
-
 	});
 
 	context("Phase Rotation", () => {

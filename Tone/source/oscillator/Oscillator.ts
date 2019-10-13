@@ -1,15 +1,13 @@
 import { AudioRange, Cents, Degrees, Frequency, Radians, Time } from "../../core/type/Units";
 import { deepEquals, optionsFromArguments } from "../../core/util/Defaults";
-import { noOp, readOnly } from "../../core/util/Interface";
+import { readOnly } from "../../core/util/Interface";
 import { isDefined } from "../../core/util/TypeCheck";
 import { Signal } from "../../signal/Signal";
 import { Source } from "../Source";
-import { 
-	generateWaveform,
-	ToneOscillatorConstructorOptions, ToneOscillatorInterface,
+import { generateWaveform, ToneOscillatorConstructorOptions, ToneOscillatorInterface,
 	ToneOscillatorOptions, ToneOscillatorType } from "./OscillatorInterface";
 import { ToneOscillatorNode } from "./ToneOscillatorNode";
-import { OfflineContext } from "../../core/context/OfflineContext";
+import { assertRange } from "../../core/util/Debug";
 export { ToneOscillatorOptions, ToneOscillatorType } from "./OscillatorInterface";
 /**
  * Oscillator supports a number of features including
@@ -319,6 +317,7 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 		return this._partialCount;
 	}
 	set partialCount(p) {
+		assertRange(p, 0);
 		let type = this._type;
 		const partial = /^(sine|triangle|square|sawtooth)(\d+)$/.exec(this._type);
 		if (partial) {
@@ -338,19 +337,6 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 			this._partials = Array.from(fullPartials);
 			this.type = this._type;
 		}
-	}
-
-	/**
-	 * Get the object's attributes. Given no arguments get
-	 * will return all available object properties and their corresponding
-	 * values.
-	 */
-	get(): ToneOscillatorOptions {
-		const values = super.get();
-		if (values.type !== "custom") {
-			delete values.partials;
-		}
-		return values;
 	}
 
 	/**
