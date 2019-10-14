@@ -6,7 +6,7 @@ import { Emitter } from "../util/Emitter";
 import { noOp, Omit } from "../util/Interface";
 import { Timeline } from "../util/Timeline";
 import { isDefined, isString } from "../util/TypeCheck";
-import { AnyAudioContext, createAudioWorkletNode, getAudioContext } from "./AudioContext";
+import { AnyAudioContext, createAudioContext, createAudioWorkletNode } from "./AudioContext";
 import { closeContext, initializeContext } from "./ContextInitialization";
 
 type Transport = import("../clock/Transport").Transport;
@@ -108,8 +108,11 @@ export class Context extends Emitter<"statechange" | "tick"> implements BaseAudi
 		super();
 		const options = optionsFromArguments(Context.getDefaults(), arguments, ["context"]);
 
-		this._context = options.context;
-
+		if (options.context) {
+			this._context = options.context;
+		} else {
+			this._context = createAudioContext();
+		}
 		this._latencyHint = options.latencyHint;
 		this.lookAhead = options.lookAhead;
 
@@ -125,11 +128,10 @@ export class Context extends Emitter<"statechange" | "tick"> implements BaseAudi
 	static getDefaults(): ContextOptions {
 		return {
 			clockSource: "worker",
-			context: getAudioContext(),
 			latencyHint: "interactive",
 			lookAhead: 0.1,
 			updateInterval: 0.03,
-		};
+		} as ContextOptions;
 	}
 
 	/**

@@ -9,7 +9,7 @@ import { isDefined } from "../util/TypeCheck";
 /**
  * Create a new AudioContext
  */
-function createAudioContext(): AudioContext {
+export function createAudioContext(): AudioContext {
 	return new stdAudioContext() as unknown as AudioContext;
 }
 
@@ -29,7 +29,6 @@ export type AnyAudioContext = AudioContext | OfflineAudioContext;
  * Interface for things that Tone.js adds to the window
  */
 interface ToneWindow extends Window {
-	TONE_AUDIO_CONTEXT?: AnyAudioContext;
 	TONE_SILENCE_LOGGING?: boolean;
 	TONE_DEBUG_CLASS?: string;
 }
@@ -46,38 +45,6 @@ export const theWindow: ToneWindow | null = typeof self === "object" ? self : nu
  */
 export const hasAudioContext = theWindow &&
 	(theWindow.hasOwnProperty("AudioContext") || theWindow.hasOwnProperty("webkitAudioContext"));
-
-/**
- * The global audio context which is getable and assignable through
- * getAudioContext and setAudioContext
- */
-let globalContext: AnyAudioContext;
-
-// if it was created already, use that one
-// this enables multiple versions of Tone.js to run on the same page.
-if (theWindow && theWindow.TONE_AUDIO_CONTEXT) {
-	globalContext = theWindow.TONE_AUDIO_CONTEXT;
-}
-
-/**
- * Returns the default system-wide AudioContext
- */
-export function getAudioContext(): AnyAudioContext {
-	if (!globalContext && hasAudioContext) {
-		setAudioContext(createAudioContext());
-	}
-	return globalContext;
-}
-
-/**
- * Set the default audio context
- */
-export function setAudioContext(context: AnyAudioContext): void {
-	globalContext = context;
-	if (theWindow) {
-		theWindow.TONE_AUDIO_CONTEXT = globalContext;
-	}
-}
 
 export function createAudioWorkletNode(context: AnyAudioContext, name: string, options?: Partial<AudioWorkletNodeOptions>): AudioWorkletNode {
 	assert(isDefined(stdAudioWorkletNode), "This node only works in a secure context (https or localhost)");

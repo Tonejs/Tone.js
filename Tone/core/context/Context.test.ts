@@ -4,7 +4,7 @@ import { Offline } from "test/helper/Offline";
 import { ONLINE_TESTING } from "test/helper/Supports";
 import { Transport } from "../clock/Transport";
 import { getContext } from "../Global";
-import { getAudioContext } from "./AudioContext";
+import { createAudioContext } from "./AudioContext";
 import { Context } from "./Context";
 //  import it for the side effects
 import "./Destination";
@@ -12,14 +12,10 @@ import { connect } from "./ToneAudioNode";
 
 describe("Context", () => {
 
-	// 	if (!Supports.AUDIO_CONTEXT_CLOSE_RESOLVES) {
-	// 		return;
-	// 	}
-
 	context("AudioContext", () => {
 
 		it("extends the AudioContext methods", () => {
-			const ctx = new Context(getAudioContext());
+			const ctx = new Context(createAudioContext());
 			expect(ctx).to.have.property("createGain");
 			expect(ctx.createGain()).to.have.property("gain");
 			expect(ctx).to.have.property("createOscillator");
@@ -42,10 +38,10 @@ describe("Context", () => {
 		}
 
 		it("has a rawContext", () => {
-			const ctx = new Context(getAudioContext());
+			const ctx = new Context(createAudioContext());
 			expect(ctx.rawContext).has.property("destination");
 			expect(ctx.rawContext).has.property("sampleRate");
-			return ctx.dispose();
+			ctx.dispose();
 		});
 
 		it("can be constructed with an options object", () => {
@@ -57,7 +53,7 @@ describe("Context", () => {
 			expect(ctx.lookAhead).to.equal(0.2);
 			expect(ctx.latencyHint).to.equal("fastest");
 			expect(ctx.clockSource).to.equal("timeout");
-			return ctx.dispose();
+			ctx.dispose();
 		});
 	});
 
@@ -72,7 +68,7 @@ describe("Context", () => {
 			await context.resume();
 			expect(context.state).to.equal("running");
 			context.dispose();
-			return context.close();
+			return ac.close();
 		});
 
 		it("invokes the statechange event", async () => {
@@ -89,7 +85,7 @@ describe("Context", () => {
 			await new Promise(done => setTimeout(() => done(), 10));
 			expect(triggerChange).to.equal(true);
 			context.dispose();
-			return context.close();
+			return ac.close();
 		});
 	});
 
@@ -104,7 +100,8 @@ describe("Context", () => {
 			});
 
 			afterEach(() => {
-				return ctx.dispose();
+				ctx.dispose();
+				return ctx.close();
 			});
 
 			it("defaults to 'worker'", () => {
@@ -150,7 +147,8 @@ describe("Context", () => {
 			});
 
 			afterEach(() => {
-				return ctx.dispose();
+				ctx.dispose();
+				return ctx.close();
 			});
 
 			it("can set a timeout", done => {
@@ -208,7 +206,8 @@ describe("Context", () => {
 			});
 
 			afterEach(() => {
-				return ctx.dispose();
+				ctx.dispose();
+				return ctx.close();
 			});
 
 			it("can set an interval", done => {
@@ -334,7 +333,8 @@ describe("Context", () => {
 		});
 
 		afterEach(() => {
-			return ctx.dispose();
+			ctx.dispose();
+			return ctx.close();
 		});
 
 		it("can set the lookAhead", () => {
