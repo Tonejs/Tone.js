@@ -1,6 +1,6 @@
 import { MidiClass } from "../core/type/Midi";
 import { Frequency, MidiNote, NormalRange, Seconds, Time } from "../core/type/Units";
-import { deepMerge, optionsFromArguments } from "../core/util/Defaults";
+import { deepMerge, omitFromObject, optionsFromArguments } from "../core/util/Defaults";
 import { RecursivePartial } from "../core/util/Interface";
 import { isArray, isNumber } from "../core/util/TypeCheck";
 import { Instrument, InstrumentOptions } from "./Instrument";
@@ -120,6 +120,8 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 		this.voice = options.voice as unknown as VoiceConstructor<Voice>;
 		this.maxPolyphony = options.maxPolyphony;
 
+		// create the first voice
+		this._getNextAvailableVoice();
 		// kick off the GC interval
 		this._gcTimeout = this.context.setInterval(this._collectGarbage.bind(this), 1);
 	}
@@ -188,7 +190,8 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 	 */
 	private _collectGarbage(): void {
 		this._averageActiveVoices = Math.max(this._averageActiveVoices * 0.95, this.activeVoices);
-		if (this._availableVoices.length && this._voices.length > this._averageActiveVoices) {
+		// keep at least one voice
+		if (this._availableVoices.length && this._voices.length > this._averageActiveVoices && this._voices.length > 1) {
 			// take off an available note
 			const firstAvail = this._availableVoices.shift() as Voice;
 			const index = this._voices.indexOf(firstAvail);
@@ -368,17 +371,18 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 	 * });
 	 */
 	set(options: RecursivePartial<VoiceOptions<Voice>>): this {
-		this.options = deepMerge(this.options, options);
-		this._voices.forEach(voice => voice.set(this.options));
+		// remove options which are controlled by the PolySynth
+		const sanitizedOptions = omitFromObject(options, ["onsilence", "context"]);
+		// store all of the options
+		this.options = deepMerge(this.options, sanitizedOptions);
+		this._voices.forEach(voice => voice.set(sanitizedOptions));
 		return this;
 	}
 
-	/**
-	 * Get the synth's attributes.
-	 */
 	get(): VoiceOptions<Voice> {
-		// return a clone of the options
-		return Object.assign({}, this.options);
+		// get a voice
+		const voice = this._voices[0] as Voice;
+		return voice.get();
 	}
 
 	/**
