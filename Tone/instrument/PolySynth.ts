@@ -66,7 +66,7 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 	/**
 	 * The currently active voices
 	 */
-	private _activeVoices: Array<{midi: MidiNote; voice: Voice}> = [];
+	private _activeVoices: Array<{midi: MidiNote; voice: Voice; released: boolean}> = [];
 
 	/**
 	 * All of the allocated voices for this synth.
@@ -218,8 +218,8 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 			const voice = this._getNextAvailableVoice();
 			if (voice) {
 				voice.triggerAttack(note, time, velocity);
-				this._activeVoices.unshift({
-					midi: midiNote, voice,
+				this._activeVoices.push({
+					midi: midiNote, voice, released: false,
 				});
 				this.log("triggerAttack", note, time);
 			}
@@ -232,10 +232,14 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 	private _triggerRelease(notes: Frequency[], time: Seconds): void {
 		notes.forEach(note => {
 			const midiNote = new MidiClass(this.context, note).toMidi();
-			const voice = this._getActiveVoice(midiNote);
-			if (voice) {
-				// trigger release on that note
-				voice.triggerRelease(time);
+			const events = this._activeVoices.filter(({ midi, released }) => midi === midiNote && !released);
+			if (events.length) {
+				events.forEach(e => {
+					// trigger release on that note
+					e.voice.triggerRelease(time);
+					// mark it as released
+					e.released = true;
+				});
 				this.log("triggerRelease", note, time);
 			}
 		});
