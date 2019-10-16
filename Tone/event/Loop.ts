@@ -2,8 +2,8 @@ import { ToneEvent } from "./ToneEvent";
 import { NormalRange, Positive, Seconds, Time, TransportTime } from "../core/type/Units";
 import { ToneWithContext, ToneWithContextOptions } from "../core/context/ToneWithContext";
 import { optionsFromArguments } from "../core/util/Defaults";
-import { noOp } from "Tone/core/util/Interface";
-import { BasicPlaybackState } from "Tone/core/util/StateTimeline";
+import { noOp } from "../core/util/Interface";
+import { BasicPlaybackState } from "../core/util/StateTimeline";
 
 export interface LoopOptions extends ToneWithContextOptions {
 	callback: (time: Seconds) => void;
