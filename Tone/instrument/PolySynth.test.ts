@@ -199,7 +199,7 @@ describe("PolySynth", () => {
 						expect(polySynth.activeVoices).to.equal(1);
 					}),
 					atTime(0.6, () => {
-						expect(polySynth.activeVoices).to.equal(1);
+						expect(polySynth.activeVoices).to.equal(2);
 					}),
 					atTime(0.7, () => {
 						expect(polySynth.activeVoices).to.equal(1);

@@ -89,6 +89,11 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 	private readonly voice: VoiceConstructor<Voice>;
 
 	/**
+	 * A voice used for holding the get/set values
+	 */
+	private _dummyVoice: Voice;
+
+	/**
 	 * The GC timeout. Held so that it could be cancelled when the node is disposed.
 	 */
 	private _gcTimeout: number = -1;
@@ -121,7 +126,10 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 		this.maxPolyphony = options.maxPolyphony;
 
 		// create the first voice
-		this._getNextAvailableVoice();
+		this._dummyVoice = this._getNextAvailableVoice() as Voice;
+		// remove it from the voices list
+		const index = this._voices.indexOf(this._dummyVoice);
+		this._voices.splice(index, 1);
 		// kick off the GC interval
 		this._gcTimeout = this.context.setInterval(this._collectGarbage.bind(this), 1);
 	}
@@ -190,8 +198,7 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 	 */
 	private _collectGarbage(): void {
 		this._averageActiveVoices = Math.max(this._averageActiveVoices * 0.95, this.activeVoices);
-		// keep at least one voice
-		if (this._availableVoices.length && this._voices.length > this._averageActiveVoices && this._voices.length > 1) {
+		if (this._availableVoices.length && this._voices.length > this._averageActiveVoices) {
 			// take off an available note
 			const firstAvail = this._availableVoices.shift() as Voice;
 			const index = this._voices.indexOf(firstAvail);
@@ -208,17 +215,7 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 	private _triggerAttack(notes: Frequency[], time: Seconds, velocity?: NormalRange): void {
 		notes.forEach(note => {
 			const midiNote = new MidiClass(this.context, note).toMidi();
-			// let voice: Voice | undefined;
-			// if there's already a note at that voice, reuse it
-			let voice = this._getActiveVoice(midiNote);
-			// if it has a note, and that note is still active
-			if (voice && voice.getLevelAtTime(time) > 0) {
-				const activeVoiceIndex = this._activeVoices.findIndex((e) => e.voice === voice);
-				this._activeVoices.splice(activeVoiceIndex, 1);
-			} else {
-				// otherwise get the next available voice
-				voice = this._getNextAvailableVoice();
-			}
+			const voice = this._getNextAvailableVoice();
 			if (voice) {
 				voice.triggerAttack(note, time, velocity);
 				this._activeVoices.unshift({
@@ -376,13 +373,12 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 		// store all of the options
 		this.options = deepMerge(this.options, sanitizedOptions);
 		this._voices.forEach(voice => voice.set(sanitizedOptions));
+		this._dummyVoice.set(sanitizedOptions);
 		return this;
 	}
 
 	get(): VoiceOptions<Voice> {
-		// get a voice
-		const voice = this._voices[0] as Voice;
-		return voice.get();
+		return this._dummyVoice.get();
 	}
 
 	/**
@@ -400,6 +396,7 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 
 	dispose(): this {
 		super.dispose();
+		this._dummyVoice.dispose();
 		this._voices.forEach(v => v.dispose());
 		this._activeVoices = [];
 		this._availableVoices = [];
