@@ -79,7 +79,7 @@ export class NoiseSynth extends Instrument<NoiseSynthOptions> {
 	 * @example
 	 * noiseSynth.triggerAttack();
 	 */
-	triggerAttack(time: Time, velocity: NormalRange = 1): this {
+	triggerAttack(time?: Time, velocity: NormalRange = 1): this {
 		time = this.toSeconds(time);
 		// the envelopes
 		this.envelope.triggerAttack(time, velocity);
@@ -94,7 +94,7 @@ export class NoiseSynth extends Instrument<NoiseSynthOptions> {
 	/**
 	 * Start the release portion of the envelopes.
 	 */
-	triggerRelease(time: Time): this {
+	triggerRelease(time?: Time): this {
 		time = this.toSeconds(time);
 		this.envelope.triggerRelease(time);
 		this.noise.stop(time + this.toSeconds(this.envelope.release));
