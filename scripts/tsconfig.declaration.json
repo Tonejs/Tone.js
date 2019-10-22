@@ -1,0 +1,10 @@
+{
+	"compilerOptions": {
+		"emitDeclarationOnly": true,
+		"outFile": "../build/tone.d.ts"
+	},
+	"extends": "./tsconfig.build.json",
+	"include": [
+		"../Tone/index.ts"
+	]
+}
