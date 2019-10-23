@@ -74,7 +74,7 @@ export class Destination extends ToneAudioNode<DestinationOptions> {
 	/**
 	 * Add a master effects chain. NOTE: this will disconnect any nodes which were previously
 	 * chained in the master effects chain.
-	 * @param nodes All arguments will be connected in a row and the Master will be routed through it.
+	 * @param args All arguments will be connected in a row and the Master will be routed through it.
 	 * @return  {Destination}  this
 	 * @example
 	 * //some overall compression to keep the levels in check

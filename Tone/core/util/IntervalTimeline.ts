@@ -90,7 +90,7 @@ export class IntervalTimeline extends Tone {
 
 	/**
 	 * Remove events whose time time is after the given time
-	 * @param  time  The time to query.
+	 * @param  after  The time to query.
 	 */
 	cancel(after: number): this {
 		this.forEachFrom(after, event => this.remove(event));

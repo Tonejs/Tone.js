@@ -39,7 +39,7 @@ export class TimeClass<Type extends Seconds | Ticks = Seconds, Unit extends stri
 	 * Quantize the time by the given subdivision. Optionally add a
 	 * percentage which will move the time value towards the ideal
 	 * quantized value by that percentage.
-	 * @param  val    The subdivision to quantize to
+	 * @param  subdiv    The subdivision to quantize to
 	 * @param  percent  Move the time value towards the quantized value by a percentage.
 	 * @example
 	 * Time(21).quantize(2) //returns 22

@@ -63,8 +63,8 @@ export class Pow extends SignalOperator<PowOptions> {
 	}
 
 	/**
- 	 * The value of the exponent.
- 	 */
+	 * The value of the exponent.
+	 */
 	get value(): number {
 		return this._exponent;
 	}

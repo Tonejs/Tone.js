@@ -127,7 +127,7 @@ export class TickParam<Type extends Hertz | BPM> extends Param<Type> {
 	/**
 	 * Returns the tick value at the time. Takes into account
 	 * any automation curves scheduled on the signal.
-	 * @param  time The time to get the tick count at
+	 * @param  event The time to get the tick count at
 	 * @return The number of ticks which have elapsed at the time given any automations.
 	 */
 	private _getTicksUntilEvent(event: TickAutomationEvent | null, time: number): Ticks {

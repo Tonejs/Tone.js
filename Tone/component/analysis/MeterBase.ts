@@ -6,14 +6,6 @@ export type MeterBaseOptions = ToneAudioNodeOptions;
 
 /**
  * The base class for Metering classes.
- *
- * @example
- * var meter = new MeterBase();
- * var signal = new Tone.Signal().open();
- * //connect signal to the meter
- * signal.connect(meter);
- * //the current level of the signal
- * var level = meter.getValue();
  */
 export class MeterBase<Options extends MeterBaseOptions> extends ToneAudioNode<Options> {
 

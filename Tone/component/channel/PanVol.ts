@@ -1,4 +1,4 @@
-import { readOnly } from "Tone/core/util/Interface";
+import { readOnly } from "../../core/util/Interface";
 import { Param } from "../../core/context/Param";
 import { InputNode, OutputNode, ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
 import { AudioRange, Decibels } from "../../core/type/Units";
@@ -15,8 +15,9 @@ export interface PanVolOptions extends ToneAudioNodeOptions {
 /**
  * PanVol is a Tone.Panner and Tone.Volume in one.
  * @example
- * //pan the incoming signal left and drop the volume
- * var panVol = new PanVol(-0.25, -12);
+ * // pan the incoming signal left and drop the volume
+ * const panVol = new PanVol(-0.25, -12).toDestination();
+ * const osc = new Oscillator().connect(panVol).start();
  * @category Component
  */
 export class PanVol extends ToneAudioNode<PanVolOptions> {

@@ -1,4 +1,5 @@
 export * from "./Noise";
+export * from "./UserMedia";
 export * from "./oscillator/Oscillator";
 export * from "./oscillator/AMOscillator";
 export * from "./oscillator/FMOscillator";
@@ -7,6 +8,7 @@ export * from "./oscillator/FatOscillator";
 export * from "./oscillator/PWMOscillator";
 export * from "./oscillator/OmniOscillator";
 export * from "./oscillator/ToneOscillatorNode";
+export * from "./oscillator/LFO";
 export * from "./buffer/ToneBufferSource";
 export * from "./buffer/Player";
 export * from "./buffer/Players";

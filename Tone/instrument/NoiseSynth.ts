@@ -15,7 +15,7 @@ export interface NoiseSynthOptions extends InstrumentOptions {
 
 /**
  * Tone.NoiseSynth is composed of [[Noise]] through an [[AmplitudeEnvelope]]. 
-  * ```
+ * ```
  * +-------+   +-------------------+
  * | Noise +>--> AmplitudeEnvelope +>--> Output
  * +-------+   +-------------------+

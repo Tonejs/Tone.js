@@ -79,59 +79,59 @@ export class Loop extends ToneWithContext<LoopOptions> {
 	}
 
 	/**
-     * Start the loop at the specified time along the Transport's timeline.
-     * @param  time  When to start the Loop.
-     */
+	 * Start the loop at the specified time along the Transport's timeline.
+	 * @param  time  When to start the Loop.
+	 */
 	start(time?: TransportTime): this {
 		this._event.start(time);
 		return this;
 	}
 
 	/**
-     * Stop the loop at the given time.
-     * @param  time  When to stop the Loop.
-     */
+	 * Stop the loop at the given time.
+	 * @param  time  When to stop the Loop.
+	 */
 	stop(time?: TransportTime): this{
 		this._event.stop(time);
 		return this;
 	}
 
 	/**
-     * Cancel all scheduled events greater than or equal to the given time
-     * @param  time  The time after which events will be cancel.
-     */
+	 * Cancel all scheduled events greater than or equal to the given time
+	 * @param  time  The time after which events will be cancel.
+	 */
 	cancel(time?: TransportTime): this{
 		this._event.cancel(time);
 		return this;
 	}
 
 	/**
-     * Internal function called when the notes should be called
-     * @param time  The time the event occurs
-     */
+	 * Internal function called when the notes should be called
+	 * @param time  The time the event occurs
+	 */
 	private _tick(time: Seconds) {
 		this.callback(time);
 	}
 
 	/**
-     * The state of the Loop, either started or stopped.
-     */
+	 * The state of the Loop, either started or stopped.
+	 */
 	get state(): BasicPlaybackState {
 		return this._event.state;
 	}
 
 	/**
-     * The progress of the loop as a value between 0-1. 0, when the loop is stopped or done iterating. 
-     */
+	 * The progress of the loop as a value between 0-1. 0, when the loop is stopped or done iterating. 
+	 */
 	get progress(): NormalRange {
 		return this._event.progress;
 	}
 
 	/**
-     * The time between successive callbacks. 
-     * @example
-     * loop.interval = "8n"; //loop every 8n
-     */
+	 * The time between successive callbacks. 
+	 * @example
+	 * loop.interval = "8n"; //loop every 8n
+	 */
 	get interval(): Time {
 		return this._event.loopEnd;
 	}
@@ -140,9 +140,9 @@ export class Loop extends ToneWithContext<LoopOptions> {
 	}
 
 	/**
-     * The playback rate of the loop. The normal playback rate is 1 (no change). 
-     * A `playbackRate` of 2 would be twice as fast. 
-     */
+	 * The playback rate of the loop. The normal playback rate is 1 (no change). 
+	 * A `playbackRate` of 2 would be twice as fast. 
+	 */
 	get playbackRate(): Positive {
 		return this._event.playbackRate;
 	}
@@ -151,9 +151,9 @@ export class Loop extends ToneWithContext<LoopOptions> {
 	}
 
 	/**
-     * Random variation +/-0.01s to the scheduled time. 
-     * Or give it a time value which it will randomize by.
-     */
+	 * Random variation +/-0.01s to the scheduled time. 
+	 * Or give it a time value which it will randomize by.
+	 */
 	get humanize(): boolean | Time {
 		return this._event.humanize;
 	}
@@ -162,8 +162,8 @@ export class Loop extends ToneWithContext<LoopOptions> {
 	}
 
 	/**
-     * The probably of the callback being invoked.
-     */
+	 * The probably of the callback being invoked.
+	 */
 	get probability(): NormalRange {
 		return this._event.probability;
 	}
@@ -173,8 +173,8 @@ export class Loop extends ToneWithContext<LoopOptions> {
 	}
 
 	/**
-     * Muting the Loop means that no callbacks are invoked.
-     */
+	 * Muting the Loop means that no callbacks are invoked.
+	 */
 	get mute(): boolean {
 		return this._event.mute;
 	}
@@ -184,8 +184,8 @@ export class Loop extends ToneWithContext<LoopOptions> {
 	}
 
 	/**
-     * The number of iterations of the loop. The default value is `Infinity` (loop forever).
-     */
+	 * The number of iterations of the loop. The default value is `Infinity` (loop forever).
+	 */
 	get iterations(): number {
 		if (this._event.loop === true) {
 			return Infinity;

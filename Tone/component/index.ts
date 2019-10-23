@@ -8,6 +8,8 @@ export * from "./channel/CrossFade";
 export * from "./channel/Merge";
 export * from "./channel/Volume";
 export * from "./channel/Panner";
+export * from "./channel/PanVol";
+export * from "./channel/MultibandSplit";
 export * from "./envelope/AmplitudeEnvelope";
 export * from "./envelope/Envelope";
 export * from "./filter/EQ3";

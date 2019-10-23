@@ -13,12 +13,12 @@ export interface MeterOptions extends MeterBaseOptions {
  * of an input signal. It can also get the raw value of the input signal.
  *
  * @example
- * var meter = new Meter();
- * var mic = new Tone.UserMedia().open();
- * //connect mic to the meter
+ * const meter = new Meter();
+ * const mic = new UserMedia().open();
+ * // connect mic to the meter
  * mic.connect(meter);
- * //the current level of the mic input in decibels
- * var level = meter.getLevel();
+ * // the current level of the mic input in decibels
+ * const level = meter.getLevel();
  * @category Component
  */
 export class Meter extends MeterBase<MeterOptions> {

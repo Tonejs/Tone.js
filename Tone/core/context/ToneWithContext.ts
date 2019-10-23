@@ -151,7 +151,7 @@ export abstract class ToneWithContext<Options extends ToneWithContextOptions> ex
 
 	/**
 	 * Set multiple properties at once with an object.
-	 * @param  params
+	 * @param  props
 	 * @example
 	 * //set values using an object
 	 * filter.set({

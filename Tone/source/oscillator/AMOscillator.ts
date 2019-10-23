@@ -29,8 +29,8 @@ export { AMOscillatorOptions } from "./OscillatorInterface";
  * ```
  *
  * @example
- * //a sine oscillator amplitude-modulated by a square wave
- * var amOsc = new AMOscillator("Ab3", "sine", "square").toDestination().start();
+ * // a sine oscillator amplitude-modulated by a square wave
+ * const amOsc = new AMOscillator("Ab3", "sine", "square").toDestination().start();
  * @category Source
  */
 export class AMOscillator extends Source<AMOscillatorOptions> implements ToneOscillatorInterface {

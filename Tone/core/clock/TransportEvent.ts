@@ -42,7 +42,7 @@ export class TransportEvent {
 	private _once: boolean;
 
 	/**
-	 * @param Transport The transport object which the event belongs to
+	 * @param transport The transport object which the event belongs to
 	 */
 	constructor(transport: Transport, opts: Partial<TransportEventOptions>) {
 

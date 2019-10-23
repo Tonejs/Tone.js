@@ -11,10 +11,13 @@ export interface SoloOptions extends ToneAudioNodeOptions {
  * Solo lets you isolate a specific audio stream. When an instance is set to `solo=true`,
  * it will mute all other instances of Solo.
  * @example
- * var soloA = new Solo()
- * var soloB = new Solo()
- * soloA.solo = true
- * //no audio will pass through soloB
+ * const soloA = new Solo().toDestination();
+ * const oscA = new Oscillator("C4", "sawtooth").connect(soloA);
+ * const soloB = new Solo().toDestination();
+ * const oscB = new Oscillator("E4", "square").connect(soloB);
+ * 
+ * soloA.solo = true;
+ * // no audio will pass through soloB
  * @category Component
  */
 export class Solo extends ToneAudioNode<SoloOptions> {

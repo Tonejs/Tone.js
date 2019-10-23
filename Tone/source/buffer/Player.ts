@@ -167,10 +167,8 @@ export class Player extends Source<PlayerOptions> {
 	 * within the buffer for the given duration.
 	 *
 	 * @param  time When the player should start.
-	 * @param  offset The offset from the beginning of the sample
-	 *                                to start at.
-	 * @param  duration How long the sample should play. If no duration is given, it will default to the full length
-	 *                  of the sample (minus any offset)
+	 * @param  offset The offset from the beginning of the samplem to start at.
+	 * @param  duration How long the sample should play. If no duration is given, it will default to the full length of the sample (minus any offset)
 	 */
 	start(time?: Time, offset?: Time, duration?: Time): this {
 		super.start(time, offset, duration);
@@ -253,8 +251,7 @@ export class Player extends Source<PlayerOptions> {
 	 * Stop and then restart the player from the beginning (or offset)
 	 * @param  time When the player should start.
 	 * @param  offset The offset from the beginning of the sample to start at.
-	 * @param  duration How long the sample should play. If no duration is given,
-	 * 				it will default to the full length of the sample (minus any offset)
+	 * @param  duration How long the sample should play. If no duration is given, it will default to the full length of the sample (minus any offset)
 	 */
 	restart(time?: Time, offset?: Time, duration?: Time): this {
 		this._stop(time);
@@ -266,9 +263,8 @@ export class Player extends Source<PlayerOptions> {
 	 * Seek to a specific time in the player's buffer. If the
 	 * source is no longer playing at that time, it will stop.
 	 * If you seek to a time that
-	 * @param {Time} offset The time to seek to.
-	 * @param {Time=} time The time for the seek event to occur.
-	 * @return {Player} this
+	 * @param offset The time to seek to.
+	 * @param when The time for the seek event to occur.
 	 * @example
 	 * source.start(0.2);
 	 * source.stop(0.4);

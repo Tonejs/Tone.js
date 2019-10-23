@@ -37,7 +37,7 @@ export class GrainPlayer extends Source<GrainPlayerOptions> {
 	buffer: ToneAudioBuffer;
 
 	/**
-	 *  Create a repeating tick to schedule the grains.
+	 * Create a repeating tick to schedule the grains.
 	 */
 	private _clock: Clock;
 
@@ -133,8 +133,8 @@ export class GrainPlayer extends Source<GrainPlayerOptions> {
 	}
 
 	/**
-     *  Internal start method
-     */
+	 * Internal start method
+	 */
 	protected _start(time?: Time, offset?: Time, duration?: Time): void {
 		offset = defaultArg(offset, 0);
 		offset = this.toSeconds(offset);
@@ -162,15 +162,15 @@ export class GrainPlayer extends Source<GrainPlayerOptions> {
 	}
 
 	/**
-     *  Internal stop method
-     */
+	 * Internal stop method
+	 */
 	protected _stop(time?: Time): void {
 		this._clock.stop(time);
 	}
 
 	/**
-     * Invoked when the clock is stopped
-     */
+	 * Invoked when the clock is stopped
+	 */
 	private _onstop(time: Seconds): void {
 		// stop the players
 		this._activeSources.forEach((source) => {
@@ -181,8 +181,8 @@ export class GrainPlayer extends Source<GrainPlayerOptions> {
 	}
 
 	/**
-     *  Invoked on each clock tick. scheduled a new grain at this time.
-     */
+	 * Invoked on each clock tick. scheduled a new grain at this time.
+	 */
 	private _tick(time: Seconds): void {
 		// check if it should stop looping
 		const ticks = this._clock.getTicksAtTime(time);
@@ -226,8 +226,8 @@ export class GrainPlayer extends Source<GrainPlayerOptions> {
 	}
 
 	/**
-     * The playback rate of the sample
-     */
+	 * The playback rate of the sample
+	 */
 	get playbackRate(): Positive {
 		return this._playbackRate;
 	}
@@ -237,8 +237,8 @@ export class GrainPlayer extends Source<GrainPlayerOptions> {
 	}
 
 	/**
-     * The loop start time.
-     */
+	 * The loop start time.
+	 */
 	get loopStart(): Time {
 		return this._loopStart;
 	}
@@ -247,8 +247,8 @@ export class GrainPlayer extends Source<GrainPlayerOptions> {
 	}
 
 	/**
-     * The loop end time.
-     */
+	 * The loop end time.
+	 */
 	get loopEnd(): Time {
 		return this._loopEnd;
 	}
@@ -257,8 +257,8 @@ export class GrainPlayer extends Source<GrainPlayerOptions> {
 	}
 
 	/**
-     * The direction the buffer should play in
-     */
+	 * The direction the buffer should play in
+	 */
 	get reverse() {
 		return this.buffer.reverse;
 	}
@@ -268,9 +268,9 @@ export class GrainPlayer extends Source<GrainPlayerOptions> {
 	}
 
 	/**
-     * The size of each chunk of audio that the
-     * buffer is chopped into and played back at.
-     */
+	 * The size of each chunk of audio that the
+	 * buffer is chopped into and played back at.
+	 */
 	get grainSize(): Time {
 		return this._grainSize;
 	}
@@ -280,8 +280,8 @@ export class GrainPlayer extends Source<GrainPlayerOptions> {
 	}
 
 	/**
-     * The duration of the cross-fade between successive grains.
-     */
+	 * The duration of the cross-fade between successive grains.
+	 */
 	get overlap(): Time {
 		return this._overlap;
 	}
@@ -290,8 +290,8 @@ export class GrainPlayer extends Source<GrainPlayerOptions> {
 	}
 
 	/**
-     * If all the buffer is loaded
-     */
+	 * If all the buffer is loaded
+	 */
 	get loaded(): boolean {
 		return this.buffer.loaded;
 	}

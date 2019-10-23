@@ -172,7 +172,7 @@ export class Timeline<GenericEvent extends TimelineEvent> extends Tone {
 
 	/**
 	 * Cancel events at and after the given time
-	 * @param  time  The time to query.
+	 * @param  after  The time to query.
 	 */
 	cancel(after: number): this {
 		if (this._timeline.length > 1) {

@@ -26,7 +26,7 @@ export interface FMSynthOptions extends SynthOptions {
  * can be explored using the modulationIndex parameter. Read more about
  * frequency modulation synthesis on Sound On Sound: [Part 1](https://web.archive.org/web/20160403123704/http://www.soundonsound.com/sos/apr00/articles/synthsecrets.htm), [Part 2](https://web.archive.org/web/20160403115835/http://www.soundonsound.com/sos/may00/articles/synth.htm).
  *
- *  @example
+ * @example
  * var fmSynth = new Tone.FMSynth().toMaster();
  * fmSynth.triggerAttackRelease("C5", "4n");
  */

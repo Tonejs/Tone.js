@@ -187,7 +187,7 @@ export class ToneAudioBuffer extends Tone {
 
 	/**
 	 * Sums multiple channels into 1 channel
-	 * @param channel Optionally only copy a single channel from the array.
+	 * @param chanNum Optionally only copy a single channel from the array.
 	 */
 	toMono(chanNum?: number): this {
 		if (isNumber(chanNum)) {

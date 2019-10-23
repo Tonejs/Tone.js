@@ -86,13 +86,13 @@ export class UserMedia extends ToneAudioNode<UserMediaOptions> {
 	}
 
 	/**
-     * Open the media stream. If a string is passed in, it is assumed
-     * to be the label or id of the stream, if a number is passed in,
-     * it is the input number of the stream.
-     * @param  labelOrId The label or id of the audio input media device.
-     *                   With no argument, the default stream is opened.
-     * @return The promise is resolved when the stream is open.
-     */
+	 * Open the media stream. If a string is passed in, it is assumed
+	 * to be the label or id of the stream, if a number is passed in,
+	 * it is the input number of the stream.
+	 * @param  labelOrId The label or id of the audio input media device.
+	 *                   With no argument, the default stream is opened.
+	 * @return The promise is resolved when the stream is open.
+	 */
 	async open(labelOrId?: string | number): Promise<void> {
 		this.assert(UserMedia.supported, "UserMedia is not supported");
 		// close the previous stream
@@ -138,8 +138,8 @@ export class UserMedia extends ToneAudioNode<UserMediaOptions> {
 	}
 
 	/**
-     * Close the media stream
-     */
+	 * Close the media stream
+	 */
 	close(): this {
 		if (this._stream && this._mediaStream) {
 			this._stream.getAudioTracks().forEach((track) => {
@@ -155,13 +155,13 @@ export class UserMedia extends ToneAudioNode<UserMediaOptions> {
 	}
 
 	/**
-     * Returns a promise which resolves with the list of audio input devices available.
-     * @return The promise that is resolved with the devices
-     * @example
-     * UserMedia.enumerateDevices().then((devices) => {
-     * 	console.log(devices)
-     * })
-     */
+	 * Returns a promise which resolves with the list of audio input devices available.
+	 * @return The promise that is resolved with the devices
+	 * @example
+	 * UserMedia.enumerateDevices().then((devices) => {
+	 * 	console.log(devices)
+	 * })
+	 */
 	static async enumerateDevices(): Promise<MediaDeviceInfo[]> {
 		const allDevices = await navigator.mediaDevices.enumerateDevices();
 		return allDevices.filter(device => {
@@ -170,21 +170,21 @@ export class UserMedia extends ToneAudioNode<UserMediaOptions> {
 	}
 
 	/**
-     * Returns the playback state of the source, "started" when the microphone is open
-     * and "stopped" when the mic is closed.
-     */
+	 * Returns the playback state of the source, "started" when the microphone is open
+	 * and "stopped" when the mic is closed.
+	 */
 	get state() {
 		return this._stream && this._stream.active ? "started" : "stopped";
 	}
 
 	/**
-     * Returns an identifier for the represented device that is
-     * persisted across sessions. It is un-guessable by other applications and
-     * unique to the origin of the calling application. It is reset when the
-     * user clears cookies (for Private Browsing, a different identifier is
-     * used that is not persisted across sessions). Returns undefined when the
-     * device is not open.
-     */
+	 * Returns an identifier for the represented device that is
+	 * persisted across sessions. It is un-guessable by other applications and
+	 * unique to the origin of the calling application. It is reset when the
+	 * user clears cookies (for Private Browsing, a different identifier is
+	 * used that is not persisted across sessions). Returns undefined when the
+	 * device is not open.
+	 */
 	get deviceId(): string | undefined {
 		if (this._device) {
 			return this._device.deviceId;
@@ -194,10 +194,10 @@ export class UserMedia extends ToneAudioNode<UserMediaOptions> {
 	}
 
 	/**
-     * Returns a group identifier. Two devices have the
-     * same group identifier if they belong to the same physical device.
-     * Returns null  when the device is not open.
-     */
+	 * Returns a group identifier. Two devices have the
+	 * same group identifier if they belong to the same physical device.
+	 * Returns null  when the device is not open.
+	 */
 	get groupId(): string | undefined {
 		if (this._device) {
 			return this._device.groupId;
@@ -207,10 +207,10 @@ export class UserMedia extends ToneAudioNode<UserMediaOptions> {
 	}
 
 	/**
-     * Returns a label describing this device (for example "Built-in Microphone").
-     * Returns undefined when the device is not open or label is not available
-     * because of permissions.
-     */
+	 * Returns a label describing this device (for example "Built-in Microphone").
+	 * Returns undefined when the device is not open or label is not available
+	 * because of permissions.
+	 */
 	get label(): string | undefined {
 		if (this._device) {
 			return this._device.label;
@@ -220,11 +220,11 @@ export class UserMedia extends ToneAudioNode<UserMediaOptions> {
 	}
 
 	/**
-     * Mute the output.
-     * @example
-     * //mute the output
-     * userMedia.mute = true;
-     */
+	 * Mute the output.
+	 * @example
+	 * //mute the output
+	 * userMedia.mute = true;
+	 */
 	get mute(): boolean {
 		return this._volume.mute;
 	}
@@ -241,7 +241,7 @@ export class UserMedia extends ToneAudioNode<UserMediaOptions> {
 	}
 
 	/**
- 	 * If getUserMedia is supported by the browser.
+	 * If getUserMedia is supported by the browser.
 	 */
 	static get supported(): boolean {
 		return isDefined(navigator.mediaDevices) && 

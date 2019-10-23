@@ -12,14 +12,14 @@ import { Envelope, EnvelopeOptions } from "./Envelope";
  *
  * @example
  * var ampEnv = new AmplitudeEnvelope({
- * 	"attack": 0.1,
- * 	"decay": 0.2,
- * 	"sustain": 1.0,
- * 	"release": 0.8
+ * 	attack: 0.1,
+ * 	decay: 0.2,
+ * 	sustain: 1.0,
+ * 	release: 0.8
  * }).toDestination();
- * //create an oscillator and connect it
- * var osc = new Tone.Oscillator().connect(ampEnv).start();
- * //trigger the envelopes attack and release "8t" apart
+ * // create an oscillator and connect it
+ * const osc = new Oscillator().connect(ampEnv).start();
+ * // trigger the envelopes attack and release "8t" apart
  * ampEnv.triggerAttackRelease("8t");
  * @category Component
  */

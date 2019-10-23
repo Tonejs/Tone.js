@@ -285,7 +285,7 @@ export class LFO extends ToneAudioNode<LFOOptions> {
 	}
 
 	/**
-	 * @param destination the destination to connect to
+	 * @param node the destination to connect to
 	 * @param outputNum the optional output number
 	 * @param inputNum the input number
 	 */

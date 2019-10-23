@@ -28,19 +28,12 @@ interface CrossFadeOptions extends ToneAudioNodeOptions {
  *                                             +---------+
  * ```
  * @example
- * var crossFade = new CrossFade(0.5);
- * //connect effect A to crossfade from
- * //effect output 0 to crossfade input 0
- * effectA.connect(crossFade.a);
- * //connect effect B to crossfade from
- * //effect output 0 to crossfade input 1
- * effectB.connect(crossFade.b);
- * crossFade.fade.value = 0;
- * // ^ only effectA is output
- * crossFade.fade.value = 1;
- * // ^ only effectB is output
+ * const crossFade = new CrossFade().toDestination();
+ * // connect two inputs to a/b
+ * const inputA = new Oscillator(440, "square").connect(crossFade.a).start();
+ * const inputB = new Oscillator(440, "sine").connect(crossFade.b).start();
+ * // use the fade to control the mix between the two
  * crossFade.fade.value = 0.5;
- * // ^ the two signals are mixed equally.
  * @category Component
  */
 export class CrossFade extends ToneAudioNode<CrossFadeOptions> {

@@ -40,7 +40,7 @@ export { PulseOscillatorOptions } from "./OscillatorInterface";
  * +-----+ +-------+                                 +-+
  * ```
  * @example
- * var pulse = new PulseOscillator("E5", 0.4).toDestination().start();
+ * const pulse = new PulseOscillator("E5", 0.4).toDestination().start();
  * @category Source
  */
 export class PulseOscillator extends Source<PulseOscillatorOptions> implements ToneOscillatorInterface {

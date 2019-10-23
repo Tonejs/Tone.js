@@ -185,7 +185,7 @@ export abstract class ToneAudioNode<Options extends ToneAudioNodeOptions = ToneA
 
 	/**
 	 * connect the output of a ToneAudioNode to an AudioParam, AudioNode, or ToneAudioNode
-	 * @param unit The output to connect to
+	 * @param destination The output to connect to
 	 * @param outputNum The output to connect from
 	 * @param inputNum The input to connect to
 	 */

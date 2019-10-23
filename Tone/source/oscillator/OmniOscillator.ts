@@ -244,7 +244,7 @@ export class OmniOscillator<OscType extends AnyOscillator>
 	 * The last argument is an optional ramp time which
 	 * will ramp any signal values to their destination value
 	 * over the duration of the rampTime.
-	 * @param  params
+	 * @param  props
 	 * @example
 	 * //set values using an object
 	 * filter.set({

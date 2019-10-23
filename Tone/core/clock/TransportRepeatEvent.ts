@@ -52,7 +52,7 @@ export class TransportRepeatEvent extends TransportEvent {
 	protected context: Context;
 
 	/**
-	 * @param Transport The transport object which the event belongs to
+	 * @param transport The transport object which the event belongs to
 	 */
 	constructor(transport: Transport, opts: Partial<TransportRepeatEventOptions>) {
 

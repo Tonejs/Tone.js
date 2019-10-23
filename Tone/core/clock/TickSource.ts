@@ -276,7 +276,7 @@ export class TickSource<Type extends BPM | Hertz> extends ToneWithContext<TickSo
 	 * Get the time of the given tick. The second argument
 	 * is when to test before. Since ticks can be set (with setTicksAtTime)
 	 * there may be multiple times for a given tick value.
-	 * @param  ticks The tick number.
+	 * @param  tick The tick number.
 	 * @param  before When to measure the tick value from.
 	 * @return The time of the tick
 	 */
