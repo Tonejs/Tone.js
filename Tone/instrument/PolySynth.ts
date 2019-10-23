@@ -232,14 +232,12 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 	private _triggerRelease(notes: Frequency[], time: Seconds): void {
 		notes.forEach(note => {
 			const midiNote = new MidiClass(this.context, note).toMidi();
-			const events = this._activeVoices.filter(({ midi, released }) => midi === midiNote && !released);
-			if (events.length) {
-				events.forEach(e => {
-					// trigger release on that note
-					e.voice.triggerRelease(time);
-					// mark it as released
-					e.released = true;
-				});
+			const event = this._activeVoices.find(({ midi, released }) => midi === midiNote && !released);
+			if (event) {
+				// trigger release on that note
+				event.voice.triggerRelease(time);
+				// mark it as released
+				event.released = true;
 				this.log("triggerRelease", note, time);
 			}
 		});
