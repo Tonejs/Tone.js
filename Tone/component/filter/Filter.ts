@@ -24,7 +24,8 @@ export interface FilterOptions extends ToneAudioNodeOptions {
  * (default), -24 and -48.
  * @example
  * import { Filter, Noise } from "tone";
- * const filter = new Filter(500, "highpass");
+ * 
+ * const filter = new Filter(1500, "highpass").toDestination();
  * const noise = new Noise().connect(filter).start();
  * @category Component
  */
