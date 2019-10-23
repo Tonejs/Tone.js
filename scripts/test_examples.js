@@ -5,6 +5,8 @@ const { file } = require("tmp-promise");
 const { writeFile } = require("fs-extra");
 const toneJson = require("../docs/tone.json");
 const eachLimit = require("async/eachLimit");
+const os = require("os");
+const cpuCount = os.cpus().length;
 
 /**
  * Get all of the examples
@@ -55,7 +57,7 @@ async function testExampleString(str) {
 	// work with file here in fd
 	await writeFile(path, str);
 	try {
-		await execPromise(`tsc ${path}`);
+		await execPromise(`tsc ${path} --noEmit`);
 	} finally {
 		cleanup();
 	}
@@ -65,7 +67,7 @@ const examples = findExamples(toneJson);
 
 async function main() {
 	let passed = 0;
-	await eachLimit(examples, 4, async example => {
+	await eachLimit(examples, cpuCount, async example => {
 		try {
 			await testExampleString(example);
 			passed++;
