@@ -20,7 +20,6 @@
     "collect:tests": "cross-var node scripts/collect_tests.js --file $npm_config_file --dir $npm_config_dir",
     "docs": "node scripts/generate_docs.js",
     "docs:json": "cross-var typedoc --options \"./scripts/typedoc.json\" --json \"$npm_config_docs_json\"",
-    "declaration": "tsc --project ./scripts/tsconfig.declaration.json",
     "increment": "node scripts/increment_version.js",
     "increment-ts": "node scripts/increment_version_ts.js",
     "karma": "cross-var karma start scripts/karma.conf.js --single-run --file $npm_config_file --dir $npm_config_dir",
