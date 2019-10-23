@@ -9,8 +9,10 @@ interface SplitOptions extends ToneAudioNodeOptions {
  * Split splits an incoming signal into the number of given channels.
  *
  * @example
- * var split = new Split();
- * stereoSignal.connect(split);
+ * import { Split } from "tone";
+ * 
+ * const split = new Split();
+ * // stereoSignal.connect(split);
  * @category Component
  */
 export class Split extends ToneAudioNode<SplitOptions> {

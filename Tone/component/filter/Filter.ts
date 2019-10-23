@@ -23,7 +23,9 @@ export interface FilterOptions extends ToneAudioNodeOptions {
  * Tone.Filter has the added ability to set the filter rolloff at -12
  * (default), -24 and -48.
  * @example
- * var filter = new Filter(200, "highpass");
+ * import { Filter, Noise } from "tone";
+ * const filter = new Filter(500, "highpass");
+ * const noise = new Noise().connect(filter).start();
  * @category Component
  */
 export class Filter extends ToneAudioNode<FilterOptions> {

@@ -39,13 +39,14 @@ export interface EnvelopeOptions extends ToneAudioNodeOptions {
  * ```
  *
  * @example
- * //an amplitude envelope
- * var gainNode = Tone.context.createGain();
- * var env = new Envelope({
- * 	"attack" : 0.1,
- * 	"decay" : 0.2,
- * 	"sustain" : 1,
- * 	"release" : 0.8,
+ * import { Envelope, Gain } from "tone";
+ * // an amplitude envelope
+ * const gainNode = new Gain();
+ * const env = new Envelope({
+ * 	attack: 0.1,
+ * 	decay: 0.2,
+ * 	sustain: 1,
+ * 	release: 0.8,
  * });
  * env.connect(gainNode.gain);
  * @category Component
@@ -320,8 +321,8 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	 * @example
 	 * env.attackCurve = "linear";
 	 * @example
-	 * //can also be an array
-	 * env.attackCurve = [0, 0.2, 0.3, 0.4, 1]
+	 * // can also be an array
+	 * env.attackCurve = [0, 0.2, 0.3, 0.4, 1];
 	 */
 	get attackCurve(): EnvelopeCurve {
 		return this._getCurve(this._attackCurve, "In");
@@ -361,7 +362,7 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	 * @param velocity The velocity of the envelope scales the vales.
 	 *                             number between 0-1
 	 * @example
-	 * //trigger the attack 0.5 seconds from now with a velocity of 0.2
+	 * // trigger the attack 0.5 seconds from now with a velocity of 0.2
 	 * env.triggerAttack("+0.5", 0.2);
 	 */
 	triggerAttack(time?: Time, velocity: NormalRange = 1): this {
@@ -422,7 +423,7 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	 * Triggers the release of the envelope.
 	 * @param  time When the release portion of the envelope should start.
 	 * @example
-	 * //trigger release immediately
+	 * // trigger release immediately
 	 * env.triggerRelease();
 	 */
 	triggerRelease(time?: Time): this {
@@ -461,7 +462,7 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	 * @param time When the attack should be triggered.
 	 * @param velocity The velocity of the envelope.
 	 * @example
-	 * //trigger the attack and then the release after 0.6 seconds.
+	 * // trigger the attack and then the release after 0.6 seconds.
 	 * env.triggerAttackRelease(0.6);
 	 */
 	triggerAttackRelease(duration: Time, time?: Time, velocity: NormalRange = 1): this {

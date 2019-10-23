@@ -7,11 +7,13 @@ export type DCMeterOptions = MeterBaseOptions;
  * DCMeter gets the raw value of the input signal at the current time.
  *
  * @example
+ * import { DCMeter, UserMedia } from "tone";
  * const meter = new DCMeter();
- * const signal = new UserMedia().open();
- * // connect signal to the meter
- * signal.connect(meter);
- * // the current level of the signal
+ * const mic = new UserMedia();
+ * mic.open();
+ * // connect mic to the meter
+ * mic.connect(meter);
+ * // the current level of the mic
  * const level = meter.getValue();
  * @category Component
  */

@@ -10,6 +10,7 @@ interface MergeOptions extends ToneAudioNodeOptions {
  * Merge brings multiple mono input channels into a single multichannel output channel.
  *
  * @example
+ * import { Merge, Noise, Oscillator } from "tone";
  * const merge = new Merge().toDestination();
  * // routing a sine tone in the left channel
  * const osc = new Oscillator().connect(merge, 0, 0).start();

@@ -11,6 +11,7 @@ interface TonePannerOptions extends ToneAudioNodeOptions {
 /**
  * Panner is an equal power Left/Right Panner. It is a wrapper around the StereoPannerNode.
  * @example
+ * import { Oscillator, Panner } from "tone";
  * // pan the input signal hard right.
  * const panner = new Panner(1).toDestination();
  * const osc = new Oscillator().connect(panner).start();
