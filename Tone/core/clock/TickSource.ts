@@ -263,9 +263,6 @@ export class TickSource<Type extends BPM | Hertz> extends ToneWithContext<TickSo
 	/**
 	 * Returns the scheduled state at the given time.
 	 * @param  time  The time to query.
-	 * @example
-	 * source.start("+0.1");
-	 * source.getStateAtTime("+0.1"); //returns "started"
 	 */
 	getStateAtTime(time: Time): PlaybackState {
 		time = this.toSeconds(time);

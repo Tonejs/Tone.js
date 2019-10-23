@@ -11,8 +11,10 @@ export abstract class AbstractParam<Type extends Unit> {
 	 * @param value The value to set the signal.
 	 * @param time The time when the change should occur.
 	 * @example
-	 * //set the frequency to "G4" in exactly 1 second from now.
-	 * freq.setValueAtTime("G4", "+1");
+	 * import { Oscillator } from "tone";
+	 * const osc = new Oscillator().toDestination().start();
+	 * // set the frequency to "G4" in exactly 1 second from now.
+	 * osc.frequency.setValueAtTime("G4", "+1");
 	 */
 	abstract setValueAtTime(value: Type, time: Time): this;
 
@@ -29,7 +31,14 @@ export abstract class AbstractParam<Type extends Unit> {
 	 * schedule changes from the current value.
 	 * @param time When to add a ramp point.
 	 * @example
-	 * param.getValueAtTime(Tone.now())
+	 * import { Oscillator } from "tone";
+	 * const osc = new Oscillator().toDestination().start();
+	 * // set the frequency to "G4" in exactly 1 second from now.
+	 * osc.frequency.setValueAtTime("G4", "+1");
+	 * setInterval(() => {
+	 * 	// check the value every 100 ms
+	 * 	osc.frequency.getValueAtTime(Tone.now());
+	 * }, 100);
 	 */
 	abstract setRampPoint(time: Time): this;
 
@@ -54,8 +63,12 @@ export abstract class AbstractParam<Type extends Unit> {
 	 *                             value to ramp from it's current value
 	 * @param startTime When the ramp should start.
 	 * @example
-	 * //exponentially ramp to the value 2 over 4 seconds.
-	 * signal.exponentialRampTo(2, 4);
+	 * import { FeedbackDelay, Noise } from "tone";
+	 * const delay = new FeedbackDelay(0.5, 0.98).toDestination();
+	 * // a short burst of noise through the feedback delay
+	 * const noise = new Noise().connect(delay).start().stop("+0.1");
+	 * // exponentially ramp to the value to 2 over 4 seconds.
+	 * delay.delayTime.exponentialRampTo(2, 4);
 	 */
 	abstract exponentialRampTo(value: Type, rampTime: Time, startTime?: Time): this;
 
@@ -70,8 +83,12 @@ export abstract class AbstractParam<Type extends Unit> {
 	 * @param startTime 	When the ramp should start.
 	 * @returns {Param} this
 	 * @example
-	 * //linearly ramp to the value 4 over 3 seconds.
-	 * signal.linearRampTo(4, 3);
+	 * import { FeedbackDelay, Noise } from "tone";
+	 * const delay = new FeedbackDelay(0.5, 0.98).toDestination();
+	 * // a short burst of noise through the feedback delay
+	 * const noise = new Noise().connect(delay).start().stop("+0.1");
+	 * // linearly ramp to the value 4 over 3 seconds.
+	 * delay.delayTime.linearRampTo(4, 3);
 	 */
 	abstract linearRampTo(value: Type, rampTime: Time, startTime?: Time): this;
 
@@ -84,8 +101,9 @@ export abstract class AbstractParam<Type extends Unit> {
 	 *                              value to ramp from it's current value
 	 * @param startTime 	When the ramp should start.
 	 * @example
-	 * //exponentially ramp to the value 2 over 4 seconds.
-	 * signal.exponentialRampTo(2, 4);
+	 * import { Oscillator } from "tone";
+	 * const osc = new Oscillator().toDestination().start();
+	 * osc.frequency.targetRampTo("C4", 4);
 	 */
 	abstract targetRampTo(value: Type, rampTime: Time, startTime?: Time): this;
 
@@ -98,8 +116,10 @@ export abstract class AbstractParam<Type extends Unit> {
 	 * @param time 	When the ramp should start.
 	 * @param  rampTime the time that it takes the value to ramp from it's current value
 	 * @example
-	 * //exponentially ramp to the value 2 over 4 seconds.
-	 * signal.exponentialRampTo(2, 4);
+	 * import { Oscillator } from "tone";
+	 * const osc = new Oscillator().toDestination().start();
+	 * // exponential approach over 4 seconds starting in 1 second
+	 * osc.frequency.exponentialApproachValueAtTime("C4", "+1", 4);
 	 */
 	abstract exponentialApproachValueAtTime(value: Type, time: Time, rampTime: Time): this;
 
@@ -144,12 +164,15 @@ export abstract class AbstractParam<Type extends Unit> {
 	 * @param  rampTime The time that it takes the value to ramp from it's current value
 	 * @param startTime When the ramp should start.
 	 * @example
-	 * //ramp to the value either linearly or exponentially
-	 * //depending on the "units" value of the signal
-	 * signal.rampTo(0, 10);
+	 * import { Oscillator } from "tone";
+	 * const osc = new Oscillator().toDestination().start();
+	 * // schedule it to ramp either linearly or exponentially depending on the units
+	 * signal.rampTo("A2", 10);
 	 * @example
-	 * //schedule it to ramp starting at a specific time
-	 * signal.rampTo(0, 10, 5)
+	 * import { Oscillator } from "tone";
+	 * const osc = new Oscillator().toDestination().start();
+	 * // schedule it to ramp starting at a specific time
+	 * signal.rampTo("A2", 10, "+2");
 	 */
 	abstract rampTo(value: Type, rampTime: Time, startTime?: Time): this;
 

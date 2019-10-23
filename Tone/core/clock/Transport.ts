@@ -52,15 +52,14 @@ type TransportCallback = (time: Seconds) => void;
  * called with the time of that event as the argument.
  *
  * @example
- * //repeated event every 8th note
- * Transport.scheduleRepeat(function(time){
- * //do something with the time
+ * import { Oscillator, Transport } from "tone";
+ * 
+ * const osc = new Oscillator().toDestination().start();
+ * // repeated event every 8th note
+ * Transport.scheduleRepeat((time) => {
+ * 	// use the callback time to schedule events
+ * 	osc.start(time).stop(time + 0.1);
  * }, "8n");
- * @example
- * //schedule an event on the 16th measure
- * Transport.schedule(function(time){
- * //do something with the time
- * }, "16:0:0");
  * @category Core
  */
 export class Transport extends ToneWithContext<TransportOptions> implements Emitter<TransportEventNames> {
@@ -104,8 +103,15 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 	/**
 	 * The Beats Per Minute of the Transport.
 	 * @example
+	 * import { Oscillator, Transport } from "tone";
+	 * const osc = new Oscillator().toDestination();
 	 * Transport.bpm.value = 80;
-	 * //ramp the bpm to 120 over 10 seconds
+	 * // start/stop the oscillator every quarter note
+	 * Transport.scheduleRepeat(time => {
+	 * 	osc.start(time).stop(time + 0.1);
+	 * }, "4n");
+	 * Transport.start();
+	 * // ramp the bpm to 120 over 10 seconds
 	 * Transport.bpm.rampTo(120, 10);
 	 */
 	bpm: TickParam<BPM>;
@@ -233,10 +239,12 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 	 * @param time The time to invoke the callback at.
 	 * @return The id of the event which can be used for canceling the event.
 	 * @example
-	 * //trigger the callback when the Transport reaches the desired time
-	 * Transport.schedule(function(time){
-	 * envelope.triggerAttack(time);
-	 * }, "128i");
+	 * import { Transport } from "tone";
+	 * // schedule an event on the 16th measure
+	 * Transport.schedule((time) => {
+	 * 	// invoked on measure 16
+	 * 	console.log("measure 16!");
+	 * }, "16:0:0");
 	 */
 	schedule(callback: TransportCallback, time: TransportTime | TransportTimeClass): number {
 		const event = new TransportEvent(this, {
@@ -256,8 +264,12 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 	 * @param  duration How long the event should repeat.
 	 * @return  The ID of the scheduled event. Use this to cancel the event.
 	 * @example
-	 * //a callback invoked every eighth note after the first measure
-	 * Transport.scheduleRepeat(callback, "8n", "1m");
+	 * import { Oscillator, Transport } from "tone";
+	 * const osc = new Oscillator().toDestination().start();
+	 * // a callback invoked every eighth note after the first measure
+	 * Transport.scheduleRepeat((time) => {
+	 * 	osc.start(time).stop(time + 0.1);
+	 * }, "8n", "1m");
 	 */
 	scheduleRepeat(
 		callback: TransportCallback,
@@ -366,7 +378,8 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 	 * @param  time The time when the transport should start.
 	 * @param  offset The timeline offset to start the transport.
 	 * @example
-	 * //start the transport in one second starting at beginning of the 5th measure.
+	 * import { Transport } from "tone";
+	 * // start the transport in one second starting at beginning of the 5th measure.
 	 * Transport.start("+1", "4:0:0");
 	 */
 	start(time?: Time, offset?: TransportTime): this {
@@ -383,6 +396,7 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 	 * Stop the transport and all sources synced to the transport.
 	 * @param time The time when the transport should stop.
 	 * @example
+	 * import { Transport } from "tone";
 	 * Transport.stop();
 	 */
 	stop(time?: Time): this {
@@ -421,12 +435,13 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 	 * The time signature as just the numerator over 4.
 	 * For example 4/4 would be just 4 and 6/8 would be 3.
 	 * @example
-	 * //common time
+	 * import { Transport } from "tone";
+	 * // common time
 	 * Transport.timeSignature = 4;
 	 * // 7/8
 	 * Transport.timeSignature = [7, 8];
-	 * //this will be reduced to a single number
-	 * Transport.timeSignature; //returns 3.5
+	 * // this will be reduced to a single number
+	 * Transport.timeSignature; // returns 3.5
 	 */
 	get timeSignature(): TimeSignature {
 		return this._timeSignature;
@@ -471,7 +486,8 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 	/**
 	 * Set the loop start and stop at the same time.
 	 * @example
-	 * //loop over the first measure
+	 * import { Transport } from "tone";
+	 * // loop over the first measure
 	 * Transport.setLoopPoints(0, "1m");
 	 * Transport.loop = true;
 	 */
@@ -610,7 +626,9 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 	 * @param  subdivision  The subdivision to quantize to
 	 * @return  The context time of the next subdivision.
 	 * @example
-	 * Transport.start(); //the transport must be started
+	 * import { Transport } from "tone";
+	 * // the transport must be started, otherwise returns 0
+	 * Transport.start(); 
 	 * Transport.nextSubdivision("4n");
 	 */
 	nextSubdivision(subdivision?: Time): Seconds {

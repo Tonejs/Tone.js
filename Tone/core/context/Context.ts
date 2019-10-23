@@ -342,7 +342,7 @@ export class Context extends Emitter<"statechange" | "tick"> implements BaseAudi
 	 * "playback" (prioritizes sustained playback), "balanced" (balances
 	 * latency and performance), and "fastest" (lowest latency, might glitch more often).
 	 * @example
-	 * //set the lookAhead to 0.3 seconds
+	 * // set the lookAhead to 0.3 seconds
 	 * Tone.context.latencyHint = 0.3;
 	 */
 	get latencyHint(): ContextLatencyHint | Seconds {

@@ -319,8 +319,12 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	 * in the array are evenly subdivided and linearly
 	 * interpolated over the duration of the attack.
 	 * @example
+	 * import { Envelope } from "tone";
+	 * const env = new Envelope();
 	 * env.attackCurve = "linear";
 	 * @example
+	 * import { Envelope } from "tone";
+	 * const env = new Envelope();
 	 * // can also be an array
 	 * env.attackCurve = [0, 0.2, 0.3, 0.4, 1];
 	 */
@@ -334,6 +338,8 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	/**
 	 * The shape of the release. See the attack curve types.
 	 * @example
+	 * import { Envelope } from "tone";
+	 * const env = new Envelope();
 	 * env.releaseCurve = "linear";
 	 */
 	get releaseCurve(): EnvelopeCurve {
@@ -346,6 +352,8 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	/**
 	 * The shape of the decay either "linear" or "exponential"
 	 * @example
+	 * import { Envelope } from "tone";
+	 * const env = new Envelope();
 	 * env.decayCurve = "linear";
 	 */
 	get decayCurve(): BasicEnvelopeCurve {
@@ -362,6 +370,9 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	 * @param velocity The velocity of the envelope scales the vales.
 	 *                             number between 0-1
 	 * @example
+	 * import { AmplitudeEnvelope, Oscillator } from "tone";
+	 * const env = new AmplitudeEnvelope().toDestination();
+	 * const osc = new Oscillator().connect(env).start();
 	 * // trigger the attack 0.5 seconds from now with a velocity of 0.2
 	 * env.triggerAttack("+0.5", 0.2);
 	 */
@@ -423,8 +434,12 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	 * Triggers the release of the envelope.
 	 * @param  time When the release portion of the envelope should start.
 	 * @example
-	 * // trigger release immediately
-	 * env.triggerRelease();
+	 * import { AmplitudeEnvelope, Oscillator } from "tone";
+	 * const env = new AmplitudeEnvelope().toDestination();
+	 * const osc = new Oscillator().connect(env).start();
+	 * env.triggerAttack();
+	 * // trigger the release half a second after the attack
+	 * env.triggerRelease("+0.5");
 	 */
 	triggerRelease(time?: Time): this {
 		this.log("triggerRelease", time);
@@ -462,8 +477,11 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	 * @param time When the attack should be triggered.
 	 * @param velocity The velocity of the envelope.
 	 * @example
-	 * // trigger the attack and then the release after 0.6 seconds.
-	 * env.triggerAttackRelease(0.6);
+	 * import { AmplitudeEnvelope, Oscillator } from "tone";
+	 * const env = new AmplitudeEnvelope().toDestination();
+	 * const osc = new Oscillator().connect(env).start();
+	 * // trigger the release 0.5 seconds after the attack
+	 * env.triggerAttackRelease(0.5);
 	 */
 	triggerAttackRelease(duration: Time, time?: Time, velocity: NormalRange = 1): this {
 		time = this.toSeconds(time);

@@ -11,7 +11,8 @@ import { Envelope, EnvelopeOptions } from "./Envelope";
  * Read more about ADSR Envelopes on [Wikipedia](https://en.wikipedia.org/wiki/Synthesizer#ADSR_envelope).
  *
  * @example
- * var ampEnv = new AmplitudeEnvelope({
+ * import { AmplitudeEnvelope, Oscillator } from "tone";
+ * const ampEnv = new AmplitudeEnvelope({
  * 	attack: 0.1,
  * 	decay: 0.2,
  * 	sustain: 1.0,
