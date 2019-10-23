@@ -35,21 +35,12 @@ jobs:
       os: linux
       addons:
         firefox: latest-beta
-    # - stage: test
-    #   before_script:
-    #   # needs an audio output device to run
-    #   - HOMEBREW_NO_AUTO_UPDATE=1 brew install Caskroom/cask/soundflower
-    #   env : BROWSER=safari
-    #   os: osx
-    #   osx_image: xcode9.2
-    # - stage: test
-    #   # puppeteer tests
-    #   before_script: npm install puppeteer
-    #   script: 
-    #     - npm run build
-    #     - npm run test:html
-    #     - npm run test:node
-    #   env : BROWSER=puppeteer
+    - stage: test
+      script: 
+        - npm run build
+        - npm run docs
+        - npm run test:examples
+      env : TEST=jsdoc_examples
     - stage: deploy
       os: linux
       script: npm run build
