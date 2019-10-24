@@ -53,8 +53,12 @@ export abstract class Tone {
 	 * called `debug` set to true, or a variable called TONE_DEBUG_CLASS
 	 * is set to the name of the class.
 	 * @example
-	 * //prints all logs originating from Tone.OscillatorNode
-	 * Tone.global.TONE_DEBUG_CLASS = "OscillatorNode"
+	 * import { Oscillator } from "tone";
+	 * const osc = new Oscillator();
+	 * // prints all logs originating from this oscillator
+	 * osc.debug = true;
+	 * // calls to start/stop will print in the console
+	 * osc.start();
 	 */
 	protected log(...args: any[]): void {
 		// if the object is either set to debug = true
@@ -102,8 +106,9 @@ export abstract class Tone {
 	/**
 	 * Convert the class to a string
 	 * @example
-	 * const osc = new Oscillator()
-	 * osc.toString() // "Oscillator"
+	 * import { Oscillator } from "tone";
+	 * const osc = new Oscillator();
+	 * console.log(osc.toString());
 	 */
 	toString(): string {
 		return this.name;

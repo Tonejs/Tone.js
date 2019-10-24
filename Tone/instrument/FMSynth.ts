@@ -27,7 +27,8 @@ export interface FMSynthOptions extends SynthOptions {
  * frequency modulation synthesis on Sound On Sound: [Part 1](https://web.archive.org/web/20160403123704/http://www.soundonsound.com/sos/apr00/articles/synthsecrets.htm), [Part 2](https://web.archive.org/web/20160403115835/http://www.soundonsound.com/sos/may00/articles/synth.htm).
  *
  * @example
- * var fmSynth = new Tone.FMSynth().toMaster();
+ * import { FMSynth } from "tone";
+ * const fmSynth = new FMSynth().toDestination();
  * fmSynth.triggerAttackRelease("C5", "4n");
  */
 
@@ -79,8 +80,11 @@ export class FMSynth extends Monophonic<FMSynthOptions> {
 	 * Harmonicity is the ratio between the two voices. A harmonicity of
 	 * 1 is no change. Harmonicity = 2 means a change of an octave.
 	 * @example
-	 * // pitch voice1 an octave below voice0
+	 * import { FMSynth } from "tone";
+	 * const fmSynth = new FMSynth().toDestination();
+	 * // pitch the modulator an octave below oscillator
 	 * synth.harmonicity.value = 0.5;
+	 * fmSynth.triggerAttackRelease("C5", "4n");
 	 */
 	readonly harmonicity: Multiply;
 

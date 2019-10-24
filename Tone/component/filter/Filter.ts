@@ -26,6 +26,7 @@ export interface FilterOptions extends ToneAudioNodeOptions {
  * import { Filter, Noise } from "tone";
  * 
  * const filter = new Filter(1500, "highpass").toDestination();
+ * filter.frequency.rampTo(20000, 10);
  * const noise = new Noise().connect(filter).start();
  * @category Component
  */

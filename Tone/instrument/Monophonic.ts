@@ -68,9 +68,9 @@ export abstract class Monophonic<Options extends MonophonicOptions> extends Inst
 	 * @param  time When the note should start.
 	 * @param  velocity The velocity scaler determines how "loud" the note will be triggered.
 	 * @example
-	 * synth.triggerAttack("C4");
-	 * @example
-	 * //trigger the note a half second from now at half velocity
+	 * import { Synth } from "tone";
+	 * const synth = new Synth().toDestination();
+	 * // trigger the note a half second from now at half velocity
 	 * synth.triggerAttack("C4", "+0.5", 0.5);
 	 */
 	triggerAttack(note: Frequency | FrequencyClass, time?: Time, velocity: NormalRange = 1): this {
@@ -85,7 +85,11 @@ export abstract class Monophonic<Options extends MonophonicOptions> extends Inst
 	 * Trigger the release portion of the envelope
 	 * @param  time If no time is given, the release happens immediatly
 	 * @example
-	 * synth.triggerRelease();
+	 * import { Synth } from "tone";
+	 * const synth = new Synth().toDestination();
+	 * synth.triggerAttack("C4");
+	 * // trigger the release a second from now
+	 * synth.triggerRelease("+1");
 	 */
 	triggerRelease(time?: Time): this {
 		this.log("triggerRelease", time);
@@ -121,11 +125,11 @@ export abstract class Monophonic<Options extends MonophonicOptions> extends Inst
 	 * @param note The note to change to.
 	 * @param  time The time when the note should be set.
 	 * @example
-	 * //change to F#6 in one quarter note from now.
+	 * import { Synth } from "tone";
+	 * const synth = new Synth().toDestination();
+	 * synth.triggerAttack("C4");
+	 * // change to F#6 in one quarter note from now.
 	 * synth.setNote("F#6", "+4n");
-	 * @example
-	 * //change to Bb4 right now
-	 * synth.setNote("Bb4");
 	 */
 	setNote(note: Frequency | FrequencyClass, time?: Time): this {
 		const computedTime = this.toSeconds(time);

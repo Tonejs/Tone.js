@@ -1,4 +1,3 @@
-import { Unit } from "../type/Units";
 import { isAudioNode, isAudioParam } from "../util/AdvancedTypeCheck";
 import { assert } from "../util/Debug";
 import { isDefined } from "../util/TypeCheck";
@@ -204,7 +203,7 @@ export abstract class ToneAudioNode<Options extends ToneAudioNodeOptions = ToneA
 
 	/**
 	 * Connect the output to the context's destination node.
-	 * alias for {@link toDestination}
+	 * See [[toDestination]]
 	 * @deprecated
 	 */
 	toMaster(): this {
@@ -223,8 +222,12 @@ export abstract class ToneAudioNode<Options extends ToneAudioNodeOptions = ToneA
 	/**
 	 * Connect the output of this node to the rest of the nodes in series.
 	 * @example
-	 * //connect a node to an effect, panVol and then to the master output
-	 * node.chain(effect, panVol, Tone.Destination);
+	 * import { Destination, Filter, Oscillator, Volume } from "tone";
+	 * const osc = new Oscillator().start();
+	 * const filter = new Filter();
+	 * const volume = new Volume(-8);
+	 * // connect a node to the filter, volume and then to the master output
+	 * osc.chain(filter, volume, Destination);
 	 */
 	chain(...nodes: InputNode[]): this {
 		connectSeries(this, ...nodes);

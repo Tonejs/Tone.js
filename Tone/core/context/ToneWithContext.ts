@@ -4,7 +4,7 @@ import { FrequencyClass } from "../type/Frequency";
 import { TimeClass } from "../type/Time";
 import { TransportTimeClass } from "../type/TransportTime";
 import { Frequency, Hertz, Seconds, Ticks, Time } from "../type/Units";
-import { getDefaultsFromInstance, omitFromObject, optionsFromArguments } from "../util/Defaults";
+import { getDefaultsFromInstance, optionsFromArguments } from "../util/Defaults";
 import { RecursivePartial } from "../util/Interface";
 import { isArray, isBoolean, isDefined, isNumber, isString, isUndef } from "../util/TypeCheck";
 import { Context } from "./Context";
@@ -124,8 +124,10 @@ export abstract class ToneWithContext<Options extends ToneWithContextOptions> ex
 	/**
 	 * Get the object's attributes.
 	 * @example
+	 * import { Oscillator } from "tone";
+	 * const osc = new Oscillator();
 	 * osc.get();
-	 * //returns {"type" : "sine", "frequency" : 440, ...etc}
+	 * // returns {"type" : "sine", "frequency" : 440, ...etc}
 	 */
 	get(): Options {
 		const defaults = getDefaultsFromInstance(this) as Options;
@@ -151,12 +153,13 @@ export abstract class ToneWithContext<Options extends ToneWithContextOptions> ex
 
 	/**
 	 * Set multiple properties at once with an object.
-	 * @param  props
 	 * @example
-	 * //set values using an object
+	 * import { Filter } from "tone";
+	 * const filter = new Filter();
+	 * // set values using an object
 	 * filter.set({
-	 * 	"frequency" : 300,
-	 * 	"type" : "highpass"
+	 * 	frequency: 300,
+	 * 	type: "highpass"
 	 * });
 	 */
 	set(props: RecursivePartial<Options>): this {

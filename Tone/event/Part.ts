@@ -22,18 +22,22 @@ interface PartOptions<T> extends Omit<ToneEventOptions<CallbackType<T>>, "value"
  * Part is a collection ToneEvents which can be started/stopped and looped as a single unit.
  *
  * @example
- * var part = new Part(function(time, note){
- * 	//the notes given as the second element in the array
- * 	//will be passed in as the second argument
+ * import { Part, Synth } from "tone";
+ * const synth = new Synth().toDestination();
+ * const part = new Part(((time, note) => {
+ * 	// the notes given as the second element in the array
+ * 	// will be passed in as the second argument
  * 	synth.triggerAttackRelease(note, "8n", time);
- * }, [[0, "C2"], ["0:2", "C3"], ["0:3:2", "G2"]]);
+ * }), [[0, "C2"], ["0:2", "C3"], ["0:3:2", "G2"]]);
  * @example
- * //use an array of objects as long as the object has a "time" attribute
- * var part = new Part(function(time, value){
- * 	//the value is an object which contains both the note and the velocity
+ * import { Part, Synth } from "tone";
+ * const synth = new Synth().toDestination();
+ * // use an array of objects as long as the object has a "time" attribute
+ * const part = new Part(((time, value) => {
+ * 	// the value is an object which contains both the note and the velocity
  * 	synth.triggerAttackRelease(value.note, "8n", time, value.velocity);
- * }, [{"time" : 0, "note" : "C3", "velocity": 0.9},
- * {"time" : "0:2", "note" : "C4", "velocity": 0.5}
+ * }), [{ time: 0, note: "C3", velocity: 0.9 },
+ * 	{ time: "0:2", note: "C4", velocity: 0.5 }
  * ]).start(0);
  * @category Event
  */
@@ -165,9 +169,11 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 	 * If two events are at the same time, the first one will
 	 * be returned.
 	 * @example
-	 * part.at("1m"); //returns the part at the first measure
-	 * part.at("2m", "C2"); //set the value at "2m" to C2.
-	 * //if an event didn't exist at that time, it will be created.
+	 * import { Part } from "tone";
+	 * const part = new Part();
+	 * part.at("1m"); // returns the part at the first measure
+	 * part.at("2m", "C2"); // set the value at "2m" to C2.
+	 * // if an event didn't exist at that time, it will be created.
 	 * @param time The time of the event to get or set.
 	 * @param value If a value is passed in, the value of the event at the given time will be set to it.
 	 */
@@ -203,6 +209,8 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 	 * 		have a 'time' attribute and the rest of the object will be used as the 'value'.
 	 * @param  value
 	 * @example
+	 * import { Part } from "tone";
+	 * const part = new Part();
 	 * part.add("1m", "C#+11");
 	 * @example
 	 * part.add({
@@ -366,9 +374,6 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 		}
 	}
 
-	/**
-	 * The probability of the notes being triggered.
-	 */
 	get probability(): NormalRange {
 		return this._probability;
 	}
@@ -377,13 +382,6 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 		this._setAll("probability", prob);
 	}
 
-	/**
-	 * If set to true, will apply small random variation
-	 * to the callback time. If the value is given as a time, it will randomize
-	 * by that amount.
-	 * @example
-	 * event.humanize = true;
-	 */
 	get humanize(): boolean | Time {
 		return this._humanize;
 	}
@@ -402,7 +400,9 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 	 * times, if set to false, 0 or 1, the
 	 * part will only play once.
 	 * @example
-	 * //loop the part 8 times
+	 * import { Part } from "tone";
+	 * const part = new Part();
+	 * // loop the part 8 times
 	 * part.loop = 8;
 	 */
 	get loop(): boolean | number {
@@ -421,9 +421,6 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 	/**
 	 * The loopEnd point determines when it will
 	 * loop if Part.loop is true.
-	 * @memberOf Part#
-	 * @type {Time}
-	 * @name loopEnd
 	 */
 	get loopEnd(): Time {
 		return new TicksClass(this.context, this._loopEnd).toSeconds();

@@ -8,7 +8,8 @@ import { Seconds, Ticks } from "./Units";
  * Ticks can be constructed with or without the `new` keyword. Ticks can be passed
  * into the parameter of any method which takes time as an argument.
  * @example
- * const t = Ticks("4n"); //a quarter note as ticks
+ * import { Ticks } from "tone";
+ * const t = Ticks("4n"); // a quarter note as ticks
  * @category Unit
  */
 export class TicksClass extends TransportTimeClass<Ticks> {

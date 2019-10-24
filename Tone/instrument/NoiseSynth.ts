@@ -21,7 +21,8 @@ export interface NoiseSynthOptions extends InstrumentOptions {
  * +-------+   +-------------------+
  * ```
  * @example
- * var noiseSynth = new Tone.NoiseSynth().toMaster();
+ * import { NoiseSynth } from "tone";
+ * const noiseSynth = new NoiseSynth().toDestination();
  * noiseSynth.triggerAttackRelease("8n");
  * @category Instrument
  */
@@ -77,6 +78,8 @@ export class NoiseSynth extends Instrument<NoiseSynthOptions> {
 	 * Start the attack portion of the envelopes. Unlike other
 	 * instruments, Tone.NoiseSynth doesn't have a note.
 	 * @example
+	 * import { NoiseSynth } from "tone";
+	 * const noiseSynth = new NoiseSynth().toDestination();
 	 * noiseSynth.triggerAttack();
 	 */
 	triggerAttack(time?: Time, velocity: NormalRange = 1): this {
@@ -101,19 +104,6 @@ export class NoiseSynth extends Instrument<NoiseSynthOptions> {
 		return this;
 	}
 
-	/**
-	 * Sync the instrument to the Transport. All subsequent calls of
-	 * [triggerAttack](#triggerattack) and [triggerRelease](#triggerrelease)
-	 * will be scheduled along the transport.
-	 * @example
-	 * synth.sync()
-	 * //schedule 3 notes when the transport first starts
-	 * synth.triggerAttackRelease('8n', 0)
-	 * synth.triggerAttackRelease('8n', '8n')
-	 * synth.triggerAttackRelease('8n', '4n')
-	 * //start the transport to hear the notes
-	 * Transport.start()
-	 */
 	sync(): this {
 		this._syncMethod("triggerAttack", 0);
 		this._syncMethod("triggerRelease", 0);

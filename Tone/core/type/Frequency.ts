@@ -11,8 +11,9 @@ export type FrequencyUnit = TimeBaseUnit | "midi";
  * Frequency is a primitive type for encoding Frequency values.
  * Eventually all time values are evaluated to hertz using the `eval` method.
  * @example
- * Frequency("C3") // 261
- * Frequency(38, "midi") //
+ * import { Frequency } from "tone";
+ * Frequency("C3"); // 261
+ * Frequency(38, "midi");
  * Frequency("C3").transpose(4);
  * @category Unit
  */
@@ -88,7 +89,8 @@ export class FrequencyClass<Type extends number = Hertz> extends TimeClass<Type,
 	 * Transposes the frequency by the given number of semitones.
 	 * @return  A new transposed frequency
 	 * @example
-	 * Frequency("A4").transpose(3); //"C5"
+	 * import { Frequency } from "tone";
+	 * Frequency("A4").transpose(3); // "C5"
 	 */
 	transpose(interval: Interval): FrequencyClass {
 		return new FrequencyClass(this.context, this.valueOf() * intervalToFrequencyRatio(interval));
@@ -99,7 +101,8 @@ export class FrequencyClass<Type extends number = Hertz> extends TimeClass<Type,
 	 * an array of frequencies transposed by those intervals.
 	 * @return  Returns an array of Frequencies
 	 * @example
-	 * Frequency("A4").harmonize([0, 3, 7]); //["A4", "C5", "E5"]
+	 * import { Frequency } from "tone";
+	 * Frequency("A4").harmonize([0, 3, 7]); // ["A4", "C5", "E5"]
 	 */
 	harmonize(intervals: Interval[]): FrequencyClass[] {
 		return intervals.map(interval => {
@@ -114,7 +117,8 @@ export class FrequencyClass<Type extends number = Hertz> extends TimeClass<Type,
 	/**
 	 * Return the value of the frequency as a MIDI note
 	 * @example
-	 * Frequency("C4").toMidi(); //60
+	 * import { Frequency } from "tone";
+	 * Frequency("C4").toMidi(); // 60
 	 */
 	toMidi(): MidiNote {
 		return ftom(this.valueOf());
@@ -123,7 +127,8 @@ export class FrequencyClass<Type extends number = Hertz> extends TimeClass<Type,
 	/**
 	 * Return the value of the frequency in Scientific Pitch Notation
 	 * @example
-	 * Frequency(69, "midi").toNote(); //"A4"
+	 * import { Frequency } from "tone";
+	 * Frequency(69, "midi").toNote(); // "A4"
 	 */
 	toNote(): Note {
 		const freq = this.toFrequency();
@@ -196,8 +201,6 @@ export class FrequencyClass<Type extends number = Hertz> extends TimeClass<Type,
 	 * Convert a MIDI note to frequency value.
 	 * @param  midi The midi number to convert.
 	 * @return The corresponding frequency value
-	 * @example
-	 * FrequencyClass.mtof(69); // returns 440
 	 */
 	static mtof(midi: MidiNote): Hertz {
 		return mtof(midi);
@@ -206,8 +209,6 @@ export class FrequencyClass<Type extends number = Hertz> extends TimeClass<Type,
 	/**
 	 * Convert a frequency value to a MIDI note.
 	 * @param frequency The value to frequency value to convert.
-	 * @example
-	 * Frequency.ftom(440); // returns 69
 	 */
 	static ftom(frequency: Hertz): MidiNote {
 		return ftom(frequency);

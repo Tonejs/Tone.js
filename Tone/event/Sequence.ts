@@ -22,15 +22,13 @@ interface SequenceOptions<T> extends Omit<ToneEventOptions<T>, "value"> {
  * by the number of items are in the array.
  * Sequence notation inspiration from [Tidal](http://yaxu.org/tidal/)
  * @example
- * var seq = new Sequence(function(time, note){
- * 	console.log(note);
- * //straight quater notes
- * }, ["C4", "E4", "G4", "A4"], "4n");
- * @example
- * var seq = new Sequence(function(time, note){
- * 	console.log(note);
- * //subdivisions are given as subarrays
- * }, ["C4", ["E4", "D4", "E4"], "G4", ["A4", "G4"]]);
+ * import { Sequence, Synth, Transport } from "tone";
+ * const synth = new Synth().toDestination();
+ * const seq = new Sequence((time, note) => {
+ * 	synth.triggerAttackRelease(note, 0.1, time);
+ * 	// subdivisions are given as subarrays
+ * }, ["C4", ["E4", "D4", "E4"], "G4", ["A4", "G4"]]).start(0);
+ * Transport.start();
  * @category Event
  */
 export class Sequence<ValueType = any> extends ToneEvent<ValueType> {

@@ -28,7 +28,10 @@ export abstract class Instrument<Options extends InstrumentOptions> extends Tone
 	/**
 	 * The volume of the output in decibels.
 	 * @example
-	 * source.volume.value = -6;
+	 * import { AMSynth } from "tone";
+	 * const amSynth = new AMSynth().toDestination();
+	 * amSynth.volume.value = -6;
+	 * amSynth.triggerAttackRelease("G#3", 0.2);
 	 */
 	volume: Param<Decibels>;
 
@@ -65,17 +68,18 @@ export abstract class Instrument<Options extends InstrumentOptions> extends Tone
 
 	/**
 	 * Sync the instrument to the Transport. All subsequent calls of
-	 * [[triggerAttack]] and [[triggerRelease]]
-	 * will be scheduled along the transport.
+	 * [[triggerAttack]] and [[triggerRelease]] will be scheduled along the transport.
 	 * @example
-	 * instrument.sync()
-	 * //schedule 3 notes when the transport first starts
-	 * instrument.triggerAttackRelease('C4', '8n', 0)
-	 * instrument.triggerAttackRelease('E4', '8n', '8n')
-	 * instrument.triggerAttackRelease('G4', '8n', '4n')
-	 * //start the transport to hear the notes
-	 * Transport.start()
-	 * @returns {Instrument} this
+	 * import { FMSynth, Transport } from "tone";
+	 * const fmSynth = new FMSynth().toDestination();
+	 * fmSynth.volume.value = -6;
+	 * fmSynth.sync();
+	 * // schedule 3 notes when the transport first starts
+	 * fmSynth.triggerAttackRelease("C4", "8n", 0);
+	 * fmSynth.triggerAttackRelease("E4", "8n", "8n");
+	 * fmSynth.triggerAttackRelease("G4", "8n", "4n");
+	 * // start the transport to hear the notes
+	 * Transport.start();
 	 */
 	sync(): this {
 		if (!this._synced) {
@@ -125,7 +129,9 @@ export abstract class Instrument<Options extends InstrumentOptions> extends Tone
 	 * @param time  When the note should be triggered.
 	 * @param  velocity The velocity the note should be triggered at.
 	 * @example
-	 * //trigger "C4" for the duration of an 8th note
+	 * import { Synth } from "tone";
+	 * const synth = new Synth().toDestination();
+	 * // trigger "C4" for the duration of an 8th note
 	 * synth.triggerAttackRelease("C4", "8n");
 	 */
 	triggerAttackRelease(note: Frequency, duration: Time, time?: Time, velocity?: NormalRange): this {

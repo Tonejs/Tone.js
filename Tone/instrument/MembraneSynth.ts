@@ -19,7 +19,8 @@ export interface MembraneSynthOptions extends SynthOptions {
  * starts at <code>note * .octaves</code> and ramps to <code>note</code>
  * over the duration of <code>.pitchDecay</code>.
  * @example
- * var synth = new MembraneSynth().toMaster();
+ * import { MembraneSynth } from "tone";
+ * const synth = new MembraneSynth().toMaster();
  * synth.triggerAttackRelease("C2", "8n");
  * @category Instrument
  */

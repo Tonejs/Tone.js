@@ -56,15 +56,12 @@ export type Subdivision = "1m" | "1n" | "2n" | "2t" | "4n" | "4t" | "8n" | "8t" 
 /**
  * A time object has a subdivision as the keys and a number as the values.
  * @example
+ * import { Time } from "tone";
  * const time = {
- * 	"2n" : 1,
- * 	"8n" : 3
- * } // = 2n + 8n * 3
- * @example
- * const time = {
- * 	"1m" : 1,
- * 	"8n" : -1
- * } // = 1m - 8n
+ * 	"2n": 1,
+ * 	"8n": 3
+ * };
+ * Time(time).valueOf(); // 2n + 8n * 3
  * @category Unit
  */
 export type TimeObject = {

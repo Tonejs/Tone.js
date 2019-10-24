@@ -21,11 +21,12 @@ export interface LoopOptions extends ToneWithContextOptions {
  * started, stopped and scheduled along
  * the Transport's timeline. 
  * @example
- * var loop = new Loop(function(time){
- * 	//triggered every eighth note. 
+ * import { Loop, Transport } from "tone";
+ * const loop = new Loop((time) => {
+ * 	// triggered every eighth note. 
  * 	console.log(time);
  * }, "8n").start(0);
- * Tone.Transport.start();
+ * Transport.start();
  * @category Event
  */
 export class Loop extends ToneWithContext<LoopOptions> {
@@ -130,7 +131,9 @@ export class Loop extends ToneWithContext<LoopOptions> {
 	/**
 	 * The time between successive callbacks. 
 	 * @example
-	 * loop.interval = "8n"; //loop every 8n
+	 * import { Loop, Transport } from "tone";
+	 * const loop = new Loop();
+	 * loop.interval = "8n"; // loop every 8n
 	 */
 	get interval(): Time {
 		return this._event.loopEnd;

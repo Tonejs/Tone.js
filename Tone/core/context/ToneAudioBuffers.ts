@@ -20,23 +20,27 @@ interface ToneAudioBuffersOptions {
  * A data structure for holding multiple buffers in a Map-like datastructure.
  *
  * @example
- * //load a whole bank of piano samples
- * var pianoSamples = new ToneAudioBuffers({
- * 	"C4" : "path/to/C4.mp3"
- * 	"C#4" : "path/to/C#4.mp3"
- * 	"D4" : "path/to/D4.mp3"
- * 	"D#4" : "path/to/D#4.mp3"
- * }, function(){
- * 	//play one of the samples when they all load
- * 	player.buffer = pianoSamples.get("C4");
+ * import { Player, ToneAudioBuffers } from "tone";
+ * const pianoSamples = new ToneAudioBuffers({
+ * 	C2: "https://tonejs.github.io/examples/audio/casio/C2.mp3",
+ * 	C3: "https://tonejs.github.io/examples/audio/casio/C3.mp3",
+ * }, () => {
+ * 	const player = new Player().toDestination();
+ * 	// play one of the samples when they all load
+ * 	player.buffer = pianoSamples.get("C2");
  * 	player.start();
  * });
  * @example
- * //To pass in additional parameters in the second parameter
- * var buffers = new ToneAudioBuffers(urls, {
- * 	"onload" : callback,
- * 	"baseUrl" : "../path/to/audio/"
- * })
+ * import { ToneAudioBuffers } from "tone";
+ * // To pass in additional parameters in the second parameter
+ * const buffers = new ToneAudioBuffers({
+ * 	 urls: {
+ * 		 C2: "C2.mp3",
+ * 		 C3: "C3.mp3",
+ * 	 },
+ * 	 onload: () => console.log("loaded"),
+ * 	 baseUrl: "https://tonejs.github.io/examples/audio/casio/"
+ * });
  * @category Core
  */
 export class ToneAudioBuffers extends Tone {

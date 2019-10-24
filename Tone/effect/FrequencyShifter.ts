@@ -26,9 +26,10 @@ interface FrequencyShifterOptions extends EffectOptions {
  * You can find a very detailed description of the algorithm here: https://larzeitlin.github.io/RMFS/
  *
  * @example
- * let input = new Tone.Oscillator(230, "sawtooth").start();
- * let shift = new FrequencyShifter(42).toDestination();
- * input.connect(shift).
+ * import { FrequencyShifter, Oscillator } from "tone";
+ * const input = new Oscillator(230, "sawtooth").start();
+ * const shift = new FrequencyShifter(42).toDestination();
+ * input.connect(shift);
  * @category Effect
  */
 export class FrequencyShifter extends Effect<FrequencyShifterOptions> {

@@ -22,13 +22,16 @@ interface ToneAudioBufferOptions {
  * provides events which keep track of the loading progress
  * of _all_ of the buffers. These are ToneAudioBuffer.on("load" / "progress" / "error")
  * @example
- * var buffer = new ToneAudioBuffer("path/to/sound.mp3", function(){
- * 	//the buffer is now available.
- * 	var buff = buffer.get();
+ * import { ToneAudioBuffer } from "tone";
+ * const buffer = new ToneAudioBuffer("https://tonejs.github.io/examples/audio/FWDL.mp3", () => {
+ * 	console.log("loaded");
  * });
  * @example
- * //can load provide fallback extension types if the first type is not supported.
- * var buffer = new ToneAudioBuffer("path/to/sound.[mp3|ogg|wav]");
+ * import { ToneAudioBuffer } from "tone";
+ * // can load provide fallback extension types if the first type is not supported.
+ * const buffer = new ToneAudioBuffer("https://tonejs.github.io/examples/audio/FWDL.[mp3|ogg]", () => {
+ * 	console.log("loaded");
+ * });
  * @category Core
  */
 export class ToneAudioBuffer extends Tone {
@@ -393,8 +396,9 @@ export class ToneAudioBuffer extends Tone {
 	 * @return If the file extension can be played
 	 * @static
 	 * @example
-	 * ToneAudioBuffer.supportsType("wav"); //returns true
-	 * ToneAudioBuffer.supportsType("path/to/file.wav"); //returns true
+	 * import { ToneAudioBuffer } from "tone";
+	 * ToneAudioBuffer.supportsType("wav"); // returns true
+	 * ToneAudioBuffer.supportsType("path/to/file.wav"); // returns true
 	 */
 	static supportsType(url: string): boolean {
 		const extensions = url.split(".");

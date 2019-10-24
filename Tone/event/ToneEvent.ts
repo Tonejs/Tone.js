@@ -27,15 +27,19 @@ export interface ToneEventOptions<T> extends ToneWithContextOptions {
  * callback for a single or repeatable events along the timeline.
  *
  * @example
- * var chord = new ToneEvent(function(time, chord){
- * 	//the chord as well as the exact time of the event
- * 	//are passed in as arguments to the callback function
- * }, ["D4", "E4", "F4"]);
- * //start the chord at the beginning of the transport timeline
- * chord.start();
- * //loop it every measure for 8 measures
- * chord.loop = 8;
- * chord.loopEnd = "1m";
+ * import { PolySynth, Sequence, ToneEvent, Transport } from "tone";
+ * 
+ * const synth = new PolySynth().toDestination();
+ * const chordEvent = new ToneEvent(((time, chord) => {
+ * 	// the chord as well as the exact time of the event
+ * 	// are passed in as arguments to the callback function
+ * 	synth.triggerAttackRelease(chord, 0.5, time);
+ * }), ["D4", "E4", "F4"]);
+ * // start the chord at the beginning of the transport timeline
+ * chordEvent.start();
+ * // loop it every measure for 8 measures
+ * chordEvent.loop = 8;
+ * chordEvent.loopEnd = "1m";
  * @category Event
  */
 export class ToneEvent<ValueType = any> extends ToneWithContext<ToneEventOptions<ValueType>> {
@@ -318,8 +322,10 @@ export class ToneEvent<ValueType = any> extends ToneWithContext<ToneEventOptions
 	/**
 	 * The playback rate of the note. Defaults to 1.
 	 * @example
+	 * import { ToneEvent } from "tone";
+	 * const note = new ToneEvent();
 	 * note.loop = true;
-	 * //repeat the note twice as fast
+	 * // repeat the note twice as fast
 	 * note.playbackRate = 2;
 	 */
 	get playbackRate(): Positive {

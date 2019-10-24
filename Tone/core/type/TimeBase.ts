@@ -24,12 +24,6 @@ export interface TimeExpression<Type extends number> {
 
 /**
  * TimeBase is a flexible encoding of time which can be evaluated to and from a string.
- * @example
- * new TimeBase(4, "n")
- * new TimeBase(2, "t")
- * new TimeBase("2t")
- * new TimeBase({"2t" : 2})
- * new TimeBase("2t") + new TimeBase("4n");
  */
 export abstract class TimeBaseClass<Type extends number, Unit extends string> extends Tone {
 
