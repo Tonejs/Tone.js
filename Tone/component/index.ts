@@ -15,6 +15,7 @@ export * from "./channel/Split";
 export * from "./dynamics/Compressor";
 export * from "./envelope/AmplitudeEnvelope";
 export * from "./envelope/Envelope";
+export * from "./envelope/ScaledEnvelope";
 export * from "./filter/EQ3";
 export * from "./filter/Filter";
 export * from "./filter/OnePoleFilter";
