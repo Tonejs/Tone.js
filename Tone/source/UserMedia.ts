@@ -15,12 +15,11 @@ export interface UserMediaOptions extends ToneAudioNodeOptions {
  * Check [MediaDevices API Support](https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia)
  * to see which browsers are supported. Access to an external input
  * is limited to secure (HTTPS) connections.
- *
  * @example
- * //list the inputs and open the third one
- * const motu = new UserMedia();
- * motu.open().then(() => {
- * 	//promise resolves when input is available
+ * import { UserMedia } from "tone";
+ * const mic = new UserMedia();
+ * mic.open().then(() => {
+ * 	// promise resolves when input is available
  * });
  * @category Source
  */
@@ -54,8 +53,6 @@ export class UserMedia extends ToneAudioNode<UserMediaOptions> {
 
 	/**
 	 * The volume of the output in decibels.
-	 * @example
-	 * input.volume.value = -6;
 	 */
 	readonly volume: Param<Decibels>;		
 	
@@ -158,9 +155,10 @@ export class UserMedia extends ToneAudioNode<UserMediaOptions> {
 	 * Returns a promise which resolves with the list of audio input devices available.
 	 * @return The promise that is resolved with the devices
 	 * @example
+	 * import { UserMedia } from "tone";
 	 * UserMedia.enumerateDevices().then((devices) => {
-	 * 	console.log(devices)
-	 * })
+	 * 	console.log(devices);
+	 * });
 	 */
 	static async enumerateDevices(): Promise<MediaDeviceInfo[]> {
 		const allDevices = await navigator.mediaDevices.enumerateDevices();
@@ -222,8 +220,13 @@ export class UserMedia extends ToneAudioNode<UserMediaOptions> {
 	/**
 	 * Mute the output.
 	 * @example
-	 * //mute the output
-	 * userMedia.mute = true;
+	 * import { UserMedia } from "tone";
+	 * const mic = new UserMedia();
+	 * mic.open().then(() => {
+	 * 	// promise resolves when input is available
+	 * });
+	 * // mute the output
+	 * mic.mute = true;
 	 */
 	get mute(): boolean {
 		return this._volume.mute;

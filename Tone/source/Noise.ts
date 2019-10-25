@@ -19,20 +19,19 @@ export interface NoiseOptions extends SourceOptions {
  * colors of noise on [Wikipedia](https://en.wikipedia.org/wiki/Colors_of_noise).
  *
  * @example
- * //initialize the noise and start
- * var noise = new Noise("pink").start();
- *
- * //make an autofilter to shape the noise
- * var autoFilter = new Tone.AutoFilter({
- * 	"frequency" : "8m",
- * 	"min" : 800,
- * 	"max" : 15000
- * }).connect(Tone.Destination);
- *
- * //connect the noise
+ * import { AutoFilter, Noise } from "tone";
+ * // initialize the noise and start
+ * const noise = new Noise("pink").start();
+ * // make an autofilter to shape the noise
+ * const autoFilter = new AutoFilter({
+ * 	frequency: "8m",
+ * 	min: 800,
+ * 	max: 15000
+ * }).toDestination();
+ * // connect the noise
  * noise.connect(autoFilter);
- * //start the autofilter LFO
- * autoFilter.start()
+ * // start the autofilter LFO
+ * autoFilter.start();
  * @category Source
  */
 export class Noise extends Source<NoiseOptions> {
@@ -92,7 +91,9 @@ export class Noise extends Source<NoiseOptions> {
 	/**
 	 * The type of the noise. Can be "white", "brown", or "pink".
 	 * @example
-	 * noise.type = "white";
+	 * import { Noise } from "tone";
+	 * const noise = new Noise().toDestination().start();
+	 * noise.type = "brown";
 	 */
 	get type(): NoiseType {
 		return this._type;

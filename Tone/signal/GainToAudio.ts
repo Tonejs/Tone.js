@@ -5,9 +5,6 @@ import { WaveShaper } from "./WaveShaper";
 /**
  * GainToAudio converts an input in NormalRange [0,1] to AudioRange [-1,1].
  * See {@link AudioToGain}.
- *
- * @example
- * var a2g = new GainToAudio();
  * @category Signal
  */
 export class GainToAudio extends SignalOperator<ToneAudioNodeOptions> {

@@ -24,7 +24,8 @@ export interface SynthOptions extends MonophonicOptions {
  * +----------------+   +-------------------+
  * ```
  * @example
- * var synth = new Synth().toDestination();
+ * import { Synth } from "tone";
+ * const synth = new Synth().toDestination();
  * synth.triggerAttackRelease("C4", "8n");
  * @category Instrument
  */

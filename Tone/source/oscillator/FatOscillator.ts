@@ -1,37 +1,27 @@
-import { AudioRange, Cents, Degrees, Frequency, Positive, Time } from "../../core/type/Units";
+import { Cents, Degrees, Frequency, Positive, Time } from "../../core/type/Units";
 import { optionsFromArguments } from "../../core/util/Defaults";
 import { noOp, readOnly } from "../../core/util/Interface";
-import { AudioToGain } from "../../signal/AudioToGain";
-import { Multiply } from "../../signal/Multiply";
 import { Signal } from "../../signal/Signal";
 import { Source } from "../Source";
 import { Oscillator } from "./Oscillator";
 import { FatConstructorOptions, FatOscillatorOptions,
 	generateWaveform, ToneOscillatorInterface, ToneOscillatorType } from "./OscillatorInterface";
+import { assertRange } from "../../core/util/Debug";
 
 export { FatOscillatorOptions } from "./OscillatorInterface";
 
 /**
  * FatOscillator is an array of oscillators with detune spread between the oscillators
- * @param frequency The oscillator's frequency.
- * @param type The type of the oscillator.
- * @param spread The detune spread between the oscillators.
  * @example
- * var fatOsc = new FatOscillator("Ab3", "sine", 40).toDestination().start();
+ * import { FatOscillator } from "tone";
+ * const fatOsc = new FatOscillator("Ab3", "sawtooth", 40).toDestination().start();
  * @category Source
  */
 export class FatOscillator extends Source<FatOscillatorOptions> implements ToneOscillatorInterface {
 
 	readonly name: string = "FatOscillator";
 
-	/**
-	 * The oscillator's frequency
-	 */
 	readonly frequency: Signal<Frequency>;
-
-	/**
-	 * The detune control signal.
-	 */
 	readonly detune: Signal<Cents>;
 
 	/**
@@ -64,8 +54,13 @@ export class FatOscillator extends Source<FatOscillatorOptions> implements ToneO
 	 */
 	private _partialCount: number;
 
+	/**
+	 * @param frequency The oscillator's frequency.
+	 * @param type The type of the oscillator.
+	 * @param spread The detune spread between the oscillators.
+	 */
+	constructor(frequency?: Frequency, type?: ToneOscillatorType, spread?: Cents);
 	constructor(options?: Partial<FatConstructorOptions>);
-	constructor(frequency?: Frequency, type?: ToneOscillatorType, modulationType?: ToneOscillatorType);
 	constructor() {
 
 		super(optionsFromArguments(FatOscillator.getDefaults(), arguments, ["frequency", "type", "spread"]));
@@ -142,7 +137,6 @@ export class FatOscillator extends Source<FatOscillatorOptions> implements ToneO
 	get type(): ToneOscillatorType {
 		return this._type;
 	}
-
 	set type(type: ToneOscillatorType) {
 		this._type = type;
 		this._forEach(osc => osc.type = type);
@@ -153,11 +147,14 @@ export class FatOscillator extends Source<FatOscillatorOptions> implements ToneO
 	 * set to 3 oscillators and the "spread" is set to 40,
 	 * the three oscillators would be detuned like this: [-20, 0, 20]
 	 * for a total detune spread of 40 cents.
+	 * @example
+	 * import { FatOscillator } from "tone";
+	 * const fatOsc = new FatOscillator().toDestination().start();
+	 * fatOsc.spread = 70;
 	 */
 	get spread(): Cents {
 		return this._spread;
 	}
-
 	set spread(spread: Cents) {
 		this._spread = spread;
 		if (this._oscillators.length > 1) {
@@ -168,13 +165,18 @@ export class FatOscillator extends Source<FatOscillatorOptions> implements ToneO
 	}
 
 	/**
-	 * The number of detuned oscillators. Should be an integer greater than 1.
+	 * The number of detuned oscillators. Must be an integer greater than 1.
+	 * @example
+	 * import { FatOscillator } from "tone";
+	 * const fatOsc = new FatOscillator("C#3", "sawtooth").toDestination().start();
+	 * // use 4 sawtooth oscillators
+	 * fatOsc.count = 4;
 	 */
 	get count(): number {
 		return this._oscillators.length;
 	}
 	set count(count: number) {
-		count = Math.max(count, 1);
+		assertRange(count, 1);
 		if (this._oscillators.length !== count) {
 			// dispose the previous oscillators
 			this._forEach(osc => osc.dispose());
@@ -205,9 +207,6 @@ export class FatOscillator extends Source<FatOscillatorOptions> implements ToneO
 		}
 	}
 
-	/**
-	 * The phase of the oscillator in degrees.
-	 */
 	get phase(): Degrees {
 		return this._phase;
 	}
@@ -216,13 +215,6 @@ export class FatOscillator extends Source<FatOscillatorOptions> implements ToneO
 		this._forEach(osc => osc.phase = phase);
 	}
 
-	/**
-	 * The oscillator type without the partialsCount appended to the end
-	 * @example
-	 * osc.type = 'sine2'
-	 * osc.baseType //'sine'
-	 * osc.partialCount = 2
-	 */
 	get baseType(): OscillatorType {
 		return this._oscillators[0].baseType;
 	}
@@ -231,19 +223,6 @@ export class FatOscillator extends Source<FatOscillatorOptions> implements ToneO
 		this._type = this._oscillators[0].type;
 	}
 
-	/**
-	 * The partials of the carrier waveform. A partial represents
-	 * the amplitude at a harmonic. The first harmonic is the
-	 * fundamental frequency, the second is the octave and so on
-	 * following the harmonic series.
-	 * Setting this value will automatically set the type to "custom".
-	 * The value is an empty array when the type is not "custom".
-	 * @memberOf FatOscillator#
-	 * @type {Array}
-	 * @name partials
-	 * @example
-	 * osc.partials = [1, 0.2, 0.01];
-	 */
 	get partials(): number[] {
 		return this._oscillators[0].partials;
 	}
@@ -256,15 +235,6 @@ export class FatOscillator extends Source<FatOscillatorOptions> implements ToneO
 		}
 	}
 
-	/**
-	 * 'partialCount' offers an alternative way to set the number of used partials.
-	 * When partialCount is 0, the maximum number of partials are used when representing
-	 * the waveform using the periodicWave. When 'partials' is set, this value is
-	 * not settable, but equals the length of the partials array.
-	 * @memberOf FatOscillator#
-	 * @type {Number}
-	 * @name partialCount
-	 */
 	get partialCount(): number {
 		return this._oscillators[0].partialCount;
 	}

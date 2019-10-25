@@ -10,16 +10,20 @@ import { Signal, SignalOptions } from "../signal/Signal";
  * The subtrahend.
  *
  * @example
- * var sub = new Subtract(1);
- * var sig = new Tone.Signal(4).connect(sub);
- * //the output of sub is 3.
+ * import { Signal, Subtract } from "tone";
+ * // subtract a scalar from a signal
+ * const sub = new Subtract(1);
+ * const sig = new Signal(4).connect(sub);
+ * // the output of sub is 3.
  * @example
- * var sub = new Subtract();
- * var sigA = new Tone.Signal(10);
- * var sigB = new Tone.Signal(2.5);
+ * import { Signal, Subtract } from "tone";
+ * // subtract two signals
+ * const sub = new Subtract();
+ * const sigA = new Signal(10);
+ * const sigB = new Signal(2.5);
  * sigA.connect(sub);
  * sigB.connect(sub.subtrahend);
- * //output of sub is 7.5
+ * // output of sub is 7.5
  * @category Signal
  */
 export class Subtract extends Signal {

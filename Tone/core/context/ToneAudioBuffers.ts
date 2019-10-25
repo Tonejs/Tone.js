@@ -22,8 +22,8 @@ interface ToneAudioBuffersOptions {
  * @example
  * import { Player, ToneAudioBuffers } from "tone";
  * const pianoSamples = new ToneAudioBuffers({
+ * 	C1: "https://tonejs.github.io/examples/audio/casio/C1.mp3",
  * 	C2: "https://tonejs.github.io/examples/audio/casio/C2.mp3",
- * 	C3: "https://tonejs.github.io/examples/audio/casio/C3.mp3",
  * }, () => {
  * 	const player = new Player().toDestination();
  * 	// play one of the samples when they all load
@@ -35,8 +35,8 @@ interface ToneAudioBuffersOptions {
  * // To pass in additional parameters in the second parameter
  * const buffers = new ToneAudioBuffers({
  * 	 urls: {
+ * 		 C1: "C1.mp3",
  * 		 C2: "C2.mp3",
- * 		 C3: "C3.mp3",
  * 	 },
  * 	 onload: () => console.log("loaded"),
  * 	 baseUrl: "https://tonejs.github.io/examples/audio/casio/"

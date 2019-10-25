@@ -68,7 +68,8 @@ const OmniOscillatorSourceMap: {
  * For example: `omniOsc.type = "fatsawtooth"` will create set the oscillator
  * to a FatOscillator of type "sawtooth".
  * @example
- * var omniOsc = new OmniOscillator("C#4", "pwm");
+ * import { OmniOscillator } from "tone";
+ * const omniOsc = new OmniOscillator("C#4", "pwm");
  * @category Source
  */
 export class OmniOscillator<OscType extends AnyOscillator>
@@ -77,14 +78,7 @@ export class OmniOscillator<OscType extends AnyOscillator>
 
 	readonly name: string = "OmniOscillator";
 
-	/**
-	 * The frequency control.
-	 */
 	readonly frequency: Signal<Frequency>;
-
-	/**
-	 * The detune control.
-	 */
 	readonly detune: Signal<Cents>;
 
 	/**
@@ -159,14 +153,18 @@ export class OmniOscillator<OscType extends AnyOscillator>
 	 * prefix the basic types with "fm", "am", or "fat" to use the FMOscillator, AMOscillator or FatOscillator
 	 * types. The oscillator could also be set to "pwm" or "pulse". All of the parameters of the
 	 * oscillator's class are accessible when the oscillator is set to that type, but throws an error
-	 * when it's not.
+	 * when it's not. 
 	 * @example
+	 * import { OmniOscillator } from "tone";
+	 * const omniOsc = new OmniOscillator().toDestination().start();
 	 * omniOsc.type = "pwm";
-	 * //modulationFrequency is parameter which is available
-	 * //only when the type is "pwm".
+	 * // modulationFrequency is parameter which is available
+	 * // only when the type is "pwm".
 	 * omniOsc.modulationFrequency.value = 0.5;
 	 * @example
-	 * //an square wave frequency modulated by a sawtooth
+	 * import { OmniOscillator } from "tone";
+	 * const omniOsc = new OmniOscillator().toDestination().start();
+	 * // an square wave frequency modulated by a sawtooth
 	 * omniOsc.type = "fmsquare";
 	 * omniOsc.modulationType = "sawtooth";
 	 */
@@ -203,15 +201,9 @@ export class OmniOscillator<OscType extends AnyOscillator>
 	}
 
 	/**
-	 * The partials of the waveform. A partial represents
-	 * the amplitude at a harmonic. The first harmonic is the
-	 * fundamental frequency, the second is the octave and so on
-	 * following the harmonic series.
-	 * Setting this value will automatically set the type to "custom".
 	 * The value is an empty array when the type is not "custom".
 	 * This is not available on "pwm" and "pulse" oscillator types.
-	 * @example
-	 * osc.partials = [1, 0.2, 0.01];
+	 * See [[Oscillator.partials]]
 	 */
 	get partials(): number[] {
 		return this._oscillator.partials;
@@ -222,12 +214,6 @@ export class OmniOscillator<OscType extends AnyOscillator>
 		}
 	}
 
-	/**
-	 * The partial count of the oscillator. This is not available on "pwm" and "pulse" oscillator types.
-	 * @example
-	 * //set the maximum number of partials
-	 * osc.partialCount = 0;
-	 */
 	get partialCount(): number {
 		return this._oscillator.partialCount;
 	}
@@ -237,21 +223,6 @@ export class OmniOscillator<OscType extends AnyOscillator>
 		}
 	}
 
-	/**
-	 * Set the parameters at once. Either pass in an
-	 * object mapping parameters to values, or to set a
-	 * single parameter, by passing in a string and value.
-	 * The last argument is an optional ramp time which
-	 * will ramp any signal values to their destination value
-	 * over the duration of the rampTime.
-	 * @param  props
-	 * @example
-	 * //set values using an object
-	 * filter.set({
-	 * 	"frequency" : 300,
-	 * 	"type" : "highpass"
-	 * });
-	 */
 	set(props: Partial<OmniOscillatorConstructorOptions>): this {
 		// make sure the type is set first
 		if (Reflect.has(props, "type") && props.type) {
@@ -290,9 +261,6 @@ export class OmniOscillator<OscType extends AnyOscillator>
 		}
 	}
 
-	/**
-	 * The phase of the oscillator in degrees.
-	 */
 	get phase(): Degrees {
 		return this._oscillator.phase;
 	}
@@ -303,8 +271,9 @@ export class OmniOscillator<OscType extends AnyOscillator>
 	/**
 	 * The source type of the oscillator.
 	 * @example
-	 * var omniOsc = new OmniOscillator(440, "fmsquare");
-	 * omniOsc.sourceType // 'fm'
+	 * import { OmniOscillator } from "tone";
+	 * const omniOsc = new OmniOscillator(440, "fmsquare");
+	 * console.log(omniOsc.sourceType); // 'fm'
 	 */
 	get sourceType(): OmniOscSourceType {
 		return this._sourceType;
@@ -340,12 +309,13 @@ export class OmniOscillator<OscType extends AnyOscillator>
 	}
 
 	/**
-	 * The base type of the oscillator.
+	 * The base type of the oscillator. See [[Oscillator.baseType]]
 	 * @example
-	 * var omniOsc = new OmniOscillator(440, "fmsquare4");
-	 * omniOsc.sourceType // 'fm'
-	 * omniOsc.baseType //'square'
-	 * omniOsc.partialCount //4
+	 * import { OmniOscillator } from "tone";
+	 * const omniOsc = new OmniOscillator(440, "fmsquare4");
+	 * omniOsc.sourceType; // 'fm'
+	 * omniOsc.baseType; // 'square'
+	 * omniOsc.partialCount; // 4
 	 */
 	get baseType(): OscillatorType | "pwm" | "pulse" {
 		return this._oscillator.baseType;
@@ -360,9 +330,11 @@ export class OmniOscillator<OscType extends AnyOscillator>
 
 	/**
 	 * The width of the oscillator when sourceType === "pulse".
+	 * See [[PWMOscillator.width]]
 	 * @example
-	 * var omniOsc = new OmniOscillator(440, "pulse");
-	 * //can access the width attribute only if type === "pulse"
+	 * import { OmniOscillator } from "tone";
+	 * const omniOsc = new OmniOscillator(440, "pulse");
+	 * // can access the width attribute only if type === "pulse"
 	 * omniOsc.width.value = 0.2;
 	 */
 	get width(): IsPulseOscillator<OscType, Signal<AudioRange>> {
@@ -374,7 +346,8 @@ export class OmniOscillator<OscType extends AnyOscillator>
 	}
 
 	/**
-	 * The number of detuned oscillators, when sourceType === "fat".
+	 * The number of detuned oscillators when sourceType === "fat".
+	 * See [[FatOscillator.count]]
 	 */
 	get count(): IsFatOscillator<OscType, number> {
 		if (this._getOscType(this._oscillator, "fat")) {
@@ -390,11 +363,8 @@ export class OmniOscillator<OscType extends AnyOscillator>
 	}
 
 	/**
-	 * The detune spread between the oscillators. If "count" is
-	 * set to 3 oscillators and the "spread" is set to 40,
-	 * the three oscillators would be detuned like this: [-20, 0, 20]
-	 * for a total detune spread of 40 cents. See Tone.FatOscillator
-	 * for more info.
+	 * The detune spread between the oscillators when sourceType === "fat".
+	 * See [[FatOscillator.count]]
 	 */
 	get spread(): IsFatOscillator<OscType, Cents> {
 		if (this._getOscType(this._oscillator, "fat")) {
@@ -410,9 +380,8 @@ export class OmniOscillator<OscType extends AnyOscillator>
 	}
 
 	/**
-	 * The type of the modulator oscillator. Only if the oscillator
-	 * is set to "am" or "fm" types. see. Tone.AMOscillator or Tone.FMOscillator
-	 * for more info.
+	 * The type of the modulator oscillator. Only if the oscillator is set to "am" or "fm" types. 
+	 * See [[AMOscillator]] or [[FMOscillator]]
 	 */
 	get modulationType(): IsAmOrFmOscillator<OscType, ToneOscillatorType> {
 		if (this._getOscType(this._oscillator, "fm") || this._getOscType(this._oscillator, "am")) {
@@ -428,10 +397,8 @@ export class OmniOscillator<OscType extends AnyOscillator>
 	}
 
 	/**
-	 * The modulation index which is in essence the depth or amount of the modulation. In other terms it is the
-	 * ratio of the frequency of the modulating signal (mf) to the amplitude of the
-	 * modulating signal (ma) -- as in ma/mf.
-	 * See Tone.FMOscillator for more info.
+	 * The modulation index when the sourceType === "fm"
+	 * See [[FMOscillator]].
 	 */
 	get modulationIndex(): IsFMOscillator<OscType, Signal<Positive>> {
 		if (this._getOscType(this._oscillator, "fm")) {
@@ -443,9 +410,7 @@ export class OmniOscillator<OscType extends AnyOscillator>
 
 	/**
 	 * Harmonicity is the frequency ratio between the carrier and the modulator oscillators.
-	 * A harmonicity of 1 gives both oscillators the same frequency.
-	 * Harmonicity = 2 means a change of an octave. See Tone.AMOscillator or Tone.FMOscillator
-	 * for more info.
+	 * See [[AMOscillator]] or [[FMOscillator]]
 	 */
 	get harmonicity(): IsAmOrFmOscillator<OscType, Signal<Positive>> {
 		if (this._getOscType(this._oscillator, "fm") || this._getOscType(this._oscillator, "am")) {
@@ -456,13 +421,8 @@ export class OmniOscillator<OscType extends AnyOscillator>
 	}
 
 	/**
-	 * The modulationFrequency Signal of the oscillator
-	 * (only if the oscillator type is set to pwm). See
-	 * Tone.PWMOscillator for more info.
-	 * @example
-	 * var omniOsc = new OmniOscillator(440, "pwm");
-	 * //can access the modulationFrequency attribute only if type === "pwm"
-	 * omniOsc.modulationFrequency.value = 0.2;
+	 * The modulationFrequency Signal of the oscillator when sourceType === "pwm"
+	 * see [[PWMOscillator]]
 	 * @min 0.1
 	 * @max 5
 	 */

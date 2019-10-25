@@ -212,6 +212,8 @@ export class ToneEvent<ValueType = any> extends ToneWithContext<ToneEventOptions
 	 * to the callback time. If the value is given as a time, it will randomize
 	 * by that amount.
 	 * @example
+	 * import { ToneEvent } from "tone";
+	 * const event = new ToneEvent();
 	 * event.humanize = true;
 	 */
 	get humanize(): Time | boolean {

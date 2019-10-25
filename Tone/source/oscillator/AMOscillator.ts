@@ -29,6 +29,7 @@ export { AMOscillatorOptions } from "./OscillatorInterface";
  * ```
  *
  * @example
+ * import { AMOscillator } from "tone";
  * // a sine oscillator amplitude-modulated by a square wave
  * const amOsc = new AMOscillator("Ab3", "sine", "square").toDestination().start();
  * @category Source
@@ -42,14 +43,7 @@ export class AMOscillator extends Source<AMOscillatorOptions> implements ToneOsc
 	 */
 	private _carrier: Oscillator;
 
-	/**
-	 * The oscillator's frequency
-	 */
 	readonly frequency: Signal<Frequency>;
-
-	/**
-	 * The detune control signal.
-	 */
 	readonly detune: Signal<Cents>;
 
 	/**
@@ -67,8 +61,10 @@ export class AMOscillator extends Source<AMOscillatorOptions> implements ToneOsc
 	 * A harmonicity of 1 gives both oscillators the same frequency.
 	 * Harmonicity = 2 means a change of an octave.
 	 * @example
-	 * //pitch the modulator an octave below carrier
-	 * synth.harmonicity.value = 0.5;
+	 * import { AMOscillator } from "tone";
+	 * const amOsc = new AMOscillator("D2").toDestination().start();
+	 * // pitch the modulator an octave below carrier
+	 * amOsc.harmonicity.value = 0.5;
 	 */
 	readonly harmonicity: Signal<Positive>;
 
@@ -164,13 +160,6 @@ export class AMOscillator extends Source<AMOscillatorOptions> implements ToneOsc
 		this._carrier.type = type;
 	}
 
-	/**
-	 * The oscillator type without the partialsCount appended to the end
-	 * @example
-	 * osc.type = 'sine2'
-	 * osc.baseType //'sine'
-	 * osc.partialCount = 2
-	 */
 	get baseType(): OscillatorType {
 		return this._carrier.baseType;
 	}
@@ -178,16 +167,9 @@ export class AMOscillator extends Source<AMOscillatorOptions> implements ToneOsc
 		this._carrier.baseType = baseType;
 	}
 
-	/**
-	 * 'partialCount' offers an alternative way to set the number of used partials.
-	 * When partialCount is 0, the maximum number of partials are used when representing
-	 * the waveform using the periodicWave. When 'partials' is set, this value is
-	 * not settable, but equals the length of the partials array.
-	 */
 	get partialCount(): number {
 		return this._carrier.partialCount;
 	}
-
 	set partialCount(partialCount: number) {
 		this._carrier.partialCount = partialCount;
 	}
@@ -198,14 +180,10 @@ export class AMOscillator extends Source<AMOscillatorOptions> implements ToneOsc
 	get modulationType(): ToneOscillatorType {
 		return this._modulator.type;
 	}
-
 	set modulationType(type: ToneOscillatorType) {
 		this._modulator.type = type;
 	}
 
-	/**
-	 * The phase of the oscillator in degrees.
-	 */
 	get phase(): Degrees {
 		return this._carrier.phase;
 	}
@@ -214,16 +192,6 @@ export class AMOscillator extends Source<AMOscillatorOptions> implements ToneOsc
 		this._modulator.phase = phase;
 	}
 
-	/**
-	 * The partials of the carrier waveform. A partial represents
-	 * the amplitude at a harmonic. The first harmonic is the
-	 * fundamental frequency, the second is the octave and so on
-	 * following the harmonic series.
-	 * Setting this value will automatically set the type to "custom".
-	 * The value is an empty array when the type is not "custom".
-	 * @example
-	 * osc.partials = [1, 0.2, 0.01];
-	 */
 	get partials(): number[] {
 		return this._carrier.partials;
 	}

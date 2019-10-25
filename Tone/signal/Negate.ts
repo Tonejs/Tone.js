@@ -7,9 +7,10 @@ import { SignalOperator } from "./SignalOperator";
  * Negate the incoming signal. i.e. an input signal of 10 will output -10
  *
  * @example
- * var neg = new Negate();
- * var sig = new Signal(-2).connect(neg);
- * //output of neg is positive 2.
+ * import { Negate, Signal } from "tone";
+ * const neg = new Negate();
+ * const sig = new Signal(-2).connect(neg);
+ * // output of neg is positive 2.
  * @category Signal
  */
 export class Negate extends SignalOperator<ToneAudioNodeOptions> {

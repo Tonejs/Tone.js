@@ -22,7 +22,15 @@ export interface SignalOptions<Type> extends ToneAudioNodeOptions {
  * [here](https://github.com/Tonejs/Tone.js/wiki/Signals).
  *
  * @example
- * const signal = new Tone.Signal(10);
+ * import { Oscillator, Signal } from "tone";
+ * const osc = new Oscillator().toDestination().start();
+ * // a scheduleable signal which can be connected to control an AudioParam or another Signal
+ * const signal = new Signal({
+ * 	value: "C4",
+ * 	units: "frequency"
+ * }).connect(osc.frequency);
+ * // the scheduled ramp controls the connected signal
+ * signal.rampTo("C2", 4, "+0.5");
  * @category Signal
  */
 export class Signal<Type extends Unit = number> extends ToneAudioNode<SignalOptions<any>>

@@ -10,17 +10,19 @@ import { Signal, SignalOptions } from "./Signal";
  * If a value is passed into the constructor, the it will be added to the input.
  *
  * @example
- * var signal = new Signal(2);
- * var add = new Add(2);
+ * import { Add, Signal } from "tone";
+ * const signal = new Signal(2);
+ * // add a signal and a scalar
+ * const add = new Add(2);
  * signal.connect(add);
- * //the output of add equals 4
+ * // the output of add equals 4
  * @example
- * //if constructed with no arguments
- * //it will add the first and second inputs
- * var add = new Add();
- * var sig0 = new Signal(3).connect(add);
- * var sig1 = new Signal(4).connect(add.addend);
- * //the output of add equals 7.
+ * import { Add, Signal } from "tone";
+ * // Add two signal inputs
+ * const add = new Add();
+ * const sig0 = new Signal(3).connect(add);
+ * const sig1 = new Signal(4).connect(add.addend);
+ * // the output of add equals 7.
  * @category Signal
  */
 export class Add extends Signal {

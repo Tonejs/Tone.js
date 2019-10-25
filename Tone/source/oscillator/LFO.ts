@@ -29,7 +29,11 @@ export interface LFOOptions extends ToneAudioNodeOptions {
  * also be synced to the transport to start/stop and change when the tempo changes.
  *
  * @example
- * var lfo = new LFO("4n", 400, 4000);
+ * import { Filter, LFO, Noise } from "tone";
+ * const filter = new Filter().toDestination();
+ * const noise = new Noise().connect(filter).start();
+ * const lfo = new LFO("4n", 400, 4000).start();
+ * // have it control the filters cutoff
  * lfo.connect(filter.frequency);
  * @category Source
  */
@@ -196,10 +200,10 @@ export class LFO extends ToneAudioNode<LFOOptions> {
 	 * Sync the start/stop/pause to the transport
 	 * and the frequency to the bpm of the transport
 	 * @example
-	 * lfo.frequency.value = "8n";
-	 * lfo.sync().start(0)
-	 * //the rate of the LFO will always be an eighth note,
-	 * //even as the tempo changes
+	 * import { LFO } from "tone";
+	 * const lfo = new LFO("8n");
+	 * lfo.sync().start(0);
+	 * // the rate of the LFO will always be an eighth note, even as the tempo changes
 	 */
 	sync(): this {
 		this._oscillator.sync();

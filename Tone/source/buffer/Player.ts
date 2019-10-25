@@ -22,8 +22,9 @@ export interface PlayerOptions extends SourceOptions {
 /**
  * Player is an audio file player with start, loop, and stop functions.
  * @example
- * var player = new Player("./path/to/sample.mp3").toDestination();
- * //play as soon as the buffer is loaded
+ * import { Player } from "tone";
+ * const player = new Player("https://tonejs.github.io/examples/audio/FWDL.mp3").toDestination();
+ * // play as soon as the buffer is loaded
  * player.autostart = true;
  * @category Source
  */
@@ -34,12 +35,6 @@ export class Player extends Source<PlayerOptions> {
 	/**
 	 * If the file should play as soon
 	 * as the buffer is loaded.
-	 * @example
-	 * //will play as soon as it's loaded
-	 * var player = new Player({
-	 * 	"url" : "./path/to/sample.mp3",
-	 * 	"autostart" : true,
-	 * }).toDestination();
 	 */
 	autostart: boolean;
 
@@ -266,8 +261,12 @@ export class Player extends Source<PlayerOptions> {
 	 * @param offset The time to seek to.
 	 * @param when The time for the seek event to occur.
 	 * @example
-	 * source.start(0.2);
-	 * source.stop(0.4);
+	 * import { Player } from "tone";
+	 * const player = new Player("https://tonejs.github.io/examples/audio/FWDL.mp3", () => {
+	 * 	player.start();
+	 * 	// seek to the offset in 1 second from now
+	 * 	player.seek(0.4, "+1");
+	 * }).toDestination();
 	 */
 	seek(offset: Time, when?: Time): this {
 		const computedTime = this.toSeconds(when);
@@ -286,9 +285,12 @@ export class Player extends Source<PlayerOptions> {
 	 * @param loopStart The loop end time
 	 * @param loopEnd The loop end time
 	 * @example
-	 * //loop 0.1 seconds of the file.
+	 * import { Player } from "tone";
+	 * const player = new Player("https://tonejs.github.io/examples/audio/FWDL.mp3").toDestination();
+	 * // loop between the given points
 	 * player.setLoopPoints(0.2, 0.3);
 	 * player.loop = true;
+	 * player.autostart = true;
 	 */
 	setLoopPoints(loopStart: Time, loopEnd: Time): this {
 		this.loopStart = loopStart;

@@ -8,13 +8,82 @@ import { OfflineContext } from "../../core/context/OfflineContext";
  * The common interface of all Oscillators
  */
 export interface ToneOscillatorInterface {
+
+	/**
+	 * The oscillator type without the partialsCount appended to the end
+	 * @example
+	 * import { Oscillator } from "tone";
+	 * const osc = new Oscillator();
+	 * osc.type = "sine2";
+	 * console.log(osc.baseType); // "sine"
+	 */
 	baseType: OscillatorType | "pulse" | "pwm";
+
+	/**
+	 * The oscillator's type. Also capable of setting the first x number of partials of the oscillator. 
+	 * For example: "sine4" would set be the first 4 partials of the sine wave and "triangle8" would 
+	 * set the first 8 partials of the triangle wave.
+	 * @example
+	 * import { Oscillator } from "tone";
+	 * const osc = new Oscillator();
+	 * osc.type = "sine2";
+	 */
 	type: ExtendedToneOscillatorType;
+	
+	/**
+	 * The frequency value of the oscillator
+	 * @example
+	 * import { FMOscillator } from "tone";
+	 * const osc = new FMOscillator("Bb4").toDestination().start();
+	 * osc.frequency.rampTo("D2", 3);
+	 */
 	readonly frequency: Signal<Frequency>;
+
+	/**
+	 * The detune value in cents (100th of a semitone).
+	 * @example
+	 * import { PulseOscillator } from "tone";
+	 * const osc = new PulseOscillator("F3").toDestination().start();
+	 * // pitch it 1 octave down (12 semitones)
+	 * osc.detune.value = -1200;
+	 */
 	readonly detune: Signal<Cents>;
+
+	/**
+	 * The phase is the starting position within the oscillator's cycle. For example
+	 * a phase of 180 would start halfway through the oscillator's cycle. 
+	 */
 	phase: Degrees;
+
+	/**
+	 * The partials describes the relative amplitude of each of the harmonics of the oscillator. 
+	 * The first value in the array is the first harmonic (i.e. the fundamental frequency), the 
+	 * second harmonic is an octave up, the third harmonic is an octave and a fifth, etc. The resulting
+	 * oscillator output is composed of a sine tone at the relative amplitude at each of the harmonic intervals. 
+	 * 
+	 * Setting this value will automatically set the type to "custom".
+	 * The value is an empty array when the type is not "custom".
+	 * @example
+	 * import { Oscillator } from "tone";
+	 * const osc = new Oscillator("F3").toDestination().start();
+	 * osc.partials = [1, 0, 0.4, 1, 0.2];
+	 */
 	partials: number[];
+	
+	/**
+	 * 'partialCount' offers an alternative way to set the number of used partials.
+	 * When partialCount is 0, the maximum number of partials are used when representing
+	 * the waveform using the periodicWave. When 'partials' is set, this value is
+	 * not settable, but equals the length of the partials array. A square wave wave
+	 * is composed of only odd harmonics up through the harmonic series. Partial count
+	 * can limit the number of harmonics which are used to generate the waveform.
+	 * @example
+	 * import { Oscillator } from "tone";
+	 * const osc = new Oscillator("C3", "square").toDestination().start();
+	 * osc.partialCount = 5;
+	 */
 	partialCount?: number;
+
 	/**
 	 * Returns an array of values which represents the waveform.
 	 * @param length The length of the waveform to return

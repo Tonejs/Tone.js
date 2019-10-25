@@ -25,8 +25,9 @@ export { FMOscillatorOptions } from "./OscillatorInterface";
  * ```
  *
  * @example
- * //a sine oscillator frequency-modulated by a square wave
- * var fmOsc = new FMOscillator("Ab3", "sine", "square").toDestination().start();
+ * import { FMOscillator } from "tone";
+ * // a sine oscillator frequency-modulated by a square wave
+ * const fmOsc = new FMOscillator("Ab3", "sine", "square").toDestination().start();
  * @category Source
  */
 export class FMOscillator extends Source<FMOscillatorOptions> implements ToneOscillatorInterface {
@@ -38,14 +39,7 @@ export class FMOscillator extends Source<FMOscillatorOptions> implements ToneOsc
 	 */
 	private _carrier: Oscillator;
 
-	/**
-	 * The oscillator's frequency
-	 */
 	readonly frequency: Signal<Frequency>;
-
-	/**
-	 * The detune control signal.
-	 */
 	readonly detune: Signal<Cents>;
 
 	/**
@@ -58,8 +52,10 @@ export class FMOscillator extends Source<FMOscillatorOptions> implements ToneOsc
 	 * A harmonicity of 1 gives both oscillators the same frequency.
 	 * Harmonicity = 2 means a change of an octave.
 	 * @example
-	 * //pitch the modulator an octave below carrier
-	 * synth.harmonicity.value = 0.5;
+	 * import { FMOscillator } from "tone";
+	 * const fmOsc = new FMOscillator("D2").toDestination().start();
+	 * // pitch the modulator an octave below carrier
+	 * fmOsc.harmonicity.value = 0.5;
 	 */
 	readonly harmonicity: Signal<Positive>;
 
@@ -170,9 +166,6 @@ export class FMOscillator extends Source<FMOscillatorOptions> implements ToneOsc
 		return this;
 	}
 
-	/**
-	 * The type of the carrier oscillator
-	 */
 	get type(): ToneOscillatorType {
 		return this._carrier.type;
 	}
@@ -180,13 +173,6 @@ export class FMOscillator extends Source<FMOscillatorOptions> implements ToneOsc
 		this._carrier.type = type;
 	}
 
-	/**
-	 * The oscillator type without the partialsCount appended to the end
-	 * @example
-	 * osc.type = 'sine2'
-	 * osc.baseType //'sine'
-	 * osc.partialCount = 2
-	 */
 	get baseType(): OscillatorType {
 		return this._carrier.baseType;
 	}
@@ -194,12 +180,6 @@ export class FMOscillator extends Source<FMOscillatorOptions> implements ToneOsc
 		this._carrier.baseType = baseType;
 	}
 
-	/**
-	 * 'partialCount' offers an alternative way to set the number of used partials.
-	 * When partialCount is 0, the maximum number of partials are used when representing
-	 * the waveform using the periodicWave. When 'partials' is set, this value is
-	 * not settable, but equals the length of the partials array.
-	 */
 	get partialCount(): number {
 		return this._carrier.partialCount;
 	}
@@ -217,9 +197,6 @@ export class FMOscillator extends Source<FMOscillatorOptions> implements ToneOsc
 		this._modulator.type = type;
 	}
 
-	/**
-	 * The phase of the oscillator in degrees.
-	 */
 	get phase(): Degrees {
 		return this._carrier.phase;
 	}
@@ -228,16 +205,6 @@ export class FMOscillator extends Source<FMOscillatorOptions> implements ToneOsc
 		this._modulator.phase = phase;
 	}
 
-	/**
-	 * The partials of the carrier waveform. A partial represents
-	 * the amplitude at a harmonic. The first harmonic is the
-	 * fundamental frequency, the second is the octave and so on
-	 * following the harmonic series.
-	 * Setting this value will automatically set the type to "custom".
-	 * The value is an empty array when the type is not "custom".
-	 * @example
-	 * osc.partials = [1, 0.2, 0.01];
-	 */
 	get partials(): number[] {
 		return this._carrier.partials;
 	}

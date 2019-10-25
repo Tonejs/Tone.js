@@ -15,6 +15,7 @@ export interface PanVolOptions extends ToneAudioNodeOptions {
 /**
  * PanVol is a Tone.Panner and Tone.Volume in one.
  * @example
+ * import { Oscillator, PanVol } from "tone";
  * // pan the incoming signal left and drop the volume
  * const panVol = new PanVol(-0.25, -12).toDestination();
  * const osc = new Oscillator().connect(panVol).start();

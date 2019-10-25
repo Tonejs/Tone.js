@@ -1,7 +1,7 @@
 import { WaveShaper, WaveShaperMappingFn } from "./WaveShaper";
-import { optionsFromArguments } from "Tone";
+import { optionsFromArguments } from "../core/util/Defaults";
 import { SignalOperator } from "./SignalOperator";
-import { ToneAudioNodeOptions } from "Tone/core/context/ToneAudioNode";
+import { ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
 
 export interface PowOptions extends ToneAudioNodeOptions {
 	value: number;
@@ -11,9 +11,10 @@ export interface PowOptions extends ToneAudioNodeOptions {
  * Pow applies an exponent to the incoming signal. The incoming signal must be AudioRange [-1, 1]
  *
  * @example
- * var pow = new Pow(2);
- * var sig = new Signal(0.5).connect(pow);
- * //output of pow is 0.25. 
+ * import { Pow, Signal } from "tone";
+ * const pow = new Pow(2);
+ * const sig = new Signal(0.5).connect(pow);
+ * // output of pow is 0.25. 
  * @category Signal
  */
 export class Pow extends SignalOperator<PowOptions> {

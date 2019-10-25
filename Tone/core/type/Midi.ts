@@ -8,8 +8,6 @@ import { Hertz, Interval, MidiNote, Seconds, Ticks } from "./Units";
  * Midi is a primitive type for encoding Time values.
  * Midi can be constructed with or without the `new` keyword. Midi can be passed
  * into the parameter of any method which takes time as an argument.
- * @example
- * var t = Midi("4n");//a quarter note
  * @category Unit
  */
 export class MidiClass extends FrequencyClass<MidiNote> {
@@ -48,9 +46,9 @@ export class MidiClass extends FrequencyClass<MidiNote> {
 
 	/**
 	 * Return the value of the frequency as a MIDI note
-	 * @return  {MIDI}
 	 * @example
-	 * Midi(60).toMidi(); //60
+	 * import { Midi } from "tone";
+	 * Midi(60).toMidi(); // 60
 	 */
 	toMidi(): MidiNote {
 		return this.valueOf();
@@ -58,9 +56,9 @@ export class MidiClass extends FrequencyClass<MidiNote> {
 
 	/**
 	 * Return the value of the frequency as a MIDI note
-	 * @return  {MIDI}
 	 * @example
-	 * Midi(60).toFrequency(); //261.6255653005986
+	 * import { Midi } from "tone";
+	 * Midi(60).toFrequency(); // 261.6255653005986
 	 */
 	toFrequency(): Hertz {
 		return mtof(this.toMidi());
@@ -70,7 +68,8 @@ export class MidiClass extends FrequencyClass<MidiNote> {
 	 * Transposes the frequency by the given number of semitones.
 	 * @return A new transposed MidiClass
 	 * @example
-	 * Midi("A4").transpose(3); //"C5"
+	 * import { Midi } from "tone";
+	 * Midi("A4").transpose(3); // "C5"
 	 */
 	transpose(interval: Interval): MidiClass {
 		return new MidiClass(this.context, this.toMidi() + interval);

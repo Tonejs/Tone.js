@@ -6,10 +6,11 @@ import { WaveShaper } from "./WaveShaper";
  * Return the absolute value of an incoming signal.
  *
  * @example
- * var signal = new Tone.Signal(-1);
- * var abs = new Tone.Abs();
+ * import { Abs, Signal } from "tone";
+ * const signal = new Signal(-1);
+ * const abs = new Abs();
  * signal.connect(abs);
- * //the output of abs is 1.
+ * // the output of abs is 1.
  * @category Signal
  */
 export class Abs extends SignalOperator<ToneAudioNodeOptions> {

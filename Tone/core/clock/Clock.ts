@@ -274,7 +274,7 @@ export class Clock<Type extends BPM | Hertz = Hertz>
 	 * @return  The name of the state input in setStateAtTime.
 	 * @example
 	 * import { Clock } from "tone";
-	 * const clock = new Tone.Clock();
+	 * const clock = new Clock();
 	 * clock.start("+0.1");
 	 * clock.getStateAtTime("+0.1"); // returns "started"
 	 */

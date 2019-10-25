@@ -43,15 +43,12 @@ export interface PolySynthOptions<Voice> extends InstrumentOptions {
  * monophonic synthesizers to be polyphonic.
  *
  * @example
- * var synth = new PolySynth(Tone.Synth, {
- *   oscillator : {
- * 		type : "square"
- * 	}
- * }).toMaster();
- * //set the attributes using the set interface
- * synth.set("detune", -1200);
- * //play a chord
- * synth.triggerAttackRelease(["C4", "E4", "A4"], "4n");
+ * import { PolySynth } from "tone";
+ * const synth = new PolySynth().toDestination();
+ * // set the attributes across all the voices using 'set'
+ * synth.set({ detune: -1200 });
+ * // play a chord
+ * synth.triggerAttackRelease(["C4", "E4", "A4"], 1);
  * @category Instrument
  */
 export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument<VoiceOptions<Voice>> {
@@ -271,7 +268,9 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 	 * @param  time  The start time of the note.
 	 * @param velocity The velocity of the note.
 	 * @example
-	 * //trigger a chord immediately with a velocity of 0.2
+	 * import { FMSynth, PolySynth } from "tone";
+	 * const synth = new PolySynth(FMSynth).toDestination();
+	 * // trigger a chord immediately with a velocity of 0.2
 	 * poly.triggerAttack(["Ab3", "C4", "F5"], undefined, 0.2);
 	 */
 	triggerAttack(notes: Frequency | Frequency[], time?: Time, velocity?: NormalRange): this {
@@ -290,7 +289,13 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 	 * @param  notes The notes to play. Accepts a single Frequency or an array of frequencies.
 	 * @param  time  When the release will be triggered.
 	 * @example
-	 * poly.triggerRelease(["Ab3", "C4", "F5"], "+2n");
+	 * @example
+	 * import { AMSynth, PolySynth } from "tone";
+	 * const poly = new PolySynth(AMSynth).toDestination();
+	 * poly.triggerAttack(["Ab3", "C4", "F5"]);
+	 * // trigger the release of the given notes. 
+	 * poly.triggerRelease(["Ab3", "C4"], "+1");
+	 * poly.triggerRelease("F5", "+3");
 	 */
 	triggerRelease(notes: Frequency | Frequency[], time?: Time): this {
 		if (!Array.isArray(notes)) {
@@ -308,11 +313,10 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 	 * @param  time  if no time is given, defaults to now
 	 * @param  velocity the velocity of the attack (0-1)
 	 * @example
-	 * //trigger a chord for a duration of a half note
-	 * poly.triggerAttackRelease(["Eb3", "G4", "C5"], "2n");
-	 * @example
-	 * //can pass in an array of durations as well
-	 * poly.triggerAttackRelease(["Eb3", "G4", "C5"], ["2n", "4n", "4n"]);
+	 * import { AMSynth, PolySynth } from "tone";
+	 * const poly = new PolySynth(AMSynth).toDestination();
+	 * // can pass in an array of durations as well
+	 * poly.triggerAttackRelease(["Eb3", "G4", "Bb4", "D5"], [4, 3, 2, 1]);
 	 */
 	triggerAttackRelease(
 		notes: Frequency | Frequency[],
@@ -339,18 +343,6 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 		return this;
 	}
 
-	/**
-	 * Sync the instrument to the Transport. All subsequent calls of
-	 * {@link triggerAttack} and {@link triggerRelease} will be scheduled along the transport.
-	 * @example
-	 * synth.sync()
-	 * //schedule 3 notes when the transport first starts
-	 * synth.triggerAttackRelease('8n', 0)
-	 * synth.triggerAttackRelease('8n', '8n')
-	 * synth.triggerAttackRelease('8n', '4n')
-	 * //start the transport to hear the notes
-	 * Transport.start()
-	 */
 	sync(): this {
 		this._syncMethod("triggerAttack", 1);
 		this._syncMethod("triggerRelease", 1);
@@ -360,14 +352,15 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 	/**
 	 * Set a member/attribute of the voices
 	 * @example
+	 * import { PolySynth } from "tone";
+	 * const poly = new PolySynth().toDestination();
+	 * // set all of the voices using an options object for the synth type
 	 * poly.set({
-	 * 	"filter" : {
-	 * 		"type" : "highpass"
-	 * 	},
-	 * 	"envelope" : {
-	 * 		"attack" : 0.25
+	 * 	envelope: {
+	 * 		attack: 0.25
 	 * 	}
 	 * });
+	 * poly.triggerAttackRelease("Bb3", 0.2);
 	 */
 	set(options: RecursivePartial<VoiceOptions<Voice>>): this {
 		// remove options which are controlled by the PolySynth

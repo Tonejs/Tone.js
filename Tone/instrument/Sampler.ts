@@ -32,15 +32,17 @@ export interface SamplerOptions extends InstrumentOptions {
  * For sample or buffer playback where repitching is not necessary,
  * use [[Player]].
  * @example
- * var sampler = new Sampler({
- * 	"C3" : "path/to/C3.mp3",
- * 	"D#3" : "path/to/Dsharp3.mp3",
- * 	"F#3" : "path/to/Fsharp3.mp3",
- * 	"A3" : "path/to/A3.mp3",
- * }, function(){
- * 	//sampler will repitch the closest sample
- * 	sampler.triggerAttack("D3")
- * })
+ * import { Sampler } from "tone";
+ * const sampler = new Sampler({
+ * 	urls: {
+ * 		C1: "C1.mp3",
+ * 		C2: "C2.mp3",
+ * 	},
+ * 	baseUrl: "https://tonejs.github.io/examples/audio/casio/",
+ * 	onload: () => {
+ * 		sampler.triggerAttackRelease(["C1", "E1", "G1", "B1"], 0.5);
+ * 	},
+ * });
  * @category Instrument
  */
 export class Sampler extends Instrument<SamplerOptions> {
@@ -239,20 +241,6 @@ export class Sampler extends Instrument<SamplerOptions> {
 		return this;
 	}
 
-	/**
-	 * Sync the instrument to the Transport. All subsequent calls of
-	 * [[triggerAttack]] and [[triggerRelease]]
-	 * will be scheduled along the transport.
-	 * @example
-	 * synth.sync()
-	 * //schedule 3 notes when the transport first starts
-	 * synth.triggerAttackRelease('8n', 0)
-	 * synth.triggerAttackRelease('8n', '8n')
-	 * synth.triggerAttackRelease('8n', '4n')
-	 * //start the transport to hear the notes
-	 * Transport.start()
-	 * @returns {Tone.Instrument} this
-	 */
 	sync(): this {
 		this._syncMethod("triggerAttack", 1);
 		this._syncMethod("triggerRelease", 1);

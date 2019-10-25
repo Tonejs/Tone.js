@@ -172,7 +172,7 @@ export abstract class AbstractParam<Type extends Unit> {
 	 * import { Oscillator } from "tone";
 	 * const osc = new Oscillator().toDestination().start();
 	 * // schedule it to ramp starting at a specific time
-	 * signal.rampTo("A2", 10, "+2");
+	 * osc.frequency.rampTo("A2", 10, "+2");
 	 */
 	abstract rampTo(value: Type, rampTime: Time, startTime?: Time): this;
 

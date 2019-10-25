@@ -23,7 +23,7 @@ export interface NoiseSynthOptions extends InstrumentOptions {
  * @example
  * import { NoiseSynth } from "tone";
  * const noiseSynth = new NoiseSynth().toDestination();
- * noiseSynth.triggerAttackRelease("8n");
+ * noiseSynth.triggerAttackRelease("8n", 0.05);
  * @category Instrument
  */
 export class NoiseSynth extends Instrument<NoiseSynthOptions> {

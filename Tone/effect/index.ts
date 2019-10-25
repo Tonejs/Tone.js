@@ -1,3 +1,4 @@
-export { FeedbackDelay } from "./FeedbackDelay";
-export { Reverb } from "./Reverb";
-export { Distortion } from "./Distortion";
+export * from "./Distortion";
+export * from "./FeedbackDelay";
+export * from "./FrequencyShifter";
+export * from "./Reverb";

@@ -35,8 +35,6 @@ export class Players extends ToneAudioNode<PlayersOptions> {
 
 	/**
 	 * The volume of the output in decibels.
-	 * @example
-	 * source.volume.value = -6;
 	 */
 	readonly volume: Param<Decibels>;
 
@@ -116,9 +114,6 @@ export class Players extends ToneAudioNode<PlayersOptions> {
 
 	/**
 	 * Mute the output.
-	 * @example
-	 * //mute the output
-	 * source.mute = true;
 	 */
 	get mute(): boolean {
 		return this._volume.mute;

@@ -16,7 +16,8 @@ export interface PluckSynthOptions extends InstrumentOptions {
 /**
  * Karplus-String string synthesis.
  * @example
- * var plucky = new Tone.PluckSynth().toDestination();
+ * import { PluckSynth } from "tone";
+ * const plucky = new PluckSynth().toDestination();
  * plucky.triggerAttack("C4");
  * @category Instrument
  */

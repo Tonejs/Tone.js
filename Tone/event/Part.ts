@@ -212,11 +212,6 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 	 * import { Part } from "tone";
 	 * const part = new Part();
 	 * part.add("1m", "C#+11");
-	 * @example
-	 * part.add({
-	 * 	time: "1m",
-	 * 	note: "C#11"
-	 * });
 	 */
 	add(obj: {
 		time: Time;

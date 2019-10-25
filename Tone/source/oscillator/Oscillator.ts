@@ -15,8 +15,9 @@ export { ToneOscillatorOptions, ToneOscillatorType } from "./OscillatorInterface
  * and Transport syncing (see Oscillator.syncFrequency).
  *
  * @example
- * //make and start a 440hz sine tone
- * var osc = new Oscillator(440, "sine").toDestination().start();
+ * import { Oscillator } from "tone";
+ * // make and start a 440hz sine tone
+ * const osc = new Oscillator(440, "sine").toDestination().start();
  * @category Source
  */
 export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOscillatorInterface {
@@ -162,11 +163,13 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 	 * Sync the signal to the Transport's bpm. Any changes to the transports bpm,
 	 * will also affect the oscillators frequency.
 	 * @example
-	 * Tone.Transport.bpm.value = 120;
+	 * import { Oscillator, Transport } from "tone";
+	 * const osc = new Oscillator().toDestination().start();
 	 * osc.frequency.value = 440;
-	 * //the ration between the bpm and the frequency will be maintained
+	 * // the ratio between the bpm and the frequency will be maintained
 	 * osc.syncFrequency();
-	 * Tone.Transport.bpm.value = 240;
+	 * // double the tempo
+	 * Transport.bpm.value *= 2;
 	 * // the frequency of the oscillator is doubled to 880
 	 */
 	syncFrequency(): this {
@@ -217,26 +220,6 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 		}
 	}
 
-	/**
-	 * The type of the oscillator: either sine, square, triangle, or sawtooth. Also capable of
-	 * setting the first x number of partials of the oscillator. For example: "sine4" would
-	 * set be the first 4 partials of the sine wave and "triangle8" would set the first
-	 * 8 partials of the triangle wave.
-	 * <br><br>
-	 * Uses PeriodicWave internally even for native types so that it can set the phase.
-	 * PeriodicWave equations are from the
-	 * [Webkit Web Audio implementation](https://code.google.com/p/chromium/codesearch#chromium/src/third_party/WebKit/Source/modules/webaudio/PeriodicWave.cpp&sq=package:chromium).
-	 *
-	 * @memberOf Oscillator#
-	 * @type {string}
-	 * @name type
-	 * @example
-	 * //set it to a square wave
-	 * osc.type = "square";
-	 * @example
-	 * //set the first 6 partials of a sawtooth wave
-	 * osc.type = "sawtooth6";
-	 */
 	get type(): ToneOscillatorType {
 		return this._type;
 	}
@@ -284,13 +267,6 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 		}
 	}
 
-	/**
-	 * The oscillator type without the partialsCount appended to the end
-	 * @example
-	 * osc.type = 'sine2'
-	 * osc.baseType //'sine'
-	 * osc.partialCount = 2
-	 */
 	get baseType(): OscillatorType {
 		return (this._type as string).replace(this.partialCount.toString(), "") as OscillatorType;
 	}
@@ -302,17 +278,6 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 		}
 	}
 
-	/**
-	 * 'partialCount' offers an alternative way to set the number of used partials.
-	 * When partialCount is 0, the maximum number of partials are used when representing
-	 * the waveform using the periodicWave. When 'partials' is set, this value is
-	 * not settable, but equals the length of the partials array.
-	 * @example
-	 * osc.type = 'sine'
-	 * osc.partialCount = 3
-	 * //is equivalent to
-	 * osc.type = 'sine3'
-	 */
 	get partialCount(): number {
 		return this._partialCount;
 	}
@@ -443,16 +408,6 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 		return -this._inverseFFT(real, imag, this._phase) / maxValue;
 	}
 
-	/**
-	 * The partials of the waveform. A partial represents
-	 * the amplitude at a harmonic. The first harmonic is the
-	 * fundamental frequency, the second is the octave and so on
-	 * following the harmonic series.
-	 * Setting this value will automatically set the type to "custom".
-	 * The value is an empty array when the type is not "custom".
-	 * @example
-	 * osc.partials = [1, 0.2, 0.01];
-	 */
 	get partials(): number[] {
 		return this._partials.slice(0, this.partialCount);
 	}
@@ -464,11 +419,6 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 		}
 	}
 
-	/**
-	 * The phase of the oscillator in degrees.
-	 * @example
-	 * osc.phase = 180; //flips the phase of the oscillator
-	 */
 	get phase(): Degrees {
 		return this._phase * (180 / Math.PI);
 	}

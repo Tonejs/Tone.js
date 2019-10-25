@@ -16,9 +16,10 @@ export interface ScaleOptions extends ToneAudioNodeOptions {
  * outputMin and outputMax.
  *
  * @example
- * var scale = new Scale(50, 100);
- * var signal = new Signal(0.5).connect(scale);
- * //the output of scale equals 75
+ * import { Scale, Signal } from "tone";
+ * const scale = new Scale(50, 100);
+ * const signal = new Signal(0.5).connect(scale);
+ * // the output of scale equals 75
  * @category Signal
  */
 export class Scale extends SignalOperator<ScaleOptions> {

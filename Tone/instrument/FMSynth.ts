@@ -83,7 +83,7 @@ export class FMSynth extends Monophonic<FMSynthOptions> {
 	 * import { FMSynth } from "tone";
 	 * const fmSynth = new FMSynth().toDestination();
 	 * // pitch the modulator an octave below oscillator
-	 * synth.harmonicity.value = 0.5;
+	 * fmSynth.harmonicity.value = 0.5;
 	 * fmSynth.triggerAttackRelease("C5", "4n");
 	 */
 	readonly harmonicity: Multiply;
