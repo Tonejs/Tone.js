@@ -1,8 +1,8 @@
 import { Envelope, EnvelopeOptions } from "./Envelope";
-import { optionsFromArguments } from "Tone/core";
-import { NormalRange, Time } from "Tone/core/type/Units";
-import { Pow } from "Tone/signal/Pow";
-import { Scale } from "Tone/signal/Scale";
+import { optionsFromArguments } from "../../core/util/Defaults";
+import { NormalRange, Time } from "../../core/type/Units";
+import { Pow } from "../../signal/Pow";
+import { Scale } from "../../signal/Scale";
 
 export interface ScaledEnvelopeOptions extends EnvelopeOptions {
 	min: number;
@@ -11,40 +11,47 @@ export interface ScaledEnvelopeOptions extends EnvelopeOptions {
 }
 
 /**
- *  @class ScaledEnvelope is an envelope which can be scaled
- *         to any range. It's useful for applying an envelope
- *         to a frequency or any other non-NormalRange signal
- *         parameter.
- *
- *  @constructor
- *  @param attack	the attack time in seconds
- *  @param decay	the decay time in seconds
- *  @param sustain 	a percentage (0-1) of the full amplitude
- *  @param release	the release time in seconds
- *  @example
- *  var scaledEnv = new ScaledEnvelope({
- *  	"attack" : 0.2,
- *  	"min" : 200,
- *  	"max" : 2000
- *  });
- *  scaledEnv.connect(oscillator.frequency);
+ * ScaledEnvelope is an envelope which can be scaled
+ * to any range. It's useful for applying an envelope
+ * to a frequency or any other non-NormalRange signal
+ * parameter. See [[Envelope]]
+ * @example
+ * import { Oscillator, ScaledEnvelope } from "tone";
+ * const oscillator = new Oscillator().toDestination().start();
+ * const scaledEnv = new ScaledEnvelope({
+ * 	attack: 0.2,
+ * 	min: 200,
+ * 	max: 2000
+ * });
+ * scaledEnv.connect(oscillator.frequency);
  */
 export class ScaledEnvelope extends Envelope {
-
+	
 	readonly name: string = "ScaledEnvelope";
-
-	private _exponent!: Pow;
-
-	private _scale!: Scale;
-
+	
+	/**
+	 * The internal exponent
+	 */
+	private _exponent: Pow;
+	
+	/**
+	 * The internal scale
+	 */
+	private _scale: Scale;
+	
 	input: Pow;
-
 	output: Scale;
 
+	/**
+	 * @param attack	the attack time in seconds
+	 * @param decay	the decay time in seconds
+	 * @param sustain 	a percentage (0-1) of the full amplitude
+	 * @param release	the release time in seconds
+	 */
 	constructor(attack?: Time, decay?: Time, sustain?: NormalRange, release?: Time);
 	constructor(options?: Partial<ScaledEnvelopeOptions>)
 	constructor() {
-		super(optionsFromArguments(ScaledEnvelope.getDefaults(), arguments, ["attack", "decay", "sustain", "release", "min", "max", "exponent"]))
+		super(optionsFromArguments(ScaledEnvelope.getDefaults(), arguments, ["attack", "decay", "sustain", "release", "min", "max", "exponent"]));
 		const options = optionsFromArguments(ScaledEnvelope.getDefaults(), arguments, ["min", "max", "exponent"]);
 
 		this._exponent = this.input = new Pow({
@@ -69,8 +76,7 @@ export class ScaledEnvelope extends Envelope {
 	}
 
 	/**
-	 * The envelope's min output value. This is the value which it
-	 * starts at.
+	 * The envelope's min output value. This is the value which it starts at.
 	 */
 	get min(): number {
 		return this._scale.min;
