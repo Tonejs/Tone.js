@@ -10,6 +10,7 @@ export * from "./channel/Volume";
 export * from "./channel/Panner";
 export * from "./envelope/AmplitudeEnvelope";
 export * from "./envelope/Envelope";
+export * from "./envelope/ScaledEnvelope";
 export * from "./filter/EQ3";
 export * from "./filter/Filter";
 export * from "./dynamics/Compressor";
