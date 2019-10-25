@@ -57,7 +57,7 @@ async function testExampleString(str) {
 	// work with file here in fd
 	await writeFile(path, str);
 	try {
-		await execPromise(`tsc ${path} --noEmit`);
+		await execPromise(`tsc  --noEmit --target es5 --lib dom,ES2015 ${path}`);
 	} finally {
 		cleanup();
 	}
