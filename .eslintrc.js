@@ -1,10 +1,15 @@
 module.exports = {
    "parser": '@typescript-eslint/parser',
     "plugins": [
-        '@typescript-eslint',
-    ],
+		'@typescript-eslint',
+		"jsdoc"
+	],
     "extends": ["plugin:@typescript-eslint/recommended"],
     "rules": {
+		"jsdoc/check-alignment": 1,
+		"jsdoc/check-param-names": [ "error" ],
+		"jsdoc/check-examples": [ "error" ],
+		"jsdoc/check-indentation": ["error", {"excludeTags" : ["example", "param"]}],
 		"dot-location" : [ "error", "property" ],
 		"linebreak-style": [ "error", "unix" ],
 		"eqeqeq" : [ "error" ],
