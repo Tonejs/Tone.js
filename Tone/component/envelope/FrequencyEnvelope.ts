@@ -58,10 +58,10 @@ export class FrequencyEnvelope extends ScaledEnvelope {
 	 * starts at.
 	 */
 	get baseFrequency(): Frequency {
-		return this._getFrequency();
+		return this._baseFrequency;
 	}
 	set baseFrequency(min) {
-		this._setFrequency(min);
+		this._baseFrequency = min;
 		this.min = this.toFrequency(min);
 	}
 
@@ -75,14 +75,6 @@ export class FrequencyEnvelope extends ScaledEnvelope {
 	set octaves(octaves: Positive) {
 		this._octaves = octaves;
 		this.max = this.baseFrequency as number * Math.pow(2, octaves);
-	}
-
-	private _getFrequency(): Frequency {
-		return this._baseFrequency;
-	}
-
-	private _setFrequency(frequency: Frequency): void {
-		this._baseFrequency = frequency;
 	}
 
 	/**
