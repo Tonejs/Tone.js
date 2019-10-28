@@ -12,21 +12,21 @@ describe("FrequencyEnvelope", () => {
 	context("FrequencyEnvelope", () => {
 
 		it("has an output connections", () => {
-			let freqEnv = new FrequencyEnvelope();
+			const freqEnv = new FrequencyEnvelope();
 			freqEnv.connect(connectTo());
 			connectFrom().connect(freqEnv);
 			freqEnv.dispose();
 		});
 
 		it("extends Envelope", () => {
-			let freqEnv = new FrequencyEnvelope();
+			const freqEnv = new FrequencyEnvelope();
 			expect(freqEnv).to.be.instanceOf(Envelope);
 			freqEnv.dispose();
 		});
 
 		it("can get and set values an Objects", () => {
-			let freqEnv = new FrequencyEnvelope();
-			let values = {
+			const freqEnv = new FrequencyEnvelope();
+			const values = {
 				attack: 0,
 				release: "4n",
 				baseFrequency: 20,
@@ -59,13 +59,13 @@ describe("FrequencyEnvelope", () => {
 		});
 
 		it("goes to the scaled range", async () => {
-			let e = {
+			const e = {
 				attack: 0.01,
 				decay: 0.4,
 				sustain: 1
 			};
 			const buffer = await Offline(() => {
-				let freqEnv = new FrequencyEnvelope(e.attack, e.decay, e.sustain);
+				const freqEnv = new FrequencyEnvelope(e.attack, e.decay, e.sustain);
 				freqEnv.baseFrequency = 200;
 				freqEnv.octaves = 3;
 				freqEnv.attackCurve = "exponential";
@@ -82,4 +82,3 @@ describe("FrequencyEnvelope", () => {
 		});
 	});
 });
-
