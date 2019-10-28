@@ -3,6 +3,7 @@ import { FMSynth } from "./FMSynth";
 import { BasicTests } from "test/helper/Basic";
 import { InstrumentTest } from "test/helper/InstrumentTests";
 import { CompareToFile } from "test/helper/CompareToFile";
+import { Offline } from "test/helper/Offline";
 
 describe("FMSynth", () => {
 
@@ -22,6 +23,15 @@ describe("FMSynth", () => {
 			fmSynth.oscillator.type = "triangle";
 			expect(fmSynth.oscillator.type).to.equal("triangle");
 			fmSynth.dispose();
+		});
+
+		it("invokes the onsilence callback", (done) => {
+			Offline(() => {
+				const synth = new FMSynth({
+					onsilence: () => done()
+				});
+				synth.triggerAttackRelease("C3", 0.2, 0);
+			}, 2);
 		});
 
 		it("can get and set modulator attributes", () => {

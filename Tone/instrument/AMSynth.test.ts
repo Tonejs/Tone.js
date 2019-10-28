@@ -3,6 +3,7 @@ import { BasicTests } from "test/helper/Basic";
 import { InstrumentTest } from "test/helper/InstrumentTests";
 import { CompareToFile } from "test/helper/CompareToFile";
 import { expect } from "chai";
+import { Offline } from "test/helper/Offline";
 
 describe("AMSynth", () => {
 
@@ -17,6 +18,15 @@ describe("AMSynth", () => {
 	});
 
 	context("API", () => {
+
+		it("invokes the onsilence callback", (done) => {
+			Offline(() => {
+				const amSynth = new AMSynth({
+					onsilence: () => done()
+				});
+				amSynth.triggerAttackRelease("C3", 0.2, 0);
+			}, 2);
+		});
 
 		it("can get and set carrier attributes", () => {
 			const amSynth = new AMSynth();
