@@ -1,7 +1,6 @@
 import { Timeline, TimelineEvent } from "./Timeline";
 import { Tone } from "../Tone";
 import { Seconds } from "../type/Units";
-import { isDefined } from "./TypeCheck";
 
 interface TimelineValueEvent<T> extends TimelineEvent {
 	value: T;
