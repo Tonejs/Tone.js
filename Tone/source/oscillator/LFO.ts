@@ -243,7 +243,7 @@ export class LFO extends ToneAudioNode<LFOOptions> {
 	}
 
 	/**
-	 * The type of the oscillator: sine, square, sawtooth, triangle.
+	 * The type of the oscillator: See [[Oscillator.type]]
 	 */
 	get type(): ToneOscillatorType {
 		return this._oscillator.type;
