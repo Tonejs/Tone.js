@@ -408,7 +408,14 @@ export class Param<TypeName extends UnitName = "number">
 
 		this.log(this.units, "cancelAndHoldAtTime", computedTime, "value=" + valueAtTime);
 
-		this._param.cancelScheduledValues(computedTime);
+		this._param.cancelAndHoldAtTime(computedTime);
+		// set the value at the given time
+		this._events.add({
+			time: computedTime,
+			type: "setValueAtTime",
+			value: valueAtTime,
+		});
+		this._param.setValueAtTime(valueAtTime, computedTime);
 
 		// if there is an event at the given computedTime
 		// and that even is not a "set"
@@ -431,13 +438,6 @@ export class Param<TypeName extends UnitName = "number">
 			}
 		}
 
-		// set the value at the given time
-		this._events.add({
-			time: computedTime,
-			type: "setValueAtTime",
-			value: valueAtTime,
-		});
-		this._param.setValueAtTime(valueAtTime, computedTime);
 		return this;
 	}
 

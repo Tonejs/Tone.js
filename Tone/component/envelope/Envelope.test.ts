@@ -153,6 +153,25 @@ describe("Envelope", () => {
 			});
 		});
 
+		it("schedule a release at the moment when the attack portion is done", () => {
+			return Offline(() => {
+				const env = new Envelope({
+					attack: 0.5,
+					decay: 0.0,
+					sustain: 1,
+					release: 0.5
+				}).toDestination();
+				env.triggerAttackRelease(0.5);
+			}, 0.7).then((buffer) => {
+				// make sure that it's got the rising edge
+				expect(buffer.getValueAtTime(0.1)).to.be.closeTo(0.2, 0.01);
+				expect(buffer.getValueAtTime(0.2)).to.be.closeTo(0.4, 0.01);
+				expect(buffer.getValueAtTime(0.3)).to.be.closeTo(0.6, 0.01);
+				expect(buffer.getValueAtTime(0.4)).to.be.closeTo(0.8, 0.01);
+				expect(buffer.getValueAtTime(0.5)).to.be.be.closeTo(1, 0.001);
+			});
+		});
+
 		it("correctly schedules an exponential attack", () => {
 			const e = {
 				attack: 0.01,
