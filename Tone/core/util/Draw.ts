@@ -1,6 +1,7 @@
 import { ToneWithContext, ToneWithContextOptions } from "../context/ToneWithContext";
 import { Seconds, Time } from "../type/Units";
 import { Timeline, TimelineEvent } from "./Timeline";
+import { onContextClose, onContextInit } from "../context/ContextInitialization";
 
 interface DrawEvent extends TimelineEvent {
 	callback: () => void;
@@ -104,3 +105,15 @@ export class Draw extends ToneWithContext<ToneWithContextOptions> {
 		return this;
 	}
 }
+
+//-------------------------------------
+// 	INITIALIZATION
+//-------------------------------------
+
+onContextInit(context => {
+	context.draw = new Draw({ context });
+});
+
+onContextClose(context => {
+	context.draw.dispose();
+});

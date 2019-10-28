@@ -11,6 +11,7 @@ import { closeContext, initializeContext } from "./ContextInitialization";
 
 type Transport = import("../clock/Transport").Transport;
 type Destination = import("./Destination").Destination;
+type Draw = import("../util/Draw").Draw;
 
 export type ContextLatencyHint = AudioContextLatencyCategory | "fastest";
 
@@ -86,11 +87,16 @@ export class Context extends Emitter<"statechange" | "tick"> implements BaseAudi
 	 * A reference the Transport singleton belonging to this context
 	 */
 	private _transport!: Transport;
-
+	
 	/**
 	 * A reference the Destination singleton belonging to this context
 	 */
 	private _destination!: Destination;
+
+	/**
+	 * A reference the Transport singleton belonging to this context
+	 */
+	private _draw!: Draw;
 
 	/**
 	 * Private indicator if the context has been initialized
@@ -250,6 +256,18 @@ export class Context extends Emitter<"statechange" | "tick"> implements BaseAudi
 	set transport(t: Transport) {
 		this.assert(!this._initialized, "The transport cannot be set after initialization.");
 		this._transport = t;
+	}
+
+	/**
+	 * This is the Draw object for the context which is useful for synchronizing the draw frame with the Tone.js clock.
+	 */
+	get draw(): Draw {
+		this.initialize();
+		return this._draw;
+	}
+	set draw(d) {
+		this.assert(!this._initialized, "Draw cannot be set after initialization.");
+		this._draw = d;
 	}
 
 	/**
