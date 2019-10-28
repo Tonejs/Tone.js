@@ -159,7 +159,6 @@ export class FMSynth extends Monophonic<FMSynthOptions> {
 		return Object.assign(Monophonic.getDefaults(), {
 			harmonicity: 3,
 			modulationIndex: 10,
-			detune: 0,
 			oscillator: Object.assign(
 				omitFromObject(OmniOscillator.getDefaults(), [
 					...Object.keys(Source.getDefaults()),
