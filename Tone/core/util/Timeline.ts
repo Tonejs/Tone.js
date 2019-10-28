@@ -1,7 +1,7 @@
 import { Tone } from "../Tone";
 import { Seconds } from "../type/Units";
 import { optionsFromArguments } from "./Defaults";
-import { EQ, GT, LT } from "./Math";
+import { EQ, GT, GTE, LT } from "./Math";
 
 type TimelineSearchParam = "ticks" | "time";
 
@@ -178,10 +178,10 @@ export class Timeline<GenericEvent extends TimelineEvent> extends Tone {
 		if (this._timeline.length > 1) {
 			let index = this._search(after);
 			if (index >= 0) {
-				if (this._timeline[index].time === after) {
+				if (EQ(this._timeline[index].time, after)) {
 					// get the first item with that time
 					for (let i = index; i >= 0; i--) {
-						if (this._timeline[i].time === after) {
+						if (EQ(this._timeline[i].time, after)) {
 							index = i;
 						} else {
 							break;
@@ -196,7 +196,7 @@ export class Timeline<GenericEvent extends TimelineEvent> extends Tone {
 			}
 		} else if (this._timeline.length === 1) {
 			// the first item's time
-			if (this._timeline[0].time >= after) {
+			if (GTE(this._timeline[0].time, after)) {
 				this._timeline = [];
 			}
 		}
@@ -230,27 +230,6 @@ export class Timeline<GenericEvent extends TimelineEvent> extends Tone {
 	}
 
 	private readonly _epsilon = 1e-6;
-
-	/**
-	 * Test if a value is the same (by some small epsilon)
-	 */
-	private _eq(a: number, b: number): boolean {
-		return Math.abs(a - b) < this._epsilon;
-	}
-
-	/**
-	 * Test if a is greater than b
-	 */
-	private _gt(a: number, b: number): boolean {
-		return a > b + this._epsilon;
-	}
-
-	/**
-	 * Test if a is greater than b
-	 */
-	private _lt(a: number, b: number): boolean {
-		return a < b + this._epsilon;
-	}
 
 	/**
 	 * Does a binary search on the timeline array and returns the
