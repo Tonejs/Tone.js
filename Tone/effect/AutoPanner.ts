@@ -1,12 +1,12 @@
-import { Panner } from "Tone/component/channel/Panner";
-import { optionsFromArguments } from "Tone/core/util/Defaults";
+import { Panner } from "../component/channel/Panner";
+import { optionsFromArguments } from "../core/util/Defaults";
 import { LFOEffect, LFOEffectOptions } from "./LFOEffect";
-import { Frequency } from "Tone/core/type/Units";
+import { Frequency } from "../core/type/Units";
 
 export type AutoPannerOptions = LFOEffectOptions;
 
 /**
- * AutoPanner is a Tone.Panner with an LFO connected to the pan amount. 
+ * AutoPanner is a [[Panner]] with an [[LFO]] connected to the pan amount. 
  * [Related Reading](https://www.ableton.com/en/blog/autopan-chopper-effect-and-more-liveschool/).
  *
  * @example
