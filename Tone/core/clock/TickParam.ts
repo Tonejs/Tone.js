@@ -1,5 +1,5 @@
 import { AutomationEvent, Param, ParamOptions } from "../context/Param";
-import { UnitMap, Seconds, Ticks, Time, UnitName } from "../type/Units";
+import { Seconds, Ticks, Time, UnitMap, UnitName } from "../type/Units";
 import { optionsFromArguments } from "../util/Defaults";
 import { Timeline } from "../util/Timeline";
 import { isUndef } from "../util/TypeCheck";

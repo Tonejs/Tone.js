@@ -1,6 +1,6 @@
 import { Signal, SignalOptions } from "../../signal/Signal";
 import { InputNode } from "../context/ToneAudioNode";
-import { BPM, Hertz, Seconds, Ticks, Time, UnitName, UnitMap } from "../type/Units";
+import { BPM, Hertz, Seconds, Ticks, Time, UnitMap, UnitName } from "../type/Units";
 import { optionsFromArguments } from "../util/Defaults";
 import { TickParam } from "./TickParam";
 

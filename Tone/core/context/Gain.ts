@@ -1,5 +1,5 @@
 import { Param } from "../context/Param";
-import { UnitName, UnitMap } from "../type/Units";
+import { UnitMap, UnitName } from "../type/Units";
 import { optionsFromArguments } from "../util/Defaults";
 import { readOnly } from "../util/Interface";
 import { ToneAudioNode, ToneAudioNodeOptions } from "./ToneAudioNode";
