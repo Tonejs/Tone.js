@@ -51,8 +51,8 @@ export class ScaledEnvelope extends Envelope {
 	constructor(attack?: Time, decay?: Time, sustain?: NormalRange, release?: Time);
 	constructor(options?: Partial<ScaledEnvelopeOptions>)
 	constructor() {
-		super(optionsFromArguments(ScaledEnvelope.getDefaults(), arguments, ["attack", "decay", "sustain", "release", "min", "max", "exponent"]));
-		const options = optionsFromArguments(ScaledEnvelope.getDefaults(), arguments, ["min", "max", "exponent"]);
+		super(optionsFromArguments(ScaledEnvelope.getDefaults(), arguments, ["attack", "decay", "sustain", "release"]));
+		const options = optionsFromArguments(ScaledEnvelope.getDefaults(), arguments, ["attack", "decay", "sustain", "release"]);
 
 		this._exponent = this.input = new Pow({
 			context: this.context,
