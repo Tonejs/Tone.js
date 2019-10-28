@@ -18,6 +18,8 @@ export interface FMSynthOptions extends ModulationSynthOptions {
  * import { FMSynth } from "tone";
  * const fmSynth = new FMSynth().toDestination();
  * fmSynth.triggerAttackRelease("C5", "4n");
+ * 
+ * @category Instrument
  */
 
 export class FMSynth extends ModulationSynth<FMSynthOptions> {

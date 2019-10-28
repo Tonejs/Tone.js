@@ -16,6 +16,8 @@ export type AMSynthOptions = ModulationSynthOptions;
  * import { AMSynth } from "tone";
  * const synth = new AMSynth().toMaster();
  * synth.triggerAttackRelease("C4", "4n");
+ * 
+ * @category Instrument
  */
 export class AMSynth extends ModulationSynth<AMSynthOptions> {
 
