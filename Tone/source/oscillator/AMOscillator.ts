@@ -43,8 +43,8 @@ export class AMOscillator extends Source<AMOscillatorOptions> implements ToneOsc
 	 */
 	private _carrier: Oscillator;
 
-	readonly frequency: Signal<Frequency>;
-	readonly detune: Signal<Cents>;
+	readonly frequency: Signal<"frequency">;
+	readonly detune: Signal<"cents">;
 
 	/**
 	 * The modulating oscillator
@@ -66,7 +66,7 @@ export class AMOscillator extends Source<AMOscillatorOptions> implements ToneOsc
 	 * // pitch the modulator an octave below carrier
 	 * amOsc.harmonicity.value = 0.5;
 	 */
-	readonly harmonicity: Signal<Positive>;
+	readonly harmonicity: Signal<"positive">;
 
 	/**
 	 * the node where the modulation happens

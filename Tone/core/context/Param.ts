@@ -1,16 +1,16 @@
 import { AbstractParam } from "../context/AbstractParam";
 import { dbToGain, gainToDb } from "../type/Conversions";
-import { AudioRange, Decibels, Frequency, NormalRange, Positive, Time, Unit, UnitName } from "../type/Units";
+import { AudioRange, Decibels, Frequency, NormalRange, Positive, Time, Unit, UnitMap, UnitName } from "../type/Units";
 import { isAudioParam } from "../util/AdvancedTypeCheck";
 import { optionsFromArguments } from "../util/Defaults";
 import { Timeline } from "../util/Timeline";
 import { isDefined } from "../util/TypeCheck";
 import { ToneWithContext, ToneWithContextOptions } from "./ToneWithContext";
 
-export interface ParamOptions<Type> extends ToneWithContextOptions {
-	units: UnitName;
-	value?: Type;
-	param: AudioParam | Param<Type>;
+export interface ParamOptions<TypeName extends UnitName> extends ToneWithContextOptions {
+	units: TypeName;
+	value?: UnitMap[TypeName];
+	param: AudioParam | Param<TypeName>;
 	convert: boolean;
 	minValue?: number;
 	maxValue?: number;
@@ -45,9 +45,9 @@ export type AutomationEvent = NormalAutomationEvent | TargetAutomationEvent;
  * serves as a base-class for classes which have a single,
  * automatable parameter.
  */
-export class Param<Type extends Unit = number>
-	extends ToneWithContext<ParamOptions<Type>>
-	implements AbstractParam<Type> {
+export class Param<TypeName extends UnitName = "number">
+	extends ToneWithContext<ParamOptions<TypeName>>
+	implements AbstractParam<TypeName> {
 
 	readonly name: string = "Param";
 
@@ -94,8 +94,8 @@ export class Param<Type extends Unit = number>
 	 * @param units The unit name
 	 * @param convert Whether or not to convert the value to the target units
 	 */
-	constructor(param: AudioParam, units?: Unit, convert?: boolean);
-	constructor(options: Partial<ParamOptions<Type>>);
+	constructor(param: AudioParam, units?: TypeName, convert?: boolean);
+	constructor(options: Partial<ParamOptions<TypeName>>);
 	constructor() {
 		super(optionsFromArguments(Param.getDefaults(), arguments, ["param", "units", "convert"]));
 
@@ -137,11 +137,11 @@ export class Param<Type extends Unit = number>
 		} as ParamOptions<any>);
 	}
 
-	get value(): Type {
+	get value(): UnitMap[TypeName] {
 		const now = this.now();
 		return this.getValueAtTime(now);
 	}
-	set value(value: Type) {
+	set value(value) {
 		this._initialValue = this._fromType(value);
 		this.cancelScheduledValues(this.now());
 		this.setValueAtTime(value, this.now());
@@ -187,7 +187,7 @@ export class Param<Type extends Unit = number>
 	 * Convert the given value from the type specified by Param.units
 	 * into the destination value (such as Gain or Frequency).
 	 */
-	protected _fromType(val: Type): number {
+	protected _fromType(val: UnitMap[TypeName]): number {
 		if (this.convert && !this.overridden) {
 			if (this._is<Time>(val, "time")) {
 				return this.toSeconds(val);
@@ -214,11 +214,11 @@ export class Param<Type extends Unit = number>
 	/**
 	 * Convert the parameters value into the units specified by Param.units.
 	 */
-	protected _toType(val: number): Type {
+	protected _toType(val: number): UnitMap[TypeName] {
 		if (this.convert && this.units === "decibels") {
-			return gainToDb(val) as Type;
+			return gainToDb(val) as UnitMap[TypeName];
 		} else {
-			return val as Type;
+			return val as UnitMap[TypeName];
 		}
 	}
 
@@ -227,7 +227,7 @@ export class Param<Type extends Unit = number>
 	// all docs are generated from ParamInterface.ts
 	//-------------------------------------
 
-	setValueAtTime(value: Type, time: Time): this {
+	setValueAtTime(value: UnitMap[TypeName], time: Time): this {
 		const computedTime = this.toSeconds(time);
 		const numericValue = this._fromType(value);
 		this.assert(isFinite(numericValue) && isFinite(computedTime),
@@ -243,7 +243,7 @@ export class Param<Type extends Unit = number>
 		return this;
 	}
 
-	getValueAtTime(time: Time): Type {
+	getValueAtTime(time: Time): UnitMap[TypeName] {
 		const computedTime = Math.max(this.toSeconds(time), 0);
 		const after = this._events.getAfter(computedTime);
 		const before = this._events.get(computedTime);
@@ -296,7 +296,7 @@ export class Param<Type extends Unit = number>
 		return this;
 	}
 
-	linearRampToValueAtTime(value: Type, endTime: Time): this {
+	linearRampToValueAtTime(value: UnitMap[TypeName], endTime: Time): this {
 		const numericValue = this._fromType(value);
 		const computedTime = this.toSeconds(endTime);
 		this.assert(isFinite(numericValue) && isFinite(computedTime),
@@ -311,7 +311,7 @@ export class Param<Type extends Unit = number>
 		return this;
 	}
 
-	exponentialRampToValueAtTime(value: Type, endTime: Time): this {
+	exponentialRampToValueAtTime(value: UnitMap[TypeName], endTime: Time): this {
 		let numericValue = this._fromType(value);
 		numericValue = Math.max(this._minOutput, numericValue);
 		const computedTime = this.toSeconds(endTime);
@@ -328,28 +328,28 @@ export class Param<Type extends Unit = number>
 		return this;
 	}
 
-	exponentialRampTo(value: Type, rampTime: Time, startTime?: Time): this {
+	exponentialRampTo(value: UnitMap[TypeName], rampTime: Time, startTime?: Time): this {
 		startTime = this.toSeconds(startTime);
 		this.setRampPoint(startTime);
 		this.exponentialRampToValueAtTime(value, startTime + this.toSeconds(rampTime));
 		return this;
 	}
 
-	linearRampTo(value: Type, rampTime: Time, startTime?: Time): this {
+	linearRampTo(value: UnitMap[TypeName], rampTime: Time, startTime?: Time): this {
 		startTime = this.toSeconds(startTime);
 		this.setRampPoint(startTime);
 		this.linearRampToValueAtTime(value, startTime + this.toSeconds(rampTime));
 		return this;
 	}
 
-	targetRampTo(value: Type, rampTime: Time, startTime?: Time): this {
+	targetRampTo(value: UnitMap[TypeName], rampTime: Time, startTime?: Time): this {
 		startTime = this.toSeconds(startTime);
 		this.setRampPoint(startTime);
 		this.exponentialApproachValueAtTime(value, startTime, rampTime);
 		return this;
 	}
 
-	exponentialApproachValueAtTime(value: Type, time: Time, rampTime: Time): this {
+	exponentialApproachValueAtTime(value: UnitMap[TypeName], time: Time, rampTime: Time): this {
 		time = this.toSeconds(time);
 		rampTime = this.toSeconds(rampTime);
 		const timeConstant = Math.log(rampTime + 1) / Math.log(200);
@@ -360,7 +360,7 @@ export class Param<Type extends Unit = number>
 		return this;
 	}
 
-	setTargetAtTime(value: Type, startTime: Time, timeConstant: Positive): this {
+	setTargetAtTime(value: UnitMap[TypeName], startTime: Time, timeConstant: Positive): this {
 		const numericValue = this._fromType(value);
 		// The value will never be able to approach without timeConstant > 0.
 		this.assert(isFinite(timeConstant) && timeConstant > 0, "timeConstant must be a number greater than 0");
@@ -378,7 +378,7 @@ export class Param<Type extends Unit = number>
 		return this;
 	}
 
-	setValueCurveAtTime(values: Type[], startTime: Time, duration: Time, scaling: number = 1): this {
+	setValueCurveAtTime(values: UnitMap[TypeName][], startTime: Time, duration: Time, scaling: number = 1): this {
 		duration = this.toSeconds(duration);
 		startTime = this.toSeconds(startTime);
 		const startingValue = this._fromType(values[0]) * scaling;
@@ -441,7 +441,7 @@ export class Param<Type extends Unit = number>
 		return this;
 	}
 
-	rampTo(value: Type, rampTime: Time = 0.1, startTime?: Time): this {
+	rampTo(value: UnitMap[TypeName], rampTime: Time = 0.1, startTime?: Time): this {
 		if (this.units === "frequency" || this.units === "bpm" || this.units === "decibels") {
 			this.exponentialRampTo(value, rampTime, startTime);
 		} else {
@@ -503,7 +503,7 @@ export class Param<Type extends Unit = number>
 		return this;
 	}
 
-	get defaultValue(): Type {
+	get defaultValue(): UnitMap[TypeName] {
 		return this._toType(this._param.defaultValue);
 	}
 

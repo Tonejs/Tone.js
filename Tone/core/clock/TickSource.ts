@@ -1,5 +1,5 @@
 import { ToneWithContext, ToneWithContextOptions } from "../context/ToneWithContext";
-import { BPM, Frequency, Hertz, Seconds, Ticks, Time } from "../type/Units";
+import { BPM, Frequency, Hertz, Seconds, Ticks, Time, UnitMap } from "../type/Units";
 import { optionsFromArguments } from "../util/Defaults";
 import { readOnly } from "../util/Interface";
 import { PlaybackState, StateTimeline, StateTimelineEvent } from "../util/StateTimeline";
@@ -8,8 +8,8 @@ import { isDefined } from "../util/TypeCheck";
 import { TickSignal } from "./TickSignal";
 
 interface TickSourceOptions extends ToneWithContextOptions {
-	frequency: Frequency;
-	units: "hertz" | "bpm";
+	frequency: number;
+	units: "bpm" | "hertz";
 }
 
 interface TickSourceOffsetEvent {
@@ -21,14 +21,14 @@ interface TickSourceOffsetEvent {
 /**
  * Uses [TickSignal](TickSignal) to track elapsed ticks with complex automation curves.
  */
-export class TickSource<Type extends BPM | Hertz> extends ToneWithContext<TickSourceOptions> {
+export class TickSource<TypeName extends "bpm" | "hertz"> extends ToneWithContext<TickSourceOptions> {
 
 	readonly name: string = "TickSource";
 
 	/**
 	 * The frequency the callback function should be invoked.
 	 */
-	readonly frequency: TickSignal<Type>;
+	readonly frequency: TickSignal<TypeName>;
 
 	/**
 	 * The state timeline
@@ -43,16 +43,16 @@ export class TickSource<Type extends BPM | Hertz> extends ToneWithContext<TickSo
 	/**
 	 * @param frequency The initial frequency that the signal ticks at
 	 */
-	constructor(frequency?: Frequency);
+	constructor(frequency?: number);
 	constructor(options?: Partial<TickSourceOptions>);
 	constructor() {
 		super(optionsFromArguments(TickSource.getDefaults(), arguments, ["frequency"]));
 		const options = optionsFromArguments(TickSource.getDefaults(), arguments, ["frequency"]);
 
-		this.frequency = new TickSignal<Type>({
+		this.frequency = new TickSignal({
 			context: this.context,
-			units: options.units,
-			value: options.frequency as Type,
+			units: options.units as TypeName,
+			value: options.frequency,
 		});
 		readOnly(this, "frequency");
 

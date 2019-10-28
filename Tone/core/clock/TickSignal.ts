@@ -1,11 +1,11 @@
 import { Signal, SignalOptions } from "../../signal/Signal";
 import { InputNode } from "../context/ToneAudioNode";
-import { BPM, Hertz, Seconds, Ticks, Time } from "../type/Units";
+import { BPM, Hertz, Seconds, Ticks, Time, UnitName, UnitMap } from "../type/Units";
 import { optionsFromArguments } from "../util/Defaults";
 import { TickParam } from "./TickParam";
 
-interface TickSignalOptions<T> extends SignalOptions<T> {
-	value: T;
+interface TickSignalOptions<TypeName extends UnitName> extends SignalOptions<TypeName> {
+	value: UnitMap[TypeName];
 	multiplier: number;
 }
 
@@ -18,21 +18,21 @@ interface TickSignalOptions<T> extends SignalOptions<T> {
  * for your [WAC paper](https://smartech.gatech.edu/bitstream/handle/1853/54588/WAC2016-49.pdf)
  * describing integrating timing functions for tempo calculations.
  */
-export class TickSignal<Type extends Hertz | BPM> extends Signal<Type> {
+export class TickSignal<TypeName extends "hertz" | "bpm"> extends Signal<TypeName> {
 
 	readonly name: string = "TickSignal";
 
 	/**
 	 * The param which controls the output signal value
 	 */
-	protected _param: TickParam<Type>;
+	protected _param: TickParam<TypeName>;
 	readonly input: InputNode;
 
 	/**
 	 * @param value The initial value of the signal
 	 */
-	constructor(value?: Type);
-	constructor(options: Partial<TickSignalOptions<Type>>);
+	constructor(value?: UnitMap[TypeName]);
+	constructor(options: Partial<TickSignalOptions<TypeName>>);
 	constructor() {
 
 		super(optionsFromArguments(TickSignal.getDefaults(), arguments, ["value"]));

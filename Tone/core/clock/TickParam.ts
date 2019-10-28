@@ -1,5 +1,5 @@
 import { AutomationEvent, Param, ParamOptions } from "../context/Param";
-import { BPM, Hertz, Seconds, Ticks, Time } from "../type/Units";
+import { UnitMap, Seconds, Ticks, Time, UnitName } from "../type/Units";
 import { optionsFromArguments } from "../util/Defaults";
 import { Timeline } from "../util/Timeline";
 import { isUndef } from "../util/TypeCheck";
@@ -8,7 +8,7 @@ type TickAutomationEvent = AutomationEvent & {
 	ticks: number;
 };
 
-interface TickParamOptions<Type> extends ParamOptions<Type> {
+interface TickParamOptions<TypeName extends UnitName> extends ParamOptions<TypeName> {
 	multiplier: number;
 }
 
@@ -17,7 +17,7 @@ interface TickParamOptions<Type> extends ParamOptions<Type> {
  * but offers conversion to BPM values as well as ability to compute tick
  * duration and elapsed ticks
  */
-export class TickParam<Type extends Hertz | BPM> extends Param<Type> {
+export class TickParam<TypeName extends "hertz" | "bpm"> extends Param<TypeName> {
 
 	readonly name: string = "TickParam";
 
@@ -40,7 +40,7 @@ export class TickParam<Type extends Hertz | BPM> extends Param<Type> {
 	 * @param value The initial value of the signal
 	 */
 	constructor(value?: number);
-	constructor(options: Partial<TickParamOptions<Type>>);
+	constructor(options: Partial<TickParamOptions<TypeName>>);
 	constructor() {
 
 		super(optionsFromArguments(TickParam.getDefaults(), arguments, ["value"]));
@@ -69,7 +69,7 @@ export class TickParam<Type extends Hertz | BPM> extends Param<Type> {
 		});
 	}
 
-	setTargetAtTime(value: Type, time: Time, constant: number): this {
+	setTargetAtTime(value: UnitMap[TypeName], time: Time, constant: number): this {
 		// approximate it with multiple linear ramps
 		time = this.toSeconds(time);
 		this.setRampPoint(time);
@@ -86,7 +86,7 @@ export class TickParam<Type extends Hertz | BPM> extends Param<Type> {
 		return this;
 	}
 
-	setValueAtTime(value: Type, time: Time): this {
+	setValueAtTime(value: UnitMap[TypeName], time: Time): this {
 		const computedTime = this.toSeconds(time);
 		super.setValueAtTime(value, time);
 		const event = this._events.get(computedTime) as TickAutomationEvent;
@@ -96,7 +96,7 @@ export class TickParam<Type extends Hertz | BPM> extends Param<Type> {
 		return this;
 	}
 
-	linearRampToValueAtTime(value: Type, time: Time): this {
+	linearRampToValueAtTime(value: UnitMap[TypeName], time: Time): this {
 		const computedTime = this.toSeconds(time);
 		super.linearRampToValueAtTime(value, time);
 		const event = this._events.get(computedTime) as TickAutomationEvent;
@@ -106,7 +106,7 @@ export class TickParam<Type extends Hertz | BPM> extends Param<Type> {
 		return this;
 	}
 
-	exponentialRampToValueAtTime(value: Type, time: Time): this {
+	exponentialRampToValueAtTime(value: UnitMap[TypeName], time: Time): this {
 		// aproximate it with multiple linear ramps
 		time = this.toSeconds(time);
 		const computedVal = this._fromType(value);
@@ -236,7 +236,7 @@ export class TickParam<Type extends Hertz | BPM> extends Param<Type> {
 	/**
 	 * Convert from the type when the unit value is BPM
 	 */
-	protected _fromType(val: Type): number {
+	protected _fromType(val: UnitMap[TypeName]): number {
 		if (this.units === "bpm" && this.multiplier) {
 			return 1 / (60 / val / this.multiplier);
 		} else {
@@ -247,9 +247,9 @@ export class TickParam<Type extends Hertz | BPM> extends Param<Type> {
 	/**
 	 * Special case of type conversion where the units === "bpm"
 	 */
-	protected _toType(val: number): Type {
+	protected _toType(val: number): UnitMap[TypeName] {
 		if (this.units === "bpm" && this.multiplier) {
-			return (val / this.multiplier) * 60 as Type;
+			return (val / this.multiplier) * 60 as UnitMap[TypeName];
 		} else {
 			return super._toType(val);
 		}

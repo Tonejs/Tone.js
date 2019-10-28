@@ -1,12 +1,12 @@
 import { Param } from "../context/Param";
-import { GainFactor, Unit, UnitName } from "../type/Units";
+import { UnitName, UnitMap } from "../type/Units";
 import { optionsFromArguments } from "../util/Defaults";
 import { readOnly } from "../util/Interface";
 import { ToneAudioNode, ToneAudioNodeOptions } from "./ToneAudioNode";
 
-interface GainOptions extends ToneAudioNodeOptions {
-	gain: number;
-	units: UnitName;
+interface GainOptions<TypeName extends UnitName> extends ToneAudioNodeOptions {
+	gain: UnitMap[TypeName];
+	units: TypeName;
 	convert: boolean;
 }
 
@@ -16,14 +16,14 @@ interface GainOptions extends ToneAudioNodeOptions {
  * API and is useful for routing audio and adjusting gains.
  * @category Core
  */
-export class Gain<Type extends Unit = GainFactor> extends ToneAudioNode<GainOptions> {
+export class Gain<TypeName extends "gain" | "decibels" | "normalRange" = "gain"> extends ToneAudioNode<GainOptions<TypeName>> {
 
 	readonly name: string = "Gain";
 
 	/**
 	 * The gain parameter of the gain node.
 	 */
-	readonly gain: Param<Type>;
+	readonly gain: Param<TypeName>;
 
 	/**
 	 * The wrapped GainNode.
@@ -38,8 +38,8 @@ export class Gain<Type extends Unit = GainFactor> extends ToneAudioNode<GainOpti
 	 * @param  gain The initial gain of the GainNode
 	 * @param units The units of the gain parameter.
 	 */
-	constructor(gain?: GainFactor, units?: Unit);
-	constructor(options?: Partial<GainOptions>);
+	constructor(gain?: UnitMap[TypeName], units?: TypeName);
+	constructor(options?: Partial<GainOptions<TypeName>>);
 	constructor() {
 		super(optionsFromArguments(Gain.getDefaults(), arguments, ["gain", "units"]));
 		const options = optionsFromArguments(Gain.getDefaults(), arguments, ["gain", "units"]);
@@ -49,16 +49,16 @@ export class Gain<Type extends Unit = GainFactor> extends ToneAudioNode<GainOpti
 			convert: options.convert,
 			param: this._gainNode.gain,
 			units: options.units,
-			value: options.gain as Type,
+			value: options.gain,
 		});
 		readOnly(this, "gain");
 	}
 
-	static getDefaults(): GainOptions {
+	static getDefaults(): GainOptions<any> {
 		return Object.assign(ToneAudioNode.getDefaults(), {
 			convert: true,
 			gain: 1,
-			units: "gain" as UnitName,
+			units: "gain",
 		});
 	}
 

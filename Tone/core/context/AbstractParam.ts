@@ -1,9 +1,9 @@
-import { Time, Unit, UnitName } from "../type/Units";
+import { Time, Unit, UnitMap, UnitName } from "../type/Units";
 
 /**
  * Abstract base class for [[Param]] and [[Signal]]
  */
-export abstract class AbstractParam<Type extends Unit> {
+export abstract class AbstractParam<TypeName extends UnitName> {
 
 	/**
 	 * Schedules a parameter value change at the given time.
@@ -16,14 +16,14 @@ export abstract class AbstractParam<Type extends Unit> {
 	 * // set the frequency to "G4" in exactly 1 second from now.
 	 * osc.frequency.setValueAtTime("G4", "+1");
 	 */
-	abstract setValueAtTime(value: Type, time: Time): this;
+	abstract setValueAtTime(value: UnitMap[TypeName], time: Time): this;
 
 	/**
 	 * Get the signals value at the given time. Subsequent scheduling
 	 * may invalidate the returned value.
 	 * @param time When to get the value
 	 */
-	abstract getValueAtTime(time: Time): Type;
+	abstract getValueAtTime(time: Time): UnitMap[TypeName];
 
 	/**
 	 * Creates a schedule point with the current value at the current time.
@@ -46,13 +46,13 @@ export abstract class AbstractParam<Type extends Unit> {
 	 * Schedules a linear continuous change in parameter value from the
 	 * previous scheduled parameter value to the given value.
 	 */
-	abstract linearRampToValueAtTime(value: Type, time: Time): this;
+	abstract linearRampToValueAtTime(value: UnitMap[TypeName], time: Time): this;
 
 	/**
 	 * Schedules an exponential continuous change in parameter value from
 	 * the previous scheduled parameter value to the given value.
 	 */
-	abstract exponentialRampToValueAtTime(value: Type, time: Time): this;
+	abstract exponentialRampToValueAtTime(value: UnitMap[TypeName], time: Time): this;
 
 	/**
 	 * Schedules an exponential continuous change in parameter value from
@@ -70,7 +70,7 @@ export abstract class AbstractParam<Type extends Unit> {
 	 * // exponentially ramp to the value to 2 over 4 seconds.
 	 * delay.delayTime.exponentialRampTo(2, 4);
 	 */
-	abstract exponentialRampTo(value: Type, rampTime: Time, startTime?: Time): this;
+	abstract exponentialRampTo(value: UnitMap[TypeName], rampTime: Time, startTime?: Time): this;
 
 	/**
 	 * Schedules an linear continuous change in parameter value from
@@ -90,7 +90,7 @@ export abstract class AbstractParam<Type extends Unit> {
 	 * // linearly ramp to the value 4 over 3 seconds.
 	 * delay.delayTime.linearRampTo(4, 3);
 	 */
-	abstract linearRampTo(value: Type, rampTime: Time, startTime?: Time): this;
+	abstract linearRampTo(value: UnitMap[TypeName], rampTime: Time, startTime?: Time): this;
 
 	/**
 	 * Start exponentially approaching the target value at the given time. Since it
@@ -105,7 +105,7 @@ export abstract class AbstractParam<Type extends Unit> {
 	 * const osc = new Oscillator().toDestination().start();
 	 * osc.frequency.targetRampTo("C4", 4);
 	 */
-	abstract targetRampTo(value: Type, rampTime: Time, startTime?: Time): this;
+	abstract targetRampTo(value: UnitMap[TypeName], rampTime: Time, startTime?: Time): this;
 
 	/**
 	 * Start exponentially approaching the target value at the given time. Since it
@@ -121,7 +121,7 @@ export abstract class AbstractParam<Type extends Unit> {
 	 * // exponential approach over 4 seconds starting in 1 second
 	 * osc.frequency.exponentialApproachValueAtTime("C4", "+1", 4);
 	 */
-	abstract exponentialApproachValueAtTime(value: Type, time: Time, rampTime: Time): this;
+	abstract exponentialApproachValueAtTime(value: UnitMap[TypeName], time: Time, rampTime: Time): this;
 
 	/**
 	 * Start exponentially approaching the target value at the given time with
@@ -130,7 +130,7 @@ export abstract class AbstractParam<Type extends Unit> {
 	 * @param startTime
 	 * @param timeConstant
 	 */
-	abstract setTargetAtTime(value: Type, startTime: Time, timeConstant: number): this;
+	abstract setTargetAtTime(value: UnitMap[TypeName], startTime: Time, timeConstant: number): this;
 
 	/**
 	 * Sets an array of arbitrary parameter values starting at the given time
@@ -141,7 +141,7 @@ export abstract class AbstractParam<Type extends Unit> {
 	 * @param duration
 	 * @param scaling If the values in the curve should be scaled by some value
 	 */
-	abstract setValueCurveAtTime(values: Type[], startTime: Time, duration: Time, scaling?: number): this;
+	abstract setValueCurveAtTime(values: UnitMap[TypeName][], startTime: Time, duration: Time, scaling?: number): this;
 
 	/**
 	 * Cancels all scheduled parameter changes with times greater than or
@@ -174,13 +174,13 @@ export abstract class AbstractParam<Type extends Unit> {
 	 * // schedule it to ramp starting at a specific time
 	 * osc.frequency.rampTo("A2", 10, "+2");
 	 */
-	abstract rampTo(value: Type, rampTime: Time, startTime?: Time): this;
+	abstract rampTo(value: UnitMap[TypeName], rampTime: Time, startTime?: Time): this;
 
 	/**
 	 * The current value of the parameter. Setting this value
 	 * is equivalent to setValueAtTime(value, context.currentTime)
 	 */
-	abstract value: Type;
+	abstract value: UnitMap[TypeName];
 
 	/**
 	 * If the value should be converted or not

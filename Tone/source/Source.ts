@@ -59,7 +59,7 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 	 * const source = new PWMOscillator().toDestination();
 	 * source.volume.value = -6;
 	 */
-	volume: Param<Decibels>;
+	volume: Param<"decibels">;
 
 	/**
 	 * The callback to invoke when the source is stopped.

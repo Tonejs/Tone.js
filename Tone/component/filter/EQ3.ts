@@ -41,47 +41,47 @@ export class EQ3 extends ToneAudioNode<EQ3Options> {
 	/**
 	 * The gain for the lower signals
 	 */
-	private _lowGain: Gain<Decibels>;
+	private _lowGain: Gain<"decibels">;
 
 	/**
 	 * The gain for the mid signals
 	 */
-	private _midGain: Gain<Decibels>;
+	private _midGain: Gain<"decibels">;
 
 	/**
 	 * The gain for the high signals
 	 */
-	private _highGain: Gain<Decibels>;
+	private _highGain: Gain<"decibels">;
 
 	/**
 	 * The gain in decibels of the low part
 	 */
-	readonly low: Param<Decibels>;
+	readonly low: Param<"decibels">;
 
 	/**
 	 * The gain in decibels of the mid part
 	 */
-	readonly mid: Param<Decibels>;
+	readonly mid: Param<"decibels">;
 
 	/**
 	 * The gain in decibels of the high part
 	 */
-	readonly high: Param<Decibels>;
+	readonly high: Param<"decibels">;
 
 	/**
 	 * The Q value for all of the filters.
 	 */
-	readonly Q: Signal<Positive>;
+	readonly Q: Signal<"positive">;
 
 	/**
 	 * The low/mid crossover frequency.
 	 */
-	readonly lowFrequency: Signal<Frequency>;
+	readonly lowFrequency: Signal<"frequency">;
 
 	/**
 	 * The mid/high crossover frequency.
 	 */
-	readonly highFrequency: Signal<Frequency>;
+	readonly highFrequency: Signal<"frequency">;
 
 	protected _internalChannels: ToneAudioNode[] = [];
 

@@ -27,12 +27,12 @@ export class FeedbackCombFilter extends ToneAudioWorklet<FeedbackCombFilterOptio
 	/**
 	 * The amount of delay of the comb filter.
 	 */
-	readonly delayTime: Param<Time>;
+	readonly delayTime: Param<"time">;
 	
 	/**
 	 * The amount of feedback of the delayed signal.
 	 */
-	readonly resonance: Param<NormalRange>;
+	readonly resonance: Param<"normalRange">;
 	
 	readonly input: Gain;
 	readonly output: Gain;
@@ -60,7 +60,7 @@ export class FeedbackCombFilter extends ToneAudioWorklet<FeedbackCombFilterOptio
 
 		const dummyGain = this.context.createGain();
 
-		this.delayTime = new Param<Time>({
+		this.delayTime = new Param<"time">({
 			context: this.context,
 			value: options.delayTime,
 			units: "time",
@@ -70,7 +70,7 @@ export class FeedbackCombFilter extends ToneAudioWorklet<FeedbackCombFilterOptio
 			swappable: true,
 		});
 		
-		this.resonance = new Param<NormalRange>({
+		this.resonance = new Param<"normalRange">({
 			context: this.context,
 			value: options.resonance,
 			units: "normalRange",

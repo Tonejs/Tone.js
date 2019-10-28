@@ -39,21 +39,21 @@ export class Compressor extends ToneAudioNode<CompressorOptions> {
 	 * @min -100
 	 * @max 0
 	 */
-	readonly threshold: Param<Decibels>;
+	readonly threshold: Param<"decibels">;
 
 	/**
 	 * The amount of time (in seconds) to reduce the gain by 10dB.
 	 * @min 0
 	 * @max 1
 	 */
-	readonly attack: Param<Time>;
+	readonly attack: Param<"time">;
 	
 	/**
 	 * The amount of time (in seconds) to increase the gain by 10dB.
 	 * @min 0
 	 * @max 1
 	 */
-	readonly release: Param<Time>;
+	readonly release: Param<"time">;
 
 	/**
 	 * A decibel value representing the range above the threshold where the
@@ -61,14 +61,14 @@ export class Compressor extends ToneAudioNode<CompressorOptions> {
 	 * @min 0
 	 * @max 40
 	 */
-	readonly knee: Param<Decibels>;
+	readonly knee: Param<"decibels">;
 
 	/**
 	 * The amount of dB change in input for a 1 dB change in output.
 	 * @min 1
 	 * @max 20
 	 */
-	readonly ratio: Param<Positive>;
+	readonly ratio: Param<"positive">;
 
 	/**
 	 * @param threshold The value above which the compression starts to be applied.
@@ -125,7 +125,7 @@ export class Compressor extends ToneAudioNode<CompressorOptions> {
 			context: this.context,
 			convert: false,
 			param: this._compressor.ratio,
-			units: "number",
+			units: "positive",
 			value: options.ratio,
 		});
 

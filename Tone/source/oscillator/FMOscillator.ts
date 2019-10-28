@@ -39,8 +39,8 @@ export class FMOscillator extends Source<FMOscillatorOptions> implements ToneOsc
 	 */
 	private _carrier: Oscillator;
 
-	readonly frequency: Signal<Frequency>;
-	readonly detune: Signal<Cents>;
+	readonly frequency: Signal<"frequency">;
+	readonly detune: Signal<"cents">;
 
 	/**
 	 * The modulating oscillator
@@ -57,14 +57,14 @@ export class FMOscillator extends Source<FMOscillatorOptions> implements ToneOsc
 	 * // pitch the modulator an octave below carrier
 	 * fmOsc.harmonicity.value = 0.5;
 	 */
-	readonly harmonicity: Signal<Positive>;
+	readonly harmonicity: Signal<"positive">;
 
 	/**
 	 * The modulation index which is in essence the depth or amount of the modulation. In other terms it is the
 	 * ratio of the frequency of the modulating signal (mf) to the amplitude of the
 	 * modulating signal (ma) -- as in ma/mf.
 	 */
-	readonly modulationIndex: Signal<Positive>;
+	readonly modulationIndex: Signal<"positive">;
 
 	/**
 	 * the node where the modulation happens

@@ -33,7 +33,7 @@ type ClockEvent = "start" | "stop" | "pause";
  * clock.start();
  * @category Core
  */
-export class Clock<Type extends BPM | Hertz = Hertz>
+export class Clock<TypeName extends "bpm" | "hertz" = "hertz">
 	extends ToneWithContext<ClockOptions> implements Emitter<ClockEvent> {
 
 	readonly name: string = "Clock";
@@ -46,7 +46,7 @@ export class Clock<Type extends BPM | Hertz = Hertz>
 	/**
 	 * The tick counter
 	 */
-	private _tickSource: TickSource<Type>;
+	private _tickSource: TickSource<TypeName>;
 
 	/**
 	 * The last time the loop callback was invoked
@@ -67,7 +67,7 @@ export class Clock<Type extends BPM | Hertz = Hertz>
 	/**
 	 * The rate the callback function should be invoked.
 	 */
-	frequency: TickSignal<Type>;
+	frequency: TickSignal<TypeName>;
 
 	/**
 	 * @param callback The callback to be invoked with the time of the audio event

@@ -28,7 +28,7 @@ export abstract class Effect<Options extends EffectOptions>
 	 * will pass through to the output. 1 = 100% effected
 	 * signal, 0 = 100% dry signal.
 	 */
-	wet: Signal<NormalRange> = this._dryWet.fade;
+	wet: Signal<"normalRange"> = this._dryWet.fade;
 
 	/**
 	 * connect the effectSend to the input of hte effect

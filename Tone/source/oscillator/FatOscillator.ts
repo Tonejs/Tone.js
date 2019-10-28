@@ -21,8 +21,8 @@ export class FatOscillator extends Source<FatOscillatorOptions> implements ToneO
 
 	readonly name: string = "FatOscillator";
 
-	readonly frequency: Signal<Frequency>;
-	readonly detune: Signal<Cents>;
+	readonly frequency: Signal<"frequency">;
+	readonly detune: Signal<"cents">;
 
 	/**
 	 * The array of oscillators

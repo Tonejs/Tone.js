@@ -35,12 +35,12 @@ export class LowpassCombFilter extends ToneAudioNode<LowpassCombFilterOptions> {
 	/**
 	 * The delayTime of the comb filter.
 	 */
-	readonly delayTime: Param<Time>;
+	readonly delayTime: Param<"time">;
 
 	/**
 	 * The amount of feedback of the delayed signal.
 	 */
-	readonly resonance: Param<NormalRange>;
+	readonly resonance: Param<"normalRange">;
 
 	readonly input: InputNode;
 	readonly output: OutputNode;

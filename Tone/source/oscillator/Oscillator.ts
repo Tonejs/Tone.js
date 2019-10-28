@@ -32,12 +32,12 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 	/**
 	 * The frequency control.
 	 */
-	frequency: Signal<Frequency>;
+	frequency: Signal<"frequency">;
 
 	/**
 	 * The detune control signal.
 	 */
-	detune: Signal<Cents>;
+	detune: Signal<"cents">;
 
 	/**
 	 * the periodic wave
@@ -75,14 +75,14 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 		super(optionsFromArguments(Oscillator.getDefaults(), arguments, ["frequency", "type"]));
 		const options = optionsFromArguments(Oscillator.getDefaults(), arguments, ["frequency", "type"]);
 
-		this.frequency = new Signal<Frequency>({
+		this.frequency = new Signal<"frequency">({
 			context: this.context,
 			units: "frequency",
 			value: options.frequency,
 		});
 		readOnly(this, "frequency");
 
-		this.detune = new Signal<Cents>({
+		this.detune = new Signal<"cents">({
 			context: this.context,
 			units: "cents",
 			value: options.detune,

@@ -24,7 +24,7 @@ import { Signal, SignalOptions } from "./Signal";
  * // the output of mult is 20.
  * @category Signal
  */
-export class Multiply extends Signal<number> {
+export class Multiply<TypeName extends "number" | "positive" = "number"> extends Signal<TypeName> {
 
 	readonly name: string = "Multiply";
 
@@ -51,22 +51,22 @@ export class Multiply extends Signal<number> {
 	/**
 	 * The multiplication factor. Can be set directly or a signal can be connected to it.
 	 */
-	factor: Param<number>;
+	factor: Param<TypeName>;
 
 	/**
 	 * @param value Constant value to multiple
 	 */
 	constructor(value?: number);
-	constructor(options?: Partial<SignalOptions<number>>);
+	constructor(options?: Partial<SignalOptions<TypeName>>);
 	constructor() {
 		super(Object.assign(optionsFromArguments(Multiply.getDefaults(), arguments, ["value"])));
 		const options = optionsFromArguments(Multiply.getDefaults(), arguments, ["value"]);
 
-		this.factor = this._param = this._mult.gain as unknown as Param<number>;
+		this.factor = this._param = this._mult.gain as unknown as Param<TypeName>;
 		this.factor.setValueAtTime(options.value, 0);
 	}
 
-	static getDefaults(): SignalOptions<number> {
+	static getDefaults(): SignalOptions<any> {
 		return Object.assign(Signal.getDefaults(), {
 			value: 0,
 		});

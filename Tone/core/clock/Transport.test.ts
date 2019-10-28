@@ -267,7 +267,7 @@ describe("Transport", () => {
 			return Offline(({ transport }) => {
 				transport.start(0).pause(0.2).start(0.4);
 
-				const pulse = new Signal<number>(0).toDestination();
+				const pulse = new Signal(0).toDestination();
 
 				transport.schedule(time => {
 					pulse.setValueAtTime(1, time);

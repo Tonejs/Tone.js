@@ -47,21 +47,21 @@ export class Subtract extends Signal {
 	/**
 	 * The value which is subtracted from the main signal
 	 */
-	subtrahend: Param<number> = this._param;
+	subtrahend: Param<"number"> = this._param;
 
 	/**
 	 * @param value The value to subtract from the incoming signal. If the value
 	 *             is omitted, it will subtract the second signal from the first.
 	 */
 	constructor(value?: number);
-	constructor(options?: Partial<SignalOptions<number>>);
+	constructor(options?: Partial<SignalOptions<"number">>);
 	constructor() {
 		super(Object.assign(optionsFromArguments(Subtract.getDefaults(), arguments, ["value"])));
 
 		connectSeries(this._constantSource, this._neg, this._sum);
 	}
 
-	static getDefaults(): SignalOptions<number> {
+	static getDefaults(): SignalOptions<"number"> {
 		return Object.assign(Signal.getDefaults(), {
 			value: 0,
 		});

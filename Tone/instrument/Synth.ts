@@ -41,12 +41,12 @@ export class Synth<Options extends SynthOptions = SynthOptions> extends Monophon
 	/**
 	 * The frequency signal
 	 */
-	readonly frequency: Signal<Frequency>;
+	readonly frequency: Signal<"frequency">;
 
 	/**
 	 * The detune signal
 	 */
-	readonly detune: Signal<Cents>;
+	readonly detune: Signal<"cents">;
 
 	/**
 	 * The envelope

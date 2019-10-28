@@ -21,7 +21,7 @@ describe("Param", () => {
 	context("constructor", () => {
 		it("can be created and disposed", async () => {
 			await Offline(context => {
-				const param = new Param<Time>({
+				const param = new Param<"time">({
 					context,
 					param: context.createConstantSource().offset,
 					units: "time",
@@ -197,7 +197,7 @@ describe("Param", () => {
 
 		it("throws an error with invalid values", () => {
 			const osc = audioContext.createOscillator();
-			const param = new Param<Frequency>({
+			const param = new Param<"frequency">({
 				context: audioContext,
 				param: osc.frequency,
 				units: "frequency",
@@ -227,7 +227,7 @@ describe("Param", () => {
 
 		it("can be created with specific units", () => {
 			const gain = audioContext.createGain();
-			const param = new Param<BPM>({
+			const param = new Param<"bpm">({
 				context: audioContext,
 				param: gain.gain,
 				units: "bpm",
@@ -238,7 +238,7 @@ describe("Param", () => {
 
 		it("can evaluate the given units", () => {
 			const gain = audioContext.createGain();
-			const param = new Param<Decibels>({
+			const param = new Param<"decibels">({
 				context: audioContext,
 				param: gain.gain,
 				units: "decibels",

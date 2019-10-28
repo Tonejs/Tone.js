@@ -33,7 +33,7 @@ export abstract class Instrument<Options extends InstrumentOptions> extends Tone
 	 * amSynth.volume.value = -6;
 	 * amSynth.triggerAttackRelease("G#3", 0.2);
 	 */
-	volume: Param<Decibels>;
+	volume: Param<"decibels">;
 
 	/**
 	 * Keep track of all events scheduled to the transport

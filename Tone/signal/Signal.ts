@@ -2,14 +2,14 @@ import { AbstractParam } from "../core/context/AbstractParam";
 import { Param } from "../core/context/Param";
 import { InputNode, OutputNode, ToneAudioNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
 import { connect } from "../core/context/ToneAudioNode";
-import { Time, Unit, UnitName } from "../core/type/Units";
+import { Time, Unit, UnitMap, UnitName } from "../core/type/Units";
 import { isAudioParam } from "../core/util/AdvancedTypeCheck";
 import { optionsFromArguments } from "../core/util/Defaults";
 import { ToneConstantSource } from "./ToneConstantSource";
 
-export interface SignalOptions<Type> extends ToneAudioNodeOptions {
-	value: Type;
-	units: UnitName;
+export interface SignalOptions<TypeName extends UnitName> extends ToneAudioNodeOptions {
+	value: UnitMap[TypeName];
+	units: TypeName;
 	convert: boolean;
 }
 
@@ -33,8 +33,8 @@ export interface SignalOptions<Type> extends ToneAudioNodeOptions {
  * signal.rampTo("C2", 4, "+0.5");
  * @category Signal
  */
-export class Signal<Type extends Unit = number> extends ToneAudioNode<SignalOptions<any>>
-	implements AbstractParam<Type> {
+export class Signal<TypeName extends UnitName = "number"> extends ToneAudioNode<SignalOptions<any>>
+	implements AbstractParam<TypeName> {
 
 	readonly name: string = "Signal";
 
@@ -46,22 +46,22 @@ export class Signal<Type extends Unit = number> extends ToneAudioNode<SignalOpti
 	/**
 	 * The constant source node which generates the signal
 	 */
-	protected _constantSource: ToneConstantSource<Type>;
+	protected _constantSource: ToneConstantSource<TypeName>;
 	readonly output: OutputNode;
-	protected _param: Param<Type>;
+	protected _param: Param<TypeName>;
 	readonly input: InputNode;
 
 	/**
 	 * @param value Initial value of the signal
 	 * @param units The unit name, e.g. "frequency"
 	 */
-	constructor(value?: Type, units?: UnitName);
-	constructor(options?: Partial<SignalOptions<Type>>);
+	constructor(value?: UnitMap[TypeName], units?: TypeName);
+	constructor(options?: Partial<SignalOptions<TypeName>>);
 	constructor() {
 
 		super(optionsFromArguments(Signal.getDefaults(), arguments, ["value", "units"]));
 
-		const options = optionsFromArguments(Signal.getDefaults(), arguments, ["value", "units"]) as SignalOptions<Type>;
+		const options = optionsFromArguments(Signal.getDefaults(), arguments, ["value", "units"]) as SignalOptions<TypeName>;
 
 		this.output = this._constantSource = new ToneConstantSource({
 			context: this.context,
@@ -100,46 +100,46 @@ export class Signal<Type extends Unit = number> extends ToneAudioNode<SignalOpti
 	// all docs are generated from AbstractParam.ts
 	//-------------------------------------
 
-	setValueAtTime(value: Type, time: Time): this {
+	setValueAtTime(value: UnitMap[TypeName], time: Time): this {
 		this._param.setValueAtTime(value, time);
 		return this;
 	}
-	getValueAtTime(time: Time): Type {
+	getValueAtTime(time: Time): UnitMap[TypeName] {
 		return this._param.getValueAtTime(time);
 	}
 	setRampPoint(time: Time): this {
 		this._param.setRampPoint(time);
 		return this;
 	}
-	linearRampToValueAtTime(value: Type, time: Time): this {
+	linearRampToValueAtTime(value: UnitMap[TypeName], time: Time): this {
 		this._param.linearRampToValueAtTime(value, time);
 		return this;
 	}
-	exponentialRampToValueAtTime(value: Type, time: Time): this {
+	exponentialRampToValueAtTime(value: UnitMap[TypeName], time: Time): this {
 		this._param.exponentialRampToValueAtTime(value, time);
 		return this;
 	}
-	exponentialRampTo(value: Type, rampTime: Time, startTime?: Time): this {
+	exponentialRampTo(value: UnitMap[TypeName], rampTime: Time, startTime?: Time): this {
 		this._param.exponentialRampTo(value, rampTime, startTime);
 		return this;
 	}
-	linearRampTo(value: Type, rampTime: Time, startTime?: Time): this {
+	linearRampTo(value: UnitMap[TypeName], rampTime: Time, startTime?: Time): this {
 		this._param.linearRampTo(value, rampTime, startTime);
 		return this;
 	}
-	targetRampTo(value: Type, rampTime: Time, startTime?: Time): this {
+	targetRampTo(value: UnitMap[TypeName], rampTime: Time, startTime?: Time): this {
 		this._param.targetRampTo(value, rampTime, startTime);
 		return this;
 	}
-	exponentialApproachValueAtTime(value: Type, time: Time, rampTime: Time): this {
+	exponentialApproachValueAtTime(value: UnitMap[TypeName], time: Time, rampTime: Time): this {
 		this._param.exponentialApproachValueAtTime(value, time, rampTime);
 		return this;
 	}
-	setTargetAtTime(value: Type, startTime: Time, timeConstant: number): this {
+	setTargetAtTime(value: UnitMap[TypeName], startTime: Time, timeConstant: number): this {
 		this._param.setTargetAtTime(value, startTime, timeConstant);
 		return this;
 	}
-	setValueCurveAtTime(values: Type[], startTime: Time, duration: Time, scaling?: number): this {
+	setValueCurveAtTime(values: UnitMap[TypeName][], startTime: Time, duration: Time, scaling?: number): this {
 		this._param.setValueCurveAtTime(values, startTime, duration, scaling);
 		return this;
 	}
@@ -151,15 +151,15 @@ export class Signal<Type extends Unit = number> extends ToneAudioNode<SignalOpti
 		this._param.cancelAndHoldAtTime(time);
 		return this;
 	}
-	rampTo(value: Type, rampTime: Time, startTime?: Time): this {
+	rampTo(value: UnitMap[TypeName], rampTime: Time, startTime?: Time): this {
 		this._param.rampTo(value, rampTime, startTime);
 		return this;
 	}
 
-	get value(): Type {
+	get value(): UnitMap[TypeName] {
 		return this._param.value;
 	}
-	set value(value: Type) {
+	set value(value: UnitMap[TypeName]) {
 		this._param.value = value;
 	}
 

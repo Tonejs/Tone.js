@@ -51,7 +51,7 @@ export class PulseOscillator extends Source<PulseOscillatorOptions> implements T
 	/**
 	 * The width of the pulse.
 	 */
-	width: Signal<AudioRange>;
+	width: Signal<"audioRange">;
 
 	/**
 	 * gate the width amount
@@ -69,12 +69,12 @@ export class PulseOscillator extends Source<PulseOscillatorOptions> implements T
 	/**
 	 * The frequency control.
 	 */
-	frequency: Signal<Frequency>;
+	frequency: Signal<"frequency">;
 
 	/**
 	 * The detune in cents.
 	 */
-	detune: Signal<Cents>;
+	detune: Signal<"cents">;
 
 	/**
 	 * Threshold the signal to turn it into a square

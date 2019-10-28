@@ -31,7 +31,7 @@ export class Panner extends ToneAudioNode<TonePannerOptions> {
 	/**
 	 * The pan control. -1 = hard left, 1 = hard right.
 	 */
-	readonly pan: Param<AudioRange>;
+	readonly pan: Param<"audioRange">;
 
 	constructor(options?: Partial<TonePannerOptions>);
 	/**

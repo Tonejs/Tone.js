@@ -26,7 +26,7 @@ export class Delay extends ToneAudioNode<DelayOptions> {
 	/**
 	 * The amount of time the incoming signal is delayed.
 	 */
-	readonly delayTime: Param<Time>;
+	readonly delayTime: Param<"time">;
 
 	/**
 	 * Private reference to the internal DelayNode

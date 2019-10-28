@@ -49,7 +49,7 @@ export class LFO extends ToneAudioNode<LFOOptions> {
 	/**
 	 * The gain of the output
 	 */
-	private _amplitudeGain: Gain<NormalRange>;
+	private _amplitudeGain: Gain<"normalRange">;
 
 	/**
 	 * The amplitude of the LFO, which controls the output range between
@@ -57,12 +57,12 @@ export class LFO extends ToneAudioNode<LFOOptions> {
 	 * is 10, setting the amplitude to 0.5 would make the LFO modulate
 	 * between -5 and 5.
 	 */
-	readonly amplitude: Param<NormalRange>;
+	readonly amplitude: Param<"normalRange">;
 
 	/**
 	 * The signal which is output when the LFO is stopped
 	 */
-	private _stoppedSignal: Signal<AudioRange>;
+	private _stoppedSignal: Signal<"audioRange">;
 
 	/**
 	 * Just outputs zeros. This is used so that scaled signal is not
@@ -108,7 +108,7 @@ export class LFO extends ToneAudioNode<LFOOptions> {
 	/**
 	 * The frequency value of the LFO
 	 */
-	readonly frequency: Signal<Frequency>;
+	readonly frequency: Signal<"frequency">;
 
 	/**
 	 * @param frequency The frequency of the oscillation.

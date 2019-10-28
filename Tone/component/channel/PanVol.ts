@@ -36,7 +36,7 @@ export class PanVol extends ToneAudioNode<PanVolOptions> {
 	/**
 	 * The L/R panning control.
 	 */
-	readonly pan: Param<AudioRange>;
+	readonly pan: Param<"audioRange">;
 
 	/**
 	 * The volume node
@@ -46,7 +46,7 @@ export class PanVol extends ToneAudioNode<PanVolOptions> {
 	/**
 	 * The volume control in decibels.
 	 */
-	readonly volume: Param<Decibels>;
+	readonly volume: Param<"decibels">;
 
 	/**
 	 * @param pan the initial pan

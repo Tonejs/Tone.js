@@ -37,12 +37,12 @@ export abstract class Monophonic<Options extends MonophonicOptions> extends Inst
 	/**
 	 * The instrument's frequency signal.
 	 */
-	abstract readonly frequency: Signal<Frequency>;
+	abstract readonly frequency: Signal<"frequency">;
 
 	/**
 	 * The instrument's detune control signal.
 	 */
-	abstract readonly detune: Signal<Cents>;
+	abstract readonly detune: Signal<"cents">;
 
 	constructor(options?: Partial<MonophonicOptions>);
 	constructor() {

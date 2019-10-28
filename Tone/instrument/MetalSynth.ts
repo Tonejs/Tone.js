@@ -39,12 +39,12 @@ export class MetalSynth extends Monophonic<MetalSynthOptions> {
 	/**
 	 * The frequency of the cymbal
 	 */
-	readonly frequency: Signal<Frequency>;
+	readonly frequency: Signal<"frequency">;
 
 	/**
 	 * The detune applied to the oscillators
 	 */
-	readonly detune: Signal<Cents>;
+	readonly detune: Signal<"cents">;
 
 	/**
 	 * The array of FMOscillators

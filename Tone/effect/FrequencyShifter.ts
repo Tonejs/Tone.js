@@ -40,7 +40,7 @@ export class FrequencyShifter extends Effect<FrequencyShifterOptions> {
 	 * The ring modulators carrier frequency. This frequency determines
 	 * by how many Hertz the input signal will be shifted up or down. Default is 0.
 	 */
-	readonly frequency: Signal<Frequency>;
+	readonly frequency: Signal<"frequency">;
 
 	/**
 	 * The ring modulators sine carrier

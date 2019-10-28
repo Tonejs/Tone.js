@@ -173,7 +173,7 @@ export type PowerOfTwo = number;
 /**
  * Map the unit name to a unit value
  */
-interface UnitMap {
+export interface UnitMap {
 	number: number;
 	decibels: Decibels;
 	normalRange: NormalRange;
@@ -203,3 +203,64 @@ export type Unit = UnitMap[keyof UnitMap];
  * @category Unit
  */
 export type UnitName = keyof UnitMap;
+
+/**
+ * Convert the unit name into the type
+ */
+export type UnitTypeFromName<Name extends UnitName> = UnitMap[Name];
+
+export type UnitTypeValue = {
+	units: "number"; 
+	value: number;
+} | {
+	units: "decibels"; 
+	value: Decibels;
+} | {
+	units: "normalRange"; 
+	value: NormalRange;
+} | {
+	units: "audioRange"; 
+	value: AudioRange;
+} | {
+	units: "gain"; 
+	value: GainFactor;
+} | {
+	units: "positive"; 
+	value: Positive;
+} | {
+	units: "time"; 
+	value: Time;
+} | {
+	units: "frequency"; 
+	value: Frequency;
+} | {
+	units: "transportTime"; 
+	value: TransportTime;
+} | {
+	units: "ticks"; 
+	value: Ticks;
+} | {
+	units: "bpm"; 
+	value: BPM;
+} | {
+	units: "degrees"; 
+	value: Degrees;
+} | {
+	units: "radians"; 
+	value: Radians;
+} | {
+	units: "samples"; 
+	value: Samples;
+} | {
+	units: "hertz"; 
+	value: Hertz;
+} | {
+	units: "cents"; 
+	value: Cents;
+}
+
+export type UnitNameFromType<Type extends UnitTypeValue["value"]> = Extract<UnitTypeValue, { value: Type }>["units"]
+
+export type GetNameAndType<Type extends UnitTypeValue["value"]> = Extract<UnitTypeValue, { value: Type }>
+
+export type ValidUnitType<Type extends UnitTypeValue["value"]> = Extract<UnitTypeValue, { value: Type }>["value"];

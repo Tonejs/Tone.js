@@ -78,8 +78,8 @@ export class OmniOscillator<OscType extends AnyOscillator>
 
 	readonly name: string = "OmniOscillator";
 
-	readonly frequency: Signal<Frequency>;
-	readonly detune: Signal<Cents>;
+	readonly frequency: Signal<"frequency">;
+	readonly detune: Signal<"cents">;
 
 	/**
 	 * The oscillator that can switch types
@@ -337,11 +337,11 @@ export class OmniOscillator<OscType extends AnyOscillator>
 	 * // can access the width attribute only if type === "pulse"
 	 * omniOsc.width.value = 0.2;
 	 */
-	get width(): IsPulseOscillator<OscType, Signal<AudioRange>> {
+	get width(): IsPulseOscillator<OscType, Signal<"audioRange">> {
 		if (this._getOscType(this._oscillator, "pulse")) {
-			return this._oscillator.width as IsPulseOscillator<OscType, Signal<AudioRange>> ;
+			return this._oscillator.width as IsPulseOscillator<OscType, Signal<"audioRange">> ;
 		} else {
-			return undefined as IsPulseOscillator<OscType, Signal<AudioRange>> ;
+			return undefined as IsPulseOscillator<OscType, Signal<"audioRange">> ;
 		}
 	}
 
@@ -400,11 +400,11 @@ export class OmniOscillator<OscType extends AnyOscillator>
 	 * The modulation index when the sourceType === "fm"
 	 * See [[FMOscillator]].
 	 */
-	get modulationIndex(): IsFMOscillator<OscType, Signal<Positive>> {
+	get modulationIndex(): IsFMOscillator<OscType, Signal<"positive">> {
 		if (this._getOscType(this._oscillator, "fm")) {
-			return this._oscillator.modulationIndex as IsFMOscillator<OscType, Signal<Positive>>;
+			return this._oscillator.modulationIndex as IsFMOscillator<OscType, Signal<"positive">>;
 		} else {
-			return undefined as IsFMOscillator<OscType, Signal<Positive>>;
+			return undefined as IsFMOscillator<OscType, Signal<"positive">>;
 		}
 	}
 
@@ -412,11 +412,11 @@ export class OmniOscillator<OscType extends AnyOscillator>
 	 * Harmonicity is the frequency ratio between the carrier and the modulator oscillators.
 	 * See [[AMOscillator]] or [[FMOscillator]]
 	 */
-	get harmonicity(): IsAmOrFmOscillator<OscType, Signal<Positive>> {
+	get harmonicity(): IsAmOrFmOscillator<OscType, Signal<"positive">> {
 		if (this._getOscType(this._oscillator, "fm") || this._getOscType(this._oscillator, "am")) {
-			return this._oscillator.harmonicity as IsAmOrFmOscillator<OscType, Signal<Positive>>;
+			return this._oscillator.harmonicity as IsAmOrFmOscillator<OscType, Signal<"positive">>;
 		} else {
-			return undefined as IsAmOrFmOscillator<OscType, Signal<Positive>>;
+			return undefined as IsAmOrFmOscillator<OscType, Signal<"positive">>;
 		}
 	}
 
@@ -426,11 +426,11 @@ export class OmniOscillator<OscType extends AnyOscillator>
 	 * @min 0.1
 	 * @max 5
 	 */
-	get modulationFrequency(): IsPWMOscillator<OscType, Signal<Frequency>> {
+	get modulationFrequency(): IsPWMOscillator<OscType, Signal<"frequency">> {
 		if (this._getOscType(this._oscillator, "pwm")) {
-			return this._oscillator.modulationFrequency as IsPWMOscillator<OscType, Signal<Frequency>>;
+			return this._oscillator.modulationFrequency as IsPWMOscillator<OscType, Signal<"frequency">>;
 		} else {
-			return undefined as IsPWMOscillator<OscType, Signal<Frequency>>;
+			return undefined as IsPWMOscillator<OscType, Signal<"frequency">>;
 		}
 	}
 

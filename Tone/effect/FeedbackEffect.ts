@@ -29,12 +29,12 @@ export abstract class FeedbackEffect<Options extends FeedbackEffectOptions> exte
 	/**
 	 * the gain which controls the feedback
 	 */
-	private _feedbackGain: Gain<NormalRange>;
+	private _feedbackGain: Gain<"normalRange">;
 
 	/**
 	 * The amount of signal which is fed back into the effect input.
 	 */
-	feedback: Param<NormalRange>;
+	feedback: Param<"normalRange">;
 
 	constructor(options: FeedbackEffectOptions) {
 

@@ -12,7 +12,7 @@ export function PassAudio(
 ): Promise<void> {
 	const duration = 0.2;
 	return Offline(() => {
-		const sig = new Signal<number>(0);
+		const sig = new Signal(0);
 		callback(sig);
 		sig.setValueAtTime(1, duration / 2);
 	}, 0.2, 1).then(buffer => {

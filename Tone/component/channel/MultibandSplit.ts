@@ -83,19 +83,19 @@ export class MultibandSplit extends ToneAudioNode<MultibandSplitOptions> {
 	/**
 	 * The low/mid crossover frequency.
 	 */
-	readonly lowFrequency: Signal<Frequency>;
+	readonly lowFrequency: Signal<"frequency">;
 
 	/**
 	 * The mid/high crossover frequency.
 	 */
-	readonly highFrequency: Signal<Frequency>;
+	readonly highFrequency: Signal<"frequency">;
 
 	protected _internalChannels = [this.low, this.mid, this.high];
 
 	/**
 	 * The Q or Quality of the filter
 	 */
-	readonly Q: Signal<Positive>;
+	readonly Q: Signal<"positive">;
 
 	/**
 	 * @param lowFrequency the low/mid crossover frequency

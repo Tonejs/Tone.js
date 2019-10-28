@@ -66,7 +66,7 @@ export function EffectTests(Constr, args?, before?): void {
 				if (before) {
 					before(instance);
 				}
-				const signal = new Signal<number>(-1).connect(instance);
+				const signal = new Signal(-1).connect(instance);
 				// make the signals ramp
 				signal.linearRampTo(1, 1);
 				instance.wet.value = 0;
@@ -84,7 +84,7 @@ export function EffectTests(Constr, args?, before?): void {
 				if (before) {
 					before(instance);
 				}
-				const signal = new Signal<number>(-1).connect(instance);
+				const signal = new Signal(-1).connect(instance);
 				// make the signals ramp
 				signal.linearRampTo(1, 1);
 				instance.wet.value = 1;

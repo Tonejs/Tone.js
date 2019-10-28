@@ -54,7 +54,7 @@ export class UserMedia extends ToneAudioNode<UserMediaOptions> {
 	/**
 	 * The volume of the output in decibels.
 	 */
-	readonly volume: Param<Decibels>;		
+	readonly volume: Param<"decibels">;		
 	
 	/**
 	 * @param volume The level of the input in decibels

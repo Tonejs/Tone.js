@@ -26,12 +26,12 @@ export class Volume extends ToneAudioNode<VolumeOptions> {
 	/**
 	 * the output node
 	 */
-	output: Gain<Decibels>;
+	output: Gain<"decibels">;
 
 	/**
 	 * Input and output are the same
 	 */
-	input: Gain;
+	input: Gain<"decibels">;
 
 	/**
 	 * The unmuted volume
@@ -46,7 +46,7 @@ export class Volume extends ToneAudioNode<VolumeOptions> {
 	 * const osc = new Oscillator().connect(vol).start();
 	 * vol.volume.value = -20;
 	 */
-	volume: Param<Decibels>;
+	volume: Param<"decibels">;
 
 	/**
 	 * @param volume the initial volume in decibels

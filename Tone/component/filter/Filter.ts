@@ -47,22 +47,22 @@ export class Filter extends ToneAudioNode<FilterOptions> {
 	/**
 	 * The Q or Quality of the filter
 	 */
-	readonly Q: Signal<Positive>;
+	readonly Q: Signal<"positive">;
 
 	/**
 	 * The cutoff frequency of the filter.
 	 */
-	readonly frequency: Signal<Frequency>;
+	readonly frequency: Signal<"frequency">;
 
 	/**
 	 * The detune parameter
 	 */
-	readonly detune: Signal<Cents>;
+	readonly detune: Signal<"cents">;
 
 	/**
 	 * The gain of the filter, only used in certain filter types
 	 */
-	readonly gain: Signal<Decibels>;
+	readonly gain: Signal<"decibels">;
 
 	/**
 	 * @param frequency The cutoff frequency of the filter.

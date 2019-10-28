@@ -37,7 +37,7 @@ export interface ToneOscillatorInterface {
 	 * const osc = new FMOscillator("Bb4").toDestination().start();
 	 * osc.frequency.rampTo("D2", 3);
 	 */
-	readonly frequency: Signal<Frequency>;
+	readonly frequency: Signal<"frequency">;
 
 	/**
 	 * The detune value in cents (100th of a semitone).
@@ -47,7 +47,7 @@ export interface ToneOscillatorInterface {
 	 * // pitch it 1 octave down (12 semitones)
 	 * osc.detune.value = -1200;
 	 */
-	readonly detune: Signal<Cents>;
+	readonly detune: Signal<"cents">;
 
 	/**
 	 * The phase is the starting position within the oscillator's cycle. For example

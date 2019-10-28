@@ -88,7 +88,7 @@ export class CrossFade extends ToneAudioNode<CrossFadeOptions> {
 	 * will output 100% crossFade.a and
 	 * a value of 1 will output 100% crossFade.b.
 	 */
-	readonly fade: Signal<NormalRange>;
+	readonly fade: Signal<"normalRange">;
 
 	protected _internalChannels = [this.a, this.b];
 

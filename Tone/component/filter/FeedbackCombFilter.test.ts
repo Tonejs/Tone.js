@@ -49,7 +49,7 @@ describe("FeedbackCombFilter", () => {
 					delayTime: 0.1,
 					resonance: 0,
 				}).toDestination();
-				const sig = new Signal<number>(0).connect(fbcf);
+				const sig = new Signal(0).connect(fbcf);
 				sig.setValueAtTime(1, 0);
 			}, 0.2).then(buffer => {
 				expect(buffer.getValueAtTime(0)).to.equal(0);
@@ -65,7 +65,7 @@ describe("FeedbackCombFilter", () => {
 					delayTime: 0.1,
 					resonance: 0.5,
 				}).toDestination();
-				const sig = new Signal<number>(0).connect(fbcf);
+				const sig = new Signal(0).connect(fbcf);
 				sig.setValueAtTime(1, 0);
 				sig.setValueAtTime(0, 0.1);
 			}, 0.4).then(buffer => {

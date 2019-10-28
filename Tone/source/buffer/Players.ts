@@ -36,7 +36,7 @@ export class Players extends ToneAudioNode<PlayersOptions> {
 	/**
 	 * The volume of the output in decibels.
 	 */
-	readonly volume: Param<Decibels>;
+	readonly volume: Param<"decibels">;
 
 	/**
 	 * The combined output of all of the players

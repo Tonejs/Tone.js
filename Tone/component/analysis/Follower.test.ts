@@ -33,7 +33,7 @@ describe("Follower", () => {
 		it("smooths the incoming signal at 0.1", () => {
 			return Offline(() => {
 				const foll = new Follower(0.1).toDestination();
-				const sig = new Signal<number>(0);
+				const sig = new Signal(0);
 				sig.connect(foll);
 				sig.setValueAtTime(1, 0.1);
 				sig.setValueAtTime(0, 0.3);
@@ -51,7 +51,7 @@ describe("Follower", () => {
 		it("smooths the incoming signal at 0.05", () => {
 			return Offline(() => {
 				const foll = new Follower(0.05).toDestination();
-				const sig = new Signal<number>(0);
+				const sig = new Signal(0);
 				sig.connect(foll);
 				sig.setValueAtTime(1, 0.1);
 				sig.setValueAtTime(0, 0.3);
@@ -69,7 +69,7 @@ describe("Follower", () => {
 		it("smooths the incoming signal at 0.2", () => {
 			return Offline(() => {
 				const foll = new Follower(0.2).toDestination();
-				const sig = new Signal<number>(0);
+				const sig = new Signal(0);
 				sig.connect(foll);
 				sig.setValueAtTime(1, 0.1);
 				sig.setValueAtTime(0, 0.3);
@@ -86,7 +86,7 @@ describe("Follower", () => {
 		it("smooths the incoming signal at 0.5", () => {
 			return Offline(() => {
 				const foll = new Follower(0.5).toDestination();
-				const sig = new Signal<number>(0);
+				const sig = new Signal(0);
 				sig.connect(foll);
 				sig.setValueAtTime(1, 0.1);
 				sig.setValueAtTime(0, 0.6);

@@ -93,7 +93,7 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	/**
 	 * the signal which is output.
 	 */
-	protected _sig: Signal<NormalRange> = new Signal({
+	protected _sig: Signal<"normalRange"> = new Signal({
 		context: this.context,
 		value: 0,
 	});

@@ -47,17 +47,17 @@ export class PWMOscillator extends Source<PWMOscillatorOptions> implements ToneO
 	/**
 	 * The frequency control.
 	 */
-	readonly frequency: Signal<Frequency>;
+	readonly frequency: Signal<"frequency">;
 
 	/**
 	 * The detune of the oscillator.
 	 */
-	readonly detune: Signal<Cents>;
+	readonly detune: Signal<"cents">;
 
 	/**
 	 * The modulation rate of the oscillator.
 	 */
-	readonly modulationFrequency: Signal<Frequency>;
+	readonly modulationFrequency: Signal<"frequency">;
 
 	/**
 	 * @param {Frequency} frequency The starting frequency of the oscillator.

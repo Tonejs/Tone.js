@@ -69,12 +69,12 @@ export class FMSynth extends Monophonic<FMSynthOptions> {
 	/**
 	 * The frequency control
 	 */
-	readonly frequency: Signal<Frequency>;
+	readonly frequency: Signal<"frequency">;
 
 	/**
 	 * The detune in cents
 	 */
-	readonly detune: Signal<Cents>;
+	readonly detune: Signal<"cents">;
 
 	/**
 	 * Harmonicity is the ratio between the two voices. A harmonicity of

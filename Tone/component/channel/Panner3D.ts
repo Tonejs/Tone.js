@@ -35,13 +35,13 @@ export class Panner3D extends ToneAudioNode<Panner3DOptions> {
 	readonly input: PannerNode;
 	readonly output: PannerNode;
 
-	readonly positionX: Param<number>;
-	readonly positionY: Param<number>;
-	readonly positionZ: Param<number>;
+	readonly positionX: Param<"number">;
+	readonly positionY: Param<"number">;
+	readonly positionZ: Param<"number">;
 
-	readonly orientationX: Param<number>;
-	readonly orientationY: Param<number>;
-	readonly orientationZ: Param<number>;
+	readonly orientationX: Param<"number">;
+	readonly orientationY: Param<"number">;
+	readonly orientationZ: Param<"number">;
 
 	/**
 	 * @param positionX The initial x position.

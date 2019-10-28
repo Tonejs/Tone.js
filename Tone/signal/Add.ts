@@ -41,20 +41,20 @@ export class Add extends Signal {
 	/**
 	 * The value which is added to the input signal
 	 */
-	readonly addend: Param<number> = this._param;
+	readonly addend: Param<"number"> = this._param;
 
 	/**
 	 * @param value If no value is provided, Tone.Add will sum the first  and second inputs.
 	 */
 	constructor(value?: number);
-	constructor(options?: Partial<SignalOptions<number>>);
+	constructor(options?: Partial<SignalOptions<"number">>);
 	constructor() {
 		super(Object.assign(optionsFromArguments(Add.getDefaults(), arguments, ["value"])));
 
 		connectSeries(this._constantSource, this._sum);
 	}
 
-	static getDefaults(): SignalOptions<number> {
+	static getDefaults(): SignalOptions<"number"> {
 		return Object.assign(Signal.getDefaults(), {
 			value: 0,
 		});

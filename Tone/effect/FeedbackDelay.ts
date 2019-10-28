@@ -37,7 +37,7 @@ export class FeedbackDelay extends FeedbackEffect<FeedbackDelayOptions> {
 	/**
 	 * The delayTime of the FeedbackDelay.
 	 */
-	readonly delayTime: Param<Time>;
+	readonly delayTime: Param<"time">;
 
 	constructor(delayTime?: Time, feedback?: NormalRange);
 	constructor(options?: Partial<FeedbackDelayOptions>);

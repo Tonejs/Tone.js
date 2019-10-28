@@ -39,7 +39,7 @@ export class ToneBufferSource extends OneShotSource<ToneBufferSourceOptions> {
 	/**
 	 * The frequency of the oscillator
 	 */
-	readonly playbackRate: Param<Positive>;
+	readonly playbackRate: Param<"positive">;
 
 	/**
 	 * The private instance of the buffer object
