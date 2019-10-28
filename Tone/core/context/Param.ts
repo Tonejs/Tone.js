@@ -6,6 +6,7 @@ import { optionsFromArguments } from "../util/Defaults";
 import { Timeline } from "../util/Timeline";
 import { isDefined } from "../util/TypeCheck";
 import { ToneWithContext, ToneWithContextOptions } from "./ToneWithContext";
+import { EQ } from "../util/Math";
 
 export interface ParamOptions<TypeName extends UnitName> extends ToneWithContextOptions {
 	units: TypeName;
@@ -407,28 +408,22 @@ export class Param<TypeName extends UnitName = "number">
 		this.assert(isFinite(computedTime), `Invalid argument to cancelAndHoldAtTime: ${JSON.stringify(time)}`);
 
 		this.log(this.units, "cancelAndHoldAtTime", computedTime, "value=" + valueAtTime);
-
-		this._param.cancelAndHoldAtTime(computedTime);
-		// set the value at the given time
-		this._events.add({
-			time: computedTime,
-			type: "setValueAtTime",
-			value: valueAtTime,
-		});
-		this._param.setValueAtTime(valueAtTime, computedTime);
-
+		
 		// if there is an event at the given computedTime
 		// and that even is not a "set"
 		const before = this._events.get(computedTime);
 		const after = this._events.getAfter(computedTime);
-		if (before && before.time === computedTime) {
+		if (before && EQ(before.time, computedTime)) {
 			// remove everything after
 			if (after) {
+				this._param.cancelScheduledValues(after.time);
 				this._events.cancel(after.time);
 			} else {
+				this._param.cancelAndHoldAtTime(computedTime);
 				this._events.cancel(computedTime + this.sampleTime);
 			}
 		} else if (after) {
+			this._param.cancelScheduledValues(after.time);
 			// cancel the next event(s)
 			this._events.cancel(after.time);
 			if (after.type === "linearRampToValueAtTime") {
@@ -438,6 +433,13 @@ export class Param<TypeName extends UnitName = "number">
 			}
 		}
 
+		// set the value at the given time
+		this._events.add({
+			time: computedTime,
+			type: "setValueAtTime",
+			value: valueAtTime,
+		});
+		this._param.setValueAtTime(valueAtTime, computedTime);
 		return this;
 	}
 
