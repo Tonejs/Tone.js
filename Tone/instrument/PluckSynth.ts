@@ -18,7 +18,10 @@ export interface PluckSynthOptions extends InstrumentOptions {
  * @example
  * import { PluckSynth } from "tone";
  * const plucky = new PluckSynth().toDestination();
- * plucky.triggerAttack("C4");
+ * plucky.triggerAttack("C4", "+0.5");
+ * plucky.triggerAttack("C3", "+1");
+ * plucky.triggerAttack("C2", "+1.5");
+ * plucky.triggerAttack("C1", "+2");
  * @category Instrument
  */
 export class PluckSynth extends Instrument<PluckSynthOptions> {
