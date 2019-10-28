@@ -167,7 +167,7 @@ export abstract class AbstractParam<TypeName extends UnitName> {
 	 * import { Oscillator } from "tone";
 	 * const osc = new Oscillator().toDestination().start();
 	 * // schedule it to ramp either linearly or exponentially depending on the units
-	 * signal.rampTo("A2", 10);
+	 * osc.frequency.rampTo("A2", 10);
 	 * @example
 	 * import { Oscillator } from "tone";
 	 * const osc = new Oscillator().toDestination().start();

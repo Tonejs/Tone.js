@@ -271,7 +271,7 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 	 * import { FMSynth, PolySynth } from "tone";
 	 * const synth = new PolySynth(FMSynth).toDestination();
 	 * // trigger a chord immediately with a velocity of 0.2
-	 * poly.triggerAttack(["Ab3", "C4", "F5"], undefined, 0.2);
+	 * synth.triggerAttack(["Ab3", "C4", "F5"], Tone.now(), 0.2);
 	 */
 	triggerAttack(notes: Frequency | Frequency[], time?: Time, velocity?: NormalRange): this {
 
