@@ -4,7 +4,7 @@ import "../component/LFO";
 import "../component/Panner";
 
 /**
- *  @class Tone.AutoPanner is a Tone.Panner with an LFO connected to the pan amount. 
+ *  @class AutoPanner is a Tone.Panner with an LFO connected to the pan amount. 
  *         More on using autopanners [here](https://www.ableton.com/en/blog/autopan-chopper-effect-and-more-liveschool/).
  *
  *  @constructor
@@ -12,13 +12,13 @@ import "../component/Panner";
  *  @param {Frequency|Object} [frequency] Rate of left-right oscillation. 
  *  @example
  * //create an autopanner and start it's LFO
- * var autoPanner = new Tone.AutoPanner("4n").toMaster().start();
+ * var autoPanner = new AutoPanner("4n").toMaster().start();
  * //route an oscillator through the panner and start it
  * var oscillator = new Tone.Oscillator().connect(autoPanner).start();
  */
-Tone.AutoPanner = function(){
+const AutoPanner = function() {
 
-	var options = Tone.defaults(arguments, ["frequency"], Tone.AutoPanner);
+	let options = Tone.defaults(arguments, ["frequency"], AutoPanner);
 	Tone.Effect.call(this, options);
 
 	/**
@@ -27,10 +27,10 @@ Tone.AutoPanner = function(){
 	 *  @private
 	 */
 	this._lfo = new Tone.LFO({
-		"frequency" : options.frequency,
-		"amplitude" : options.depth,
-		"min" : -1,
-		"max" : 1,
+		frequency: options.frequency,
+		amplitude: options.depth,
+		min: -1,
+		max: 1,
 	});
 
 	/**
@@ -55,33 +55,33 @@ Tone.AutoPanner = function(){
 	 */
 	this.frequency = this._lfo.frequency;
 
-	//connections
+	// connections
 	this.connectEffect(this._panner);
 	this._lfo.connect(this._panner.pan);
 	this.type = options.type;
 	this._readOnly(["depth", "frequency"]);
 };
 
-//extend Effect
-Tone.extend(Tone.AutoPanner, Tone.Effect);
+// extend Effect
+Tone.extend(AutoPanner, Tone.Effect);
 
 /**
  *  defaults
  *  @static
  *  @type {Object}
  */
-Tone.AutoPanner.defaults = {
-	"frequency" : 1,
-	"type" : "sine",
-	"depth" : 1
+AutoPanner.defaults = {
+	frequency: 1,
+	type: "sine",
+	depth: 1
 };
 
 /**
  * Start the effect.
  * @param {Time} [time=now] When the LFO will start. 
- * @returns {Tone.AutoPanner} this
+ * @returns {AutoPanner} this
  */
-Tone.AutoPanner.prototype.start = function(time){
+AutoPanner.prototype.start = function(time) {
 	this._lfo.start(time);
 	return this;
 };
@@ -89,9 +89,9 @@ Tone.AutoPanner.prototype.start = function(time){
 /**
  * Stop the effect.
  * @param {Time} [time=now] When the LFO will stop. 
- * @returns {Tone.AutoPanner} this
+ * @returns {AutoPanner} this
  */
-Tone.AutoPanner.prototype.stop = function(time){
+AutoPanner.prototype.stop = function(time) {
 	this._lfo.stop(time);
 	return this;
 };
@@ -100,18 +100,18 @@ Tone.AutoPanner.prototype.stop = function(time){
  * Sync the panner to the transport.
  * @param {Time} [delay=0] Delay time before starting the effect after the
  *                               Transport has started. 
- * @returns {Tone.AutoPanner} this
+ * @returns {AutoPanner} this
  */
-Tone.AutoPanner.prototype.sync = function(delay){
+AutoPanner.prototype.sync = function(delay) {
 	this._lfo.sync(delay);
 	return this;
 };
 
 /**
  * Unsync the panner from the transport
- * @returns {Tone.AutoPanner} this
+ * @returns {AutoPanner} this
  */
-Tone.AutoPanner.prototype.unsync = function(){
+AutoPanner.prototype.unsync = function() {
 	this._lfo.unsync();
 	return this;
 };
@@ -123,20 +123,20 @@ Tone.AutoPanner.prototype.unsync = function(){
  * @type {string}
  * @name type
  */
-Object.defineProperty(Tone.AutoPanner.prototype, "type", {
-	get : function(){
+Object.defineProperty(AutoPanner.prototype, "type", {
+	get: function() {
 		return this._lfo.type;
 	},
-	set : function(type){
+	set: function(type) {
 		this._lfo.type = type;
 	}
 });
 
 /**
  *  clean up
- *  @returns {Tone.AutoPanner} this
+ *  @returns {AutoPanner} this
  */
-Tone.AutoPanner.prototype.dispose = function(){
+AutoPanner.prototype.dispose = function() {
 	Tone.Effect.prototype.dispose.call(this);
 	this._lfo.dispose();
 	this._lfo = null;
@@ -148,5 +148,5 @@ Tone.AutoPanner.prototype.dispose = function(){
 	return this;
 };
 
-export default Tone.AutoPanner;
+export default AutoPanner;
 
