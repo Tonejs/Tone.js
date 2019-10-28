@@ -1,20 +1,13 @@
 import { Effect, EffectOptions } from "../effect/Effect";
 import { Frequency, NormalRange, Positive, Time } from "../core/type/Units";
-import { LFO } from "../source/oscillator/LFO";
-import { ToneOscillatorType } from "../source/oscillator/OscillatorInterface";
 import { Filter, FilterOptions } from "../component/filter/Filter";
 import { SourceOptions } from "../source/Source";
 import { optionsFromArguments } from "../core/util/Defaults";
-import { Signal } from "../signal/Signal";
-import { readOnly } from "../core/util/Interface";
-import { Param } from "../core/context/Param";
+import { LFOEffect, LFOEffectOptions } from "./LFOEffect";
 
-export interface AutoFilterOptions extends EffectOptions {
-	frequency: Frequency;
+export interface AutoFilterOptions extends LFOEffectOptions {
 	baseFrequency: Frequency;
 	octaves: Positive;
-	type: ToneOscillatorType;
-	depth: NormalRange;
 	filter: Omit<FilterOptions, keyof SourceOptions | "frequency" | "detune" | "gain">;
 }
 
@@ -30,26 +23,10 @@ export interface AutoFilterOptions extends EffectOptions {
  * // route an oscillator through the filter and start it
  * const oscillator = new Oscillator().connect(autoFilter).start();
  */
-export class AutoFilter extends Effect<AutoFilterOptions> {
+export class AutoFilter extends LFOEffect<AutoFilterOptions> {
 
 	readonly name: string = "AutoFilter";
 
-	/**
-	 * the lfo which drives the filter cutoff
-	 */
-	private _lfo: LFO;
-	
-	/**
-	 * The range of the filter modulating between the min and max frequency. 
-	 * 0 = no modulation. 1 = full modulation.
-	 */
-	readonly depth: Param<"normalRange">;
-	
-	/**
-	 * How fast the filter modulates between min and max. 
-	 */
-	readonly frequency: Signal<"frequency">;
-	
 	/**
 	 * The filter node
 	 */
@@ -58,7 +35,7 @@ export class AutoFilter extends Effect<AutoFilterOptions> {
 	/**
 	 * The octaves placeholder
 	 */
-	private _octaves: Positive;
+	private _octaves!: Positive;
 
 	/**
 	 * @param frequency The rate of the LFO.
@@ -72,32 +49,19 @@ export class AutoFilter extends Effect<AutoFilterOptions> {
 		super(optionsFromArguments(AutoFilter.getDefaults(), arguments, ["frequency", "baseFrequency", "octaves"]));
 		const options = optionsFromArguments(AutoFilter.getDefaults(), arguments, ["frequency", "baseFrequency", "octaves"]);
 
-		this._lfo = new LFO({
-			context: this.context,
-			frequency: options.frequency,
-			amplitude: options.depth,
-		});
-		this.depth = this._lfo.amplitude;
-		this.frequency = this._lfo.frequency;
 		this.filter = new Filter(Object.assign(options.filter, {
 			context: this.context,
 		}));
-		this._octaves = 0;
 
 		// connections
 		this.connectEffect(this.filter);
 		this._lfo.connect(this.filter.frequency);
-		this.type = options.type;
-		readOnly(this, ["frequency", "depth"]);
 		this.octaves = options.octaves;
 		this.baseFrequency = options.baseFrequency;
 	}
 
 	static getDefaults(): AutoFilterOptions {
-		return Object.assign(Effect.getDefaults(), {
-			frequency: 1,
-			type: "sine" as ToneOscillatorType,
-			depth: 1,
+		return Object.assign(LFOEffect.getDefaults(), {
 			baseFrequency: 200,
 			octaves: 2.6,
 			filter: {
@@ -106,53 +70,6 @@ export class AutoFilter extends Effect<AutoFilterOptions> {
 				Q: 1,
 			}
 		});
-	}
-
-	/**
-	 * Start the effect.
-	 */
-	start(time?: Time): this {
-		this._lfo.start(time);
-		return this;
-	}
-
-	/**
-	 * Stop the lfo
-	 */
-	stop(time?: Time): this {
-		this._lfo.stop(time);
-		return this;
-	}
-
-	/**
-	 * Sync the filter to the transport. See [[LFO.sync]]
-	 */
-	sync(): this {
-		this._lfo.sync();
-		return this;
-	}
-
-	/**
-	 * Unsync the filter from the transport.
-	 */
-	unsync(): this {
-		this._lfo.unsync();
-		return this;
-	}
-
-	/**
-	 * The type of the LFO's oscillator: See [[Oscillator.type]]
-	 * @example
-	 * import { AutoFilter, Noise } from "tone";
-	 * const autoFilter = new AutoFilter().start().toDestination();
-	 * const noise = new Noise().start().connect(autoFilter);
-	 * autoFilter.type = "square";
-	 */
-	get type() {
-		return this._lfo.type;
-	}
-	set type(type) {
-		this._lfo.type = type;
 	}
 
 	/**
@@ -180,10 +97,7 @@ export class AutoFilter extends Effect<AutoFilterOptions> {
 
 	dispose(): this {
 		super.dispose();
-		this._lfo.dispose();
 		this.filter.dispose();
-		this.frequency.dispose();
-		this.depth.dispose();
 		return this;
 	}
 }
