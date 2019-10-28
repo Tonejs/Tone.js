@@ -3,7 +3,7 @@ import { MonoSynth } from "./MonoSynth";
 import { InstrumentTest } from "test/helper/InstrumentTests";
 import { CompareToFile } from "test/helper/CompareToFile";
 import { expect } from "chai";
-import { Offline } from "Tone";
+import { Offline } from "test/helper/Offline";
 import { CHROME_AUDIO_RENDERING } from "test/helper/Supports";
 
 describe("MonoSynth", () => {
@@ -82,7 +82,7 @@ describe("MonoSynth", () => {
 				}).toDestination();
 				synth.triggerAttack("C4", 0);
 			}, 0.5).then((buffer) => {
-				// expect(buffer.getLastSoundTime()).to.be.closeTo(0.2, 0.01);
+				expect(buffer.getTimeOfLastSound()).to.be.closeTo(0.2, 0.01);
 			});
 		});
 
