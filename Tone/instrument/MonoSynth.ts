@@ -76,7 +76,11 @@ export class MonoSynth extends Monophonic<MonoSynthOptions> {
 		super(optionsFromArguments(MonoSynth.getDefaults(), arguments));
 		const options = optionsFromArguments(MonoSynth.getDefaults(), arguments);
 
-		this.oscillator = new OmniOscillator(Object.assign(options.oscillator, { context: this.context }));
+		this.oscillator = new OmniOscillator(Object.assign(options.oscillator, { 
+			context: this.context,
+			detune: options.detune,
+			onstop: () => this.onsilence(this),
+		}));
 		this.frequency = this.oscillator.frequency;
 		this.detune = this.oscillator.detune;
 		this.filter = new Filter(Object.assign(options.filter, { context: this.context }));
@@ -106,15 +110,15 @@ export class MonoSynth extends Monophonic<MonoSynthOptions> {
 			filter: Object.assign(
 				omitFromObject(Filter.getDefaults(), Object.keys(ToneAudioNode.getDefaults())),
 				{
-					Q: 6,
-					rolloff: -24,
+					Q: 1,
+					rolloff: -12,
 					type: "lowpass",
 				},
 			),
 			filterEnvelope: Object.assign(
 				omitFromObject(FrequencyEnvelope.getDefaults(), Object.keys(ToneAudioNode.getDefaults())), 
 				{
-					attack: 0.06,
+					attack: 0.6,
 					baseFrequency: 200,
 					decay: 0.2,
 					exponent: 2,
@@ -126,7 +130,7 @@ export class MonoSynth extends Monophonic<MonoSynthOptions> {
 			oscillator: Object.assign(
 				omitFromObject(OmniOscillator.getDefaults(), Object.keys(Source.getDefaults())),
 				{
-					type: "square",
+					type: "sawtooth",
 				},
 			),
 		});
