@@ -55,6 +55,13 @@ describe("Context", () => {
 			expect(ctx.clockSource).to.equal("timeout");
 			ctx.dispose();
 		});
+		
+		it("returns 'now' and 'immediate' time", () => {
+			const ctx = new Context();
+			expect(ctx.now()).to.be.a("number");
+			expect(ctx.immediate()).to.be.a("number");
+			ctx.dispose();
+		});
 	});
 
 	context("state", () => {

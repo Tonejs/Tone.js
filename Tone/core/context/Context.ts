@@ -397,10 +397,17 @@ export class Context extends Emitter<"statechange" | "tick"> implements BaseAudi
 	}
 
 	/**
-	 * The current audio context time plus a short {@link lookAhead}.
+	 * The current audio context time plus a short [[lookAhead]].
 	 */
 	now(): Seconds {
 		return this._context.currentTime + this.lookAhead;
+	}
+
+	/**
+	 * The current audio context time without the [[lookAhead]]. See [[now]]
+	 */
+	immediate(): Seconds {
+		return this._context.currentTime;
 	}
 
 	/**
