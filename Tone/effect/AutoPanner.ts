@@ -11,10 +11,10 @@ export type AutoPannerOptions = LFOEffectOptions;
  *
  * @example
  * import { AutoPanner, Oscillator } from "tone";
- * // create an autopanner and start it's LFO
+ * // create an autopanner and start it
  * const autoPanner = new AutoPanner("4n").toDestination().start();
  * // route an oscillator through the panner and start it
- * const oscillator = new Tone.Oscillator().connect(autoPanner).start();
+ * const oscillator = new Oscillator().connect(autoPanner).start();
  */
 export class AutoPanner extends LFOEffect<AutoPannerOptions> {
 	

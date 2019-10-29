@@ -270,10 +270,10 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 	 * @param  time  The start time of the note.
 	 * @param velocity The velocity of the note.
 	 * @example
-	 * import { FMSynth, PolySynth } from "tone";
+	 * import { FMSynth, now, PolySynth } from "tone";
 	 * const synth = new PolySynth(FMSynth).toDestination();
 	 * // trigger a chord immediately with a velocity of 0.2
-	 * synth.triggerAttack(["Ab3", "C4", "F5"], Tone.now(), 0.2);
+	 * synth.triggerAttack(["Ab3", "C4", "F5"], now(), 0.2);
 	 */
 	triggerAttack(notes: Frequency | Frequency[], time?: Time, velocity?: NormalRange): this {
 

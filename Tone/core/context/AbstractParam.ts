@@ -31,13 +31,13 @@ export abstract class AbstractParam<TypeName extends UnitName> {
 	 * schedule changes from the current value.
 	 * @param time When to add a ramp point.
 	 * @example
-	 * import { Oscillator } from "tone";
+	 * import { now, Oscillator } from "tone";
 	 * const osc = new Oscillator().toDestination().start();
 	 * // set the frequency to "G4" in exactly 1 second from now.
 	 * osc.frequency.setValueAtTime("G4", "+1");
 	 * setInterval(() => {
 	 * 	// check the value every 100 ms
-	 * 	osc.frequency.getValueAtTime(Tone.now());
+	 * 	osc.frequency.getValueAtTime(now());
 	 * }, 100);
 	 */
 	abstract setRampPoint(time: Time): this;

@@ -25,8 +25,8 @@ export interface NoiseOptions extends SourceOptions {
  * // make an autofilter to shape the noise
  * const autoFilter = new AutoFilter({
  * 	frequency: "8m",
- * 	min: 800,
- * 	max: 15000
+ * 	baseFrequency: 200,
+ * 	octaves: 8
  * }).toDestination();
  * // connect the noise
  * noise.connect(autoFilter);

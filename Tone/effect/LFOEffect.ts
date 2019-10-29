@@ -94,8 +94,8 @@ export abstract class LFOEffect<Options extends LFOEffectOptions> extends Effect
 	/**
 	 * The type of the LFO's oscillator: See [[Oscillator.type]]
 	 * @example
-	 * import { LFOEffect, Noise } from "tone";
-	 * const autoFilter = new LFOEffect().start().toDestination();
+	 * import { AutoFilter, Noise } from "tone";
+	 * const autoFilter = new AutoFilter().start().toDestination();
 	 * const noise = new Noise().start().connect(autoFilter);
 	 * autoFilter.type = "square";
 	 */

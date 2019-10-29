@@ -51,6 +51,7 @@ export function setContext(context: Context | AudioContext | OfflineAudioContext
  * More about the Autoplay policy
  * [here](https://developers.google.com/web/updates/2017/09/autoplay-policy-changes#webaudio)
  * @example
+ * import * as Tone from "tone";
  * document.querySelector("button").addEventListener("click", async () => {
  * 	await Tone.start();
  * 	console.log("context started");
