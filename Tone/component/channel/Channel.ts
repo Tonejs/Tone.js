@@ -21,6 +21,7 @@ export interface ChannelOptions extends ToneAudioNodeOptions {
  * import { Channel } from "tone";
  * // pan the incoming signal left and drop the volume 12db
  * const channel = new Channel(-0.25, -12);
+ * @category Component
  */
 export class Channel extends ToneAudioNode<ChannelOptions> {
 
