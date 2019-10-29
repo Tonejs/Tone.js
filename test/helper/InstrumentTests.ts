@@ -3,6 +3,7 @@ import { Instrument } from "Tone/instrument/Instrument";
 import { connectTo } from "./Connect";
 import { Offline } from "./Offline";
 import { OutputAudio } from "./OutputAudio";
+import { Monophonic } from "Tone/instrument/Monophonic";
 
 export function InstrumentTest(Constr, note, constrArg?, optionsIndex?): void {
 
@@ -24,11 +25,11 @@ export function InstrumentTest(Constr, note, constrArg?, optionsIndex?): void {
 			let instance;
 			if (!optionsIndex) {
 				instance = new Constr({
-					volume : -10,
+					volume: -10,
 				});
 			} else if (optionsIndex === 1) {
 				instance = new Constr(constrArg, {
-					volume : -10,
+					volume: -10,
 				});
 			}
 			expect(instance.volume.value).to.be.closeTo(-10, 0.1);
@@ -134,7 +135,7 @@ export function InstrumentTest(Constr, note, constrArg?, optionsIndex?): void {
 		});
 
 		it("can sync triggerAttack to the Transport", () => {
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				const instance = new Constr(constrArg);
 				instance.toDestination();
 				instance.sync();
@@ -150,7 +151,7 @@ export function InstrumentTest(Constr, note, constrArg?, optionsIndex?): void {
 		});
 
 		it("can unsync triggerAttack to the Transport", () => {
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				const instance = new Constr(constrArg);
 				instance.toDestination();
 				instance.sync();
@@ -167,7 +168,7 @@ export function InstrumentTest(Constr, note, constrArg?, optionsIndex?): void {
 		});
 
 		it("calling sync and unsync multiple times has no effect", () => {
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				const instance = new Constr(constrArg);
 				instance.toDestination();
 				instance.sync();
@@ -186,7 +187,7 @@ export function InstrumentTest(Constr, note, constrArg?, optionsIndex?): void {
 		});
 
 		it("can sync triggerAttackRelease to the Transport", () => {
-			return Offline(({transport}) => {
+			return Offline(({ transport }) => {
 				const instance = new Constr(constrArg);
 				instance.toDestination();
 				instance.sync();
@@ -201,6 +202,21 @@ export function InstrumentTest(Constr, note, constrArg?, optionsIndex?): void {
 				// test a sample enough in the future for the decay to die down
 				expect(buffer.getRmsAtTime(0.9)).to.be.closeTo(0, 0.1);
 			});
+		});
+
+		it("invokes onsilence", (done) => {
+			Offline(() => {
+				const instance = new Constr(constrArg);
+				if (instance instanceof Monophonic) {
+					instance.triggerAttackRelease(note, 0.1, 0);
+					instance.onsilence = (voice) => {
+						expect(voice).to.equal(instance);
+						done();
+					};
+				} else {
+					done();
+				}
+			}, 3);
 		});
 	});
 }
