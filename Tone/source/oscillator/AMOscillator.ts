@@ -31,7 +31,20 @@ export { AMOscillatorOptions } from "./OscillatorInterface";
  * @example
  * import { AMOscillator } from "tone";
  * // a sine oscillator amplitude-modulated by a square wave
- * const amOsc = new AMOscillator("Ab3", "sine", "square").toDestination().start();
+ * const amOsc = new AMOscillator("Ab3", "sine", "square").toDestination().start().stop("+6");
+ * // schedule a series of notes
+ * amOsc.frequency.setValueAtTime("F3", "+0.25");
+ * amOsc.frequency.setValueAtTime("C4", "+0.5");
+ * amOsc.frequency.setValueAtTime("Bb3", "+1");
+ * amOsc.frequency.setValueAtTime("Ab3", "+2");
+ * // schedule harmonicity changes along with those notes
+ * amOsc.harmonicity.setValueAtTime(0.5, "+0.25");
+ * amOsc.harmonicity.setValueAtTime(2, "+0.5");
+ * amOsc.harmonicity.setValueAtTime(1.5, "+1");
+ * amOsc.harmonicity.setValueAtTime(1, "+2");
+ * amOsc.harmonicity.linearRampTo(1.1, 2, "+2");
+ * // fade it out all the way at the end
+ * amOsc.volume.exponentialRampTo(-Infinity, 3, "+3,");
  * @category Source
  */
 export class AMOscillator extends Source<AMOscillatorOptions> implements ToneOscillatorInterface {

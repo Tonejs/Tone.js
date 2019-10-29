@@ -22,14 +22,6 @@ export abstract class AbstractParam<TypeName extends UnitName> {
 	 * Get the signals value at the given time. Subsequent scheduling
 	 * may invalidate the returned value.
 	 * @param time When to get the value
-	 */
-	abstract getValueAtTime(time: Time): UnitMap[TypeName];
-
-	/**
-	 * Creates a schedule point with the current value at the current time.
-	 * This is useful for creating an automation anchor point in order to
-	 * schedule changes from the current value.
-	 * @param time When to add a ramp point.
 	 * @example
 	 * import { now, Oscillator } from "tone";
 	 * const osc = new Oscillator().toDestination().start();
@@ -39,6 +31,22 @@ export abstract class AbstractParam<TypeName extends UnitName> {
 	 * 	// check the value every 100 ms
 	 * 	osc.frequency.getValueAtTime(now());
 	 * }, 100);
+	 */
+	abstract getValueAtTime(time: Time): UnitMap[TypeName];
+	
+	/**
+	 * Creates a schedule point with the current value at the current time.
+	 * Automation methods like [[linearRampToValueAtTime]] and [[exponentialRampToValueAtTime]]
+	 * require a starting automation value usually set by [[setValueAtTime]]. This method
+	 * is useful since it will do a `setValueAtTime` with whatever the currently computed
+	 * value at the given time is. 
+	 * @param time When to add a ramp point.
+	 * @example
+	 * import { Oscillator } from "tone";
+	 * const osc = new Oscillator().toDestination().start();
+	 * // set the frequency to "G4" in exactly 1 second from now.
+	 * osc.frequency.setRampPoint("+1");
+	 * osc.frequency.linearRampToValueAtTime("C1", "+2");
 	 */
 	abstract setRampPoint(time: Time): this;
 
@@ -67,8 +75,8 @@ export abstract class AbstractParam<TypeName extends UnitName> {
 	 * const delay = new FeedbackDelay(0.5, 0.98).toDestination();
 	 * // a short burst of noise through the feedback delay
 	 * const noise = new Noise().connect(delay).start().stop("+0.1");
-	 * // exponentially ramp to the value to 2 over 4 seconds.
-	 * delay.delayTime.exponentialRampTo(2, 4);
+	 * // making the delay time shorter over time will also make the pitch rise
+	 * delay.delayTime.exponentialRampTo(0.01, 20);
 	 */
 	abstract exponentialRampTo(value: UnitMap[TypeName], rampTime: Time, startTime?: Time): this;
 
