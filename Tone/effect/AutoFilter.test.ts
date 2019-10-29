@@ -4,11 +4,26 @@ import { EffectTests } from "test/helper/EffectTests";
 import teoria from "teoria";
 import { Offline } from "test/helper/Offline";
 import { expect } from "chai";
+import { CompareToFile } from "test/helper/CompareToFile";
+import { Noise } from "Tone/source";
 
 describe("AutoFilter", () => {
 	
 	BasicTests(AutoFilter);
 	EffectTests(AutoFilter);
+
+	it("matches a file", () => {
+		return CompareToFile(() => {
+			const autoFilter = new AutoFilter({
+				baseFrequency: 200,
+				octaves: 4,
+				frequency: 4,
+				type: "sine"
+			}).toDestination();
+			new Noise().connect(autoFilter).start();
+			autoFilter.start(0.2);
+		}, "autoFilter.wav", 0.1);
+	});
 
 	context("API", () => {
 

@@ -3,10 +3,23 @@ import { BasicTests } from "test/helper/Basic";
 import { EffectTests } from "test/helper/EffectTests";
 import { Offline } from "test/helper/Offline";
 import { expect } from "chai";
+import { CompareToFile } from "test/helper/CompareToFile";
+import { Oscillator } from "Tone/source/oscillator/Oscillator";
 
 describe("AutoPanner", () => {
 	BasicTests(AutoPanner);
 	EffectTests(AutoPanner);
+
+	it("matches a file", () => {
+		return CompareToFile(() => {
+			const autoFilter = new AutoPanner({
+				type: "sine",
+				frequency: 3,
+			}).toDestination();
+			new Oscillator().connect(autoFilter).start();
+			autoFilter.start(0.2);
+		}, "autoPanner.wav", 0.01);
+	});
 
 	context("API", () => {
 
