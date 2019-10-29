@@ -21,7 +21,7 @@ export class Pow extends SignalOperator<PowOptions> {
 	
 	readonly name: string = "Pow";
 	
-	private _exponent!: number;
+	private _exponent: number;
 
 	private _exponentScaler: WaveShaper;
 
@@ -40,11 +40,11 @@ export class Pow extends SignalOperator<PowOptions> {
 
 		this._exponentScaler = this.input = this.output = new WaveShaper({
 			context: this.context,
-			mapping: this._expFunc(this._exponent),
+			mapping: this._expFunc(options.value),
 			length: 8192,
 		});
 
-		this.value = options.value;
+		this._exponent = options.value;
 	}
 
 	static getDefaults(): PowOptions {
