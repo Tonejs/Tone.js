@@ -61,10 +61,16 @@ export class AMOscillator extends Source<AMOscillatorOptions> implements ToneOsc
 	 * A harmonicity of 1 gives both oscillators the same frequency.
 	 * Harmonicity = 2 means a change of an octave.
 	 * @example
-	 * import { AMOscillator } from "tone";
+	 * import { AMOscillator, Transport } from "tone";
 	 * const amOsc = new AMOscillator("D2").toDestination().start();
-	 * // pitch the modulator an octave below carrier
-	 * amOsc.harmonicity.value = 0.5;
+	 * Transport.scheduleRepeat(time => {
+	 * 	amOsc.harmonicity.setValueAtTime(1, time);
+	 * 	amOsc.harmonicity.setValueAtTime(0.5, time + 0.5);
+	 * 	amOsc.harmonicity.setValueAtTime(1.5, time + 1);
+	 * 	amOsc.harmonicity.setValueAtTime(1, time + 2);
+	 * 	amOsc.harmonicity.linearRampToValueAtTime(2, time + 4);
+	 * }, 4);
+	 * Transport.start();
 	 */
 	readonly harmonicity: Signal<"positive">;
 
