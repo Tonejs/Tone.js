@@ -1,8 +1,10 @@
 import { optionsFromArguments } from "../../core/util/Defaults";
 import { Frequency, Hertz, NormalRange, Positive, Time } from "../../core/type/Units";
-import { ScaledEnvelope, ScaledEnvelopeOptions } from "./ScaledEnvelope";
+import { Envelope, EnvelopeOptions } from "./Envelope";
+import { Scale } from "../../signal/Scale";
+import { Pow } from "../../signal/Pow";
 
-export interface FrequencyEnvelopeOptions extends ScaledEnvelopeOptions {
+export interface FrequencyEnvelopeOptions extends EnvelopeOptions {
 	baseFrequency: Frequency;
 	octaves: number;
 	exponent: number;
@@ -21,7 +23,7 @@ export interface FrequencyEnvelopeOptions extends ScaledEnvelopeOptions {
  * freqEnv.connect(oscillator.frequency);
  * freqEnv.triggerAttack();
  */
-export class FrequencyEnvelope extends ScaledEnvelope {
+export class FrequencyEnvelope extends Envelope {
 
 	readonly name: string = "FrequencyEnvelope";
 
@@ -34,6 +36,16 @@ export class FrequencyEnvelope extends ScaledEnvelope {
 	 * The number of octaves
 	 */
 	private _octaves: Positive;
+
+	/**
+	 * Internal scaler from 0-1 to the final output range
+	 */
+	private _scale: Scale;
+
+	/**
+	 * Apply a power curve to the output
+	 */
+	private _exponent: Pow;
 
 	/**
 	 * @param attack	the attack time in seconds
@@ -49,10 +61,21 @@ export class FrequencyEnvelope extends ScaledEnvelope {
 
 		this._octaves = options.octaves;
 		this._baseFrequency = this.toFrequency(options.baseFrequency);
+
+		this._exponent = this.input = new Pow({
+			context: this.context,
+			value: options.exponent
+		});
+		this._scale = this.output = new Scale({
+			context: this.context,
+			min: this._baseFrequency,
+			max: this._baseFrequency * Math.pow(2, this._octaves),
+		});
+		this._sig.chain(this._exponent, this._scale);
 	}
 
 	static getDefaults(): FrequencyEnvelopeOptions {
-		return Object.assign(ScaledEnvelope.getDefaults(), {
+		return Object.assign(Envelope.getDefaults(), {
 			baseFrequency: 200,
 			exponent: 1,
 			octaves: 4,
@@ -68,7 +91,9 @@ export class FrequencyEnvelope extends ScaledEnvelope {
 	}
 	set baseFrequency(min) {
 		this._baseFrequency = this.toFrequency(min);
-		this.min = this._baseFrequency;
+		this._scale.min = this._baseFrequency;
+		// update the max value when the min changes
+		this.octaves = this._octaves;
 	}
 
 	/**
@@ -80,7 +105,17 @@ export class FrequencyEnvelope extends ScaledEnvelope {
 	}
 	set octaves(octaves: Positive) {
 		this._octaves = octaves;
-		this.max = this._baseFrequency * Math.pow(2, octaves);
+		this._scale.max = this._baseFrequency * Math.pow(2, octaves);
+	}
+
+	/**
+	 * The envelope's exponent value.
+	 */
+	get exponent(): number {
+		return this._exponent.value;
+	}
+	set exponent(exponent) {
+		this._exponent.value = exponent;
 	}
 
 	/**
@@ -88,6 +123,8 @@ export class FrequencyEnvelope extends ScaledEnvelope {
 	 */
 	dispose(): this {
 		super.dispose();
+		this._exponent.dispose();
+		this._scale.dispose();
 		return this;
 	}
 }
