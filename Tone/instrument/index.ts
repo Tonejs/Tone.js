@@ -7,3 +7,4 @@ export * from "./PluckSynth";
 export * from "./FMSynth";
 export * from "./AMSynth";
 export * from "./NoiseSynth";
+export * from "./MonoSynth";

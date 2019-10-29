@@ -1,16 +1,24 @@
 import { AmplitudeEnvelope } from "../component/envelope/AmplitudeEnvelope";
-import { Envelope } from "../component/envelope/Envelope";
-import { Filter } from "../component/filter/Filter";
+import { Envelope, EnvelopeOptions } from "../component/envelope/Envelope";
+import { Filter, FilterOptions } from "../component/filter/Filter";
 import { omitFromObject, optionsFromArguments } from "../core/util/Defaults";
 import { readOnly, RecursivePartial } from "../core/util/Interface";
-import { Monophonic } from "../instrument/Monophonic";
+import { Monophonic, MonophonicOptions } from "../instrument/Monophonic";
 import { OmniOscillator } from "../source/oscillator/OmniOscillator";
 import { Source } from "../source/Source";
 import { Synth, SynthOptions } from "./Synth";
-import { FrequencyEnvelope } from "Tone/component/envelope/FrequencyEnvelope";
-import { Time } from "Tone/core/type/Units";
-import { Signal } from "Tone";
-import { OutputNode } from "Tone/core";
+import { FrequencyEnvelope, FrequencyEnvelopeOptions } from "../component/envelope/FrequencyEnvelope";
+import { Time } from "../core/type/Units";
+import { Signal } from "../signal/Signal";
+import { OutputNode, ToneAudioNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
+import { OmniOscillatorSynthOptions } from "../source/oscillator/OscillatorInterface";
+
+export interface MonoSynthOptions extends MonophonicOptions {
+	oscillator: OmniOscillatorSynthOptions;
+	envelope: Omit<EnvelopeOptions, keyof ToneAudioNodeOptions>;
+	filterEnvelope: Omit<FrequencyEnvelopeOptions, keyof ToneAudioNodeOptions>;
+	filter: Omit<FilterOptions, keyof ToneAudioNodeOptions>;
+}
 
 /**
  * MonoSynth is composed of one `oscillator`, one `filter`, and two `envelopes`.
@@ -20,16 +28,16 @@ import { OutputNode } from "Tone/core";
  * @example
  * import { MonoSynth } from "tone";
  * const synth = new MonoSynth({
- * 		oscillator: {
- *			type: "square"
- *		},
- *		envelope: {
- *			attack: 0.1
- *		}
+ * 	oscillator: {
+ * 		type: "square"
+ * 	},
+ * 	envelope: {
+ * 		attack: 0.1
+ * 	}
  * }).toDestination();
  * synth.triggerAttackRelease("C4", "8n");
  */
-export class MonoSynth extends Monophonic<SynthOptions> {
+export class MonoSynth extends Monophonic<MonoSynthOptions> {
 
 	readonly name = "MonoSynth";
 
@@ -63,36 +71,31 @@ export class MonoSynth extends Monophonic<SynthOptions> {
 	 */
 	readonly envelope: AmplitudeEnvelope;
 
-	protected _internalChannels: OutputNode[];
-
 	constructor(options?: RecursivePartial<SynthOptions>);
 	constructor() {
 		super(optionsFromArguments(MonoSynth.getDefaults(), arguments));
 		const options = optionsFromArguments(MonoSynth.getDefaults(), arguments);
 
-		this.oscillator = new OmniOscillator({ context: this.context });
+		this.oscillator = new OmniOscillator(Object.assign(options.oscillator, { context: this.context }));
 		this.frequency = this.oscillator.frequency;
 		this.detune = this.oscillator.detune;
-		this.filter = new Filter({ context: this.context });
-		this.filterEnvelope = new FrequencyEnvelope({ context: this.context });
-		this.envelope = new AmplitudeEnvelope({ context: this.context });
-		this._internalChannels = [this.oscillator, this.envelope, this.output];
-		this.set(options);
+		this.filter = new Filter(Object.assign(options.filter, { context: this.context }));
+		this.filterEnvelope = new FrequencyEnvelope(Object.assign(options.filterEnvelope, { context: this.context }));
+		this.envelope = new AmplitudeEnvelope(Object.assign(options.envelope, { context: this.context }));
 
-		this.filter.frequency.value = 5000;
 		// connect the oscillators to the output
 		this.oscillator.chain(this.filter, this.envelope, this.output);
+
 		// connect the filter envelope
 		this.filterEnvelope.connect(this.filter.frequency);
 		
 		readOnly(this, ["oscillator", "frequency", "detune", "filter", "filterEnvelope", "envelope"]);
 	}
 
-	static getDefaults(): SynthOptions {
+	static getDefaults(): MonoSynthOptions {
 		return Object.assign(Synth.getDefaults(), {
-			detune: 0,
 			envelope: Object.assign(
-				omitFromObject(Envelope.getDefaults(), Object.keys(Source.getDefaults())),
+				omitFromObject(Envelope.getDefaults(), Object.keys(ToneAudioNode.getDefaults())),
 				{
 					attack: 0.005,
 					decay: 0.1,
@@ -100,21 +103,26 @@ export class MonoSynth extends Monophonic<SynthOptions> {
 					sustain: 0.9,
 				},
 			),
-			filter: {
-				Q: 6,
-				rolloff: -24,
-				type: "lowpass",
-			},
-			filterEnvelope: {
-				attack: 0.06,
-				baseFrequency: 200,
-				decay: 0.2,
-				exponent: 2,
-				octaves: 7,
-				release: 2,
-				sustain: 0.5,
-			},
-			frequency: "C4",
+			filter: Object.assign(
+				omitFromObject(Filter.getDefaults(), Object.keys(ToneAudioNode.getDefaults())),
+				{
+					Q: 6,
+					rolloff: -24,
+					type: "lowpass",
+				},
+			),
+			filterEnvelope: Object.assign(
+				omitFromObject(FrequencyEnvelope.getDefaults(), Object.keys(ToneAudioNode.getDefaults())), 
+				{
+					attack: 0.06,
+					baseFrequency: 200,
+					decay: 0.2,
+					exponent: 2,
+					octaves: 3,
+					release: 2,
+					sustain: 0.5,
+				}
+			),
 			oscillator: Object.assign(
 				omitFromObject(OmniOscillator.getDefaults(), Object.keys(Source.getDefaults())),
 				{
@@ -148,12 +156,10 @@ export class MonoSynth extends Monophonic<SynthOptions> {
 	protected _triggerEnvelopeRelease(time: Time): void {
 		time = this.toSeconds(time);
 		this.envelope.triggerRelease(time);
+		this.filterEnvelope.triggerRelease(time);
 		this.oscillator.stop(time + this.toSeconds(this.envelope.release));
 	}
 
-	/**
-	 * clean up
-	 */
 	dispose(): this {
 		super.dispose();
 		this.oscillator.dispose();
