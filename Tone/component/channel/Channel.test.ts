@@ -61,5 +61,17 @@ describe("Channel", () => {
 			channelA.dispose();
 			channelB.dispose();
 		});
+
+		describe("bus", () => {
+			it("can connect two channels together by name", () => {
+				return PassAudio(input => {
+					const sendChannel = new Channel();
+					input.connect(sendChannel);
+					sendChannel.send("test");
+					const recvChannel = new Channel().toDestination();
+					recvChannel.receive("test");
+				});
+			});
+		});
 	});
 });
