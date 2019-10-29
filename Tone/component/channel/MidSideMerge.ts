@@ -9,7 +9,7 @@ import { optionsFromArguments } from "../../core/util/Defaults";
 export type MidSideMergeOptions = ToneAudioNodeOptions;
 
 /**
- * MidSideMerge merges the mid and side signal after they've been seperated by [[MidSideMerge]]
+ * MidSideMerge merges the mid and side signal after they've been separated by [[MidSideMerge]]
  * ```
  * Mid = (Left+Right)/sqrt(2);   // obtain mid-signal from left and right
  * Side = (Left-Right)/sqrt(2);   // obtain side-signal from left and righ

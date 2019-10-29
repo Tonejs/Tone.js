@@ -10,10 +10,9 @@ export type MidSideSplitOptions = ToneAudioNodeOptions;
 /**
  * Mid/Side processing separates the the 'mid' signal (which comes out of both the left and the right channel)
  * and the 'side' (which only comes out of the the side channels).
- * 
  * ```
  * Mid = (Left+Right)/sqrt(2);   // obtain mid-signal from left and right
- * Side = (Left-Right)/sqrt(2);   // obtain side-signal from left and righ
+ * Side = (Left-Right)/sqrt(2);   // obtain side-signal from left and right
  * ```
  */
 export class MidSideSplit extends ToneAudioNode<MidSideSplitOptions> {
