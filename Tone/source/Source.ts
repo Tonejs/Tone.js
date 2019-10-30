@@ -20,18 +20,17 @@ export interface SourceOptions extends ToneAudioNodeOptions {
 /**
  * Base class for sources. 
  * start/stop of this.context.transport.
+ * 
  * ```javascript
- * //Multiple state change events can be chained together,
- * //but must be set in the correct order and with ascending times
- *
+ * // Multiple state change events can be chained together,
+ * // but must be set in the correct order and with ascending times
  * // OK
  * state.start().stop("+0.2");
- * // AND
+ * // OK
  * state.start().stop("+0.2").start("+0.4").stop("+0.7")
- *
  * // BAD
  * state.stop("+0.2").start();
- * // OR
+ * // BAD
  * state.start("+0.3").stop("+0.2");
  * ```
  */
