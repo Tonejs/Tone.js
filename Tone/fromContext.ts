@@ -8,6 +8,10 @@ import { TicksClass } from "./core/type/Ticks";
 import { TimeClass } from "./core/type/Time";
 import { TransportTimeClass } from "./core/type/TransportTime";
 import { isDefined, isFunction } from "./core/util/TypeCheck";
+import { omitFromObject } from "./core/util/Defaults";
+import { Draw } from "./classes";
+
+type ClassesWithoutSingletons = Omit<typeof Classes, "Transport" | "Destination" | "Draw">;
 
 /**
  * The exported Tone object. Contains all of the classes that default
@@ -16,8 +20,11 @@ import { isDefined, isFunction } from "./core/util/TypeCheck";
 type Tone = {
 	Transport: Transport;
 	Destination: Destination;
+	Draw: Draw;
+	context: Context;
 	now: () => number;
-} & typeof Classes;
+	immediate: () => number;
+} & ClassesWithoutSingletons;
 
 /**
  * Bind the TimeBaseClass to the context
@@ -31,29 +38,37 @@ function bindTypeClass(context: Context, type) {
  * @param context The context to bind all of the nodes to
  */
 export function fromContext(context: Context): Tone {
-	const toneFromContext: any = {};
-	Object.keys(Classes).forEach(key => {
+
+	const classesWithContext: Partial<ClassesWithoutSingletons> = {};
+	Object.keys(omitFromObject(Classes, ["Transport", "Destination", "Draw"])).map(key => {
 		const cls = Classes[key];
 		if (isDefined(cls) && isFunction(cls.getDefaults)) {
-			toneFromContext[key] = class ToneFromContextNode extends cls {
+			classesWithContext[key] = class ToneFromContextNode extends cls {
 				get defaultContext(): Context {
 					return context;
 				}
 			};
 		} else {
 			// otherwise just copy it over
-			toneFromContext[key] = Classes[key];
+			classesWithContext[key] = Classes[key];
 		}
 	});
-	toneFromContext.now = () => context.now();
-	toneFromContext.Transport = context.transport;
-	toneFromContext.Destination = context.destination;
-	// add the type classes
-	toneFromContext.Midi = bindTypeClass(context, MidiClass);
-	toneFromContext.Time = bindTypeClass(context, TimeClass);
-	toneFromContext.Frequency = bindTypeClass(context, FrequencyClass);
-	toneFromContext.Ticks = bindTypeClass(context, TicksClass);
-	toneFromContext.TransportTime = bindTypeClass(context, TransportTimeClass);
+
+	const toneFromContext: Tone = {
+		...(classesWithContext as ClassesWithoutSingletons),
+		now: () => context.now(),
+		immediate: () => context.immediate(),
+		Transport: context.transport,
+		Destination: context.destination,
+		Draw: context.draw,
+		context,
+		// the type functions
+		Midi: bindTypeClass(context, MidiClass),
+		Time: bindTypeClass(context, TimeClass),
+		Frequency: bindTypeClass(context, FrequencyClass),
+		Ticks: bindTypeClass(context, TicksClass),
+		TransportTime: bindTypeClass(context, TransportTimeClass),
+	};
 	// return the object
-	return toneFromContext as Tone;
+	return toneFromContext;
 }
