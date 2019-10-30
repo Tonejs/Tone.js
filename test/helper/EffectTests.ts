@@ -2,19 +2,11 @@ import { expect } from "chai";
 import { connectFrom, connectTo } from "test/helper/Connect";
 import { Offline } from "test/helper/Offline";
 import { PassAudio } from "test/helper/PassAudio";
-import { Merge } from "Tone/component/channel/Merge";
-import { Effect } from "Tone/effect/Effect";
 import { Signal } from "Tone/signal/Signal";
 
 export function EffectTests(Constr, args?, before?): void {
 
 	context("Effect Tests", () => {
-
-		it("extends Tone.Effect", () => {
-			const instance = new Constr(args);
-			expect(instance).to.be.an.instanceof(Effect);
-			instance.dispose();
-		});
 
 		it("has an input and output", () => {
 			const instance = new Constr(args);
@@ -40,7 +32,7 @@ export function EffectTests(Constr, args?, before?): void {
 
 		it("can be constructed with an object", () => {
 			const instance = new Constr({
-				wet : 0.25,
+				wet: 0.25,
 			});
 			if (before) {
 				before(instance);
@@ -60,7 +52,18 @@ export function EffectTests(Constr, args?, before?): void {
 			});
 		});
 
-		it.skip("can pass 100% dry signal", () => {
+		it("has no sound when not connected to any inputs", () => {
+			return Offline(() => {
+				const instance = new Constr(args).toDestination();
+				if (before) {
+					before(instance);
+				}
+			}, 0.5, 1).then((buffer) => {
+				expect(buffer.isSilent()).to.be.true;
+			});
+		});
+
+		it("can pass 100% dry signal", () => {
 			return Offline(() => {
 				const instance = new Constr(args).toDestination();
 				if (before) {
@@ -68,12 +71,12 @@ export function EffectTests(Constr, args?, before?): void {
 				}
 				const signal = new Signal(-1).connect(instance);
 				// make the signals ramp
-				signal.linearRampTo(1, 1);
+				signal.linearRampTo(1, 1, 0);
 				instance.wet.value = 0;
 			}, 0.5, 1).then((buffer) => {
 				buffer.forEach((sample, time) => {
 					const value = (time * 2) - 1;
-					expect(sample).to.be.closeTo(value, 0.01);
+					expect(sample).to.be.closeTo(value, 0.1);
 				});
 			});
 		});
