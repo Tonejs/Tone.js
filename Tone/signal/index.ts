@@ -7,6 +7,7 @@ export * from "./Negate";
 export * from "./Pow";
 export * from "./Signal";
 export * from "./Scale";
+export * from "./ScaleExp";
 export * from "./Subtract";
 export * from "./WaveShaper";
 export * from "./Zero";
