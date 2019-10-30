@@ -136,7 +136,7 @@ export class Context extends Emitter<"statechange" | "tick"> implements BaseAudi
 			clockSource: "worker",
 			latencyHint: "interactive",
 			lookAhead: 0.1,
-			updateInterval: 0.03,
+			updateInterval: 0.05,
 		} as ContextOptions;
 	}
 
@@ -213,9 +213,11 @@ export class Context extends Emitter<"statechange" | "tick"> implements BaseAudi
 		return this._context.createWaveShaper();
 	}
 	createMediaStreamSource(stream: MediaStream): MediaStreamAudioSourceNode {
-		this.assert(isAudioContext(this._context), "Only available on online audio context");
-		// @ts-ignore
-		return this._context.createMediaStreamSource(stream);
+		if (isAudioContext(this._context)) {
+			return this._context.createMediaStreamSource(stream);
+		} else {
+			throw new Error("Only available on online audio context");
+		}
 	}
 	decodeAudioData(audioData: ArrayBuffer): Promise<AudioBuffer> {
 		return this._context.decodeAudioData(audioData);
@@ -360,8 +362,9 @@ export class Context extends Emitter<"statechange" | "tick"> implements BaseAudi
 	 * "playback" (prioritizes sustained playback), "balanced" (balances
 	 * latency and performance), and "fastest" (lowest latency, might glitch more often).
 	 * @example
-	 * // set the lookAhead to 0.3 seconds
-	 * Tone.context.latencyHint = 0.3;
+	 * import * as Tone from "tone";
+	 * // set the latencyHint to prioritize smooth playback at the expensive of latency
+	 * Tone.context.latencyHint = "playback";
 	 */
 	get latencyHint(): ContextLatencyHint | Seconds {
 		return this._latencyHint;
@@ -386,7 +389,7 @@ export class Context extends Emitter<"statechange" | "tick"> implements BaseAudi
 			}
 		}
 		this.lookAhead = lookAheadValue;
-		this.updateInterval = lookAheadValue / 3;
+		this.updateInterval = lookAheadValue / 2;
 	}
 
 	/**
