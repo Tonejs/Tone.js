@@ -15,6 +15,7 @@ export type AutoPannerOptions = LFOEffectOptions;
  * const autoPanner = new AutoPanner("4n").toDestination().start();
  * // route an oscillator through the panner and start it
  * const oscillator = new Oscillator().connect(autoPanner).start();
+ * @category Effect
  */
 export class AutoPanner extends LFOEffect<AutoPannerOptions> {
 	

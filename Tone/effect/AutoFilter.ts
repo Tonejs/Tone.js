@@ -22,6 +22,7 @@ export interface AutoFilterOptions extends LFOEffectOptions {
  * const autoFilter = new AutoFilter("4n").toDestination().start();
  * // route an oscillator through the filter and start it
  * const oscillator = new Oscillator().connect(autoFilter).start();
+ * @category Effect
  */
 export class AutoFilter extends LFOEffect<AutoFilterOptions> {
 
