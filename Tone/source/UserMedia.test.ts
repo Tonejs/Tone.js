@@ -2,6 +2,7 @@ import { BasicTests } from "test/helper/Basic";
 import { UserMedia } from "./UserMedia";
 import { GET_USER_MEDIA } from "test/helper/Supports";
 import { expect } from "chai";
+import { OfflineContext } from "Tone/core";
 
 describe("UserMedia", () => {
 
@@ -150,6 +151,18 @@ describe("UserMedia", () => {
 				return UserMedia.enumerateDevices().then((devices) => {
 					expect(devices).to.be.instanceOf(Array);
 				});
+			});
+
+			it("doesn't work in OfflineContext", done => {
+				if (HAS_USER_MEDIA_INPUTS) {
+					const context = new OfflineContext(2, 2, 44100);
+					const extIn = new UserMedia({ context });
+					extIn.open().catch(() => {
+						done();
+					});
+				} else {
+					done();
+				}
 			});
 		});
 	}
