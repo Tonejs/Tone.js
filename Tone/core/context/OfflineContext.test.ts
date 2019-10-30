@@ -21,6 +21,11 @@ context("OfflineContext", () => {
 		return ctx.dispose();
 	});
 
+	it("closing shouldn't do anything", () => {
+		const ctx = new OfflineContext(1, 0.1, 44100);
+		return ctx.close();
+	});
+
 	it("can render audio", () => {
 		const ctx = new OfflineContext(1, 0.2, 44100);
 		const osc = ctx.createOscillator();
