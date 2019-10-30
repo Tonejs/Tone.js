@@ -10,8 +10,9 @@ export interface FrequencyEnvelopeOptions extends EnvelopeOptions {
 	exponent: number;
 }
 /**
- * FrequencyEnvelope is a ScaledEnvelope, but instead of `min` and `max`
- * it's got a `baseFrequency` and `octaves` parameter. See [[ScaledEnvelope]]
+ * FrequencyEnvelope is an [[Envelope]] which ramps between [[baseFrequency]]
+ * and [[octaves]]. It can also have an optional [[exponent]] to adjust the curve
+ * which it ramps. 
  * @example
  * import { FrequencyEnvelope, Oscillator } from "tone";
  * const oscillator = new Oscillator().toDestination().start();
@@ -83,7 +84,7 @@ export class FrequencyEnvelope extends Envelope {
 	}
 
 	/**
-	 * The envelope's mininum output value. This is the value which it
+	 * The envelope's minimum output value. This is the value which it
 	 * starts at.
 	 */
 	get baseFrequency(): Frequency {
