@@ -149,16 +149,6 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 	}
 
 	/**
-	 * If there is a voice active on that note, return it
-	 */
-	private _getActiveVoice(note: MidiNote): Voice | undefined {
-		const event = this._activeVoices.find(({ midi }) => midi === note);
-		if (event) {
-			return event.voice;
-		}
-	}
-
-	/**
 	 * Invoked when the source is done making sound, so that it can be
 	 * readded to the pool of available voices
 	 */
