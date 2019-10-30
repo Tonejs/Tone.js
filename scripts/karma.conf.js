@@ -107,6 +107,7 @@ module.exports = function(config) {
 			mocha: {
 				reporter: "html",
 				timeout: 10000,
+				retries: 2,
 				ui: "bdd",
 			},
 		},
