@@ -74,6 +74,7 @@ describe("Context", () => {
 			expect(context.state).to.equal("suspended");
 			await context.resume();
 			expect(context.state).to.equal("running");
+			expect(context.destination).to.exist;
 			context.dispose();
 			return ac.close();
 		});
