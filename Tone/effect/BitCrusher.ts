@@ -20,6 +20,8 @@ export interface BitCrusherOptions extends EffectOptions {
  * const crusher = new BitCrusher(4).toDestination();
  * const synth = new Synth().connect(crusher);
  * synth.triggerAttackRelease("C2", 2);
+ * 
+ * @category Effect
  */
 export class BitCrusher extends Effect<BitCrusherOptions> {
 
