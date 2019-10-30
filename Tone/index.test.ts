@@ -20,4 +20,25 @@ describe("Tone", () => {
 		expect(Tone.Transport).to.be.an.instanceOf(Transport);
 		expect(Tone.context).to.be.an.instanceOf(Context);
 	});
+
+	it("can start the global context", () => {
+		return Tone.start();
+	});
+
+	it("can set the global context from a raw online context", async () => {
+		const ctx = new AudioContext();
+		const origContext = Tone.getContext();
+		Tone.setContext(ctx);
+		expect(Tone.getContext().rawContext).to.equal(ctx);
+		await ctx.close();
+		Tone.setContext(origContext);
+	});
+	
+	it("can set the global context from a raw offline context", async () => {
+		const ctx = new OfflineAudioContext(2, 44100, 44100);
+		const origContext = Tone.getContext();
+		Tone.setContext(ctx);
+		expect(Tone.getContext().rawContext).to.equal(ctx);
+		Tone.setContext(origContext);
+	});
 });
