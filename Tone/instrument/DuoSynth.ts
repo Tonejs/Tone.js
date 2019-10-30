@@ -1,6 +1,6 @@
-import { Monophonic } from "./Monophonic";
+import { Monophonic, MonophonicOptions } from "./Monophonic";
 import { MonoSynth, MonoSynthOptions } from "./MonoSynth";
-import { Envelope, FrequencyEnvelope, optionsFromArguments, Signal, Synth, SynthOptions } from "Tone";
+import { Envelope, FrequencyEnvelope, optionsFromArguments, Signal, Synth } from "Tone";
 import { readOnly, RecursivePartial, writable } from "Tone/core/util/Interface";
 import { LFO, OmniOscillator } from "Tone/source";
 import { Gain, ToneAudioNode } from "Tone/core";
@@ -9,7 +9,7 @@ import { NormalRange, Positive, Seconds, Time } from "Tone/core/type/Units";
 import { omitFromObject } from "Tone/core/util/Defaults";
 import { Source } from "Tone/source/Source";
 
-export interface DuoSynthOptions extends SynthOptions {
+export interface DuoSynthOptions extends MonophonicOptions {
 	voice0: MonoSynthOptions;
 	voice1: MonoSynthOptions;
 	vibratoRate: Signal<"frequency"> | number;
@@ -86,14 +86,7 @@ export class DuoSynth<Options extends DuoSynthOptions> extends Monophonic<Option
 
 		this.voice0 = new MonoSynth(Object.assign(options.voice0, { context: this.context, onstop: () => this.onsilence(this) }));
 		this.voice1 = new MonoSynth(Object.assign(options.voice1, { context: this.context, onstop: () => this.onsilence(this) }));
-		this.envelope = new Envelope({
-			attack: options.envelope.attack,
-			attackCurve: "linear",
-			context: this.context,
-			decay: options.envelope.decay,
-			release: options.envelope.release,
-			sustain: 0,
-		});
+		this.envelope = new Envelope({ context: this.context });
 
 		this.harmonicity = new Multiply({
 			context: this.context,
@@ -101,7 +94,11 @@ export class DuoSynth<Options extends DuoSynthOptions> extends Monophonic<Option
 			value: options.harmonicity,
 		});
 
-		this._vibrato = new LFO(Object.assign(options.vibratoRate, { context: this.context }, -50, 50));
+		this._vibrato = new LFO(Object.assign(options.vibratoRate, {
+			context: this.context,
+			min: -50,
+			max: 50
+		}));
 		this._vibrato.start();
 		this.vibratoRate = this._vibrato.frequency;
 		this._vibratoGain = new Gain({
