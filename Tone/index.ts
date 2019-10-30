@@ -8,18 +8,14 @@ export { start } from "./core/Global";
  * See [[Context.now]]
  * @Category Core
  */
-export function now(): import("./core/type/Units").Seconds {
-	return getContext().now();
-}
+export const now = getContext().now.bind(getContext());
 
 /**
  * The current audio context time of the global [[Context]] without the [[Context.lookAhead]]
  * See [[Context.immediate]]
  * @Category Core
  */
-export function immediate(): import("./core/type/Units").Seconds {
-	return getContext().immediate();
-}
+export const immediate = getContext().immediate.bind(getContext());
 
 /**
  * The Transport object belonging to the global Tone.js Context.
@@ -41,3 +37,10 @@ export const Destination = getContext().destination;
  * @Category Core
  */
 export const Draw = getContext().draw;
+
+/**
+ * A reference to the global context
+ * See [[Context]]
+ * @Category Core
+ */
+export const context = getContext();
