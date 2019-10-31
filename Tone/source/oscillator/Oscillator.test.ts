@@ -105,6 +105,14 @@ describe("Oscillator", () => {
 			osc.dispose();
 		});
 
+		it("can set the type after starting", () => {
+			const osc = new Oscillator(110, "sawtooth10").start();
+			expect(osc.type).to.equal("sawtooth10");
+			osc.type = "sawtooth20";
+			expect(osc.type).to.equal("sawtooth20");
+			osc.dispose();
+		});
+
 		it("handles 4 basic types", () => {
 			const osc = new Oscillator();
 			const types: ToneOscillatorType[] = ["triangle", "sawtooth", "sine", "square"];
