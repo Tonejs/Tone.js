@@ -24,6 +24,14 @@ describe("TickSource", () => {
 			source.dispose();
 		});
 
+		it("can set ticks", () => {
+			const source = new TickSource();
+			expect(source.ticks).to.equal(0);
+			source.ticks = 10;
+			expect(source.ticks).to.equal(10);
+			source.dispose();
+		});
+
 		it("ticks increment at the rate of the frequency after started", () => {
 			return Offline(() => {
 				const source = new TickSource();
