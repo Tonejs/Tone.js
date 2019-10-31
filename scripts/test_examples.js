@@ -73,6 +73,10 @@ async function main() {
 			passed++;
 			// print a dot for each passed example
 			process.stdout.write(".");
+			// add a new line occasionally
+			if (passed % 100 === 0) {
+				process.stdout.write("\n");
+			}
 		} catch (e) {
 			console.log(example + "\n" + e);
 		}
