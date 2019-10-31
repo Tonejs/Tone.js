@@ -50,6 +50,15 @@ describe("Connect", () => {
 			})).to.equal(false);
 		});
 
+		it("can disconnect from an audio param", async () => {
+			await Offline((context) => {
+				const osc = context.createOscillator();
+				const gain = context.createGain();
+				connect(gain, osc.frequency);
+				disconnect(gain, osc.frequency);
+			});
+		});
+
 		it("throws an error if things aren't connected", async () => {
 			let threwError = false;
 			await PassesAudio((context, input, output) => {
