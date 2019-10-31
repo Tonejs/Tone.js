@@ -1,5 +1,5 @@
 import { Gain } from "../../core/context/Gain";
-import { Cents, Degrees, Frequency, Positive, Seconds, Time } from "../../core/type/Units";
+import { Degrees, Frequency, Seconds, Time } from "../../core/type/Units";
 import { optionsFromArguments } from "../../core/util/Defaults";
 import { readOnly } from "../../core/util/Interface";
 import { AudioToGain } from "../../signal/AudioToGain";

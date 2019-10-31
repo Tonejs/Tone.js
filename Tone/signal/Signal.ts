@@ -2,7 +2,7 @@ import { AbstractParam } from "../core/context/AbstractParam";
 import { Param } from "../core/context/Param";
 import { InputNode, OutputNode, ToneAudioNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
 import { connect } from "../core/context/ToneAudioNode";
-import { Time, Unit, UnitMap, UnitName } from "../core/type/Units";
+import { Time, UnitMap, UnitName } from "../core/type/Units";
 import { isAudioParam } from "../core/util/AdvancedTypeCheck";
 import { optionsFromArguments } from "../core/util/Defaults";
 import { ToneConstantSource } from "./ToneConstantSource";

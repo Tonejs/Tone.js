@@ -3,7 +3,6 @@ import { ToneAudioNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNo
 import { GainFactor, Seconds, Time } from "../core/type/Units";
 import { noOp } from "../core/util/Interface";
 import { BasicPlaybackState } from "../core/util/StateTimeline";
-import { OfflineContext } from "../core/context/OfflineContext";
 
 export type OneShotSourceCurve = "linear" | "exponential";
 

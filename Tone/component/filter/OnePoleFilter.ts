@@ -1,5 +1,5 @@
 import { ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
-import { Frequency, NormalRange } from "../../core/type/Units";
+import { Frequency } from "../../core/type/Units";
 import { optionsFromArguments } from "../../core/util/Defaults";
 import { Gain } from "../../core/context/Gain";
 

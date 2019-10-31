@@ -1,6 +1,6 @@
 import { connect } from "../core/Connect";
 import { Param } from "../core/context/Param";
-import { Seconds, Time, Unit, UnitMap, UnitName } from "../core/type/Units";
+import { Seconds, Time, UnitMap, UnitName } from "../core/type/Units";
 import { optionsFromArguments } from "../core/util/Defaults";
 import { OneShotSource, OneShotSourceOptions } from "../source/OneShotSource";
 

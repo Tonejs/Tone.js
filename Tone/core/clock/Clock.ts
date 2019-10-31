@@ -1,5 +1,5 @@
 import { ToneWithContext, ToneWithContextOptions } from "../context/ToneWithContext";
-import { BPM, Frequency, Hertz, Seconds, Ticks, Time } from "../type/Units";
+import { Frequency, Hertz, Seconds, Ticks, Time } from "../type/Units";
 import { optionsFromArguments } from "../util/Defaults";
 import { Emitter } from "../util/Emitter";
 import { noOp, readOnly } from "../util/Interface";

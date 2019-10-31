@@ -29,7 +29,6 @@ export class MeterBase<Options extends MeterBaseOptions> extends ToneAudioNode<O
 	constructor(options?: Partial<MeterBaseOptions>);
 	constructor() {
 		super(optionsFromArguments(MeterBase.getDefaults(), arguments));
-		const options = optionsFromArguments(MeterBase.getDefaults(), arguments);
 
 		this.input = this.output = this._analyser = new Analyser({
 			context: this.context,

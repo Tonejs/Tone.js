@@ -1,6 +1,6 @@
 import { Param } from "../../core/context/Param";
 import { ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
-import { AudioRange, NormalRange } from "../../core/type/Units";
+import { AudioRange } from "../../core/type/Units";
 import { optionsFromArguments } from "../../core/util/Defaults";
 import { readOnly } from "../../core/util/Interface";
 

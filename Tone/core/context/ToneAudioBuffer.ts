@@ -1,6 +1,6 @@
 import { getContext } from "../Global";
 import { Tone } from "../Tone";
-import { Samples, Seconds, Time } from "../type/Units";
+import { Samples, Seconds } from "../type/Units";
 import { isAudioBuffer } from "../util/AdvancedTypeCheck";
 import { optionsFromArguments } from "../util/Defaults";
 import { noOp } from "../util/Interface";

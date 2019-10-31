@@ -1,6 +1,5 @@
 import { Signal } from "../signal/Signal";
 import { Multiply } from "../signal/Multiply";
-import { AudioToGain } from "../signal/AudioToGain";
 import { Gain } from "../core/context/Gain";
 import { Positive, Seconds } from "../core/type/Units";
 import { Envelope, EnvelopeOptions } from "../component/envelope/Envelope";

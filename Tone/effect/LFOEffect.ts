@@ -1,5 +1,5 @@
 import { Effect, EffectOptions } from "../effect/Effect";
-import { Frequency, NormalRange, Positive, Time } from "../core/type/Units";
+import { Frequency, NormalRange, Time } from "../core/type/Units";
 import { LFO } from "../source/oscillator/LFO";
 import { ToneOscillatorType } from "../source/oscillator/OscillatorInterface";
 import { Signal } from "../signal/Signal";

@@ -1,7 +1,8 @@
 {
 	"compilerOptions": {
 		"sourceMap": true,
-		"declaration": true
+		"declaration": true,
+		"noUnusedLocals": true,
 	},
 	"extends": "../tsconfig.json",
 	"include": [

@@ -160,7 +160,6 @@ export class Sequence<ValueType = any> extends ToneEvent<ValueType> {
 			},
 			set: (target: any[], property: PropertyKey, value: any): boolean => {
 				if (isString(property) && isFinite(parseInt(property, 10))) {
-					const index = parseInt(property, 10);
 					if (isArray(value)) {
 						target[property] = this._createSequence(value);
 					} else {

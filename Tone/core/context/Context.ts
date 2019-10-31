@@ -3,7 +3,7 @@ import { Seconds } from "../type/Units";
 import { isAudioContext } from "../util/AdvancedTypeCheck";
 import { optionsFromArguments } from "../util/Defaults";
 import { Emitter } from "../util/Emitter";
-import { noOp, Omit } from "../util/Interface";
+import { Omit } from "../util/Interface";
 import { Timeline } from "../util/Timeline";
 import { isDefined, isString } from "../util/TypeCheck";
 import { AnyAudioContext, createAudioContext, createAudioWorkletNode } from "./AudioContext";

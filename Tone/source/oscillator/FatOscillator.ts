@@ -1,4 +1,4 @@
-import { Cents, Degrees, Frequency, Positive, Time } from "../../core/type/Units";
+import { Cents, Degrees, Frequency, Time } from "../../core/type/Units";
 import { optionsFromArguments } from "../../core/util/Defaults";
 import { noOp, readOnly } from "../../core/util/Interface";
 import { Signal } from "../../signal/Signal";

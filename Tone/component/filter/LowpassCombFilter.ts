@@ -4,7 +4,6 @@ import { Frequency, NormalRange, Time } from "../../core/type/Units";
 import { optionsFromArguments } from "../../core/util/Defaults";
 import { RecursivePartial } from "../../core/util/Interface";
 import { FeedbackCombFilter } from "./FeedbackCombFilter";
-import { Filter } from "./Filter";
 import { OnePoleFilter } from "./OnePoleFilter";
 
 interface LowpassCombFilterOptions extends ToneAudioNodeOptions {

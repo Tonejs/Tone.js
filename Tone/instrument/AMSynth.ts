@@ -31,7 +31,6 @@ export class AMSynth extends ModulationSynth<AMSynthOptions> {
 	constructor(options?: RecursivePartial<AMSynthOptions>);
 	constructor() {
 		super(optionsFromArguments(AMSynth.getDefaults(), arguments));
-		const options = optionsFromArguments(AMSynth.getDefaults(), arguments);
 
 		this._modulationScale = new AudioToGain({
 			context: this.context,

@@ -1,7 +1,7 @@
 import { ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
 import { optionsFromArguments } from "../core/util/Defaults";
-import { isArray, isFunction, isUndef } from "../core/util/TypeCheck";
-import { Signal, SignalOptions } from "./Signal";
+import { isArray, isFunction } from "../core/util/TypeCheck";
+import { Signal } from "./Signal";
 import { SignalOperator } from "./SignalOperator";
 
 export type WaveShaperMappingFn = (value: number, index?: number) => number;

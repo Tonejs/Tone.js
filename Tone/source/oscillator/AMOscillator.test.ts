@@ -1,7 +1,6 @@
 import { expect } from "chai";
 import { BasicTests } from "test/helper/Basic";
 import { CompareToFile } from "test/helper/CompareToFile";
-import { Offline } from "test/helper/Offline";
 import { OscillatorTests } from "test/helper/OscillatorTests";
 import { SourceTests } from "test/helper/SourceTests";
 import { AMOscillator } from "./AMOscillator";

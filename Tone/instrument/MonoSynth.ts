@@ -10,7 +10,7 @@ import { Synth, SynthOptions } from "./Synth";
 import { FrequencyEnvelope, FrequencyEnvelopeOptions } from "../component/envelope/FrequencyEnvelope";
 import { Time } from "../core/type/Units";
 import { Signal } from "../signal/Signal";
-import { OutputNode, ToneAudioNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
+import { ToneAudioNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
 import { OmniOscillatorSynthOptions } from "../source/oscillator/OscillatorInterface";
 
 export interface MonoSynthOptions extends MonophonicOptions {

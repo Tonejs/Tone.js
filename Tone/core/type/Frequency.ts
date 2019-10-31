@@ -2,7 +2,7 @@ import { getContext } from "../Global";
 import { intervalToFrequencyRatio, mtof } from "./Conversions";
 import { ftom, getA4, setA4 } from "./Conversions";
 import { TimeClass } from "./Time";
-import { TimeBaseClass, TimeBaseUnit, TimeExpression, TimeValue } from "./TimeBase";
+import { TimeBaseUnit, TimeExpression, TimeValue } from "./TimeBase";
 import { Frequency, Hertz, Interval, MidiNote, Note, Seconds, Ticks } from "./Units";
 
 export type FrequencyUnit = TimeBaseUnit | "midi";

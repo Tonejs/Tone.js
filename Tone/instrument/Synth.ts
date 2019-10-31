@@ -1,7 +1,7 @@
 import { AmplitudeEnvelope } from "../component/envelope/AmplitudeEnvelope";
 import { Envelope, EnvelopeOptions } from "../component/envelope/Envelope";
 import { ToneAudioNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
-import { Cents, Frequency, Seconds } from "../core/type/Units";
+import { Seconds } from "../core/type/Units";
 import { omitFromObject, optionsFromArguments } from "../core/util/Defaults";
 import { readOnly } from "../core/util/Interface";
 import { RecursivePartial } from "../core/util/Interface";

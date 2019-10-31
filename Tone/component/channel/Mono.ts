@@ -1,5 +1,5 @@
 import { Gain } from "../../core/context/Gain";
-import { InputNode, OutputNode, ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
+import { OutputNode, ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
 import { optionsFromArguments } from "../../core/util/Defaults";
 import { Merge } from "./Merge";
 
@@ -34,7 +34,6 @@ export class Mono extends ToneAudioNode<MonoOptions> {
 	constructor() {
 
 		super(optionsFromArguments(Mono.getDefaults(), arguments));
-		const options = optionsFromArguments(Mono.getDefaults(), arguments);
 
 		this.input = new Gain({ context: this.context });
 

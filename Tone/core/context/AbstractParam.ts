@@ -1,4 +1,4 @@
-import { Time, Unit, UnitMap, UnitName } from "../type/Units";
+import { Time, UnitMap, UnitName } from "../type/Units";
 
 /**
  * Abstract base class for [[Param]] and [[Signal]]

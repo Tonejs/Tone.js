@@ -1,4 +1,4 @@
-import { InputNode, OutputNode, ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
+import { ToneAudioNode } from "../../core/context/ToneAudioNode";
 import { dbToGain } from "../../core/type/Conversions";
 import { NormalRange, PowerOfTwo } from "../../core/type/Units";
 import { optionsFromArguments } from "../../core/util/Defaults";

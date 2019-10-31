@@ -34,7 +34,6 @@ export class AutoPanner extends LFOEffect<AutoPannerOptions> {
 	constructor() {
 
 		super(optionsFromArguments(AutoPanner.getDefaults(), arguments, ["frequency"]));
-		const options = optionsFromArguments(AutoPanner.getDefaults(), arguments, ["frequency"]);
 
 		this._panner = new Panner({ context: this.context });
 		// connections

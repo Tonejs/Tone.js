@@ -1,7 +1,7 @@
 import { Gain } from "../../core/context/Gain";
 import { Param } from "../../core/context/Param";
 import { InputNode, OutputNode, ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
-import { AudioRange, Cents, Degrees, Frequency, NormalRange, Time, UnitName } from "../../core/type/Units";
+import { Degrees, Frequency, NormalRange, Time, UnitName } from "../../core/type/Units";
 import { optionsFromArguments } from "../../core/util/Defaults";
 import { readOnly } from "../../core/util/Interface";
 import { BasicPlaybackState } from "../../core/util/StateTimeline";
@@ -10,7 +10,6 @@ import { Scale } from "../../signal/Scale";
 import { connectSignal, Signal } from "../../signal/Signal";
 import { Zero } from "../../signal/Zero";
 import { Oscillator, ToneOscillatorType } from "./Oscillator";
-import { ToneOscillatorInterface } from "./OscillatorInterface";
 
 export interface LFOOptions extends ToneAudioNodeOptions {
 	type: ToneOscillatorType;

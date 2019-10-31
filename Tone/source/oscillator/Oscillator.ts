@@ -1,4 +1,4 @@
-import { AudioRange, Cents, Degrees, Frequency, Radians, Time } from "../../core/type/Units";
+import { AudioRange, Degrees, Frequency, Radians, Time } from "../../core/type/Units";
 import { deepEquals, optionsFromArguments } from "../../core/util/Defaults";
 import { readOnly } from "../../core/util/Interface";
 import { isDefined } from "../../core/util/TypeCheck";

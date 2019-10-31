@@ -151,7 +151,7 @@ describe("ToneOscillatorNode", () => {
 		});
 
 		it("can play for a specific duration", () => {
-			return Offline((context) => {
+			return Offline(() => {
 				const osc = new ToneOscillatorNode().toDestination();
 				osc.start(0).stop(0.1);
 			}, 0.4).then(buffer => {

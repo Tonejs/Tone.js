@@ -4,7 +4,7 @@ import { Volume } from "../component";
 import { optionsFromArguments } from "../core/util/Defaults";
 import { Param } from "../core/context/Param";
 import { readOnly } from "../core/util/Interface";
-import { isDefined, isNumber, isUndef } from "../core/util/TypeCheck";
+import { isDefined, isNumber } from "../core/util/TypeCheck";
 
 export interface UserMediaOptions extends ToneAudioNodeOptions {
 	volume: Decibels;

@@ -1,4 +1,4 @@
-import { Cents, Degrees, Frequency, Time } from "../../core/type/Units";
+import { Degrees, Frequency, Time } from "../../core/type/Units";
 import { optionsFromArguments } from "../../core/util/Defaults";
 import { readOnly } from "../../core/util/Interface";
 import { Multiply } from "../../signal/Multiply";

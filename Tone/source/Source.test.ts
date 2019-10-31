@@ -103,7 +103,6 @@ describe("Source", () => {
 			const source = new Oscillator();
 			expect(source.state).to.equal("stopped");
 			source.start(0);
-			const currentTime = source.context.currentTime;
 			setTimeout(() => {
 				expect(source.state).to.equal("started");
 				source.dispose();

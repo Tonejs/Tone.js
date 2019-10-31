@@ -6,7 +6,7 @@ import { defaultArg, optionsFromArguments } from "../../core/util/Defaults";
 import { noOp } from "../../core/util/Interface";
 import { isDefined } from "../../core/util/TypeCheck";
 import { OneShotSource, OneShotSourceCurve, OneShotSourceOptions } from "../OneShotSource";
-import { EQ, GTE, LT } from "../../core/util/Math";
+import { GTE, LT } from "../../core/util/Math";
 
 export type ToneBufferSourceCurve = OneShotSourceCurve;
 

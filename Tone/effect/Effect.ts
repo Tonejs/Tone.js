@@ -1,6 +1,6 @@
 import { CrossFade } from "../component/channel/CrossFade";
 import { Gain } from "../core/context/Gain";
-import { InputNode, OutputNode, ToneAudioNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
+import { ToneAudioNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
 import { NormalRange } from "../core/type/Units";
 import { readOnly } from "../core/util/Interface";
 import { Signal } from "../signal/Signal";

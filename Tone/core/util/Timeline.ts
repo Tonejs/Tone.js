@@ -229,8 +229,6 @@ export class Timeline<GenericEvent extends TimelineEvent> extends Tone {
 		}
 	}
 
-	private readonly _epsilon = 1e-6;
-
 	/**
 	 * Does a binary search on the timeline array and returns the
 	 * nearest event index whose time is after or equal to the given time.

@@ -24,7 +24,6 @@ export class DCMeter extends MeterBase<DCMeterOptions> {
 	constructor(options?: Partial<DCMeterOptions>);
 	constructor() {
 		super(optionsFromArguments(DCMeter.getDefaults(), arguments));
-		const options = optionsFromArguments(DCMeter.getDefaults(), arguments);
 
 		this._analyser.type = "waveform";
 		this._analyser.size = 256;
