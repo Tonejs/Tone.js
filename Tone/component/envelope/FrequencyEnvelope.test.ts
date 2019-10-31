@@ -55,6 +55,8 @@ describe("FrequencyEnvelope", () => {
 			expect(env1.attack).to.equal(0.1);
 			expect(env1.decay).to.equal(0.2);
 			expect(env1.sustain).to.equal(0.3);
+			env1.exponent = 2;
+			expect(env1.exponent).to.equal(2);
 			env1.dispose();
 		});
 
