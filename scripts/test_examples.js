@@ -63,11 +63,13 @@ async function testExampleString(str) {
 	}
 }
 
-const examples = findExamples(toneJson);
-
 async function main() {
+	const section = parseInt(process.env.TEST_EXAMPLES, 10);
+	const examples = findExamples(toneJson);
+	const half = Math.floor(examples.length/2);
+	const split = section === 0 ? examples.slice(0, half) : examples.slice(half);
 	let passed = 0;
-	await eachLimit(examples, cpuCount, async example => {
+	await eachLimit(split, cpuCount, async example => {
 		try {
 			await testExampleString(example);
 			passed++;
@@ -75,7 +77,7 @@ async function main() {
 			console.log(example + "\n" + e);
 		}
 	});
-	console.log(`valid examples ${passed}/${examples.length}`);
+	console.log(`valid examples ${passed}/${split.length}`);
 }
 main();
 
