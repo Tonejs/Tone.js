@@ -356,7 +356,7 @@ export function disconnect(
 	}
 
 	if (isAudioParam(dstNode)) {
-		srcNode.disconnect(dstNode as AudioParam, outputNumber);
+		srcNode.disconnect(dstNode, outputNumber);
 	} else if (isAudioNode(dstNode)) {
 		srcNode.disconnect(dstNode, outputNumber, inputNumber);
 	} else {
