@@ -281,6 +281,14 @@ describe("Clock", () => {
 			clock.dispose();
 		});
 
+		it("can set the ticks", () => {
+			const clock = new Clock();
+			expect(clock.ticks).to.equal(0);
+			clock.ticks = 10;
+			expect(clock.ticks).to.equal(10);
+			clock.dispose();
+		});
+
 		it("increments 1 tick per callback", () => {
 			return Offline(() => {
 				let ticks = 0;
@@ -430,6 +438,45 @@ describe("Clock", () => {
 				});
 				clock.start(0.09999).stop(0.1);
 			}, 0.4);
+		});
+
+		it("triggers 'start' event when time is in the past", (done) => {
+			const clock = new Clock(noOp, 20);
+			clock.on("start", () => {
+				done();
+				clock.dispose();
+			});
+			setTimeout(() => {
+				clock.start(0);
+			}, 100);
+		});
+
+		it("triggers 'stop' event when time is in the past", (done) => {
+			const clock = new Clock(noOp, 20);
+			clock.on("stop", () => {
+				done();
+				clock.dispose();
+			});
+			setTimeout(() => {
+				clock.start(0);
+			}, 100);
+			setTimeout(() => {
+				clock.stop(0);
+			}, 200);
+		});
+
+		it("triggers 'pause' event when time is in the past", (done) => {
+			const clock = new Clock(noOp, 20);
+			clock.on("pause", () => {
+				done();
+				clock.dispose();
+			});
+			setTimeout(() => {
+				clock.start(0);
+			}, 100);
+			setTimeout(() => {
+				clock.pause(0);
+			}, 200);
 		});
 	});
 
