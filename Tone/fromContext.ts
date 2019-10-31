@@ -56,8 +56,8 @@ export function fromContext(context: Context): Tone {
 
 	const toneFromContext: Tone = {
 		...(classesWithContext as ClassesWithoutSingletons),
-		now: () => context.now(),
-		immediate: () => context.immediate(),
+		now: context.now.bind(context),
+		immediate: context.immediate.bind(context),
 		Transport: context.transport,
 		Destination: context.destination,
 		Draw: context.draw,
