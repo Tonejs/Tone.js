@@ -20,6 +20,7 @@ describe("Context", () => {
 		const ctxTransport = context.transport;
 		expect(context.destination).is.instanceOf(Destination);
 		expect(context.draw).is.instanceOf(Draw);
+		expect(context.listener).to.exist;
 		await context.close();
 		expect(ctxDest.disposed).to.be.true;
 		expect(ctxDraw.disposed).to.be.true;
