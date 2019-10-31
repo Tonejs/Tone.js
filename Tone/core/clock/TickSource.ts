@@ -73,7 +73,7 @@ export class TickSource<TypeName extends "bpm" | "hertz"> extends ToneWithContex
 	 * Returns the playback state of the source, either "started", "stopped" or "paused".
 	 */
 	get state(): PlaybackState {
-		return this._state.getValueAtTime(this.now());
+		return this.getStateAtTime(this.now());
 	}
 
 	/**
