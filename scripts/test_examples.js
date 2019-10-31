@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { resolve } = require("path");
 const { exec } = require("child_process");
@@ -64,20 +65,19 @@ async function testExampleString(str) {
 }
 
 async function main() {
-	const section = parseInt(process.env.TEST_EXAMPLES, 10);
 	const examples = findExamples(toneJson);
-	const half = Math.floor(examples.length/2);
-	const split = section === 0 ? examples.slice(0, half) : examples.slice(half);
 	let passed = 0;
-	await eachLimit(split, cpuCount, async example => {
+	await eachLimit(examples, cpuCount, async example => {
 		try {
 			await testExampleString(example);
 			passed++;
+			// print a dot for each passed example
+			process.stdout.write(".");
 		} catch (e) {
 			console.log(example + "\n" + e);
 		}
 	});
-	console.log(`valid examples ${passed}/${split.length}`);
+	console.log(`valid examples ${passed}/${examples.length}`);
 }
 main();
 
