@@ -1,4 +1,3 @@
-import { Envelope } from "../component/envelope/Envelope";
 import { FrequencyClass } from "../core/type/Frequency";
 import { Cents, Frequency, NormalRange, Seconds, Time } from "../core/type/Units";
 import { optionsFromArguments } from "../core/util/Defaults";
