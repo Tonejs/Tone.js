@@ -1,4 +1,5 @@
 export * from "./AMSynth";
+export * from "./DuoSynth";
 export * from "./FMSynth";
 export * from "./MetalSynth";
 export * from "./MembraneSynth";

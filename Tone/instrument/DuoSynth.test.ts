@@ -1,7 +1,6 @@
 import { BasicTests } from "test/helper/Basic";
 import { InstrumentTest } from "test/helper/InstrumentTests";
 import { DuoSynth } from "./DuoSynth";
-import { CHROME_AUDIO_RENDERING } from "test/helper/Supports";
 import { CompareToFile } from "test/helper/CompareToFile";
 import { expect } from "chai";
 import { MonophonicTest } from "test/helper/MonophonicTests";
@@ -28,19 +27,17 @@ describe("DuoSynth", () => {
 			envelope: {
 				decay: 0.1,
 				sustain: 0.5,
-				release: 0.2
+				release: 0.3
 			}
 		}
 	});
 
-	if (CHROME_AUDIO_RENDERING) {
-		it("matches a file", () => {
-			return CompareToFile(() => {
-				let synth = new DuoSynth().toDestination();
-				synth.triggerAttackRelease("C5", 0.1, 0.1);
-			}, "duoSynth.wav", 0.01);
-		});
-	}
+	it("matches a file", () => {
+		return CompareToFile(() => {
+			let synth = new DuoSynth().toDestination();
+			synth.triggerAttackRelease("C5", 0.1, 0.1);
+		}, "duoSynth.wav", 0.01);
+	});
 
 	context("API", () => {
 

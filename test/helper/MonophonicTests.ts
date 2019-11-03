@@ -23,7 +23,13 @@ export function MonophonicTest(Constr, note, constrArg?): void {
 			return Offline(() => {
 				const instance = new Constr(constrArg);
 				instance.toDestination();
-				instance.envelope.sustain = 0;
+				if (instance.envelope) {
+					instance.envelope.sustain = 0;
+				} else if (instance.voice0) {
+					// DuoSynth is a special case
+					instance.voice0.envelope.sustain = 0;
+					instance.voice1.envelope.sustain = 0;
+				}
 				instance.triggerAttack(note, 0);
 				instance.onsilence = () => wasInvoked = true;
 			}, 2).then(() => {
