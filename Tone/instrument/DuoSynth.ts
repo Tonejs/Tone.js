@@ -1,18 +1,23 @@
 import { Monophonic, MonophonicOptions } from "./Monophonic";
 import { MonoSynth, MonoSynthOptions } from "./MonoSynth";
-import { Envelope, FrequencyEnvelope, optionsFromArguments, Signal, Synth } from "Tone";
-import { readOnly, RecursivePartial, writable } from "Tone/core/util/Interface";
-import { LFO, OmniOscillator } from "Tone/source";
-import { Gain, ToneAudioNode } from "Tone/core";
+import { Envelope } from "../component/envelope/Envelope";
+import { FrequencyEnvelope } from "../component/envelope/FrequencyEnvelope";
+import { Signal } from "../signal/Signal";
+import { readOnly, RecursivePartial, writable } from "../core/util/Interface";
+import { OmniOscillator } from "../source/oscillator/OmniOscillator";
+import { LFO } from "../source/oscillator/LFO";
+import { Gain, } from "../core/context/Gain";
+import { ToneAudioNode } from "../core/context/ToneAudioNode";
 import { Multiply } from "../signal/Multiply";
-import { NormalRange, Positive, Seconds, Time } from "Tone/core/type/Units";
-import { omitFromObject } from "Tone/core/util/Defaults";
-import { Source } from "Tone/source/Source";
+import { NormalRange, Positive, Seconds, Time } from "../core/type/Units";
+import { omitFromObject, optionsFromArguments } from "../core/util/Defaults";
+import { Source } from "../source/Source";
+import { EQ } from "../core/util/Math";
 
 export interface DuoSynthOptions extends MonophonicOptions {
 	voice0: MonoSynthOptions;
 	voice1: MonoSynthOptions;
-	vibratoRate: Signal<"frequency"> | number;
+	vibratoRate: number;
 	vibratoAmount: Positive;
 	harmonicity: Positive;
 }
@@ -30,15 +35,13 @@ export interface DuoSynthOptions extends MonophonicOptions {
 export class DuoSynth<Options extends DuoSynthOptions> extends Monophonic<Options> {
 
 	readonly name = "DuoSynth";
-	
+
+	readonly detune: Signal<"cents">;
+		
 	/**
 	 * the first voice
 	 */
 	readonly voice0: MonoSynth;
-	
-	readonly detune: Signal<"cents">;
-	
-	readonly envelope: Envelope;
 
 	/**
 	 * the second voice
@@ -84,9 +87,14 @@ export class DuoSynth<Options extends DuoSynthOptions> extends Monophonic<Option
 		super(optionsFromArguments(DuoSynth.getDefaults(), arguments));
 		const options = optionsFromArguments(DuoSynth.getDefaults(), arguments);
 
-		this.voice0 = new MonoSynth(Object.assign(options.voice0, { context: this.context, onstop: () => this.onsilence(this) }));
-		this.voice1 = new MonoSynth(Object.assign(options.voice1, { context: this.context, onstop: () => this.onsilence(this) }));
-		this.envelope = new Envelope({ context: this.context });
+		this.voice0 = new MonoSynth(Object.assign(options.voice0, { 
+			context: this.context, 
+			onsilence: () => this._onsilence() 
+		}));
+		this.voice1 = new MonoSynth(Object.assign(options.voice1, { 
+			context: this.context, 
+			onsilence: () => this._onsilence() 
+		}));
 
 		this.harmonicity = new Multiply({
 			context: this.context,
@@ -99,6 +107,7 @@ export class DuoSynth<Options extends DuoSynthOptions> extends Monophonic<Option
 			min: -50,
 			max: 50
 		}));
+		// start the vibrato immediately
 		this._vibrato.start();
 		this.vibratoRate = this._vibrato.frequency;
 		this._vibratoGain = new Gain({
@@ -134,8 +143,15 @@ export class DuoSynth<Options extends DuoSynthOptions> extends Monophonic<Option
 		readOnly(this, ["voice0", "voice1", "frequency", "vibratoAmount", "vibratoRate"]);
 	}
 
+	private _onsilence() {
+		const totalEnvelope = this.voice0.envelope.getValueAtTime(this.now()) + this.voice1.envelope.getValueAtTime(this.now());
+		if (EQ(totalEnvelope, 0)) {
+			this.onsilence(this);
+		}
+	}
+
 	static getDefaults(): DuoSynthOptions {
-		return Object.assign(Synth.getDefaults(), {
+		return Object.assign(Monophonic.getDefaults(), {
 			vibratoAmount: 0.5,
 			vibratoRate: 5,
 			harmonicity: 1.5,
@@ -217,39 +233,32 @@ export class DuoSynth<Options extends DuoSynthOptions> extends Monophonic<Option
 	}
 
 	/**
-	 * start the attack portion of the envelopes
-	 *
+	 * Start the attack portion of the envelopes
 	 * @param {Time} [time=now] the time the attack should start
 	 * @param {NormalRange} [velocity=1] the velocity of the note (0-1)
 	 */
-	protected _triggerEnvelopeAttack(time: Seconds, velocity: NormalRange = 1): void {
+	triggerEnvelopeAttack(time: Seconds, velocity: NormalRange = 1): void {
 		time = this.toSeconds(time);
 		this.voice0.triggerAttack(time, velocity);
 		this.voice1.triggerAttack(time, velocity);
 	}
 
 	/**
-	 * start the release portion of the envelopes
+	 * Start the release portion of the envelopes
 	 *
 	 * @param {Time} [time=now] the time the release should start
 	 */
-	protected _triggerEnvelopeRelease(time: Seconds): void {
+	triggerEnvelopeRelease(time: Seconds): void {
 		this.voice0.triggerRelease(time);
 		this.voice1.triggerRelease(time);
 	}
 
-	public getLevelAtTime(time: Time): NormalRange {
-		return (this.voice0.getLevelAtTime(time) + this.voice1.getLevelAtTime(time))/2;
-	}
-
 	dispose(): this {
 		super.dispose();
-		writable(this, ["voice0", "voice1", "frequency", "vibratoAmount", "vibratoRate"]);
 		this.voice0.dispose();
 		this.voice1.dispose();
 		this.frequency.dispose();
 		this.detune.dispose();
-		this.envelope.dispose();
 		this._vibrato.dispose();
 		this.vibratoRate.dispose();
 		this._vibratoGain.dispose();
