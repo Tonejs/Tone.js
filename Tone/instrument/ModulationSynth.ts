@@ -12,7 +12,6 @@ import { Synth, SynthOptions } from "./Synth";
 import { AmplitudeEnvelope } from "../component/envelope/AmplitudeEnvelope";
 import { readOnly, RecursivePartial } from "../core/util/Interface";
 import { omitFromObject, optionsFromArguments } from "../core/util/Defaults";
-import { EQ } from "../core/util/Math";
 
 export interface ModulationSynthOptions extends SynthOptions {
 	harmonicity: Positive;
