@@ -8,7 +8,7 @@ import { OmniOscillator } from "../source/oscillator/OmniOscillator";
 import { Source } from "../source/Source";
 import { Synth, SynthOptions } from "./Synth";
 import { FrequencyEnvelope, FrequencyEnvelopeOptions } from "../component/envelope/FrequencyEnvelope";
-import { Time } from "../core/type/Units";
+import { NormalRange, Seconds, Time } from "../core/type/Units";
 import { Signal } from "../signal/Signal";
 import { ToneAudioNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
 import { OmniOscillatorSynthOptions } from "../source/oscillator/OscillatorInterface";
@@ -97,7 +97,7 @@ export class MonoSynth extends Monophonic<MonoSynthOptions> {
 	}
 
 	static getDefaults(): MonoSynthOptions {
-		return Object.assign(Synth.getDefaults(), {
+		return Object.assign(Monophonic.getDefaults(), {
 			envelope: Object.assign(
 				omitFromObject(Envelope.getDefaults(), Object.keys(ToneAudioNode.getDefaults())),
 				{
@@ -141,15 +141,14 @@ export class MonoSynth extends Monophonic<MonoSynthOptions> {
 	 * @param time the time the attack should start
 	 * @param velocity the velocity of the note (0-1)
 	 */
-	protected _triggerEnvelopeAttack(time?: Time, velocity: number = 1): void {
-		const computedTime = this.toSeconds(time);
-		this.envelope.triggerAttack(computedTime, velocity);
-		this.filterEnvelope.triggerAttack(computedTime);
-		this.oscillator.start(computedTime);
+	protected _triggerEnvelopeAttack(time: Seconds, velocity: number = 1): void {
+		this.envelope.triggerAttack(time, velocity);
+		this.filterEnvelope.triggerAttack(time);
+		this.oscillator.start(time);
 		if (this.envelope.sustain === 0) {
 			const computedAttack = this.toSeconds(this.envelope.attack);
 			const computedDecay = this.toSeconds(this.envelope.decay);
-			this.oscillator.stop(computedTime + computedAttack + computedDecay);
+			this.oscillator.stop(time + computedAttack + computedDecay);
 		}
 	}
 
@@ -157,11 +156,15 @@ export class MonoSynth extends Monophonic<MonoSynthOptions> {
 	 * start the release portion of the envelope
 	 * @param time the time the release should start
 	 */
-	protected _triggerEnvelopeRelease(time: Time): void {
-		time = this.toSeconds(time);
+	protected _triggerEnvelopeRelease(time: Seconds): void {
 		this.envelope.triggerRelease(time);
 		this.filterEnvelope.triggerRelease(time);
 		this.oscillator.stop(time + this.toSeconds(this.envelope.release));
+	}
+
+	getLevelAtTime(time: Time): NormalRange {
+		time = this.toSeconds(time);
+		return this.envelope.getValueAtTime(time);
 	}
 
 	dispose(): this {

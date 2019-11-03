@@ -1,7 +1,7 @@
 import { AmplitudeEnvelope } from "../component/envelope/AmplitudeEnvelope";
 import { Envelope, EnvelopeOptions } from "../component/envelope/Envelope";
 import { ToneAudioNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
-import { Seconds } from "../core/type/Units";
+import { NormalRange, Seconds, Time } from "../core/type/Units";
 import { omitFromObject, optionsFromArguments } from "../core/util/Defaults";
 import { readOnly } from "../core/util/Interface";
 import { RecursivePartial } from "../core/util/Interface";
@@ -123,6 +123,11 @@ export class Synth<Options extends SynthOptions = SynthOptions> extends Monophon
 	protected _triggerEnvelopeRelease(time: Seconds): void {
 		this.envelope.triggerRelease(time);
 		this.oscillator.stop(time + this.toSeconds(this.envelope.release));
+	}
+
+	getLevelAtTime(time: Time): NormalRange {
+		time = this.toSeconds(time);
+		return this.envelope.getValueAtTime(time);
 	}
 
 	/**

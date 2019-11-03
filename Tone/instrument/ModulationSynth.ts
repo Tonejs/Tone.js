@@ -1,7 +1,7 @@
 import { Signal } from "../signal/Signal";
 import { Multiply } from "../signal/Multiply";
 import { Gain } from "../core/context/Gain";
-import { Positive, Seconds } from "../core/type/Units";
+import { NormalRange, Positive, Seconds, Time } from "../core/type/Units";
 import { Envelope, EnvelopeOptions } from "../component/envelope/Envelope";
 import { ToneAudioNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
 import { Monophonic } from "./Monophonic";
@@ -93,14 +93,13 @@ export abstract class ModulationSynth<Options extends ModulationSynthOptions> ex
 			context: this.context,
 			oscillator: options.oscillator,
 			envelope: options.envelope,
-			onsilence: this._onsilence.bind(this),
+			onsilence: () => this.onsilence(this),
 			volume: -10,
 		});
 		this._modulator = new Synth({
 			context: this.context,
 			oscillator: options.modulation,
 			envelope: options.modulationEnvelope,
-			onsilence: this._onsilence.bind(this),
 			volume: -10,
 		});
 
@@ -180,13 +179,6 @@ export abstract class ModulationSynth<Options extends ModulationSynthOptions> ex
 		});
 	}
 
-	private _onsilence() {
-		const totalEnvelope = this.modulationEnvelope.getValueAtTime(this.now()) + this.envelope.getValueAtTime(this.now());
-		if (EQ(totalEnvelope, 0)) {
-			this.onsilence(this);
-		}
-	}
-		
 	/**
 	 * Trigger the attack portion of the note
 	 */
@@ -206,6 +198,11 @@ export abstract class ModulationSynth<Options extends ModulationSynthOptions> ex
 		// @ts-ignore
 		this._modulator._triggerEnvelopeRelease(time);
 		return this;
+	}
+	
+	getLevelAtTime(time: Time): NormalRange {
+		time = this.toSeconds(time);
+		return this.envelope.getValueAtTime(time);
 	}
 
 	dispose(): this {

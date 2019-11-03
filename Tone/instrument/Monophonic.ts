@@ -30,11 +30,6 @@ export abstract class Monophonic<Options extends MonophonicOptions> extends Inst
 	onsilence: onSilenceCallback;
 
 	/**
-	 * The instrument's envelope
-	 */
-	abstract envelope: Envelope;
-
-	/**
 	 * The instrument's frequency signal.
 	 */
 	abstract readonly frequency: Signal<"frequency">;
@@ -114,10 +109,7 @@ export abstract class Monophonic<Options extends MonophonicOptions> extends Inst
 	 * @param time The time to query the envelope value
 	 * @return The output level between 0-1
 	 */
-	getLevelAtTime(time: Time): NormalRange {
-		time = this.toSeconds(time);
-		return this.envelope.getValueAtTime(time);
-	}
+	abstract getLevelAtTime(time: Time): NormalRange;
 
 	/**
 	 * Set the note at the given time. If no time is given, the note

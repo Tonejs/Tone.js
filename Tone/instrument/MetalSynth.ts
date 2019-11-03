@@ -2,7 +2,7 @@ import { Envelope, EnvelopeOptions } from "../component/envelope/Envelope";
 import { Filter } from "../component/filter/Filter";
 import { Gain } from "../core/context/Gain";
 import { ToneAudioNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
-import { Frequency, NormalRange, Positive, Seconds } from "../core/type/Units";
+import { Frequency, NormalRange, Positive, Seconds, Time } from "../core/type/Units";
 import { deepMerge, omitFromObject, optionsFromArguments } from "../core/util/Defaults";
 import { noOp, RecursivePartial } from "../core/util/Interface";
 import { Multiply } from "../signal/Multiply";
@@ -195,6 +195,11 @@ export class MetalSynth extends Monophonic<MetalSynthOptions> {
 		this.envelope.triggerRelease(time);
 		this._oscillators.forEach(osc => osc.stop(time + this.toSeconds(this.envelope.release)));
 		return this;
+	}
+
+	getLevelAtTime(time: Time): NormalRange {
+		time = this.toSeconds(time);
+		return this.envelope.getValueAtTime(time);
 	}
 
 	/**
