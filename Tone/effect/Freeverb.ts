@@ -23,11 +23,13 @@ const allpassFilterFrequencies = [225, 556, 441, 341];
 /**
  * Freeverb is a reverb based on [Freeverb](https://ccrma.stanford.edu/~jos/pasp/Freeverb.html).
  * Read more on reverb on [Sound On Sound](https://web.archive.org/web/20160404083902/http://www.soundonsound.com:80/sos/feb01/articles/synthsecrets.asp).
- *  @example
- * var freeverb = new Freeverb().toMaster();
- * freeverb.dampening.value = 1000;
- * //routing synth through the reverb
- * var synth = new Tone.AMSynth().connect(freeverb);
+ * @example
+ * import { Freeverb, NoiseSynth } from "tone";
+ * const freeverb = new Freeverb().toDestination();
+ * freeverb.dampening = 1000;
+ * // routing synth through the reverb
+ * const synth = new NoiseSynth().connect(freeverb);
+ * synth.triggerAttackRelease(0.05);
  */
 export class Freeverb extends StereoEffect<FreeverbOptions> {
 
