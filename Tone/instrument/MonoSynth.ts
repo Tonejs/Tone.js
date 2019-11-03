@@ -6,7 +6,6 @@ import { readOnly, RecursivePartial } from "../core/util/Interface";
 import { Monophonic, MonophonicOptions } from "../instrument/Monophonic";
 import { OmniOscillator } from "../source/oscillator/OmniOscillator";
 import { Source } from "../source/Source";
-import { Synth, SynthOptions } from "./Synth";
 import { FrequencyEnvelope, FrequencyEnvelopeOptions } from "../component/envelope/FrequencyEnvelope";
 import { NormalRange, Seconds, Time } from "../core/type/Units";
 import { Signal } from "../signal/Signal";
@@ -71,7 +70,7 @@ export class MonoSynth extends Monophonic<MonoSynthOptions> {
 	 */
 	readonly envelope: AmplitudeEnvelope;
 
-	constructor(options?: RecursivePartial<SynthOptions>);
+	constructor(options?: RecursivePartial<MonoSynthOptions>);
 	constructor() {
 		super(optionsFromArguments(MonoSynth.getDefaults(), arguments));
 		const options = optionsFromArguments(MonoSynth.getDefaults(), arguments);
