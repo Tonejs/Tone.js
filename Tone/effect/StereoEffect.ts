@@ -1,5 +1,6 @@
 import { EffectOptions } from "./Effect";
-import { ToneAudioNode } from "../core/context/ToneAudioNode";
+import { OutputNode, ToneAudioNode } from "../core/context/ToneAudioNode";
+import { connect, connectSeries } from "../core/Connect";
 import { CrossFade } from "../component/channel/CrossFade";
 import { Signal } from "../signal/Signal";
 import { Split } from "../component/channel/Split";
@@ -68,17 +69,19 @@ export class StereoEffect<Options extends StereoEffectOptions> extends ToneAudio
 	/**
 	 * Connect the left part of the effect
 	 */
-	protected connectEffectLeft(node: ToneAudioNode): void{
-		this._split.connect(node, 0, 0);
-		node.connect(this._merge, 0, 0);
+	protected connectEffectLeft(...nodes: OutputNode[]): void{
+		this._split.connect(nodes[0], 0, 0);
+		connectSeries(...nodes);
+		connect(nodes[nodes.length-1], this._merge, 0, 0);
 	}
 	
 	/**
 	 * Connect the right part of the effect
 	 */
-	protected connectEffectRight(node: ToneAudioNode): void{
-		this._split.connect(node, 1, 0);
-		node.connect(this._merge, 0, 1);
+	protected connectEffectRight(...nodes: OutputNode[]): void{
+		this._split.connect(nodes[0], 1, 0);
+		connectSeries(...nodes);
+		connect(nodes[nodes.length-1], this._merge, 0, 1);
 	}
 
 	static getDefaults(): StereoEffectOptions {
