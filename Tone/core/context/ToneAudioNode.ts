@@ -305,7 +305,7 @@ export function connect(srcNode: OutputNode, dstNode: InputNode, outputNumber = 
 	assert(srcNode.numberOfOutputs > 0, "Cannot connect from node with no outputs");
 
 	// resolve the input of the dstNode
-	while (dstNode instanceof ToneAudioNode || dstNode instanceof Param) {
+	while ((dstNode instanceof ToneAudioNode || dstNode instanceof Param)) {
 		if (isDefined(dstNode.input)) {
 			dstNode = dstNode.input;
 		}
@@ -342,9 +342,7 @@ export function disconnect(
 	// resolve the destination node
 	if (isDefined(dstNode)) {
 		while (dstNode instanceof ToneAudioNode) {
-			if (dstNode.input) {
-				dstNode = dstNode.input;
-			}
+			dstNode = dstNode.input;
 		}
 	}
 
