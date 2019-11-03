@@ -6,6 +6,7 @@ import { ToneWithContext } from "Tone/core/context/ToneWithContext";
 import { Tone } from "Tone/core/Tone";
 import { ConnectTest } from "./Connect";
 import { setLogger } from "Tone/core/util/Debug";
+import { ToneAudioNode } from "Tone/core/context/ToneAudioNode";
 
 export const testAudioContext = new OfflineContext(1, 1, 11025);
 
@@ -46,6 +47,15 @@ export function BasicTests(Constr, ...args: any[]): void {
 				}
 			}
 			instance.dispose();
+		});
+
+		it("can be serialized to JSON", () => {
+			const instance = new Constr(...args);
+			if (instance instanceof ToneAudioNode) {
+				const json = instance.get();
+				// this throws an error if the object is recursive
+				JSON.stringify(json);
+			}
 		});
 
 		ConnectTest(Constr, ...args);
