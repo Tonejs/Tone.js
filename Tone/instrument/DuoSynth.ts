@@ -7,7 +7,6 @@ import { Gain, } from "../core/context/Gain";
 import { Multiply } from "../signal/Multiply";
 import { Frequency, NormalRange, Positive, Seconds, Time } from "../core/type/Units";
 import { deepMerge, omitFromObject, optionsFromArguments } from "../core/util/Defaults";
-import { EQ } from "../core/util/Math";
 import { Param } from "../core/context/Param";
 
 export interface DuoSynthOptions extends MonophonicOptions {
