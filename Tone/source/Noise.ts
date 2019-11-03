@@ -24,10 +24,10 @@ export interface NoiseOptions extends SourceOptions {
  * const noise = new Noise("pink").start();
  * // make an autofilter to shape the noise
  * const autoFilter = new AutoFilter({
- * 	frequency: "8m",
+ * 	frequency: "8n",
  * 	baseFrequency: 200,
  * 	octaves: 8
- * }).toDestination();
+ * }).toDestination().start();
  * // connect the noise
  * noise.connect(autoFilter);
  * // start the autofilter LFO
