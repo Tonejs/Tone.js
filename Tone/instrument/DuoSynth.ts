@@ -19,7 +19,7 @@ export interface DuoSynthOptions extends MonophonicOptions {
 }
 
 /**
- * DuoSynth is a monophonic synth composed of two MonoSynths run in parallel with control over the
+ * DuoSynth is a monophonic synth composed of two [[MonoSynths]] run in parallel with control over the
  * frequency ratio between the two voices and vibrato effect.
  * @example
  * import { DuoSynth } from "tone";
