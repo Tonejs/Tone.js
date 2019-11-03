@@ -36,7 +36,7 @@ describe("DuoSynth", () => {
 		return CompareToFile(() => {
 			let synth = new DuoSynth().toDestination();
 			synth.triggerAttackRelease("C5", 0.1, 0.1);
-		}, "duoSynth.wav", 0.01);
+		}, "duoSynth.wav", 0.05);
 	});
 
 	context("API", () => {
