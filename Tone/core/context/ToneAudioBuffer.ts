@@ -17,19 +17,12 @@ interface ToneAudioBufferOptions {
  * AudioBuffer loading and storage. ToneAudioBuffer is used internally by all
  * classes that make requests for audio files such as Tone.Player,
  * Tone.Sampler and Tone.Convolver.
- *
  * Aside from load callbacks from individual buffers, ToneAudioBuffer
  * provides events which keep track of the loading progress
  * of _all_ of the buffers. These are ToneAudioBuffer.on("load" / "progress" / "error")
  * @example
  * import { ToneAudioBuffer } from "tone";
  * const buffer = new ToneAudioBuffer("https://tonejs.github.io/examples/audio/FWDL.mp3", () => {
- * 	console.log("loaded");
- * });
- * @example
- * import { ToneAudioBuffer } from "tone";
- * // can load provide fallback extension types if the first type is not supported.
- * const buffer = new ToneAudioBuffer("https://tonejs.github.io/examples/audio/FWDL.[mp3|ogg]", () => {
  * 	console.log("loaded");
  * });
  * @category Core
