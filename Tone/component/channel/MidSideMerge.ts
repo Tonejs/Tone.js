@@ -37,12 +37,12 @@ export class MidSideMerge extends ToneAudioNode<MidSideMergeOptions> {
 	/**
 	 * The "mid" input.
 	 */
-	readonly mid: Gain;
+	readonly mid: ToneAudioNode;
 
 	/**
 	 * The "side" input.
 	 */
-	readonly side: Gain;
+	readonly side: ToneAudioNode;
 
 	/**
 	 * Recombine the mid/side into Left

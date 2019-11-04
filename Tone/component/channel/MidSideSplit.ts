@@ -43,12 +43,12 @@ export class MidSideSplit extends ToneAudioNode<MidSideSplitOptions> {
 	/**
 	 * The "mid" output. `(Left+Right)/sqrt(2)`
 	 */
-	readonly mid: Multiply;
+	readonly mid: ToneAudioNode;
 
 	/**
 	 * The "side" output. `(Left-Right)/sqrt(2)`
 	 */
-	readonly side: Multiply;
+	readonly side: ToneAudioNode;
 	
 	constructor(options?: Partial<MidSideSplitOptions>);
 	constructor() {
