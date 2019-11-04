@@ -126,7 +126,7 @@ export abstract class ToneWithContext<Options extends ToneWithContextOptions> ex
 	 * @example
 	 * import { Oscillator } from "tone";
 	 * const osc = new Oscillator();
-	 * osc.get();
+	 * console.log(osc.get());
 	 * // returns {"type" : "sine", "frequency" : 440, ...etc}
 	 */
 	get(): Options {
