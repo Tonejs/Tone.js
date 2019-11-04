@@ -9,6 +9,7 @@ export * from "./FeedbackDelay";
 export * from "./FrequencyShifter";
 export * from "./Freeverb";
 export * from "./JCReverb";
+export * from "./Phaser";
 export * from "./Reverb";
 export * from "./StereoWidener";
 export * from "./Tremolo";
