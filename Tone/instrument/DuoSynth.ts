@@ -56,6 +56,9 @@ export class DuoSynth extends Monophonic<DuoSynthOptions> {
 	 * Harmonicity is the ratio between the two voices. A harmonicity of
 	 * 1 is no change. Harmonicity = 2 means a change of an octave.
 	 * @example
+	 * import { DuoSynth } from "tone";
+	 * const duoSynth = new DuoSynth().toDestination();
+	 * duoSynth.triggerAttackRelease("C4", "2n");
 	 * // pitch voice1 an octave below voice0
 	 * duoSynth.harmonicity.value = 0.5;
 	 */
