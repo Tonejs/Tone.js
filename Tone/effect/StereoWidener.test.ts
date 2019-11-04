@@ -17,7 +17,7 @@ describe("StereoWidener", () => {
 		return CompareToFile(() => {
 			const phaser = new StereoWidener(0.1).toDestination();
 			const player = new Player(buffer).connect(phaser).start();
-		}, "stereoWidener.wav", 0.01);
+		}, "stereoWidener.wav", 0.3);
 	});
 
 	context("API", () => {
