@@ -16,7 +16,7 @@ describe("Freeverb", () => {
 			reverb.dampening = 7000;
 			const osc = new Oscillator().connect(reverb);
 			osc.start(0).stop(0.01);
-		}, "freeverb.wav", 1.5);
+		}, "freeverb.wav", 0.3);
 	});
 
 	context("API", () => {
