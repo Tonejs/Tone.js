@@ -12,7 +12,7 @@ describe("Phaser", () => {
 	EffectTests(Phaser);
 
 	it("matches a file basic", async () => {
-		const buffer = await ToneAudioBuffer.fromUrl("./audio/FWDL.mp3");
+		const buffer = await ToneAudioBuffer.fromUrl("./audio/FWDL.wav");
 		return CompareToFile(() => {
 			const phaser = new Phaser(2, 6, 200).toDestination();
 			const player = new Player(buffer).connect(phaser).start();

@@ -13,7 +13,7 @@ describe("StereoWidener", () => {
 	EffectTests(StereoWidener, 0);
 
 	it("matches a file basic", async () => {
-		const buffer = await ToneAudioBuffer.fromUrl("./audio/FWDL.mp3");
+		const buffer = await ToneAudioBuffer.fromUrl("./audio/FWDL.wav");
 		return CompareToFile(() => {
 			const phaser = new StereoWidener(0.1).toDestination();
 			const player = new Player(buffer).connect(phaser).start();
