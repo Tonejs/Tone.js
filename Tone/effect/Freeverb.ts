@@ -73,36 +73,36 @@ export class Freeverb extends StereoEffect<FreeverbOptions> {
 		});
 
 		// make the allpass filters on the right
-		for (let l = 0; l < allpassFilterFrequencies.length; l++) {
-			let allpassL = this.context.createBiquadFilter();
+		this._allpassFiltersL = allpassFilterFrequencies.map(freq => {
+			const allpassL = this.context.createBiquadFilter();
 			allpassL.type = "allpass";
-			allpassL.frequency.value = allpassFilterFrequencies[l];
-			this._allpassFiltersL.push(allpassL);
-		}
-
+			allpassL.frequency.value = freq;
+			return allpassL;
+		});
+		
 		// make the allpass filters on the left
-		for (let r = 0; r < allpassFilterFrequencies.length; r++) {
-			let allpassR = this.context.createBiquadFilter();
+		this._allpassFiltersR = allpassFilterFrequencies.map(freq => {
+			const allpassR = this.context.createBiquadFilter();
 			allpassR.type = "allpass";
-			allpassR.frequency.value = allpassFilterFrequencies[r];
-			this._allpassFiltersR.push(allpassR);
-		}
+			allpassR.frequency.value = freq;
+			return allpassR;
+		});
 
 		// make the comb filters
-		for (let c = 0; c < combFilterTunings.length; c++) {
+		this._combFilters = combFilterTunings.map((delayTime, index) => {
 			const lfpf = new LowpassCombFilter({
 				context: this.context,
-				delayTime: combFilterTunings[c],
 				dampening: options.dampening,
+				delayTime,
 			});
-			if (c < combFilterTunings.length / 2) {
+			if (index < combFilterTunings.length / 2) {
 				this.connectEffectLeft(lfpf, ...this._allpassFiltersL);
 			} else {
 				this.connectEffectRight(lfpf, ...this._allpassFiltersR);
 			}
 			this.roomSize.connect(lfpf.resonance);
-			this._combFilters.push(lfpf);
-		}
+			return lfpf;
+		});
 
 		readOnly(this, ["roomSize"]);
 	}
