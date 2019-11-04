@@ -12,6 +12,14 @@ describe("StereoWidener", () => {
 	BasicTests(StereoWidener);
 	EffectTests(StereoWidener, 0);
 
+	it("matches a file basic", async () => {
+		const buffer = await ToneAudioBuffer.fromUrl("./audio/FWDL.mp3");
+		return CompareToFile(() => {
+			const phaser = new StereoWidener(0.1).toDestination();
+			const player = new Player(buffer).connect(phaser).start();
+		}, "stereoWidener.wav", 0.01);
+	});
+
 	context("API", () => {
 
 		it("can pass in options in the constructor", () => {
