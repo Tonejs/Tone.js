@@ -39,6 +39,8 @@ const allpassFilterFreqs = [347, 113, 37];
  * synth.triggerAttackRelease("A4", "8n");
  */
 export class JCReverb extends StereoEffect<JCReverbOptions> {
+
+	readonly name: string = "JCReverb";
 	
 	/**
 	 * Room size control values. 
