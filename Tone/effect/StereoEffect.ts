@@ -34,12 +34,12 @@ export class StereoEffect<Options extends StereoEffectOptions> extends ToneAudio
 	/**
 	 * Split it
 	 */
-	private _split: Split;
+	protected _split: Split;
 	
 	/**
 	 * the stereo effect merger
 	 */
-	private _merge: Merge;
+	protected _merge: Merge;
 
 	constructor(options: StereoEffectOptions) {
 
