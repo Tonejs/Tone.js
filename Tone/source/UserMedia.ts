@@ -157,7 +157,8 @@ export class UserMedia extends ToneAudioNode<UserMediaOptions> {
 	 * @example
 	 * import { UserMedia } from "tone";
 	 * UserMedia.enumerateDevices().then((devices) => {
-	 * 	console.log(devices);
+	 * 	// print the device labels
+	 * 	console.log(devices.map(device => device.label));
 	 * });
 	 */
 	static async enumerateDevices(): Promise<MediaDeviceInfo[]> {
