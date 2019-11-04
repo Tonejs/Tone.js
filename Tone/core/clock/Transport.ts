@@ -53,13 +53,14 @@ type TransportCallback = (time: Seconds) => void;
  *
  * @example
  * import { Oscillator, Transport } from "tone";
- * 
- * const osc = new Oscillator().toDestination().start();
+ * const osc = new Oscillator().toDestination();
  * // repeated event every 8th note
  * Transport.scheduleRepeat((time) => {
  * 	// use the callback time to schedule events
  * 	osc.start(time).stop(time + 0.1);
  * }, "8n");
+ * // transport must be started before it starts invoking events
+ * Transport.start();
  * @category Core
  */
 export class Transport extends ToneWithContext<TransportOptions> implements Emitter<TransportEventNames> {
