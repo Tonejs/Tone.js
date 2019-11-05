@@ -82,8 +82,8 @@ export class PingPongDelay extends StereoXFeedbackEffect<PingPongDelayOptions> {
 		this.connectEffectRight(this._rightPreDelay, this._rightDelay);
 		this.delayTime.fan(this._leftDelay.delayTime, this._rightDelay.delayTime, this._rightPreDelay.delayTime);
 		// rearranged the feedback to be after the rightPreDelay
-		this._feedbackLR.disconnect();
-		this._feedbackLR.connect(this._rightDelay);
+		this._feedbackL.disconnect();
+		this._feedbackL.connect(this._rightDelay);
 		readOnly(this, ["delayTime"]);
 	}
 
