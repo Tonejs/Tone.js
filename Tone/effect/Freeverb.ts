@@ -30,6 +30,7 @@ const allpassFilterFrequencies = [225, 556, 441, 341];
  * // routing synth through the reverb
  * const synth = new NoiseSynth().connect(freeverb);
  * synth.triggerAttackRelease(0.05);
+ * @category Effect
  */
 export class Freeverb extends StereoEffect<FreeverbOptions> {
 

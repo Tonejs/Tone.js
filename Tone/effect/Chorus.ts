@@ -27,6 +27,8 @@ export interface ChorusOptions extends StereoEffectOptions {
  * const chorus = new Chorus(4, 2.5, 0.5);
  * const synth = new PolySynth().connect(chorus);
  * synth.triggerAttackRelease(["C3", "E3", "G3"], "8n");
+ * 
+ * @category Effect
  */
 export class Chorus extends StereoEffect<ChorusOptions> {
 

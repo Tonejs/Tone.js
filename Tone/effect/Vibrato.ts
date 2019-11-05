@@ -17,6 +17,7 @@ export interface VibratoOptions extends EffectOptions {
 /**
  * A Vibrato effect composed of a Tone.Delay and a Tone.LFO. The LFO
  * modulates the delayTime of the delay, causing the pitch to rise and fall. 
+ * @category Effect
  */
 export class Vibrato extends Effect<VibratoOptions> {
 

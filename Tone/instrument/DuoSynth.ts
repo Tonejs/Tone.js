@@ -24,6 +24,7 @@ export interface DuoSynthOptions extends MonophonicOptions {
  * import { DuoSynth } from "tone";
  * const duoSynth = new DuoSynth().toDestination();
  * duoSynth.triggerAttackRelease("C4", "2n");
+ * @category Instrument
  */
 export class DuoSynth extends Monophonic<DuoSynthOptions> {
 

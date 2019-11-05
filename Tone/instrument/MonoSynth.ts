@@ -35,6 +35,7 @@ export interface MonoSynthOptions extends MonophonicOptions {
  * 	}
  * }).toDestination();
  * synth.triggerAttackRelease("C4", "8n");
+ * @category Instrument
  */
 export class MonoSynth extends Monophonic<MonoSynthOptions> {
 

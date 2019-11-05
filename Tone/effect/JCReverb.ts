@@ -37,6 +37,8 @@ const allpassFilterFreqs = [347, 113, 37];
  * // connecting the synth to reverb through delay
  * const synth = new DuoSynth().chain(delay, reverb);
  * synth.triggerAttackRelease("A4", "8n");
+ * 
+ * @category Effect
  */
 export class JCReverb extends StereoEffect<JCReverbOptions> {
 

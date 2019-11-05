@@ -19,6 +19,7 @@ export interface StereoWidenerOptions extends MidSideEffectOptions {
  * Mid *= 2*(1-width)<br>
  * Side *= 2*width
  * ```
+ * @category Effect
  */
 export class StereoWidener extends MidSideEffect<StereoWidenerOptions> {
 

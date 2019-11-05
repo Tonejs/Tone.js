@@ -27,6 +27,7 @@ export interface PhaserOptions extends StereoEffectOptions {
  * }).toDestination();
  * const synth = new FMSynth().connect(phaser);
  * synth.triggerAttackRelease("E3", "2n");
+ * @category Effect
  */
 export class Phaser extends StereoEffect<PhaserOptions> {
 

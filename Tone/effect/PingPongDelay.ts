@@ -23,6 +23,7 @@ export interface PingPongDelayOptions extends StereoXFeedbackEffectOptions {
  * const pingPong = new PingPongDelay("4n", 0.2).toDestination();
  * const drum = new MembraneSynth().connect(pingPong);
  * drum.triggerAttackRelease("C4", "32n");
+ * @category Effect
  */
 export class PingPongDelay extends StereoXFeedbackEffect<PingPongDelayOptions> {
 
