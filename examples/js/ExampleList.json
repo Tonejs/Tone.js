@@ -23,7 +23,8 @@
 		"PingPongDelay" : "pingPongDelay",
 		"Buses" : "buses",
 		"Reverb" : "reverb",
-		"Spatialization" : "spatialPanner"
+		"Spatialization" : "spatialPanner",
+		"PitchShift" : "pitchShift"
 	},
 	"Sequencing / Timing" : {
 		"Step Sequencer" : "stepSequencer",
