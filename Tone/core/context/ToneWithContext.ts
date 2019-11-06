@@ -7,13 +7,13 @@ import { Frequency, Hertz, Seconds, Ticks, Time } from "../type/Units";
 import { getDefaultsFromInstance, optionsFromArguments } from "../util/Defaults";
 import { RecursivePartial } from "../util/Interface";
 import { isArray, isBoolean, isDefined, isNumber, isString, isUndef } from "../util/TypeCheck";
-import { Context } from "./Context";
+import { BaseContext } from "./BaseContext";
 
 /**
  * A unit which process audio
  */
 export interface ToneWithContextOptions {
-	context: Context;
+	context: BaseContext;
 }
 
 /**
@@ -24,19 +24,19 @@ export abstract class ToneWithContext<Options extends ToneWithContextOptions> ex
 	/**
 	 * The context belonging to the node.
 	 */
-	readonly context: Context;
+	readonly context: BaseContext;
 
 	/**
 	 * The default context to use if no AudioContext is passed in to the constructor.
 	 * Probably should not be set manually. Used internally.
 	 * @hidden
 	 */
-	readonly defaultContext?: Context;
+	readonly defaultContext?: BaseContext;
 
 	/**
 	 * Pass in a constructor as the first argument
 	 */
-	constructor(context?: Context)
+	constructor(context?: BaseContext)
 	constructor(options?: Partial<ToneWithContextOptions>);
 	constructor() {
 		super();

@@ -1,4 +1,4 @@
-import { Context } from "../context/Context";
+import { BaseContext } from "../context/BaseContext";
 import { TicksClass } from "../type/Ticks";
 import { Seconds, Ticks, Time } from "../type/Units";
 import { TransportEvent, TransportEventOptions } from "./TransportEvent";
@@ -49,7 +49,7 @@ export class TransportRepeatEvent extends TransportEvent {
 	/**
 	 * The audio context belonging to this event
 	 */
-	protected context: Context;
+	protected context: BaseContext;
 
 	/**
 	 * @param transport The transport object which the event belongs to

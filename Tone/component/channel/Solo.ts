@@ -1,4 +1,4 @@
-import { Context } from "Tone/core";
+import { BaseContext } from "Tone/core";
 import { Gain } from "../../core/context/Gain";
 import { ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
 import { optionsFromArguments } from "../../core/util/Defaults";
@@ -61,12 +61,12 @@ export class Solo extends ToneAudioNode<SoloOptions> {
 	/**
 	 * Hold all of the solo'ed tracks belonging to a specific context
 	 */
-	private static _allSolos: Map<Context, Set<Solo>> = new Map();
+	private static _allSolos: Map<BaseContext, Set<Solo>> = new Map();
 
 	/**
 	 * Hold the currently solo'ed instance(s)
 	 */
-	private static _soloed: Map<Context, Set<Solo>> = new Map();
+	private static _soloed: Map<BaseContext, Set<Solo>> = new Map();
 
 	/**
 	 * Isolates this instance and mutes all other instances of Solo.

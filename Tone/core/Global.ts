@@ -1,29 +1,27 @@
 import { version } from "../version";
-import { hasAudioContext, theWindow } from "./context/AudioContext";
+import { AnyAudioContext, hasAudioContext, theWindow } from "./context/AudioContext";
 import { Context } from "./context/Context";
+import { DummyContext } from "./context/DummyContext";
+import { BaseContext } from "./context/BaseContext";
 import { OfflineContext } from "./context/OfflineContext";
 import { isAudioContext, isOfflineAudioContext } from "./util/AdvancedTypeCheck";
 
 /**
  * This dummy context is used to avoid throwing immediate errors when importing in Node.js
  */
-// eslint-disable-next-line @typescript-eslint/no-object-literal-type-assertion
-const dummyContext: Context = {
-	destination: {},
-	transport: {},
-} as Context;
+const dummyContext = new DummyContext();
 
 /**
  * The global audio context which is getable and assignable through
  * getContext and setContext
  */
-let globalContext: Context = dummyContext;
+let globalContext: BaseContext = dummyContext;
 
 /**
  * Returns the default system-wide [[Context]]
  * @category Core
  */
-export function getContext(): Context {
+export function getContext(): BaseContext {
 	if (globalContext === dummyContext && hasAudioContext) {
 		setContext(new Context());
 	}
@@ -34,7 +32,7 @@ export function getContext(): Context {
  * Set the default audio context
  * @category Core
  */
-export function setContext(context: Context | AudioContext | OfflineAudioContext): void {
+export function setContext(context: BaseContext | AnyAudioContext): void {
 	if (isAudioContext(context)) {
 		globalContext = new Context(context);
 	} else if (isOfflineAudioContext(context)) {
