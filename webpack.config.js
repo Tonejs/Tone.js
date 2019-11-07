@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
@@ -15,7 +16,8 @@ const defaults = {
 		path: path.resolve(__dirname, "build"),
 		filename: "[name].js",
 		library: "Tone",
-		libraryTarget: "umd"
+		libraryTarget: "umd",
+		globalObject: "typeof self !== 'undefined' ? self : this",
 	},
 	resolve: {
 		extensions: [".ts", ".js"]
