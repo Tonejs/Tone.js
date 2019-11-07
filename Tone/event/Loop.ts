@@ -29,7 +29,7 @@ export interface LoopOptions extends ToneWithContextOptions {
  * Transport.start();
  * @category Event
  */
-export class Loop extends ToneWithContext<LoopOptions> {
+export class Loop<Options extends LoopOptions = LoopOptions> extends ToneWithContext<Options> {
 
 	readonly name: string = "Loop";
 
@@ -110,7 +110,7 @@ export class Loop extends ToneWithContext<LoopOptions> {
 	 * Internal function called when the notes should be called
 	 * @param time  The time the event occurs
 	 */
-	private _tick(time: Seconds) {
+	protected _tick(time: Seconds): void {
 		this.callback(time);
 	}
 

@@ -3,8 +3,7 @@ import { assert } from "../core/util/Debug";
 /**
  * The name of the patterns
  */
-export type PatternName = "up" | "down" | "upDown" | "downUp" |
-"alternateUp" | "alternateDown" | "random" | "randomOnce";
+export type PatternName = "up" | "down" | "upDown" | "downUp" | "alternateUp" | "alternateDown" | "random" | "randomOnce";
 
 /**
  * Start at the first value and go up to the last
@@ -128,8 +127,9 @@ function* randomOnce<T>(values: T[]): IterableIterator<T> {
  * of values and yield the items according to the passed in pattern
  * @param values An array of values to iterate over
  * @param pattern The name of the pattern use when iterating over
+ * @param index Where to start in the offset of the values array
  */
-export function* PatternGenerator<T>(values: T[], pattern: PatternName = "up"): Iterator<T> {
+export function* PatternGenerator<T>(values: T[], pattern: PatternName = "up", index: number = 0): Iterator<T> {
 	// safeguards
 	assert(values.length > 0, "The array must have more than one value in it");
 	switch (pattern) {
