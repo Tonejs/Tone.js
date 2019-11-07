@@ -1,4 +1,5 @@
-export { Part } from "./Part";
-export { Sequence } from "./Sequence";
-export { ToneEvent } from "./ToneEvent";
-export { Loop } from "./Loop";
+export * from "./Loop";
+export * from "./Part";
+export * from "./Pattern";
+export * from "./Sequence";
+export * from "./ToneEvent";
