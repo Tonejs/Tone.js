@@ -1,4 +1,4 @@
-import { Context } from "../context/Context";
+import { BaseContext } from "../context/BaseContext";
 import { Tone } from "../Tone";
 import { isDefined, isObject, isString, isUndef } from "../util/TypeCheck";
 import { BPM, Hertz, MidiNote, Milliseconds, Samples, Seconds, Ticks, Time } from "./Units";
@@ -27,7 +27,7 @@ export interface TimeExpression<Type extends number> {
  */
 export abstract class TimeBaseClass<Type extends number, Unit extends string> extends Tone {
 
-	readonly context: Context;
+	readonly context: BaseContext;
 
 	/**
 	 * The value of the units
@@ -55,7 +55,7 @@ export abstract class TimeBaseClass<Type extends number, Unit extends string> ex
 	 * @param  value  The time value as a number, string or object
 	 * @param  units  Unit values
 	 */
-	constructor(context: Context, value?: TimeValue, units?: Unit) {
+	constructor(context: BaseContext, value?: TimeValue, units?: Unit) {
 		super();
 
 		this._val = value;

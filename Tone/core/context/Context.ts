@@ -2,12 +2,12 @@ import { Ticker, TickerClockSource } from "../clock/Ticker";
 import { Seconds } from "../type/Units";
 import { isAudioContext } from "../util/AdvancedTypeCheck";
 import { optionsFromArguments } from "../util/Defaults";
-import { Emitter } from "../util/Emitter";
 import { Omit } from "../util/Interface";
 import { Timeline } from "../util/Timeline";
 import { isDefined, isString } from "../util/TypeCheck";
 import { AnyAudioContext, createAudioContext, createAudioWorkletNode } from "./AudioContext";
 import { closeContext, initializeContext } from "./ContextInitialization";
+import { BaseContext } from "./BaseContext";
 
 type Transport = import("../clock/Transport").Transport;
 type Destination = import("./Destination").Destination;
@@ -42,7 +42,7 @@ export interface ContextTimeoutEvent {
  * Wrapper around the native AudioContext.
  * @category Core
  */
-export class Context extends Emitter<"statechange" | "tick"> implements BaseAudioContextSubset {
+export class Context extends BaseContext {
 
 	readonly name: string = "Context";
 

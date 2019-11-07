@@ -1,4 +1,5 @@
 export * from "./context/Context";
+export * from "./context/BaseContext";
 export * from "./context/Destination";
 export * from "./context/Delay";
 export * from "./context/Gain";
