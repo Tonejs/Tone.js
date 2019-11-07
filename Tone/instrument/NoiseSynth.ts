@@ -110,7 +110,7 @@ export class NoiseSynth extends Instrument<NoiseSynthOptions> {
 		return this;
 	}
 
-	triggerAttackRelease(duration: Time, time: Time, velocity: NormalRange = 1): this {
+	triggerAttackRelease(duration: Time, time?: Time, velocity: NormalRange = 1): this {
 		time = this.toSeconds(time);
 		duration = this.toSeconds(duration);
 		this.triggerAttack(time, velocity);
