@@ -1,4 +1,4 @@
-import { BaseContext } from "Tone/core";
+import { BaseContext } from "../../core/context/BaseContext";
 import { Gain } from "../../core/context/Gain";
 import { ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
 import { optionsFromArguments } from "../../core/util/Defaults";
