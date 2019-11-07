@@ -1,4 +1,5 @@
 import { ToneAudioNode, ToneAudioNodeOptions } from "./ToneAudioNode";
+import { noOp } from "../util/Interface";
 
 export type ToneAudioWorkletOptions = ToneAudioNodeOptions;
 
@@ -30,6 +31,11 @@ export abstract class ToneAudioWorklet<Options extends ToneAudioWorkletOptions> 
 	 * Invoked when the module is loaded and the node is created
 	 */
 	protected abstract onReady(node: AudioWorkletNode): void;
+
+	/**
+	 * Callback which is invoked when there is an error in the processing
+	 */
+	onprocessorerror: (e: string) => void = noOp;
 	
 	constructor(options: Options) {
 		super(options);
@@ -42,10 +48,7 @@ export abstract class ToneAudioWorklet<Options extends ToneAudioWorkletOptions> 
 			// create the worklet when it's read
 			if (!this.disposed) {
 				this._worklet = this.context.createAudioWorkletNode(name, this.workletOptions);
-				this._worklet.onprocessorerror = e => {
-					// @ts-ignore
-					throw e.error;
-				};
+				this._worklet.onprocessorerror = this.onprocessorerror.bind(this);
 				this.onReady(this._worklet);
 			}
 		});
