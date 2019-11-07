@@ -22,8 +22,6 @@ export * from "./util/IntervalTimeline";
 export * from "./util/StateTimeline";
 export * from "./util/Timeline";
 export * from "./util/TypeCheck";
-
-export * from "./Tone";
 export * from "./Connect";
 
 export { dbToGain, gainToDb, intervalToFrequencyRatio, ftom, mtof } from "./type/Conversions";
