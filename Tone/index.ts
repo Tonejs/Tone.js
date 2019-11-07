@@ -1,5 +1,6 @@
 export { getContext, setContext } from "./core/Global";
 export * from "./classes";
+export * from "./version";
 import { getContext } from "./core/Global";
 export { start } from "./core/Global";
 
