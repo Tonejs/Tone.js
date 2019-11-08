@@ -162,7 +162,7 @@ export class PitchShift extends FeedbackEffect<PitchShiftOptions> {
 	/**
 	 * Repitch the incoming signal by some interval (measured in semi-tones).
 	 * @example
-	 * import { PitchShift } from "tone";
+	 * import { Oscillator, PitchShift } from "tone";
 	 * const pitchShift = new PitchShift().toDestination();
 	 * const osc = new Oscillator().connect(pitchShift).start().toDestination();
 	 * pitchShift.pitch = -12; // down one octave
