@@ -250,6 +250,9 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 	 * osc.sync().start(0).stop(0.3);
 	 * // start the transport.
 	 * Transport.start();
+	 * // set it to loop once a second
+	 * Transport.loop = true;
+	 * Transport.loopEnd = 1;
 	 */
 	sync(): this {
 		if (!this._synced) {
