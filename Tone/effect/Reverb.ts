@@ -1,10 +1,10 @@
 import { Merge } from "../component/channel/Merge";
 import { Gain } from "../core/context/Gain";
-import { Offline } from "../core/context/Offline";
 import { Seconds } from "../core/type/Units";
 import { optionsFromArguments } from "../core/util/Defaults";
 import { Noise } from "../source/Noise";
 import { Effect, EffectOptions } from "./Effect";
+import { OfflineContext } from "../core/context/OfflineContext";
 
 interface ReverbOptions extends EffectOptions {
 	decay: Seconds;
@@ -72,24 +72,26 @@ export class Reverb extends Effect<ReverbOptions> {
 	 * @return Promise which returns this object.
 	 */
 	async generate(): Promise<this> {
-		const buffer = await Offline((context) => {
-			// create a noise burst which decays over the duration
-			const noiseL = new Noise({ context });
-			const noiseR = new Noise({ context });
-			const merge = new Merge({ context });
-			noiseL.connect(merge, 0, 0);
-			noiseR.connect(merge, 0, 1);
-			const gainNode = new Gain({ context }).toDestination();
-			merge.connect(gainNode);
-			noiseL.start(0);
-			noiseR.start(0);
-			// predelay
-			gainNode.gain.setValueAtTime(0, 0);
-			gainNode.gain.setValueAtTime(1, this.preDelay);
-			// decay
-			gainNode.gain.exponentialApproachValueAtTime(0, this.preDelay, this.decay);
-		}, this.decay + this.preDelay);
-		this._convolver.buffer = buffer.get() as AudioBuffer;
+		const context = new OfflineContext(2, this.decay + this.preDelay, this.context.sampleRate);
+		// create a noise burst which decays over the duration
+		const noiseL = new Noise({ context });
+		const noiseR = new Noise({ context });
+		const merge = new Merge({ context });
+		noiseL.connect(merge, 0, 0);
+		noiseR.connect(merge, 0, 1);
+		const gainNode = new Gain({ context }).toDestination();
+		merge.connect(gainNode);
+		noiseL.start(0);
+		noiseR.start(0);
+		// predelay
+		gainNode.gain.setValueAtTime(0, 0);
+		gainNode.gain.setValueAtTime(1, this.preDelay);
+		// decay
+		gainNode.gain.exponentialApproachValueAtTime(0, this.preDelay, this.decay);
+		
+		// render the output
+		const response = await context.render();
+		this._convolver.buffer = response.get() as AudioBuffer;
 		return this;
 	}
 
