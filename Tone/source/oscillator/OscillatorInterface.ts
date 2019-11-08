@@ -42,10 +42,13 @@ export interface ToneOscillatorInterface {
 	/**
 	 * The detune value in cents (100th of a semitone).
 	 * @example
-	 * import { PulseOscillator } from "tone";
+	 * import { now, PulseOscillator } from "tone";
 	 * const osc = new PulseOscillator("F3").toDestination().start();
-	 * // pitch it 1 octave down (12 semitones)
-	 * osc.detune.value = -1200;
+	 * // pitch it 1 octave = 12 semitones = 1200 cents
+	 * osc.detune.setValueAtTime(-1200, now());
+	 * osc.detune.setValueAtTime(1200, now() + 0.5);
+	 * osc.detune.linearRampToValueAtTime(0, now() + 1);
+	 * osc.stop(now() + 1.5);
 	 */
 	readonly detune: Signal<"cents">;
 
