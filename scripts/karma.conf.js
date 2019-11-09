@@ -49,6 +49,7 @@ module.exports = function(config) {
 		// Karma Typescript compiler options
 		karmaTypescriptConfig: {
 			compilerOptions: {
+				target: "es6",
 				module: "commonjs",
 			},
 			bundlerOptions: {
