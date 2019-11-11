@@ -17,6 +17,16 @@ export function assertRange(value: number, gte: number, lte: number = Infinity):
 }
 
 /**
+ * Make sure that the given value is within the range
+ */
+export function assertContextRunning(context: import("../context/BaseContext").BaseContext): void {
+	// add a warning if the context is not started
+	if (!context.isOffline && context.state !== "running") {
+		warn("The AudioContext is \"suspended\". Invoke Tone.start() from a user action to start the audio.");
+	}
+}
+
+/**
  * A basic logging interface
  */
 interface Logger {
