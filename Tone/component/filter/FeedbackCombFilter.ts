@@ -107,7 +107,6 @@ export class FeedbackCombFilter extends ToneAudioWorklet<FeedbackCombFilterOptio
 				constructor(options) {
 					super(options);
 					this.delayBuffer = new Float32Array(sampleRate);
-					this.waitingForInputs = true;
 				}
 			
 				getParameter(parameter, index) {
@@ -116,10 +115,6 @@ export class FeedbackCombFilter extends ToneAudioWorklet<FeedbackCombFilterOptio
 					} else {
 						return parameter[0];
 					}
-				}
-
-				isActive(){
-					return this.waitingForInputs || this.delayBuffer.some(val => Math.abs(val) > 1e-6);
 				}
 			
 				process(inputs, outputs, parameters) {
@@ -143,14 +138,11 @@ export class FeedbackCombFilter extends ToneAudioWorklet<FeedbackCombFilterOptio
 						// write the current value to the delayBuffer in the future
 						this.delayBuffer[delayedIndex] = value + currentValue * feedback;
 
-						// if there has yet to be any inputs
-						this.waitingForInputs = this.waitingForInputs && value === 0;
-	
 						// set all of the output channels to the same value
 						outputChannel[index] = delaySamples > 0 ? currentValue : value;
 					});
-					// process while the delay buffer still has some values in it or before any values have been processed
-					return this.isActive();
+					// keep the processing alive
+					return true;
 				}
 			});
 		`;
