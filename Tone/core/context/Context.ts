@@ -407,7 +407,11 @@ export class Context extends BaseContext {
 	}
 
 	/**
-	 * The current audio context time without the [[lookAhead]]. See [[now]]
+	 * The current audio context time without the [[lookAhead]]. 
+	 * In most cases it is better to use [[now]] instead of [[immediate]] since
+	 * with [[now]] the [[lookAhead]] is applied equally to _all_ components including internal components,
+	 * to making sure that everything is scheduled in sync. Mixing [[now]] and [[immediate]]
+	 * can cause some timing issues. If no lookAhead is desired, you can set the [[lookAhead]] to `0`.
 	 */
 	immediate(): Seconds {
 		return this._context.currentTime;
