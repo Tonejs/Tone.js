@@ -58,17 +58,19 @@ describe("Debug", () => {
 	it("warns if console is not running", async () => {
 		const ac = new AudioContext();
 		await ac.suspend();
-		const osc = new Oscillator();
-		osc.debug = true;
-		let warnInvoked = false;
-		setLogger({
-			log: () => {},
-			warn: () => warnInvoked = true
-		});
-		osc.start();
-		expect(warnInvoked).to.be.false;
-		osc.dispose();
-		setLogger(console);
+		if (ac.state === "suspended") {
+			const osc = new Oscillator();
+			osc.debug = true;
+			let warnInvoked = false;
+			setLogger({
+				log: () => {},
+				warn: () => warnInvoked = true
+			});
+			osc.start();
+			expect(warnInvoked).to.be.false;
+			osc.dispose();
+			setLogger(console);
+		}
 		await ac.close();
 	});
 });
