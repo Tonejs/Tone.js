@@ -43,6 +43,7 @@ export class FeedbackCombFilter extends ToneAudioWorklet<FeedbackCombFilterOptio
 	protected workletOptions: Partial<AudioWorkletNodeOptions> = {
 		numberOfInputs: 1,
 		numberOfOutputs: 1,
+		channelCount: 1,
 	}
 	
 	/**
@@ -106,42 +107,50 @@ export class FeedbackCombFilter extends ToneAudioWorklet<FeedbackCombFilterOptio
 				constructor(options) {
 					super(options);
 					this.delayBuffer = new Float32Array(sampleRate);
+					this.waitingForInputs = true;
 				}
 			
-				getParameter(name, index, parameters) {
-					if (parameters[name].length > 1) {
-						return parameters[name][index];
+				getParameter(parameter, index) {
+					if (parameter.length > 1) {
+						return parameter[index];
 					} else {
-						return parameters[name][0];
+						return parameter[0];
 					}
+				}
+
+				isActive(){
+					return this.waitingForInputs || this.delayBuffer.some(val => Math.abs(val) > 1e-6);
 				}
 			
 				process(inputs, outputs, parameters) {
 					const input = inputs[0];
 					const output = outputs[0];
-					if (input && output) {
-						const delayLength = this.delayBuffer.length;
-						input.forEach((inputChannel, channelNum) => {
-							inputChannel.forEach((value, index) => {
-								const delayTime = this.getParameter("delayTime", index, parameters);
-								const feedback = this.getParameter("feedback", index, parameters);
-								const delaySamples = Math.floor(delayTime * sampleRate);
-								const currentIndex = (currentFrame + index) % delayLength;
-								const delayedIndex = (currentFrame + index + delaySamples) % delayLength;
-								
-								// the current value to output
-								const currentValue = this.delayBuffer[currentIndex];
-								
-								// write the current value to the delayBuffer in the future
-								this.delayBuffer[delayedIndex] = value + currentValue * feedback;
-			
-								// set all of the output channels to the same value
-								output[channelNum][index] = delaySamples > 0 ? currentValue : value;
-							});
-						});
-						return true;
-					}
-					return true;
+					const delayLength = this.delayBuffer.length;
+					const inputChannel = input[0];
+					const outputChannel = output[0];
+					const delayTimeParam = parameters.delayTime;
+					const feedbackParam = parameters.feedback;
+					inputChannel.forEach((value, index) => {
+						const delayTime = this.getParameter(delayTimeParam, index);
+						const feedback = this.getParameter(feedbackParam, index);
+						const delaySamples = Math.floor(delayTime * sampleRate);
+						const currentIndex = (currentFrame + index) % delayLength;
+						const delayedIndex = (currentFrame + index + delaySamples) % delayLength;
+						
+						// the current value to output
+						const currentValue = this.delayBuffer[currentIndex];
+						
+						// write the current value to the delayBuffer in the future
+						this.delayBuffer[delayedIndex] = value + currentValue * feedback;
+
+						// if there has yet to be any inputs
+						this.waitingForInputs = this.waitingForInputs && value === 0;
+	
+						// set all of the output channels to the same value
+						outputChannel[index] = delaySamples > 0 ? currentValue : value;
+					});
+					// process while the delay buffer still has some values in it or before any values have been processed
+					return this.isActive();
 				}
 			});
 		`;
