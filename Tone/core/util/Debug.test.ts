@@ -2,7 +2,8 @@ import { expect } from "chai";
 import { ToneOscillatorNode } from "../../source/oscillator/ToneOscillatorNode";
 import { assertRange, setLogger } from "./Debug";
 import { theWindow } from "../context/AudioContext";
-import { GrainPlayer, Oscillator } from "Tone/source";
+import { Oscillator } from "Tone/source";
+import { Context } from "../context/Context";
 
 describe("Debug", () => {
 
@@ -56,19 +57,18 @@ describe("Debug", () => {
 	});
 
 	it("warns if console is not running", async () => {
-		const ac = new AudioContext();
-		await ac.suspend();
-		const osc = new GrainPlayer();
-		osc.debug = true;
+		const context = new Context();
+		await context.rawContext.suspend(0);
+		const osc = new Oscillator({ context });
 		let warnInvoked = false;
 		setLogger({
 			log: () => {},
 			warn: () => warnInvoked = true
 		});
 		osc.start();
-		expect(warnInvoked).to.be.false;
+		expect(warnInvoked).to.be.true;
 		osc.dispose();
 		setLogger(console);
-		await ac.close();
+		await context.close();
 	});
 });
