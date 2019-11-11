@@ -8,6 +8,7 @@ import { defaultArg } from "../core/util/Defaults";
 import { noOp, readOnly } from "../core/util/Interface";
 import { BasicPlaybackState, StateTimeline } from "../core/util/StateTimeline";
 import { isUndef } from "../core/util/TypeCheck";
+import { assertContextRunning } from "../core/util/Debug";
 
 type onStopCallback = (source: Source<any>) => void;
 
@@ -209,6 +210,7 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 			} else {
 				this._start(computedTime, offset, duration);
 			}
+			assertContextRunning(this.context);
 		}
 		return this;
 	}
