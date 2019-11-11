@@ -106,7 +106,6 @@ export class FeedbackCombFilter extends ToneAudioWorklet<FeedbackCombFilterOptio
 				constructor(options) {
 					super(options);
 					this.delayBuffer = new Float32Array(sampleRate);
-					this.currentFrame = 0
 				}
 			
 				getParameter(name, index, parameters) {
@@ -120,7 +119,6 @@ export class FeedbackCombFilter extends ToneAudioWorklet<FeedbackCombFilterOptio
 				process(inputs, outputs, parameters) {
 					const input = inputs[0];
 					const output = outputs[0];
-					this.currentFrame += 128
 					if (input && output) {
 						const delayLength = this.delayBuffer.length;
 						input.forEach((inputChannel, channelNum) => {
@@ -128,8 +126,8 @@ export class FeedbackCombFilter extends ToneAudioWorklet<FeedbackCombFilterOptio
 								const delayTime = this.getParameter("delayTime", index, parameters);
 								const feedback = this.getParameter("feedback", index, parameters);
 								const delaySamples = Math.floor(delayTime * sampleRate);
-								const currentIndex = (this.currentFrame + index) % delayLength;
-								const delayedIndex = (this.currentFrame + index + delaySamples) % delayLength;
+								const currentIndex = (currentFrame + index) % delayLength;
+								const delayedIndex = (currentFrame + index + delaySamples) % delayLength;
 								
 								// the current value to output
 								const currentValue = this.delayBuffer[currentIndex];
