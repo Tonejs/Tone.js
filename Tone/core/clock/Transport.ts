@@ -542,7 +542,6 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 	get seconds(): Seconds {
 		return this._clock.seconds;
 	}
-
 	set seconds(s: Seconds) {
 		const now = this.now();
 		const ticks = this._clock.frequency.timeToTicks(s, now);
