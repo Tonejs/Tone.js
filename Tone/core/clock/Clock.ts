@@ -6,6 +6,7 @@ import { noOp, readOnly } from "../util/Interface";
 import { PlaybackState, StateTimeline } from "../util/StateTimeline";
 import { TickSignal } from "./TickSignal";
 import { TickSource } from "./TickSource";
+import { assertContextRunning } from "../util/Debug";
 
 type ClockCallback = (time: Time, ticks?: Ticks) => void;
 
@@ -119,8 +120,8 @@ export class Clock<TypeName extends "bpm" | "hertz" = "hertz">
 	 * @param offset  Where the tick counter starts counting from.
 	 */
 	start(time?: Time, offset?: Ticks): this {
-		// make sure the context is started
-		// this.context.resume();
+		// make sure the context is running
+		assertContextRunning(this.context);
 		// start the loop
 		const computedTime = this.toSeconds(time);
 		this.log("start", computedTime);
