@@ -185,7 +185,6 @@ export class TickSource<TypeName extends "bpm" | "hertz"> extends ToneWithContex
 	get ticks(): Ticks {
 		return this.getTicksAtTime(this.now());
 	}
-
 	set ticks(t: Ticks) {
 		this.setTicksAtTime(t, this.now());
 	}
@@ -197,7 +196,6 @@ export class TickSource<TypeName extends "bpm" | "hertz"> extends ToneWithContex
 	get seconds(): Seconds {
 		return this.getSecondsAtTime(this.now());
 	}
-
 	set seconds(s: Seconds) {
 		const now = this.now();
 		const ticks = this.frequency.timeToTicks(s, now);
