@@ -6,6 +6,7 @@ import { PlaybackState, StateTimeline, StateTimelineEvent } from "../util/StateT
 import { Timeline } from "../util/Timeline";
 import { isDefined } from "../util/TypeCheck";
 import { TickSignal } from "./TickSignal";
+import { EQ } from "../util/Math";
 
 interface TickSourceOptions extends ToneWithContextOptions {
 	frequency: number;
@@ -292,14 +293,12 @@ export class TickSource<TypeName extends "bpm" | "hertz"> extends ToneWithContex
 	 * @param  endTime    The end of the search range
 	 * @param  callback   The callback to invoke with each tick
 	 */
-	forEachTickBetween(startTime: Time, endTime: Time, callback: (when: Seconds, ticks: Ticks) => void): this {
-		const computedStartTime = this.toSeconds(startTime);
-		const computedEndTime = this.toSeconds(endTime);
+	forEachTickBetween(startTime: number, endTime: number, callback: (when: Seconds, ticks: Ticks) => void): this {
 		// only iterate through the sections where it is "started"
-		let lastStateEvent = this._state.get(computedStartTime);
-		this._state.forEachBetween(computedStartTime, computedEndTime, event => {
+		let lastStateEvent = this._state.get(startTime);
+		this._state.forEachBetween(startTime, endTime, event => {
 			if (lastStateEvent && lastStateEvent.state === "started" && event.state !== "started") {
-				this.forEachTickBetween(Math.max(lastStateEvent.time, computedStartTime), event.time - this.sampleTime, callback);
+				this.forEachTickBetween(Math.max(lastStateEvent.time, startTime), event.time - this.sampleTime, callback);
 			}
 			lastStateEvent = event;
 		});
@@ -307,17 +306,14 @@ export class TickSource<TypeName extends "bpm" | "hertz"> extends ToneWithContex
 		let error = null;
 
 		if (lastStateEvent && lastStateEvent.state === "started" && this._state) {
-			const maxStartTime = Math.max(lastStateEvent.time, computedStartTime);
+			const maxStartTime = Math.max(lastStateEvent.time, startTime);
 			// figure out the difference between the frequency ticks and the
 			const startTicks = this.frequency.getTicksAtTime(maxStartTime);
 			const ticksAtStart = this.frequency.getTicksAtTime(lastStateEvent.time);
 			const diff = startTicks - ticksAtStart;
-			let offset = diff % 1;
-			if (offset !== 0) {
-				offset = 1 - offset;
-			}
+			const offset = Math.ceil(diff) - diff;
 			let nextTickTime = this.frequency.getTimeOfTick(startTicks + offset);
-			while (nextTickTime < computedEndTime && this._state) {
+			while (nextTickTime < endTime && this._state) {
 				try {
 					callback(nextTickTime, Math.round(this.getTicksAtTime(nextTickTime)));
 				} catch (e) {
