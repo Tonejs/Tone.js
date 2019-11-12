@@ -7,12 +7,17 @@ import { Tone } from "Tone/core/Tone";
 import { ConnectTest } from "./Connect";
 import { setLogger } from "Tone/core/util/Debug";
 import { ToneAudioNode } from "Tone/core/context/ToneAudioNode";
+import { getContext } from "Tone/core/Global";
 
 export const testAudioContext = new OfflineContext(1, 1, 11025);
 
 export function BasicTests(Constr, ...args: any[]): void {
 
 	context("Basic", () => {
+
+		before(() => {
+			return getContext().resume();
+		});
 
 		it("can be created and disposed", () => {
 			const instance = new Constr(...args);
