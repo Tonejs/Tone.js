@@ -57,7 +57,7 @@ export class TickSource<TypeName extends "bpm" | "hertz"> extends ToneWithContex
 		});
 		readOnly(this, "frequency");
 
-		// set the inital state
+		// set the initial state
 		this._state.setStateAtTime("stopped", 0);
 		// add the first event
 		this.setTicksAtTime(0, 0);
@@ -305,7 +305,7 @@ export class TickSource<TypeName extends "bpm" | "hertz"> extends ToneWithContex
 
 		let error = null;
 
-		if (lastStateEvent && lastStateEvent.state === "started" && this._state) {
+		if (lastStateEvent && lastStateEvent.state === "started") {
 			const maxStartTime = Math.max(lastStateEvent.time, startTime);
 			// figure out the difference between the frequency ticks and the
 			const startTicks = this.frequency.getTicksAtTime(maxStartTime);
@@ -313,16 +313,14 @@ export class TickSource<TypeName extends "bpm" | "hertz"> extends ToneWithContex
 			const diff = startTicks - ticksAtStart;
 			const offset = Math.ceil(diff) - diff;
 			let nextTickTime = this.frequency.getTimeOfTick(startTicks + offset);
-			while (nextTickTime < endTime && this._state) {
+			while (nextTickTime < endTime) {
 				try {
 					callback(nextTickTime, Math.round(this.getTicksAtTime(nextTickTime)));
 				} catch (e) {
 					error = e;
 					break;
 				}
-				if (this._state) {
-					nextTickTime += this.frequency.getDurationOfTicks(1, nextTickTime);
-				}
+				nextTickTime += this.frequency.getDurationOfTicks(1, nextTickTime);
 			}
 		}
 
