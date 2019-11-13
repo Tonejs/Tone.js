@@ -156,8 +156,11 @@ export class GrainPlayer extends Source<GrainPlayerOptions> {
 	 * 					it will default to the full length of the sample (minus any offset)
 	 */
 	restart(time?: Time, offset?: Time, duration?: Time): this {
-		this._stop(time);
-		this._start(time, offset, duration);
+		time = this.toSeconds(time);
+		if (this._state.getValueAtTime(time) === "started") {
+			this._stop(time);
+			this._start(time, offset, duration);
+		}
 		return this;
 	}
 

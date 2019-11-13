@@ -284,7 +284,9 @@ describe("Source", () => {
 				transport.seconds = 0.305;
 				expect(source.state).to.equal("started");
 				transport.seconds = 0.405;
-				expect(source.state).to.equal("stopped");
+				return atTime(0.01, () => {
+					expect(source.state).to.equal("stopped");
+				});
 			}, 0.1);
 		});
 

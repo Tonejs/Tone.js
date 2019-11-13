@@ -115,6 +115,15 @@ export function SourceTests(Constr, args?): void {
 				expect(buffer.getRmsAtTime(0.3)).to.equal(0);
 			});
 		});
+		
+		it("calling restart before calling start has no effect", () => {
+			return Offline(() => {
+				const instance = new Constr(args).toDestination();
+				instance.restart(0.1);
+			}, 0.2).then((buffer) => {
+				expect(buffer.isSilent()).to.be.true;
+			});
+		});
 
 	});
 }
