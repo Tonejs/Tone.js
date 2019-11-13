@@ -387,6 +387,24 @@ describe("Transport", () => {
 			}, 0.6);
 		});
 
+		it("can set the ticks while started", () => {
+			let invocations = 0;
+			const times = [0, 1.5];
+			return Offline(({ transport }) => {
+				transport.PPQ = 1;
+				transport.schedule(time => {
+					expect(time).to.be.closeTo(times[invocations], 0.01);
+					invocations++;
+				}, 0);
+				transport.start(0);
+				return atTime(1.1, () => {
+					transport.ticks = 0;
+				});
+			}, 2.5).then(() => {
+				expect(invocations).to.equal(2);
+			});
+		});
+
 	});
 
 	context("schedule", () => {

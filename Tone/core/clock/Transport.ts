@@ -573,10 +573,13 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 			const now = this.now();
 			// stop everything synced to the transport
 			if (this.state === "started") {
-				this.emit("stop", now);
-				this._clock.setTicksAtTime(t, now);
+				const ticks = this._clock.getTicksAtTime(now);
+				// schedule to start on the next tick, #573
+				const time = this._clock.getTimeOfTick(Math.ceil(ticks));
+				this.emit("stop", time);
+				this._clock.setTicksAtTime(t, time);
 				// restart it with the new time
-				this.emit("start", now, this.seconds);
+				this.emit("start", time, this._clock.getSecondsAtTime(time));
 			} else {
 				this._clock.setTicksAtTime(t, now);
 			}

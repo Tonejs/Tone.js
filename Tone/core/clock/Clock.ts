@@ -216,6 +216,18 @@ export class Clock<TypeName extends "bpm" | "hertz" = "hertz">
 	}
 
 	/**
+	 * Get the time of the given tick. The second argument
+	 * is when to test before. Since ticks can be set (with setTicksAtTime)
+	 * there may be multiple times for a given tick value.
+	 * @param  tick The tick number.
+	 * @param  before When to measure the tick value from.
+	 * @return The time of the tick
+	 */
+	getTimeOfTick(tick: Ticks, before = this.now()): Seconds {
+		return this._tickSource.getTimeOfTick(tick, before);
+	}
+
+	/**
 	 * Get the clock's ticks at the given time.
 	 * @param  time  When to get the tick value
 	 * @return The tick value at the given time.
