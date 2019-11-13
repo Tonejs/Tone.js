@@ -7,13 +7,11 @@ import { Timeline } from "../util/Timeline";
 import { isDefined, isString } from "../util/TypeCheck";
 import { AnyAudioContext, createAudioContext, createAudioWorkletNode } from "./AudioContext";
 import { closeContext, initializeContext } from "./ContextInitialization";
-import { BaseContext } from "./BaseContext";
+import { BaseContext, ContextLatencyHint } from "./BaseContext";
 
 type Transport = import("../clock/Transport").Transport;
 type Destination = import("./Destination").Destination;
 type Draw = import("../util/Draw").Draw;
-
-export type ContextLatencyHint = AudioContextLatencyCategory | "fastest";
 
 // these are either not used in Tone.js or deprecated and not implemented.
 export type ExcludedFromBaseAudioContext = "onstatechange" | "addEventListener" |

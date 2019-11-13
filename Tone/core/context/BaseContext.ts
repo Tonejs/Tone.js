@@ -7,6 +7,8 @@ type Destination = import("./Destination").Destination;
 type Transport = import("../clock/Transport").Transport;
 type BaseAudioContextSubset = import("./Context").BaseAudioContextSubset;
 
+export type ContextLatencyHint = AudioContextLatencyCategory | "fastest";
+
 export abstract class BaseContext extends Emitter<"statechange" | "tick"> implements BaseAudioContextSubset {
 
 	//---------------------------
@@ -68,6 +70,8 @@ export abstract class BaseContext extends Emitter<"statechange" | "tick"> implem
 	abstract async addAudioWorkletModule(_url: string, _name: string): Promise<void>
 
 	abstract lookAhead: number;
+
+	abstract latencyHint: ContextLatencyHint | Seconds;
 
 	abstract resume(): Promise<void>
 

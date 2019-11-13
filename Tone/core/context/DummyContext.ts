@@ -110,6 +110,8 @@ export class DummyContext extends BaseContext {
 	}
 
 	lookAhead = 0;
+	
+	latencyHint = 0;
 
 	resume(): Promise<void> {
 		return Promise.resolve();
