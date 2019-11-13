@@ -301,7 +301,7 @@ export class TickSource<TypeName extends "bpm" | "hertz"> extends ToneWithContex
 			lastStateEvent = event;
 		});
 
-		let error = null;
+		let error: Error | null = null;
 
 		if (lastStateEvent && lastStateEvent.state === "started") {
 			const maxStartTime = Math.max(lastStateEvent.time, startTime);
