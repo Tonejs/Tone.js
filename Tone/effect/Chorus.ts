@@ -1,14 +1,13 @@
-import { StereoEffect, StereoEffectOptions } from "../effect/StereoEffect";
-import { Degrees, Frequency, Milliseconds, NormalRange, Seconds } from "../core/type/Units";
+import { StereoFeedbackEffect, StereoFeedbackEffectOptions } from "../effect/StereoFeedbackEffect";
+import { Degrees, Frequency, Milliseconds, NormalRange, Seconds, Time } from "../core/type/Units";
 import { ToneOscillatorType } from "../source/oscillator/OscillatorInterface";
 import { optionsFromArguments } from "../core/util/Defaults";
 import { LFO } from "../source/oscillator/LFO";
 import { Delay } from "../core/context/Delay";
 import { Signal } from "../signal/Signal";
 import { readOnly } from "../core/util/Interface";
-import { Gain } from "../core/context/Gain";
 
-export interface ChorusOptions extends StereoEffectOptions {
+export interface ChorusOptions extends StereoFeedbackEffectOptions {
 	frequency: Frequency;
 	delayTime: Milliseconds;
 	depth: NormalRange;
@@ -30,7 +29,7 @@ export interface ChorusOptions extends StereoEffectOptions {
  * 
  * @category Effect
  */
-export class Chorus extends StereoEffect<ChorusOptions> {
+export class Chorus extends StereoFeedbackEffect<ChorusOptions> {
 
 	readonly name: string = "Chorus";
 
@@ -70,16 +69,6 @@ export class Chorus extends StereoEffect<ChorusOptions> {
 	readonly frequency: Signal<"frequency">
 
 	/**
-	 * Pass the left signal through
-	 */
-	private _passThroughL: Gain;
-
-	/**
-	 * Pass the right signal through
-	 */
-	private _passThroughR: Gain;
-
-	/**
 	 * @param frequency The frequency of the LFO.
 	 * @param delayTime The delay of the chorus effect in ms.
 	 * @param depth The depth of the chorus.
@@ -88,8 +77,8 @@ export class Chorus extends StereoEffect<ChorusOptions> {
 	constructor(options?: Partial<ChorusOptions>);
 	constructor() {
 
-		super(optionsFromArguments(Chorus.getDefaults(), arguments, ["order"]));
-		const options = optionsFromArguments(Chorus.getDefaults(), arguments, ["order"]);
+		super(optionsFromArguments(Chorus.getDefaults(), arguments, ["frequency", "delayTime", "depth"]));
+		const options = optionsFromArguments(Chorus.getDefaults(), arguments, ["frequency", "delayTime", "depth"]);
 
 		this._depth = options.depth;
 		this._delayTime = options.delayTime / 1000;
@@ -108,8 +97,6 @@ export class Chorus extends StereoEffect<ChorusOptions> {
 		});
 		this._delayNodeL = new Delay({ context: this.context });
 		this._delayNodeR = new Delay({ context: this.context });
-		this._passThroughL = new Gain({ context: this.context });
-		this._passThroughR = new Gain({ context: this.context });
 		this.frequency = this._lfoL.frequency;
 		readOnly(this, ["frequency"]);
 		// have one LFO frequency control the other
@@ -118,15 +105,9 @@ export class Chorus extends StereoEffect<ChorusOptions> {
 		// connections
 		this.connectEffectLeft(this._delayNodeL);
 		this.connectEffectRight(this._delayNodeR);
-		// and pass through to make the detune apparent
-		this.connectEffectLeft(this._passThroughL);
-		this.connectEffectRight(this._passThroughR);
 		// lfo setup
 		this._lfoL.connect(this._delayNodeL.delayTime);
 		this._lfoR.connect(this._delayNodeR.delayTime);
-		// start the lfo
-		this._lfoL.start();
-		this._lfoR.start();
 		// set the initial values
 		this.depth = this._depth;
 		this.type = options.type;
@@ -134,12 +115,14 @@ export class Chorus extends StereoEffect<ChorusOptions> {
 	}
 
 	static getDefaults(): ChorusOptions {
-		return Object.assign(StereoEffect.getDefaults(), {
+		return Object.assign(StereoFeedbackEffect.getDefaults(), {
 			frequency: 1.5,
 			delayTime: 3.5,
 			depth: 0.7,
 			type: "sine" as "sine",
-			spread: 180
+			spread: 180,
+			feedback: 0,
+			wet: 0.5,
 		});
 	}
 
@@ -195,14 +178,48 @@ export class Chorus extends StereoEffect<ChorusOptions> {
 		this._lfoR.phase = (spread/2) + 90;
 	}
 
+	/**
+	 * Start the effect.
+	 */
+	start(time?: Time): this {
+		this._lfoL.start(time);
+		this._lfoR.start(time);
+		return this;
+	}
+
+	/**
+	 * Stop the lfo
+	 */
+	stop(time?: Time): this {
+		this._lfoL.stop(time);
+		this._lfoR.stop(time);
+		return this;
+	}
+
+	/**
+	 * Sync the filter to the transport. See [[LFO.sync]]
+	 */
+	sync(): this {
+		this._lfoL.sync();
+		this._lfoR.sync();
+		return this;
+	}
+
+	/**
+	 * Unsync the filter from the transport.
+	 */
+	unsync(): this {
+		this._lfoL.unsync();
+		this._lfoR.unsync();
+		return this;
+	}
+
 	dispose(): this {
 		super.dispose();
 		this._lfoL.dispose();
 		this._lfoR.dispose();
 		this._delayNodeL.dispose();
 		this._delayNodeR.dispose();
-		this._passThroughL.dispose();
-		this._passThroughR.dispose();
 		this.frequency.dispose();
 		return this;
 	}

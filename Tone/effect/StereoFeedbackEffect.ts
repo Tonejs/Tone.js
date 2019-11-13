@@ -70,11 +70,11 @@ export class StereoFeedbackEffect<Options extends StereoFeedbackEffectOptions> e
 		this._merge.connect(this._feedbackSplit);
 		this._feedbackMerge.connect(this._split);
 		
-		// the left output connected to the right input
+		// the left output connected to the left input
 		this._feedbackSplit.connect(this._feedbackL, 0, 0);
 		this._feedbackL.connect(this._feedbackMerge, 0, 0);
 
-		// the left output connected to the right input
+		// the right output connected to the right input
 		this._feedbackSplit.connect(this._feedbackR, 1, 0);
 		this._feedbackR.connect(this._feedbackMerge, 0, 1);
 		
