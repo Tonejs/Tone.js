@@ -6,7 +6,6 @@ import { PlaybackState, StateTimeline, StateTimelineEvent } from "../util/StateT
 import { Timeline } from "../util/Timeline";
 import { isDefined } from "../util/TypeCheck";
 import { TickSignal } from "./TickSignal";
-import { EQ } from "../util/Math";
 
 interface TickSourceOptions extends ToneWithContextOptions {
 	frequency: number;
