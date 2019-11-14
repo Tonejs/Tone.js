@@ -28,7 +28,7 @@ export abstract class ToneAudioNode<Options extends ToneAudioNodeOptions = ToneA
 	/**
 	 * The name of the class
 	 */
-	abstract readonly name: string = "AudioNode";
+	abstract readonly name: string = "ToneAudioNode";
 
 	/**
 	 * The input node or nodes. If the object is a source,
