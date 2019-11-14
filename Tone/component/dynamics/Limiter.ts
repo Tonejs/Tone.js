@@ -1,9 +1,9 @@
-import { InputNode, OutputNode, ToneAudioNode, ToneAudioNodeOptions } from "Tone/core/context/ToneAudioNode";
-import { Decibels } from "Tone/core/type/Units";
-import { optionsFromArguments } from "Tone/core/util/Defaults";
+import { InputNode, OutputNode, ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
+import { Decibels } from "../../core/type/Units";
+import { optionsFromArguments } from "../../core/util/Defaults";
 import { Compressor } from "./Compressor";
-import { Param } from "Tone/core/context/Param";
-import { readOnly } from "Tone/core/util/Interface";
+import { Param } from "../../core/context/Param";
+import { readOnly } from "../../core/util/Interface";
 
 export interface LimiterOptions extends ToneAudioNodeOptions {
 	threshold: Decibels;
