@@ -147,7 +147,7 @@ export class Compressor extends ToneAudioNode<CompressorOptions> {
 	 * A read-only decibel value for metering purposes, representing the current amount of gain
 	 * reduction that the compressor is applying to the signal. If fed no signal the value will be 0 (no gain reduction).
 	 */
-	get reduction(): number {
+	get reduction(): Decibels {
 		return this._compressor.reduction;
 	}
 
