@@ -16,7 +16,7 @@ import { BarsBeatsSixteenths, MidiNote, Seconds, Subdivision, Ticks, Time } from
 export class TimeClass<Type extends Seconds | Ticks = Seconds, Unit extends string = TimeBaseUnit>
 	extends TimeBaseClass<Type, Unit> {
 
-	readonly name: string = "Time";
+	readonly name: string = "TimeClass";
 
 	protected _getExpressions(): TimeExpression<Type> {
 		return Object.assign(super._getExpressions(), {

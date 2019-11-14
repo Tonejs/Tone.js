@@ -8,6 +8,7 @@ import { ConnectTest } from "./Connect";
 import { setLogger } from "Tone/core/util/Debug";
 import { ToneAudioNode } from "Tone/core/context/ToneAudioNode";
 import { getContext } from "Tone/core/Global";
+import * as Classes from "Tone/classes";
 
 export const testAudioContext = new OfflineContext(1, 1, 11025);
 
@@ -64,6 +65,16 @@ export function BasicTests(Constr, ...args: any[]): void {
 		});
 
 		ConnectTest(Constr, ...args);
+	});
+
+	it("exports its class name", () => {
+		// find the constructor
+		for (let className in Classes) {
+			if (Classes[className] === Constr) {
+				const instance = new Constr(...args);
+				expect(instance.toString()).to.equal(className);
+			}
+		}
 	});
 }
 
