@@ -11,7 +11,7 @@ describe("MidSideCompressor", () => {
 
 		it("passes the incoming signal through", () => {
 			return PassAudio((input) => {
-				const comp = new MidSideCompressor().toMaster();
+				const comp = new MidSideCompressor().toDestination();
 				input.connect(comp);
 			});
 		});

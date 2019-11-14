@@ -14,7 +14,7 @@ export type AMSynthOptions = ModulationSynthOptions;
  *
  * @example
  * import { AMSynth } from "tone";
- * const synth = new AMSynth().toMaster();
+ * const synth = new AMSynth().toDestination();
  * synth.triggerAttackRelease("C4", "4n");
  * 
  * @category Instrument

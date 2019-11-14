@@ -21,7 +21,7 @@ export interface TremoloOptions extends StereoEffectOptions {
  * @example
  * import { Oscillator, Tremolo } from "tone";
  * // create a tremolo and start it's LFO
- * const tremolo = new Tremolo(9, 0.75).toMaster().start();
+ * const tremolo = new Tremolo(9, 0.75).toDestination().start();
  * // route an oscillator through the tremolo and start it
  * const oscillator = new Oscillator().connect(tremolo).start();
  * 

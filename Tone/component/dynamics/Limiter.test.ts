@@ -11,7 +11,7 @@ describe("Limiter", () => {
 
 		it("passes the incoming signal through", () => {
 			return PassAudio((input) => {
-				const limiter = new Limiter().toMaster();
+				const limiter = new Limiter().toDestination();
 				input.connect(limiter);
 			});
 		});

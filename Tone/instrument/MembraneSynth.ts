@@ -20,7 +20,7 @@ export interface MembraneSynthOptions extends SynthOptions {
  * over the duration of <code>.pitchDecay</code>.
  * @example
  * import { MembraneSynth } from "tone";
- * const synth = new MembraneSynth().toMaster();
+ * const synth = new MembraneSynth().toDestination();
  * synth.triggerAttackRelease("C2", "8n");
  * @category Instrument
  */
