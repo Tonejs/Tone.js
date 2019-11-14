@@ -73,6 +73,7 @@ export function BasicTests(Constr, ...args: any[]): void {
 			if (Classes[className] === Constr) {
 				const instance = new Constr(...args);
 				expect(instance.toString()).to.equal(className);
+				instance.dispose();
 			}
 		}
 	});
