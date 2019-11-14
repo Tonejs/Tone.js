@@ -4,7 +4,7 @@ import { Decibels, Positive, Time } from "../../core/type/Units";
 import { optionsFromArguments } from "../../core/util/Defaults";
 import { readOnly } from "../../core/util/Interface";
 
-interface CompressorOptions extends ToneAudioNodeOptions {
+export interface CompressorOptions extends ToneAudioNodeOptions {
 	attack: Time;
 	knee: Decibels;
 	ratio: Positive;
