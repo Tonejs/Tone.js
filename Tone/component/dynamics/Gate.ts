@@ -1,10 +1,10 @@
-import { ToneAudioNode, ToneAudioNodeOptions } from "Tone/core/context/ToneAudioNode";
-import { Decibels, Time } from "Tone/core/type/Units";
-import { GreaterThan } from "Tone/signal/GreaterThan";
-import { Gain } from "Tone/core/context/Gain";
+import { ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
+import { Decibels, Time } from "../../core/type/Units";
+import { GreaterThan } from "../../signal/GreaterThan";
+import { Gain } from "../../core/context/Gain";
 import { Follower } from "../analysis/Follower";
-import { optionsFromArguments } from "Tone/core/util/Defaults";
-import { dbToGain, gainToDb } from "Tone/core/type/Conversions";
+import { optionsFromArguments } from "../../core/util/Defaults";
+import { dbToGain, gainToDb } from "../../core/type/Conversions";
 
 export interface GateOptions extends ToneAudioNodeOptions {
 	threshold: Decibels;
