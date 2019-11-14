@@ -19,7 +19,7 @@ export type FrequencyUnit = TimeBaseUnit | "midi";
  */
 export class FrequencyClass<Type extends number = Hertz> extends TimeClass<Type, FrequencyUnit> {
 
-	readonly name: string = "FrequencyClass";
+	readonly name: string = "Frequency";
 
 	readonly defaultUnits: FrequencyUnit = "hz";
 
