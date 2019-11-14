@@ -7,7 +7,6 @@ export abstract class AbstractParam<TypeName extends UnitName> {
 
 	/**
 	 * Schedules a parameter value change at the given time.
-	 * Does this work? is this working. are you working?
 	 * @param value The value to set the signal.
 	 * @param time The time when the change should occur.
 	 * @example
