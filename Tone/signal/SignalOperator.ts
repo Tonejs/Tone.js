@@ -1,10 +1,13 @@
 import { optionsFromArguments } from "..//core/util/Defaults";
 import { InputNode, ToneAudioNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
 import { connectSignal } from "./Signal";
+
+export type SignalOperatorOptions = ToneAudioNodeOptions;
+
 /**
  * A signal operator has an input and output and modifies the signal.
  */
-export abstract class SignalOperator<Options extends ToneAudioNodeOptions> extends ToneAudioNode<Options> {
+export abstract class SignalOperator<Options extends SignalOperatorOptions> extends ToneAudioNode<Options> {
 
 	constructor(options?: Partial<Options>);
 	constructor() {
