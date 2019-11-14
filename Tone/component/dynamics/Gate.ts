@@ -18,7 +18,7 @@ export interface GateOptions extends ToneAudioNodeOptions {
  *
  * @example
  * import { Gate, UserMedia } from "tone";
- * const gate = new Gate(-30, 0.2, 0.3).toDestination();
+ * const gate = new Gate(-30, 0.2).toDestination();
  * const mic = new UserMedia().connect(gate);
  * // the gate will only pass through the incoming
  * // signal when it's louder than -30db
