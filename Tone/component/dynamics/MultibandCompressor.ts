@@ -1,4 +1,4 @@
-import { InputNode, OutputNode, ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
+import { InputNode, ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
 import { Compressor, CompressorOptions } from "./Compressor";
 import { optionsFromArguments } from "../../core/util/Defaults";
 import { readOnly, RecursivePartial } from "../../core/util/Interface";
