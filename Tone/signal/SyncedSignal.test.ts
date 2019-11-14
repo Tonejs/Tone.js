@@ -1,4 +1,4 @@
-import { TransportTimelineSignal } from "./TransportTimelineSignal";
+import { TransportTimelineSignal } from "./SyncedSignal";
 import { Offline } from "test/helper/Offline";
 import { expect } from "chai";
 import { dbToGain } from "Tone/core/type/Conversions";
@@ -236,7 +236,7 @@ describe("TransportTimelineSignal", () => {
 				sig.targetRampTo(1, 0.3);
 				transport.start(0);
 			}, 0.5).then((buffer) => {
-				expect(buffer.getValueAtTime(0)).to.be.below(0.01);
+				expect(buffer.getValueAtTime(0)).to.be.below(0.07);
 				expect(buffer.getValueAtTime(0.3)).to.be.closeTo(1, 0.1);
 			});
 		});

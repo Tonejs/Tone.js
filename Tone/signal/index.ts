@@ -11,5 +11,6 @@ export * from "./Signal";
 export * from "./Scale";
 export * from "./ScaleExp";
 export * from "./Subtract";
+export * from "./SyncedSignal";
 export * from "./WaveShaper";
 export * from "./Zero";
