@@ -29,7 +29,7 @@ Tone.Compressor = function(){
 	this._compressor = this.input = this.output = this.context.createDynamicsCompressor();
 
 	/**
-	 *  the threshold vaue
+	 *  the threshold value
 	 *  @type {Decibels}
 	 *  @signal
 	 */
