@@ -25,6 +25,10 @@ describe("Tone", () => {
 		return Tone.start();
 	});
 
+	it("resolves the promise when everything is loaded", () => {
+		return Tone.loaded();
+	});
+
 	it("can set the global context from a raw online context", async () => {
 		const ctx = new AudioContext();
 		const origContext = Tone.getContext();
