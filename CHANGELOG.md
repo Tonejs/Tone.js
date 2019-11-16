@@ -34,7 +34,7 @@
 
 * TransportTimelineSignal is now called SyncedSignal
 * Buffer now called ToneAudioBuffer
-* Buffer.on("loaded") is should now use Tone.loaded(): Promise<void>
+* Buffer.on("loaded") is should now use: `Tone.loaded(): Promise<void>`
 
 # 13.8.25
 
