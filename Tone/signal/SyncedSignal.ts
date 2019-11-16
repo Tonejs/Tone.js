@@ -8,9 +8,9 @@ import { OutputNode } from "../core/context/ToneAudioNode";
 /**
  * Adds the ability to synchronize the signal to the [[Transport]]
  */
-export class TransportTimelineSignal<TypeName extends UnitName = "number"> extends Signal<TypeName> {
+export class SyncedSignal<TypeName extends UnitName = "number"> extends Signal<TypeName> {
 
-	readonly name: string = "TransportTimelineSignal";
+	readonly name: string = "SyncedSignal";
 	
 	/**
 	 * Don't override when something is connected to the input

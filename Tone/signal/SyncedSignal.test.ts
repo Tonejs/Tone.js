@@ -1,4 +1,4 @@
-import { TransportTimelineSignal } from "./SyncedSignal";
+import { SyncedSignal } from "./SyncedSignal";
 import { Offline } from "test/helper/Offline";
 import { expect } from "chai";
 import { dbToGain } from "Tone/core/type/Conversions";
@@ -6,21 +6,21 @@ import "../core/clock/Transport";
 import "../core/context/Destination";
 import { BasicTests } from "test/helper/Basic";
 
-describe("TransportTimelineSignal", () => {
+describe("SyncedSignal", () => {
 
-	BasicTests(TransportTimelineSignal);
+	BasicTests(SyncedSignal);
 
 	context("Scheduling Events", () => {
 
 		it("can schedule a change in the future", () => {
-			const sched = new TransportTimelineSignal(1);
+			const sched = new SyncedSignal(1);
 			sched.setValueAtTime(2, 0.2);
 			sched.dispose();
 		});
 	
 		it("can schedule setValueAtTime relative to the Transport", () => {
 			return Offline(({ transport }) => {
-				const sched = new TransportTimelineSignal(1).toDestination();
+				const sched = new SyncedSignal(1).toDestination();
 				sched.setValueAtTime(2, 0.1);
 				sched.setValueAtTime(3, 0.2);
 				transport.start(0.1);
@@ -34,7 +34,7 @@ describe("TransportTimelineSignal", () => {
 	
 		it("can schedule linearRampToValueAtTime relative to the Transport", () => {
 			return Offline(({ transport }) => {
-				const sched = new TransportTimelineSignal(1).toDestination();
+				const sched = new SyncedSignal(1).toDestination();
 				sched.setValueAtTime(1, 0.1);
 				sched.linearRampToValueAtTime(2, 0.2);
 				transport.start(0.1);
@@ -49,7 +49,7 @@ describe("TransportTimelineSignal", () => {
 	
 		it("can schedule exponentialRampToValueAtTime relative to the Transport", () => {
 			return Offline(({ transport }) => {
-				const sched = new TransportTimelineSignal(1).toDestination();
+				const sched = new SyncedSignal(1).toDestination();
 				sched.setValueAtTime(1, 0.1);
 				sched.exponentialRampToValueAtTime(2, 0.2);
 				transport.start(0.1);
@@ -65,7 +65,7 @@ describe("TransportTimelineSignal", () => {
 		it("can get exponential ramp value in the future", () => {
 			let sched;
 			return Offline(({ transport }) => {
-				sched = new TransportTimelineSignal(0.5).toDestination();
+				sched = new SyncedSignal(0.5).toDestination();
 				sched.setValueAtTime(0.5, 0);
 				sched.exponentialRampToValueAtTime(1, 0.2);
 				sched.exponentialRampToValueAtTime(0.5, 0.4);
@@ -80,7 +80,7 @@ describe("TransportTimelineSignal", () => {
 		it("can get exponential approach in the future", () => {
 			let sched;
 			return Offline(({ transport }) => {
-				sched = new TransportTimelineSignal(0.5).toDestination();
+				sched = new SyncedSignal(0.5).toDestination();
 				sched.setValueAtTime(0.5, 0);
 				sched.setTargetAtTime(1, 0.2, 0.2);
 				transport.start(0.1);
@@ -94,7 +94,7 @@ describe("TransportTimelineSignal", () => {
 		it("can loop the signal when the Transport loops", () => {
 			let sched;
 			return Offline(({ transport }) => {
-				sched = new TransportTimelineSignal(1).toDestination();
+				sched = new SyncedSignal(1).toDestination();
 				transport.setLoopPoints(0, 1);
 				transport.loop = true;
 				sched.setValueAtTime(1, 0);
@@ -111,7 +111,7 @@ describe("TransportTimelineSignal", () => {
 		it("can get set a curve in the future", () => {
 			let sched;
 			return Offline(({ transport }) => {
-				sched = new TransportTimelineSignal(0).toDestination();
+				sched = new SyncedSignal(0).toDestination();
 				sched.setValueCurveAtTime([0, 1, 0.2, 0.8, 0], 0, 1);
 				transport.start(0.2);
 			}, 1).then((buffer) => {
@@ -124,7 +124,7 @@ describe("TransportTimelineSignal", () => {
 		it("can scale a curve value", () => {
 			let sched;
 			return Offline(({ transport }) => {
-				sched = new TransportTimelineSignal(1).toDestination();
+				sched = new SyncedSignal(1).toDestination();
 				sched.setValueCurveAtTime([0, 1, 0], 0, 1, 0.5);
 				transport.start(0);
 			}, 1).then((buffer) => {
@@ -137,7 +137,7 @@ describe("TransportTimelineSignal", () => {
 		it("can schedule a linear ramp between two times", () => {
 			let sched;
 			return Offline(({ transport }) => {
-				sched = new TransportTimelineSignal(0).toDestination();
+				sched = new SyncedSignal(0).toDestination();
 				sched.linearRampTo(1, 1, 1);
 				transport.start(0);
 			}, 3).then((buffer) => {
@@ -152,7 +152,7 @@ describe("TransportTimelineSignal", () => {
 		it("can get exponential ramp value between two times", () => {
 			let sched;
 			return Offline(({ transport }) => {
-				sched = new TransportTimelineSignal(1).toDestination();
+				sched = new SyncedSignal(1).toDestination();
 				sched.exponentialRampTo(3, 1, 1);
 				transport.start(0);
 			}, 3).then((buffer) => {
@@ -165,7 +165,7 @@ describe("TransportTimelineSignal", () => {
 		it("can cancel and hold a scheduled value", () => {
 			let sched;
 			return Offline(({ transport }) => {
-				sched = new TransportTimelineSignal(0).toDestination();
+				sched = new SyncedSignal(0).toDestination();
 				sched.setValueAtTime(0, 0);
 				sched.linearRampToValueAtTime(1, 1);
 				sched.cancelAndHoldAtTime(0.5);
@@ -181,7 +181,7 @@ describe("TransportTimelineSignal", () => {
 		it("can cancel a scheduled value", () => {
 			let sched;
 			return Offline(({ transport }) => {
-				sched = new TransportTimelineSignal(0).toDestination();
+				sched = new SyncedSignal(0).toDestination();
 				sched.setValueAtTime(0, 0);
 				sched.linearRampToValueAtTime(1, 0.5);
 				sched.linearRampToValueAtTime(0, 1);
@@ -198,7 +198,7 @@ describe("TransportTimelineSignal", () => {
 		it("can automate values with different units", () => {
 			let sched;
 			return Offline(({ transport }) => {
-				sched = new TransportTimelineSignal(-10, "decibels").toDestination();
+				sched = new SyncedSignal(-10, "decibels").toDestination();
 				sched.setValueAtTime(-5, 0);
 				sched.linearRampToValueAtTime(-12, 0.5);
 				sched.exponentialRampTo(-6, 0.1, 1);
@@ -218,7 +218,7 @@ describe("TransportTimelineSignal", () => {
 
 		it("can set a ramp point and then ramp from there", async () => {
 			const buffer = await Offline(({ transport }) => {
-				const sig = new TransportTimelineSignal(0).toDestination();
+				const sig = new SyncedSignal(0).toDestination();
 				sig.setRampPoint(0);
 				sig.linearRampToValueAtTime(1, 1);
 				sig.setRampPoint(0.5);
@@ -232,7 +232,7 @@ describe("TransportTimelineSignal", () => {
 
 		it("can set a exponential approach ramp from the current time", () => {
 			return Offline(({ transport }) => {
-				const sig = new TransportTimelineSignal(0).toDestination();
+				const sig = new SyncedSignal(0).toDestination();
 				sig.targetRampTo(1, 0.3);
 				transport.start(0);
 			}, 0.5).then((buffer) => {
