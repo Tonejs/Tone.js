@@ -18,6 +18,20 @@ Tone.js is a Web Audio framework for creating interactive music in the browser. 
 * `npm install tone`
 * dev -> `npm install tone@next`
 
+## importing
+
+You can import the entire library: 
+
+```typescript
+import * as Tone from "tone";
+```
+
+or individual modules: 
+
+```typescript
+import { Synth } from "tone";
+```
+
 # Hello Tone
 
 ```javascript
