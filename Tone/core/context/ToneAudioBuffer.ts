@@ -372,7 +372,9 @@ export class ToneAudioBuffer extends Tone {
 			url = url.replace(matches[0], extension);
 		}
 
-		const response = await fetch(ToneAudioBuffer.baseUrl + url);
+		// make sure there is a slash between the baseUrl and the url
+		const baseUrl = ToneAudioBuffer.baseUrl.endsWith("/") ? ToneAudioBuffer.baseUrl : ToneAudioBuffer.baseUrl + "/";
+		const response = await fetch(baseUrl + url);
 		if (!response.ok) {
 			throw new Error(`could not load url: ${url}`);
 		}
