@@ -41,7 +41,7 @@ import { ToneAudioBuffer } from "./ToneAudioBuffer";
 export async function Offline(
 	callback: (context: OfflineContext) => Promise<void> | void,
 	duration: Seconds,
-	channels: number = 2,
+	channels = 2,
 	sampleRate: number = getContext().sampleRate,
 ): Promise<ToneAudioBuffer> {
 	// set the OfflineAudioContext based on the current context

@@ -29,12 +29,12 @@ export class TransportRepeatEvent extends TransportEvent {
 	/**
 	 * The ID of the current timeline event
 	 */
-	private _currentId: number = -1;
+	private _currentId = -1;
 
 	/**
 	 * The ID of the next timeline event
 	 */
-	private _nextId: number = -1;
+	private _nextId = -1;
 
 	/**
 	 * The time of the next event

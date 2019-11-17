@@ -200,7 +200,7 @@ describe("Loop", () => {
 
 				let firstStop = false;
 				let restarted = false;
-				let tested = false;
+				const tested = false;
 				return (time) => {
 					// stop the transport
 					if (time > 0.2 && !firstStop) {

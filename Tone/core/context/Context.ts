@@ -99,7 +99,7 @@ export class Context extends BaseContext {
 	/**
 	 * Private indicator if the context has been initialized
 	 */
-	private _initialized: boolean = false;
+	private _initialized = false;
 
 	/**
 	 * Indicates if the context is an OfflineAudioContext or an AudioContext

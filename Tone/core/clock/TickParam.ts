@@ -29,7 +29,7 @@ export class TickParam<TypeName extends "hertz" | "bpm"> extends Param<TypeName>
 	/**
 	 * The internal holder for the multiplier value
 	 */
-	private _multiplier: number = 1;
+	private _multiplier = 1;
 
 	/**
 	 * @param param The AudioParam to wrap

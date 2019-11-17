@@ -200,7 +200,7 @@ export class PulseOscillator extends Source<PulseOscillatorOptions> implements T
 		return 0;
 	}
 
-	async asArray(length: number = 1024): Promise<Float32Array> {
+	async asArray(length = 1024): Promise<Float32Array> {
 		return generateWaveform(this, length);
 	}
 

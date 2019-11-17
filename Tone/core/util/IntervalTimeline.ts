@@ -32,7 +32,7 @@ export class IntervalTimeline extends Tone {
 	/**
 	 * Keep track of the length of the timeline.
 	 */
-	private _length: number = 0;
+	private _length = 0;
 
 	/**
 	 * The event to add to the timeline. All events must
@@ -379,7 +379,7 @@ class IntervalNode {
 	// the parent node
 	parent: IntervalNode | null = null;
 	// the number of child nodes
-	height: number = 0;
+	height = 0;
 
 	constructor(low: number, high: number, event: IntervalTimelineEvent) {
 		this.event = event;

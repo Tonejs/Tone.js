@@ -428,7 +428,7 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 		this.type = this._type;
 	}
 
-	async asArray(length: number = 1024): Promise<Float32Array> {
+	async asArray(length = 1024): Promise<Float32Array> {
 		return generateWaveform(this, length);
 	}
 

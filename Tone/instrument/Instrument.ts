@@ -44,7 +44,7 @@ export abstract class Instrument<Options extends InstrumentOptions> extends Tone
 	/**
 	 * If the instrument is currently synced
 	 */
-	private _synced: boolean = false;
+	private _synced = false;
 
 	constructor(options?: Partial<InstrumentOptions>);
 	constructor() {

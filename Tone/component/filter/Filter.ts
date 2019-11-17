@@ -168,7 +168,7 @@ export class Filter extends ToneAudioNode<FilterOptions> {
 	 * @param  len The number of values to return
 	 * @return The frequency response curve between 20-20kHz
 	 */
-	getFrequencyResponse(len: number = 128): Float32Array {
+	getFrequencyResponse(len = 128): Float32Array {
 		// start with all 1s
 		const totalResponse = new Float32Array(len).map(() => 1);
 		const freqValues = new Float32Array(len);

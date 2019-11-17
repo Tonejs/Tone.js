@@ -89,7 +89,7 @@ export class WaveShaper extends SignalOperator<WaveShaperOptions> {
 	 * // map the input signal from [-1, 1] to [0, 10]
 	 * shaper.setMap((val, index) => (val + 1) * 5);
 	 */
-	setMap(mapping: WaveShaperMappingFn, length: number = 1024): this {
+	setMap(mapping: WaveShaperMappingFn, length = 1024): this {
 		const array = new Float32Array(length);
 		for (let i = 0, len = length; i < len; i++) {
 			const normalized = (i / (len - 1)) * 2 - 1;

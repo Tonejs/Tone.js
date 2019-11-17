@@ -29,7 +29,7 @@ describe("ScaleExp", () => {
 
 		it("scales a signal between two values exponentially", () => {
 			return ConstantOutput(() => {
-				let signal = new Signal(0.5);
+				const signal = new Signal(0.5);
 				const scale = new ScaleExp(0, 1, 3);
 				signal.connect(scale);
 				scale.toDestination();
@@ -38,7 +38,7 @@ describe("ScaleExp", () => {
 
 		it("scale a signal between 1 and 3 exponentially", () => {
 			return ConstantOutput(() => {
-				let signal = new Signal(0.5);
+				const signal = new Signal(0.5);
 				const scale = new ScaleExp(1, 3, 2);
 				signal.connect(scale);
 				scale.toDestination();

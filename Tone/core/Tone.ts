@@ -45,7 +45,7 @@ export abstract class Tone {
 	/**
 	 * Set this debug flag to log all events that happen in this class.
 	 */
-	debug: boolean = false;
+	debug = false;
 
 	/**
 	 * Prints the outputs to the console log for debugging purposes.
@@ -84,7 +84,7 @@ export abstract class Tone {
 	/**
 	 * Indicates if the instance was disposed
 	 */
-	private _wasDisposed: boolean = false;
+	private _wasDisposed = false;
 
 	/**
 	 * disconnect and dispose.

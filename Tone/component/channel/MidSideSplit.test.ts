@@ -25,7 +25,7 @@ describe("MidSideSplit", () => {
 			return Offline(() => {
 				const split = new MidSideSplit();
 				split.mid.toDestination();
-				let merge = new Merge().connect(split);
+				const merge = new Merge().connect(split);
 				new Signal(0.5).connect(merge, 0, 0);
 				new Signal(0.5).connect(merge, 0, 1);
 			}).then((buffer) => {
@@ -38,7 +38,7 @@ describe("MidSideSplit", () => {
 			return Offline(() => {
 				const split = new MidSideSplit();
 				split.side.toDestination();
-				let merge = new Merge().connect(split);
+				const merge = new Merge().connect(split);
 				new Signal(0.5).connect(merge, 0, 0);
 				new Signal(0.5).connect(merge, 0, 1);
 			}).then((buffer) => {
@@ -51,7 +51,7 @@ describe("MidSideSplit", () => {
 			return Offline(() => {
 				const split = new MidSideSplit();
 				split.mid.toDestination();
-				let merge = new Merge().connect(split);
+				const merge = new Merge().connect(split);
 				new Signal(-1).connect(merge, 0, 0);
 				new Signal(1).connect(merge, 0, 1);
 			}).then((buffer) => {
@@ -62,11 +62,11 @@ describe("MidSideSplit", () => {
 
 		it("can decompose and reconstruct a signal", () => {
 			return Offline(() => {
-				let midSideMerge = new MidSideMerge().toDestination();
+				const midSideMerge = new MidSideMerge().toDestination();
 				const split = new MidSideSplit();
 				split.mid.connect(midSideMerge.mid);
 				split.side.connect(midSideMerge.side);
-				let merge = new Merge().connect(split);
+				const merge = new Merge().connect(split);
 				new Signal(0.2).connect(merge, 0, 0);
 				new Signal(0.4).connect(merge, 0, 1);
 			}, 0.1, 2).then((buffer) => {

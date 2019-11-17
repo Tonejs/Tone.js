@@ -40,7 +40,7 @@ describe("FrequencyEnvelope", () => {
 		});
 
 		it("can take parameters as both an object and as arguments", () => {
-			let env0 = new FrequencyEnvelope({
+			const env0 = new FrequencyEnvelope({
 				attack: 0,
 				decay: 0.5,
 				sustain: 1,
@@ -51,7 +51,7 @@ describe("FrequencyEnvelope", () => {
 			expect(env0.sustain).to.equal(1);
 			expect(env0.exponent).to.equal(3);
 			env0.dispose();
-			let env1 = new FrequencyEnvelope(0.1, 0.2, 0.3);
+			const env1 = new FrequencyEnvelope(0.1, 0.2, 0.3);
 			expect(env1.attack).to.equal(0.1);
 			expect(env1.decay).to.equal(0.2);
 			expect(env1.sustain).to.equal(0.3);

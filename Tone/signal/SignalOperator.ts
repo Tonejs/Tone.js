@@ -14,7 +14,7 @@ export abstract class SignalOperator<Options extends SignalOperatorOptions> exte
 		super(Object.assign(optionsFromArguments(SignalOperator.getDefaults(), arguments, ["context"])));
 	}
 
-	connect(destination: InputNode, outputNum: number = 0, inputNum: number = 0): this {
+	connect(destination: InputNode, outputNum = 0, inputNum = 0): this {
 		connectSignal(this, destination, outputNum, inputNum);
 		return this;
 	}

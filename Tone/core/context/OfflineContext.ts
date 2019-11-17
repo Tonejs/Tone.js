@@ -94,7 +94,7 @@ export class OfflineContext extends Context {
 	 * Render the output of the OfflineContext
 	 * @param asynchronous If the clock should be rendered asynchronously, which will not block the main thread, but be slightly slower.
 	 */
-	async render(asynchronous: boolean = true): Promise<ToneAudioBuffer> {
+	async render(asynchronous = true): Promise<ToneAudioBuffer> {
 		await this.workletsAreReady();
 		await this._renderClock(asynchronous);
 		const buffer = await this._context.startRendering();

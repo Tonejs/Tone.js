@@ -56,7 +56,7 @@ export class Param<TypeName extends UnitName = "number">
 
 	readonly units: UnitName;
 	convert: boolean;
-	overridden: boolean = false;
+	overridden = false;
 
 	/**
 	 * The timeline which tracks all of the automations.
@@ -379,7 +379,7 @@ export class Param<TypeName extends UnitName = "number">
 		return this;
 	}
 
-	setValueCurveAtTime(values: UnitMap[TypeName][], startTime: Time, duration: Time, scaling: number = 1): this {
+	setValueCurveAtTime(values: UnitMap[TypeName][], startTime: Time, duration: Time, scaling = 1): this {
 		duration = this.toSeconds(duration);
 		startTime = this.toSeconds(startTime);
 		const startingValue = this._fromType(values[0]) * scaling;

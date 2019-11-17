@@ -10,7 +10,7 @@ export function assert(statement: boolean, error: string): void {
 /**
  * Make sure that the given value is within the range
  */
-export function assertRange(value: number, gte: number, lte: number = Infinity): void {
+export function assertRange(value: number, gte: number, lte = Infinity): void {
 	if (!(gte <= value && value <= lte)) {
 		throw new RangeError(`Value must be within [${gte}, ${lte}], got: ${value}`);
 	}

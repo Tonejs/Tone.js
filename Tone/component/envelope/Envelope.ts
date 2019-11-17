@@ -501,7 +501,7 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	/**
 	 * Connect the envelope to a destination node.
 	 */
-	connect(destination: InputNode, outputNumber: number = 0, inputNumber: number = 0): this {
+	connect(destination: InputNode, outputNumber = 0, inputNumber = 0): this {
 		connectSignal(this, destination, outputNumber, inputNumber);
 		return this;
 	}
@@ -510,7 +510,7 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	 * Render the envelope curve to an array of the given length. 
 	 * Good for visualizing the envelope curve
 	 */
-	async asArray(length: number = 1024): Promise<Float32Array> {
+	async asArray(length = 1024): Promise<Float32Array> {
 		const duration = length / this.context.sampleRate;
 		const context = new OfflineContext(1, duration, this.context.sampleRate);
 		// normalize the ADSR for the given duration with 20% sustain time

@@ -81,7 +81,7 @@ export class Signal<TypeName extends UnitName = "number"> extends ToneAudioNode<
 		});
 	}
 
-	connect(destination: InputNode, outputNum: number = 0, inputNum: number = 0): this {
+	connect(destination: InputNode, outputNum = 0, inputNum = 0): this {
 		// start it only when connected to something
 		connectSignal(this, destination, outputNum, inputNum);
 		return this;

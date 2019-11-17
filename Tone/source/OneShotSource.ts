@@ -34,17 +34,17 @@ export abstract class OneShotSource<Options extends ToneAudioNodeOptions> extend
 	/**
 	 * The start time
 	 */
-	protected _startTime: number = -1;
+	protected _startTime = -1;
 
 	/**
 	 * The stop time
 	 */
-	protected _stopTime: number = -1;
+	protected _stopTime = -1;
 
 	/**
 	 * The id of the timeout
 	 */
-	private _timeout: number = -1;
+	private _timeout = -1;
 
 	/**
 	 * The public output node

@@ -6,6 +6,9 @@ module.exports = {
 	],
     "extends": ["plugin:@typescript-eslint/recommended"],
     "rules": {
+		"prefer-rest-params" : "off",
+		"@typescript-eslint/ban-ts-ignore" : "off",
+		"@typescript-eslint/no-empty-function" : "off",
 		"jsdoc/check-alignment": 1,
 		"jsdoc/check-param-names": [ "error" ],
 		"jsdoc/check-examples": [ "error" ],

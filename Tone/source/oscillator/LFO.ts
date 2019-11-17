@@ -72,7 +72,7 @@ export class LFO extends ToneAudioNode<LFOOptions> {
 	/**
 	 * The value that the LFO outputs when it's stopped
 	 */
-	private _stoppedValue: number = 0;
+	private _stoppedValue = 0;
 
 	/**
 	 * Convert the oscillators audio range to an output between 0-1 so it can be scaled
@@ -102,7 +102,7 @@ export class LFO extends ToneAudioNode<LFOOptions> {
 	/**
 	 * If the input value is converted using the [[units]]
 	 */
-	convert: boolean = true;
+	convert = true;
 
 	/**
 	 * The frequency value of the LFO

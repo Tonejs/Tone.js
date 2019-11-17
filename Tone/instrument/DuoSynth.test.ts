@@ -34,7 +34,7 @@ describe("DuoSynth", () => {
 
 	it("matches a file", () => {
 		return CompareToFile(() => {
-			let synth = new DuoSynth().toDestination();
+			const synth = new DuoSynth().toDestination();
 			synth.triggerAttackRelease("C5", 0.1, 0.1);
 		}, "duoSynth.wav", 0.05);
 	});
@@ -42,35 +42,35 @@ describe("DuoSynth", () => {
 	context("API", () => {
 
 		it("can get and set voice0 attributes", () => {
-			let duoSynth = new DuoSynth();
+			const duoSynth = new DuoSynth();
 			duoSynth.voice0.oscillator.type = "triangle";
 			expect(duoSynth.voice0.oscillator.type).to.equal("triangle");
 			duoSynth.dispose();
 		});
 
 		it("can get and set voice1 attributes", () => {
-			let duoSynth = new DuoSynth();
+			const duoSynth = new DuoSynth();
 			duoSynth.voice1.envelope.attack = 0.24;
 			expect(duoSynth.voice1.envelope.attack).to.equal(0.24);
 			duoSynth.dispose();
 		});
 
 		it("can get and set harmonicity", () => {
-			let duoSynth = new DuoSynth();
+			const duoSynth = new DuoSynth();
 			duoSynth.harmonicity.value = 2;
 			expect(duoSynth.harmonicity.value).to.equal(2);
 			duoSynth.dispose();
 		});
 
 		it("can get and set vibratoRate", () => {
-			let duoSynth = new DuoSynth();
+			const duoSynth = new DuoSynth();
 			duoSynth.vibratoRate.value = 2;
 			expect(duoSynth.vibratoRate.value).to.equal(2);
 			duoSynth.dispose();
 		});
 
 		it("can be constructed with an options object", () => {
-			let duoSynth = new DuoSynth({
+			const duoSynth = new DuoSynth({
 				voice0: {
 					filter: {
 						rolloff: -24
@@ -82,7 +82,7 @@ describe("DuoSynth", () => {
 		});
 
 		it("can get/set attributes", () => {
-			let duoSynth = new DuoSynth();
+			const duoSynth = new DuoSynth();
 			duoSynth.set({
 				harmonicity: 1.5
 			});

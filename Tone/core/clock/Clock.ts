@@ -52,7 +52,7 @@ export class Clock<TypeName extends "bpm" | "hertz" = "hertz">
 	/**
 	 * The last time the loop callback was invoked
 	 */
-	private _lastUpdate: number = 0;
+	private _lastUpdate = 0;
 
 	/**
 	 * Keep track of the playback state

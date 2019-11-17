@@ -53,7 +53,7 @@ export class Draw extends ToneWithContext<ToneWithContextOptions> {
 	/**
 	 * The animation frame id
 	 */
-	private _animationFrame: number = -1;
+	private _animationFrame = -1;
 
 	/**
 	 * Schedule a function at the given time to be invoked

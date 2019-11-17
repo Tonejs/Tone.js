@@ -60,7 +60,7 @@ export class ToneAudioBuffers extends Tone {
 	/**
 	 * Keep track of the number of loaded buffers
 	 */
-	private _loadingCount: number = 0;
+	private _loadingCount = 0;
 
 	/**
 	 * @param  urls  An object literal or array of urls to load.

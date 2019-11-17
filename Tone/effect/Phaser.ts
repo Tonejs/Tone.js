@@ -139,7 +139,7 @@ export class Phaser extends StereoEffect<PhaserOptions> {
 		const filters: BiquadFilterNode[] = [];
 		// make all the filters
 		for (let i = 0; i < stages; i++) {
-			let filter = this.context.createBiquadFilter();
+			const filter = this.context.createBiquadFilter();
 			filter.type = "allpass";
 			this.Q.connect(filter.Q);
 			connectToFreq.connect(filter.frequency);
@@ -156,7 +156,7 @@ export class Phaser extends StereoEffect<PhaserOptions> {
 	}
 	set octaves(octaves) {
 		this._octaves = octaves;
-		let max = this._baseFrequency * Math.pow(2, octaves);
+		const max = this._baseFrequency * Math.pow(2, octaves);
 		this._lfoL.max = max;
 		this._lfoR.max = max;
 	}

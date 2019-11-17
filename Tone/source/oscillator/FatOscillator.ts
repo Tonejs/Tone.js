@@ -244,7 +244,7 @@ export class FatOscillator extends Source<FatOscillatorOptions> implements ToneO
 		this._type = this._oscillators[0].type;
 	}
 
-	async asArray(length: number = 1024): Promise<Float32Array> {
+	async asArray(length = 1024): Promise<Float32Array> {
 		return generateWaveform(this, length);
 	}
 

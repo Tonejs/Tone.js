@@ -129,7 +129,7 @@ function* randomOnce<T>(values: T[]): IterableIterator<T> {
  * @param pattern The name of the pattern use when iterating over
  * @param index Where to start in the offset of the values array
  */
-export function* PatternGenerator<T>(values: T[], pattern: PatternName = "up", index: number = 0): Iterator<T> {
+export function* PatternGenerator<T>(values: T[], pattern: PatternName = "up", index = 0): Iterator<T> {
 	// safeguards
 	assert(values.length > 0, "The array must have more than one value in it");
 	switch (pattern) {

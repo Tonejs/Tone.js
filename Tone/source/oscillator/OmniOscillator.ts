@@ -434,7 +434,7 @@ export class OmniOscillator<OscType extends AnyOscillator>
 		}
 	}
 
-	async asArray(length: number = 1024): Promise<Float32Array> {
+	async asArray(length = 1024): Promise<Float32Array> {
 		return generateWaveform(this, length);
 	}
 

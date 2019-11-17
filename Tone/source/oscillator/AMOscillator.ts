@@ -215,7 +215,7 @@ export class AMOscillator extends Source<AMOscillatorOptions> implements ToneOsc
 		this._carrier.partials = partials;
 	}
 
-	async asArray(length: number = 1024): Promise<Float32Array> {
+	async asArray(length = 1024): Promise<Float32Array> {
 		return generateWaveform(this, length);
 	}
 

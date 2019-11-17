@@ -110,7 +110,7 @@ export class UserMedia extends ToneAudioNode<UserMediaOptions> {
 			this.assert(isDefined(this._device), `No matching device ${labelOrId}`);
 		}
 		// do getUserMedia
-		let constraints = {
+		const constraints = {
 			audio: {
 				echoCancellation: false,
 				sampleRate: this.context.sampleRate,

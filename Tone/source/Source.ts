@@ -82,7 +82,7 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 	/**
 	 * The synced `start` callback function from the transport
 	 */
-	protected _synced: boolean = false;
+	protected _synced = false;
 
 	/**
 	 * Keep track of all of the scheduled event ids

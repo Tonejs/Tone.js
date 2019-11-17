@@ -95,12 +95,12 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 	/**
 	 * The GC timeout. Held so that it could be cancelled when the node is disposed.
 	 */
-	private _gcTimeout: number = -1;
+	private _gcTimeout = -1;
 
 	/**
 	 * A moving average of the number of active voices
 	 */
-	private _averageActiveVoices: number = 0;
+	private _averageActiveVoices = 0;
 
 	/**
 	 * @param voice The constructor of the voices

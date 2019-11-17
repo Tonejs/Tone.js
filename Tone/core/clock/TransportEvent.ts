@@ -65,7 +65,7 @@ export class TransportEvent {
 	/**
 	 * Current ID counter
 	 */
-	private static _eventId: number = 0;
+	private static _eventId = 0;
 
 	/**
 	 * Invoke the event callback.

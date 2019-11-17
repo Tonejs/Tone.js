@@ -44,12 +44,12 @@ export class GrainPlayer extends Source<GrainPlayerOptions> {
 	/**
 	 * Internal loopStart value
 	 */
-	private _loopStart: number = 0;
+	private _loopStart = 0;
 
 	/**
 	 * Internal loopStart value
 	 */
-	private _loopEnd: number = 0;
+	private _loopEnd = 0;
 
 	/**
 	 * All of the currently playing BufferSources

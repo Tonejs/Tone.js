@@ -61,7 +61,7 @@ describe("AutoPanner", () => {
 
 		it("can sync the frequency to the transport", () => {
 			return Offline(({ transport }) => {
-				let panner = new AutoPanner(2);
+				const panner = new AutoPanner(2);
 				panner.sync();
 				panner.frequency.toDestination();
 				transport.bpm.setValueAtTime(transport.bpm.value * 2, 0.05);
@@ -74,7 +74,7 @@ describe("AutoPanner", () => {
 
 		it("can unsync the frequency to the transport", () => {
 			return Offline(({ transport }) => {
-				let panner = new AutoPanner(2);
+				const panner = new AutoPanner(2);
 				panner.sync();
 				panner.frequency.toDestination();
 				transport.bpm.setValueAtTime(transport.bpm.value * 2, 0.05);

@@ -49,8 +49,8 @@ export class ToneBufferSource extends OneShotSource<ToneBufferSourceOptions> {
 	/**
 	 * indicators if the source has started/stopped
 	 */
-	private _sourceStarted: boolean = false;
-	private _sourceStopped: boolean = false;
+	private _sourceStarted = false;
+	private _sourceStopped = false;
 
 	/**
 	 * @param buffer The buffer to play

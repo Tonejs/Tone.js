@@ -141,7 +141,7 @@ export class MonoSynth extends Monophonic<MonoSynthOptions> {
 	 * @param time the time the attack should start
 	 * @param velocity the velocity of the note (0-1)
 	 */
-	protected _triggerEnvelopeAttack(time: Seconds, velocity: number = 1): void {
+	protected _triggerEnvelopeAttack(time: Seconds, velocity = 1): void {
 		this.envelope.triggerAttack(time, velocity);
 		this.filterEnvelope.triggerAttack(time);
 		this.oscillator.start(time);

@@ -135,7 +135,7 @@ export class Chorus extends StereoFeedbackEffect<ChorusOptions> {
 	}
 	set depth(depth) {
 		this._depth = depth;
-		let deviation = this._delayTime * depth;
+		const deviation = this._delayTime * depth;
 		this._lfoL.min = Math.max(this._delayTime - deviation, 0);
 		this._lfoL.max = this._delayTime + deviation;
 		this._lfoR.min = Math.max(this._delayTime - deviation, 0);
