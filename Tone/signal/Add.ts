@@ -44,7 +44,7 @@ export class Add extends Signal {
 	readonly addend: Param<"number"> = this._param;
 
 	/**
-	 * @param value If no value is provided, Tone.Add will sum the first  and second inputs.
+	 * @param value If no value is provided, will sum the input and [[addend]].
 	 */
 	constructor(value?: number);
 	constructor(options?: Partial<SignalOptions<"number">>);
