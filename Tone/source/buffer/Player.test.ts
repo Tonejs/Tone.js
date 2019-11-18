@@ -154,8 +154,8 @@ describe("Player", () => {
 		});
 
 		it("can be played in reverse", () => {
-			const shorterBuffer = buffer.slice(0.1);
-			const audioBuffer = (shorterBuffer.get() as AudioBuffer).getChannelData(0).slice(1000);
+			const shorterBuffer = buffer.slice(0, buffer.duration / 2);
+			const audioBuffer = (shorterBuffer.get() as AudioBuffer).getChannelData(0);
 			const lastSample = audioBuffer[audioBuffer.length - 1];
 			expect(lastSample).to.not.equal(0);
 			return Offline(() => {
