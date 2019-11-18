@@ -98,6 +98,7 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 	constructor(options: SourceOptions) {
 		super(options);
 		this._state.memory = 100;
+		this._state.increasing = true;
 
 		this._volume = this.output = new Volume({
 			context: this.context,
