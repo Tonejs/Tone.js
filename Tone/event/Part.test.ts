@@ -814,4 +814,16 @@ describe("Part", () => {
 			});
 		});
 	});
+
+	context("scheduling", () => {
+
+		it("throws an error if events are scheduling in the wrong order", () => {
+			const part = new Part();
+			part.start(1);
+			expect(() => {
+				part.start(0);
+			}).to.throw(Error);
+			part.dispose();
+		});
+	});
 });

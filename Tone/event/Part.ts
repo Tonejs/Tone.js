@@ -69,6 +69,9 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 		super(optionsFromArguments(Part.getDefaults(), arguments, ["callback", "events"]));
 		const options = optionsFromArguments(Part.getDefaults(), arguments, ["callback", "events"]);
 
+		// make sure things are assigned in the right order
+		this._state.increasing = true;
+
 		// add the events
 		options.events.forEach(event => {
 			if (isArray(event)) {
