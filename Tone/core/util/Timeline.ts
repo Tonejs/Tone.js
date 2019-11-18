@@ -84,7 +84,7 @@ export class Timeline<GenericEvent extends TimelineEvent> extends Tone {
 		event.time = event.time.valueOf();
 		if (this.increasing && this.length) {
 			const lastValue = this._timeline[this.length - 1] as GenericEvent;
-			this.assert(lastValue.time <= event.time, "The time must be greater than or equal to the last scheduled time");
+			this.assert(GTE(event.time, lastValue.time), "The time must be greater than or equal to the last scheduled time");
 			this._timeline.push(event);
 		} else {
 			const index = this._search(event.time);
