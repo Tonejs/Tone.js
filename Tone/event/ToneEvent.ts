@@ -126,6 +126,7 @@ export class ToneEvent<ValueType = any> extends ToneWithContext<ToneEventOptions
 		this._humanize = options.humanize;
 		this.mute = options.mute;
 		this.playbackRate = options.playbackRate;
+		this._state.increasing = true;
 	}
 
 	static getDefaults(): ToneEventOptions<any> {
