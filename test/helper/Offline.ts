@@ -27,10 +27,12 @@ export async function Offline(
 				offline.on("tick", () => fn(offline.now()));
 			});
 		}
-		const buffer = await offline.render();
-		return new TestAudioBuffer(buffer.get() as AudioBuffer);
+	} catch (e) {
+		throw e;
 	} finally {
 		setContext(originalContext);
+		const buffer = await offline.render();
+		return new TestAudioBuffer(buffer.get() as AudioBuffer);
 	}
 }
 
