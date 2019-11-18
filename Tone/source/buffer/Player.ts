@@ -183,16 +183,16 @@ export class Player extends Source<PlayerOptions> {
 		}
 
 		// compute the values in seconds
-		let comptuedOffset = this.toSeconds(offset);
+		let computedOffset = this.toSeconds(offset);
 
 		// if it's synced, it should factor in the playback rate for computing the offset
 		if (this._synced) {
-			comptuedOffset *= this._playbackRate;
+			computedOffset *= this._playbackRate;
 		}
 
 		// compute the duration which is either the passed in duration of the buffer.duration - offset
 		const origDuration = duration;
-		duration = defaultArg(duration, Math.max(this._buffer.duration - comptuedOffset, 0));
+		duration = defaultArg(duration, Math.max(this._buffer.duration - computedOffset, 0));
 		let computedDuration = this.toSeconds(duration);
 
 		// scale it by the playback rate
@@ -216,6 +216,8 @@ export class Player extends Source<PlayerOptions> {
 
 		// set the looping properties
 		if (!this._loop && !this._synced) {
+			// cancel the previous stop
+			this._state.cancel(startTime + computedDuration);
 			// if it's not looping, set the state change at the end of the sample
 			this._state.setStateAtTime("stopped", startTime + computedDuration, {
 				implicitEnd: true,
@@ -227,10 +229,10 @@ export class Player extends Source<PlayerOptions> {
 
 		// start it
 		if (this._loop && isUndef(origDuration)) {
-			source.start(startTime, comptuedOffset);
+			source.start(startTime, computedOffset);
 		} else {
 			// subtract the fade out time
-			source.start(startTime, comptuedOffset, computedDuration - this.toSeconds(this.fadeOut));
+			source.start(startTime, computedOffset, computedDuration - this.toSeconds(this.fadeOut));
 		}
 	}
 
@@ -274,11 +276,11 @@ export class Player extends Source<PlayerOptions> {
 	seek(offset: Time, when?: Time): this {
 		const computedTime = this.toSeconds(when);
 		if (this._state.getValueAtTime(computedTime) === "started") {
-			const comptuedOffset = this.toSeconds(offset);
+			const computedOffset = this.toSeconds(offset);
 			// if it's currently playing, stop it
 			this._stop(computedTime);
 			// restart it at the given time
-			this._start(computedTime, comptuedOffset);
+			this._start(computedTime, computedOffset);
 		}
 		return this;
 	}
