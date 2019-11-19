@@ -312,7 +312,9 @@ export class Player extends Source<PlayerOptions> {
 	}
 	set loopStart(loopStart) {
 		this._loopStart = loopStart;
-		assertRange(this.toSeconds(loopStart), 0, this.buffer.duration);
+		if (this.buffer.loaded) {
+			assertRange(this.toSeconds(loopStart), 0, this.buffer.duration);
+		}
 		// get the current source
 		this._activeSources.forEach(source => {
 			source.loopStart = loopStart;
@@ -327,7 +329,9 @@ export class Player extends Source<PlayerOptions> {
 	}
 	set loopEnd(loopEnd) {
 		this._loopEnd = loopEnd;
-		assertRange(this.toSeconds(loopEnd), 0, this.buffer.duration);
+		if (this.buffer.loaded) {
+			assertRange(this.toSeconds(loopEnd), 0, this.buffer.duration);
+		}
 		// get the current source
 		this._activeSources.forEach(source => {
 			source.loopEnd = loopEnd;
