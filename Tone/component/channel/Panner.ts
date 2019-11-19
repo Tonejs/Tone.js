@@ -30,6 +30,8 @@ export class Panner extends ToneAudioNode<TonePannerOptions> {
 
 	/**
 	 * The pan control. -1 = hard left, 1 = hard right.
+	 * @min -1
+	 * @max 1
 	 */
 	readonly pan: Param<"audioRange">;
 
@@ -46,6 +48,8 @@ export class Panner extends ToneAudioNode<TonePannerOptions> {
 			context: this.context,
 			param: this._panner.pan,
 			value: options.pan,
+			minValue: -1,
+			maxValue: 1,
 		});
 
 		// this is necessary for standardized-audio-context
