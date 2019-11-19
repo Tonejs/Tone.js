@@ -5,6 +5,7 @@ import { noOp } from "../../core/util/Interface";
 import { isUndef } from "../../core/util/TypeCheck";
 import { Source, SourceOptions } from "../Source";
 import { ToneBufferSource } from "./ToneBufferSource";
+import { assertRange } from "../../core/util/Debug";
 
 export interface PlayerOptions extends SourceOptions {
 	onload: () => void;
@@ -311,6 +312,7 @@ export class Player extends Source<PlayerOptions> {
 	}
 	set loopStart(loopStart) {
 		this._loopStart = loopStart;
+		assertRange(this.toSeconds(loopStart), 0, this.buffer.duration);
 		// get the current source
 		this._activeSources.forEach(source => {
 			source.loopStart = loopStart;
@@ -325,6 +327,7 @@ export class Player extends Source<PlayerOptions> {
 	}
 	set loopEnd(loopEnd) {
 		this._loopEnd = loopEnd;
+		assertRange(this.toSeconds(loopEnd), 0, this.buffer.duration);
 		// get the current source
 		this._activeSources.forEach(source => {
 			source.loopEnd = loopEnd;
