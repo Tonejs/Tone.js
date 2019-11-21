@@ -231,9 +231,7 @@ export class Sequence<ValueType = any> extends ToneEvent<ValueType> {
 		return this._part.loop;
 	}
 	set loop(l) {
-		if (this._part) {
-			this._part.loop = l;
-		}
+		this._part.loop = l;
 	}
 
 	/**
@@ -244,9 +242,7 @@ export class Sequence<ValueType = any> extends ToneEvent<ValueType> {
 	}
 	set loopStart(index) {
 		this._loopStart = index;
-		if (this._part) {
-			this._part.loopStart = this._indexTime(index);
-		}
+		this._part.loopStart = this._indexTime(index);
 	}
 
 	/**
@@ -257,12 +253,10 @@ export class Sequence<ValueType = any> extends ToneEvent<ValueType> {
 	}
 	set loopEnd(index) {
 		this._loopEnd = index;
-		if (this._part) {
-			if (index === 0) {
-				this._part.loopEnd = this._indexTime(this._eventsArray.length);
-			} else {
-				this._part.loopEnd = this._indexTime(index);
-			}
+		if (index === 0) {
+			this._part.loopEnd = this._indexTime(this._eventsArray.length);
+		} else {
+			this._part.loopEnd = this._indexTime(index);
 		}
 	}
 
@@ -270,36 +264,28 @@ export class Sequence<ValueType = any> extends ToneEvent<ValueType> {
 		return this._part.startOffset;
 	}
 	set startOffset(start) {
-		if (this._part) {
-			this._part.startOffset = start;
-		}
+		this._part.startOffset = start;
 	}
 
 	get playbackRate(): Positive {
 		return this._part.playbackRate;
 	}
 	set playbackRate(rate) {
-		if (this._part) {
-			this._part.playbackRate = rate;
-		}
+		this._part.playbackRate = rate;
 	}
 
 	get probability(): NormalRange {
 		return this._part.probability;
 	}
 	set probability(prob) {
-		if (this._part) {
-			this._part.probability = prob;
-		}
+		this._part.probability = prob;
 	}
 
 	get humanize(): boolean | Time {
 		return this._part.humanize;
 	}
 	set humanize(variation) {
-		if (this._part) {
-			this._part.humanize = variation;
-		}
+		this._part.humanize = variation;
 	}
 
 	/**
