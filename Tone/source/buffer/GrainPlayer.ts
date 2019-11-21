@@ -6,6 +6,7 @@ import { Clock } from "../../core/clock/Clock";
 import { Cents, Positive, Seconds, Time } from "../../core/type/Units";
 import { ToneBufferSource } from "./ToneBufferSource";
 import { intervalToFrequencyRatio } from "../../core/type/Conversions";
+import { assertRange } from "../../core/util/Debug";
 
 interface GrainPlayerOptions extends SourceOptions {
 	onload: () => void;
@@ -235,6 +236,7 @@ export class GrainPlayer extends Source<GrainPlayerOptions> {
 		return this._playbackRate;
 	}
 	set playbackRate(rate) {
+		assertRange(rate, 0.001);
 		this._playbackRate = rate;
 		this.grainSize = this._grainSize;
 	}
