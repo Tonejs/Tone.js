@@ -125,8 +125,10 @@ export class ToneEvent<ValueType = any> extends ToneWithContext<ToneEventOptions
 		this._probability = options.probability;
 		this._humanize = options.humanize;
 		this.mute = options.mute;
-		this.playbackRate = options.playbackRate;
+		this._playbackRate = options.playbackRate;
 		this._state.increasing = true;
+		// schedule the events for the first time
+		this._rescheduleEvents();
 	}
 
 	static getDefaults(): ToneEventOptions<any> {
