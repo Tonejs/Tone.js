@@ -26,6 +26,14 @@ describe("UserMedia", () => {
 			extIn.dispose();
 		});
 
+		it("properties return undefined before open", () => {
+			const extIn = new UserMedia();
+			expect(extIn.deviceId).to.be.undefined;
+			expect(extIn.groupId).to.be.undefined;
+			expect(extIn.label).to.be.undefined;
+			extIn.dispose();
+		});
+
 		it("indicates if the browser has UserMedia support", () => {
 			expect(UserMedia.supported).to.be.a("boolean");
 		});
