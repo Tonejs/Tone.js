@@ -61,7 +61,7 @@ describe("Sequence", () => {
 			});
 		});
 
-		it.skip("loops by default with the loopEnd as the duration of the loop", () => {
+		it("loops by default with the loopEnd as the duration of the loop", () => {
 			return Offline(() => {
 				const seq = new Sequence(noOp, [0, 1, 2, 3], "8n");
 				expect(seq.loop).to.be.true;
