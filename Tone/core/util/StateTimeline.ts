@@ -1,5 +1,6 @@
 import { Seconds } from "../type/Units";
 import { Timeline, TimelineEvent } from "./Timeline";
+import { assertRange } from "./Debug";
 
 export type BasicPlaybackState = "started" | "stopped";
 export type PlaybackState = BasicPlaybackState | "paused";
@@ -48,6 +49,7 @@ export class StateTimeline<AdditionalOptions extends {} = {}> extends Timeline<S
 	 * @param options Any additional options that are needed in the timeline.
 	 */
 	setStateAtTime(state: PlaybackState, time: Seconds, options?: AdditionalOptions): this {
+		assertRange(time, 0);
 		this.add(Object.assign({}, options, {
 			state,
 			time,
