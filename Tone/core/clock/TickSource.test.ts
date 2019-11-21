@@ -14,6 +14,12 @@ describe("TickSource", () => {
 			expect(source.frequency.value).to.equal(2);
 			source.dispose();
 		});
+
+		it("initially returns stop", () => {
+			const source = new TickSource(2);
+			expect(source.state).to.equal("stopped");
+			source.dispose();
+		});
 	});
 
 	context("Ticks", () => {
