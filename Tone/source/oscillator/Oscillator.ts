@@ -196,6 +196,7 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 		partialCount: number;
 		real: Float32Array;
 		imag: Float32Array;
+		wave: PeriodicWave;
 	}> = [];
 
 	/**
@@ -203,7 +204,7 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 	 * the oscillator values when they have already been computed
 	 * with the same values.
 	 */
-	private _getCachedPeriodicWave(): {real: Float32Array; imag: Float32Array; partials: number[]} | undefined {
+	private _getCachedPeriodicWave(): {real: Float32Array; imag: Float32Array; partials: number[]; wave: PeriodicWave} | undefined {
 		if (this._type === "custom") {
 			const oscProps = Oscillator._periodicWaveCache.find(description => {
 				return description.phase === this._phase &&
@@ -238,8 +239,8 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 			// first check if the value is cached
 			const cache = this._getCachedPeriodicWave();
 			if (isDefined(cache)) {
-				const { real, imag, partials } = cache;
-				this._wave = this.context.createPeriodicWave(real, imag);
+				const { partials, wave } = cache;
+				this._wave = wave;
 				this._partials = partials;
 				if (this._oscillator !== null) {
 					this._oscillator.setPeriodicWave(this._wave);
@@ -259,6 +260,7 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 					phase: this._phase,
 					real,
 					type: this._type,
+					wave: this._wave,
 				});
 				if (Oscillator._periodicWaveCache.length > 100) {
 					Oscillator._periodicWaveCache.shift();
