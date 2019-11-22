@@ -187,7 +187,7 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 	 */
 	private _collectGarbage(): void {
 		this._averageActiveVoices = Math.max(this._averageActiveVoices * 0.95, this.activeVoices);
-		if (this._availableVoices.length && this._voices.length > this._averageActiveVoices) {
+		if (this._availableVoices.length && this._voices.length > Math.ceil(this._averageActiveVoices + 1)) {
 			// take off an available note
 			const firstAvail = this._availableVoices.shift() as Voice;
 			const index = this._voices.indexOf(firstAvail);
