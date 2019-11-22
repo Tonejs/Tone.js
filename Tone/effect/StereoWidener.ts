@@ -90,7 +90,7 @@ export class StereoWidener extends MidSideEffect<StereoWidenerOptions> {
 		this._sideMult = new Multiply({ context: this.context });
 		this.width.connect(this._twoTimesWidthSide);
 		this._twoTimesWidthSide.connect(this._sideMult.factor);
-		this.connectEffectMid(this._sideMult);
+		this.connectEffectSide(this._sideMult);
 	}
 
 	static getDefaults(): StereoWidenerOptions {
