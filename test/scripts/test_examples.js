@@ -79,6 +79,7 @@ async function main() {
 			}
 		} catch (e) {
 			console.log(example + "\n" + e);
+			throw e;
 		}
 	});
 	console.log(`valid examples ${passed}/${examples.length}`);
