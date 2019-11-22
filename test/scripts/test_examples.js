@@ -14,7 +14,7 @@ const cpuCount = os.cpus().length;
  */
 function findExamples(obj) {
 	let examples = [];
-	for (let prop in obj) {
+	for (const prop in obj) {
 		if (Array.isArray(obj[prop])) {
 			obj[prop].forEach(child => {
 				examples = [...examples, ...findExamples(child)];
@@ -53,7 +53,7 @@ function execPromise(cmd) {
  * Run the string through the typescript compiler
  */
 async function testExampleString(str) {
-	str = str.replace("from \"tone\"", `from "${resolve(__dirname, "../")}"`);
+	str = str.replace("from \"tone\"", `from "${resolve(__dirname, "../../")}"`);
 	const { path, cleanup } = await file({ postfix: ".ts" });
 	// work with file here in fd
 	await writeFile(path, str);
