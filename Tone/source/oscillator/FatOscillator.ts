@@ -5,7 +5,7 @@ import { Signal } from "../../signal/Signal";
 import { Source } from "../Source";
 import { Oscillator } from "./Oscillator";
 import { FatConstructorOptions, FatOscillatorOptions,
-	generateWaveform, ToneOscillatorInterface, ToneOscillatorType } from "./OscillatorInterface";
+	generateWaveform, NonCustomOscillatorType, ToneOscillatorInterface, ToneOscillatorType } from "./OscillatorInterface";
 import { assertRange } from "../../core/util/Debug";
 
 export { FatOscillatorOptions } from "./OscillatorInterface";
@@ -184,16 +184,15 @@ export class FatOscillator extends Source<FatOscillatorOptions> implements ToneO
 			for (let i = 0; i < count; i++) {
 				const osc = new Oscillator({
 					context: this.context,
+					volume: -6 - count * 1.1,
+					type: this._type as NonCustomOscillatorType,
+					phase: this._phase + (i / count) * 360,
+					partialCount: this._partialCount,
 					onstop: i === 0 ? () => this.onstop(this) : noOp,
 				});
 				if (this.type === "custom") {
 					osc.partials = this._partials;
-				} else {
-					osc.type = this._type;
 				}
-				osc.partialCount = this._partialCount;
-				osc.phase = this._phase + (i / count) * 360;
-				osc.volume.value = -6 - count * 1.1;
 				this.frequency.connect(osc.frequency);
 				this.detune.connect(osc.detune);
 				osc.connect(this.output);
