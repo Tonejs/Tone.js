@@ -11,7 +11,7 @@ export type GreaterThanZeroOptions = SignalOperatorOptions
  * @example
  * import { GreaterThanZero, Signal } from "tone";
  * const gt0 = new GreaterThanZero();
- * const sig = new Tone.Signal(0.01).connect(gt0);
+ * const sig = new Signal(0.01).connect(gt0);
  * // the output of gt0 is 1.
  * sig.value = 0;
  * // the output of gt0 is 0.
