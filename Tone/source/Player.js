@@ -300,7 +300,7 @@ Tone.Player.prototype.seek = function(offset, time){
 /**
  *  Set the loop start and end. Will only loop if loop is
  *  set to true.
- *  @param {Time} loopStart The loop end time
+ *  @param {Time} loopStart The loop start time
  *  @param {Time} loopEnd The loop end time
  *  @returns {Tone.Player} this
  *  @example
