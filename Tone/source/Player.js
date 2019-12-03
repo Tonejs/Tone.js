@@ -278,7 +278,6 @@ Tone.Player.prototype.restart = function(time, offset, duration){
 /**
  *  Seek to a specific time in the player's buffer. If the
  *  source is no longer playing at that time, it will stop.
- *  If you seek to a time that
  *  @param {Time} offset The time to seek to.
  *  @param {Time=} time The time for the seek event to occur.
  *  @return {Tone.Player} this
@@ -301,7 +300,7 @@ Tone.Player.prototype.seek = function(offset, time){
 /**
  *  Set the loop start and end. Will only loop if loop is
  *  set to true.
- *  @param {Time} loopStart The loop end time
+ *  @param {Time} loopStart The loop start time
  *  @param {Time} loopEnd The loop end time
  *  @returns {Tone.Player} this
  *  @example
