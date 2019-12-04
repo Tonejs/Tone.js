@@ -263,7 +263,6 @@ export class Player extends Source<PlayerOptions> {
 	/**
 	 * Seek to a specific time in the player's buffer. If the
 	 * source is no longer playing at that time, it will stop.
-	 * If you seek to a time that
 	 * @param offset The time to seek to.
 	 * @param when The time for the seek event to occur.
 	 * @example
@@ -288,7 +287,7 @@ export class Player extends Source<PlayerOptions> {
 
 	/**
 	 * Set the loop start and end. Will only loop if loop is set to true.
-	 * @param loopStart The loop end time
+	 * @param loopStart The loop start time
 	 * @param loopEnd The loop end time
 	 * @example
 	 * import { Player } from "tone";
