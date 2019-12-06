@@ -392,7 +392,7 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 			attack = remainingDistance / attackRate;
 		}
 		// attack
-		if (attack === 0) {
+		if (attack < this.sampleTime) {
 			// case where the attack time is 0 should set instantly
 			this._sig.setValueAtTime(velocity, time);
 		} else if (this._attackCurve === "linear") {
@@ -420,7 +420,7 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 			const decayStart = time + attack;
 			this.log("decay", decayStart);
 			if (this._decayCurve === "linear") {
-				this._sig.linearRampTo(decayValue, decay, decayStart + this.sampleTime);
+				this._sig.linearRampToValueAtTime(decayValue, decay + decayStart);
 			} else {
 				this.assert(this._decayCurve === "exponential",
 					`decayCurve can only be "linear" or "exponential", got ${this._decayCurve}`);
@@ -447,7 +447,7 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 		const currentValue = this.getValueAtTime(time);
 		if (currentValue > 0) {
 			const release = this.toSeconds(this.release);
-			if (EQ(release, 0)) {
+			if (release < this.sampleTime) {
 				this._sig.setValueAtTime(0, time);
 			} else if (this._releaseCurve === "linear") {
 				this._sig.linearRampTo(0, release, time);
