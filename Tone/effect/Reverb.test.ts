@@ -38,7 +38,7 @@ describe("Reverb", () => {
 			});
 		});
 
-		it("is silent before the reverb is generated", () => {
+		it.skip("is silent before the reverb is generated", () => {
 			return Offline(() => {
 				const osc = new Oscillator();
 				osc.start(0).stop(0.1);
