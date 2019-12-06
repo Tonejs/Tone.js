@@ -2,6 +2,7 @@ export * from "./clock/Clock";
 export * from "./clock/Transport";
 
 export * from "./context/Context";
+export * from "./context/BaseContext";
 export * from "./context/Delay";
 export * from "./context/Destination";
 export * from "./context/Gain";
