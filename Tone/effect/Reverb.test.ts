@@ -49,7 +49,7 @@ describe("Reverb", () => {
 			});
 		});
 
-		it.only("passes audio from input to output", () => {
+		it("passes audio from input to output", () => {
 			return Offline(async () => {
 				const osc = new Oscillator();
 				osc.start(0).stop(0.1);
