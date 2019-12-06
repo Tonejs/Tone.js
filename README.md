@@ -199,5 +199,6 @@ If you have questions (or answers) that are not necessarily bugs/issues, please 
 * [Many of Chris Wilson's Repositories](https://github.com/cwilso)
 * [Many of Mohayonao's Repositories](https://github.com/mohayonao)
 * [The Spec](http://webaudio.github.io/web-audio-api/)
+* [TypeScript - React+TypeScript Cheatsheets](https://github.com/typescript-cheatsheets/react-typescript-cheatsheet)
 * [Sound on Sound - Synth Secrets](http://www.soundonsound.com/sos/may99/articles/synthsec.htm)
 * [Miller Puckette - Theory and Techniques of Electronic Music](http://msp.ucsd.edu/techniques.htm)
