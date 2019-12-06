@@ -44,13 +44,6 @@ export class Reverb extends Effect<ReverbOptions> {
 	private _preDelay: Seconds;
 
 	/**
-	 * Since multiple calls of `generate` can be invoked at the same time
-	 * before the previous one has resolved, this makes sure that only the 
-	 * latest call's buffer is used.
-	 */
-	private _generateId = 0;
-
-	/**
 	 * Resolves when the reverb buffer is generated. Whenever either [[decay]]
 	 * or [[preDelay]] are set, you have to wait until [[ready]] resolves
 	 * before the IR is generated with the latest values. 

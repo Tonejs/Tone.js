@@ -6,7 +6,6 @@ import { isArray, isObject, isString } from "../../core/util/TypeCheck";
 import { connectSignal, Signal } from "../../signal/Signal";
 import { OfflineContext } from "../../core/context/OfflineContext";
 import { assertRange } from "../../core/util/Debug";
-import { EQ } from "../../core/util/Math";
 
 type BasicEnvelopeCurve = "linear" | "exponential";
 type InternalEnvelopeCurve = BasicEnvelopeCurve | number[];
