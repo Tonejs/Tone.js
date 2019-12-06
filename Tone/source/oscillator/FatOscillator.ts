@@ -195,6 +195,7 @@ export class FatOscillator extends Source<FatOscillatorOptions> implements ToneO
 				}
 				this.frequency.connect(osc.frequency);
 				this.detune.connect(osc.detune);
+				osc.detune.overridden = false;
 				osc.connect(this.output);
 				this._oscillators[i] = osc;
 			}
