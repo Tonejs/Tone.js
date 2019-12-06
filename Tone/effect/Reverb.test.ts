@@ -49,13 +49,13 @@ describe("Reverb", () => {
 			});
 		});
 
-		it("passes audio from input to output", () => {
+		it.only("passes audio from input to output", () => {
 			return Offline(async () => {
 				const osc = new Oscillator();
 				osc.start(0).stop(0.1);
 				const reverb = new Reverb(0.2).toDestination();
 				osc.connect(reverb);
-				await reverb.generate();
+				await reverb.ready;
 			}, 0.3).then((buffer) => {
 				expect(buffer.getRmsAtTime(0.05)).to.be.greaterThan(0);
 				expect(buffer.getRmsAtTime(0.1)).to.be.greaterThan(0);

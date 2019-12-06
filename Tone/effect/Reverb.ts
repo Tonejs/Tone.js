@@ -1,10 +1,11 @@
 import { Merge } from "../component/channel/Merge";
 import { Gain } from "../core/context/Gain";
-import { Seconds } from "../core/type/Units";
+import { Seconds, Time } from "../core/type/Units";
 import { optionsFromArguments } from "../core/util/Defaults";
 import { Noise } from "../source/Noise";
 import { Effect, EffectOptions } from "./Effect";
 import { OfflineContext } from "../core/context/OfflineContext";
+import { noOp } from "../core/util/Interface";
 
 interface ReverbOptions extends EffectOptions {
 	decay: Seconds;
@@ -15,8 +16,8 @@ interface ReverbOptions extends EffectOptions {
  * Simple convolution created with decaying noise.
  * Generates an Impulse Response Buffer
  * with Tone.Offline then feeds the IR into ConvolverNode.
- * Note: the Reverb will not make any sound until [[generate]]
- * has been invoked and resolved.
+ * The impulse response generation is async, so you have
+ * to wait until [[ready]] resolves before it will make a sound. 
  *
  * Inspiration from [ReverbGen](https://github.com/adelespinasse/reverbGen).
  * Copyright (c) 2014 Alan deLespinasse Apache 2.0 License.
@@ -34,15 +35,27 @@ export class Reverb extends Effect<ReverbOptions> {
 
 	/**
 	 * The duration of the reverb.
-	 * [[generate]] must be called in order to update the values.
 	 */
-	decay: Seconds;
+	private _decay: Seconds;
 	
 	/**
 	 * The amount of time before the reverb is fully ramped in.
-	 * [[generate]] must be called in order to update the values.
 	 */
-	preDelay: Seconds;
+	private _preDelay: Seconds;
+
+	/**
+	 * Since multiple calls of `generate` can be invoked at the same time
+	 * before the previous one has resolved, this makes sure that only the 
+	 * latest call's buffer is used.
+	 */
+	private _generateId = 0;
+
+	/**
+	 * Resolves when the reverb buffer is generated. Whenever either [[decay]]
+	 * or [[preDelay]] are set, you have to wait until [[ready]] resolves
+	 * before the IR is generated with the latest values. 
+	 */
+	ready: Promise<void> = Promise.resolve();
 
 	/**
 	 * @param decay The amount of time it will reverberate for.
@@ -54,8 +67,9 @@ export class Reverb extends Effect<ReverbOptions> {
 		super(optionsFromArguments(Reverb.getDefaults(), arguments, ["decay"]));
 		const options = optionsFromArguments(Reverb.getDefaults(), arguments, ["decay"]);
 
-		this.decay = options.decay;
-		this.preDelay = options.preDelay;
+		this._decay = options.decay;
+		this._preDelay = options.preDelay;
+		this.generate();
 
 		this.connectEffect(this._convolver);
 	}
@@ -68,12 +82,36 @@ export class Reverb extends Effect<ReverbOptions> {
 	}
 
 	/**
+	 * The duration of the reverb.
+	 */
+	get decay(): Time {
+		return this._decay;
+	}
+	set decay(time) {
+		this._decay = this.toSeconds(time);
+		this.generate();
+	}
+
+	/**
+	 * The amount of time before the reverb is fully ramped in.
+	 */
+	get preDelay(): Time {
+		return this._preDelay;
+	}
+	set preDelay(time) {
+		this._preDelay = this.toSeconds(time);
+		this.generate();
+	}
+
+	/**
 	 * Generate the Impulse Response. Returns a promise while the IR is being generated.
 	 * @return Promise which returns this object.
 	 */
 	async generate(): Promise<this> {
-		const context = new OfflineContext(2, this.decay + this.preDelay, this.context.sampleRate);
-		// create a noise burst which decays over the duration
+		const previousReady = this.ready;
+
+		// create a noise burst which decays over the duration in each channel
+		const context = new OfflineContext(2, this._decay + this._preDelay, this.context.sampleRate);
 		const noiseL = new Noise({ context });
 		const noiseR = new Noise({ context });
 		const merge = new Merge({ context });
@@ -85,13 +123,19 @@ export class Reverb extends Effect<ReverbOptions> {
 		noiseR.start(0);
 		// predelay
 		gainNode.gain.setValueAtTime(0, 0);
-		gainNode.gain.setValueAtTime(1, this.preDelay);
+		gainNode.gain.setValueAtTime(1, this._preDelay);
 		// decay
-		gainNode.gain.exponentialApproachValueAtTime(0, this.preDelay, this.decay);
+		gainNode.gain.exponentialApproachValueAtTime(0, this._preDelay, this.decay);
 		
-		// render the output
-		const response = await context.render();
-		this._convolver.buffer = response.get() as AudioBuffer;
+		// render the buffer
+		const renderPromise = context.render();
+		this.ready = renderPromise.then(noOp);
+		
+		// wait for the previous `ready` to resolve
+		await previousReady;
+		// set the buffer
+		this._convolver.buffer = (await renderPromise).get() as AudioBuffer;
+
 		return this;
 	}
 
