@@ -207,6 +207,9 @@ export class Param<TypeName extends UnitName = "number">
 			} else {
 				return val as number;
 			}
+		} else if (this.overridden) {
+			// if it's overridden, should only schedule 0s
+			return 0;
 		} else {
 			return val as number;
 		}

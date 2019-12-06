@@ -57,6 +57,16 @@ describe("Signal", () => {
 			}, 3);
 		});
 
+		it("scheduling anything on the connected signal doesn't change the output", () => {
+			return ConstantOutput((context) => {
+				const sigA = new Signal(1).toDestination();
+				sigA.setValueAtTime(10, 0);
+				const sigB = new Signal(3);
+				sigB.setValueAtTime(4, 0);
+				sigB.connect(sigA);
+			}, 4);
+		});
+
 		it("takes the first signals value when many values are chained", () => {
 			return ConstantOutput((context) => {
 				const sigA = new Signal(3).toDestination();
