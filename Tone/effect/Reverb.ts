@@ -6,6 +6,7 @@ import { Noise } from "../source/Noise";
 import { Effect, EffectOptions } from "./Effect";
 import { OfflineContext } from "../core/context/OfflineContext";
 import { noOp } from "../core/util/Interface";
+import { assertRange } from "Tone/core/util/Debug";
 
 interface ReverbOptions extends EffectOptions {
 	decay: Seconds;
@@ -81,7 +82,9 @@ export class Reverb extends Effect<ReverbOptions> {
 		return this._decay;
 	}
 	set decay(time) {
-		this._decay = this.toSeconds(time);
+		time = this.toSeconds(time);
+		assertRange(time, 0);
+		this._decay = time;
 		this.generate();
 	}
 
@@ -92,7 +95,9 @@ export class Reverb extends Effect<ReverbOptions> {
 		return this._preDelay;
 	}
 	set preDelay(time) {
-		this._preDelay = this.toSeconds(time);
+		time = this.toSeconds(time);
+		assertRange(time, 0);
+		this._preDelay = time;
 		this.generate();
 	}
 
