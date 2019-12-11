@@ -6,7 +6,7 @@ import { Noise } from "../source/Noise";
 import { Effect, EffectOptions } from "./Effect";
 import { OfflineContext } from "../core/context/OfflineContext";
 import { noOp } from "../core/util/Interface";
-import { assertRange } from "Tone/core/util/Debug";
+import { assertRange } from "../core/util/Debug";
 
 interface ReverbOptions extends EffectOptions {
 	decay: Seconds;
