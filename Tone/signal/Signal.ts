@@ -11,6 +11,8 @@ export interface SignalOptions<TypeName extends UnitName> extends ToneAudioNodeO
 	value: UnitMap[TypeName];
 	units: TypeName;
 	convert: boolean;
+	minValue?: number;
+	maxValue?: number;
 }
 
 /**
@@ -68,6 +70,8 @@ export class Signal<TypeName extends UnitName = "number"> extends ToneAudioNode<
 			convert: options.convert,
 			offset: options.value,
 			units: options.units,
+			minValue: options.minValue,
+			maxValue: options.maxValue,
 		});
 		this._constantSource.start(0);
 		this.input = this._param = this._constantSource.offset;

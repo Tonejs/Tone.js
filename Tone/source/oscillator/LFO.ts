@@ -310,6 +310,8 @@ export class LFO extends ToneAudioNode<LFOOptions> {
 	private _toType = Param.prototype._toType;
 	// @ts-ignore
 	private _is = Param.prototype._is;
+	// @ts-ignore
+	private _clampValue = Param.prototype._clampValue;
 
 	dispose(): this {
 		super.dispose();

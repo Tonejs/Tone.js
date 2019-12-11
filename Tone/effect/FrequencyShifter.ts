@@ -91,6 +91,8 @@ export class FrequencyShifter extends Effect<FrequencyShifterOptions> {
 			context: this.context,
 			units: "frequency",
 			value: options.frequency,
+			minValue: -this.context.sampleRate/2,
+			maxValue: this.context.sampleRate/2,
 		});
 
 		this._sine = new ToneOscillatorNode({

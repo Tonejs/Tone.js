@@ -185,27 +185,38 @@ export class Param<TypeName extends UnitName = "number">
 	}
 
 	/**
+	 * Make sure the value is always in the defined range
+	 */
+	private _clampValue(value: number): number {
+		if (isDefined(this.maxValue) && isDefined(this.minValue)) {
+			return Math.max(Math.min(value, this.maxValue), this.minValue);
+		} else {
+			return value;
+		}
+	}
+
+	/**
 	 * Convert the given value from the type specified by Param.units
 	 * into the destination value (such as Gain or Frequency).
 	 */
 	protected _fromType(val: UnitMap[TypeName]): number {
 		if (this.convert && !this.overridden) {
 			if (this._is<Time>(val, "time")) {
-				return this.toSeconds(val);
+				return this._clampValue(this.toSeconds(val));
 			} else if (this._is<Decibels>(val, "decibels")) {
-				return dbToGain(val);
+				return this._clampValue(dbToGain(val));
 			} else if (this._is<Frequency>(val, "frequency")) {
-				return this.toFrequency(val);
+				return this._clampValue(this.toFrequency(val));
 			} else if (this._is<NormalRange>(val, "normalRange")) {
-				return Math.min(Math.max(val, 0), 1);
+				return this._clampValue(val);
 			} else if (this._is<AudioRange>(val, "audioRange")) {
-				return Math.min(Math.max(val, -1), 1);
+				return this._clampValue(val);
 			} else if (this._is<Positive>(val, "positive")) {
-				return Math.max(val, 0);
+				return this._clampValue(val);
 			} else if (this._is<number>(val, "number")) {
-				return val;
+				return this._clampValue(val);
 			} else {
-				return val as number;
+				return this._clampValue(val as number);
 			}
 		} else if (this.overridden) {
 			// if it's overridden, should only schedule 0s

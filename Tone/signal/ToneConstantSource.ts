@@ -8,6 +8,8 @@ export interface ToneConstantSourceOptions<TypeName extends UnitName> extends On
 	convert: boolean;
 	offset: UnitMap[TypeName];
 	units: TypeName;
+	minValue?: number;
+	maxValue?: number;
 }
 
 /**
@@ -47,6 +49,8 @@ export class ToneConstantSource<TypeName extends UnitName = "number"> extends On
 			param: this._source.offset,
 			units: options.units,
 			value: options.offset,
+			minValue: options.minValue,
+			maxValue: options.maxValue,
 		});
 	}
 

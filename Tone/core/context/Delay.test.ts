@@ -38,6 +38,17 @@ describe("Delay", () => {
 		delay.dispose();
 	});
 
+	it("clamps the delayTime range between 0 and maxDelay", () => {
+		const delay = new Delay({
+			maxDelay: 1
+		});
+		delay.delayTime.value = 2;
+		expect(delay.delayTime.value).to.be.closeTo(1, 0.001);
+		delay.delayTime.value = -1;
+		expect(delay.delayTime.value).to.be.closeTo(0, 0.001);
+		delay.dispose();
+	});
+
 	it("can set the delayTime value", () => {
 		const delay = new Delay();
 		expect(delay.delayTime.value).to.be.closeTo(0, 0.001);
