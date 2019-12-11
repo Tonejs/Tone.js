@@ -1,5 +1,5 @@
 import { Param } from "../context/Param";
-import { Time } from "../type/Units";
+import { Seconds, Time } from "../type/Units";
 import { optionsFromArguments } from "../util/Defaults";
 import { readOnly } from "../util/Interface";
 import { ToneAudioNode, ToneAudioNodeOptions } from "./ToneAudioNode";
@@ -18,10 +18,9 @@ export class Delay extends ToneAudioNode<DelayOptions> {
 	readonly name: string = "Delay";
 
 	/**
-	 * The maximum delay time. This cannot be changed after
-	 * the value is passed into the constructor.
+	 * Private holder of the max delay time
 	 */
-	readonly maxDelay: Time;
+	private _maxDelay: Seconds;
 
 	/**
 	 * The amount of time the incoming signal is delayed.
@@ -47,7 +46,7 @@ export class Delay extends ToneAudioNode<DelayOptions> {
 		const options = optionsFromArguments(Delay.getDefaults(), arguments, ["delayTime", "maxDelay"]);
 
 		const maxDelayInSeconds = this.toSeconds(options.maxDelay);
-		this.maxDelay = Math.max(maxDelayInSeconds, this.toSeconds(options.delayTime));
+		this._maxDelay = Math.max(maxDelayInSeconds, this.toSeconds(options.delayTime));
 
 		this._delayNode = this.input = this.output = this.context.createDelay(maxDelayInSeconds);
 
@@ -56,6 +55,8 @@ export class Delay extends ToneAudioNode<DelayOptions> {
 			param: this._delayNode.delayTime,
 			units: "time",
 			value: options.delayTime,
+			minValue: 0,
+			maxValue: this.maxDelay,
 		});
 
 		readOnly(this, "delayTime");
@@ -66,6 +67,14 @@ export class Delay extends ToneAudioNode<DelayOptions> {
 			delayTime: 0,
 			maxDelay: 1,
 		});
+	}
+
+	/**
+	 * The maximum delay time. This cannot be changed after
+	 * the value is passed into the constructor.
+	 */
+	get maxDelay(): Seconds {
+		return this._maxDelay;
 	}
 
 	/**
