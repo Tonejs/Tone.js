@@ -90,7 +90,7 @@ export class UserMedia extends ToneAudioNode<UserMediaOptions> {
 	 *                   With no argument, the default stream is opened.
 	 * @return The promise is resolved when the stream is open.
 	 */
-	async open(labelOrId?: string | number): Promise<void> {
+	async open(labelOrId?: string | number): Promise<this> {
 		this.assert(UserMedia.supported, "UserMedia is not supported");
 		// close the previous stream
 		if (this.state === "started") {
@@ -132,6 +132,7 @@ export class UserMedia extends ToneAudioNode<UserMediaOptions> {
 			connect(mediaStreamNode, this.output);
 			this._mediaStream = mediaStreamNode;
 		}
+		return this;
 	}
 
 	/**
