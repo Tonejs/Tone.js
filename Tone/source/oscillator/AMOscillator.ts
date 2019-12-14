@@ -157,13 +157,9 @@ export class AMOscillator extends Source<AMOscillatorOptions> implements ToneOsc
 		this._carrier.stop(time);
 	}
 
-	/**
-	 * restart the oscillator
-	 */
-	restart(time?: Time): this {
+	protected _restart(time: Seconds): void {
 		this._modulator.restart(time);
 		this._carrier.restart(time);
-		return this;
 	}
 
 	/**

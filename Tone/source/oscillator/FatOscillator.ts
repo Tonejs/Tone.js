@@ -1,4 +1,4 @@
-import { Cents, Degrees, Frequency, Time } from "../../core/type/Units";
+import { Cents, Degrees, Frequency, Seconds, Time } from "../../core/type/Units";
 import { optionsFromArguments } from "../../core/util/Defaults";
 import { noOp, readOnly } from "../../core/util/Interface";
 import { Signal } from "../../signal/Signal";
@@ -113,13 +113,8 @@ export class FatOscillator extends Source<FatOscillatorOptions> implements ToneO
 		this._forEach(osc => osc.stop(time));
 	}
 
-	/**
-	 * restart the oscillator
-	 */
-	restart(time): this {
-		time = this.toSeconds(time);
+	protected _restart(time: Seconds): void {
 		this._forEach(osc => osc.restart(time));
-		return this;
 	}
 
 	/**

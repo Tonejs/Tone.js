@@ -149,7 +149,7 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 	 * Restart the oscillator. Does not stop the oscillator, but instead
 	 * just cancels any scheduled 'stop' from being invoked.
 	 */
-	restart(time?: Time): this {
+	protected _restart(time?: Time): this {
 		const computedTime = this.toSeconds(time);
 		this.log("restart", computedTime);
 		if (this._oscillator) {

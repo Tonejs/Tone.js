@@ -1,5 +1,5 @@
 import { ToneAudioBuffer } from "../../core/context/ToneAudioBuffer";
-import { Positive, Time } from "../../core/type/Units";
+import { Positive, Seconds, Time } from "../../core/type/Units";
 import { defaultArg, optionsFromArguments } from "../../core/util/Defaults";
 import { noOp } from "../../core/util/Interface";
 import { isUndef } from "../../core/util/TypeCheck";
@@ -249,15 +249,17 @@ export class Player extends Source<PlayerOptions> {
 	 * Stop and then restart the player from the beginning (or offset)
 	 * @param  time When the player should start.
 	 * @param  offset The offset from the beginning of the sample to start at.
-	 * @param  duration How long the sample should play. If no duration is given, it will default to the full length of the sample (minus any offset)
+	 * @param  duration How long the sample should play. If no duration is given, 
+	 * 					it will default to the full length of the sample (minus any offset)
 	 */
-	restart(time?: Time, offset?: Time, duration?: Time): this {
-		time = this.toSeconds(time);
-		if (this._state.getValueAtTime(time) === "started") {
-			this._stop(time);
-			this._start(time, offset, duration);
-		}
+	restart(time?: Seconds, offset?: Time, duration?: Time): this {
+		super.restart(time, offset, duration);
 		return this;
+	}
+	
+	protected _restart(time?: Seconds, offset?: Time, duration?: Time): void {
+		this._stop(time);
+		this._start(time, offset, duration);
 	}
 
 	/**

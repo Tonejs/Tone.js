@@ -7,7 +7,7 @@ import { Decibels, Seconds, Time } from "../core/type/Units";
 import { defaultArg } from "../core/util/Defaults";
 import { noOp, readOnly } from "../core/util/Interface";
 import { BasicPlaybackState, StateTimeline } from "../core/util/StateTimeline";
-import { isUndef } from "../core/util/TypeCheck";
+import { isDefined, isUndef } from "../core/util/TypeCheck";
 import { assertContextRunning } from "../core/util/Debug";
 
 type onStopCallback = (source: Source<any>) => void;
@@ -157,7 +157,7 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 	// overwrite these functions
 	protected abstract _start(time: Time, offset?: Time, duration?: Time): void;
 	protected abstract _stop(time: Time): void;
-	abstract restart(time: Time, offset?: Time, duration?: Time): this;
+	protected abstract _restart(time: Seconds, offset?: Time, duration?: Time): void;
 
 	/**
 	 * Ensure that the scheduled time is not before the current time.
@@ -192,6 +192,11 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 		} else {
 			this.log("start", computedTime);
 			this._state.setStateAtTime("started", computedTime);
+			// try {
+			// } catch (e) {
+			// 	debugger;
+			// 	console.log(computedTime);
+			// }
 			if (this._synced) {
 				// add the offset time to the event
 				const event = this._state.get(computedTime);
@@ -229,15 +234,29 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 	stop(time?: Time): this {
 		let computedTime = isUndef(time) && this._synced ? this.context.transport.seconds : this.toSeconds(time);
 		computedTime = this._clampToCurrentTime(computedTime);
-		this.log("stop", computedTime);
-		if (!this._synced) {
-			this._stop(computedTime);
-		} else {
-			const sched = this.context.transport.schedule(this._stop.bind(this), computedTime);
-			this._scheduled.push(sched);
+		if (this._state.getValueAtTime(computedTime) === "started" || isDefined(this._state.getNextState("started", computedTime))) {
+			this.log("stop", computedTime);
+			if (!this._synced) {
+				this._stop(computedTime);
+			} else {
+				const sched = this.context.transport.schedule(this._stop.bind(this), computedTime);
+				this._scheduled.push(sched);
+			}
+			this._state.cancel(computedTime);
+			this._state.setStateAtTime("stopped", computedTime);
 		}
-		this._state.cancel(computedTime);
-		this._state.setStateAtTime("stopped", computedTime);
+		return this;
+	}
+
+	/**
+	 * Restart the source.
+	 */
+	restart(time?: Time, offset?: Time, duration?: Time): this {
+		time = this.toSeconds(time);
+		if (this._state.getValueAtTime(time) === "started") {
+			this._state.cancel(time);
+			this._restart(time, offset, duration);
+		}
 		return this;
 	}
 

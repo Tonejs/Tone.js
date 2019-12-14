@@ -1,4 +1,4 @@
-import { Degrees, Frequency, Time } from "../../core/type/Units";
+import { Degrees, Frequency, Seconds, Time } from "../../core/type/Units";
 import { optionsFromArguments } from "../../core/util/Defaults";
 import { readOnly } from "../../core/util/Interface";
 import { Multiply } from "../../signal/Multiply";
@@ -126,10 +126,9 @@ export class PWMOscillator extends Source<PWMOscillatorOptions> implements ToneO
 	/**
 	 * restart the oscillator
 	 */
-	restart(time?: Time): this {
+	protected _restart(time: Seconds): void {
 		this._modulator.restart(time);
 		this._pulse.restart(time);
-		return this;
 	}
 
 	/**

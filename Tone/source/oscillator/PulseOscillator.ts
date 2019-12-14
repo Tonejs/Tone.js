@@ -1,5 +1,5 @@
 import { Gain } from "../../core/context/Gain";
-import { AudioRange, Degrees, Frequency, Time } from "../../core/type/Units";
+import { AudioRange, Degrees, Frequency, Seconds, Time } from "../../core/type/Units";
 import { optionsFromArguments } from "../../core/util/Defaults";
 import { readOnly } from "../../core/util/Interface";
 import { Signal } from "../../signal/Signal";
@@ -149,17 +149,10 @@ export class PulseOscillator extends Source<PulseOscillatorOptions> implements T
 		this._widthGate.gain.setValueAtTime(0, time);
 	}
 
-	/**
-	 * Restart the oscillator
-	 */
-	restart(time?: Time): this {
-		const computedTime = this.toSeconds(time);
-		if (this._state.getValueAtTime(computedTime) === "started") {
-			this._sawtooth.restart(computedTime);
-			this._widthGate.gain.cancelScheduledValues(computedTime);
-			this._widthGate.gain.setValueAtTime(1, computedTime);
-		}
-		return this;
+	protected _restart(time: Seconds): void {
+		this._sawtooth.restart(time);
+		this._widthGate.gain.cancelScheduledValues(time);
+		this._widthGate.gain.setValueAtTime(1, time);
 	}
 
 	/**

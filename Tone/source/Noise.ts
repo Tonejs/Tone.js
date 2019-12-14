@@ -178,19 +178,10 @@ export class Noise extends Source<NoiseOptions> {
 		}
 	}
 
-	/**
-	 * Restarts the noise.
-	 * @param  time When to restart the noise.
-	 */
-	restart(time?: Time): this {
-		time = this.toSeconds(time);
-		if (this._state.getValueAtTime(time) === "started") {
-			// TODO could be optimized by cancelling the buffer source 'stop'
-			// stop and restart
-			this._stop(time);
-			this._start(time);
-		}
-		return this;
+	protected _restart(time?: Time): void {
+		// TODO could be optimized by cancelling the buffer source 'stop'
+		this._stop(time);
+		this._start(time);		
 	}
 
 	/**
