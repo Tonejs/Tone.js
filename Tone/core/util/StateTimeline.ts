@@ -25,6 +25,7 @@ export class StateTimeline<AdditionalOptions extends {} = {}> extends Timeline<S
 	constructor(initial: PlaybackState = "stopped") {
 		super();
 		this._initial = initial;
+		this.setStateAtTime(this._initial, 0);
 	}
 
 	/**

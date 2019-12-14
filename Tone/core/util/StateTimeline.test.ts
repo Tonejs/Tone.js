@@ -68,7 +68,7 @@ describe("StateTimeline", () => {
 		// @ts-ignore
 		expect(sched.getLastState("stopped", 2).time).is.equal(1);
 		// @ts-ignore
-		expect(sched.getLastState("stopped", 0.9)).not.to.exist;
+		expect(sched.getLastState("stopped", 0.9).time).to.equal(0);
 		// @ts-ignore
 		expect(sched.getLastState("stopped", 4).state).is.equal("stopped");
 		// @ts-ignore
