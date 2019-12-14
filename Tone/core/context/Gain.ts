@@ -8,6 +8,8 @@ interface GainOptions<TypeName extends UnitName> extends ToneAudioNodeOptions {
 	gain: UnitMap[TypeName];
 	units: TypeName;
 	convert: boolean;
+	minValue?: number;
+	maxValue?: number;
 }
 
 /**
@@ -50,6 +52,8 @@ export class Gain<TypeName extends "gain" | "decibels" | "normalRange" = "gain">
 			param: this._gainNode.gain,
 			units: options.units,
 			value: options.gain,
+			minValue: options.minValue,
+			maxValue: options.maxValue,
 		});
 		readOnly(this, "gain");
 	}
