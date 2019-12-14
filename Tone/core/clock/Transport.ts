@@ -178,7 +178,7 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 		this._bindClockEvents();
 		this.bpm = this._clock.frequency as unknown as TickParam<"bpm">;
 		this._clock.frequency.multiplier = options.ppq;
-		this.bpm.value = options.bpm;
+		this.bpm.setValueAtTime(options.bpm, 0);
 		readOnly(this, "bpm");
 		this._timeSignature = options.timeSignature;
 

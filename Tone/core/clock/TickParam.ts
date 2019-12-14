@@ -265,6 +265,7 @@ export class TickParam<TypeName extends "hertz" | "bpm"> extends Param<TypeName>
 		// might be necessary to clear all the previous values
 		const currentVal = this.value;
 		this._multiplier = m;
-		this.value = currentVal;
+		this.cancelScheduledValues(0);
+		this.setValueAtTime(currentVal, 0);
 	}
 }
