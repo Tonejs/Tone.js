@@ -83,7 +83,7 @@ export class Reverb extends Effect<ReverbOptions> {
 	}
 	set decay(time) {
 		time = this.toSeconds(time);
-		assertRange(time, 0);
+		assertRange(time, this.sampleTime);
 		this._decay = time;
 		this.generate();
 	}
