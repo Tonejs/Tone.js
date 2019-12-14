@@ -128,15 +128,9 @@ export class Freeverb extends StereoEffect<FreeverbOptions> {
 
 	dispose(): this {
 		super.dispose();
-		for (let al = 0; al < this._allpassFiltersL.length; al++) {
-			this._allpassFiltersL[al].disconnect();
-		}
-		for (let ar = 0; ar < this._allpassFiltersR.length; ar++) {
-			this._allpassFiltersR[ar].disconnect();
-		}
-		for (let cf = 0; cf < this._combFilters.length; cf++) {
-			this._combFilters[cf].dispose();
-		}
+		this._allpassFiltersL.forEach(al => al.disconnect());
+		this._allpassFiltersR.forEach(ar => ar.disconnect());
+		this._combFilters.forEach(cf => cf.dispose());
 		this.roomSize.dispose();
 		return this;
 	}
