@@ -1,12 +1,14 @@
 import { gainToDb } from "../../core/type/Conversions";
-import { Decibels, NormalRange } from "../../core/type/Units";
+import { NormalRange } from "../../core/type/Units";
 import { optionsFromArguments } from "../../core/util/Defaults";
 import { MeterBase, MeterBaseOptions } from "./MeterBase";
 import { warn } from "../../core/util/Debug";
+import { Analyser } from "./Analyser";
 
 export interface MeterOptions extends MeterBaseOptions {
 	smoothing: NormalRange;
 	normalRange: boolean;
+	channels: number;
 }
 
 /**
@@ -54,9 +56,14 @@ export class Meter extends MeterBase<MeterOptions> {
 		super(optionsFromArguments(Meter.getDefaults(), arguments, ["smoothing"]));
 		const options = optionsFromArguments(Meter.getDefaults(), arguments, ["smoothing"]);
 
-		this.smoothing = options.smoothing;
-		this._analyser.size = 256;
-		this._analyser.type = "waveform";
+		this.input = this.output = this._analyser = new Analyser({
+			context: this.context,
+			size: 256,
+			type: "waveform",
+			channels: options.channels,
+		});
+
+		this.smoothing = options.smoothing,
 		this.normalRange = options.normalRange;
 	}
 
@@ -64,6 +71,7 @@ export class Meter extends MeterBase<MeterOptions> {
 		return Object.assign(MeterBase.getDefaults(), {
 			smoothing: 0.8,
 			normalRange: false,
+			channels: 1,
 		});
 	}
 
@@ -71,7 +79,7 @@ export class Meter extends MeterBase<MeterOptions> {
 	 * Use [[getValue]] instead. For the previous getValue behavior, use DCMeter.
 	 * @deprecated
 	 */
-	getLevel(): Decibels {
+	getLevel(): number | number[] {
 		warn("'getLevel' has been changed to 'getValue'");
 		return this.getValue();
 	}
@@ -79,15 +87,33 @@ export class Meter extends MeterBase<MeterOptions> {
 	/**
 	 * Get the current value of the incoming signal. 
 	 * Output is in decibels when [[normalRange]] is `false`.
+	 * If [[channels]] = 1, then the output is a single number
+	 * representing the value of the input signal. When [[channels]] > 1,
+	 * then each channel is returned as a value in a number array. 
 	 */
-	getValue(): number {
-		const values = this._analyser.getValue();
-		const totalSquared = values.reduce((total, current) => total + current * current, 0);
-		const rms = Math.sqrt(totalSquared / values.length);
-		// the rms can only fall at the rate of the smoothing
-		// but can jump up instantly
-		this._rms = Math.max(rms, this._rms * this.smoothing);
-		return this.normalRange ? this._rms : gainToDb(this._rms);
+	getValue(): number | number[] {
+		const aValues = this._analyser.getValue();
+		const channelValues = this.channels === 1 ? [aValues as Float32Array] : aValues as Float32Array[];
+		const vals = channelValues.map(values => {
+			const totalSquared = values.reduce((total, current) => total + current * current, 0);
+			const rms = Math.sqrt(totalSquared / values.length);
+			// the rms can only fall at the rate of the smoothing
+			// but can jump up instantly
+			this._rms = Math.max(rms, this._rms * this.smoothing);
+			return this.normalRange ? this._rms : gainToDb(this._rms);
+		});
+		if (this.channels === 1) {
+			return vals[0];
+		} else {
+			return vals;
+		}
+	}
+
+	/**
+	 * The number of channels of analysis.
+	 */
+	get channels(): number {
+		return this._analyser.channels;
 	}
 
 	dispose(): this {
