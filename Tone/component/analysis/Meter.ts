@@ -77,7 +77,8 @@ export class Meter extends MeterBase<MeterOptions> {
 	}
 
 	/**
-	 * Get the current decibel value of the incoming signal
+	 * Get the current value of the incoming signal. 
+	 * Output is in decibels when [[normalRange]] is `false`.
 	 */
 	getValue(): number {
 		const values = this._analyser.getValue();
