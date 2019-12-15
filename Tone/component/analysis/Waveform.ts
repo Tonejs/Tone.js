@@ -41,7 +41,7 @@ export class Waveform extends MeterBase<WaveformOptions> {
 	 * represents a sample in the waveform.
 	 */
 	getValue(): Float32Array {
-		return this._analyser.getValue();
+		return this._analyser.getValue() as Float32Array;
 	}
 
 	/**

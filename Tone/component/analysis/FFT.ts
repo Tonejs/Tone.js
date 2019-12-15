@@ -52,7 +52,8 @@ export class FFT extends MeterBase<FFTOptions> {
 	 * Returns the frequency data of length [[size]] as a Float32Array of decibel values.
 	 */
 	getValue(): Float32Array {
-		return this._analyser.getValue().map(v => this.normalRange ? dbToGain(v) : v);
+		const values = this._analyser.getValue() as Float32Array;
+		return values.map(v => this.normalRange ? dbToGain(v) : v);
 	}
 
 	/**

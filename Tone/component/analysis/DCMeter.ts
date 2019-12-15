@@ -33,7 +33,7 @@ export class DCMeter extends MeterBase<DCMeterOptions> {
 	 * Get the signal value of the incoming signal
 	 */
 	getValue(): number {
-		const value = this._analyser.getValue();
+		const value = this._analyser.getValue() as Float32Array;
 		return value[0];
 	}
 }

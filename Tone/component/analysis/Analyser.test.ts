@@ -64,4 +64,15 @@ describe("Analyser", () => {
 		anl.dispose();
 	});
 
+	it("can do multichannel analysis", () => {
+		const anl = new Analyser({
+			type: "waveform",
+			channels: 2,
+			size: 512,
+		});
+		expect(anl.getValue().length).to.equal(2);
+		expect((anl.getValue()[0] as Float32Array).length).to.equal(512);
+		anl.dispose();
+	});
+
 });
