@@ -42,9 +42,12 @@ describe("Delay", () => {
 		const delay = new Delay({
 			maxDelay: 1
 		});
-		delay.delayTime.value = 2;
-		expect(delay.delayTime.value).to.be.closeTo(1, 0.001);
-		delay.delayTime.value = -1;
+		expect(() => {
+			delay.delayTime.value = 2;
+		}).to.throw(RangeError);
+		expect(() => {
+			delay.delayTime.value = -1;
+		}).to.throw(RangeError);
 		expect(delay.delayTime.value).to.be.closeTo(0, 0.001);
 		delay.dispose();
 	});

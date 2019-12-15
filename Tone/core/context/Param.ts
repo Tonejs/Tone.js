@@ -7,6 +7,7 @@ import { Timeline } from "../util/Timeline";
 import { isDefined } from "../util/TypeCheck";
 import { ToneWithContext, ToneWithContextOptions } from "./ToneWithContext";
 import { EQ } from "../util/Math";
+import { assertRange } from "../util/Debug";
 
 export interface ParamOptions<TypeName extends UnitName> extends ToneWithContextOptions {
 	units: TypeName;
@@ -143,7 +144,6 @@ export class Param<TypeName extends UnitName = "number">
 		return this.getValueAtTime(now);
 	}
 	set value(value) {
-		this._initialValue = this._fromType(value);
 		this.cancelScheduledValues(this.now());
 		this.setValueAtTime(value, this.now());
 	}
@@ -187,12 +187,11 @@ export class Param<TypeName extends UnitName = "number">
 	/**
 	 * Make sure the value is always in the defined range
 	 */
-	private _clampValue(value: number): number {
+	private _assertRange(value: number): number {
 		if (isDefined(this.maxValue) && isDefined(this.minValue)) {
-			return Math.max(Math.min(value, this.maxValue), this.minValue);
-		} else {
-			return value;
+			assertRange(value, this._fromType(this.minValue), this._fromType(this.maxValue));
 		}
+		return value;
 	}
 
 	/**
@@ -202,21 +201,21 @@ export class Param<TypeName extends UnitName = "number">
 	protected _fromType(val: UnitMap[TypeName]): number {
 		if (this.convert && !this.overridden) {
 			if (this._is<Time>(val, "time")) {
-				return this._clampValue(this.toSeconds(val));
+				return this.toSeconds(val);
 			} else if (this._is<Decibels>(val, "decibels")) {
-				return this._clampValue(dbToGain(val));
+				return dbToGain(val);
 			} else if (this._is<Frequency>(val, "frequency")) {
-				return this._clampValue(this.toFrequency(val));
+				return this.toFrequency(val);
 			} else if (this._is<NormalRange>(val, "normalRange")) {
-				return this._clampValue(val);
+				return Math.min(Math.max(val, 0), 1);
 			} else if (this._is<AudioRange>(val, "audioRange")) {
-				return this._clampValue(val);
+				return Math.min(Math.max(val, -1), 1);
 			} else if (this._is<Positive>(val, "positive")) {
-				return this._clampValue(val);
+				return Math.max(val, 0);
 			} else if (this._is<number>(val, "number")) {
-				return this._clampValue(val);
+				return val;
 			} else {
-				return this._clampValue(val as number);
+				return val as number;
 			}
 		} else if (this.overridden) {
 			// if it's overridden, should only schedule 0s
@@ -247,7 +246,7 @@ export class Param<TypeName extends UnitName = "number">
 		const numericValue = this._fromType(value);
 		this.assert(isFinite(numericValue) && isFinite(computedTime),
 			`Invalid argument(s) to setValueAtTime: ${JSON.stringify(value)}, ${JSON.stringify(time)}`);
-
+		this._assertRange(numericValue);
 		this.log(this.units, "setValueAtTime", value, computedTime);
 		this._events.add({
 			time: computedTime,
@@ -316,6 +315,7 @@ export class Param<TypeName extends UnitName = "number">
 		const computedTime = this.toSeconds(endTime);
 		this.assert(isFinite(numericValue) && isFinite(computedTime),
 			`Invalid argument(s) to linearRampToValueAtTime: ${JSON.stringify(value)}, ${JSON.stringify(endTime)}`);
+		this._assertRange(numericValue);
 		this._events.add({
 			time: computedTime,
 			type: "linearRampToValueAtTime",
@@ -329,6 +329,7 @@ export class Param<TypeName extends UnitName = "number">
 	exponentialRampToValueAtTime(value: UnitMap[TypeName], endTime: Time): this {
 		let numericValue = this._fromType(value);
 		numericValue = Math.max(this._minOutput, numericValue);
+		this._assertRange(numericValue);
 		const computedTime = this.toSeconds(endTime);
 		this.assert(isFinite(numericValue) && isFinite(computedTime),
 			`Invalid argument(s) to exponentialRampToValueAtTime: ${JSON.stringify(value)}, ${JSON.stringify(endTime)}`);
@@ -380,6 +381,7 @@ export class Param<TypeName extends UnitName = "number">
 		// The value will never be able to approach without timeConstant > 0.
 		this.assert(isFinite(timeConstant) && timeConstant > 0, "timeConstant must be a number greater than 0");
 		const computedTime = this.toSeconds(startTime);
+		this._assertRange(numericValue);
 		this.assert(isFinite(numericValue) && isFinite(computedTime),
 			`Invalid argument(s) to setTargetAtTime: ${JSON.stringify(value)}, ${JSON.stringify(startTime)}`);
 		this._events.add({
