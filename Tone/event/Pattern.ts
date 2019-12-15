@@ -19,6 +19,7 @@ export interface PatternOptions<ValueType> extends LoopOptions {
  * const pattern = new Pattern((time, note) => {
  * 	// the order of the notes passed in depends on the pattern
  * }, ["C2", "D4", "E5", "A6"], "upDown");
+ * @category Event
  */
 export class Pattern<ValueType> extends Loop<PatternOptions<ValueType>> {
 
