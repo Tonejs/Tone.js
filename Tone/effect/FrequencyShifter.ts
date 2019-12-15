@@ -97,13 +97,11 @@ export class FrequencyShifter extends Effect<FrequencyShifterOptions> {
 
 		this._sine = new ToneOscillatorNode({
 			context: this.context,
-			frequency: options.frequency,
 			type: "sine",
 		});
 
 		this._cosine = new Oscillator({
 			context: this.context,
-			frequency: options.frequency,
 			phase: -90,
 			type: "sine",
 		});
