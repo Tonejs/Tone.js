@@ -55,7 +55,7 @@
 					keys.get(noteNames[i]).start(time, 0, "32n", 0, vel);
 				}
 			});
-			//set the columne on the correct draw frame
+			//set the column on the correct draw frame
 			Tone.Draw.schedule(function(){
 				document.querySelector("tone-step-sequencer").setAttribute("highlight", col);
 			}, time);
