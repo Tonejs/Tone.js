@@ -6,6 +6,7 @@ import { warn } from "../../core/util/Debug";
 
 export interface MeterOptions extends MeterBaseOptions {
 	smoothing: NormalRange;
+	normalRange: boolean;
 }
 
 /**
@@ -26,6 +27,13 @@ export interface MeterOptions extends MeterBaseOptions {
 export class Meter extends MeterBase<MeterOptions> {
 
 	readonly name: string = "Meter";
+
+	/**
+	 * If the output should be in decibels or normal range between 0-1. If `normalRange` is false,
+	 * the output range will be the measured decibel value, otherwise the decibel value will be converted to
+	 * the range of 0-1
+	 */
+	normalRange: boolean;
 
 	/**
 	 * A value from between 0 and 1 where 0 represents no time averaging with the last analysis frame.
@@ -49,11 +57,13 @@ export class Meter extends MeterBase<MeterOptions> {
 		this.smoothing = options.smoothing;
 		this._analyser.size = 256;
 		this._analyser.type = "waveform";
+		this.normalRange = options.normalRange;
 	}
 
 	static getDefaults(): MeterOptions {
 		return Object.assign(MeterBase.getDefaults(), {
 			smoothing: 0.8,
+			normalRange: false,
 		});
 	}
 
@@ -76,7 +86,7 @@ export class Meter extends MeterBase<MeterOptions> {
 		// the rms can only fall at the rate of the smoothing
 		// but can jump up instantly
 		this._rms = Math.max(rms, this._rms * this.smoothing);
-		return gainToDb(this._rms);
+		return this.normalRange ? this._rms : gainToDb(this._rms);
 	}
 
 	dispose(): this {

@@ -50,14 +50,29 @@ describe("Meter", () => {
 				meter.dispose();
 			});
 		});
-
+		
 		if (ONLINE_TESTING) {
+			
 			it("can get the rms level of the incoming signal", (done) => {
 				const meter = new Meter();
 				const osc = new Oscillator().connect(meter).start();
 				osc.volume.value = -6;
 				setTimeout(() => {
 					expect(meter.getValue()).to.be.closeTo(-9, 1);
+					meter.dispose();
+					osc.dispose();
+					done();
+				}, 400);
+			});
+
+			it("can get the values in normal range", (done) => {
+				const meter = new Meter({
+					normalRange: true,
+				});
+				const osc = new Oscillator().connect(meter).start();
+				osc.volume.value = -6;
+				setTimeout(() => {
+					expect(meter.getValue()).to.be.closeTo(0.35, 0.15);
 					meter.dispose();
 					osc.dispose();
 					done();
