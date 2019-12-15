@@ -119,6 +119,7 @@ export abstract class ModulationSynth<Options extends ModulationSynthOptions> ex
 		this.harmonicity = new Multiply({
 			context: this.context,
 			value: options.harmonicity,
+			minValue: 0,
 		});
 		this._modulationNode = new Gain({
 			context: this.context,

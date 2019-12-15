@@ -2,6 +2,7 @@ import { Gain } from "../core/context/Gain";
 import { Param } from "../core/context/Param";
 import { optionsFromArguments } from "../core/util/Defaults";
 import { Signal, SignalOptions } from "./Signal";
+import { InputNode, OutputNode } from "../core/context/ToneAudioNode";
 
 /**
  * Multiply two incoming signals. Or, if a number is given in the constructor,
@@ -36,17 +37,17 @@ export class Multiply<TypeName extends "number" | "positive" = "number"> extends
 	/**
 	 * the input gain node
 	 */
-	private _mult: Gain = new Gain({ context: this.context });
+	private _mult: Gain;
 
 	/**
 	 * The multiplicand input.
 	 */
-	input = this._mult;
+	input: InputNode;
 
 	/**
 	 * The product of the input and {@link factor}
 	 */
-	output = this._mult;
+	output: OutputNode;
 
 	/**
 	 * The multiplication factor. Can be set directly or a signal can be connected to it.
@@ -61,6 +62,12 @@ export class Multiply<TypeName extends "number" | "positive" = "number"> extends
 	constructor() {
 		super(Object.assign(optionsFromArguments(Multiply.getDefaults(), arguments, ["value"])));
 		const options = optionsFromArguments(Multiply.getDefaults(), arguments, ["value"]);
+
+		this._mult = this.input = this.output = new Gain({ 
+			context: this.context,
+			minValue: options.minValue,
+			maxValue: options.maxValue,
+		});
 
 		this.factor = this._param = this._mult.gain as unknown as Param<TypeName>;
 		this.factor.setValueAtTime(options.value, 0);
