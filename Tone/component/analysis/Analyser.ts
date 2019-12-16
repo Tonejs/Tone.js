@@ -3,7 +3,7 @@ import { NormalRange, PowerOfTwo } from "../../core/type/Units";
 import { optionsFromArguments } from "../../core/util/Defaults";
 import { Split } from "../channel/Split";
 import { Gain } from "../../core/context/Gain";
-import { assertRange } from "../../core/util/Debug";
+import { assert, assertRange } from "../../core/util/Debug";
 
 export type AnalyserType = "fft" | "waveform";
 
@@ -140,7 +140,7 @@ export class Analyser extends ToneAudioNode<AnalyserOptions> {
 		return this._type;
 	}
 	set type(type: AnalyserType) {
-		this.assert(type === "waveform" || type === "fft", `Analyser: invalid type: ${type}`);
+		assert(type === "waveform" || type === "fft", `Analyser: invalid type: ${type}`);
 		this._type = type;
 	}
 

@@ -1,6 +1,7 @@
 import { ToneAudioBuffer } from "../core/context/ToneAudioBuffer";
 import { Positive, Time } from "../core/type/Units";
 import { optionsFromArguments } from "../core/util/Defaults";
+import { assert } from "../core/util/Debug";
 import { Source, SourceOptions } from "../source/Source";
 import { ToneBufferSource } from "./buffer/ToneBufferSource";
 
@@ -99,7 +100,7 @@ export class Noise extends Source<NoiseOptions> {
 		return this._type;
 	}
 	set type(type: NoiseType) {
-		this.assert(type in _noiseBuffers, "Noise: invalid type: " + type);
+		assert(type in _noiseBuffers, "Noise: invalid type: " + type);
 		if (this._type !== type) {
 			this._type = type;
 			// if it's playing, stop and restart it

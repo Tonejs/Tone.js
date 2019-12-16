@@ -3,6 +3,7 @@ import { optionsFromArguments } from "../util/Defaults";
 import { noOp } from "../util/Interface";
 import { isString } from "../util/TypeCheck";
 import { ToneAudioBuffer } from "./ToneAudioBuffer";
+import { assert } from "../util/Debug";
 
 export interface ToneAudioBuffersUrlMap {
 	[name: string]: string | AudioBuffer | ToneAudioBuffer;
@@ -113,7 +114,7 @@ export class ToneAudioBuffers extends Tone {
 	 * @param  name  The key or index of the buffer.
 	 */
 	get(name: string | number): ToneAudioBuffer {
-		this.assert(this.has(name), `ToneAudioBuffers has no buffer named: ${name}`);
+		assert(this.has(name), `ToneAudioBuffers has no buffer named: ${name}`);
 		return this._buffers.get(name.toString()) as ToneAudioBuffer;
 	}
 

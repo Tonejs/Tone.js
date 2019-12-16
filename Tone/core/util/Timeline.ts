@@ -1,6 +1,7 @@
 import { Tone } from "../Tone";
 import { Seconds } from "../type/Units";
 import { optionsFromArguments } from "./Defaults";
+import { assert } from "./Debug";
 import { EQ, GT, GTE, LT } from "./Math";
 
 type TimelineSearchParam = "ticks" | "time";
@@ -80,11 +81,11 @@ export class Timeline<GenericEvent extends TimelineEvent> extends Tone {
 	 */
 	add(event: GenericEvent): this {
 		// the event needs to have a time attribute
-		this.assert(Reflect.has(event, "time"), "Timeline: events must have a time attribute");
+		assert(Reflect.has(event, "time"), "Timeline: events must have a time attribute");
 		event.time = event.time.valueOf();
 		if (this.increasing && this.length) {
 			const lastValue = this._timeline[this.length - 1] as GenericEvent;
-			this.assert(GTE(event.time, lastValue.time), "The time must be greater than or equal to the last scheduled time");
+			assert(GTE(event.time, lastValue.time), "The time must be greater than or equal to the last scheduled time");
 			this._timeline.push(event);
 		} else {
 			const index = this._search(event.time);

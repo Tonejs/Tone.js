@@ -1,5 +1,6 @@
 import { Tone } from "../Tone";
 import { isDefined } from "./TypeCheck";
+import { assert } from "./Debug";
 
 /**
  * An IntervalTimeline event must have a time and duration
@@ -40,8 +41,8 @@ export class IntervalTimeline extends Tone {
 	 * @param  event  The event to add to the timeline
 	 */
 	add(event: IntervalTimelineEvent): this {
-		this.assert(isDefined(event.time), "Events must have a time property");
-		this.assert(isDefined(event.duration), "Events must have a duration parameter");
+		assert(isDefined(event.time), "Events must have a time property");
+		assert(isDefined(event.duration), "Events must have a duration parameter");
 
 		event.time = event.time.valueOf();
 		let node: IntervalNode | null = new IntervalNode(event.time, event.time + event.duration, event);

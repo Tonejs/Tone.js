@@ -1,5 +1,7 @@
 /**
- * Assert that the statement is true, otherwise invoke an error with the given message.
+ * Assert that the statement is true, otherwise invoke the error.
+ * @param statement
+ * @param error The message which is passed into an Error
  */
 export function assert(statement: boolean, error: string): void {
 	if (!statement) {

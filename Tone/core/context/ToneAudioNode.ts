@@ -1,9 +1,8 @@
 import { isAudioNode, isAudioParam } from "../util/AdvancedTypeCheck";
-import { assert } from "../util/Debug";
 import { isDefined } from "../util/TypeCheck";
 import { Param } from "./Param";
 import { ToneWithContext, ToneWithContextOptions } from "./ToneWithContext";
-import { warn } from "../util/Debug";
+import { assert, warn } from "../util/Debug";
 
 export type InputNode = ToneAudioNode | AudioNode | Param<any> | AudioParam;
 export type OutputNode = ToneAudioNode | AudioNode;
@@ -122,7 +121,7 @@ export abstract class ToneAudioNode<Options extends ToneAudioNodeOptions = ToneA
 	 */
 	private _getChannelProperties(): ChannelProperties {
 		const nodeList = this._getInternalNodes();
-		this.assert(nodeList.length > 0, "ToneAudioNode does not have any internal nodes");
+		assert(nodeList.length > 0, "ToneAudioNode does not have any internal nodes");
 		// use the first node to get properties
 		// they should all be the same
 		const node = nodeList[0];

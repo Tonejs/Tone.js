@@ -5,6 +5,7 @@ import { optionsFromArguments } from "../../core/util/Defaults";
 import { readOnly, writable } from "../../core/util/Interface";
 import { isNumber } from "../../core/util/TypeCheck";
 import { Signal } from "../../signal/Signal";
+import { assert } from "../../core/util/Debug";
 
 export type FilterRollOff = -12 | -24 | -48 | -96;
 
@@ -123,7 +124,7 @@ export class Filter extends ToneAudioNode<FilterOptions> {
 	set type(type: BiquadFilterType) {
 		const types: BiquadFilterType[] = ["lowpass", "highpass", "bandpass",
 			"lowshelf", "highshelf", "notch", "allpass", "peaking"];
-		this.assert(types.indexOf(type) !== -1, `Invalid filter type: ${type}`);
+		assert(types.indexOf(type) !== -1, `Invalid filter type: ${type}`);
 		this._type = type;
 		this._filters.forEach(filter => filter.type = type);
 	}
@@ -141,7 +142,7 @@ export class Filter extends ToneAudioNode<FilterOptions> {
 		const possibilities = [-12, -24, -48, -96];
 		let cascadingCount = possibilities.indexOf(rolloffNum);
 		// check the rolloff is valid
-		this.assert(cascadingCount !== -1, `rolloff can only be ${possibilities.join(", ")}`);
+		assert(cascadingCount !== -1, `rolloff can only be ${possibilities.join(", ")}`);
 		cascadingCount += 1;
 
 		this._rolloff = rolloffNum;

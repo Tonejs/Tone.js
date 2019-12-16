@@ -1,6 +1,7 @@
 import { ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
 import { optionsFromArguments } from "../core/util/Defaults";
 import { isArray, isFunction } from "../core/util/TypeCheck";
+import { assert } from "../core/util/Debug";
 import { Signal } from "./Signal";
 import { SignalOperator } from "./SignalOperator";
 
@@ -122,7 +123,7 @@ export class WaveShaper extends SignalOperator<WaveShaperOptions> {
 
 	set oversample(oversampling: OverSampleType) {
 		const isOverSampleType = ["none", "2x", "4x"].some(str => str.includes(oversampling));
-		this.assert(isOverSampleType, "oversampling must be either 'none', '2x', or '4x'");
+		assert(isOverSampleType, "oversampling must be either 'none', '2x', or '4x'");
 		this._shaper.oversample = oversampling;
 	}
 

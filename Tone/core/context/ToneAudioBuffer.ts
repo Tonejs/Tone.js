@@ -5,6 +5,7 @@ import { isAudioBuffer } from "../util/AdvancedTypeCheck";
 import { optionsFromArguments } from "../util/Defaults";
 import { noOp } from "../util/Interface";
 import { isArray, isNumber, isString } from "../util/TypeCheck";
+import { assert } from "../util/Debug";
 
 interface ToneAudioBufferOptions {
 	url?: string | AudioBuffer | ToneAudioBuffer;
@@ -245,7 +246,7 @@ export class ToneAudioBuffer extends Tone {
 	slice(start: Seconds, end: Seconds = this.duration): ToneAudioBuffer {
 		const startSamples = Math.floor(start * this.sampleRate);
 		const endSamples = Math.floor(end * this.sampleRate);
-		this.assert(startSamples < endSamples, "The start time must be less than the end time");
+		assert(startSamples < endSamples, "The start time must be less than the end time");
 		const length = endSamples - startSamples;
 		const retBuffer = getContext().createBuffer(this.numberOfChannels, length, this.sampleRate);
 		for (let channel = 0; channel < this.numberOfChannels; channel++) {

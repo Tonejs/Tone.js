@@ -5,6 +5,7 @@ import { GainFactor, Positive, Seconds, Time } from "../../core/type/Units";
 import { defaultArg, optionsFromArguments } from "../../core/util/Defaults";
 import { noOp } from "../../core/util/Interface";
 import { isDefined } from "../../core/util/TypeCheck";
+import { assert } from "../../core/util/Debug";
 import { OneShotSource, OneShotSourceCurve, OneShotSourceOptions } from "../OneShotSource";
 import { GTE, LT } from "../../core/util/Math";
 
@@ -134,7 +135,7 @@ export class ToneBufferSource extends OneShotSource<ToneBufferSourceOptions> {
 	 * @param  gain  The gain to play the buffer back at.
 	 */
 	start(time?: Time, offset?: Time, duration?: Time, gain: GainFactor = 1): this {
-		this.assert(this.buffer.loaded, "buffer is either not set or not loaded");
+		assert(this.buffer.loaded, "buffer is either not set or not loaded");
 		const computedTime = this.toSeconds(time);
 
 		// apply the gain envelope

@@ -2,6 +2,7 @@ import { connect, OutputNode, ToneAudioNode, ToneAudioNodeOptions } from "../cor
 import { Decibels } from "../core/type/Units";
 import { Volume } from "../component";
 import { optionsFromArguments } from "../core/util/Defaults";
+import { assert } from "../core/util/Debug";
 import { Param } from "../core/context/Param";
 import { readOnly } from "../core/util/Interface";
 import { isDefined, isNumber } from "../core/util/TypeCheck";
@@ -91,7 +92,7 @@ export class UserMedia extends ToneAudioNode<UserMediaOptions> {
 	 * @return The promise is resolved when the stream is open.
 	 */
 	async open(labelOrId?: string | number): Promise<this> {
-		this.assert(UserMedia.supported, "UserMedia is not supported");
+		assert(UserMedia.supported, "UserMedia is not supported");
 		// close the previous stream
 		if (this.state === "started") {
 			this.close();
@@ -107,7 +108,7 @@ export class UserMedia extends ToneAudioNode<UserMediaOptions> {
 			if (!this._device && devices.length > 0) {
 				this._device = devices[0];
 			}
-			this.assert(isDefined(this._device), `No matching device ${labelOrId}`);
+			assert(isDefined(this._device), `No matching device ${labelOrId}`);
 		}
 		// do getUserMedia
 		const constraints = {

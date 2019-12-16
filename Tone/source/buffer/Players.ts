@@ -5,6 +5,7 @@ import { ToneAudioBuffers, ToneAudioBuffersUrlMap } from "../../core/context/Ton
 import { OutputNode, ToneAudioNode } from "../../core/context/ToneAudioNode";
 import { Decibels, Time } from "../../core/type/Units";
 import { optionsFromArguments } from "../../core/util/Defaults";
+import { assert } from "../../core/util/Debug";
 import { noOp, readOnly } from "../../core/util/Interface";
 import { BasicPlaybackState } from "../../core/util/StateTimeline";
 import { Source, SourceOptions } from "../Source";
@@ -169,7 +170,7 @@ export class Players extends ToneAudioNode<PlayersOptions> {
 	 * @param  name  The players name as defined in the constructor object or `add` method.
 	 */
 	player(name: string): Player {
-		this.assert(this.has(name), `No Player with the name ${name} exists on this object`);
+		assert(this.has(name), `No Player with the name ${name} exists on this object`);
 		if (!this._players.has(name)) {
 			const player = new Player({
 				context: this.context,
@@ -196,7 +197,7 @@ export class Players extends ToneAudioNode<PlayersOptions> {
 	 * @param callback  The callback to invoke when the url is loaded.
 	 */
 	add(name: string, url: string | ToneAudioBuffer | AudioBuffer, callback?: () => void): this {
-		this.assert(!this._buffers.has(name), "A buffer with that name already exists on this object");
+		assert(!this._buffers.has(name), "A buffer with that name already exists on this object");
 		this._buffers.add(name, url, callback);
 		return this;
 	}

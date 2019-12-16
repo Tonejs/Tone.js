@@ -8,6 +8,7 @@ import { isDefined, isString } from "../util/TypeCheck";
 import { AnyAudioContext, createAudioContext, createAudioWorkletNode } from "./AudioContext";
 import { closeContext, initializeContext } from "./ContextInitialization";
 import { BaseContext, ContextLatencyHint } from "./BaseContext";
+import { assert } from "../util/Debug";
 
 type Transport = import("../clock/Transport").Transport;
 type Destination = import("./Destination").Destination;
@@ -254,7 +255,7 @@ export class Context extends BaseContext {
 		return this._transport;
 	}
 	set transport(t: Transport) {
-		this.assert(!this._initialized, "The transport cannot be set after initialization.");
+		assert(!this._initialized, "The transport cannot be set after initialization.");
 		this._transport = t;
 	}
 
@@ -266,7 +267,7 @@ export class Context extends BaseContext {
 		return this._draw;
 	}
 	set draw(d) {
-		this.assert(!this._initialized, "Draw cannot be set after initialization.");
+		assert(!this._initialized, "Draw cannot be set after initialization.");
 		this._draw = d;
 	}
 
@@ -278,7 +279,7 @@ export class Context extends BaseContext {
 		return this._destination;
 	}
 	set destination(d: Destination) {
-		this.assert(!this._initialized, "The destination cannot be set after initialization.");
+		assert(!this._initialized, "The destination cannot be set after initialization.");
 		this._destination = d;
 	}
 
@@ -308,7 +309,7 @@ export class Context extends BaseContext {
 	 * @param name The name of the module
 	 */
 	async addAudioWorkletModule(url: string, name: string): Promise<void> {
-		this.assert(isDefined(this.rawContext.audioWorklet), "AudioWorkletNode is only available in a secure context (https or localhost)");
+		assert(isDefined(this.rawContext.audioWorklet), "AudioWorkletNode is only available in a secure context (https or localhost)");
 		if (!this._workletModules.has(name)) {
 			this._workletModules.set(name, this.rawContext.audioWorklet.addModule(url));
 		}

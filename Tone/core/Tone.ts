@@ -68,15 +68,6 @@ export abstract class Tone {
 		}
 	}
 
-	/**
-	 * Assert that the statement is true, otherwise invoke the error.
-	 * @param statement
-	 * @param error The message which is passed into an Error
-	 */
-	protected assert(statement: boolean, error: string): void {
-		assert(statement, error);
-	}
-
 	//-------------------------------------
 	// 	DISPOSING
 	//-------------------------------------

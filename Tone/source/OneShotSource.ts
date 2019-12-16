@@ -2,6 +2,7 @@ import { Gain } from "../core/context/Gain";
 import { ToneAudioNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
 import { GainFactor, Seconds, Time } from "../core/type/Units";
 import { noOp } from "../core/util/Interface";
+import { assert } from "../core/util/Debug";
 import { BasicPlaybackState } from "../core/util/StateTimeline";
 
 export type OneShotSourceCurve = "linear" | "exponential";
@@ -107,7 +108,7 @@ export abstract class OneShotSource<Options extends ToneAudioNodeOptions> extend
 	 * @param  time When to start the source
 	 */
 	protected _startGain(time: Seconds, gain: GainFactor = 1): this {
-		this.assert(this._startTime === -1, "Source cannot be started more than once");
+		assert(this._startTime === -1, "Source cannot be started more than once");
 		// apply a fade in envelope
 		const fadeInTime = this.toSeconds(this._fadeIn);
 
@@ -144,7 +145,7 @@ export abstract class OneShotSource<Options extends ToneAudioNodeOptions> extend
 	 * @param  time When to stop the source
 	 */
 	protected _stopGain(time: Seconds): this {
-		this.assert(this._startTime !== -1, "'start' must be called before 'stop'");
+		assert(this._startTime !== -1, "'start' must be called before 'stop'");
 		// cancel the previous stop
 		this.cancelStop();
 
@@ -216,7 +217,7 @@ export abstract class OneShotSource<Options extends ToneAudioNodeOptions> extend
 	 */
 	cancelStop(): this {
 		this.log("cancelStop");
-		this.assert(this._startTime !== -1, "Source is not started");
+		assert(this._startTime !== -1, "Source is not started");
 		// cancel the stop envelope
 		this._gainNode.gain.cancelScheduledValues(this._startTime + this.sampleTime);
 		this.context.clearTimeout(this._timeout);

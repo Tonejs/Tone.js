@@ -10,7 +10,7 @@ import { AMSynth, AMSynthOptions } from "./AMSynth";
 import { MetalSynth, MetalSynthOptions } from "./MetalSynth";
 import { Monophonic } from "./Monophonic";
 import { Synth, SynthOptions } from "./Synth";
-import { warn } from "../core/util/Debug";
+import { assert, warn } from "../core/util/Debug";
 
 type VoiceConstructor<V> = {
 	getDefaults: () => VoiceOptions<V>;
@@ -117,7 +117,7 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 		const options = optionsFromArguments(PolySynth.getDefaults(), arguments, ["voice", "options"]);
 
 		// check against the old API (pre 14.3.0)
-		this.assert(!isNumber(options.voice), "DEPRECATED: The polyphony count is no longer the first argument.");
+		assert(!isNumber(options.voice), "DEPRECATED: The polyphony count is no longer the first argument.");
 
 		const defaults = options.voice.getDefaults();
 		this.options = Object.assign(defaults, options.options) as VoiceOptions<Voice>;
@@ -237,7 +237,7 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 	 * to wait for just-in-time scheduling
 	 */
 	private _scheduleEvent(type: "attack" | "release", notes: Frequency[], time: Seconds, velocity?: NormalRange): void {
-		this.assert(!this.disposed, "Synth was already disposed");
+		assert(!this.disposed, "Synth was already disposed");
 		// if the notes are greater than this amount of time in the future, they should be scheduled with setTimeout
 		if (time <= this.now()) {
 			// do it immediately
@@ -319,17 +319,17 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 		const computedTime = this.toSeconds(time);
 		this.triggerAttack(notes, computedTime, velocity);
 		if (isArray(duration)) {
-			this.assert(isArray(notes), "If the duration is an array, the notes must also be an array");
+			assert(isArray(notes), "If the duration is an array, the notes must also be an array");
 			notes = notes as Frequency[];
 			for (let i = 0; i < notes.length; i++) {
 				const d = duration[Math.min(i, duration.length - 1)];
 				const durationSeconds = this.toSeconds(d);
-				this.assert(durationSeconds > 0, "The duration must be greater than 0");
+				assert(durationSeconds > 0, "The duration must be greater than 0");
 				this.triggerRelease(notes[i], computedTime + durationSeconds);
 			}
 		} else {
 			const durationSeconds = this.toSeconds(duration);
-			this.assert(durationSeconds > 0, "The duration must be greater than 0");
+			assert(durationSeconds > 0, "The duration must be greater than 0");
 			this.triggerRelease(notes, computedTime + durationSeconds);
 		}
 		return this;
