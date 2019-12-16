@@ -1,4 +1,5 @@
 import { assert } from "../core/util/Debug";
+import { clamp } from "../core/util/Math";
 
 /**
  * The name of the patterns
@@ -11,7 +12,7 @@ export type PatternName = "up" | "down" | "upDown" | "downUp" | "alternateUp" | 
 function* upPatternGen<T>(values: T[]): IterableIterator<T> {
 	let index = 0;
 	while (index < values.length) {
-		index = clamp(index, values);
+		index = clampToArraySize(index, values);
 		yield values[index];
 		index++;
 	}
@@ -23,7 +24,7 @@ function* upPatternGen<T>(values: T[]): IterableIterator<T> {
 function* downPatternGen<T>(values: T[]): IterableIterator<T> {
 	let index = values.length - 1;
 	while (index >= 0) {
-		index = clamp(index, values);
+		index = clampToArraySize(index, values);
 		yield values[index];
 		index--;
 	}
@@ -41,8 +42,8 @@ function* infiniteGen<T>(values: T[], gen: typeof upPatternGen): IterableIterato
 /**
  * Make sure that the index is in the given range
  */
-function clamp(index: number, values: any[]): number {
-	return Math.max(Math.min(index, values.length - 1), 0);
+function clampToArraySize(index: number, values: any[]): number {
+	return clamp(index, 0, values.length - 1);
 }
 
 /**
@@ -51,7 +52,7 @@ function clamp(index: number, values: any[]): number {
 function* alternatingGenerator<T>(values: T[], directionUp: boolean): IterableIterator<T> {
 	let index = directionUp ? 0 : values.length - 1;
 	while (true) {
-		index = clamp(index, values);
+		index = clampToArraySize(index, values);
 		yield values[index];
 		if (directionUp) {
 			index++;
@@ -74,7 +75,7 @@ function* jumpUp<T>(values: T[]): IterableIterator<T> {
 	let index = 0;
 	let stepIndex = 0;
 	while (index < values.length) {
-		index = clamp(index, values);
+		index = clampToArraySize(index, values);
 		yield values[index];
 		stepIndex++;
 		index += (stepIndex % 2 ? 2 : -1);
@@ -88,7 +89,7 @@ function* jumpDown<T>(values: T[]): IterableIterator<T> {
 	let index = values.length - 1;
 	let stepIndex = 0;
 	while (index >= 0) {
-		index = clamp(index, values);
+		index = clampToArraySize(index, values);
 		yield values[index];
 		stepIndex++;
 		index += (stepIndex % 2 ? -2 : 1);
@@ -117,7 +118,7 @@ function* randomOnce<T>(values: T[]): IterableIterator<T> {
 	while (copy.length > 0) {
 		// random choose an index, and then remove it so it's not chosen again
 		const randVal = copy.splice(Math.floor(copy.length * Math.random()), 1);
-		const index = clamp(randVal[0], values);
+		const index = clampToArraySize(randVal[0], values);
 		yield values[index];
 	}
 }

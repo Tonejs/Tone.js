@@ -8,6 +8,7 @@ import { generateWaveform, ToneOscillatorConstructorOptions, ToneOscillatorInter
 	ToneOscillatorOptions, ToneOscillatorType } from "./OscillatorInterface";
 import { ToneOscillatorNode } from "./ToneOscillatorNode";
 import { assertRange } from "../../core/util/Debug";
+import { clamp } from "../../core/util/Math";
 export { ToneOscillatorOptions, ToneOscillatorType } from "./OscillatorInterface";
 /**
  * Oscillator supports a number of features including
@@ -407,7 +408,7 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 		for (let i = 0; i < testPositions; i++) {
 			maxValue = Math.max(this._inverseFFT(real, imag, (i / testPositions) * twoPi), maxValue);
 		}
-		return -this._inverseFFT(real, imag, this._phase) / maxValue;
+		return clamp(-this._inverseFFT(real, imag, this._phase) / maxValue, -1, 1);
 	}
 
 	get partials(): number[] {

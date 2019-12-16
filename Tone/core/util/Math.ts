@@ -31,3 +31,10 @@ export function LT(a: number, b: number): boolean {
 export function EQ(a: number, b: number): boolean {
 	return Math.abs(a - b) < EPSILON;
 }
+
+/**
+ * Clamp the value within the given range
+ */
+export function clamp(value: number, min: number, max: number): number {
+	return Math.max(Math.min(value, max), min);
+}
