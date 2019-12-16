@@ -395,17 +395,17 @@ describe("Param", () => {
 		testUnitConversion("decibels", -100, -100, 0);
 		testUnitConversion("gain", 1.2, 1.2, 1.2);
 		testUnitConversion("positive", 1.5, 1.5, 1.5);
-		testUnitConversion("positive", -1.5, 0, 0);
+		testUnitConversion("positive", 0, 0, 0);
 		testUnitConversion("time", 2, 2, 2);
 		testUnitConversion("time", 0, 0, 0);
 		testUnitConversion("frequency", 20, 20, 20);
 		testUnitConversion("frequency", 0.1, 0.1, 0.1);
-		testUnitConversion("normalRange", -1, 0, 0);
+		testUnitConversion("normalRange", 0, 0, 0);
 		testUnitConversion("normalRange", 0.5, 0.5, 0.5);
 		testUnitConversion("normalRange", 1.5, 1, 1);
-		testUnitConversion("audioRange", -1.1, -1, -1);
+		testUnitConversion("audioRange", -1, -1, -1);
 		testUnitConversion("audioRange", 0.5, 0.5, 0.5);
-		testUnitConversion("audioRange", 1.5, 1, 1);
+		testUnitConversion("audioRange", 1, 1, 1);
 	});
 
 	context("min/maxValue", () => {

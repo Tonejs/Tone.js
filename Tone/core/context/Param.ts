@@ -7,7 +7,7 @@ import { Timeline } from "../util/Timeline";
 import { isDefined } from "../util/TypeCheck";
 import { ToneWithContext, ToneWithContextOptions } from "./ToneWithContext";
 import { EQ } from "../util/Math";
-import { assertRange } from "../util/Debug";
+import { assert, assertRange } from "../util/Debug";
 
 export interface ParamOptions<TypeName extends UnitName> extends ToneWithContextOptions {
 	units: TypeName;
@@ -103,7 +103,7 @@ export class Param<TypeName extends UnitName = "number">
 
 		const options = optionsFromArguments(Param.getDefaults(), arguments, ["param", "units", "convert"]);
 
-		this.assert(isDefined(options.param) &&
+		assert(isDefined(options.param) &&
 			(isAudioParam(options.param) || options.param instanceof Param), "param must be an AudioParam");
 
 		while (!isAudioParam(options.param)) {
@@ -206,14 +206,6 @@ export class Param<TypeName extends UnitName = "number">
 				return dbToGain(val);
 			} else if (this._is<Frequency>(val, "frequency")) {
 				return this.toFrequency(val);
-			} else if (this._is<NormalRange>(val, "normalRange")) {
-				return Math.min(Math.max(val, 0), 1);
-			} else if (this._is<AudioRange>(val, "audioRange")) {
-				return Math.min(Math.max(val, -1), 1);
-			} else if (this._is<Positive>(val, "positive")) {
-				return Math.max(val, 0);
-			} else if (this._is<number>(val, "number")) {
-				return val;
 			} else {
 				return val as number;
 			}
@@ -244,7 +236,7 @@ export class Param<TypeName extends UnitName = "number">
 	setValueAtTime(value: UnitMap[TypeName], time: Time): this {
 		const computedTime = this.toSeconds(time);
 		const numericValue = this._fromType(value);
-		this.assert(isFinite(numericValue) && isFinite(computedTime),
+		assert(isFinite(numericValue) && isFinite(computedTime),
 			`Invalid argument(s) to setValueAtTime: ${JSON.stringify(value)}, ${JSON.stringify(time)}`);
 		this._assertRange(numericValue);
 		this.log(this.units, "setValueAtTime", value, computedTime);
@@ -313,7 +305,7 @@ export class Param<TypeName extends UnitName = "number">
 	linearRampToValueAtTime(value: UnitMap[TypeName], endTime: Time): this {
 		const numericValue = this._fromType(value);
 		const computedTime = this.toSeconds(endTime);
-		this.assert(isFinite(numericValue) && isFinite(computedTime),
+		assert(isFinite(numericValue) && isFinite(computedTime),
 			`Invalid argument(s) to linearRampToValueAtTime: ${JSON.stringify(value)}, ${JSON.stringify(endTime)}`);
 		this._assertRange(numericValue);
 		this._events.add({
@@ -331,7 +323,7 @@ export class Param<TypeName extends UnitName = "number">
 		numericValue = Math.max(this._minOutput, numericValue);
 		this._assertRange(numericValue);
 		const computedTime = this.toSeconds(endTime);
-		this.assert(isFinite(numericValue) && isFinite(computedTime),
+		assert(isFinite(numericValue) && isFinite(computedTime),
 			`Invalid argument(s) to exponentialRampToValueAtTime: ${JSON.stringify(value)}, ${JSON.stringify(endTime)}`);
 		// store the event
 		this._events.add({
@@ -379,10 +371,10 @@ export class Param<TypeName extends UnitName = "number">
 	setTargetAtTime(value: UnitMap[TypeName], startTime: Time, timeConstant: Positive): this {
 		const numericValue = this._fromType(value);
 		// The value will never be able to approach without timeConstant > 0.
-		this.assert(isFinite(timeConstant) && timeConstant > 0, "timeConstant must be a number greater than 0");
+		assert(isFinite(timeConstant) && timeConstant > 0, "timeConstant must be a number greater than 0");
 		const computedTime = this.toSeconds(startTime);
 		this._assertRange(numericValue);
-		this.assert(isFinite(numericValue) && isFinite(computedTime),
+		assert(isFinite(numericValue) && isFinite(computedTime),
 			`Invalid argument(s) to setTargetAtTime: ${JSON.stringify(value)}, ${JSON.stringify(startTime)}`);
 		this._events.add({
 			constant: timeConstant,
@@ -410,7 +402,7 @@ export class Param<TypeName extends UnitName = "number">
 
 	cancelScheduledValues(time: Time): this {
 		const computedTime = this.toSeconds(time);
-		this.assert(isFinite(computedTime), `Invalid argument to cancelScheduledValues: ${JSON.stringify(time)}`);
+		assert(isFinite(computedTime), `Invalid argument to cancelScheduledValues: ${JSON.stringify(time)}`);
 		this._events.cancel(computedTime);
 		this._param.cancelScheduledValues(computedTime);
 		this.log(this.units, "cancelScheduledValues", computedTime);
@@ -421,7 +413,7 @@ export class Param<TypeName extends UnitName = "number">
 		const computedTime = this.toSeconds(time);
 		const valueAtTime = this._fromType(this.getValueAtTime(computedTime));
 		// remove the schedule events
-		this.assert(isFinite(computedTime), `Invalid argument to cancelAndHoldAtTime: ${JSON.stringify(time)}`);
+		assert(isFinite(computedTime), `Invalid argument to cancelAndHoldAtTime: ${JSON.stringify(time)}`);
 
 		this.log(this.units, "cancelAndHoldAtTime", computedTime, "value=" + valueAtTime);
 		
@@ -506,7 +498,7 @@ export class Param<TypeName extends UnitName = "number">
 	 * onto the parameter and replace the connections.
 	 */
 	setParam(param: AudioParam): this {
-		this.assert(this._swappable, "The Param must be assigned as 'swappable' in the constructor");
+		assert(this._swappable, "The Param must be assigned as 'swappable' in the constructor");
 		const input = this.input as GainNode;
 		input.disconnect(this._param);
 		this.apply(param);
