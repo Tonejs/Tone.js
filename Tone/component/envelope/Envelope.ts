@@ -5,7 +5,8 @@ import { optionsFromArguments } from "../../core/util/Defaults";
 import { isArray, isObject, isString } from "../../core/util/TypeCheck";
 import { connectSignal, Signal } from "../../signal/Signal";
 import { OfflineContext } from "../../core/context/OfflineContext";
-import { assertRange } from "../../core/util/Debug";
+import { assert } from "../../core/util/Debug";
+import { range, timeRange } from "../../core/util/Decorator";
 
 type BasicEnvelopeCurve = "linear" | "exponential";
 type InternalEnvelopeCurve = BasicEnvelopeCurve | number[];
@@ -55,24 +56,84 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	readonly name: string = "Envelope";
 	
 	/**
-	 * Private container for the attack value
+	 * When triggerAttack is called, the attack time is the amount of
+	 * time it takes for the envelope to reach it's maximum value.
+	 * ```
+	 *           /\
+	 *          /X \
+	 *         /XX  \
+	 *        /XXX   \
+	 *       /XXXX    \___________
+	 *      /XXXXX                \
+	 *     /XXXXXX                 \
+	 *    /XXXXXXX                  \
+	 *   /XXXXXXXX                   \
+	 * ```
+	 * @min 0
+	 * @max 2
 	 */
-	private _attack!: Time;
+	@timeRange(0)
+	attack: Time;
 
 	/**
-	 * Private holder of the decay time
+	 * After the attack portion of the envelope, the value will fall
+	 * over the duration of the decay time to it's sustain value.
+	 * ```
+	 *           /\
+	 *          / X\
+	 *         /  XX\
+	 *        /   XXX\
+	 *       /    XXXX\___________
+	 *      /     XXXXX           \
+	 *     /      XXXXX            \
+	 *    /       XXXXX             \
+	 *   /        XXXXX              \
+	 * ```
+	 * @min 0
+	 * @max 2
 	 */
-	private _decay!: Time;
+	@timeRange(0)
+	decay: Time;
 
 	/**
-	 * private holder for the sustain value
+	 * The sustain value is the value
+	 * which the envelope rests at after triggerAttack is
+	 * called, but before triggerRelease is invoked.
+	 * ```
+	 *           /\
+	 *          /  \
+	 *         /    \
+	 *        /      \
+	 *       /        \___________
+	 *      /          XXXXXXXXXXX\
+	 *     /           XXXXXXXXXXX \
+	 *    /            XXXXXXXXXXX  \
+	 *   /             XXXXXXXXXXX   \
+	 * ```
 	 */
-	private _sustain!: NormalRange;
+	@range(0, 1)
+	sustain: NormalRange;
 
 	/**
-	 * private holder for the release value
+	 * After triggerRelease is called, the envelope's
+	 * value will fall to it's miminum value over the
+	 * duration of the release time.
+	 * ```
+	 *           /\
+	 *          /  \
+	 *         /    \
+	 *        /      \
+	 *       /        \___________
+	 *      /                    X\
+	 *     /                     XX\
+	 *    /                      XXX\
+	 *   /                       XXXX\
+	 * ```
+	 * @min 0
+	 * @max 5
 	 */
-	private _release!: Time;
+	@timeRange(0)
+	release: Time;
 
 	/**
 	 * The automation curve type for the attack
@@ -151,106 +212,6 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	 */
 	get value(): NormalRange {
 		return this.getValueAtTime(this.now());
-	}
-
-	/**
-	 * When triggerAttack is called, the attack time is the amount of
-	 * time it takes for the envelope to reach it's maximum value.
-	 * ```
-	 *           /\
-	 *          /X \
-	 *         /XX  \
-	 *        /XXX   \
-	 *       /XXXX    \___________
-	 *      /XXXXX                \
-	 *     /XXXXXX                 \
-	 *    /XXXXXXX                  \
-	 *   /XXXXXXXX                   \
-	 * ```
-	 * @min 0
-	 * @max 2
-	 */
-	get attack(): Time {
-		return this._attack;
-	}
-	set attack(time) {
-		assertRange(this.toSeconds(time), 0);
-		this._attack = time;
-	}
-
-	/**
-	 * After the attack portion of the envelope, the value will fall
-	 * over the duration of the decay time to it's sustain value.
-	 * ```
-	 *           /\
-	 *          / X\
-	 *         /  XX\
-	 *        /   XXX\
-	 *       /    XXXX\___________
-	 *      /     XXXXX           \
-	 *     /      XXXXX            \
-	 *    /       XXXXX             \
-	 *   /        XXXXX              \
-	 * ```
-	 * @min 0
-	 * @max 2
-	 */
-	get decay(): Time {
-		return this._decay;
-	}
-	set decay(time) {
-		assertRange(this.toSeconds(time), 0);
-		this._decay = time;
-	}
-
-	/**
-	 * The sustain value is the value
-	 * which the envelope rests at after triggerAttack is
-	 * called, but before triggerRelease is invoked.
-	 * ```
-	 *           /\
-	 *          /  \
-	 *         /    \
-	 *        /      \
-	 *       /        \___________
-	 *      /          XXXXXXXXXXX\
-	 *     /           XXXXXXXXXXX \
-	 *    /            XXXXXXXXXXX  \
-	 *   /             XXXXXXXXXXX   \
-	 * ```
-	 */
-	get sustain(): NormalRange {
-		return this._sustain;
-	}
-	set sustain(val) {
-		assertRange(this.toSeconds(val), 0, 1);
-		this._sustain = val;
-	}
-
-	/**
-	 * After triggerRelease is called, the envelope's
-	 * value will fall to it's miminum value over the
-	 * duration of the release time.
-	 * ```
-	 *           /\
-	 *          /  \
-	 *         /    \
-	 *        /      \
-	 *       /        \___________
-	 *      /                    X\
-	 *     /                     XX\
-	 *    /                      XXX\
-	 *   /                       XXXX\
-	 * ```
-	 * @min 0
-	 * @max 5
-	 */
-	get release(): Time {
-		return this._release;
-	}
-	set release(time) {
-		assertRange(this.toSeconds(time), 0);
-		this._release = time;
 	}
 
 	/**
@@ -359,7 +320,7 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 		return this._decayCurve;
 	}
 	set decayCurve(curve) {
-		this.assert(["linear", "exponential"].some(c => c === curve), `Invalid envelope curve: ${curve}`);
+		assert(["linear", "exponential"].some(c => c === curve), `Invalid envelope curve: ${curve}`);
 		this._decayCurve = curve;
 	}
 
@@ -421,8 +382,6 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 			if (this._decayCurve === "linear") {
 				this._sig.linearRampToValueAtTime(decayValue, decay + decayStart);
 			} else {
-				this.assert(this._decayCurve === "exponential",
-					`decayCurve can only be "linear" or "exponential", got ${this._decayCurve}`);
 				this._sig.exponentialApproachValueAtTime(decayValue, decayStart, decay);
 			}
 		}
@@ -453,7 +412,7 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 			} else if (this._releaseCurve === "exponential") {
 				this._sig.targetRampTo(0, release, time);
 			} else {
-				this.assert(isArray(this._releaseCurve), "releaseCurve must be either 'linear', 'exponential' or an array");
+				assert(isArray(this._releaseCurve), "releaseCurve must be either 'linear', 'exponential' or an array");
 				this._sig.cancelAndHoldAtTime(time);
 				this._sig.setValueCurveAtTime(this._releaseCurve, time, release, currentValue);
 			}

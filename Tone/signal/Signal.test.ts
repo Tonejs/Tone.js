@@ -434,20 +434,29 @@ describe("Signal", () => {
 		});
 
 		it("converts NormalRange units", () => {
-			const signal = new Signal(2, "normalRange");
+			expect(() => {
+				new Signal(2, "normalRange");
+			}).to.throw(RangeError);
+			const signal = new Signal(1, "normalRange");
 			expect(signal.value).to.be.closeTo(1, 0.01);
 			signal.dispose();
 		});
-
+		
 		it("converts AudioRange units", () => {
-			const signal = new Signal(-2, "audioRange");
+			expect(() => {
+				new Signal(-2, "audioRange");
+			}).to.throw(RangeError);
+			const signal = new Signal(-1, "audioRange");
 			expect(signal.value).to.be.closeTo(-1, 0.01);
 			signal.dispose();
 		});
-
+		
 		it("converts Positive units", () => {
-			const signal = new Signal(-2, "positive");
-			expect(signal.value).to.be.closeTo(0, 0.01);
+			expect(() => {
+				new Signal(-2, "positive");
+			}).to.throw(RangeError);
+			const signal = new Signal(100, "positive");
+			expect(signal.value).to.be.closeTo(100, 0.01);
 			signal.dispose();
 		});
 

@@ -8,6 +8,8 @@ import { noOp } from "../core/util/Interface";
 import { isArray, isNote, isNumber } from "../core/util/TypeCheck";
 import { Instrument, InstrumentOptions } from "../instrument/Instrument";
 import { ToneBufferSource, ToneBufferSourceCurve } from "../source/buffer/ToneBufferSource";
+import { timeRange } from "../core/util/Decorator";
+import { assert } from "../core/util/Debug";
 
 interface SamplesMap {
 	[note: string]: ToneAudioBuffer | AudioBuffer | string;
@@ -64,6 +66,7 @@ export class Sampler extends Instrument<SamplerOptions> {
 	 * @min 0
 	 * @max 1
 	 */
+	@timeRange(0)
 	attack: Time;
 	
 	/**
@@ -71,6 +74,7 @@ export class Sampler extends Instrument<SamplerOptions> {
 	 * @min 0
 	 * @max 1
 	 */
+	@timeRange(0)
 	release: Time;
 
 	/**
@@ -101,7 +105,7 @@ export class Sampler extends Instrument<SamplerOptions> {
 		const urlMap = {};
 		Object.keys(options.urls).forEach((note) => {
 			const noteNumber = parseInt(note, 10);
-			this.assert(isNote(note)
+			assert(isNote(note)
 				|| (isNumber(noteNumber) && isFinite(noteNumber)), `url key is neither a note or midi pitch: ${note}`);
 			if (isNote(note)) {
 				// convert the note name to MIDI
@@ -263,7 +267,7 @@ export class Sampler extends Instrument<SamplerOptions> {
 		const computedTime = this.toSeconds(time);
 		this.triggerAttack(notes, computedTime, velocity);
 		if (isArray(duration)) {
-			this.assert(isArray(notes), "notes must be an array when duration is array");
+			assert(isArray(notes), "notes must be an array when duration is array");
 			(notes as Frequency[]).forEach((note, index) => {
 				const d = duration[Math.min(index, duration.length - 1)];
 				this.triggerRelease(note, computedTime + this.toSeconds(d));
@@ -281,7 +285,7 @@ export class Sampler extends Instrument<SamplerOptions> {
 	 * @param  callback  The callback to invoke when the url is loaded.
 	 */
 	add(note: Note | MidiNote, url: string | ToneAudioBuffer | AudioBuffer, callback?: () => void): this {
-		this.assert(isNote(note) || isFinite(note), `note must be a pitch or midi: ${note}`);
+		assert(isNote(note) || isFinite(note), `note must be a pitch or midi: ${note}`);
 		if (isNote(note)) {
 			// convert the note name to MIDI
 			const mid = new FrequencyClass(this.context, note).toMidi();

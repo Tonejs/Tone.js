@@ -13,6 +13,7 @@
 		"moduleResolution": "node",
 		"strictPropertyInitialization" : true,
 		"downlevelIteration" : true,
+		"experimentalDecorators": true,
 		"lib": ["es6", "dom", "es2015"],
 		"baseUrl": "./"
 	},
