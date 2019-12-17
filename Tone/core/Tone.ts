@@ -6,7 +6,7 @@
  */
 import { version } from "../version";
 import { theWindow } from "./context/AudioContext";
-import { assert, log } from "./util/Debug";
+import { log } from "./util/Debug";
 
 //-------------------------------------
 // 	TONE

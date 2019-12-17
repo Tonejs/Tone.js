@@ -1,6 +1,6 @@
 import { AbstractParam } from "../context/AbstractParam";
 import { dbToGain, gainToDb } from "../type/Conversions";
-import { AudioRange, Decibels, Frequency, NormalRange, Positive, Time, UnitMap, UnitName } from "../type/Units";
+import { Decibels, Frequency, Positive, Time, UnitMap, UnitName } from "../type/Units";
 import { isAudioParam } from "../util/AdvancedTypeCheck";
 import { optionsFromArguments } from "../util/Defaults";
 import { Timeline } from "../util/Timeline";
