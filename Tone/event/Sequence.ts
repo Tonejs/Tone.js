@@ -51,12 +51,12 @@ export class Sequence<ValueType = any> extends ToneEvent<ValueType> {
 	/**
 	 * private reference to all of the sequence proxies
 	 */
-	private _events: ValueType[] = [];
+	private _events: SequenceEventDescription<ValueType> = [];
 
 	/**
 	 * The proxied array
 	 */
-	private _eventsArray: ValueType[] = [];
+	private _eventsArray: SequenceEventDescription<ValueType> = [];
 
 	/**
 	 * @param  callback  The callback to invoke with every note
