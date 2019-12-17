@@ -106,7 +106,8 @@ export class MetalSynth extends Monophonic<MetalSynthOptions> {
 		}).connect(this.output);
 
 		this._highpass = new Filter({
-			Q: -3.0102999566398125,
+			// Q: -3.0102999566398125,
+			Q: 0,
 			context: this.context,
 			type: "highpass",
 		}).connect(this._amplitude);
