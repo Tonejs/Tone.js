@@ -2,7 +2,7 @@ import { assertRange } from "./Debug";
 import { Time } from "../type/Units";
 
 /**
- * Assert that the time is in the given range
+ * Assert that the number is in the given range.
  */
 export function range(min: number, max = Infinity) {
 	const valueMap: WeakMap<any, number> = new WeakMap();
