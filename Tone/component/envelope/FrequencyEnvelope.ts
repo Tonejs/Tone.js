@@ -3,6 +3,7 @@ import { Frequency, Hertz, NormalRange, Positive, Time } from "../../core/type/U
 import { Envelope, EnvelopeOptions } from "./Envelope";
 import { Scale } from "../../signal/Scale";
 import { Pow } from "../../signal/Pow";
+import { assertRange } from "../../core/util/Debug";
 
 export interface FrequencyEnvelopeOptions extends EnvelopeOptions {
 	baseFrequency: Frequency;
@@ -91,12 +92,14 @@ export class FrequencyEnvelope extends Envelope {
 		return this._baseFrequency;
 	}
 	set baseFrequency(min) {
-		this._baseFrequency = this.toFrequency(min);
+		const freq = this.toFrequency(min);
+		assertRange(freq, 0);
+		this._baseFrequency = freq;
 		this._scale.min = this._baseFrequency;
 		// update the max value when the min changes
 		this.octaves = this._octaves;
 	}
-
+	
 	/**
 	 * The number of octaves above the baseFrequency that the
 	 * envelope will scale to.
@@ -105,6 +108,7 @@ export class FrequencyEnvelope extends Envelope {
 		return this._octaves;
 	}
 	set octaves(octaves: Positive) {
+		assertRange(octaves, 0);
 		this._octaves = octaves;
 		this._scale.max = this._baseFrequency * Math.pow(2, octaves);
 	}

@@ -6,6 +6,7 @@ import { isUndef } from "../../core/util/TypeCheck";
 import { Source, SourceOptions } from "../Source";
 import { ToneBufferSource } from "./ToneBufferSource";
 import { assertRange } from "../../core/util/Debug";
+import { timeRange } from "../../core/util/Decorator";
 
 export interface PlayerOptions extends SourceOptions {
 	onload: () => void;
@@ -72,11 +73,13 @@ export class Player extends Source<PlayerOptions> {
 	/**
 	 * The fadeIn time of the amplitude envelope.
 	 */
+	@timeRange(0)
 	fadeIn: Time;
-
+	
 	/**
 	 * The fadeOut time of the amplitude envelope.
 	 */
+	@timeRange(0)
 	fadeOut: Time;
 
 	/**

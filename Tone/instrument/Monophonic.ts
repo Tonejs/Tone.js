@@ -4,6 +4,7 @@ import { optionsFromArguments } from "../core/util/Defaults";
 import { noOp } from "../core/util/Interface";
 import { Instrument, InstrumentOptions } from "../instrument/Instrument";
 import { Signal } from "../signal/Signal";
+import { timeRange } from "../core/util/Decorator";
 
 type onSilenceCallback = (instrument: Monophonic<any>) => void;
 
@@ -21,6 +22,7 @@ export abstract class Monophonic<Options extends MonophonicOptions> extends Inst
 	/**
 	 * The glide time between notes.
 	 */
+	@timeRange(0)
 	portamento: Seconds;
 
 	/**
