@@ -192,11 +192,6 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 		} else {
 			this.log("start", computedTime);
 			this._state.setStateAtTime("started", computedTime);
-			// try {
-			// } catch (e) {
-			// 	debugger;
-			// 	console.log(computedTime);
-			// }
 			if (this._synced) {
 				// add the offset time to the event
 				const event = this._state.get(computedTime);
