@@ -6,9 +6,10 @@ import { OutputNode, ToneAudioNode, ToneAudioNodeOptions } from "../core/context
 import { Decibels, Seconds, Time } from "../core/type/Units";
 import { defaultArg } from "../core/util/Defaults";
 import { noOp, readOnly } from "../core/util/Interface";
-import { BasicPlaybackState, StateTimeline } from "../core/util/StateTimeline";
+import { BasicPlaybackState, StateTimeline, StateTimelineEvent } from "../core/util/StateTimeline";
 import { isDefined, isUndef } from "../core/util/TypeCheck";
-import { assertContextRunning } from "../core/util/Debug";
+import { assert, assertContextRunning } from "../core/util/Debug";
+import { GT } from "../core/util/Math";
 
 type onStopCallback = (source: Source<any>) => void;
 
@@ -185,6 +186,8 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 		computedTime = this._clampToCurrentTime(computedTime);
 		// if it's started, stop it and restart it
 		if (this._state.getValueAtTime(computedTime) === "started") {
+			// time should be strictly greater than the previous start time
+			assert(GT(computedTime, (this._state.get(computedTime) as StateTimelineEvent).time), "Start time must be strictly greater than previous start time");
 			this._state.cancel(computedTime);
 			this._state.setStateAtTime("started", computedTime);
 			this.log("restart", computedTime);

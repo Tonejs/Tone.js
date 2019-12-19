@@ -64,10 +64,12 @@ describe("Source", () => {
 	});
 
 	it("cannot be scheduled to stop/start twice in a row", () => {
-		const source = new Oscillator();
-		source.start(0).start(1);
-		source.stop(2).stop(3);
-		source.dispose();
+		return Offline(() => {
+			const source = new Oscillator();
+			source.start(0).start(1);
+			source.stop(2).stop(3);
+			source.dispose();
+		});
 	});
 
 	it("can be scheduled with multiple starts/stops", () => {
@@ -140,6 +142,17 @@ describe("Source", () => {
 				}
 			};
 		}, 0.6);
+	});
+
+	it("start needs to be greater than the previous start time", () => {
+		return Offline(() => {
+			const source = new Oscillator();
+			source.start(0);
+			expect(() => {
+				source.start(0);
+			}).to.throw(Error);
+			source.dispose();
+		});
 	});
 
 	context("sync", () => {
