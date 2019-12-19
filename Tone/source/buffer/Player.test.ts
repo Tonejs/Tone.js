@@ -404,7 +404,7 @@ describe("Player", () => {
 			});
 		});
 
-		it("is stopped and restarted if retrigger=false", () => {
+		it("is stopped and restarted when start is called twice", () => {
 			return Offline(() => {
 				// make a ramp between 0-1
 				const ramp = new Float32Array(Math.floor(getContext().sampleRate * 0.3));
