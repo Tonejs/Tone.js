@@ -155,7 +155,8 @@ export class Player extends Source<PlayerOptions> {
 
 		// delete the source from the active sources
 		this._activeSources.delete(source);
-		if (this._activeSources.size === 0 && !this._synced) {
+		if (this._activeSources.size === 0 && !this._synced && 
+		this._state.getValueAtTime(this.now()) === "started") {
 			this._state.setStateAtTime("stopped", this.now());
 		}
 	}
