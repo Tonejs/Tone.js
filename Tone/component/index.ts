@@ -12,6 +12,7 @@ export * from "./channel/MidSideMerge";
 export * from "./channel/MidSideSplit";
 export * from "./channel/MultibandSplit";
 export * from "./channel/Panner";
+export * from "./channel/Panner3D";
 export * from "./channel/PanVol";
 export * from "./channel/Volume";
 export * from "./channel/Solo";
