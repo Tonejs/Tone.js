@@ -167,7 +167,7 @@ export class Player extends Source<PlayerOptions> {
 	 * within the buffer for the given duration.
 	 *
 	 * @param  time When the player should start.
-	 * @param  offset The offset from the beginning of the samplem to start at.
+	 * @param  offset The offset from the beginning of the sample to start at.
 	 * @param  duration How long the sample should play. If no duration is given, it will default to the full length of the sample (minus any offset)
 	 */
 	start(time?: Time, offset?: Time, duration?: Time): this {
@@ -179,7 +179,7 @@ export class Player extends Source<PlayerOptions> {
 	 * Internal start method
 	 */
 	protected _start(startTime?: Time, offset?: Time, duration?: Time): void {
-		// if it's a loop the default offset is the loopstart point
+		// if it's a loop the default offset is the loopStart point
 		if (this._loop) {
 			offset = defaultArg(offset, this._loopStart);
 		} else {
