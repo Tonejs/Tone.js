@@ -7,7 +7,7 @@ import { noOp } from "../../core/util/Interface";
 import { isDefined } from "../../core/util/TypeCheck";
 import { assert } from "../../core/util/Debug";
 import { OneShotSource, OneShotSourceCurve, OneShotSourceOptions } from "../OneShotSource";
-import { GTE, LT } from "../../core/util/Math";
+import { EQ, GTE, LT } from "../../core/util/Math";
 
 export type ToneBufferSourceCurve = OneShotSourceCurve;
 
@@ -161,8 +161,12 @@ export class ToneBufferSource extends OneShotSource<ToneBufferSourceOptions> {
 			if (GTE(computedOffset, loopEnd)) {
 				computedOffset = ((computedOffset - loopStart) % loopDuration) + loopStart;
 			}
+			// when the offset is very close to the duration, set it to 0
+			if (EQ(computedOffset, this.buffer.duration)) {
+				computedOffset = 0;
+			}
 		}
-
+		
 		// this.buffer.loaded would have return false if the AudioBuffer was undefined
 		this._source.buffer = this.buffer.get() as AudioBuffer;
 		this._source.loopEnd = this.toSeconds(this.loopEnd) || this.buffer.duration;
