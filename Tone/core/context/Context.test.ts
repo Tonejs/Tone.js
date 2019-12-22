@@ -7,24 +7,27 @@ import { getContext } from "../Global";
 import { createAudioContext } from "./AudioContext";
 import { Context } from "./Context";
 import { Destination } from "./Destination";
+import { Listener } from "./Listener";
 import { Draw } from "../util/Draw";
 import { connect } from "./ToneAudioNode";
 
 describe("Context", () => {
 
 	it("creates and disposes the classes attached to the context", async () => {
-		const ac = new AudioContext();
+		const ac = createAudioContext();
 		const context = new Context(ac);
 		const ctxDest = context.destination;
 		const ctxDraw = context.draw;
 		const ctxTransport = context.transport;
+		const ctxListener = context.listener;
 		expect(context.destination).is.instanceOf(Destination);
 		expect(context.draw).is.instanceOf(Draw);
-		expect(context.listener).to.exist;
+		expect(context.listener).is.instanceOf(Listener);
 		await context.close();
 		expect(ctxDest.disposed).to.be.true;
 		expect(ctxDraw.disposed).to.be.true;
 		expect(ctxTransport.disposed).to.be.true;
+		expect(ctxListener.disposed).to.be.true;
 		context.dispose();
 	});
 
@@ -83,7 +86,7 @@ describe("Context", () => {
 	context("state", () => {
 
 		it("can suspend and resume the state", async () => {
-			const ac = new AudioContext();
+			const ac = createAudioContext();
 			const context = new Context(ac);
 			expect(context.rawContext).to.equal(ac);
 			await ac.suspend();
@@ -95,7 +98,7 @@ describe("Context", () => {
 		});
 
 		it("invokes the statechange event", async () => {
-			const ac = new AudioContext();
+			const ac = createAudioContext();
 			const context = new Context(ac);
 			let triggerChange = false;
 			context.on("statechange", state => {
