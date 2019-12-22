@@ -2,6 +2,7 @@ import { Param } from "../../core/context/Param";
 import { ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
 import { Degrees, GainFactor } from "../../core/type/Units";
 import { optionsFromArguments } from "../../core/util/Defaults";
+import "../../core/context/Listener";
 
 export interface Panner3DOptions extends ToneAudioNodeOptions {
 	coneInnerAngle: Degrees;
