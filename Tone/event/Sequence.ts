@@ -281,6 +281,10 @@ export class Sequence<ValueType = any> extends ToneEvent<ValueType> {
 		this._part.probability = prob;
 	}
 
+	get progress(): NormalRange {
+		return this._part.progress;
+	}
+
 	get humanize(): boolean | Time {
 		return this._part.humanize;
 	}
