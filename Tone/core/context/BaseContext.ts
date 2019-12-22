@@ -5,6 +5,7 @@ import { AnyAudioContext } from "./AudioContext";
 type Draw = import("../util/Draw").Draw;
 type Destination = import("./Destination").Destination;
 type Transport = import("../clock/Transport").Transport;
+type Listener = import("./Listener").Listener;
 type BaseAudioContextSubset = import("./Context").BaseAudioContextSubset;
 
 export type ContextLatencyHint = AudioContextLatencyCategory | "fastest";
@@ -91,7 +92,7 @@ export abstract class BaseContext extends Emitter<"statechange" | "tick"> implem
 
 	abstract get sampleRate(): number
 
-	abstract get listener(): AudioListener
+	abstract get listener(): Listener
 
 	abstract get transport(): Transport
 

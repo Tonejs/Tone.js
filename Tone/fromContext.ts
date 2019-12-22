@@ -1,6 +1,7 @@
 import * as Classes from "./classes";
 import { Transport } from "./core/clock/Transport";
 import { Context } from "./core/context/Context";
+import { Listener } from "./core/context/Listener";
 import { Destination } from "./core/context/Destination";
 import { FrequencyClass } from "./core/type/Frequency";
 import { MidiClass } from "./core/type/Midi";
@@ -20,6 +21,7 @@ type ClassesWithoutSingletons = Omit<typeof Classes, "Transport" | "Destination"
 type Tone = {
 	Transport: Transport;
 	Destination: Destination;
+	Listener: Listener;
 	Draw: Draw;
 	context: Context;
 	now: () => number;
@@ -60,6 +62,7 @@ export function fromContext(context: Context): Tone {
 		immediate: context.immediate.bind(context),
 		Transport: context.transport,
 		Destination: context.destination,
+		Listener: context.listener,
 		Draw: context.draw,
 		context,
 		// the type functions

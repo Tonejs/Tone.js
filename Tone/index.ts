@@ -34,6 +34,12 @@ export const Transport = getContext().transport;
 export const Destination = getContext().destination;
 
 /**
+ * The [[Listener]] belonging to the global Tone.js Context.
+ * @category Core
+ */
+export const Listener = getContext().listener;
+
+/**
  * Draw is used to synchronize the draw frame with the Transport's callbacks. 
  * See [[Draw]]
  * @category Core

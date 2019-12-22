@@ -12,6 +12,7 @@ import { assert } from "../util/Debug";
 
 type Transport = import("../clock/Transport").Transport;
 type Destination = import("./Destination").Destination;
+type Listener = import("./Listener").Listener;
 type Draw = import("../util/Draw").Draw;
 
 // these are either not used in Tone.js or deprecated and not implemented.
@@ -86,6 +87,11 @@ export class Context extends BaseContext {
 	 * A reference the Transport singleton belonging to this context
 	 */
 	private _transport!: Transport;
+
+	/**
+	 * A reference the Listener singleton belonging to this context
+	 */
+	private _listener!: Listener;
 	
 	/**
 	 * A reference the Destination singleton belonging to this context
@@ -240,11 +246,17 @@ export class Context extends BaseContext {
 	get sampleRate(): number {
 		return this._context.sampleRate;
 	}
+
 	/**
 	 * The listener
 	 */
-	get listener(): AudioListener {
-		return this._context.listener;
+	get listener(): Listener {
+		this.initialize();
+		return this._listener;
+	}
+	set listener(l) {
+		assert(!this._initialized, "The listener cannot be set after initialization.");
+		this._listener = l;
 	}
 
 	/**

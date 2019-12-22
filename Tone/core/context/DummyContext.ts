@@ -5,6 +5,7 @@ import { AnyAudioContext } from "./AudioContext";
 type Draw = import("../util/Draw").Draw;
 type Destination = import("./Destination").Destination;
 type Transport = import("../clock/Transport").Transport;
+type Listener = import("./Listener").Listener;
 
 export class DummyContext extends BaseContext {
 	//---------------------------
@@ -149,8 +150,8 @@ export class DummyContext extends BaseContext {
 		return 0;
 	}
 
-	get listener(): AudioListener {
-		return {} as AudioListener;
+	get listener(): Listener {
+		return {} as Listener;
 	}
 
 	get transport(): Transport {
