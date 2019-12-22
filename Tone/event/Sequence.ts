@@ -5,7 +5,7 @@ import { isArray, isString } from "../core/util/TypeCheck";
 import { Part } from "./Part";
 import { ToneEvent, ToneEventCallback, ToneEventOptions } from "./ToneEvent";
 
-type SequenceEventDescription<T> = Array<T | T[]>;
+type SequenceEventDescription<T> = Array<T | Array<T | Array<T | Array<T | Array<T | T[]>>>>>;
 
 interface SequenceOptions<T> extends Omit<ToneEventOptions<T>, "value"> {
 	loopStart: number;
