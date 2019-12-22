@@ -72,7 +72,7 @@ export class Listener extends ToneAudioNode<ListenerOptions> {
 
 	readonly upZ: Param = new Param({
 		context: this.context,
-		param: this.context.rawContext.listener.forwardZ,
+		param: this.context.rawContext.listener.upZ,
 	})
 
 	static getDefaults(): ListenerOptions {
