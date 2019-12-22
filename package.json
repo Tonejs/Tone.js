@@ -96,7 +96,7 @@
     "yargs": "^13.2.0"
   },
   "dependencies": {
-    "standardized-audio-context": "^23.0.3",
+    "standardized-audio-context": "^23.0.7",
     "tslib": "^1.10.0"
   }
 }
