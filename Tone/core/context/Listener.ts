@@ -85,7 +85,7 @@ export class Listener extends ToneAudioNode<ListenerOptions> {
 			forwardZ: -1,
 			upX: 0,
 			upY: 1,
-			upZ: -1,
+			upZ: 0,
 		});
 	}
 
