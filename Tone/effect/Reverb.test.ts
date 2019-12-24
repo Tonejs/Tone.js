@@ -20,6 +20,15 @@ describe("Reverb", () => {
 			reverb.dispose();
 		});
 
+		it("can get/set values", () => {
+			const reverb = new Reverb();
+			reverb.decay = 0.5;
+			expect(reverb.decay).to.be.closeTo(0.5, 0.001);
+			reverb.preDelay = 0.05;
+			expect(reverb.preDelay).to.be.closeTo(0.05, 0.001);
+			reverb.dispose();
+		});
+
 		it("can get/set the options", () => {
 			const reverb = new Reverb();
 			reverb.set({
