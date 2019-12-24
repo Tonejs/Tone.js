@@ -458,4 +458,4 @@ export type OmniOscillatorSynthOptions =
 	OmitSourceOptions<OmniFatCustomOscillatorOptions> | OmitSourceOptions<OmniFatTypeOscillatorOptions> | OmitSourceOptions<OmniFatPartialsOscillatorOptions> |
 	OmitSourceOptions<OmniFMCustomOscillatorOptions> | OmitSourceOptions<OmniFMTypeOscillatorOptions> | OmitSourceOptions<OmniFMPartialsOscillatorOptions> |
 	OmitSourceOptions<OmniAMCustomOscillatorOptions> | OmitSourceOptions<OmniAMTypeOscillatorOptions> | OmitSourceOptions<OmniAMPartialsOscillatorOptions> |
-	OmitSourceOptions<ToneOscillatorConstructorOptions>;
+	OmitSourceOptions<ToneCustomOscillatorOptions> | OmitSourceOptions<ToneTypeOscillatorOptions> | OmitSourceOptions<TonePartialOscillatorOptions>
