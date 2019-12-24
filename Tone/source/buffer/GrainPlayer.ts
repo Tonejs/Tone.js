@@ -249,6 +249,9 @@ export class GrainPlayer extends Source<GrainPlayerOptions> {
 		return this._loopStart;
 	}
 	set loopStart(time) {
+		if (this.buffer.loaded) {
+			assertRange(this.toSeconds(time), 0, this.buffer.duration);
+		}
 		this._loopStart = this.toSeconds(time);
 	}
 
@@ -259,6 +262,9 @@ export class GrainPlayer extends Source<GrainPlayerOptions> {
 		return this._loopEnd;
 	}
 	set loopEnd(time) {
+		if (this.buffer.loaded) {
+			assertRange(this.toSeconds(time), 0, this.buffer.duration);
+		}
 		this._loopEnd = this.toSeconds(time);
 	}
 
