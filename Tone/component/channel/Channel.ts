@@ -157,9 +157,10 @@ export class Channel extends ToneAudioNode<ChannelOptions> {
 	 * Receive audio from a channel which was connected with [[send]]. 
 	 * @param name The channel name to receive audio from.
 	 */
-	receive(name: string) {
+	receive(name: string): this {
 		const bus = this._getBus(name);
 		bus.connect(this);
+		return this;
 	}
 
 	dispose(): this {
