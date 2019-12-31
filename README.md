@@ -4,7 +4,7 @@ Tone.js
 [![Build Status](https://travis-ci.org/Tonejs/Tone.js.svg?branch=dev)](https://travis-ci.org/Tonejs/Tone.js) [![codecov](https://codecov.io/gh/Tonejs/Tone.js/branch/dev/graph/badge.svg)](https://codecov.io/gh/Tonejs/Tone.js)
 
 
-Tone.js is a Web Audio framework for creating interactive music in the browser. The architecture of Tone.js aims to be familiar to both musicians and audio programmers looking to create web-based audio applications. On the high-level, Tone offers common DAW (digital audio workstation) features like a global transport for scheduling events and prebuilt synths and effects. For signal-processing programmers (coming from languages like Max/MSP), Tone provides a wealth of high performance, low latency building blocks and DSP modules to build your own synthesizers, effects, and complex control signals.
+Tone.js is a Web Audio framework for creating interactive music in the browser. The architecture of Tone.js aims to be familiar to both musicians and audio programmers looking to create web-based audio applications. On the high-level, Tone offers common DAW (digital audio workstation) features like a global transport for scheduling events and prebuilt synths and effects. For signal-processing programmers (coming from languages like Max/MSP), Tone provides a wealth of high-performance building blocks to create your own synthesizers, effects, and complex control signals.
 
 [API](https://tonejs.github.io/docs/)
 
@@ -54,13 +54,13 @@ The first argument to `triggerAttackRelease` is the frequency which can either b
 
 #### Time
 
-Tone.js abstracts away the AudioContext time. Instead of defining all values in seconds, any method which takes time as an argument can accept a number or a string. For example `"4n"` is a quarter-note, `"8t"` is an eighth-note triplet, and `"1m"` is one measure. These values can even be composed into expressions.
+Tone.js abstracts away the AudioContext time. Instead of defining all values in seconds, any method which takes time as an argument can accept a number or a string. For example `"4n"` is a quarter-note, `"8t"` is an eighth-note triplet, and `"1m"` is one measure.
 
 [Read about Time encodings](https://github.com/Tonejs/Tone.js/wiki/Time).
 
 # Starting Audio
 
-Browsers will not play _any_ audio until a user clicks something (like a play button) and the AudioContext has had a chance to start. Execute the above example only after a users invokes `resume()` on Tone's context, or simply `Tone.start()`. 
+Browsers will not play _any_ audio until a user clicks something (like a play button) and the AudioContext has had a chance to start. Run your Tone.js code only after calling `Tone.start()` from a event listener which is triggered by a user action such as "click" or "keydown". 
 
 `Tone.start` returns a promise, the audio will be ready only after that promise is resolved. Scheduling or playing audio before the AudioContext is running will result in silence or wrong scheduling.
 
@@ -171,7 +171,7 @@ Like the underlying Web Audio API, Tone.js is built with audio-rate signal contr
 
 # AudioContext
 
-Tone.js creates an AudioContext when it loads and shims it for maximum browser compatibility. The AudioContext can be found at `Tone.context`. Or set your own AudioContext using `Tone.setContext(audioContext)`.
+Tone.js creates an AudioContext when it loads and shims it for maximum browser compatibility using [standardized-audio-context](https://github.com/chrisguttandin/standardized-audio-context). The AudioContext can be accessed at `Tone.context`. Or set your own AudioContext using `Tone.setContext(audioContext)`.
 
 # MIDI
 
@@ -201,3 +201,4 @@ If you have questions (or answers) that are not necessarily bugs/issues, please 
 * [The Spec](http://webaudio.github.io/web-audio-api/)
 * [Sound on Sound - Synth Secrets](http://www.soundonsound.com/sos/may99/articles/synthsec.htm)
 * [Miller Puckette - Theory and Techniques of Electronic Music](http://msp.ucsd.edu/techniques.htm)
+* [standardized-audio-context](https://github.com/chrisguttandin/standardized-audio-context)
