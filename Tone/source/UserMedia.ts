@@ -1,6 +1,6 @@
 import { connect, OutputNode, ToneAudioNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
 import { Decibels } from "../core/type/Units";
-import { Volume } from "../component";
+import { Volume } from "../component/channel/Volume";
 import { optionsFromArguments } from "../core/util/Defaults";
 import { assert } from "../core/util/Debug";
 import { Param } from "../core/context/Param";

@@ -5,7 +5,7 @@ import { CrossFade } from "../component/channel/CrossFade";
 import { Signal } from "../signal/Signal";
 import { Split } from "../component/channel/Split";
 import { Gain } from "../core/context/Gain";
-import { Merge } from "../component";
+import { Merge } from "../component/channel/Merge";
 import { readOnly } from "../core/util/Interface";
 
 export type StereoEffectOptions = EffectOptions;
