@@ -1,4 +1,4 @@
-import { connectSeries } from "../core/Connect";
+import { connectSeries } from "../core/context/ToneAudioNode";
 import { Gain } from "../core/context/Gain";
 import { Param } from "../core/context/Param";
 import { optionsFromArguments } from "../core/util/Defaults";

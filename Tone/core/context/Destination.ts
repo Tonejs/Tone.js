@@ -1,11 +1,10 @@
 import { Volume } from "../../component/channel/Volume";
-import { connectSeries } from "../Connect";
 import { Decibels } from "../type/Units";
 import { optionsFromArguments } from "../util/Defaults";
 import { onContextClose, onContextInit } from "./ContextInitialization";
 import { Gain } from "./Gain";
 import { Param } from "./Param";
-import { ToneAudioNode, ToneAudioNodeOptions } from "./ToneAudioNode";
+import { connectSeries, ToneAudioNode, ToneAudioNodeOptions } from "./ToneAudioNode";
 
 interface DestinationOptions extends ToneAudioNodeOptions {
 	volume: Decibels;

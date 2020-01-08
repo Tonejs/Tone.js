@@ -1,6 +1,5 @@
 import { EffectOptions } from "./Effect";
-import { OutputNode, ToneAudioNode } from "../core/context/ToneAudioNode";
-import { connect, connectSeries } from "../core/Connect";
+import { connect, connectSeries, OutputNode, ToneAudioNode } from "../core/context/ToneAudioNode";
 import { CrossFade } from "../component/channel/CrossFade";
 import { Signal } from "../signal/Signal";
 import { Split } from "../component/channel/Split";

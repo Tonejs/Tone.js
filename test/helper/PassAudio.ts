@@ -9,6 +9,7 @@ import { Signal } from "Tone/signal/Signal";
  */
 export function PassAudio(
 	callback: (input: ToneAudioNode) => void,
+	passes = true
 ): Promise<void> {
 	const duration = 0.2;
 	return Offline(() => {
@@ -18,7 +19,12 @@ export function PassAudio(
 	}, 0.2, 1).then(buffer => {
 		expect(buffer.getValueAtTime(0)).to.be.closeTo(0, 0.001);
 		expect(buffer.getValueAtTime(duration / 2 - 0.01)).to.be.closeTo(0, 0.001);
-		expect(buffer.getValueAtTime(duration / 2 + 0.01)).to.not.equal(0);
-		expect(buffer.getValueAtTime(duration - 0.01)).to.not.equal(0);
+		if (passes) {
+			expect(buffer.getValueAtTime(duration / 2 + 0.01)).to.not.equal(0);
+			expect(buffer.getValueAtTime(duration - 0.01)).to.not.equal(0);
+		} else {
+			expect(buffer.getValueAtTime(duration / 2 + 0.01)).to.be.closeTo(0, 0.001);
+			expect(buffer.getValueAtTime(duration - 0.01)).to.be.closeTo(0, 0.001);
+		}
 	});
 }

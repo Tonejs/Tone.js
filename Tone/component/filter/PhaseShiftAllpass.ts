@@ -1,6 +1,5 @@
-import { connectSeries } from "../../core/Connect";
 import { Gain } from "../../core/context/Gain";
-import { ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
+import { connectSeries, ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
 
 /**
  * PhaseShiftAllpass is an very efficient implementation of a Hilbert Transform

@@ -1,4 +1,4 @@
-import { connect } from "../../core/Connect";
+import { connect } from "../../core/context/ToneAudioNode";
 import { Param } from "../../core/context/Param";
 import { ToneAudioBuffer } from "../../core/context/ToneAudioBuffer";
 import { GainFactor, Positive, Seconds, Time } from "../../core/type/Units";

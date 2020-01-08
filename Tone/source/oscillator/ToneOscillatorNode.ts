@@ -1,4 +1,4 @@
-import { connect } from "../../core/Connect";
+import { connect } from "../../core/context/ToneAudioNode";
 import { Param } from "../../core/context/Param";
 import { Cents, Frequency, Seconds, Time } from "../../core/type/Units";
 import { optionsFromArguments } from "../../core/util/Defaults";

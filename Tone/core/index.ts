@@ -26,8 +26,6 @@ export * from "./util/StateTimeline";
 export * from "./util/Timeline";
 export * from "./util/TypeCheck";
 
-export * from "./Connect";
-
 export { dbToGain, gainToDb, intervalToFrequencyRatio, ftom, mtof } from "./type/Conversions";
 export { optionsFromArguments, defaultArg } from "./util/Defaults";
 

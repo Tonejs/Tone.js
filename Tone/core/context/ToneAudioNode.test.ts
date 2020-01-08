@@ -3,6 +3,9 @@ import { Merge } from "Tone/component";
 import { Split } from "Tone/component/channel/Split";
 import { Oscillator } from "Tone/source";
 import { Gain } from "./Gain";
+import { connect, disconnect } from "./ToneAudioNode";
+import { PassAudio } from "test/helper/PassAudio";
+import { Offline } from "test/helper/Offline";
 
 describe("ToneAudioNode", () => {
 
@@ -188,6 +191,134 @@ describe("ToneAudioNode", () => {
 			}).throws(Error);
 			nodeA.dispose();
 			nodeB.dispose();
+		});
+	});
+
+	context("connect native node", () => {
+
+		it("can create a connection", () => {
+			return PassAudio(input => {
+				const output = input.context.destination;
+				connect(input, output);
+			});
+		});
+
+		it("can disconnect two nodes", () => {
+			return PassAudio(input => {
+				const output = input.context.destination;
+				connect(input, output);
+				disconnect(input, output);
+			}, false);
+		});
+
+		it("can disconnect a node", () => {
+			PassAudio(input => {
+				const output = input.context.destination;
+				connect(input, output);
+				disconnect(input);
+			}, false);
+		});
+		
+		it("can connect one channel to another", () => {
+			return PassAudio(input => {
+				const context = input.context;
+				const output = input.context.destination;
+				const merge = context.createChannelMerger(2);
+				const split = context.createChannelSplitter(2);
+				connect(input, merge, 0, 1);
+				connect(merge, split, 0, 0);
+				connect(split, output, 1, 0);
+			});
+		});
+		
+		it("can disconnect from an explicit channel", () => {
+			return PassAudio(input => {
+				const context = input.context;
+				const output = input.context.destination;
+				const merge = context.createChannelMerger(2);
+				const split = context.createChannelSplitter(2);
+				connect(input, merge, 0, 1);
+				connect(merge, split, 0, 0);
+				connect(split, output, 1, 0);
+				disconnect(split, output, 1, 0);
+			}, false);
+		});
+		
+		it("can disconnect from an audio param", () => {
+			return Offline((context) => {
+				const osc = context.createOscillator();
+				const gain = context.createGain();
+				connect(gain, osc.frequency);
+				disconnect(gain, osc.frequency);
+			});
+		});
+		
+		it("throws an error if things aren't connected", async () => {
+			let threwError = false;
+			await PassAudio(input => {
+				const output = input.context.destination;
+				disconnect(input, output);
+			}).catch(() => threwError = true);
+			expect(threwError).to.equal(true);
+		});
+		
+		it("throws an error if the destination has no input", () => {
+			const source = new Oscillator();
+			const gain = new Gain();
+			expect(() => {
+				gain.connect(source);
+			}).to.throw(Error);
+			gain.dispose();
+			source.dispose();
+		});
+		
+		it("throws an error if things aren't connected to a specific channel", async () => {
+			let threwError = false;
+			await PassAudio(input => {
+				const context = input.context;
+				const output = input.context.destination;
+				const merge = context.createChannelMerger(2);
+				const split = context.createChannelSplitter(2);
+				connect(input, merge, 0, 1);
+				connect(merge, split, 0, 0);
+				connect(split, output, 1, 0);
+				disconnect(split, output, 0, 0);
+			}).catch(() => threwError = true);
+			expect(threwError).to.equal(true);
+		});
+	});
+
+	context("ToneAudioNode", () => {
+		it("can create a connection", async () => {
+			await Offline(() => {
+				const input = new Gain();
+				const output = new Gain();
+				const gain = new Gain();
+				connect(input, gain);
+				connect(gain, output);
+			});
+		});
+
+		it("can disconnect a node", async () => {
+			await Offline(() => {
+				const input = new Gain();
+				const output = new Gain();
+				const gain = new Gain();
+				connect(input, gain);
+				connect(gain, output);
+				disconnect(gain);
+			});
+		});
+
+		it("can disconnect a node explicitly", async () => {
+			await Offline(() => {
+				const input = new Gain();
+				const output = new Gain();
+				const gain = new Gain();
+				connect(input, gain);
+				connect(gain, output);
+				disconnect(gain, output);
+			});
 		});
 	});
 

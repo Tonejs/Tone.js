@@ -2,7 +2,7 @@ import { BasicTests } from "test/helper/Basic";
 import { CompareToFile } from "test/helper/CompareToFile";
 import { connectTo } from "test/helper/Connect";
 import { PassAudio } from "test/helper/PassAudio";
-import { connect } from "Tone/core/Connect";
+import { connect } from "Tone/core/context/ToneAudioNode";
 import { Subtract } from "Tone/signal/Subtract";
 import { PhaseShiftAllpass } from "./PhaseShiftAllpass";
 
