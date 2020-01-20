@@ -1,19 +1,58 @@
-### 13.8.24
+# [14.4.0](https://github.com/Tonejs/Tone.js/compare/13.8.25...14.4.0) (2019-11-16)
+
+
+### Features
+
+* adding AudioWorkletNode constructors to Context ([f7bdd75](https://github.com/Tonejs/Tone.js/commit/f7bdd75))
+* adding linting to jsdocs ([10ef513](https://github.com/Tonejs/Tone.js/commit/10ef513))
+* adding send/receive to Channel ([703f27a](https://github.com/Tonejs/Tone.js/commit/703f27a))
+* Adding triggerRelease to PluckSynth ([04405af](https://github.com/Tonejs/Tone.js/commit/04405af))
+* Can set the parameter after constructing Param ([23ca0f9](https://github.com/Tonejs/Tone.js/commit/23ca0f9))
+* Chorus extends StereoFeedbackEffect ([a28f1af](https://github.com/Tonejs/Tone.js/commit/a28f1af)), closes [#575](https://github.com/Tonejs/Tone.js/issues/575)
+* Convolver is just a wrapper around the ConvolverNode, no longer an effect ([1668dec](https://github.com/Tonejs/Tone.js/commit/1668dec))
+* Get an oscillator wave as an array ([9ad519e](https://github.com/Tonejs/Tone.js/commit/9ad519e))
+* OfflineContext returns a ToneAudioBuffer ([889dafa](https://github.com/Tonejs/Tone.js/commit/889dafa))
+* OfflineContext yields thread every second of audio rendered ([1154470](https://github.com/Tonejs/Tone.js/commit/1154470)), closes [#436](https://github.com/Tonejs/Tone.js/issues/436)
+* Renaming TransportTimelineSignal to SyncedSignal ([86853fb](https://github.com/Tonejs/Tone.js/commit/86853fb))
+* Render a segment of the envelope as an array ([fc5b6f7](https://github.com/Tonejs/Tone.js/commit/fc5b6f7))
+* testing examples in jsdocs ([e306319](https://github.com/Tonejs/Tone.js/commit/e306319))
+* Wrapper around the AudioWorkletNode ([2ee8cb1](https://github.com/Tonejs/Tone.js/commit/2ee8cb1))
+* **Converted to typescript!!! (WIP)**
+* Input/Outputs are no longer arrays.
+	* simplifies connect/disconnect logic greatly. Simplifies API to just have clearly named inputs/outputs instead of overloading input/output connect numbers
+* Using "Destination" instead of "Master" for output
+	* More consistent with Web Audio API
+* FrequencyShifter - thanks @Foaly
+* PolySynth does not require a polyphony value.
+	* Voice allocation and disposing is done automatically based on demand.
+* MetalSynth and MembraneSynth extends Monophonic enabling them to be used in PolySynth
+* OnePoleFilter is a 6b-per-octave lowpass or highpass filter
+	* Using OnePoleFilter in PluckSynth and LowpassCombFilter
+
+
+### BREAKING CHANGES
+
+* TransportTimelineSignal renamed SyncedSignal
+* Master renamed Destination
+* Buffer renamed ToneAudioBuffer
+* Buffer.on("loaded") is should now use: `Tone.loaded(): Promise<void>`
+
+# 13.8.25
 
 * Moving to common.js-style code
 
-**Breaking Changes**
+### BREAKING CHANGES
 
 * AudioNode.prototype.connect is no longer overwritten. This means that you can no longer connect native nodes to Tone.js Nodes.
-* Tone.connect(srcNode, destNode, [ouputNum], [inputNum]) is the way to connect native Web Audio nodes with Tone.js nodes. 
+* Tone.connect(srcNode, destNode, [ouputNum], [inputNum]) is the way to connect native Web Audio nodes with Tone.js nodes.
 
-### 13.4.9
+# 13.4.9
 
 * Updating semantic versioning to be more in line with other [semvers](https://semver.org/). Now version is 13.x.x
 * logging full version
-* Added Object notation for Tone.TimeBase and classes that extend it. 
+* Added Object notation for Tone.TimeBase and classes that extend it.
 	- i.e. Tone.Time({'4n' : 1, '8t' : 2})
-	- Replacement for deprecated expression strings. 
+	- Replacement for deprecated expression strings.
 * Tone.Meter uses RMS instead of peak (thanks [@Idicious](https://github.com/Idicious))
 * Tone.Sampler supports polyphonic syntax (thanks [@zfan40](https://github.com/zfan40))
 * Building files with [webpack](https://webpack.js.org/)
@@ -21,11 +60,11 @@
 * Changing references to `window` allowing it to not throw error in node context
 * Testing examples
 * Tone.Channel combines Tone.PanVol with Tone.Solo.
-* Removing require.html example. 
+* Removing require.html example.
 * adding `partialCount` and `baseType` to Oscillator classes, helps with getting/setting complex types.
 
 
-### r12
+# r12
 
 * Consolidating all shims into [shim folder](https://github.com/Tonejs/Tone.js/tree/dev/Tone/shim)
 * Using ConstantSourceNode in Signal when available
@@ -39,7 +78,7 @@
 * [TickSource](https://tonejs.github.io/docs/TickSource) (used in Clock and Player) tracks the elapsed ticks
 	* Improved precision of tracking ticks in Transport and Clock
 * `Player.position` returns the playback position of the AudioBuffer accounting for any playbackRate changes
-* Removing `retrigger` option with Tone.Player. Tone.BufferSource should be used if retriggering is desired. 
+* Removing `retrigger` option with Tone.Player. Tone.BufferSource should be used if retriggering is desired.
 
 **BREAKING CHANGES:**
 
@@ -49,7 +88,7 @@
 			* e.g. `Time('4n') * 2 + Time('3t')` instead of `Time('4n * 2 + 3t')`
 		* this change greatly simplifies the code and is more performant
 
-### r11
+# r11
 
 * [Code coverage](https://coveralls.io/github/Tonejs/Tone.js) analysis
 * [Dev build](https://tonejs.github.io/build/dev/Tone.js) with each successful commit
@@ -65,7 +104,7 @@
 * [Tone.Envelope](https://tonejs.github.io/docs/Envelope) uses exponential approach instead of exponential curve for decay and release curves
 * [Tone.BufferSource](https://tonejs.github.io/docs/BufferSource) fadeIn/Out can be either "linear" or "exponential" curve
 
-### r10
+# r10
 
 * Tone.Context wraps AudioContext
 * Tone.OfflineContext wraps OfflineAudioContext
@@ -75,7 +114,7 @@
 * Time.eval->valueOf which takes advantage of build-in primitive evaluation [#205](https://github.com/Tonejs/Tone.js/issues/205)
 * [Offline example](https://tonejs.github.io/examples/#offline)
 
-### r9
+# r9
 
 * Tone.Clock performance and lookAhead updates.
 * Tone.Transport.lookAhead = seconds|'playback'|'interactive'|'balanced'
@@ -85,7 +124,7 @@
 * Compressor Parameters are now Tone.Params
 * Bug fixes
 
-### r8
+# r8
 
 * Transport.seconds returns the progress in seconds.
 * Buffer.from/toArray, Float32Array <-> Buffer conversions
@@ -101,7 +140,7 @@
 * Patch for Chrome 53+ issue of not correctly scheduling AudioParams with setValueAtTime
 * Panner3D and Tone.Listener wrap native PannerNode and AudioListener to give 3D panning ability.
 
-### r7
+# r7
 
 * MetalSynth creates metalic, cymbal sounds
 * DrumSynth -> MembraneSynth
@@ -129,7 +168,7 @@
 DEPRECATED:
 * Removed SimpleFM and SimpleAM
 
-### r6
+# r6
 
 * Added PitchShift and Vibrato Effect.
 * Added Timeline/TimelineState/TimelineSignal which keeps track of all scheduled state changes.
@@ -158,7 +197,7 @@ DEPRECATED:
 * Tone.Signal no longer takes an AudioParam in the first argument. Use Tone.Param instead.
 * Tone.Buffer.onload/onprogress/onerror is deprecated. Use `Tone.Buffer.on("load", callback)` instead.
 
-### r5
+# r5
 
 * reverse buffer for Player and Sampler.
 * Tone.Volume for simple volume control in Decibels.
@@ -178,7 +217,7 @@ DEPRECATED:
 * [new docs](http://tonejs.org/docs)
 * [updated examples](http://tonejs.org/examples)
 
-### r4
+# r4
 
 * `toFrequency` accepts notes by name (i.e. `"C4"`)
 * Envelope no longer accepts exponential scaling, only Tone.ScaledEnvelope
@@ -209,7 +248,7 @@ Or if setBpm was being invoked with a rampTime:
 	find `Tone.Transport.setBpm\((\d+)\, (\d+)\)` and replace it with `Tone.Transport.bpm.rampTo($1, $2)`.
 
 
-### r3
+# r3
 
 Core Change:
 
@@ -244,7 +283,7 @@ Synths:
 * NoiseSynth
 
 
-### r2
+# r2
 
 * PluckSynth - Karplus-Strong Plucked String modeling synth
 * Freeverb
@@ -260,4 +299,4 @@ Synths:
 * midi<-->note conversions
 
 
-### r1 - First!
+# r1 - First!

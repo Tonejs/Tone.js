@@ -1,0 +1,124 @@
+import { gainToDb } from "../../core/type/Conversions";
+import { NormalRange } from "../../core/type/Units";
+import { optionsFromArguments } from "../../core/util/Defaults";
+import { MeterBase, MeterBaseOptions } from "./MeterBase";
+import { warn } from "../../core/util/Debug";
+import { Analyser } from "./Analyser";
+
+export interface MeterOptions extends MeterBaseOptions {
+	smoothing: NormalRange;
+	normalRange: boolean;
+	channels: number;
+}
+
+/**
+ * Meter gets the [RMS](https://en.wikipedia.org/wiki/Root_mean_square)
+ * of an input signal. It can also get the raw value of the input signal.
+ *
+ * @example
+ * import { Meter, UserMedia } from "tone";
+ * const meter = new Meter();
+ * const mic = new UserMedia();
+ * mic.open();
+ * // connect mic to the meter
+ * mic.connect(meter);
+ * // the current level of the mic
+ * const level = meter.getValue();
+ * @category Component
+ */
+export class Meter extends MeterBase<MeterOptions> {
+
+	readonly name: string = "Meter";
+
+	/**
+	 * If the output should be in decibels or normal range between 0-1. If `normalRange` is false,
+	 * the output range will be the measured decibel value, otherwise the decibel value will be converted to
+	 * the range of 0-1
+	 */
+	normalRange: boolean;
+
+	/**
+	 * A value from between 0 and 1 where 0 represents no time averaging with the last analysis frame.
+	 */
+	smoothing: number;
+
+	/**
+	 * The previous frame's value
+	 */
+	private _rms = 0;
+
+	/**
+	 * @param smoothing The amount of smoothing applied between frames.
+	 */
+	constructor(smoothing?: NormalRange);
+	constructor(options?: Partial<MeterOptions>);
+	constructor() {
+		super(optionsFromArguments(Meter.getDefaults(), arguments, ["smoothing"]));
+		const options = optionsFromArguments(Meter.getDefaults(), arguments, ["smoothing"]);
+
+		this.input = this.output = this._analyser = new Analyser({
+			context: this.context,
+			size: 256,
+			type: "waveform",
+			channels: options.channels,
+		});
+
+		this.smoothing = options.smoothing,
+		this.normalRange = options.normalRange;
+	}
+
+	static getDefaults(): MeterOptions {
+		return Object.assign(MeterBase.getDefaults(), {
+			smoothing: 0.8,
+			normalRange: false,
+			channels: 1,
+		});
+	}
+
+	/**
+	 * Use [[getValue]] instead. For the previous getValue behavior, use DCMeter.
+	 * @deprecated
+	 */
+	getLevel(): number | number[] {
+		warn("'getLevel' has been changed to 'getValue'");
+		return this.getValue();
+	}
+
+	/**
+	 * Get the current value of the incoming signal. 
+	 * Output is in decibels when [[normalRange]] is `false`.
+	 * If [[channels]] = 1, then the output is a single number
+	 * representing the value of the input signal. When [[channels]] > 1,
+	 * then each channel is returned as a value in a number array. 
+	 */
+	getValue(): number | number[] {
+		const aValues = this._analyser.getValue();
+		const channelValues = this.channels === 1 ? [aValues as Float32Array] : aValues as Float32Array[];
+		const vals = channelValues.map(values => {
+			const totalSquared = values.reduce((total, current) => total + current * current, 0);
+			const rms = Math.sqrt(totalSquared / values.length);
+			// the rms can only fall at the rate of the smoothing
+			// but can jump up instantly
+			this._rms = Math.max(rms, this._rms * this.smoothing);
+			return this.normalRange ? this._rms : gainToDb(this._rms);
+		});
+		if (this.channels === 1) {
+			return vals[0];
+		} else {
+			return vals;
+		}
+	}
+
+	/**
+	 * The number of channels of analysis.
+	 */
+	get channels(): number {
+		return this._analyser.channels;
+	}
+
+	dispose(): this {
+		super.dispose();
+		this._analyser.dispose();
+		return this;
+	}
+}

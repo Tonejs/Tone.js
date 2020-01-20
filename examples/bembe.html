@@ -45,8 +45,7 @@
 		}).toMaster();
 
 		var bellPart = new Tone.Sequence(function(time, freq){
-			bell.frequency.setValueAtTime(freq, time, Math.random()*0.5 + 0.5);
-			bell.triggerAttack(time);
+			bell.triggerAttack(freq, time, Math.random()*0.5 + 0.5);
 		}, [[300, null, 200], 
 			[null, 200, 200], 
 			[null, 200, null], 

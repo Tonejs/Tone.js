@@ -1,0 +1,23 @@
+{
+	"compileOnSave": true,
+	"compilerOptions": {
+		"strictNullChecks": true,
+		"target": "es5",
+		"module": "es2015",
+		"noImplicitAny": false,
+		"importHelpers": true,
+		"noUnusedLocals": false,
+		"removeComments": false,
+		"outDir": "./build/esm",
+		"sourceMap": true,
+		"moduleResolution": "node",
+		"strictPropertyInitialization" : true,
+		"downlevelIteration" : true,
+		"experimentalDecorators": true,
+		"lib": ["es6", "dom", "es2015"],
+		"baseUrl": "./"
+	},
+	"include": [
+		"Tone/**/*.ts", "test/**/*.ts"
+	]
+}

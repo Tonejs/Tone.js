@@ -1,0 +1,16 @@
+{
+	"compilerOptions": {
+		"sourceMap": true,
+		"declaration": true,
+		"noUnusedLocals": true,
+	},
+	"extends": "../tsconfig.json",
+	"include": [
+		"../Tone/**/*.ts"
+	],
+	"exclude": [
+		"../node_modules",
+		"../Tone/**/*.test.ts",
+		"../test/**/*.ts"
+	]
+}

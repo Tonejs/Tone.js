@@ -8,11 +8,12 @@ install:
 - git config --global user.email "travis@travis-ci.org"
 - git config --global user.name "Travis CI"
 script: 
-  - npm run test:travis
+  - npm run test
   - npm run codecov
 before_deploy: 
+  - npm run test:node
   - npm run increment
-  - npm run tsd
+  - npm run docs
 jobs:
   include:
     - stage: test
@@ -30,26 +31,17 @@ jobs:
       os: linux
       addons:
         firefox: latest
-    # - stage: test
-    #   env : BROWSER=firefox
-    #   os: linux
-    #   addons:
-    #     firefox: latest-beta
     - stage: test
-      before_script:
-      # needs an audio output device to run
-      - HOMEBREW_NO_AUTO_UPDATE=1 brew install Caskroom/cask/soundflower
-      env : BROWSER=safari
-      os: osx
-      osx_image: xcode9.2
+      env : BROWSER=firefox
+      os: linux
+      addons:
+        firefox: latest-beta
     - stage: test
-      # puppeteer tests
-      before_script: npm install puppeteer
       script: 
         - npm run build
-        - npm run test:html
-        - npm run test:node
-      env : BROWSER=puppeteer
+        - npm run docs
+        - npm run test:examples
+      env : TEST_EXAMPLES=1
     - stage: deploy
       os: linux
       script: npm run build
@@ -62,6 +54,16 @@ jobs:
         on:
           repo: Tonejs/Tone.js
           branch: dev
+          # don't publish on cron or PRs
+          condition: $TRAVIS_EVENT_TYPE != cron && $TRAVIS_EVENT_TYPE != pull_request
+      - provider: npm
+        skip_cleanup: true
+        email: yotammann@gmail.com
+        api_key: $NPM_TOKEN
+        tag: typescript
+        on:
+          repo: Tonejs/Tone.js
+          branch: typescript
           # don't publish on cron or PRs
           condition: $TRAVIS_EVENT_TYPE != cron && $TRAVIS_EVENT_TYPE != pull_request
       # publish without @next when pushing on master
@@ -86,4 +88,3 @@ jobs:
 cache:
   directories:
     - node_modules
-    - $HOME/Library/Caches/Homebrew
