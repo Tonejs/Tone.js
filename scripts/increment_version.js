@@ -5,7 +5,7 @@ const semver = require("semver");
 const { resolve } = require("path");
 const { execSync } = require("child_process");
 
-const tsVersion = execSync("npm show tone@typescript version").toString();
+const tsVersion = execSync("npm show tone@next version").toString();
 const masterVersion = execSync("npm show tone version").toString();
 
 // go with whichever is the latest version
@@ -33,7 +33,7 @@ if (process.env.TRAVIS) {
 	fs.writeFileSync(packageFile, JSON.stringify(packageObj, undefined, "  "));
 	
 	// write a version file
-	let versionFile = `export const version: string = ${JSON.stringify(version)};\n`;
+	const versionFile = `export const version: string = ${JSON.stringify(version)};\n`;
 	fs.writeFileSync(resolve(__dirname, "../Tone/version.ts"), versionFile);
 }
 
