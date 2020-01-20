@@ -56,16 +56,6 @@ jobs:
           branch: dev
           # don't publish on cron or PRs
           condition: $TRAVIS_EVENT_TYPE != cron && $TRAVIS_EVENT_TYPE != pull_request
-      - provider: npm
-        skip_cleanup: true
-        email: yotammann@gmail.com
-        api_key: $NPM_TOKEN
-        tag: typescript
-        on:
-          repo: Tonejs/Tone.js
-          branch: typescript
-          # don't publish on cron or PRs
-          condition: $TRAVIS_EVENT_TYPE != cron && $TRAVIS_EVENT_TYPE != pull_request
       # publish without @next when pushing on master
       - provider: npm
         skip_cleanup: true
