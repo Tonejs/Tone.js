@@ -91,6 +91,19 @@ describe("Sampler", () => {
 			}).throws(Error);
 		});
 
+		it("invokes onerror if the ", done => {
+			const sampler = new Sampler({
+				urls: {
+					40: "./nosuchfile.wav",
+				},
+				onerror(e) {
+					expect(e).to.be.instanceOf(Error);
+					sampler.dispose();
+					done();
+				}
+			});
+		});
+
 		it("can get and set envelope attributes", () => {
 			const sampler = new Sampler();
 			sampler.attack = 0.1;

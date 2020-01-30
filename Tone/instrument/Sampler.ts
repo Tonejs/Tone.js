@@ -20,6 +20,7 @@ export interface SamplerOptions extends InstrumentOptions {
 	attack: Time;
 	release: Time;
 	onload: () => void;
+	onerror: (error: Error) => void;
 	baseUrl: string;
 	curve: ToneBufferSourceCurve;
 	urls: SamplesMap;
@@ -117,7 +118,12 @@ export class Sampler extends Instrument<SamplerOptions> {
 			}
 		});
 
-		this._buffers = new ToneAudioBuffers(urlMap, options.onload, options.baseUrl);
+		this._buffers = new ToneAudioBuffers({
+			urls: urlMap, 
+			onload: options.onload, 
+			baseUrl: options.baseUrl,
+			onerror: options.onerror,
+		});
 		this.attack = options.attack;
 		this.release = options.release;
 		this.curve = options.curve;
@@ -135,6 +141,7 @@ export class Sampler extends Instrument<SamplerOptions> {
 			baseUrl: "",
 			curve: "exponential" as "exponential",
 			onload: noOp,
+			onerror: noOp,
 			release: 0.1,
 			urls: {},
 		});
