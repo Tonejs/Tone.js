@@ -67,5 +67,20 @@ describe("Panner", () => {
 				expect(r[0]).to.be.closeTo(0.707, 0.01);
 			});
 		});
+
+		it("can chain two panners when channelCount is 2", () => {
+			return Offline(() => {
+				const panner1 = new Panner({
+					channelCount: 2,
+				}).toDestination();
+				const panner0 = new Panner(-1).connect(panner1);
+				new Signal(1).connect(panner0);
+			}, 0.1, 2).then((buffer) => {
+				const l = buffer.toArray()[0];
+				const r = buffer.toArray()[1];
+				expect(l[0]).to.be.closeTo(1, 0.01);
+				expect(r[0]).to.be.closeTo(0, 0.01);
+			});
+		});
 	});
 });

@@ -6,6 +6,7 @@ import { readOnly } from "../../core/util/Interface";
 
 interface TonePannerOptions extends ToneAudioNodeOptions {
 	pan: AudioRange;
+	channelCount: number;
 }
 
 /**
@@ -55,7 +56,7 @@ export class Panner extends ToneAudioNode<TonePannerOptions> {
 		// this is necessary for standardized-audio-context
 		// doesn't make any difference for the native AudioContext
 		// https://github.com/chrisguttandin/standardized-audio-context/issues/647
-		this._panner.channelCount = 1;
+		this._panner.channelCount = options.channelCount;
 		this._panner.channelCountMode = "explicit";
 
 		// initial value
@@ -65,6 +66,7 @@ export class Panner extends ToneAudioNode<TonePannerOptions> {
 	static getDefaults(): TonePannerOptions {
 		return Object.assign(ToneAudioNode.getDefaults(), {
 			pan: 0,
+			channelCount: 1,
 		});
 	}
 
