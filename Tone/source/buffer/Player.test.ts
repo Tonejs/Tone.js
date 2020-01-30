@@ -132,7 +132,8 @@ describe("Player", () => {
 		it("invokes onerror if no url", (done) => {
 			const source = new Player({
 				url: "./nosuchfile.wav", 
-				onerror() {
+				onerror(e) {
+					expect(e).to.be.instanceOf(Error);
 					source.dispose();
 					done();
 				}
