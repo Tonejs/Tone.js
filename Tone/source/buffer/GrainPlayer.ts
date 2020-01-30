@@ -10,6 +10,7 @@ import { assertRange } from "../../core/util/Debug";
 
 interface GrainPlayerOptions extends SourceOptions {
 	onload: () => void;
+	onerror: (error: Error) => void;
 	reverse: boolean;
 	url?: ToneAudioBuffer | string | AudioBuffer;
 	overlap: Seconds;
@@ -95,6 +96,7 @@ export class GrainPlayer extends Source<GrainPlayerOptions> {
 
 		this.buffer = new ToneAudioBuffer({
 			onload: options.onload,
+			onerror: options.onerror,
 			reverse: options.reverse,
 			url: options.url,
 		});
@@ -122,6 +124,7 @@ export class GrainPlayer extends Source<GrainPlayerOptions> {
 	static getDefaults(): GrainPlayerOptions {
 		return Object.assign(Source.getDefaults(), {
 			onload: noOp,
+			onerror: noOp,
 			overlap: 0.1,
 			grainSize: 0.2,
 			playbackRate: 1,

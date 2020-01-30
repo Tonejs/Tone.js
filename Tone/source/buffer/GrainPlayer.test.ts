@@ -87,6 +87,16 @@ describe("GrainPlayer", () => {
 			});
 		});
 
+		it("invokes onerror if no url", (done) => {
+			const source = new GrainPlayer({
+				url: "./nosuchfile.wav", 
+				onerror() {
+					source.dispose();
+					done();
+				}
+			});
+		});
+
 	});
 
 	context("Looping", () => {
