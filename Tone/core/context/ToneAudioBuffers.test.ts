@@ -72,6 +72,18 @@ describe("ToneAudioBuffers", () => {
 		});
 	});
 
+	it("invokes onerror if it cant load the url", done => {
+		const buffer = new ToneAudioBuffers({
+			onerror(): void {
+				buffer.dispose();
+				done();
+			},
+			urls: {
+				test: "nosuchfile.wav",
+			},
+		});
+	});
+
 	it("reports itself as loaded", done => {
 		const buffer = new ToneAudioBuffers({
 			kick: testFile2,

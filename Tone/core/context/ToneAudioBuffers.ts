@@ -86,7 +86,7 @@ export class ToneAudioBuffers extends Tone {
 		Object.keys(options.urls).forEach(name => {
 			this._loadingCount++;
 			const url = options.urls[name];
-			this.add(name, url, this._bufferLoaded.bind(this, options.onload));
+			this.add(name, url, this._bufferLoaded.bind(this, options.onload), options.onerror);
 		});
 
 	}
@@ -140,16 +140,18 @@ export class ToneAudioBuffers extends Tone {
 	 * @param  name      A unique name to give the buffer
 	 * @param  url  Either the url of the bufer, or a buffer which will be added with the given name.
 	 * @param  callback  The callback to invoke when the url is loaded.
+	 * @param  onerror  Invoked if the buffer can't be loaded
 	 */
 	add(
 		name: string | number,
 		url: string | AudioBuffer | ToneAudioBuffer,
 		callback: () => void = noOp,
+		onerror: (e: Error) => void = noOp,
 	): this {
 		if (isString(url)) {
-			this._buffers.set(name.toString(), new ToneAudioBuffer(this.baseUrl + url, callback));
+			this._buffers.set(name.toString(), new ToneAudioBuffer(this.baseUrl + url, callback, onerror));
 		} else {
-			this._buffers.set(name.toString(), new ToneAudioBuffer(url, callback));
+			this._buffers.set(name.toString(), new ToneAudioBuffer(url, callback, onerror));
 		}
 		return this;
 	}

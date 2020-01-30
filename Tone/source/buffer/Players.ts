@@ -16,6 +16,7 @@ export interface PlayersOptions extends SourceOptions {
 	volume: Decibels;
 	mute: boolean;
 	onload: () => void;
+	onerror: (error: Error) => void;
 	baseUrl: string;
 	fadeIn: Time;
 	fadeOut: Time;
@@ -94,7 +95,12 @@ export class Players extends ToneAudioNode<PlayersOptions> {
 
 		this.volume = this._volume.volume;
 		readOnly(this, "volume");
-		this._buffers = new ToneAudioBuffers(options.urls, options.onload, options.baseUrl);
+		this._buffers = new ToneAudioBuffers({
+			urls: options.urls, 
+			onload: options.onload, 
+			baseUrl: options.baseUrl,
+			onerror: options.onerror
+		});
 		// mute initially
 		this.mute = options.mute;
 		this._fadeIn = options.fadeIn;
@@ -108,6 +114,7 @@ export class Players extends ToneAudioNode<PlayersOptions> {
 			fadeOut: 0,
 			mute: false,
 			onload: noOp,
+			onerror: noOp,
 			urls: {},
 			volume: 0,
 		});

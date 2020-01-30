@@ -65,6 +65,18 @@ describe("Players", () => {
 			});
 		});
 
+		it("invokes onerror if no url", (done) => {
+			const source = new Players({
+				urls: {
+					test: "./nosuchfile.wav"
+				}, 
+				onerror() {
+					source.dispose();
+					done();
+				}
+			});
+		});
+
 		it("can get and set fadeIn/Out", () => {
 			const players = new Players({
 				test: "./audio/sine.wav",
