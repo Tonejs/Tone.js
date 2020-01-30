@@ -129,6 +129,16 @@ describe("Player", () => {
 			player.dispose();
 		});
 
+		it("invokes onerror if no url", (done) => {
+			const source = new Player({
+				url: "./nosuchfile.wav", 
+				onerror() {
+					source.dispose();
+					done();
+				}
+			});
+		});
+
 		it("can autostart after loading", (done) => {
 			const player = new Player({
 				autostart: true,

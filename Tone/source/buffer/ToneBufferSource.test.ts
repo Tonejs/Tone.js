@@ -1,9 +1,3 @@
-// import CompareToFile from "helper/CompareToFile";
-// import Meter from "helper/Meter";
-// import Offline from "helper/Offline";
-// import Test from "helper/Test";
-// import Buffer from "Tone/core/Buffer";
-// import Tone from "Tone/core/Tone";
 import { expect } from "chai";
 import { BasicTests } from "test/helper/Basic";
 import { CompareToFile } from "test/helper/CompareToFile";
@@ -53,7 +47,7 @@ describe("ToneBufferSource", () => {
 
 		it("can be created with an options object", () => {
 			const source = new ToneBufferSource({
-				buffer,
+				url: buffer,
 				loop: true,
 				loopEnd: 0.2,
 				loopStart: 0.1,
@@ -84,6 +78,16 @@ describe("ToneBufferSource", () => {
 				expect(source.buffer.loaded).is.equal(true);
 				source.dispose();
 				done();
+			});
+		});
+
+		it("invokes onerror if no url", (done) => {
+			const source = new ToneBufferSource({
+				url: "./nosuchfile.wav", 
+				onerror() {
+					source.dispose();
+					done();
+				}
 			});
 		});
 

@@ -132,7 +132,7 @@ export class Noise extends Source<NoiseOptions> {
 	protected _start(time?: Time): void {
 		const buffer = _noiseBuffers[this._type];
 		this._source = new ToneBufferSource({
-			buffer,
+			url: buffer,
 			context: this.context,
 			fadeIn: this._fadeIn,
 			fadeOut: this._fadeOut,

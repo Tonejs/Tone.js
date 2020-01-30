@@ -12,7 +12,7 @@ import { EQ, GTE, LT } from "../../core/util/Math";
 export type ToneBufferSourceCurve = OneShotSourceCurve;
 
 export interface ToneBufferSourceOptions extends OneShotSourceOptions {
-	buffer: ToneAudioBuffer;
+	url: string | AudioBuffer | ToneAudioBuffer;
 	curve: ToneBufferSourceCurve;
 	playbackRate: Positive;
 	fadeIn: Time;
@@ -21,6 +21,7 @@ export interface ToneBufferSourceOptions extends OneShotSourceOptions {
 	loopEnd: Time;
 	loop: boolean;
 	onload: () => void;
+	onerror: (error: Error) => void;
 }
 
 /**
@@ -54,15 +55,15 @@ export class ToneBufferSource extends OneShotSource<ToneBufferSourceOptions> {
 	private _sourceStopped = false;
 
 	/**
-	 * @param buffer The buffer to play
+	 * @param url The buffer to play or url to load
 	 * @param onload The callback to invoke when the buffer is done playing.
 	 */
-	constructor(buffer?: ToneAudioBuffer | AudioBuffer | string, onload?: () => void);
+	constructor(url?: ToneAudioBuffer | AudioBuffer | string, onload?: () => void);
 	constructor(options?: Partial<ToneBufferSourceOptions>);
 	constructor() {
 
-		super(optionsFromArguments(ToneBufferSource.getDefaults(), arguments, ["buffer", "onload"]));
-		const options = optionsFromArguments(ToneBufferSource.getDefaults(), arguments, ["buffer", "onload"]);
+		super(optionsFromArguments(ToneBufferSource.getDefaults(), arguments, ["url", "onload"]));
+		const options = optionsFromArguments(ToneBufferSource.getDefaults(), arguments, ["url", "onload"]);
 
 		connect(this._source, this._gainNode);
 		this._source.onended = () => this._stopSource();
@@ -81,18 +82,19 @@ export class ToneBufferSource extends OneShotSource<ToneBufferSourceOptions> {
 		this.loop = options.loop;
 		this.loopStart = options.loopStart;
 		this.loopEnd = options.loopEnd;
-		this._buffer = new ToneAudioBuffer(options.buffer, options.onload);
+		this._buffer = new ToneAudioBuffer(options.url, options.onload, options.onerror);
 
 		this._internalChannels.push(this._source);
 	}
 
 	static getDefaults(): ToneBufferSourceOptions {
 		return Object.assign(OneShotSource.getDefaults(), {
-			buffer: new ToneAudioBuffer(),
+			url: new ToneAudioBuffer(),
 			loop: false,
 			loopEnd: 0,
 			loopStart: 0,
 			onload: noOp,
+			onerror: noOp,
 			playbackRate: 1,
 		});
 	}

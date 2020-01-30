@@ -178,7 +178,7 @@ export class Sampler extends Instrument<SamplerOptions> {
 			const playbackRate = intervalToFrequencyRatio(difference);
 			// play that note
 			const source = new ToneBufferSource({
-				buffer,
+				url: buffer,
 				context: this.context,
 				curve: this.curve,
 				fadeIn: this.attack,

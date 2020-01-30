@@ -206,7 +206,7 @@ export class GrainPlayer extends Source<GrainPlayerOptions> {
 		// create a buffer source
 		const source = new ToneBufferSource({
 			context: this.context,
-			buffer: this.buffer,
+			url: this.buffer,
 			fadeIn: fadeIn,
 			fadeOut: this._overlap,
 			loop: this.loop,

@@ -10,6 +10,7 @@ import { timeRange } from "../../core/util/Decorator";
 
 export interface PlayerOptions extends SourceOptions {
 	onload: () => void;
+	onerror: (error: Error) => void;
 	playbackRate: Positive;
 	loop: boolean;
 	autostart: boolean;
@@ -95,6 +96,7 @@ export class Player extends Source<PlayerOptions> {
 
 		this._buffer = new ToneAudioBuffer({
 			onload: this._onload.bind(this, options.onload),
+			onerror: options.onerror,
 			reverse: options.reverse,
 			url: options.url,
 		});
@@ -116,6 +118,7 @@ export class Player extends Source<PlayerOptions> {
 			loopEnd: 0,
 			loopStart: 0,
 			onload: noOp,
+			onerror: noOp,
 			playbackRate: 1,
 			reverse: false,
 		});
@@ -208,7 +211,7 @@ export class Player extends Source<PlayerOptions> {
 
 		// make the source
 		const source = new ToneBufferSource({
-			buffer: this._buffer,
+			url: this._buffer,
 			context: this.context,
 			fadeIn: this.fadeIn,
 			fadeOut: this.fadeOut,
