@@ -4,20 +4,21 @@ export * from "./version";
 import { getContext } from "./core/Global";
 import { ToneAudioBuffer } from "./core/context/ToneAudioBuffer";
 export { start } from "./core/Global";
+import { Seconds } from "./core/type/Units";
 
 /**
  * The current audio context time of the global [[Context]]. 
  * See [[Context.now]]
  * @category Core
  */
-export const now = getContext().now.bind(getContext());
+export const now: () => Seconds = getContext().now.bind(getContext());
 
 /**
  * The current audio context time of the global [[Context]] without the [[Context.lookAhead]]
  * See [[Context.immediate]]
  * @category Core
  */
-export const immediate = getContext().immediate.bind(getContext());
+export const immediate: () => Seconds = getContext().immediate.bind(getContext());
 
 /**
  * The Transport object belonging to the global Tone.js Context.
@@ -59,3 +60,10 @@ export const context = getContext();
  * @category Core
  */
 export const loaded = ToneAudioBuffer.loaded.bind(ToneAudioBuffer);
+
+// this fills in name changes from 13.x to 14.x
+import { ToneAudioBuffers } from "./core/context/ToneAudioBuffers";
+import { ToneBufferSource } from "./source/buffer/ToneBufferSource";
+export const Buffer: typeof ToneAudioBuffer = ToneAudioBuffer;
+export const Buffers: typeof ToneAudioBuffers = ToneAudioBuffers;
+export const BufferSource: typeof ToneBufferSource = ToneBufferSource;
