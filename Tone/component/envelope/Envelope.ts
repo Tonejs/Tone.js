@@ -375,7 +375,7 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 			this._sig.setValueCurveAtTime(curve, time, attack, velocity);
 		}
 		// decay
-		if (decay) {
+		if (decay && this.sustain < 1) {
 			const decayValue = velocity * this.sustain;
 			const decayStart = time + attack;
 			this.log("decay", decayStart);
