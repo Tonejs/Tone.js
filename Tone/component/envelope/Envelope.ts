@@ -353,6 +353,7 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 		}
 		// attack
 		if (attack < this.sampleTime) {
+			this._sig.cancelScheduledValues(time);
 			// case where the attack time is 0 should set instantly
 			this._sig.setValueAtTime(velocity, time);
 		} else if (this._attackCurve === "linear") {
