@@ -235,9 +235,8 @@ export class Timeline<GenericEvent extends TimelineEvent> extends Tone {
 	 * nearest event index whose time is after or equal to the given time.
 	 * If a time is searched before the first index in the timeline, -1 is returned.
 	 * If the time is after the end, the index of the last item is returned.
-	 * @param  time
 	 */
-	protected _search(time: number, param: TimelineSearchParam = "time"): number {
+	protected _search(time: number, param: TimelineSearchParam = "time", upperBound = true): number {
 		if (this._timeline.length === 0) {
 			return -1;
 		}
@@ -254,10 +253,12 @@ export class Timeline<GenericEvent extends TimelineEvent> extends Tone {
 			const nextEvent = this._timeline[midPoint + 1];
 			if (EQ(event[param], time)) {
 				// choose the last one that has the same time
-				for (let i = midPoint; i < this._timeline.length; i++) {
+				for (let i = midPoint; upperBound ? i < this._timeline.length : i >= 0; upperBound ? i++ : i--) {
 					const testEvent = this._timeline[i];
 					if (EQ(testEvent[param], time)) {
 						midPoint = i;
+					} else {
+						break;
 					}
 				}
 				return midPoint;
@@ -371,12 +372,13 @@ export class Timeline<GenericEvent extends TimelineEvent> extends Tone {
 	forEachAtTime(time: number, callback: (event: GenericEvent) => void): this {
 		// iterate over the items in reverse so that removing an item doesn't break things
 		const upperBound = this._search(time);
-		if (upperBound !== -1) {
+		const lowerBound = this._search(time, "time", false);
+		if (upperBound !== -1 && this._timeline[upperBound].time === time) {
 			this._iterate(event => {
 				if (event.time === time) {
 					callback(event);
 				}
-			}, 0, upperBound);
+			}, lowerBound, upperBound);
 		}
 		return this;
 	}
