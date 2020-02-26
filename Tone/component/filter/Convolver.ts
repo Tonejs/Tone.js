@@ -108,7 +108,7 @@ export class Convolver extends ToneAudioNode<ConvolverOptions> {
 			this._convolver.disconnect();
 			// create and connect a new one
 			this._convolver = this.context.createConvolver();
-			this.input.connect(this._convolver);
+			this.input.chain(this._convolver, this.output);
 		}
 		const buff = this._buffer.get();
 		this._convolver.buffer = buff ? buff : null;
