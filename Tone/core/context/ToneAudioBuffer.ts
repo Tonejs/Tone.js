@@ -143,11 +143,10 @@ export class ToneAudioBuffer extends Tone {
 			this.set(audioBuffer);
 			// invoke the onload method
 			this.onload(this);
-		} catch (e) {
-			// remove the failed file before throwing error
+		} finally {
+			// remove the downloaded file
 			const index = ToneAudioBuffer.downloads.indexOf(promise);
 			ToneAudioBuffer.downloads.splice(index, 1);
-			throw e;
 		}
 		return this;
 	}
@@ -410,5 +409,7 @@ export class ToneAudioBuffer extends Tone {
 		for (const promise of ToneAudioBuffer.downloads) {
 			await promise;
 		}
+		// this makes sure that the function is always async
+		return Promise.resolve();
 	}
 }
