@@ -4,7 +4,7 @@ import { clamp } from "../core/util/Math";
 /**
  * The name of the patterns
  */
-export type PatternName = "up" | "down" | "upDown" | "downUp" | "alternateUp" | "alternateDown" | "random" | "randomOnce";
+export type PatternName = "up" | "down" | "upDown" | "downUp" | "alternateUp" | "alternateDown" | "random" | "randomOnce" | "randomWalk";
 
 /**
  * Start at the first value and go up to the last
@@ -124,6 +124,28 @@ function* randomOnce<T>(values: T[]): IterableIterator<T> {
 }
 
 /**
+ * Randomly choose to walk up or down 1 index in the values array
+ */
+function* randomWalk<T>(values: T[]): IterableIterator<T> {
+        // randomly choose a starting index in the values array
+        let index = Math.floor(Math.random() * values.length);
+	while (true) {
+                if (index == 0) {
+                        index++; // at bottom of array, so force upward step
+                }
+                else if (index == values.length - 1) {
+                        index--; // at top of array, so force downward step
+                }
+		else if (Math.random() < 0.5) { // else choose random downward or upward step
+			index--;
+		} else {
+			index++;
+		}
+		yield values[index];
+	}
+}
+
+/**
  * PatternGenerator returns a generator which will iterate over the given array
  * of values and yield the items according to the passed in pattern
  * @param values An array of values to iterate over
@@ -149,6 +171,8 @@ export function* PatternGenerator<T>(values: T[], pattern: PatternName = "up", i
 		case "random":
 			yield* randomGen(values);
 		case "randomOnce":
-			yield* infiniteGen(values, randomOnce);
+                        yield* infiniteGen(values, randomOnce);
+                case "randomWalk":
+                        yield* randomWalk(values);
 	}
 }
