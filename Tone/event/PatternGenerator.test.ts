@@ -66,7 +66,7 @@ describe("PatternGenerator", () => {
 			expect(getArrayValues(pattern, 10)).to.deep.equal([4, 2, 3, 1, 2, 0, 1, 4, 2, 3]);
 		});
 
-		it("outputs random elements form the values", () => {
+		it("outputs random elements from the values", () => {
 			const values = [0, 1, 2, 3, 4];
 			const pattern = PatternGenerator(values, "random");
 			for (let i = 0; i < 10; i++) {
@@ -77,6 +77,17 @@ describe("PatternGenerator", () => {
 		it("does randomOnce pattern", () => {
 			const pattern = PatternGenerator([4, 5, 6, 7, 8], "randomOnce");
 			expect(getArrayValues(pattern, 10).sort()).to.deep.equal([4, 4, 5, 5, 6, 6, 7, 7, 8, 8]);
+                });
+                
+                it("randomly walks up or down 1 step without repeating", () => {
+			const values = [0, 1, 2, 3, 4];
+                        const pattern = PatternGenerator(values, "randomWalk");
+                        let currentIndex = values.indexOf(pattern.next().value);
+			for (let i = 0; i < 10; i++) {
+                                let nextIndex = values.indexOf(pattern.next().value);
+                                expect(currentIndex).to.not.equal(nextIndex);
+                                currentIndex = nextIndex;
+			}
 		});
 	});
 });
