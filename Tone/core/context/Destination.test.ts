@@ -50,6 +50,22 @@ describe("Destination", () => {
 		});
 	});
 
+	it("can get the maxChannelCount", () => {
+		return Offline((context) => {
+			expect(context.destination.maxChannelCount).to.equal(4);
+		}, 0.1, 4);
+	});
+
+	it("can set the audio channel configuration", () => {
+		return Offline((context) => {
+			expect(context.destination.channelCount).to.equal(4);
+			context.destination.channelCountMode = "explicit";
+			context.destination.channelInterpretation = "discrete";
+			expect(context.destination.channelCountMode).to.equal("explicit");
+			expect(context.destination.channelInterpretation).to.equal("discrete");
+		}, 0.1, 4);
+	});
+
 	it("can pass audio through chained nodes", () => {
 		return PassAudio(input => {
 			const gain = input.context.createGain();

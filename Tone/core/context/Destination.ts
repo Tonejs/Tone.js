@@ -49,6 +49,7 @@ export class Destination extends ToneAudioNode<DestinationOptions> {
 		connectSeries(this.input, this.output, this.context.rawContext.destination);
 
 		this.mute = options.mute;
+		this._internalChannels = [this.input, this.context.rawContext.destination, this.output];
 	}
 
 	static getDefaults(): DestinationOptions {
@@ -99,6 +100,13 @@ export class Destination extends ToneAudioNode<DestinationOptions> {
 		args.push(this.output);
 		connectSeries(...args);
 		return this;
+	}
+
+	/**
+	 * The maximum number of channels the system can output
+	 */
+	get maxChannelCount(): number {
+		return this.context.rawContext.destination.maxChannelCount;
 	}
 
 	/**
