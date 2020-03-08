@@ -127,16 +127,14 @@ function* randomOnce<T>(values: T[]): IterableIterator<T> {
  * Randomly choose to walk up or down 1 index in the values array
  */
 function* randomWalk<T>(values: T[]): IterableIterator<T> {
-        // randomly choose a starting index in the values array
-        let index = Math.floor(Math.random() * values.length);
+	// randomly choose a starting index in the values array
+	let index = Math.floor(Math.random() * values.length);
 	while (true) {
-                if (index == 0) {
-                        index++; // at bottom of array, so force upward step
-                }
-                else if (index == values.length - 1) {
-                        index--; // at top of array, so force downward step
-                }
-		else if (Math.random() < 0.5) { // else choose random downward or upward step
+		if (index === 0) {
+			index++; // at bottom of array, so force upward step
+		} else if (index === values.length - 1) {
+			index--; // at top of array, so force downward step
+		} else if (Math.random() < 0.5) { // else choose random downward or upward step
 			index--;
 		} else {
 			index++;
@@ -171,8 +169,8 @@ export function* PatternGenerator<T>(values: T[], pattern: PatternName = "up", i
 		case "random":
 			yield* randomGen(values);
 		case "randomOnce":
-                        yield* infiniteGen(values, randomOnce);
-                case "randomWalk":
-                        yield* randomWalk(values);
+			yield* infiniteGen(values, randomOnce);
+		case "randomWalk":
+			yield* randomWalk(values);
 	}
 }

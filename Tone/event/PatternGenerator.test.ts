@@ -77,16 +77,18 @@ describe("PatternGenerator", () => {
 		it("does randomOnce pattern", () => {
 			const pattern = PatternGenerator([4, 5, 6, 7, 8], "randomOnce");
 			expect(getArrayValues(pattern, 10).sort()).to.deep.equal([4, 4, 5, 5, 6, 6, 7, 7, 8, 8]);
-                });
+		});
                 
-                it("randomly walks up or down 1 step without repeating", () => {
+		it("randomly walks up or down 1 step without repeating", () => {
 			const values = [0, 1, 2, 3, 4];
-                        const pattern = PatternGenerator(values, "randomWalk");
-                        let currentIndex = values.indexOf(pattern.next().value);
+			const pattern = PatternGenerator(values, "randomWalk");
+			let currentIndex = values.indexOf(pattern.next().value);
 			for (let i = 0; i < 10; i++) {
-                                let nextIndex = values.indexOf(pattern.next().value);
-                                expect(currentIndex).to.not.equal(nextIndex);
-                                currentIndex = nextIndex;
+				const nextIndex = values.indexOf(pattern.next().value);
+				expect(currentIndex).to.not.equal(nextIndex);
+				// change always equals 1
+				expect(Math.abs(currentIndex - nextIndex)).to.equal(1);
+				currentIndex = nextIndex;
 			}
 		});
 	});
