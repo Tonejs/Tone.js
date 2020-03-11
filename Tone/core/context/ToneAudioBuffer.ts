@@ -136,16 +136,17 @@ export class ToneAudioBuffer extends Tone {
 	 * @returns A Promise which resolves with this ToneAudioBuffer
 	 */
 	async load(url: string): Promise<this> {
-		const promise = ToneAudioBuffer.load(url);
-		ToneAudioBuffer.downloads.push(promise);
-		try {
-			const audioBuffer = await promise;
+		const doneLoading: Promise<void> = ToneAudioBuffer.load(url).then(audioBuffer => {
 			this.set(audioBuffer);
 			// invoke the onload method
 			this.onload(this);
+		});
+		ToneAudioBuffer.downloads.push(doneLoading);
+		try {
+			await doneLoading;
 		} finally {
 			// remove the downloaded file
-			const index = ToneAudioBuffer.downloads.indexOf(promise);
+			const index = ToneAudioBuffer.downloads.indexOf(doneLoading);
 			ToneAudioBuffer.downloads.splice(index, 1);
 		}
 		return this;
@@ -351,7 +352,7 @@ export class ToneAudioBuffer extends Tone {
 	/**
 	 * All of the downloads
 	 */
-	static downloads: Array<Promise<AudioBuffer>> = [];
+	static downloads: Array<Promise<void>> = [];
 
 	/**
 	 * Loads a url using fetch and returns the AudioBuffer.
