@@ -407,9 +407,7 @@ export class ToneAudioBuffer extends Tone {
 	 * Returns a Promise which resolves when all of the buffers have loaded
 	 */
 	static async loaded(): Promise<void> {
-		for (const promise of ToneAudioBuffer.downloads) {
-			await promise;
-		}
+		await Promise.all(ToneAudioBuffer.downloads);
 		// this makes sure that the function is always async
 		return Promise.resolve();
 	}
