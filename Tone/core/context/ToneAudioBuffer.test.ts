@@ -367,6 +367,15 @@ describe("ToneAudioBuffer", () => {
 			expect(buff1.loaded).to.equal(true);
 		});
 
+		it("can be setup before the urls", async () => {
+			const loadedPromise = ToneAudioBuffer.loaded();
+			const buff0 = new ToneAudioBuffer(testFile);
+			const buff1 = new ToneAudioBuffer(testFile);
+			await loadedPromise;
+			expect(buff0.loaded).to.equal(true);
+			expect(buff1.loaded).to.equal(true);
+		});
+
 		it("invokes loaded even if there is an error", () => {
 			ToneAudioBuffer.fromUrl(testFile);
 			ToneAudioBuffer.fromUrl("nosuchfile.wav");
