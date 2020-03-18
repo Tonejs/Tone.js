@@ -55,7 +55,7 @@ describe("TickSource", () => {
 				return time => {
 					if (time < 0.399) {
 						expect(source.ticks).to.be.closeTo(2 * time, 0.01);
-					} else if (time > 4) {
+					} else if (time > 0.4) {
 						expect(source.ticks).to.be.equal(0);
 					}
 				};
