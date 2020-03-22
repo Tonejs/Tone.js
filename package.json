@@ -82,7 +82,7 @@
     "karma-sourcemap-loader": "^0.3.7",
     "karma-spec-reporter": "0.0.32",
     "karma-typescript": "^5.0.0",
-    "mocha": "^5.1.1",
+    "mocha": "^7.1.1",
     "semver": "^5.5.0",
     "teoria": "^2.5.0",
     "tmp-promise": "^2.0.2",
@@ -96,7 +96,7 @@
     "yargs": "^13.2.0"
   },
   "dependencies": {
-    "standardized-audio-context": "^23.1.2",
+    "standardized-audio-context": "^24.1.1",
     "tslib": "^1.10.0"
   }
 }
