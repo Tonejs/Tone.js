@@ -56,6 +56,9 @@ export abstract class ToneWithContext<Options extends ToneWithContextOptions> ex
 
 	/**
 	 * Return the current time of the Context clock plus the lookAhead.
+	 * @example
+	 * import { Transport } from "tone";
+	 * console.log(Transport.now());
 	 */
 	now(): Seconds {
 		return this.context.currentTime + this.context.lookAhead;
@@ -63,6 +66,9 @@ export abstract class ToneWithContext<Options extends ToneWithContextOptions> ex
 
 	/**
 	 * Return the current time of the Context clock without any lookAhead.
+	 * @example
+	 * import { Transport } from "tone";
+	 * console.log(Transport.immediate());
 	 */
 	immediate(): Seconds {
 		return this.context.currentTime;
@@ -70,6 +76,9 @@ export abstract class ToneWithContext<Options extends ToneWithContextOptions> ex
 
 	/**
 	 * The duration in seconds of one sample.
+	 * @example
+	 * import { Transport } from "tone";
+	 * console.log(Transport.sampleTime);
 	 */
 	get sampleTime(): Seconds {
 		return 1 / this.context.sampleRate;
@@ -77,6 +86,9 @@ export abstract class ToneWithContext<Options extends ToneWithContextOptions> ex
 
 	/**
 	 * The number of seconds of 1 processing block (128 samples)
+	 * @example
+	 * import { Destination } from "tone";
+	 * console.log(Destination.blockTime);
 	 */
 	get blockTime(): Seconds {
 		return 128 / this.context.sampleRate;
@@ -138,7 +150,7 @@ export abstract class ToneWithContext<Options extends ToneWithContextOptions> ex
 					defaults[attribute] = member.value;
 				} else if (member instanceof ToneWithContext) {
 					defaults[attribute] = member._getPartialProperties(defaults[attribute]);
-				// otherwise make sure it's a serializable type
+					// otherwise make sure it's a serializable type
 				} else if (isArray(member) || isNumber(member) || isString(member) || isBoolean(member)) {
 					defaults[attribute] = member;
 				} else {

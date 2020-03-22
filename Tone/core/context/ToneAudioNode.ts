@@ -44,6 +44,10 @@ export abstract class ToneAudioNode<Options extends ToneAudioNodeOptions = ToneA
 	/**
 	 * The number of inputs feeding into the AudioNode.
 	 * For source nodes, this will be 0.
+	 * @example
+	 * import { Gain } from "tone";
+	 * const node = new Gain();
+	 * console.log(node.numberOfInputs);
 	 */
 	get numberOfInputs(): number {
 		if (isDefined(this.input)) {
@@ -59,6 +63,10 @@ export abstract class ToneAudioNode<Options extends ToneAudioNodeOptions = ToneA
 
 	/**
 	 * The number of outputs of the AudioNode.
+	 * * @example
+	 * import { Gain } from "tone";
+	 * const node = new Gain();
+	 * console.log(node.numberOfOutputs);
 	 */
 	get numberOfOutputs(): number {
 		if (isDefined(this.output)) {
@@ -194,6 +202,10 @@ export abstract class ToneAudioNode<Options extends ToneAudioNodeOptions = ToneA
 
 	/**
 	 * Connect the output to the context's destination node.
+	 * @example
+	 * import { Oscillator } from "tone";
+	 * const osc = new Oscillator().start();
+	 * osc.toDestination();
 	 */
 	toDestination(): this {
 		this.connect(this.context.destination);
