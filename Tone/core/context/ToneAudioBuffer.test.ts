@@ -307,6 +307,16 @@ describe("ToneAudioBuffer", () => {
 			sliced3.dispose();
 		});
 
+		it("slice can extend the buffer also", async () => {
+			const buffer = await ToneAudioBuffer.fromUrl(testFile);
+			// original duration
+			expect(buffer.duration).to.be.closeTo(3, 0.01);
+			const sliced = buffer.slice(0, 4);
+			expect(sliced.duration).to.be.closeTo(4, 0.01);
+			buffer.dispose();
+			sliced.dispose();
+		});
+
 		it("can convert a buffer to mono", () => {
 			const buffer = new ToneAudioBuffer();
 			const arr = [new Float32Array(0.5 * buffer.sampleRate), new Float32Array(0.5 * buffer.sampleRate)];
