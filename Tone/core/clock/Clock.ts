@@ -8,7 +8,7 @@ import { TickSignal } from "./TickSignal";
 import { TickSource } from "./TickSource";
 import { assertContextRunning } from "../util/Debug";
 
-type ClockCallback = (time: Time, ticks?: Ticks) => void;
+type ClockCallback = (time: Seconds, ticks?: Ticks) => void;
 
 interface ClockOptions extends ToneWithContextOptions {
 	frequency: Hertz;
@@ -260,16 +260,16 @@ export class Clock<TypeName extends "bpm" | "hertz" = "hertz">
 			// the state change events
 			this._state.forEachBetween(startTime, endTime, e => {
 				switch (e.state) {
-					case "started" :
+					case "started":
 						const offset = this._tickSource.getTicksAtTime(e.time);
 						this.emit("start", e.time, offset);
 						break;
-					case "stopped" :
+					case "stopped":
 						if (e.time !== 0) {
 							this.emit("stop", e.time);
 						}
 						break;
-					case "paused" :
+					case "paused":
 						this.emit("pause", e.time);
 						break;
 				}
