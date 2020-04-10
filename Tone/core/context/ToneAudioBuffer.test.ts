@@ -172,41 +172,6 @@ describe("ToneAudioBuffer", () => {
 		});
 	});
 
-	context("events", () => {
-
-		// it("the static on('error') method is invoked", done => {
-		// 	ToneAudioBuffer.on("error", function(e) {
-		// 		buffer.dispose();
-		// 		ToneAudioBuffer.cancelDownloads();
-		// 		ToneAudioBuffer.off("error");
-		// 		done();
-		// 	});
-		// 	const buffer = new ToneAudioBuffer("nosuchfile.wav");
-		// });
-
-		// it("the static on('load') method is invoked", done => {
-		// 	const buffer = new ToneAudioBuffer(testFile);
-		// 	ToneAudioBuffer.on("load", () => {
-		// 		buffer.dispose();
-		// 		ToneAudioBuffer.off("load");
-		// 		done();
-		// 	});
-		// });
-
-		// it("the static on('progress') method is invoked", done => {
-		// 	const buffer = new ToneAudioBuffer(testFile);
-		// 	ToneAudioBuffer.on("progress", function(percent) {
-		// 		expect(percent).to.be.a('number');
-		// 		expect(percent).to.be.within(0, 1);
-		// 		if (percent === 1) {
-		// 			ToneAudioBuffer.off("progress");
-		// 			buffer.dispose();
-		// 			done();
-		// 		}
-		// 	});
-		// });
-	});
-
 	context("buffer manipulation", () => {
 
 		it("returns an empty array if there is no channel data", () => {
