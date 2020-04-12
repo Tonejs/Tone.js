@@ -64,7 +64,7 @@ export class PulseOscillator extends Source<PulseOscillatorOptions> implements T
 	/**
 	 * the sawtooth oscillator
 	 */
-	private _sawtooth: Oscillator;
+	private _triangle: Oscillator;
 
 	/**
 	 * The frequency control.
@@ -101,19 +101,19 @@ export class PulseOscillator extends Source<PulseOscillatorOptions> implements T
 			value: options.width,
 		});
 
-		this._sawtooth = new Oscillator({
+		this._triangle = new Oscillator({
 			context: this.context,
 			detune: options.detune,
 			frequency: options.frequency,
 			onstop: () => this.onstop(this),
 			phase: options.phase,
-			type: "sawtooth",
+			type: "triangle",
 		});
-		this.frequency = this._sawtooth.frequency;
-		this.detune = this._sawtooth.detune;
+		this.frequency = this._triangle.frequency;
+		this.detune = this._triangle.detune;
 
 		// connections
-		this._sawtooth.chain(this._thresh, this.output);
+		this._triangle.chain(this._thresh, this.output);
 		this.width.chain(this._widthGate, this._thresh);
 		readOnly(this, ["width", "frequency", "detune"]);
 	}
@@ -133,7 +133,7 @@ export class PulseOscillator extends Source<PulseOscillatorOptions> implements T
 	 */
 	protected _start(time: Time): void {
 		time = this.toSeconds(time);
-		this._sawtooth.start(time);
+		this._triangle.start(time);
 		this._widthGate.gain.setValueAtTime(1, time);
 	}
 
@@ -142,7 +142,7 @@ export class PulseOscillator extends Source<PulseOscillatorOptions> implements T
 	 */
 	protected _stop(time: Time): void {
 		time = this.toSeconds(time);
-		this._sawtooth.stop(time);
+		this._triangle.stop(time);
 		// the width is still connected to the output.
 		// that needs to be stopped also
 		this._widthGate.gain.cancelScheduledValues(time);
@@ -150,7 +150,7 @@ export class PulseOscillator extends Source<PulseOscillatorOptions> implements T
 	}
 
 	protected _restart(time: Seconds): void {
-		this._sawtooth.restart(time);
+		this._triangle.restart(time);
 		this._widthGate.gain.cancelScheduledValues(time);
 		this._widthGate.gain.setValueAtTime(1, time);
 	}
@@ -159,10 +159,10 @@ export class PulseOscillator extends Source<PulseOscillatorOptions> implements T
 	 * The phase of the oscillator in degrees.
 	 */
 	get phase(): Degrees {
-		return this._sawtooth.phase;
+		return this._triangle.phase;
 	}
 	set phase(phase: Degrees) {
-		this._sawtooth.phase = phase;
+		this._triangle.phase = phase;
 	}
 
 	/**
@@ -202,7 +202,7 @@ export class PulseOscillator extends Source<PulseOscillatorOptions> implements T
 	 */
 	dispose(): this {
 		super.dispose();
-		this._sawtooth.dispose();
+		this._triangle.dispose();
 		this.width.dispose();
 		this._widthGate.dispose();
 		this._thresh.dispose();
