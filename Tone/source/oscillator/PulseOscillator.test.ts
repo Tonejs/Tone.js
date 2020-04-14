@@ -102,11 +102,11 @@ describe("PulseOscillator", () => {
 				osc.start(0);
 			}, 1).then((buffer) => {
 				buffer.forEach((sample, time) => {
-					if (time <= 0.5) {
+					if (time <= 0.6) {
 						expect(sample).to.be.within(0, 1);
-					} else if (time >= 0.51 && time <= 0.7) {
+					} else if (time >= 0.63 && time <= 0.87) {
 						expect(sample).to.be.within(-1, 0);
-					} else if (time > 0.71) {
+					} else if (time > 0.9) {
 						expect(sample).to.be.within(0, 1);
 					}
 				});

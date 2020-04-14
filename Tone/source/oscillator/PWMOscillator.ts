@@ -74,8 +74,7 @@ export class PWMOscillator extends Source<PWMOscillatorOptions> implements ToneO
 			frequency: options.modulationFrequency,
 		});
 		// change the pulse oscillator type
-		// @ts-ignore
-		this._pulse._sawtooth.type = "sine";
+		this._pulse.carrierType = "sine";
 
 		this.modulationFrequency = this._pulse.frequency;
 
