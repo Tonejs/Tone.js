@@ -193,6 +193,15 @@ export class PulseOscillator extends Source<PulseOscillatorOptions> implements T
 		return 0;
 	}
 
+	/**
+	 * *Internal use* The carrier oscillator type is fed through the 
+	 * waveshaper node to create the pulse. Using different carrier oscillators
+	 * changes oscillator's behavior. 
+	 */
+	set carrierType(type: "triangle" | "sine") {
+		this._triangle.type = type;
+	}
+
 	async asArray(length = 1024): Promise<Float32Array> {
 		return generateWaveform(this, length);
 	}
