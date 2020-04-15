@@ -55,6 +55,8 @@ export abstract class BaseContext extends Emitter<"statechange" | "tick"> implem
 
 	abstract createMediaStreamSource(_stream: MediaStream): MediaStreamAudioSourceNode
 
+	abstract createMediaStreamDestination(): MediaStreamAudioDestinationNode
+
 	abstract decodeAudioData(_audioData: ArrayBuffer): Promise<AudioBuffer>
 
 	//---------------------------
@@ -62,7 +64,7 @@ export abstract class BaseContext extends Emitter<"statechange" | "tick"> implem
 	//---------------------------
 
 	abstract createAudioWorkletNode(
-		_name: string, 
+		_name: string,
 		_options?: Partial<AudioWorkletNodeOptions>
 	): AudioWorkletNode
 

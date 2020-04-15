@@ -87,6 +87,10 @@ export class DummyContext extends BaseContext {
 		return {} as MediaStreamAudioSourceNode;
 	}
 
+	createMediaStreamDestination(): MediaStreamAudioDestinationNode {
+		return {} as MediaStreamAudioDestinationNode;
+	}
+
 	decodeAudioData(_audioData: ArrayBuffer): Promise<AudioBuffer> {
 		return Promise.resolve({} as AudioBuffer);
 	}
@@ -96,7 +100,7 @@ export class DummyContext extends BaseContext {
 	//---------------------------
 
 	createAudioWorkletNode(
-		_name: string, 
+		_name: string,
 		_options?: Partial<AudioWorkletNodeOptions>
 	): AudioWorkletNode {
 		return {} as AudioWorkletNode;
@@ -111,7 +115,7 @@ export class DummyContext extends BaseContext {
 	}
 
 	lookAhead = 0;
-	
+
 	latencyHint = 0;
 
 	resume(): Promise<void> {

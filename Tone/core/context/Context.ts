@@ -16,8 +16,7 @@ type Listener = import("./Listener").Listener;
 type Draw = import("../util/Draw").Draw;
 
 // these are either not used in Tone.js or deprecated and not implemented.
-export type ExcludedFromBaseAudioContext = "onstatechange" | "addEventListener" |
-"removeEventListener" | "listener" | "dispatchEvent" | "audioWorklet" | "destination" | "createScriptProcessor";
+export type ExcludedFromBaseAudioContext = "onstatechange" | "addEventListener" | "removeEventListener" | "listener" | "dispatchEvent" | "audioWorklet" | "destination" | "createScriptProcessor";
 // "createMediaStreamSource" | "createMediaElementSource" | "createMediaStreamTrackSource" |
 // "baseLatency" | "suspend" |
 
@@ -92,7 +91,7 @@ export class Context extends BaseContext {
 	 * A reference the Listener singleton belonging to this context
 	 */
 	private _listener!: Listener;
-	
+
 	/**
 	 * A reference the Destination singleton belonging to this context
 	 */
@@ -218,11 +217,14 @@ export class Context extends BaseContext {
 		return this._context.createWaveShaper();
 	}
 	createMediaStreamSource(stream: MediaStream): MediaStreamAudioSourceNode {
-		if (isAudioContext(this._context)) {
-			return this._context.createMediaStreamSource(stream);
-		} else {
-			throw new Error("Only available on online audio context");
-		}
+		assert(isAudioContext(this._context), "Not available if OfflineAudioContext");
+		const context = this._context as AudioContext;
+		return context.createMediaStreamSource(stream);
+	}
+	createMediaStreamDestination(): MediaStreamAudioDestinationNode {
+		assert(isAudioContext(this._context), "Not available if OfflineAudioContext");
+		const context = this._context as AudioContext;
+		return context.createMediaStreamDestination();
 	}
 	decodeAudioData(audioData: ArrayBuffer): Promise<AudioBuffer> {
 		return this._context.decodeAudioData(audioData);
@@ -309,12 +311,12 @@ export class Context extends BaseContext {
 	 * must first be loaded using [[addAudioWorkletModule]]. 
 	 */
 	createAudioWorkletNode(
-		name: string, 
+		name: string,
 		options?: Partial<AudioWorkletNodeOptions>
 	): AudioWorkletNode {
 		return createAudioWorkletNode(this.rawContext, name, options);
 	}
-	
+
 	/**
 	 * Add an AudioWorkletProcessor module
 	 * @param url The url of the module
