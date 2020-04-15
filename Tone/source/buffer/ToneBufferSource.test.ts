@@ -83,7 +83,7 @@ describe("ToneBufferSource", () => {
 
 		it("invokes onerror if no url", (done) => {
 			const source = new ToneBufferSource({
-				url: "./nosuchfile.wav", 
+				url: "./nosuchfile.wav",
 				onerror() {
 					source.dispose();
 					done();
@@ -279,7 +279,7 @@ describe("ToneBufferSource", () => {
 				player.onended = () => {
 					wasInvoked = true;
 				};
-			}, buffer.duration * 1.1).then(() => {
+			}, buffer.duration * 2).then(() => {
 				expect(wasInvoked).to.equal(true);
 			});
 		});
