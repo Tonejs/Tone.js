@@ -42,6 +42,7 @@ describe("Recorder", () => {
 			}
 			testContext.dispose();
 			rec.dispose();
+			return testContext.close();
 		});
 	});
 
