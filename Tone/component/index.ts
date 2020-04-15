@@ -14,9 +14,10 @@ export * from "./channel/MultibandSplit";
 export * from "./channel/Panner";
 export * from "./channel/Panner3D";
 export * from "./channel/PanVol";
-export * from "./channel/Volume";
+export * from "./channel/Recorder";
 export * from "./channel/Solo";
 export * from "./channel/Split";
+export * from "./channel/Volume";
 
 export * from "./dynamics/Compressor";
 export * from "./dynamics/Gate";
