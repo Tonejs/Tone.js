@@ -4,7 +4,6 @@ import { assert } from "../../core/util/Debug";
 import { theWindow } from "../../core/context/AudioContext";
 import { optionsFromArguments } from "../../core/util/Defaults";
 import { PlaybackState } from "../../core/util/StateTimeline";
-import { Context } from "../../core/context/Context";
 
 export interface RecorderOptions extends ToneAudioNodeOptions {
 	mimeType?: string;
