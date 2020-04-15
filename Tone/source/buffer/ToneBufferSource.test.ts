@@ -2,7 +2,7 @@ import { expect } from "chai";
 import { BasicTests } from "test/helper/Basic";
 import { CompareToFile } from "test/helper/CompareToFile";
 import { Offline } from "test/helper/Offline";
-import { ONLINE_TESTING } from "test/helper/Supports";
+import { OFFLINE_BUFFERSOURCE_ONENDED, ONLINE_TESTING } from "test/helper/Supports";
 import { ToneAudioBuffer } from "Tone/core/context/ToneAudioBuffer";
 import { getContext } from "Tone/core/Global";
 import { ToneBufferSource } from "./ToneBufferSource";
@@ -270,19 +270,21 @@ describe("ToneBufferSource", () => {
 			});
 		});
 
-		it("schedules the onended callback when the buffer is done without scheduling stop", () => {
+		if (OFFLINE_BUFFERSOURCE_ONENDED) {
+			it("schedules the onended callback when the buffer is done without scheduling stop", () => {
 
-			let wasInvoked = false;
-			return Offline(() => {
-				const player = new ToneBufferSource(buffer).toDestination();
-				player.start(0);
-				player.onended = () => {
-					wasInvoked = true;
-				};
-			}, buffer.duration * 2).then(() => {
-				expect(wasInvoked).to.equal(true);
+				let wasInvoked = false;
+				return Offline(() => {
+					const player = new ToneBufferSource(buffer).toDestination();
+					player.start(0);
+					player.onended = () => {
+						wasInvoked = true;
+					};
+				}, buffer.duration * 1.1).then(() => {
+					expect(wasInvoked).to.equal(true);
+				});
 			});
-		});
+		}
 
 	});
 

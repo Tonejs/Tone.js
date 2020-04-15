@@ -1,4 +1,3 @@
-
 import { UAParser } from "ua-parser-js";
 
 const parsed = new UAParser().getBrowser();
@@ -39,3 +38,5 @@ export const ONLINE_TESTING = isntVersion("Chrome", 71);
 export const AUDIO_CONTEXT_CLOSE_RESOLVES = isnt("Firefox") && isnt("Safari", 10);
 // if it supports gUM testing
 export const GET_USER_MEDIA = isnt("Safari");
+// firefox does not invoke AudioBufferSourceNode.onended in the offline context
+export const OFFLINE_BUFFERSOURCE_ONENDED = isnt("Firefox");
