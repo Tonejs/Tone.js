@@ -7,8 +7,10 @@ import { Gain } from "../context/Gain";
 import { ToneWithContext, ToneWithContextOptions } from "../context/ToneWithContext";
 import { TicksClass } from "../type/Ticks";
 import { TransportTimeClass } from "../type/TransportTime";
-import { BarsBeatsSixteenths, BPM, NormalRange, Seconds,
-	Subdivision, Ticks, Time, TimeSignature, TransportTime } from "../type/Units";
+import {
+	BarsBeatsSixteenths, BPM, NormalRange, Seconds,
+	Subdivision, Ticks, Time, TimeSignature, TransportTime
+} from "../type/Units";
 import { optionsFromArguments } from "../util/Defaults";
 import { Emitter } from "../util/Emitter";
 import { readOnly, writable } from "../util/Interface";
@@ -473,7 +475,7 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 	set loopEnd(endPosition: Time) {
 		this._loopEnd = this.toTicks(endPosition);
 	}
-	
+
 	/**
 	 * If the transport loops or not.
 	 */
