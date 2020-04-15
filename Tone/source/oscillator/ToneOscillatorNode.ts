@@ -3,6 +3,7 @@ import { Param } from "../../core/context/Param";
 import { Cents, Frequency, Seconds, Time } from "../../core/type/Units";
 import { optionsFromArguments } from "../../core/util/Defaults";
 import { OneShotSource, OneShotSourceOptions } from "../OneShotSource";
+import { readOnly } from "../../core/util/Interface";
 
 export interface ToneOscillatorNodeOptions extends OneShotSourceOptions {
 	frequency: Frequency;
@@ -67,6 +68,8 @@ export class ToneOscillatorNode extends OneShotSource<ToneOscillatorNodeOptions>
 			units: "cents",
 			value: options.detune,
 		});
+
+		readOnly(this, ["frequency", "detune"]);
 	}
 
 	static getDefaults(): ToneOscillatorNodeOptions {
