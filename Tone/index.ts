@@ -5,6 +5,7 @@ import { getContext } from "./core/Global";
 import { ToneAudioBuffer } from "./core/context/ToneAudioBuffer";
 export { start } from "./core/Global";
 import { Seconds } from "./core/type/Units";
+export { supported } from "./core/context/AudioContext";
 
 /**
  * The current audio context time of the global [[Context]]. 

@@ -1,7 +1,7 @@
 import {
 	AudioContext as stdAudioContext,
 	AudioWorkletNode as stdAudioWorkletNode,
-	OfflineAudioContext as stdOfflineAudioContext,
+	OfflineAudioContext as stdOfflineAudioContext
 } from "standardized-audio-context";
 import { assert } from "../util/Debug";
 import { isDefined } from "../util/TypeCheck";
@@ -51,3 +51,10 @@ export function createAudioWorkletNode(context: AnyAudioContext, name: string, o
 	// @ts-ignore
 	return new stdAudioWorkletNode(context, name, options);
 }
+
+/**
+ * This promise resolves to a boolean which indicates if the 
+ * functionality is supported within the currently used browse. 
+ * Taken from [standardized-audio-context](https://github.com/chrisguttandin/standardized-audio-context#issupported)
+ */
+export { isSupported as supported } from "standardized-audio-context";
