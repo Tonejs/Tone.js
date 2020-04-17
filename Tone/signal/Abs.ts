@@ -5,11 +5,12 @@ import { WaveShaper } from "./WaveShaper";
 /**
  * Return the absolute value of an incoming signal.
  *
+ * @offline 0.5 1
  * @example
- * const signal = new Tone.Signal(-1);
- * const abs = new Tone.Abs();
+ * const abs = new Tone.Abs().toDestination();
+ * const signal = new Tone.Signal(1);
+ * signal.rampTo(-1, 0.5);
  * signal.connect(abs);
- * // the output of abs is 1.
  * @category Signal
  */
 export class Abs extends SignalOperator<ToneAudioNodeOptions> {
