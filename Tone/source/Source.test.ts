@@ -244,7 +244,7 @@ describe("Source", () => {
 			}, 0.6);
 		});
 
-		it("can schedule multiple starts", () => {
+		it.skip("can sync schedule multiple starts", () => {
 			return Offline(({ transport }) => {
 				const buff = ToneAudioBuffer.fromArray(new Float32Array(1024).map(v => 1));
 				const source = new Player(buff);
