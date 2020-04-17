@@ -16,7 +16,7 @@ interface TonePannerOptions extends ToneAudioNodeOptions {
  * // move the input signal from right to left
  * const panner = new Tone.Panner(1).toDestination();
  * panner.pan.rampTo(-1, 0.5);
- * const osc = new Tone.Oscillator().connect(panner).start();
+ * const osc = new Tone.Oscillator(100).connect(panner).start();
  * @category Component
  */
 export class Panner extends ToneAudioNode<TonePannerOptions> {
@@ -38,7 +38,7 @@ export class Panner extends ToneAudioNode<TonePannerOptions> {
 	 * @example
 	 * // pan hard left
 	 * const panner = new Tone.Panner(-1).toDestination();
-	 * const osc = new Tone.Oscillator().connect(panner).start();
+	 * const osc = new Tone.Oscillator(50, "triangle").connect(panner).start();
 	 */
 	readonly pan: Param<"audioRange">;
 
