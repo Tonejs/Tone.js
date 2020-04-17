@@ -76,7 +76,7 @@ export class Player extends Source<PlayerOptions> {
 	 */
 	@timeRange(0)
 	fadeIn: Time;
-	
+
 	/**
 	 * The fadeOut time of the amplitude envelope.
 	 */
@@ -158,8 +158,8 @@ export class Player extends Source<PlayerOptions> {
 
 		// delete the source from the active sources
 		this._activeSources.delete(source);
-		if (this._activeSources.size === 0 && !this._synced && 
-		this._state.getValueAtTime(this.now()) === "started") {
+		if (this._activeSources.size === 0 && !this._synced &&
+			this._state.getValueAtTime(this.now()) === "started") {
 			this._state.setStateAtTime("stopped", this.now());
 		}
 	}
@@ -263,7 +263,7 @@ export class Player extends Source<PlayerOptions> {
 		super.restart(time, offset, duration);
 		return this;
 	}
-	
+
 	protected _restart(time?: Seconds, offset?: Time, duration?: Time): void {
 		this._stop(time);
 		this._start(time, offset, duration);
