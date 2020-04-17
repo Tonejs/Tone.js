@@ -234,7 +234,7 @@ export abstract class ToneAudioNode<Options extends ToneAudioNodeOptions = ToneA
 	 * const filter = new Tone.Filter();
 	 * const volume = new Tone.Volume(-8);
 	 * // connect a node to the filter, volume and then to the master output
-	 * osc.chain(filter, volume, Destination);
+	 * osc.chain(filter, volume, Tone.Destination);
 	 */
 	chain(...nodes: InputNode[]): this {
 		connectSeries(this, ...nodes);
