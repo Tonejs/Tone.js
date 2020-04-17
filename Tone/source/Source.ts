@@ -185,7 +185,7 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 		let computedTime = isUndef(time) && this._synced ? this.context.transport.seconds : this.toSeconds(time);
 		computedTime = this._clampToCurrentTime(computedTime);
 		// if it's started, stop it and restart it
-		if (this._state.getValueAtTime(computedTime) === "started") {
+		if (!this._synced && this._state.getValueAtTime(computedTime) === "started") {
 			// time should be strictly greater than the previous start time
 			assert(GT(computedTime, (this._state.get(computedTime) as StateTimelineEvent).time), "Start time must be strictly greater than previous start time");
 			this._state.cancel(computedTime);

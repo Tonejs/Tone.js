@@ -244,6 +244,25 @@ describe("Source", () => {
 			}, 0.6);
 		});
 
+		it("can schedule multiple starts", () => {
+			return Offline(({ transport }) => {
+				const buff = ToneAudioBuffer.fromArray(new Float32Array(1024).map(v => 1));
+				const source = new Player(buff);
+				source.sync().start(0.1).start(0.3);
+				transport.start(0);
+				expect(source.state).to.equal("stopped");
+
+				return [
+					atTime(0.11, () => {
+						expect(source.state).to.equal("started");
+					}),
+					atTime(0.31, () => {
+						expect(source.state).to.equal("started");
+					}),
+				];
+			}, 0.6);
+		});
+
 		it("has correct offset when the transport is started with an offset", () => {
 			return Offline(({ transport }) => {
 				const source = new Oscillator();
