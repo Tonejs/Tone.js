@@ -14,9 +14,8 @@ interface VolumeOptions extends ToneAudioNodeOptions {
  * Volume is a simple volume node, useful for creating a volume fader.
  *
  * @example
- * import { Oscillator, Volume } from "tone";
- * const vol = new Volume(-12).toDestination();
- * const osc = new Oscillator().connect(vol).start();
+ * const vol = new Tone.Volume(-12).toDestination();
+ * const osc = new Tone.Oscillator().connect(vol).start();
  * @category Component
  */
 export class Volume extends ToneAudioNode<VolumeOptions> {
@@ -41,9 +40,8 @@ export class Volume extends ToneAudioNode<VolumeOptions> {
 	/**
 	 * The volume control in decibels.
 	 * @example
-	 * import { Oscillator, Volume } from "tone";
-	 * const vol = new Volume().toDestination();
-	 * const osc = new Oscillator().connect(vol).start();
+	 * const vol = new Tone.Volume().toDestination();
+	 * const osc = new Tone.Oscillator().connect(vol).start();
 	 * vol.volume.value = -20;
 	 */
 	volume: Param<"decibels">;
@@ -81,9 +79,8 @@ export class Volume extends ToneAudioNode<VolumeOptions> {
 	/**
 	 * Mute the output.
 	 * @example
-	 * import { Oscillator, Volume } from "tone";
-	 * const vol = new Volume(-12).toDestination();
-	 * const osc = new Oscillator().connect(vol).start();
+	 * const vol = new Tone.Volume(-12).toDestination();
+	 * const osc = new Tone.Oscillator().connect(vol).start();
 	 * // mute the output
 	 * vol.mute = true;
 	 */

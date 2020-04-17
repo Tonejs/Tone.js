@@ -13,9 +13,8 @@ export type GreaterThanOptions = SignalOptions<"number">;
  * can compare two signals or a signal and a number.
  * 
  * @example
- * import { GreaterThan, Signal } from "tone";
- * const gt = new GreaterThan(2);
- * const sig = new Signal(4).connect(gt);
+ * const gt = new Tone.GreaterThan(2);
+ * const sig = new Tone.Signal(4).connect(gt);
  * // output of gt is equal 1.
  */
 export class GreaterThan extends Signal<"number"> {
@@ -41,7 +40,7 @@ export class GreaterThan extends Signal<"number"> {
 	 * The signal to compare to 0. 
 	 */
 	readonly comparator: Param<"number">
-		
+
 	/**
 	 * @param value The value to compare to
 	 */
@@ -56,7 +55,7 @@ export class GreaterThan extends Signal<"number"> {
 			value: options.value
 		});
 		this._gtz = this.output = new GreaterThanZero({ context: this.context });
-		
+
 		this.comparator = this._param = this._subtract.subtrahend;
 		readOnly(this, "comparator");
 

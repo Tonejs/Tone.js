@@ -19,10 +19,9 @@ interface DestinationOptions extends ToneAudioNodeOptions {
  * It also gives you the ability to apply master effects to your application.
  *
  * @example
- * import { Destination, Oscillator } from "tone";
- * const oscillator = new Oscillator().start();
+ * const oscillator = new Tone.Oscillator().start();
  * // the audio will go from the oscillator to the speakers
- * oscillator.connect(Destination);
+ * oscillator.connect(Tone.Destination);
  * // a convenience for connecting to the master output is also provided:
  * oscillator.toDestination();
  * // these two are equivalent.
@@ -62,10 +61,9 @@ export class Destination extends ToneAudioNode<DestinationOptions> {
 	/**
 	 * Mute the output.
 	 * @example
-	 * import { Destination, Oscillator } from "tone";
-	 * const oscillator = new Oscillator().start().toDestination();
+	 * const oscillator = new Tone.Oscillator().start().toDestination();
 	 * // mute the output
-	 * Destination.mute = true;
+	 * Tone.Destination.mute = true;
 	 */
 	get mute(): boolean {
 		return this.input.mute;
@@ -81,18 +79,17 @@ export class Destination extends ToneAudioNode<DestinationOptions> {
 	 * @param args All arguments will be connected in a row and the Master will be routed through it.
 	 * @return  {Destination}  this
 	 * @example
-	 * import { Compressor, Destination, Filter } from "tone";
 	 * // some overall compression to keep the levels in check
-	 * const masterCompressor = new Compressor({
+	 * const masterCompressor = new Tone.Compressor({
 	 * 	threshold: -6,
 	 * 	ratio: 3,
 	 * 	attack: 0.5,
 	 * 	release: 0.1
 	 * });
 	 * // give a little boost to the lows
-	 * const lowBump = new Filter(200, "lowshelf");
+	 * const lowBump = new Tone.Filter(200, "lowshelf");
 	 * // route everything through the filter and compressor before going to the speakers
-	 * Destination.chain(lowBump, masterCompressor);
+	 * Tone.Destination.chain(lowBump, masterCompressor);
 	 */
 	chain(...args: Array<AudioNode | ToneAudioNode>): this {
 		this.input.disconnect();

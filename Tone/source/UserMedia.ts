@@ -17,8 +17,7 @@ export interface UserMediaOptions extends ToneAudioNodeOptions {
  * to see which browsers are supported. Access to an external input
  * is limited to secure (HTTPS) connections.
  * @example
- * import { UserMedia } from "tone";
- * const mic = new UserMedia();
+ * const mic = new Tone.UserMedia();
  * mic.open().then(() => {
  * 	// promise resolves when input is available
  * });
@@ -55,8 +54,8 @@ export class UserMedia extends ToneAudioNode<UserMediaOptions> {
 	/**
 	 * The volume of the output in decibels.
 	 */
-	readonly volume: Param<"decibels">;		
-	
+	readonly volume: Param<"decibels">;
+
 	/**
 	 * @param volume The level of the input in decibels
 	 */
@@ -121,7 +120,7 @@ export class UserMedia extends ToneAudioNode<UserMediaOptions> {
 		};
 		if (this._device) {
 			// @ts-ignore
-			constraints.audio.deviceId = this._device.deviceId;				
+			constraints.audio.deviceId = this._device.deviceId;
 		}
 		const stream = await navigator.mediaDevices.getUserMedia(constraints);
 		// start a new source only if the previous one is closed
@@ -157,8 +156,7 @@ export class UserMedia extends ToneAudioNode<UserMediaOptions> {
 	 * Returns a promise which resolves with the list of audio input devices available.
 	 * @return The promise that is resolved with the devices
 	 * @example
-	 * import { UserMedia } from "tone";
-	 * UserMedia.enumerateDevices().then((devices) => {
+	 * Tone.UserMedia.enumerateDevices().then((devices) => {
 	 * 	// print the device labels
 	 * 	console.log(devices.map(device => device.label));
 	 * });
@@ -223,8 +221,7 @@ export class UserMedia extends ToneAudioNode<UserMediaOptions> {
 	/**
 	 * Mute the output.
 	 * @example
-	 * import { UserMedia } from "tone";
-	 * const mic = new UserMedia();
+	 * const mic = new Tone.UserMedia();
 	 * mic.open().then(() => {
 	 * 	// promise resolves when input is available
 	 * });
@@ -250,7 +247,7 @@ export class UserMedia extends ToneAudioNode<UserMediaOptions> {
 	 * If getUserMedia is supported by the browser.
 	 */
 	static get supported(): boolean {
-		return isDefined(navigator.mediaDevices) && 
+		return isDefined(navigator.mediaDevices) &&
 			isDefined(navigator.mediaDevices.getUserMedia);
 	}
 }

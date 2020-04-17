@@ -17,9 +17,8 @@ export interface GateOptions extends ToneAudioNodeOptions {
  * of the incoming signal and compares it to the [[threshold]] value using [[GreaterThan]].
  *
  * @example
- * import { Gate, UserMedia } from "tone";
- * const gate = new Gate(-30, 0.2).toDestination();
- * const mic = new UserMedia().connect(gate);
+ * const gate = new Tone.Gate(-30, 0.2).toDestination();
+ * const mic = new Tone.UserMedia().connect(gate);
  * // the gate will only pass through the incoming
  * // signal when it's louder than -30db
  */
@@ -44,7 +43,7 @@ export class Gate extends ToneAudioNode<GateOptions> {
 	 * Gate the incoming signal when it does not exceed the threshold
 	 */
 	private _gate: Gain;
-	
+
 	/**
 	 * @param threshold The threshold above which the gate will open.
 	 * @param smoothing The follower's smoothing time

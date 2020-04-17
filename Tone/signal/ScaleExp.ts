@@ -12,9 +12,8 @@ export interface ScaleExpOptions extends ScaleOptions {
  * Scales a NormalRange value [0,1] exponentially
  * to the output range of outputMin to outputMax.
  * @example
- * import { ScaleExp, Signal } from "tone";
- * const scaleExp = new ScaleExp(0, 100, 2);
- * const signal = new Signal(0.5).connect(scaleExp);
+ * const scaleExp = new Tone.ScaleExp(0, 100, 2);
+ * const signal = new Tone.Signal(0.5).connect(scaleExp);
  */
 export class ScaleExp extends Scale<ScaleExpOptions> {
 

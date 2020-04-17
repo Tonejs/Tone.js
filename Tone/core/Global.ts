@@ -49,14 +49,13 @@ export function setContext(context: BaseContext | AnyAudioContext): void {
  * More about the Autoplay policy
  * [here](https://developers.google.com/web/updates/2017/09/autoplay-policy-changes#webaudio)
  * @example
- * import * as Tone from "tone";
  * document.querySelector("button").addEventListener("click", async () => {
  * 	await Tone.start();
  * 	console.log("context started");
  * });
  * @category Core
  */
-export function start(): Promise <void> {
+export function start(): Promise<void> {
 	return globalContext.resume();
 }
 

@@ -24,10 +24,9 @@ export interface SignalOptions<TypeName extends UnitName> extends ToneAudioNodeO
  * [here](https://github.com/Tonejs/Tone.js/wiki/Signals).
  *
  * @example
- * import { Oscillator, Signal } from "tone";
- * const osc = new Oscillator().toDestination().start();
+ * const osc = new Tone.Oscillator().toDestination().start();
  * // a scheduleable signal which can be connected to control an AudioParam or another Signal
- * const signal = new Signal({
+ * const signal = new Tone.Signal({
  * 	value: "C4",
  * 	units: "frequency"
  * }).connect(osc.frequency);

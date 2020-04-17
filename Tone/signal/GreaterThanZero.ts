@@ -9,9 +9,8 @@ export type GreaterThanZeroOptions = SignalOperatorOptions
 /**
  * GreaterThanZero outputs 1 when the input is strictly greater than zero
  * @example
- * import { GreaterThanZero, Signal } from "tone";
- * const gt0 = new GreaterThanZero();
- * const sig = new Signal(0.01).connect(gt0);
+ * const gt0 = new Tone.GreaterThanZero();
+ * const sig = new Tone.Signal(0.01).connect(gt0);
  * // the output of gt0 is 1.
  * sig.value = 0;
  * // the output of gt0 is 0.
@@ -24,7 +23,7 @@ export class GreaterThanZero extends SignalOperator<GreaterThanZeroOptions> {
 	 * The waveshaper
 	 */
 	private _thresh: WaveShaper;
-	
+
 	/**
 	 * Scale the first thresholded signal by a large value.
 	 * this will help with values which are very close to 0

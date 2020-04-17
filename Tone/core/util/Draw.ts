@@ -15,10 +15,9 @@ interface DrawEvent extends TimelineEvent {
  * synchronized visuals and sound. Draw makes it easy to schedule
  * callbacks using the AudioContext time and uses requestAnimationFrame.
  * @example
- * import { Draw, Transport } from "tone";
- * Transport.schedule((time) => {
+ * Tone.Transport.schedule((time) => {
  *  	// use the time argument to schedule a callback with Draw
- *  	Draw.schedule(() => {
+ *  	Tone.Draw.schedule(() => {
  *  		// do drawing or DOM manipulation here
  *  	}, time);
  * }, "+0.5");

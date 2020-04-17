@@ -10,7 +10,7 @@ export interface PhaserOptions extends StereoEffectOptions {
 	octaves: Positive;
 	stages: Positive;
 	Q: Positive;
-	baseFrequency: Frequency;	
+	baseFrequency: Frequency;
 }
 
 /**
@@ -19,13 +19,12 @@ export interface PhaserOptions extends StereoEffectOptions {
  * [Wikipedia](https://en.wikipedia.org/wiki/Phaser_(effect)).
  * Inspiration for this phaser comes from [Tuna.js](https://github.com/Dinahmoe/tuna/).
  * @example
- * import { FMSynth, Phaser } from "tone";
- * const phaser = new Phaser({
+ * const phaser = new Tone.Phaser({
  * 	frequency: 15,
  * 	octaves: 5,
  * 	baseFrequency: 1000
  * }).toDestination();
- * const synth = new FMSynth().connect(phaser);
+ * const synth = new Tone.FMSynth().connect(phaser);
  * synth.triggerAttackRelease("E3", "2n");
  * @category Effect
  */
@@ -87,13 +86,13 @@ export class Phaser extends StereoEffect<PhaserOptions> {
 
 		this._lfoL = new LFO({
 			context: this.context,
-			frequency: options.frequency, 
+			frequency: options.frequency,
 			min: 0,
 			max: 1
 		});
 		this._lfoR = new LFO({
 			context: this.context,
-			frequency: options.frequency, 
+			frequency: options.frequency,
 			min: 0,
 			max: 1,
 			phase: 180,
@@ -173,8 +172,8 @@ export class Phaser extends StereoEffect<PhaserOptions> {
 		this._lfoR.min = this._baseFrequency;
 		this.octaves = this._octaves;
 	}
-	
-	dispose(): this{
+
+	dispose(): this {
 		super.dispose();
 		this.Q.dispose();
 		this._lfoL.dispose();

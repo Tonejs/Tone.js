@@ -19,8 +19,7 @@ export interface MultibandCompressorOptions extends ToneAudioNodeOptions {
  * A compressor with separate controls over low/mid/high dynamics. See [[Compressor]] and [[MultibandSplit]]
  *
  * @example
- * import { MultibandCompressor } from "tone";
- * const multiband = new MultibandCompressor({
+ * const multiband = new Tone.MultibandCompressor({
  * 	lowFrequency: 200,
  * 	highFrequency: 1300,
  * 	low: {
@@ -48,7 +47,7 @@ export class MultibandCompressor extends ToneAudioNode<MultibandCompressorOption
 	/**
 	 * mid/high crossover frequency.
 	 */
-  	readonly highFrequency: Signal<"frequency">;
+	readonly highFrequency: Signal<"frequency">;
 
 	/**
 	 * The compressor applied to the low frequencies
@@ -64,7 +63,7 @@ export class MultibandCompressor extends ToneAudioNode<MultibandCompressorOption
 	 * The compressor applied to the high frequencies
 	 */
 	readonly high: Compressor;
-	
+
 	constructor(options?: RecursivePartial<MultibandCompressorOptions>);
 	constructor() {
 		super(Object.assign(optionsFromArguments(MultibandCompressor.getDefaults(), arguments)));

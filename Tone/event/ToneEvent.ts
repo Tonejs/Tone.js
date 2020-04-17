@@ -27,10 +27,8 @@ export interface ToneEventOptions<T> extends ToneWithContextOptions {
  * callback for a single or repeatable events along the timeline.
  *
  * @example
- * import { PolySynth, Sequence, ToneEvent, Transport } from "tone";
- * 
- * const synth = new PolySynth().toDestination();
- * const chordEvent = new ToneEvent(((time, chord) => {
+ * const synth = new Tone.PolySynth().toDestination();
+ * const chordEvent = new Tone.ToneEvent(((time, chord) => {
  * 	// the chord as well as the exact time of the event
  * 	// are passed in as arguments to the callback function
  * 	synth.triggerAttackRelease(chord, 0.5, time);
@@ -215,8 +213,7 @@ export class ToneEvent<ValueType = any> extends ToneWithContext<ToneEventOptions
 	 * to the callback time. If the value is given as a time, it will randomize
 	 * by that amount.
 	 * @example
-	 * import { ToneEvent } from "tone";
-	 * const event = new ToneEvent();
+	 * const event = new Tone.ToneEvent();
 	 * event.humanize = true;
 	 */
 	get humanize(): Time | boolean {
@@ -327,8 +324,7 @@ export class ToneEvent<ValueType = any> extends ToneWithContext<ToneEventOptions
 	/**
 	 * The playback rate of the note. Defaults to 1.
 	 * @example
-	 * import { ToneEvent } from "tone";
-	 * const note = new ToneEvent();
+	 * const note = new Tone.ToneEvent();
 	 * note.loop = true;
 	 * // repeat the note twice as fast
 	 * note.playbackRate = 2;

@@ -21,12 +21,11 @@ export interface LoopOptions extends ToneWithContextOptions {
  * started, stopped and scheduled along
  * the Transport's timeline. 
  * @example
- * import { Loop, Transport } from "tone";
- * const loop = new Loop((time) => {
+ * const loop = new Tone.Loop((time) => {
  * 	// triggered every eighth note. 
  * 	console.log(time);
  * }, "8n").start(0);
- * Transport.start();
+ * Tone.Transport.start();
  * @category Event
  */
 export class Loop<Options extends LoopOptions = LoopOptions> extends ToneWithContext<Options> {
@@ -92,7 +91,7 @@ export class Loop<Options extends LoopOptions = LoopOptions> extends ToneWithCon
 	 * Stop the loop at the given time.
 	 * @param  time  When to stop the Loop.
 	 */
-	stop(time?: TransportTime): this{
+	stop(time?: TransportTime): this {
 		this._event.stop(time);
 		return this;
 	}
@@ -101,7 +100,7 @@ export class Loop<Options extends LoopOptions = LoopOptions> extends ToneWithCon
 	 * Cancel all scheduled events greater than or equal to the given time
 	 * @param  time  The time after which events will be cancel.
 	 */
-	cancel(time?: TransportTime): this{
+	cancel(time?: TransportTime): this {
 		this._event.cancel(time);
 		return this;
 	}
@@ -131,8 +130,7 @@ export class Loop<Options extends LoopOptions = LoopOptions> extends ToneWithCon
 	/**
 	 * The time between successive callbacks. 
 	 * @example
-	 * import { Loop, Transport } from "tone";
-	 * const loop = new Loop();
+	 * const loop = new Tone.Loop();
 	 * loop.interval = "8n"; // loop every 8n
 	 */
 	get interval(): Time {
@@ -204,7 +202,7 @@ export class Loop<Options extends LoopOptions = LoopOptions> extends ToneWithCon
 		}
 	}
 
-	dispose(): this{
+	dispose(): this {
 		super.dispose();
 		this._event.dispose();
 		return this;

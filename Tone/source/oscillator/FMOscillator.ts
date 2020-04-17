@@ -6,8 +6,10 @@ import { Multiply } from "../../signal/Multiply";
 import { Signal } from "../../signal/Signal";
 import { Source } from "../Source";
 import { Oscillator } from "./Oscillator";
-import { FMConstructorOptions, FMOscillatorOptions,
-	generateWaveform, NonCustomOscillatorType, ToneOscillatorInterface, ToneOscillatorType } from "./OscillatorInterface";
+import {
+	FMConstructorOptions, FMOscillatorOptions,
+	generateWaveform, NonCustomOscillatorType, ToneOscillatorInterface, ToneOscillatorType
+} from "./OscillatorInterface";
 
 export { FMOscillatorOptions } from "./OscillatorInterface";
 /**
@@ -25,9 +27,8 @@ export { FMOscillatorOptions } from "./OscillatorInterface";
  * ```
  *
  * @example
- * import { FMOscillator } from "tone";
  * // a sine oscillator frequency-modulated by a square wave
- * const fmOsc = new FMOscillator("Ab3", "sine", "square").toDestination().start();
+ * const fmOsc = new Tone.FMOscillator("Ab3", "sine", "square").toDestination().start();
  * @category Source
  */
 export class FMOscillator extends Source<FMOscillatorOptions> implements ToneOscillatorInterface {
@@ -52,8 +53,7 @@ export class FMOscillator extends Source<FMOscillatorOptions> implements ToneOsc
 	 * A harmonicity of 1 gives both oscillators the same frequency.
 	 * Harmonicity = 2 means a change of an octave.
 	 * @example
-	 * import { FMOscillator } from "tone";
-	 * const fmOsc = new FMOscillator("D2").toDestination().start();
+	 * const fmOsc = new Tone.FMOscillator("D2").toDestination().start();
 	 * // pitch the modulator an octave below carrier
 	 * fmOsc.harmonicity.value = 0.5;
 	 */

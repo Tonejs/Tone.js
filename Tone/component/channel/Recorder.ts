@@ -13,9 +13,8 @@ export interface RecorderOptions extends ToneAudioNodeOptions {
  * This is only natively supported in Chrome and Firefox. 
  * For a cross-browser shim, install (MediaStreamRecorder)[https://github.com/streamproc/MediaStreamRecorder]. 
  * @example
- * import { Recorder, Synth } from "tone";
- * const recorder = new Recorder();
- * const synth = new Synth().connect(recorder);
+ * const recorder = new Tone.Recorder();
+ * const synth = new Tone.Synth().connect(recorder);
  * // start recording
  * recorder.start();
  * // generate a few notes

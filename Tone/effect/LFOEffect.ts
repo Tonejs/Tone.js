@@ -23,13 +23,13 @@ export abstract class LFOEffect<Options extends LFOEffectOptions> extends Effect
 	 * the lfo which drives the filter cutoff
 	 */
 	protected _lfo: LFO;
-	
+
 	/**
 	 * The range of the filter modulating between the min and max frequency. 
 	 * 0 = no modulation. 1 = full modulation.
 	 */
 	readonly depth: Param<"normalRange">;
-	
+
 	/**
 	 * How fast the filter modulates between min and max. 
 	 */
@@ -94,9 +94,8 @@ export abstract class LFOEffect<Options extends LFOEffectOptions> extends Effect
 	/**
 	 * The type of the LFO's oscillator: See [[Oscillator.type]]
 	 * @example
-	 * import { AutoFilter, Noise } from "tone";
-	 * const autoFilter = new AutoFilter().start().toDestination();
-	 * const noise = new Noise().start().connect(autoFilter);
+	 * const autoFilter = new Tone.AutoFilter().start().toDestination();
+	 * const noise = new Tone.Noise().start().connect(autoFilter);
 	 * autoFilter.type = "square";
 	 */
 	get type() {

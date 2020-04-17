@@ -12,21 +12,19 @@ import { ToneAudioBuffer } from "./ToneAudioBuffer";
  * @param  duration     the amount of time to record for.
  * @return  The promise which is invoked with the ToneAudioBuffer of the recorded output.
  * @example
- * import { Offline, Oscillator } from "tone";
  * // render 2 seconds of the oscillator
- * Offline(() => {
+ * Tone.Offline(() => {
  * 	// only nodes created in this callback will be recorded
- * 	const oscillator = new Oscillator().toDestination().start(0);
+ * 	const oscillator = new Tone.Oscillator().toDestination().start(0);
  * }, 2).then((buffer) => {
  * 	// do something with the output buffer
  * 	console.log(buffer);
  * });
  * @example
- * import { Offline, Oscillator } from "tone";
  * // can also schedule events along the Transport
  * // using the passed in Offline Transport
- * Offline(({ transport }) => {
- * 	const osc = new Oscillator().toDestination();
+ * Tone.Offline(({ transport }) => {
+ * 	const osc = new Tone.Oscillator().toDestination();
  * 	transport.schedule(time => {
  * 		osc.start(time).stop(time + 0.1);
  * 	}, 1);

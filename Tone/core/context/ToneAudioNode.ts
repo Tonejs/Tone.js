@@ -45,8 +45,7 @@ export abstract class ToneAudioNode<Options extends ToneAudioNodeOptions = ToneA
 	 * The number of inputs feeding into the AudioNode.
 	 * For source nodes, this will be 0.
 	 * @example
-	 * import { Gain } from "tone";
-	 * const node = new Gain();
+	 * const node = new Tone.Gain();
 	 * console.log(node.numberOfInputs);
 	 */
 	get numberOfInputs(): number {
@@ -63,9 +62,8 @@ export abstract class ToneAudioNode<Options extends ToneAudioNodeOptions = ToneA
 
 	/**
 	 * The number of outputs of the AudioNode.
-	 * * @example
-	 * import { Gain } from "tone";
-	 * const node = new Gain();
+	 * @example
+	 * const node = new Tone.Gain();
 	 * console.log(node.numberOfOutputs);
 	 */
 	get numberOfOutputs(): number {
@@ -203,8 +201,7 @@ export abstract class ToneAudioNode<Options extends ToneAudioNodeOptions = ToneA
 	/**
 	 * Connect the output to the context's destination node.
 	 * @example
-	 * import { Oscillator } from "tone";
-	 * const osc = new Oscillator().start();
+	 * const osc = new Tone.Oscillator().start();
 	 * osc.toDestination();
 	 */
 	toDestination(): this {
@@ -233,10 +230,9 @@ export abstract class ToneAudioNode<Options extends ToneAudioNodeOptions = ToneA
 	/**
 	 * Connect the output of this node to the rest of the nodes in series.
 	 * @example
-	 * import { Destination, Filter, Oscillator, Volume } from "tone";
-	 * const osc = new Oscillator().start();
-	 * const filter = new Filter();
-	 * const volume = new Volume(-8);
+	 * const osc = new Tone.Oscillator().start();
+	 * const filter = new Tone.Filter();
+	 * const volume = new Tone.Volume(-8);
 	 * // connect a node to the filter, volume and then to the master output
 	 * osc.chain(filter, volume, Destination);
 	 */

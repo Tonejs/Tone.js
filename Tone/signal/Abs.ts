@@ -6,9 +6,8 @@ import { WaveShaper } from "./WaveShaper";
  * Return the absolute value of an incoming signal.
  *
  * @example
- * import { Abs, Signal } from "tone";
- * const signal = new Signal(-1);
- * const abs = new Abs();
+ * const signal = new Tone.Signal(-1);
+ * const abs = new Tone.Abs();
  * signal.connect(abs);
  * // the output of abs is 1.
  * @category Signal

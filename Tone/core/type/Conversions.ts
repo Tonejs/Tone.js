@@ -27,10 +27,9 @@ export function gainToDb(gain: GainFactor): Decibels {
  * Convert an interval (in semitones) to a frequency ratio.
  * @param interval the number of semitones above the base note
  * @example
- * import { intervalToFrequencyRatio } from "tone";
- * intervalToFrequencyRatio(0); // 1
- * intervalToFrequencyRatio(12); // 2
- * intervalToFrequencyRatio(-12); // 0.5
+ * Tone.intervalToFrequencyRatio(0); // 1
+ * Tone.intervalToFrequencyRatio(12); // 2
+ * Tone.intervalToFrequencyRatio(-12); // 0.5
  */
 export function intervalToFrequencyRatio(interval: Interval): number {
 	return Math.pow(2, (interval / 12));
@@ -54,8 +53,7 @@ export function setA4(freq: Hertz): void {
  * Convert a frequency value to a MIDI note.
  * @param frequency The value to frequency value to convert.
  * @example
- * import { ftom } from "tone";
- * ftom(440); // returns 69
+ * Tone.ftom(440); // returns 69
  */
 export function ftom(frequency: Hertz): MidiNote {
 	return Math.round(ftomf(frequency)) as MidiNote;
@@ -73,8 +71,7 @@ export function ftomf(frequency: Hertz): number {
  * @param  midi The midi number to convert.
  * @return The corresponding frequency value
  * @example
- * import { mtof } from "tone";
- * mtof(69); // 440
+ * Tone.mtof(69); // 440
  */
 export function mtof(midi: MidiNote): Hertz {
 	return A4 * Math.pow(2, (midi - 69) / 12);

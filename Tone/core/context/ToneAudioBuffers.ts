@@ -21,20 +21,18 @@ interface ToneAudioBuffersOptions {
  * A data structure for holding multiple buffers in a Map-like datastructure.
  *
  * @example
- * import { Player, ToneAudioBuffers } from "tone";
- * const pianoSamples = new ToneAudioBuffers({
+ * const pianoSamples = new Tone.ToneAudioBuffers({
  * 	C1: "https://tonejs.github.io/examples/audio/casio/C1.mp3",
  * 	C2: "https://tonejs.github.io/examples/audio/casio/C2.mp3",
  * }, () => {
- * 	const player = new Player().toDestination();
+ * 	const player = new Tone.Player().toDestination();
  * 	// play one of the samples when they all load
  * 	player.buffer = pianoSamples.get("C2");
  * 	player.start();
  * });
  * @example
- * import { ToneAudioBuffers } from "tone";
  * // To pass in additional parameters in the second parameter
- * const buffers = new ToneAudioBuffers({
+ * const buffers = new Tone.ToneAudioBuffers({
  * 	 urls: {
  * 		 C1: "C1.mp3",
  * 		 C2: "C2.mp3",

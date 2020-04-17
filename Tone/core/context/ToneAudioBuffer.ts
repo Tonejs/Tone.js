@@ -22,8 +22,7 @@ interface ToneAudioBufferOptions {
  * provides events which keep track of the loading progress
  * of _all_ of the buffers. These are ToneAudioBuffer.on("load" / "progress" / "error")
  * @example
- * import { ToneAudioBuffer } from "tone";
- * const buffer = new ToneAudioBuffer("https://tonejs.github.io/examples/audio/FWDL.mp3", () => {
+ * const buffer = new Tone.ToneAudioBuffer("https://tonejs.github.io/examples/audio/FWDL.mp3", () => {
  * 	console.log("loaded");
  * });
  * @category Core
@@ -392,9 +391,8 @@ export class ToneAudioBuffer extends Tone {
 	 * @return If the file extension can be played
 	 * @static
 	 * @example
-	 * import { ToneAudioBuffer } from "tone";
-	 * ToneAudioBuffer.supportsType("wav"); // returns true
-	 * ToneAudioBuffer.supportsType("path/to/file.wav"); // returns true
+	 * Tone.ToneAudioBuffer.supportsType("wav"); // returns true
+	 * Tone.ToneAudioBuffer.supportsType("path/to/file.wav"); // returns true
 	 */
 	static supportsType(url: string): boolean {
 		const extensions = url.split(".");

@@ -7,10 +7,12 @@ import { Multiply } from "../../signal/Multiply";
 import { Signal } from "../../signal/Signal";
 import { Source } from "../Source";
 import { Oscillator } from "./Oscillator";
-import { AMConstructorOptions, AMOscillatorOptions,
+import {
+	AMConstructorOptions, AMOscillatorOptions,
 	generateWaveform, NonCustomOscillatorType,
-	ToneOscillatorInterface, 
-	ToneOscillatorType } from "./OscillatorInterface";
+	ToneOscillatorInterface,
+	ToneOscillatorType
+} from "./OscillatorInterface";
 
 export { AMOscillatorOptions } from "./OscillatorInterface";
 
@@ -29,9 +31,8 @@ export { AMOscillatorOptions } from "./OscillatorInterface";
  * ```
  *
  * @example
- * import { AMOscillator } from "tone";
  * // a sine oscillator amplitude-modulated by a square wave
- * const amOsc = new AMOscillator("Ab3", "sine", "square").toDestination().start().stop("+5");
+ * const amOsc = new Tone.AMOscillator("Ab3", "sine", "square").toDestination().start().stop("+5");
  * // schedule a series of notes
  * amOsc.frequency.setValueAtTime("F3", "+0.25");
  * amOsc.frequency.setValueAtTime("C4", "+0.5");
@@ -71,16 +72,15 @@ export class AMOscillator extends Source<AMOscillatorOptions> implements ToneOsc
 	 * A harmonicity of 1 gives both oscillators the same frequency.
 	 * Harmonicity = 2 means a change of an octave.
 	 * @example
-	 * import { AMOscillator, Transport } from "tone";
-	 * const amOsc = new AMOscillator("D2").toDestination().start();
-	 * Transport.scheduleRepeat(time => {
+	 * const amOsc = new Tone.AMOscillator("D2").toDestination().start();
+	 * Tone.Transport.scheduleRepeat(time => {
 	 * 	amOsc.harmonicity.setValueAtTime(1, time);
 	 * 	amOsc.harmonicity.setValueAtTime(0.5, time + 0.5);
 	 * 	amOsc.harmonicity.setValueAtTime(1.5, time + 1);
 	 * 	amOsc.harmonicity.setValueAtTime(1, time + 2);
 	 * 	amOsc.harmonicity.linearRampToValueAtTime(2, time + 4);
 	 * }, 4);
-	 * Transport.start();
+	 * Tone.Transport.start();
 	 */
 	readonly harmonicity: Signal<"positive">;
 
@@ -112,7 +112,7 @@ export class AMOscillator extends Source<AMOscillatorOptions> implements ToneOsc
 			type: options.type,
 		} as OscillatorOptions);
 		this.frequency = this._carrier.frequency,
-		this.detune = this._carrier.detune;
+			this.detune = this._carrier.detune;
 
 		this._modulator = new Oscillator({
 			context: this.context,

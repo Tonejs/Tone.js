@@ -15,9 +15,8 @@ export interface FrequencyEnvelopeOptions extends EnvelopeOptions {
  * and [[octaves]]. It can also have an optional [[exponent]] to adjust the curve
  * which it ramps. 
  * @example
- * import { FrequencyEnvelope, Oscillator } from "tone";
- * const oscillator = new Oscillator().toDestination().start();
- * const freqEnv = new FrequencyEnvelope({
+ * const oscillator = new Tone.Oscillator().toDestination().start();
+ * const freqEnv = new Tone.FrequencyEnvelope({
  * 	attack: 0.2,
  * 	baseFrequency: "C2",
  * 	octaves: 4
@@ -99,7 +98,7 @@ export class FrequencyEnvelope extends Envelope {
 		// update the max value when the min changes
 		this.octaves = this._octaves;
 	}
-	
+
 	/**
 	 * The number of octaves above the baseFrequency that the
 	 * envelope will scale to.

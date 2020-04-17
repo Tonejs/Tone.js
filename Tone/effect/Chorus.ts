@@ -12,7 +12,7 @@ export interface ChorusOptions extends StereoFeedbackEffectOptions {
 	delayTime: Milliseconds;
 	depth: NormalRange;
 	type: ToneOscillatorType;
-	spread: Degrees;	
+	spread: Degrees;
 }
 
 /**
@@ -22,9 +22,8 @@ export interface ChorusOptions extends StereoFeedbackEffectOptions {
  * Read more on the chorus effect on [SoundOnSound](http://www.soundonsound.com/sos/jun04/articles/synthsecrets.htm).
  *
  * @example
- * import { Chorus, PolySynth } from "tone";
- * const chorus = new Chorus(4, 2.5, 0.5);
- * const synth = new PolySynth().connect(chorus);
+ * const chorus = new Tone.Chorus(4, 2.5, 0.5);
+ * const synth = new Tone.PolySynth().connect(chorus);
  * synth.triggerAttackRelease(["C3", "E3", "G3"], "8n");
  * 
  * @category Effect
@@ -174,8 +173,8 @@ export class Chorus extends StereoFeedbackEffect<ChorusOptions> {
 		return this._lfoR.phase - this._lfoL.phase;
 	}
 	set spread(spread) {
-		this._lfoL.phase = 90 - (spread/2);
-		this._lfoR.phase = (spread/2) + 90;
+		this._lfoL.phase = 90 - (spread / 2);
+		this._lfoR.phase = (spread / 2) + 90;
 	}
 
 	/**

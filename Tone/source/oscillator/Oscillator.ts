@@ -4,8 +4,10 @@ import { readOnly } from "../../core/util/Interface";
 import { isDefined } from "../../core/util/TypeCheck";
 import { Signal } from "../../signal/Signal";
 import { Source } from "../Source";
-import { generateWaveform, ToneOscillatorConstructorOptions, ToneOscillatorInterface,
-	ToneOscillatorOptions, ToneOscillatorType } from "./OscillatorInterface";
+import {
+	generateWaveform, ToneOscillatorConstructorOptions, ToneOscillatorInterface,
+	ToneOscillatorOptions, ToneOscillatorType
+} from "./OscillatorInterface";
 import { ToneOscillatorNode } from "./ToneOscillatorNode";
 import { assertRange } from "../../core/util/Debug";
 import { clamp } from "../../core/util/Math";
@@ -16,9 +18,8 @@ export { ToneOscillatorOptions, ToneOscillatorType } from "./OscillatorInterface
  * and Transport syncing (see Oscillator.syncFrequency).
  *
  * @example
- * import { Oscillator } from "tone";
  * // make and start a 440hz sine tone
- * const osc = new Oscillator(440, "sine").toDestination().start();
+ * const osc = new Tone.Oscillator(440, "sine").toDestination().start();
  * @category Source
  */
 export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOscillatorInterface {
@@ -164,13 +165,12 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 	 * Sync the signal to the Transport's bpm. Any changes to the transports bpm,
 	 * will also affect the oscillators frequency.
 	 * @example
-	 * import { Oscillator, Transport } from "tone";
-	 * const osc = new Oscillator().toDestination().start();
+	 * const osc = new Tone.Oscillator().toDestination().start();
 	 * osc.frequency.value = 440;
 	 * // the ratio between the bpm and the frequency will be maintained
 	 * osc.syncFrequency();
 	 * // double the tempo
-	 * Transport.bpm.value *= 2;
+	 * Tone.Transport.bpm.value *= 2;
 	 * // the frequency of the oscillator is doubled to 880
 	 */
 	syncFrequency(): this {
@@ -205,7 +205,7 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 	 * the oscillator values when they have already been computed
 	 * with the same values.
 	 */
-	private _getCachedPeriodicWave(): {real: Float32Array; imag: Float32Array; partials: number[]; wave: PeriodicWave} | undefined {
+	private _getCachedPeriodicWave(): { real: Float32Array; imag: Float32Array; partials: number[]; wave: PeriodicWave } | undefined {
 		if (this._type === "custom") {
 			const oscProps = Oscillator._periodicWaveCache.find(description => {
 				return description.phase === this._phase &&

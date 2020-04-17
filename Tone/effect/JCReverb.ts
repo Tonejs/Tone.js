@@ -32,11 +32,10 @@ const allpassFilterFreqs = [347, 113, 37];
  * JCReverb is now implemented with an AudioWorkletNode which may result on performance degradation on some platforms
  *
  * @example
- * import { DuoSynth, FeedbackDelay, JCReverb } from "tone";
- * const reverb = new JCReverb(0.4).toDestination();
- * const delay = new FeedbackDelay(0.5);
+ * const reverb = new Tone.JCReverb(0.4).toDestination();
+ * const delay = new Tone.FeedbackDelay(0.5);
  * // connecting the synth to reverb through delay
- * const synth = new DuoSynth().chain(delay, reverb);
+ * const synth = new Tone.DuoSynth().chain(delay, reverb);
  * synth.triggerAttackRelease("A4", "8n");
  * 
  * @category Effect
@@ -44,7 +43,7 @@ const allpassFilterFreqs = [347, 113, 37];
 export class JCReverb extends StereoEffect<JCReverbOptions> {
 
 	readonly name: string = "JCReverb";
-	
+
 	/**
 	 * Room size control values. 
 	 */
@@ -82,7 +81,7 @@ export class JCReverb extends StereoEffect<JCReverbOptions> {
 		});
 		this._scaleRoomSize = new Scale({
 			context: this.context,
-			min: -0.733, 
+			min: -0.733,
 			max: 0.197,
 		});
 
@@ -93,12 +92,12 @@ export class JCReverb extends StereoEffect<JCReverbOptions> {
 			allpass.frequency.value = freq;
 			return allpass;
 		});
-		
+
 		// and the comb filters
 		this._feedbackCombFilters = combFilterDelayTimes.map((delayTime, index) => {
 			const fbcf = new FeedbackCombFilter({
 				context: this.context,
-				delayTime, 
+				delayTime,
 			});
 			this._scaleRoomSize.connect(fbcf.resonance);
 			fbcf.resonance.value = combFilterResonances[index];

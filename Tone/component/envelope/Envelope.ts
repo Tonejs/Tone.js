@@ -39,10 +39,9 @@ export interface EnvelopeOptions extends ToneAudioNodeOptions {
  * ```
  *
  * @example
- * import { Envelope, Gain } from "tone";
  * // an amplitude envelope
- * const gainNode = new Gain();
- * const env = new Envelope({
+ * const gainNode = new Tone.Gain();
+ * const env = new Tone.Envelope({
  * 	attack: 0.1,
  * 	decay: 0.2,
  * 	sustain: 1,
@@ -54,7 +53,7 @@ export interface EnvelopeOptions extends ToneAudioNodeOptions {
 export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 
 	readonly name: string = "Envelope";
-	
+
 	/**
 	 * When triggerAttack is called, the attack time is the amount of
 	 * time it takes for the envelope to reach it's maximum value.
@@ -279,12 +278,10 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	 * in the array are evenly subdivided and linearly
 	 * interpolated over the duration of the attack.
 	 * @example
-	 * import { Envelope } from "tone";
-	 * const env = new Envelope();
+	 * const env = new Tone.Envelope();
 	 * env.attackCurve = "linear";
 	 * @example
-	 * import { Envelope } from "tone";
-	 * const env = new Envelope();
+	 * const env = new Tone.Envelope();
 	 * // can also be an array
 	 * env.attackCurve = [0, 0.2, 0.3, 0.4, 1];
 	 */
@@ -298,8 +295,7 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	/**
 	 * The shape of the release. See the attack curve types.
 	 * @example
-	 * import { Envelope } from "tone";
-	 * const env = new Envelope();
+	 * const env = new Tone.Envelope();
 	 * env.releaseCurve = "linear";
 	 */
 	get releaseCurve(): EnvelopeCurve {
@@ -312,8 +308,7 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	/**
 	 * The shape of the decay either "linear" or "exponential"
 	 * @example
-	 * import { Envelope } from "tone";
-	 * const env = new Envelope();
+	 * const env = new Tone.Envelope();
 	 * env.decayCurve = "linear";
 	 */
 	get decayCurve(): BasicEnvelopeCurve {
@@ -330,9 +325,8 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	 * @param velocity The velocity of the envelope scales the vales.
 	 *                             number between 0-1
 	 * @example
-	 * import { AmplitudeEnvelope, Oscillator } from "tone";
-	 * const env = new AmplitudeEnvelope().toDestination();
-	 * const osc = new Oscillator().connect(env).start();
+	 * const env = new Tone.AmplitudeEnvelope().toDestination();
+	 * const osc = new Tone.Oscillator().connect(env).start();
 	 * // trigger the attack 0.5 seconds from now with a velocity of 0.2
 	 * env.triggerAttack("+0.5", 0.2);
 	 */
@@ -393,9 +387,8 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	 * Triggers the release of the envelope.
 	 * @param  time When the release portion of the envelope should start.
 	 * @example
-	 * import { AmplitudeEnvelope, Oscillator } from "tone";
-	 * const env = new AmplitudeEnvelope().toDestination();
-	 * const osc = new Oscillator().connect(env).start();
+	 * const env = new Tone.AmplitudeEnvelope().toDestination();
+	 * const osc = new Tone.Oscillator().connect(env).start();
 	 * env.triggerAttack();
 	 * // trigger the release half a second after the attack
 	 * env.triggerRelease("+0.5");
@@ -436,9 +429,8 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	 * @param time When the attack should be triggered.
 	 * @param velocity The velocity of the envelope.
 	 * @example
-	 * import { AmplitudeEnvelope, Oscillator } from "tone";
-	 * const env = new AmplitudeEnvelope().toDestination();
-	 * const osc = new Oscillator().connect(env).start();
+	 * const env = new Tone.AmplitudeEnvelope().toDestination();
+	 * const osc = new Tone.Oscillator().connect(env).start();
 	 * // trigger the release 0.5 seconds after the attack
 	 * env.triggerAttackRelease(0.5);
 	 */
@@ -478,7 +470,7 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 		const sustainTime = envelopeDuration * 0.1;
 		const totalDuration = envelopeDuration + sustainTime;
 		// @ts-ignore
-		const clone = new this.constructor(Object.assign(this.get(), { 
+		const clone = new this.constructor(Object.assign(this.get(), {
 			attack: duration * this.toSeconds(this.attack) / totalDuration,
 			decay: duration * this.toSeconds(this.decay) / totalDuration,
 			release: duration * this.toSeconds(this.release) / totalDuration,

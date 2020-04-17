@@ -24,10 +24,9 @@ export interface AutoWahOptions extends EffectOptions {
  * Inspiration from [Tuna.js](https://github.com/Dinahmoe/tuna).
  * 
  * @example
- * import { AutoWah, Synth } from "tone";
- * const autoWah = new AutoWah(50, 6, -30).toDestination();
+ * const autoWah = new Tone.AutoWah(50, 6, -30).toDestination();
  * // initialize the synth and connect to autowah
- * const synth = new Synth().connect(autoWah);
+ * const synth = new Tone.Synth().connect(autoWah);
  * // Q value influences the effect of the wah - default is 2
  * autoWah.Q.value = 6;
  * // more audible on higher notes
@@ -37,7 +36,7 @@ export interface AutoWahOptions extends EffectOptions {
 export class AutoWah extends Effect<AutoWahOptions> {
 
 	readonly name: string = "AutoWah";
-	
+
 	/**
 	 * The envelope follower. Set the attack/release
 	 * timing to adjust how the envelope is followed.

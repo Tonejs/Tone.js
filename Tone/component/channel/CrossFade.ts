@@ -28,11 +28,10 @@ interface CrossFadeOptions extends ToneAudioNodeOptions {
  *                                             +---------+
  * ```
  * @example
- * import { CrossFade, Oscillator } from "tone";
- * const crossFade = new CrossFade().toDestination();
- * // connect two inputs to a/b
- * const inputA = new Oscillator(440, "square").connect(crossFade.a).start();
- * const inputB = new Oscillator(440, "sine").connect(crossFade.b).start();
+ * const crossFade = new Tone.CrossFade().toDestination();
+ * // connect two inputs Tone.to a/b
+ * const inputA = new Tone.Oscillator(440, "square").connect(crossFade.a).start();
+ * const inputB = new Tone.Oscillator(440, "sine").connect(crossFade.b).start();
  * // use the fade to control the mix between the two
  * crossFade.fade.value = 0.5;
  * @category Component

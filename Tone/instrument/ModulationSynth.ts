@@ -70,8 +70,7 @@ export abstract class ModulationSynth<Options extends ModulationSynthOptions> ex
 	 * Harmonicity is the ratio between the two voices. A harmonicity of
 	 * 1 is no change. Harmonicity = 2 means a change of an octave.
 	 * @example
-	 * import { AMSynth } from "tone";
-	 * const amSynth = new AMSynth().toDestination();
+	 * const amSynth = new Tone.AMSynth().toDestination();
 	 * // pitch the modulator an octave below oscillator
 	 * amSynth.harmonicity.value = 0.5;
 	 * amSynth.triggerAttackRelease("C5", "4n");
@@ -125,7 +124,7 @@ export abstract class ModulationSynth<Options extends ModulationSynthOptions> ex
 			context: this.context,
 			gain: 0,
 		});
-		
+
 		readOnly(this, ["frequency", "harmonicity", "oscillator", "envelope", "modulation", "modulationEnvelope", "detune"]);
 	}
 
@@ -188,7 +187,7 @@ export abstract class ModulationSynth<Options extends ModulationSynthOptions> ex
 		// @ts-ignore
 		this._modulator._triggerEnvelopeAttack(time, velocity);
 	}
-	
+
 	/**
 	 * Trigger the release portion of the note
 	 */
@@ -199,7 +198,7 @@ export abstract class ModulationSynth<Options extends ModulationSynthOptions> ex
 		this._modulator._triggerEnvelopeRelease(time);
 		return this;
 	}
-	
+
 	getLevelAtTime(time: Time): NormalRange {
 		time = this.toSeconds(time);
 		return this.envelope.getValueAtTime(time);

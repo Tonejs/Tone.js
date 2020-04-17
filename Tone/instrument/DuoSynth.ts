@@ -21,8 +21,7 @@ export interface DuoSynthOptions extends MonophonicOptions {
  * DuoSynth is a monophonic synth composed of two [[MonoSynths]] run in parallel with control over the
  * frequency ratio between the two voices and vibrato effect.
  * @example
- * import { DuoSynth } from "tone";
- * const duoSynth = new DuoSynth().toDestination();
+ * const duoSynth = new Tone.DuoSynth().toDestination();
  * duoSynth.triggerAttackRelease("C4", "2n");
  * @category Instrument
  */
@@ -32,7 +31,7 @@ export class DuoSynth extends Monophonic<DuoSynthOptions> {
 
 	readonly frequency: Signal<"frequency">;
 	readonly detune: Signal<"cents">;
-		
+
 	/**
 	 * the first voice
 	 */
@@ -42,7 +41,7 @@ export class DuoSynth extends Monophonic<DuoSynthOptions> {
 	 * the second voice
 	 */
 	readonly voice1: MonoSynth;
-	
+
 	/**
 	 * The amount of vibrato
 	 */
@@ -57,8 +56,7 @@ export class DuoSynth extends Monophonic<DuoSynthOptions> {
 	 * Harmonicity is the ratio between the two voices. A harmonicity of
 	 * 1 is no change. Harmonicity = 2 means a change of an octave.
 	 * @example
-	 * import { DuoSynth } from "tone";
-	 * const duoSynth = new DuoSynth().toDestination();
+	 * const duoSynth = new Tone.DuoSynth().toDestination();
 	 * duoSynth.triggerAttackRelease("C4", "2n");
 	 * // pitch voice1 an octave below voice0
 	 * duoSynth.harmonicity.value = 0.5;
@@ -80,12 +78,12 @@ export class DuoSynth extends Monophonic<DuoSynthOptions> {
 		super(optionsFromArguments(DuoSynth.getDefaults(), arguments));
 		const options = optionsFromArguments(DuoSynth.getDefaults(), arguments);
 
-		this.voice0 = new MonoSynth(Object.assign(options.voice0, { 
-			context: this.context, 
+		this.voice0 = new MonoSynth(Object.assign(options.voice0, {
+			context: this.context,
 			onsilence: () => this.onsilence(this)
 		}));
-		this.voice1 = new MonoSynth(Object.assign(options.voice1, { 
-			context: this.context, 
+		this.voice1 = new MonoSynth(Object.assign(options.voice1, {
+			context: this.context,
 		}));
 
 		this.harmonicity = new Multiply({
@@ -120,7 +118,7 @@ export class DuoSynth extends Monophonic<DuoSynthOptions> {
 			units: "cents",
 			value: options.detune
 		});
-		
+
 		// control the two voices frequency
 		this.frequency.connect(this.voice0.frequency);
 		this.frequency.chain(this.harmonicity, this.voice1.frequency);
@@ -147,7 +145,7 @@ export class DuoSynth extends Monophonic<DuoSynthOptions> {
 			vibratoRate: 5,
 			harmonicity: 1.5,
 			voice0: deepMerge(
-				omitFromObject(MonoSynth.getDefaults(), Object.keys(Monophonic.getDefaults())), 
+				omitFromObject(MonoSynth.getDefaults(), Object.keys(Monophonic.getDefaults())),
 				{
 					filterEnvelope: {
 						attack: 0.01,
@@ -163,9 +161,9 @@ export class DuoSynth extends Monophonic<DuoSynthOptions> {
 					}
 				}),
 			voice1: deepMerge(
-				omitFromObject(MonoSynth.getDefaults(), Object.keys(Monophonic.getDefaults())), 
+				omitFromObject(MonoSynth.getDefaults(), Object.keys(Monophonic.getDefaults())),
 				{
-					
+
 					filterEnvelope: {
 						attack: 0.01,
 						decay: 0.0,
@@ -190,7 +188,7 @@ export class DuoSynth extends Monophonic<DuoSynthOptions> {
 		// @ts-ignore
 		this.voice1._triggerEnvelopeAttack(time, velocity);
 	}
-	
+
 	/**
 	 * Trigger the release portion of the note
 	 */

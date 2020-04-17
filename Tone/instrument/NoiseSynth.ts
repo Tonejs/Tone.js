@@ -21,8 +21,7 @@ export interface NoiseSynthOptions extends InstrumentOptions {
  * +-------+   +-------------------+
  * ```
  * @example
- * import { NoiseSynth } from "tone";
- * const noiseSynth = new NoiseSynth().toDestination();
+ * const noiseSynth = new Tone.NoiseSynth().toDestination();
  * noiseSynth.triggerAttackRelease("8n", 0.05);
  * @category Instrument
  */
@@ -78,8 +77,7 @@ export class NoiseSynth extends Instrument<NoiseSynthOptions> {
 	 * Start the attack portion of the envelopes. Unlike other
 	 * instruments, Tone.NoiseSynth doesn't have a note.
 	 * @example
-	 * import { NoiseSynth } from "tone";
-	 * const noiseSynth = new NoiseSynth().toDestination();
+	 * const noiseSynth = new Tone.NoiseSynth().toDestination();
 	 * noiseSynth.triggerAttack();
 	 */
 	triggerAttack(time?: Time, velocity: NormalRange = 1): this {

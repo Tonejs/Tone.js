@@ -15,10 +15,9 @@ export interface BitCrusherOptions extends EffectOptions {
  * Lowering the bit depth of the signal creates distortion. Read more about BitCrushing
  * on [Wikipedia](https://en.wikipedia.org/wiki/Bitcrusher).
  * @example
- * import { BitCrusher, Synth } from "tone";
  * // initialize crusher and route a synth through it
- * const crusher = new BitCrusher(4).toDestination();
- * const synth = new Synth().connect(crusher);
+ * const crusher = new Tone.BitCrusher(4).toDestination();
+ * const synth = new Tone.Synth().connect(crusher);
  * synth.triggerAttackRelease("C2", 2);
  * 
  * @category Effect
@@ -33,18 +32,18 @@ export class BitCrusher extends Effect<BitCrusherOptions> {
 	 * @max 16
 	 */
 	readonly bits: Param<"positive">;
-	
+
 	/**
 	 * The node which does the bit crushing effect. Runs in an AudioWorklet when possible.
 	 */
 	private _bitCrusherWorklet: BitCrusherWorklet;
-	
+
 	constructor(bits?: Positive, frequencyReduction?: NormalRange);
 	constructor(options?: Partial<BitCrusherWorkletOptions>);
 	constructor() {
 		super(optionsFromArguments(BitCrusher.getDefaults(), arguments, ["bits"]));
 		const options = optionsFromArguments(BitCrusher.getDefaults(), arguments, ["bits"]);
-		
+
 		this._bitCrusherWorklet = new BitCrusherWorklet({
 			context: this.context,
 			bits: options.bits,
@@ -61,7 +60,7 @@ export class BitCrusher extends Effect<BitCrusherOptions> {
 			frequencyReduction: 0.5,
 		});
 	}
-	
+
 	dispose(): this {
 		super.dispose();
 		this._bitCrusherWorklet.dispose();
@@ -77,24 +76,24 @@ interface BitCrusherWorkletOptions extends ToneAudioWorkletOptions {
  * Internal class which creates an AudioWorklet to do the bit crushing
  */
 class BitCrusherWorklet extends ToneAudioWorklet<BitCrusherWorkletOptions> {
-	
+
 	readonly name: string = "BitCrusherWorklet";
-	
+
 	readonly input: Gain;
 	readonly output: Gain;
 
 	readonly bits: Param<"positive">;
-	
+
 	protected workletOptions: Partial<AudioWorkletNodeOptions> = {
 		numberOfInputs: 1,
 		numberOfOutputs: 1,
 	}
-	
+
 	constructor(options?: Partial<BitCrusherWorkletOptions>);
 	constructor() {
 		super(optionsFromArguments(BitCrusherWorklet.getDefaults(), arguments));
 		const options = optionsFromArguments(BitCrusherWorklet.getDefaults(), arguments);
-		
+
 		this.input = new Gain({ context: this.context });
 		this.output = new Gain({ context: this.context });
 
@@ -110,17 +109,17 @@ class BitCrusherWorklet extends ToneAudioWorklet<BitCrusherWorkletOptions> {
 			swappable: true,
 		});
 	}
-	
+
 	static getDefaults(): BitCrusherWorkletOptions {
 		return Object.assign(ToneAudioWorklet.getDefaults(), {
 			bits: 12,
 		});
 	}
-	
+
 	protected _audioWorkletName(): string {
 		return "bit-crusher";
 	}
-	
+
 	protected _audioWorklet(): string {
 		return /* javascript */` 
 		registerProcessor("${this._audioWorkletName()}", class extends AudioWorkletProcessor {
@@ -153,7 +152,7 @@ class BitCrusherWorklet extends ToneAudioWorklet<BitCrusherWorkletOptions> {
 		});
 		`;
 	}
-	
+
 	onReady(node: AudioWorkletNode) {
 		connectSeries(this.input, node, this.output);
 		// @ts-ignore

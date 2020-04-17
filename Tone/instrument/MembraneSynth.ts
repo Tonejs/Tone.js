@@ -20,8 +20,7 @@ export interface MembraneSynthOptions extends SynthOptions {
  * starts at <code>note * .octaves</code> and ramps to <code>note</code>
  * over the duration of <code>.pitchDecay</code>.
  * @example
- * import { MembraneSynth } from "tone";
- * const synth = new MembraneSynth().toDestination();
+ * const synth = new Tone.MembraneSynth().toDestination();
  * synth.triggerAttackRelease("C2", "8n");
  * @category Instrument
  */
@@ -44,7 +43,7 @@ export class MembraneSynth extends Synth<MembraneSynthOptions> {
 	 */
 	@timeRange(0)
 	pitchDecay: Time;
-	
+
 	/**
 	 * Portamento is ignored in this synth. use pitch decay instead.
 	 */

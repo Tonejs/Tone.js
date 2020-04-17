@@ -26,7 +26,7 @@ export interface PitchShiftOptions extends FeedbackEffectOptions {
 export class PitchShift extends FeedbackEffect<PitchShiftOptions> {
 
 	readonly name: string = "PitchShift";
-	
+
 	/**
 	 * The pitch signal
 	 */
@@ -162,9 +162,8 @@ export class PitchShift extends FeedbackEffect<PitchShiftOptions> {
 	/**
 	 * Repitch the incoming signal by some interval (measured in semi-tones).
 	 * @example
-	 * import { Oscillator, PitchShift } from "tone";
-	 * const pitchShift = new PitchShift().toDestination();
-	 * const osc = new Oscillator().connect(pitchShift).start().toDestination();
+	 * const pitchShift = new Tone.PitchShift().toDestination();
+	 * const osc = new Tone.Oscillator().connect(pitchShift).start().toDestination();
 	 * pitchShift.pitch = -12; // down one octave
 	 * pitchShift.pitch = 7; // up a fifth
 	 */
@@ -204,7 +203,7 @@ export class PitchShift extends FeedbackEffect<PitchShiftOptions> {
 		this.pitch = this._pitch;
 	}
 
-	dispose(): this{
+	dispose(): this {
 		super.dispose();
 		this._frequency.dispose();
 		this._delayA.dispose();

@@ -19,8 +19,7 @@ export interface CompressorOptions extends ToneAudioNodeOptions {
  * by narrowing or "compressing" an audio signal's dynamic range.
  * Read more on [Wikipedia](https://en.wikipedia.org/wiki/Dynamic_range_compression).
  * @example
- * import { Compressor } from "tone";
- * const comp = new Compressor(-30, 3);
+ * const comp = new Tone.Compressor(-30, 3);
  * @category Component
  */
 export class Compressor extends ToneAudioNode<CompressorOptions> {
@@ -47,7 +46,7 @@ export class Compressor extends ToneAudioNode<CompressorOptions> {
 	 * @max 1
 	 */
 	readonly attack: Param<"time">;
-	
+
 	/**
 	 * The amount of time (in seconds) to increase the gain by 10dB.
 	 * @min 0
@@ -90,7 +89,7 @@ export class Compressor extends ToneAudioNode<CompressorOptions> {
 			units: "decibels",
 			value: options.threshold,
 		});
-		
+
 		this.attack = new Param({
 			minValue: this._compressor.attack.minValue,
 			maxValue: this._compressor.attack.maxValue,
@@ -99,7 +98,7 @@ export class Compressor extends ToneAudioNode<CompressorOptions> {
 			units: "time",
 			value: options.attack,
 		});
-		
+
 		this.release = new Param({
 			minValue: this._compressor.release.minValue,
 			maxValue: this._compressor.release.maxValue,
@@ -108,7 +107,7 @@ export class Compressor extends ToneAudioNode<CompressorOptions> {
 			units: "time",
 			value: options.release,
 		});
-		
+
 		this.knee = new Param({
 			minValue: this._compressor.knee.minValue,
 			maxValue: this._compressor.knee.maxValue,
@@ -118,7 +117,7 @@ export class Compressor extends ToneAudioNode<CompressorOptions> {
 			units: "decibels",
 			value: options.knee,
 		});
-		
+
 		this.ratio = new Param({
 			minValue: this._compressor.ratio.minValue,
 			maxValue: this._compressor.ratio.maxValue,

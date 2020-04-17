@@ -13,7 +13,7 @@ import { log } from "./util/Debug";
 //-------------------------------------
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface BaseToneOptions {}
+export interface BaseToneOptions { }
 
 /**
  * @class  Tone is the base class of all other classes.
@@ -53,8 +53,7 @@ export abstract class Tone {
 	 * called `debug` set to true, or a variable called TONE_DEBUG_CLASS
 	 * is set to the name of the class.
 	 * @example
-	 * import { Oscillator } from "tone";
-	 * const osc = new Oscillator();
+	 * const osc = new Tone.Oscillator();
 	 * // prints all logs originating from this oscillator
 	 * osc.debug = true;
 	 * // calls to start/stop will print in the console
@@ -97,8 +96,7 @@ export abstract class Tone {
 	/**
 	 * Convert the class to a string
 	 * @example
-	 * import { Oscillator } from "tone";
-	 * const osc = new Oscillator();
+	 * const osc = new Tone.Oscillator();
 	 * console.log(osc.toString());
 	 */
 	toString(): string {

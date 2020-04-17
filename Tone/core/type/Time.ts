@@ -9,8 +9,7 @@ import { BarsBeatsSixteenths, MidiNote, Seconds, Subdivision, Ticks, Time } from
  * @param  val    The time value.
  * @param  units  The units of the value.
  * @example
- * import { Time } from "tone";
- * const time = Time("4n"); // a quarter note
+ * const time = Tone.Time("4n"); // a quarter note
  * @category Unit
  */
 export class TimeClass<Type extends Seconds | Ticks = Seconds, Unit extends string = TimeBaseUnit>
@@ -43,9 +42,8 @@ export class TimeClass<Type extends Seconds | Ticks = Seconds, Unit extends stri
 	 * @param  subdiv    The subdivision to quantize to
 	 * @param  percent  Move the time value towards the quantized value by a percentage.
 	 * @example
-	 * import { Time } from "tone";
-	 * Time(21).quantize(2); // returns 22
-	 * Time(0.6).quantize("4n", 0.5); // returns 0.55
+	 * Tone.Time(21).quantize(2); // returns 22
+	 * Tone.Time(0.6).quantize("4n", 0.5); // returns 0.55
 	 */
 	quantize(subdiv: Time, percent = 1): Type {
 		const subdivision = new (this.constructor as typeof TimeClass)(this.context, subdiv).valueOf();
@@ -64,9 +62,8 @@ export class TimeClass<Type extends Seconds | Ticks = Seconds, Unit extends stri
 	 * closest representation between 1m to 128th note.
 	 * @return {Notation}
 	 * @example
-	 * import { Time } from "tone";
 	 * // if the Transport is at 120bpm:
-	 * Time(2).toNotation(); // returns "1m"
+	 * Tone.Time(2).toNotation(); // returns "1m"
 	 */
 	toNotation(): Subdivision {
 		const time = this.toSeconds();

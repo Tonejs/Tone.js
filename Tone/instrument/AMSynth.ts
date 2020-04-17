@@ -13,8 +13,7 @@ export type AMSynthOptions = ModulationSynthOptions;
  * [SoundOnSound](https://web.archive.org/web/20160404103653/http://www.soundonsound.com:80/sos/mar00/articles/synthsecrets.htm).
  *
  * @example
- * import { AMSynth } from "tone";
- * const synth = new AMSynth().toDestination();
+ * const synth = new Tone.AMSynth().toDestination();
  * synth.triggerAttackRelease("C4", "4n");
  * 
  * @category Instrument

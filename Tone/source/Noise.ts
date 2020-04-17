@@ -20,11 +20,10 @@ export interface NoiseOptions extends SourceOptions {
  * colors of noise on [Wikipedia](https://en.wikipedia.org/wiki/Colors_of_noise).
  *
  * @example
- * import { AutoFilter, Noise } from "tone";
  * // initialize the noise and start
- * const noise = new Noise("pink").start();
+ * const noise = new Tone.Noise("pink").start();
  * // make an autofilter to shape the noise
- * const autoFilter = new AutoFilter({
+ * const autoFilter = new Tone.AutoFilter({
  * 	frequency: "8n",
  * 	baseFrequency: 200,
  * 	octaves: 8
@@ -92,8 +91,7 @@ export class Noise extends Source<NoiseOptions> {
 	/**
 	 * The type of the noise. Can be "white", "brown", or "pink".
 	 * @example
-	 * import { Noise } from "tone";
-	 * const noise = new Noise().toDestination().start();
+	 * const noise = new Tone.Noise().toDestination().start();
 	 * noise.type = "brown";
 	 */
 	get type(): NoiseType {
@@ -182,7 +180,7 @@ export class Noise extends Source<NoiseOptions> {
 	protected _restart(time?: Time): void {
 		// TODO could be optimized by cancelling the buffer source 'stop'
 		this._stop(time);
-		this._start(time);		
+		this._start(time);
 	}
 
 	/**

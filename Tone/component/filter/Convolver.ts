@@ -17,15 +17,14 @@ export interface ConvolverOptions extends ToneAudioNodeOptions {
  * [Wikipedia](https://en.wikipedia.org/wiki/Convolution_reverb).
  *
  * @example
- * import { Convolver } from "tone";
  * // initializing the convolver with an impulse response
- * const convolver = new Convolver("./path/to/ir.wav").toDestination();
+ * const convolver = new Tone.Convolver("./path/to/ir.wav").toDestination();
  * @category Component
  */
 export class Convolver extends ToneAudioNode<ConvolverOptions> {
 
 	readonly name: string = "Convolver";
-	
+
 	/**
 	 * The native ConvolverNode
 	 */

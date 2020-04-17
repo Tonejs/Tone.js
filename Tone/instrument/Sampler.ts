@@ -35,8 +35,7 @@ export interface SamplerOptions extends InstrumentOptions {
  * For sample or buffer playback where repitching is not necessary,
  * use [[Player]].
  * @example
- * import { Sampler } from "tone";
- * const sampler = new Sampler({
+ * const sampler = new Tone.Sampler({
  * 	urls: {
  * 		C1: "C1.mp3",
  * 		C2: "C2.mp3",
@@ -69,7 +68,7 @@ export class Sampler extends Instrument<SamplerOptions> {
 	 */
 	@timeRange(0)
 	attack: Time;
-	
+
 	/**
 	 * The envelope applied to the end of the envelope.
 	 * @min 0
@@ -119,8 +118,8 @@ export class Sampler extends Instrument<SamplerOptions> {
 		});
 
 		this._buffers = new ToneAudioBuffers({
-			urls: urlMap, 
-			onload: options.onload, 
+			urls: urlMap,
+			onload: options.onload,
 			baseUrl: options.baseUrl,
 			onerror: options.onerror,
 		});

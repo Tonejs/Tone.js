@@ -12,8 +12,7 @@ export interface ToneOscillatorInterface {
 	/**
 	 * The oscillator type without the partialsCount appended to the end
 	 * @example
-	 * import { Oscillator } from "tone";
-	 * const osc = new Oscillator();
+	 * const osc = new Tone.Oscillator();
 	 * osc.type = "sine2";
 	 * console.log(osc.baseType); // "sine"
 	 */
@@ -24,17 +23,15 @@ export interface ToneOscillatorInterface {
 	 * For example: "sine4" would set be the first 4 partials of the sine wave and "triangle8" would 
 	 * set the first 8 partials of the triangle wave.
 	 * @example
-	 * import { Oscillator } from "tone";
-	 * const osc = new Oscillator();
+	 * const osc = new Tone.Oscillator();
 	 * osc.type = "sine2";
 	 */
 	type: ExtendedToneOscillatorType;
-	
+
 	/**
 	 * The frequency value of the oscillator
 	 * @example
-	 * import { FMOscillator } from "tone";
-	 * const osc = new FMOscillator("Bb4").toDestination().start();
+	 * const osc = new Tone.FMOscillator("Bb4").toDestination().start();
 	 * osc.frequency.rampTo("D2", 3);
 	 */
 	readonly frequency: Signal<"frequency">;
@@ -42,12 +39,11 @@ export interface ToneOscillatorInterface {
 	/**
 	 * The detune value in cents (100th of a semitone).
 	 * @example
-	 * import { now, PulseOscillator } from "tone";
-	 * const osc = new PulseOscillator("F3").toDestination().start();
+	 * const osc = new Tone.PulseOscillator("F3").toDestination().start();
 	 * // pitch it 1 octave = 12 semitones = 1200 cents
-	 * osc.detune.setValueAtTime(-1200, now());
-	 * osc.detune.setValueAtTime(1200, now() + 0.5);
-	 * osc.detune.linearRampToValueAtTime(0, now() + 1);
+	 * osc.detune.setValueAtTime(-1200, Tone.now());
+	 * osc.detune.setValueAtTime(1200, Tone.now() + 0.5);
+	 * osc.detune.linearRampToValueAtTime(0, Tone.now() + 1);
 	 * osc.stop(now() + 1.5);
 	 */
 	readonly detune: Signal<"cents">;
@@ -67,12 +63,11 @@ export interface ToneOscillatorInterface {
 	 * Setting this value will automatically set the type to "custom".
 	 * The value is an empty array when the type is not "custom".
 	 * @example
-	 * import { Oscillator } from "tone";
-	 * const osc = new Oscillator("F3").toDestination().start();
+	 * const osc = new Tone.Oscillator("F3").toDestination().start();
 	 * osc.partials = [1, 0, 0.4, 1, 0.2];
 	 */
 	partials: number[];
-	
+
 	/**
 	 * 'partialCount' offers an alternative way to set the number of used partials.
 	 * When partialCount is 0, the maximum number of partials are used when representing
@@ -81,8 +76,7 @@ export interface ToneOscillatorInterface {
 	 * is composed of only odd harmonics up through the harmonic series. Partial count
 	 * can limit the number of harmonics which are used to generate the waveform.
 	 * @example
-	 * import { Oscillator } from "tone";
-	 * const osc = new Oscillator("C3", "square").toDestination().start();
+	 * const osc = new Tone.Oscillator("C3", "square").toDestination().start();
 	 * osc.partialCount = 5;
 	 */
 	partialCount?: number;
@@ -100,7 +94,7 @@ export interface ToneOscillatorInterface {
 export async function generateWaveform(instance: any, length: number): Promise<Float32Array> {
 	const duration = length / instance.context.sampleRate;
 	const context = new OfflineContext(1, duration, instance.context.sampleRate);
-	const clone = new instance.constructor(Object.assign(instance.get(), { 
+	const clone = new instance.constructor(Object.assign(instance.get(), {
 		// should do 2 iterations
 		frequency: 2 / duration,
 		// zero out the detune

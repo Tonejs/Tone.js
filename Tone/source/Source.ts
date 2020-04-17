@@ -56,8 +56,7 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 	/**
 	 * The volume of the output in decibels.
 	 * @example
-	 * import { PWMOscillator } from "tone";
-	 * const source = new PWMOscillator().toDestination();
+	 * const source = new Tone.PWMOscillator().toDestination();
 	 * source.volume.value = -6;
 	 */
 	volume: Param<"decibels">;
@@ -122,8 +121,7 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 	/**
 	 * Returns the playback state of the source, either "started" or "stopped".
 	 * @example
-	 * import { Player } from "tone";
-	 * const player = new Player("https://tonejs.github.io/examples/audio/FWDL.mp3", () => {
+	 * const player = new Tone.Player("https://tonejs.github.io/examples/audio/FWDL.mp3", () => {
 	 * 	player.start();
 	 * 	console.log(player.state);
 	 * }).toDestination();
@@ -143,8 +141,7 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 	/**
 	 * Mute the output.
 	 * @example
-	 * import { Oscillator } from "tone";
-	 * const osc = new Oscillator().toDestination().start();
+	 * const osc = new Tone.Oscillator().toDestination().start();
 	 * // mute the output
 	 * osc.mute = true;
 	 */
@@ -177,8 +174,7 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 	 * start the source now.
 	 * @param  time When the source should be started.
 	 * @example
-	 * import { Oscillator } from "tone";
-	 * const source = new Oscillator().toDestination();
+	 * const source = new Tone.Oscillator().toDestination();
 	 * source.start("+0.5"); // starts the source 0.5 seconds from now
 	 */
 	start(time?: Time, offset?: Time, duration?: Time): this {
@@ -224,8 +220,7 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 	 * stop the source now.
 	 * @param  time When the source should be stopped.
 	 * @example
-	 * import { Oscillator } from "tone";
-	 * const source = new Oscillator().toDestination();
+	 * const source = new Tone.Oscillator().toDestination();
 	 * source.start();
 	 * source.stop("+0.5"); // stops the source 0.5 seconds from now
 	 */
@@ -264,15 +259,14 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 	 * instead of the AudioContext time.
 	 *
 	 * @example
-	 * import { Oscillator, Transport } from "tone";
-	 * const osc = new Oscillator().toDestination();
+	 * const osc = new Tone.Oscillator().toDestination();
 	 * // sync the source so that it plays between 0 and 0.3 on the Transport's timeline
 	 * osc.sync().start(0).stop(0.3);
 	 * // start the transport.
-	 * Transport.start();
+	 * Tone.Transport.start();
 	 * // set it to loop once a second
-	 * Transport.loop = true;
-	 * Transport.loopEnd = 1;
+	 * Tone.Transport.loop = true;
+	 * Tone.Transport.loopEnd = 1;
 	 */
 	sync(): this {
 		if (!this._synced) {

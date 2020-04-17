@@ -8,9 +8,11 @@ import { AMOscillator } from "./AMOscillator";
 import { FatOscillator } from "./FatOscillator";
 import { FMOscillator } from "./FMOscillator";
 import { Oscillator } from "./Oscillator";
-import { generateWaveform,
+import {
+	generateWaveform,
 	OmniOscillatorConstructorOptions, OmniOscillatorOptions,
-	OmniOscillatorType, ToneOscillatorInterface, ToneOscillatorType } from "./OscillatorInterface";
+	OmniOscillatorType, ToneOscillatorInterface, ToneOscillatorType
+} from "./OscillatorInterface";
 import { PulseOscillator } from "./PulseOscillator";
 import { PWMOscillator } from "./PWMOscillator";
 
@@ -68,8 +70,7 @@ const OmniOscillatorSourceMap: {
  * For example: `omniOsc.type = "fatsawtooth"` will create set the oscillator
  * to a FatOscillator of type "sawtooth".
  * @example
- * import { OmniOscillator } from "tone";
- * const omniOsc = new OmniOscillator("C#4", "pwm");
+ * const omniOsc = new Tone.OmniOscillator("C#4", "pwm");
  * @category Source
  */
 export class OmniOscillator<OscType extends AnyOscillator>
@@ -155,15 +156,13 @@ export class OmniOscillator<OscType extends AnyOscillator>
 	 * oscillator's class are accessible when the oscillator is set to that type, but throws an error
 	 * when it's not. 
 	 * @example
-	 * import { OmniOscillator } from "tone";
-	 * const omniOsc = new OmniOscillator().toDestination().start();
+	 * const omniOsc = new Tone..OmniOscillator().toDestination().start();
 	 * omniOsc.type = "pwm";
 	 * // modulationFrequency is parameter which is available
 	 * // only when the type is "pwm".
 	 * omniOsc.modulationFrequency.value = 0.5;
 	 * @example
-	 * import { OmniOscillator } from "tone";
-	 * const omniOsc = new OmniOscillator().toDestination().start();
+	 * const omniOsc = new Tone.OmniOscillator().toDestination().start();
 	 * // an square wave frequency modulated by a sawtooth
 	 * omniOsc.type = "fmsquare";
 	 * omniOsc.modulationType = "sawtooth";
@@ -271,8 +270,7 @@ export class OmniOscillator<OscType extends AnyOscillator>
 	/**
 	 * The source type of the oscillator.
 	 * @example
-	 * import { OmniOscillator } from "tone";
-	 * const omniOsc = new OmniOscillator(440, "fmsquare");
+	 * const omniOsc = new Tone.OmniOscillator(440, "fmsquare");
 	 * console.log(omniOsc.sourceType); // 'fm'
 	 */
 	get sourceType(): OmniOscSourceType {
@@ -311,8 +309,7 @@ export class OmniOscillator<OscType extends AnyOscillator>
 	/**
 	 * The base type of the oscillator. See [[Oscillator.baseType]]
 	 * @example
-	 * import { OmniOscillator } from "tone";
-	 * const omniOsc = new OmniOscillator(440, "fmsquare4");
+	 * const omniOsc = new Tone.OmniOscillator(440, "fmsquare4");
 	 * omniOsc.sourceType; // 'fm'
 	 * omniOsc.baseType; // 'square'
 	 * omniOsc.partialCount; // 4
@@ -332,16 +329,15 @@ export class OmniOscillator<OscType extends AnyOscillator>
 	 * The width of the oscillator when sourceType === "pulse".
 	 * See [[PWMOscillator.width]]
 	 * @example
-	 * import { OmniOscillator } from "tone";
-	 * const omniOsc = new OmniOscillator(440, "pulse");
+	 * const omniOsc = new Tone.OmniOscillator(440, "pulse");
 	 * // can access the width attribute only if type === "pulse"
 	 * omniOsc.width.value = 0.2;
 	 */
 	get width(): IsPulseOscillator<OscType, Signal<"audioRange">> {
 		if (this._getOscType(this._oscillator, "pulse")) {
-			return this._oscillator.width as IsPulseOscillator<OscType, Signal<"audioRange">> ;
+			return this._oscillator.width as IsPulseOscillator<OscType, Signal<"audioRange">>;
 		} else {
-			return undefined as IsPulseOscillator<OscType, Signal<"audioRange">> ;
+			return undefined as IsPulseOscillator<OscType, Signal<"audioRange">>;
 		}
 	}
 

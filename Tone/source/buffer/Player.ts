@@ -25,8 +25,7 @@ export interface PlayerOptions extends SourceOptions {
 /**
  * Player is an audio file player with start, loop, and stop functions.
  * @example
- * import { Player } from "tone";
- * const player = new Player("https://tonejs.github.io/examples/audio/FWDL.mp3").toDestination();
+ * const player = new Tone.Player("https://tonejs.github.io/examples/audio/FWDL.mp3").toDestination();
  * // play as soon as the buffer is loaded
  * player.autostart = true;
  * @category Source
@@ -275,8 +274,7 @@ export class Player extends Source<PlayerOptions> {
 	 * @param offset The time to seek to.
 	 * @param when The time for the seek event to occur.
 	 * @example
-	 * import { Player } from "tone";
-	 * const player = new Player("https://tonejs.github.io/examples/audio/FWDL.mp3", () => {
+	 * const player = new Tone.Player("https://tonejs.github.io/examples/audio/FWDL.mp3", () => {
 	 * 	player.start();
 	 * 	// seek to the offset in 1 second from now
 	 * 	player.seek(0.4, "+1");
@@ -299,8 +297,7 @@ export class Player extends Source<PlayerOptions> {
 	 * @param loopStart The loop start time
 	 * @param loopEnd The loop end time
 	 * @example
-	 * import { Player } from "tone";
-	 * const player = new Player("https://tonejs.github.io/examples/audio/FWDL.mp3").toDestination();
+	 * const player = new Tone.Player("https://tonejs.github.io/examples/audio/FWDL.mp3").toDestination();
 	 * // loop between the given points
 	 * player.setLoopPoints(0.2, 0.3);
 	 * player.loop = true;

@@ -4,8 +4,10 @@ import { noOp, readOnly } from "../../core/util/Interface";
 import { Signal } from "../../signal/Signal";
 import { Source } from "../Source";
 import { Oscillator } from "./Oscillator";
-import { FatConstructorOptions, FatOscillatorOptions,
-	generateWaveform, NonCustomOscillatorType, ToneOscillatorInterface, ToneOscillatorType } from "./OscillatorInterface";
+import {
+	FatConstructorOptions, FatOscillatorOptions,
+	generateWaveform, NonCustomOscillatorType, ToneOscillatorInterface, ToneOscillatorType
+} from "./OscillatorInterface";
 import { assertRange } from "../../core/util/Debug";
 
 export { FatOscillatorOptions } from "./OscillatorInterface";
@@ -13,8 +15,7 @@ export { FatOscillatorOptions } from "./OscillatorInterface";
 /**
  * FatOscillator is an array of oscillators with detune spread between the oscillators
  * @example
- * import { FatOscillator } from "tone";
- * const fatOsc = new FatOscillator("Ab3", "sawtooth", 40).toDestination().start();
+ * const fatOsc = new Tone.FatOscillator("Ab3", "sawtooth", 40).toDestination().start();
  * @category Source
  */
 export class FatOscillator extends Source<FatOscillatorOptions> implements ToneOscillatorInterface {
@@ -143,8 +144,7 @@ export class FatOscillator extends Source<FatOscillatorOptions> implements ToneO
 	 * the three oscillators would be detuned like this: [-20, 0, 20]
 	 * for a total detune spread of 40 cents.
 	 * @example
-	 * import { FatOscillator } from "tone";
-	 * const fatOsc = new FatOscillator().toDestination().start();
+	 * const fatOsc = new Tone.FatOscillator().toDestination().start();
 	 * fatOsc.spread = 70;
 	 */
 	get spread(): Cents {
@@ -162,8 +162,7 @@ export class FatOscillator extends Source<FatOscillatorOptions> implements ToneO
 	/**
 	 * The number of detuned oscillators. Must be an integer greater than 1.
 	 * @example
-	 * import { FatOscillator } from "tone";
-	 * const fatOsc = new FatOscillator("C#3", "sawtooth").toDestination().start();
+	 * const fatOsc = new Tone.FatOscillator("C#3", "sawtooth").toDestination().start();
 	 * // use 4 sawtooth oscillators
 	 * fatOsc.count = 4;
 	 */

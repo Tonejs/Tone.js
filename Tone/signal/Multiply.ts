@@ -9,19 +9,17 @@ import { InputNode, OutputNode } from "../core/context/ToneAudioNode";
  * multiplies the incoming signal by that value.
  *
  * @example
- * import { Multiply, Signal } from "tone";
  * // multiply two signals
- * const mult = new Multiply();
- * const sigA = new Signal(3);
- * const sigB = new Signal(4);
+ * const mult = new Tone.Multiply();
+ * const sigA = new Tone.Signal(3);
+ * const sigB = new Tone.Signal(4);
  * sigA.connect(mult);
  * sigB.connect(mult.factor);
  * // output of mult is 12.
  * @example
- * import { Multiply, Signal } from "tone";
  * // multiply a signal and a number
- * const mult = new Multiply(10);
- * const sig = new Signal(2).connect(mult);
+ * const mult = new Tone.Multiply(10);
+ * const sig = new Tone.Signal(2).connect(mult);
  * // the output of mult is 20.
  * @category Signal
  */
@@ -63,7 +61,7 @@ export class Multiply<TypeName extends "number" | "positive" = "number"> extends
 		super(Object.assign(optionsFromArguments(Multiply.getDefaults(), arguments, ["value"])));
 		const options = optionsFromArguments(Multiply.getDefaults(), arguments, ["value"]);
 
-		this._mult = this.input = this.output = new Gain({ 
+		this._mult = this.input = this.output = new Gain({
 			context: this.context,
 			minValue: options.minValue,
 			maxValue: options.maxValue,

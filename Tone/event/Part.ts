@@ -11,8 +11,8 @@ type CallbackType<T> =
 		time: Time;
 		[key: string]: any;
 	} ? T :
-		T extends ArrayLike<any> ? T[1] :
-			T extends Time ? null : never;
+	T extends ArrayLike<any> ? T[1] :
+	T extends Time ? null : never;
 
 interface PartOptions<T> extends Omit<ToneEventOptions<CallbackType<T>>, "value"> {
 	events: T[];
@@ -22,18 +22,16 @@ interface PartOptions<T> extends Omit<ToneEventOptions<CallbackType<T>>, "value"
  * Part is a collection ToneEvents which can be started/stopped and looped as a single unit.
  *
  * @example
- * import { Part, Synth } from "tone";
- * const synth = new Synth().toDestination();
- * const part = new Part(((time, note) => {
+ * const synth = new Tone.Synth().toDestination();
+ * const part = new Tone.Part(((time, note) => {
  * 	// the notes given as the second element in the array
  * 	// will be passed in as the second argument
  * 	synth.triggerAttackRelease(note, "8n", time);
  * }), [[0, "C2"], ["0:2", "C3"], ["0:3:2", "G2"]]);
  * @example
- * import { Part, Synth } from "tone";
- * const synth = new Synth().toDestination();
+ * const synth = new Tone.Synth().toDestination();
  * // use an array of objects as long as the object has a "time" attribute
- * const part = new Part(((time, value) => {
+ * const part = new Tone.Part(((time, value) => {
  * 	// the value is an object which contains both the note and the velocity
  * 	synth.triggerAttackRelease(value.note, "8n", time, value.velocity);
  * }), [{ time: 0, note: "C3", velocity: 0.9 },
@@ -172,8 +170,7 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 	 * If two events are at the same time, the first one will
 	 * be returned.
 	 * @example
-	 * import { Part } from "tone";
-	 * const part = new Part();
+	 * const part = new Tone.Part();
 	 * part.at("1m"); // returns the part at the first measure
 	 * part.at("2m", "C2"); // set the value at "2m" to C2.
 	 * // if an event didn't exist at that time, it will be created.
@@ -212,8 +209,7 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 	 * 		have a 'time' attribute and the rest of the object will be used as the 'value'.
 	 * @param  value
 	 * @example
-	 * import { Part } from "tone";
-	 * const part = new Part();
+	 * const part = new Tone.Part();
 	 * part.add("1m", "C#+11");
 	 */
 	add(obj: {
@@ -398,8 +394,7 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 	 * times, if set to false, 0 or 1, the
 	 * part will only play once.
 	 * @example
-	 * import { Part } from "tone";
-	 * const part = new Part();
+	 * const part = new Tone.Part();
 	 * // loop the part 8 times
 	 * part.loop = 8;
 	 */

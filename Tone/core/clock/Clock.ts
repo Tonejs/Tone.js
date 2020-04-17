@@ -25,10 +25,9 @@ type ClockEvent = "start" | "stop" | "pause";
  * is precise. For most applications, it is better to use Tone.Transport
  * instead of the Clock by itself since you can synchronize multiple callbacks.
  * @example
- * import { Clock } from "tone";
  * // the callback will be invoked approximately once a second
  * // and will print the time exactly once a second apart.
- * const clock = new Clock(time => {
+ * const clock = new Tone.Clock(time => {
  * 	console.log(time);
  * }, 1);
  * clock.start();
@@ -139,8 +138,7 @@ export class Clock<TypeName extends "bpm" | "hertz" = "hertz">
 	 * Stop the clock. Stopping the clock resets the tick counter to 0.
 	 * @param time The time when the clock should stop.
 	 * @example
-	 * import { Clock } from "tone";
-	 * const clock = new Clock(time => {
+	 * const clock = new Tone.Clock(time => {
 	 * 	console.log(time);
 	 * }, 1);
 	 * clock.start();
@@ -286,8 +284,7 @@ export class Clock<TypeName extends "bpm" | "hertz" = "hertz">
 	 * @param  time  The time to query.
 	 * @return  The name of the state input in setStateAtTime.
 	 * @example
-	 * import { Clock } from "tone";
-	 * const clock = new Clock();
+	 * const clock = new Tone.Clock();
 	 * clock.start("+0.1");
 	 * clock.getStateAtTime("+0.1"); // returns "started"
 	 */

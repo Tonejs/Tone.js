@@ -375,7 +375,6 @@ export class Context extends BaseContext {
 	 * "playback" (prioritizes sustained playback), "balanced" (balances
 	 * latency and performance), and "fastest" (lowest latency, might glitch more often).
 	 * @example
-	 * import * as Tone from "tone";
 	 * // set the latencyHint to prioritize smooth playback at the expensive of latency
 	 * Tone.context.latencyHint = "playback";
 	 */

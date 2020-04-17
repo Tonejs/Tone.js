@@ -15,11 +15,10 @@ export interface ChebyshevOptions extends EffectOptions {
  * and order = 1 is no change. 
  * Read more at [music.columbia.edu](http://music.columbia.edu/cmc/musicandcomputers/chapter4/04_06.php).
  * @example
- * import { Chebyshev, MonoSynth } from "tone";
  * // create a new cheby
- * const cheby = new Chebyshev(50).toDestination();
+ * const cheby = new Tone.Chebyshev(50).toDestination();
  * // create a monosynth connected to our cheby
- * const synth = new MonoSynth().connect(cheby);
+ * const synth = new Tone.MonoSynth().connect(cheby);
  * synth.triggerAttackRelease("C2", 0.4);
  * @category Effect
  */
@@ -36,7 +35,7 @@ export class Chebyshev extends Effect<ChebyshevOptions> {
 	 * holds onto the order of the filter
 	 */
 	private _order: number;
-	
+
 	/**
 	 * @param order The order of the chebyshev polynomial. Normal range between 1-100. 
 	 */

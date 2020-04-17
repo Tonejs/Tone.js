@@ -10,22 +10,21 @@ export type AutoPannerOptions = LFOEffectOptions;
  * [Related Reading](https://www.ableton.com/en/blog/autopan-chopper-effect-and-more-liveschool/).
  *
  * @example
- * import { AutoPanner, Oscillator } from "tone";
  * // create an autopanner and start it
- * const autoPanner = new AutoPanner("4n").toDestination().start();
+ * const autoPanner = new Tone.AutoPanner("4n").toDestination().start();
  * // route an oscillator through the panner and start it
- * const oscillator = new Oscillator().connect(autoPanner).start();
+ * const oscillator = new Tone.Oscillator().connect(autoPanner).start();
  * @category Effect
  */
 export class AutoPanner extends LFOEffect<AutoPannerOptions> {
-	
+
 	readonly name: string = "AutoPanner";
-	
+
 	/**
 	 * The filter node
 	 */
 	readonly _panner: Panner;
-	
+
 	/**
 	 * @param frequency Rate of left-right oscillation. 
 	 */
@@ -43,7 +42,7 @@ export class AutoPanner extends LFOEffect<AutoPannerOptions> {
 		this._lfo.max = 1;
 	}
 
-	dispose(): this{
+	dispose(): this {
 		super.dispose();
 		this._panner.dispose();
 		return this;

@@ -21,7 +21,7 @@ function findExamples(obj) {
 			});
 		} else if (prop === "comment" && obj[prop].tags) {
 			examples = [
-				...examples, 
+				...examples,
 				...obj[prop].tags.filter(tag => tag.tag === "example").map(tag => tag.text)
 			];
 		} else if (typeof obj[prop] === "object") {
@@ -53,7 +53,8 @@ function execPromise(cmd) {
  * Run the string through the typescript compiler
  */
 async function testExampleString(str) {
-	str = str.replace("from \"tone\"", `from "${resolve(__dirname, "../../")}"`);
+	// str = str.replace("from \"tone\"", `from "${resolve(__dirname, "../../")}"`);
+	str = `import * as Tone from "${resolve(__dirname, "../../")}"`;
 	const { path, cleanup } = await file({ postfix: ".ts" });
 	// work with file here in fd
 	await writeFile(path, str);

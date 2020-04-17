@@ -20,11 +20,11 @@ type OmitMonophonicOptions<T> = Omit<T, "context" | "onsilence">;
 
 type VoiceOptions<T> =
 	T extends MembraneSynth ? MembraneSynthOptions :
-		T extends MetalSynth ? MetalSynthOptions :
-			T extends FMSynth ? FMSynthOptions :
-				T extends AMSynth ? AMSynthOptions :
-					T extends Synth ? SynthOptions :
-						never;
+	T extends MetalSynth ? MetalSynthOptions :
+	T extends FMSynth ? FMSynthOptions :
+	T extends AMSynth ? AMSynthOptions :
+	T extends Synth ? SynthOptions :
+	never;
 
 /**
  * The settable synth options. excludes monophonic options.
@@ -45,8 +45,7 @@ export interface PolySynthOptions<Voice> extends InstrumentOptions {
  * monophonic synthesizers to be polyphonic.
  *
  * @example
- * import { PolySynth } from "tone";
- * const synth = new PolySynth().toDestination();
+ * const synth = new Tone.PolySynth().toDestination();
  * // set the attributes across all the voices using 'set'
  * synth.set({ detune: -1200 });
  * // play a chord
@@ -65,7 +64,7 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 	/**
 	 * The currently active voices
 	 */
-	private _activeVoices: Array<{midi: MidiNote; voice: Voice; released: boolean}> = [];
+	private _activeVoices: Array<{ midi: MidiNote; voice: Voice; released: boolean }> = [];
 
 	/**
 	 * All of the allocated voices for this synth.
@@ -260,10 +259,9 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 	 * @param  time  The start time of the note.
 	 * @param velocity The velocity of the note.
 	 * @example
-	 * import { FMSynth, now, PolySynth } from "tone";
-	 * const synth = new PolySynth(FMSynth).toDestination();
+	 * const synth = new Tone.PolySynth(Tone.FMSynth).toDestination();
 	 * // trigger a chord immediately with a velocity of 0.2
-	 * synth.triggerAttack(["Ab3", "C4", "F5"], now(), 0.2);
+	 * synth.triggerAttack(["Ab3", "C4", "F5"], Tone.now(), 0.2);
 	 */
 	triggerAttack(notes: Frequency | Frequency[], time?: Time, velocity?: NormalRange): this {
 
@@ -282,8 +280,7 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 	 * @param  time  When the release will be triggered.
 	 * @example
 	 * @example
-	 * import { AMSynth, PolySynth } from "tone";
-	 * const poly = new PolySynth(AMSynth).toDestination();
+	 * const poly = new Tone.PolySynth(Tone.AMSynth).toDestination();
 	 * poly.triggerAttack(["Ab3", "C4", "F5"]);
 	 * // trigger the release of the given notes. 
 	 * poly.triggerRelease(["Ab3", "C4"], "+1");
@@ -305,8 +302,7 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 	 * @param  time  if no time is given, defaults to now
 	 * @param  velocity the velocity of the attack (0-1)
 	 * @example
-	 * import { AMSynth, PolySynth } from "tone";
-	 * const poly = new PolySynth(AMSynth).toDestination();
+	 * const poly = new Tone.PolySynth(Tone.AMSynth).toDestination();
 	 * // can pass in an array of durations as well
 	 * poly.triggerAttackRelease(["Eb3", "G4", "Bb4", "D5"], [4, 3, 2, 1]);
 	 */
@@ -344,8 +340,7 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 	/**
 	 * Set a member/attribute of the voices
 	 * @example
-	 * import { PolySynth } from "tone";
-	 * const poly = new PolySynth().toDestination();
+	 * const poly = new Tone.PolySynth().toDestination();
 	 * // set all of the voices using an options object for the synth type
 	 * poly.set({
 	 * 	envelope: {

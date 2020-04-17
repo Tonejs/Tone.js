@@ -18,9 +18,8 @@ export interface LimiterOptions extends ToneAudioNodeOptions {
  * additional gain above the threshold.
  *
  * @example
- * import { Limiter, Oscillator } from "tone";
- * const limiter = new Limiter(-20).toDestination();
- * const oscillator = new Oscillator().connect(limiter);
+ * const limiter = new Tone.Limiter(-20).toDestination();
+ * const oscillator = new Tone.Oscillator().connect(limiter);
  * oscillator.start();
  */
 export class Limiter extends ToneAudioNode<LimiterOptions> {

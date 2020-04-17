@@ -19,16 +19,15 @@ export interface PingPongDelayOptions extends StereoXFeedbackEffectOptions {
  * (left or right), and the channel triggered second will always
  * trigger at the same interval after the first.
  * @example
- * import { MembraneSynth, PingPongDelay } from "tone";
- * const pingPong = new PingPongDelay("4n", 0.2).toDestination();
- * const drum = new MembraneSynth().connect(pingPong);
+ * const pingPong = new Tone.PingPongDelay("4n", 0.2).toDestination();
+ * const drum = new Tone.MembraneSynth().connect(pingPong);
  * drum.triggerAttackRelease("C4", "32n");
  * @category Effect
  */
 export class PingPongDelay extends StereoXFeedbackEffect<PingPongDelayOptions> {
 
 	readonly name: string = "PingPongDelay";
-	
+
 	/**
 	 * the delay node on the left side
 	 */
@@ -48,7 +47,7 @@ export class PingPongDelay extends StereoXFeedbackEffect<PingPongDelayOptions> {
 	 * the delay time signal
 	 */
 	readonly delayTime: Signal<"time">;
-	
+
 	/**
 	 * @param delayTime The delayTime between consecutive echos.
 	 * @param feedback The amount of the effected signal which is fed back through the delay.

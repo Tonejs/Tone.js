@@ -16,9 +16,8 @@ interface FeedbackDelayOptions extends FeedbackEffectOptions {
  * @param delayTime The delay applied to the incoming signal.
  * @param feedback The amount of the effected signal which is fed back through the delay.
  * @example
- * import { FeedbackDelay, MembraneSynth } from "tone";
- * const feedbackDelay = new FeedbackDelay("8n", 0.5).toDestination();
- * const tom = new MembraneSynth({
+ * const feedbackDelay = new Tone.FeedbackDelay("8n", 0.5).toDestination();
+ * const tom = new Tone.MembraneSynth({
  * 	octaves: 4,
  * 	pitchDecay: 0.1
  * }).connect(feedbackDelay);

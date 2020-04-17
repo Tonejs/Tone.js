@@ -16,8 +16,7 @@ export { PWMOscillatorOptions } from "./OscillatorInterface";
  * changing the timbre of the oscillator by altering the harmonics
  * generated.
  * @example
- * import { PWMOscillator } from "tone";
- * const pwm = new PWMOscillator("Ab3", 0.3).toDestination().start();
+ * const pwm = new Tone.PWMOscillator("Ab3", 0.3).toDestination().start();
  * @category Source
  */
 export class PWMOscillator extends Source<PWMOscillatorOptions> implements ToneOscillatorInterface {

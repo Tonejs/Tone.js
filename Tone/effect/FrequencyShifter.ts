@@ -26,9 +26,8 @@ interface FrequencyShifterOptions extends EffectOptions {
  * You can find a very detailed description of the algorithm here: https://larzeitlin.github.io/RMFS/
  *
  * @example
- * import { FrequencyShifter, Oscillator } from "tone";
- * const input = new Oscillator(230, "sawtooth").start();
- * const shift = new FrequencyShifter(42).toDestination();
+ * const input = new Tone.Oscillator(230, "sawtooth").start();
+ * const shift = new Tone.FrequencyShifter(42).toDestination();
  * input.connect(shift);
  * @category Effect
  */
@@ -91,8 +90,8 @@ export class FrequencyShifter extends Effect<FrequencyShifterOptions> {
 			context: this.context,
 			units: "frequency",
 			value: options.frequency,
-			minValue: -this.context.sampleRate/2,
-			maxValue: this.context.sampleRate/2,
+			minValue: -this.context.sampleRate / 2,
+			maxValue: this.context.sampleRate / 2,
 		});
 
 		this._sine = new ToneOscillatorNode({

@@ -25,8 +25,7 @@ export interface MonoSynthOptions extends MonophonicOptions {
  * Filter are controlled by Envelopes.
  * <img src="https://docs.google.com/drawings/d/1gaY1DF9_Hzkodqf8JI1Cg2VZfwSElpFQfI94IQwad38/pub?w=924&h=240">
  * @example
- * import { MonoSynth } from "tone";
- * const synth = new MonoSynth({
+ * const synth = new Tone.MonoSynth({
  * 	oscillator: {
  * 		type: "square"
  * 	},
@@ -76,7 +75,7 @@ export class MonoSynth extends Monophonic<MonoSynthOptions> {
 		super(optionsFromArguments(MonoSynth.getDefaults(), arguments));
 		const options = optionsFromArguments(MonoSynth.getDefaults(), arguments);
 
-		this.oscillator = new OmniOscillator(Object.assign(options.oscillator, { 
+		this.oscillator = new OmniOscillator(Object.assign(options.oscillator, {
 			context: this.context,
 			detune: options.detune,
 			onstop: () => this.onsilence(this),
@@ -92,7 +91,7 @@ export class MonoSynth extends Monophonic<MonoSynthOptions> {
 
 		// connect the filter envelope
 		this.filterEnvelope.connect(this.filter.frequency);
-		
+
 		readOnly(this, ["oscillator", "frequency", "detune", "filter", "filterEnvelope", "envelope"]);
 	}
 
@@ -116,7 +115,7 @@ export class MonoSynth extends Monophonic<MonoSynthOptions> {
 				},
 			),
 			filterEnvelope: Object.assign(
-				omitFromObject(FrequencyEnvelope.getDefaults(), Object.keys(ToneAudioNode.getDefaults())), 
+				omitFromObject(FrequencyEnvelope.getDefaults(), Object.keys(ToneAudioNode.getDefaults())),
 				{
 					attack: 0.6,
 					baseFrequency: 200,

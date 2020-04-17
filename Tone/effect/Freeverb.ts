@@ -25,11 +25,10 @@ const allpassFilterFrequencies = [225, 556, 441, 341];
  * Read more on reverb on [Sound On Sound](https://web.archive.org/web/20160404083902/http://www.soundonsound.com:80/sos/feb01/articles/synthsecrets.asp).
  * Freeverb is now implemented with an AudioWorkletNode which may result on performance degradation on some platforms
  * @example
- * import { Freeverb, NoiseSynth } from "tone";
- * const freeverb = new Freeverb().toDestination();
+ * const freeverb = new Tone.Freeverb().toDestination();
  * freeverb.dampening = 1000;
  * // routing synth through the reverb
- * const synth = new NoiseSynth().connect(freeverb);
+ * const synth = new Tone.NoiseSynth().connect(freeverb);
  * synth.triggerAttackRelease(0.05);
  * @category Effect
  */
@@ -55,7 +54,7 @@ export class Freeverb extends StereoEffect<FreeverbOptions> {
 	/**
 	 * the allpass filters on the right
 	 */
-	private _allpassFiltersR: BiquadFilterNode[]= [];
+	private _allpassFiltersR: BiquadFilterNode[] = [];
 
 	/**
 	 * @param roomSize Correlated to the decay time.
@@ -67,7 +66,7 @@ export class Freeverb extends StereoEffect<FreeverbOptions> {
 
 		super(optionsFromArguments(Freeverb.getDefaults(), arguments, ["roomSize", "dampening"]));
 		const options = optionsFromArguments(Freeverb.getDefaults(), arguments, ["roomSize", "dampening"]);
-	
+
 		this.roomSize = new Signal({
 			context: this.context,
 			value: options.roomSize,
@@ -81,7 +80,7 @@ export class Freeverb extends StereoEffect<FreeverbOptions> {
 			allpassL.frequency.value = freq;
 			return allpassL;
 		});
-		
+
 		// make the allpass filters on the left
 		this._allpassFiltersR = allpassFilterFrequencies.map(freq => {
 			const allpassR = this.context.createBiquadFilter();
@@ -119,7 +118,7 @@ export class Freeverb extends StereoEffect<FreeverbOptions> {
 	/**
 	 * The amount of dampening of the reverberant signal.
 	 */
-	
+
 	get dampening(): Frequency {
 		return this._combFilters[0].dampening;
 	}

@@ -12,9 +12,8 @@ export interface DistortionOptions extends EffectOptions {
  * Algorithm from [this stackoverflow answer](http://stackoverflow.com/a/22313408).
  *
  * @example
- * import { Distortion, FMSynth } from "tone";
- * const dist = new Distortion(0.8).toDestination();
- * const fm = new FMSynth().connect(dist);
+ * const dist = new Tone.Distortion(0.8).toDestination();
+ * const fm = new Tone.FMSynth().connect(dist);
  * fm.triggerAttackRelease("A1", "8n");
  * @category Effect
  */

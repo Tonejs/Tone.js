@@ -10,18 +10,16 @@ import { Signal, SignalOptions } from "./Signal";
  * If a value is passed into the constructor, the it will be added to the input.
  *
  * @example
- * import { Add, Signal } from "tone";
- * const signal = new Signal(2);
+ * const signal = new Tone.Signal(2);
  * // add a signal and a scalar
- * const add = new Add(2);
+ * const add = new Tone.Add(2);
  * signal.connect(add);
  * // the output of add equals 4
  * @example
- * import { Add, Signal } from "tone";
  * // Add two signal inputs
- * const add = new Add();
- * const sig0 = new Signal(3).connect(add);
- * const sig1 = new Signal(4).connect(add.addend);
+ * const add = new Tone.Add();
+ * const sig0 = new Tone.Signal(3).connect(add);
+ * const sig1 = new Tone.Signal(4).connect(add.addend);
  * // the output of add equals 7.
  * @category Signal
  */

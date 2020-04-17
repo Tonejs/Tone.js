@@ -16,8 +16,7 @@ export interface PluckSynthOptions extends InstrumentOptions {
 /**
  * Karplus-String string synthesis.
  * @example
- * import { PluckSynth } from "tone";
- * const plucky = new PluckSynth().toDestination();
+ * const plucky = new Tone.PluckSynth().toDestination();
  * plucky.triggerAttack("C4", "+0.5");
  * plucky.triggerAttack("C3", "+1");
  * plucky.triggerAttack("C2", "+1.5");
@@ -114,7 +113,7 @@ export class PluckSynth extends Instrument<PluckSynthOptions> {
 	/**
 	 * Ramp down the [[resonance]] to 0 over the duration of the release time.
 	 */
-	triggerRelease(time?: Time): this{
+	triggerRelease(time?: Time): this {
 		this._lfcf.resonance.linearRampTo(0, this.release, time);
 		return this;
 	}

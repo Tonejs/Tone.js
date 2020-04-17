@@ -19,23 +19,22 @@ export interface TremoloOptions extends StereoEffectOptions {
  * The effect is a stereo effect where the modulation phase is inverted in each channel.
  *
  * @example
- * import { Oscillator, Tremolo } from "tone";
  * // create a tremolo and start it's LFO
- * const tremolo = new Tremolo(9, 0.75).toDestination().start();
+ * const tremolo = new Tone.Tremolo(9, 0.75).toDestination().start();
  * // route an oscillator through the tremolo and start it
- * const oscillator = new Oscillator().connect(tremolo).start();
+ * const oscillator = new Tone.Oscillator().connect(tremolo).start();
  * 
  * @category Effect
  */
 export class Tremolo extends StereoEffect<TremoloOptions> {
 
 	readonly name: string = "Tremolo";
-	
+
 	/**
 	 * The tremolo LFO in the left channel
 	 */
 	private _lfoL: LFO;
-	
+
 	/**
 	 * The tremolo LFO in the left channel
 	 */
@@ -90,12 +89,12 @@ export class Tremolo extends StereoEffect<TremoloOptions> {
 		this._amplitudeR = new Gain({ context: this.context });
 		this.frequency = new Signal({
 			context: this.context,
-			value: options.frequency, 
+			value: options.frequency,
 			units: "frequency",
 		});
 		this.depth = new Signal({
 			context: this.context,
-			value: options.depth, 
+			value: options.depth,
 			units: "normalRange",
 		});
 
@@ -139,13 +138,13 @@ export class Tremolo extends StereoEffect<TremoloOptions> {
 	/**
 	 * Sync the effect to the transport.
 	 */
-	sync(): this{
+	sync(): this {
 		this._lfoL.sync();
 		this._lfoR.sync();
 		this.context.transport.syncSignal(this.frequency);
 		return this;
 	}
-	
+
 	/**
 	 * Unsync the filter from the transport
 	 */
@@ -175,8 +174,8 @@ export class Tremolo extends StereoEffect<TremoloOptions> {
 		return this._lfoR.phase - this._lfoL.phase; // 180
 	}
 	set spread(spread) {
-		this._lfoL.phase = 90 - (spread/2);
-		this._lfoR.phase = (spread/2) + 90;
+		this._lfoL.phase = 90 - (spread / 2);
+		this._lfoR.phase = (spread / 2) + 90;
 	}
 
 	dispose(): this {

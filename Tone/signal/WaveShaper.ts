@@ -20,11 +20,10 @@ interface WaveShaperOptions extends ToneAudioNodeOptions {
  * [WaveShaperNode](http://webaudio.github.io/web-audio-api/#the-waveshapernode-interface).
  *
  * @example
- * import { Oscillator, Signal, WaveShaper } from "tone";
- * const osc = new Oscillator().toDestination().start();
+ * const osc = new Tone.Oscillator().toDestination().start();
  * // multiply the output of the signal by 2 using the waveshaper's function
- * const timesTwo = new WaveShaper((val) => val * 2, 2048).connect(osc.frequency);
- * const signal = new Signal(440).connect(timesTwo);
+ * const timesTwo = new Tone.WaveShaper((val) => val * 2, 2048).connect(osc.frequency);
+ * const signal = new Tone.Signal(440).connect(timesTwo);
  * @category Signal
  */
 export class WaveShaper extends SignalOperator<WaveShaperOptions> {
@@ -85,8 +84,7 @@ export class WaveShaper extends SignalOperator<WaveShaperOptions> {
 	 *                which goes from -1 to 1 over the number of elements
 	 *                in the curve array. The second argument is the array position.
 	 * @example
-	 * import { WaveShaper } from "tone";
-	 * const shaper = new WaveShaper();
+	 * const shaper = new Tone.WaveShaper();
 	 * // map the input signal from [-1, 1] to [0, 10]
 	 * shaper.setMap((val, index) => (val + 1) * 5);
 	 */

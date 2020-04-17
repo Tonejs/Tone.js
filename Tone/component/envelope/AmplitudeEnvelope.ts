@@ -11,15 +11,14 @@ import { Envelope, EnvelopeOptions } from "./Envelope";
  * Read more about ADSR Envelopes on [Wikipedia](https://en.wikipedia.org/wiki/Synthesizer#ADSR_envelope).
  *
  * @example
- * import { AmplitudeEnvelope, Oscillator } from "tone";
- * const ampEnv = new AmplitudeEnvelope({
+ * const ampEnv = new Tone.AmplitudeEnvelope({
  * 	attack: 0.1,
  * 	decay: 0.2,
  * 	sustain: 1.0,
  * 	release: 0.8
  * }).toDestination();
  * // create an oscillator and connect it
- * const osc = new Oscillator().connect(ampEnv).start();
+ * const osc = new Tone.Oscillator().connect(ampEnv).start();
  * // trigger the envelopes attack and release "8t" apart
  * ampEnv.triggerAttackRelease("8t");
  * @category Component

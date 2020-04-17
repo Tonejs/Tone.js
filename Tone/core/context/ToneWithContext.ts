@@ -57,8 +57,7 @@ export abstract class ToneWithContext<Options extends ToneWithContextOptions> ex
 	/**
 	 * Return the current time of the Context clock plus the lookAhead.
 	 * @example
-	 * import { Transport } from "tone";
-	 * console.log(Transport.now());
+	 * console.log(Tone.Transport.now());
 	 */
 	now(): Seconds {
 		return this.context.currentTime + this.context.lookAhead;
@@ -67,8 +66,7 @@ export abstract class ToneWithContext<Options extends ToneWithContextOptions> ex
 	/**
 	 * Return the current time of the Context clock without any lookAhead.
 	 * @example
-	 * import { Transport } from "tone";
-	 * console.log(Transport.immediate());
+	 * console.log(Tone.Transport.immediate());
 	 */
 	immediate(): Seconds {
 		return this.context.currentTime;
@@ -77,8 +75,7 @@ export abstract class ToneWithContext<Options extends ToneWithContextOptions> ex
 	/**
 	 * The duration in seconds of one sample.
 	 * @example
-	 * import { Transport } from "tone";
-	 * console.log(Transport.sampleTime);
+	 * console.log(Tone.Transport.sampleTime);
 	 */
 	get sampleTime(): Seconds {
 		return 1 / this.context.sampleRate;
@@ -87,8 +84,7 @@ export abstract class ToneWithContext<Options extends ToneWithContextOptions> ex
 	/**
 	 * The number of seconds of 1 processing block (128 samples)
 	 * @example
-	 * import { Destination } from "tone";
-	 * console.log(Destination.blockTime);
+	 * console.log(Tone.Destination.blockTime);
 	 */
 	get blockTime(): Seconds {
 		return 128 / this.context.sampleRate;
@@ -136,8 +132,7 @@ export abstract class ToneWithContext<Options extends ToneWithContextOptions> ex
 	/**
 	 * Get the object's attributes.
 	 * @example
-	 * import { Oscillator } from "tone";
-	 * const osc = new Oscillator();
+	 * const osc = new Tone.Oscillator();
 	 * console.log(osc.get());
 	 * // returns {"type" : "sine", "frequency" : 440, ...etc}
 	 */
@@ -166,8 +161,7 @@ export abstract class ToneWithContext<Options extends ToneWithContextOptions> ex
 	/**
 	 * Set multiple properties at once with an object.
 	 * @example
-	 * import { Filter } from "tone";
-	 * const filter = new Filter();
+	 * const filter = new Tone.Filter();
 	 * // set values using an object
 	 * filter.set({
 	 * 	frequency: 300,

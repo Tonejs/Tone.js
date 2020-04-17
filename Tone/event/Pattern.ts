@@ -15,8 +15,7 @@ export interface PatternOptions<ValueType> extends LoopOptions {
  * Pattern arpeggiates between the given notes
  * in a number of patterns. 
  * @example
- * import { Pattern } from "tone";
- * const pattern = new Pattern((time, note) => {
+ * const pattern = new Tone.Pattern((time, note) => {
  * 	// the order of the notes passed in depends on the pattern
  * }, ["C2", "D4", "E5", "A6"], "upDown");
  * @category Event
@@ -24,7 +23,7 @@ export interface PatternOptions<ValueType> extends LoopOptions {
 export class Pattern<ValueType> extends Loop<PatternOptions<ValueType>> {
 
 	readonly name: string = "Pattern";
-	
+
 	/**
 	 * The pattern generator function
 	 */
