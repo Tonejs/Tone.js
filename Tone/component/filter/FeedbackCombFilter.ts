@@ -21,19 +21,19 @@ export interface FeedbackCombFilterOptions extends ToneAudioNodeOptions {
  * @category Component
  */
 export class FeedbackCombFilter extends ToneAudioWorklet<FeedbackCombFilterOptions> {
-	
+
 	readonly name = "FeedbackCombFilter";
-	
+
 	/**
 	 * The amount of delay of the comb filter.
 	 */
 	readonly delayTime: Param<"time">;
-	
+
 	/**
 	 * The amount of feedback of the delayed signal.
 	 */
 	readonly resonance: Param<"normalRange">;
-	
+
 	readonly input: Gain;
 	readonly output: Gain;
 
@@ -45,7 +45,7 @@ export class FeedbackCombFilter extends ToneAudioWorklet<FeedbackCombFilterOptio
 		numberOfOutputs: 1,
 		channelCount: 1,
 	}
-	
+
 	/**
 	 * @param delayTime The delay time of the filter.
 	 * @param resonance The amount of feedback the filter has.
@@ -70,7 +70,7 @@ export class FeedbackCombFilter extends ToneAudioWorklet<FeedbackCombFilterOptio
 			param: dummyGain.gain,
 			swappable: true,
 		});
-		
+
 		this.resonance = new Param<"normalRange">({
 			context: this.context,
 			value: options.resonance,
@@ -107,6 +107,7 @@ export class FeedbackCombFilter extends ToneAudioWorklet<FeedbackCombFilterOptio
 				constructor(options) {
 					super(options);
 					this.delayBuffer = new Float32Array(sampleRate);
+					this.fallbackInput = new Float32Array(128)
 				}
 			
 				getParameter(parameter, index) {
@@ -121,8 +122,8 @@ export class FeedbackCombFilter extends ToneAudioWorklet<FeedbackCombFilterOptio
 					const input = inputs[0];
 					const output = outputs[0];
 					const delayLength = this.delayBuffer.length;
-					const inputChannel = input[0];
 					const outputChannel = output[0];
+					const inputChannel = input[0] || this.fallbackInput;
 					const delayTimeParam = parameters.delayTime;
 					const feedbackParam = parameters.feedback;
 					inputChannel.forEach((value, index) => {
