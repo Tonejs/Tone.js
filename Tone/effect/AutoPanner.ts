@@ -3,7 +3,9 @@ import { optionsFromArguments } from "../core/util/Defaults";
 import { LFOEffect, LFOEffectOptions } from "./LFOEffect";
 import { Frequency } from "../core/type/Units";
 
-export type AutoPannerOptions = LFOEffectOptions;
+export interface AutoPannerOptions extends LFOEffectOptions {
+	channelCount: number;
+}
 
 /**
  * AutoPanner is a [[Panner]] with an [[LFO]] connected to the pan amount. 
@@ -33,13 +35,23 @@ export class AutoPanner extends LFOEffect<AutoPannerOptions> {
 	constructor() {
 
 		super(optionsFromArguments(AutoPanner.getDefaults(), arguments, ["frequency"]));
+		const options = optionsFromArguments(AutoPanner.getDefaults(), arguments, ["frequency"]);
 
-		this._panner = new Panner({ context: this.context });
+		this._panner = new Panner({
+			context: this.context,
+			channelCount: options.channelCount
+		});
 		// connections
 		this.connectEffect(this._panner);
 		this._lfo.connect(this._panner.pan);
 		this._lfo.min = -1;
 		this._lfo.max = 1;
+	}
+
+	static getDefaults(): AutoPannerOptions {
+		return Object.assign(LFOEffect.getDefaults(), {
+			channelCount: 1
+		});
 	}
 
 	dispose(): this {

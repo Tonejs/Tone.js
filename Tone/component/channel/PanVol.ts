@@ -10,6 +10,7 @@ export interface PanVolOptions extends ToneAudioNodeOptions {
 	pan: AudioRange;
 	volume: Decibels;
 	mute: boolean;
+	channelCount: number;
 }
 
 /**
@@ -61,6 +62,7 @@ export class PanVol extends ToneAudioNode<PanVolOptions> {
 		this._panner = this.input = new Panner({
 			context: this.context,
 			pan: options.pan,
+			channelCount: options.channelCount,
 		});
 		this.pan = this._panner.pan;
 		this._volume = this.output = new Volume({
@@ -81,6 +83,7 @@ export class PanVol extends ToneAudioNode<PanVolOptions> {
 			mute: false,
 			pan: 0,
 			volume: 0,
+			channelCount: 1,
 		});
 	}
 
