@@ -57,7 +57,9 @@ export abstract class ToneWithContext<Options extends ToneWithContextOptions> ex
 	/**
 	 * Return the current time of the Context clock plus the lookAhead.
 	 * @example
-	 * console.log(Tone.Transport.now());
+	 * setInterval(() => {
+	 * 	console.log(Tone.now());
+	 * }, 100)
 	 */
 	now(): Seconds {
 		return this.context.currentTime + this.context.lookAhead;
@@ -66,7 +68,9 @@ export abstract class ToneWithContext<Options extends ToneWithContextOptions> ex
 	/**
 	 * Return the current time of the Context clock without any lookAhead.
 	 * @example
-	 * console.log(Tone.Transport.immediate());
+	 * setInterval(() => {
+	 * 	console.log(Tone.immediate());
+	 * }, 100)
 	 */
 	immediate(): Seconds {
 		return this.context.currentTime;
@@ -92,6 +96,9 @@ export abstract class ToneWithContext<Options extends ToneWithContextOptions> ex
 
 	/**
 	 * Convert the incoming time to seconds
+	 * @example
+	 * const gain = new Tone.Gain();
+	 * console.log(gain.toSeconds("4n"));
 	 */
 	toSeconds(time?: Time): Seconds {
 		return new TimeClass(this.context, time).toSeconds();
@@ -99,6 +106,9 @@ export abstract class ToneWithContext<Options extends ToneWithContextOptions> ex
 
 	/**
 	 * Convert the input to a frequency number
+	 * @example
+	 * const gain = new Tone.Gain();
+	 * console.log(gain.toFrequency("4n"));
 	 */
 	toFrequency(freq: Frequency): Hertz {
 		return new FrequencyClass(this.context, freq).toFrequency();
@@ -106,6 +116,9 @@ export abstract class ToneWithContext<Options extends ToneWithContextOptions> ex
 
 	/**
 	 * Convert the input time into ticks
+	 * @example
+	 * const gain = new Tone.Gain();
+	 * console.log(gain.toTicks("4n"));
 	 */
 	toTicks(time?: Time | TimeClass): Ticks {
 		return new TransportTimeClass(this.context, time).toTicks();
@@ -134,7 +147,6 @@ export abstract class ToneWithContext<Options extends ToneWithContextOptions> ex
 	 * @example
 	 * const osc = new Tone.Oscillator();
 	 * console.log(osc.get());
-	 * // returns {"type" : "sine", "frequency" : 440, ...etc}
 	 */
 	get(): Options {
 		const defaults = getDefaultsFromInstance(this) as Options;
