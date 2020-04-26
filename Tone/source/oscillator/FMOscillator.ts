@@ -26,9 +26,15 @@ export { FMOscillatorOptions } from "./OscillatorInterface";
  * +-----------------+
  * ```
  *
+ * @offline 0.1 1
  * @example
- * // a sine oscillator frequency-modulated by a square wave
- * const fmOsc = new Tone.FMOscillator("Ab3", "sine", "square").toDestination().start();
+ * const fmOsc = new Tone.FMOscillator({
+ * 	frequency: 20,
+ * 	type: "square",
+ * 	modulationType: "triangle",
+ * 	harmonicity: 0.2,
+ * 	modulationIndex: 3
+ * }).toDestination().start();
  * @category Source
  */
 export class FMOscillator extends Source<FMOscillatorOptions> implements ToneOscillatorInterface {
