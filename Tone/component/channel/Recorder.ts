@@ -11,7 +11,7 @@ export interface RecorderOptions extends ToneAudioNodeOptions {
 
 /**
  * This is only natively supported in Chrome and Firefox. 
- * For a cross-browser shim, install (MediaStreamRecorder)[https://github.com/streamproc/MediaStreamRecorder]. 
+ * For a cross-browser shim, install (audio-recorder-polyfill)[https://www.npmjs.com/package/audio-recorder-polyfill]. 
  * @example
  * const recorder = new Tone.Recorder();
  * const synth = new Tone.Synth().connect(recorder);
@@ -83,7 +83,7 @@ export class Recorder extends ToneAudioNode<RecorderOptions> {
 
 	/**
 	 * Test if your platform supports the Media Recorder API. If it's not available, 
-	 * try installing this (polyfill)[https://github.com/streamproc/MediaStreamRecorder]. 
+	 * try installing this (polyfill)[https://www.npmjs.com/package/audio-recorder-polyfill].
 	 */
 	static get supported(): boolean {
 		return theWindow !== null && Reflect.has(theWindow, "MediaRecorder");
