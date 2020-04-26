@@ -102,16 +102,32 @@ export class Recorder extends ToneAudioNode<RecorderOptions> {
 		}
 	}
 
-	start(): this {
+	async start() {
 		assert(this.state !== "started", "Recorder is already started");
+		const startPromise = new Promise(done => {
+			const handleStart = () => {
+				this._recorder.removeEventListener("start", handleStart, false);
+
+				done();
+			};
+
+			this._recorder.addEventListener("start", handleStart, false);
+		});
+
 		this._recorder.start();
-		return this;
+		return await startPromise;
 	}
 
 	async stop(): Promise<Blob> {
 		assert(this.state !== "stopped", "Recorder is not started");
 		const dataPromise: Promise<Blob> = new Promise(done => {
-			this._recorder.ondataavailable = (e: BlobEvent) => done(e.data);
+			const handleData = (e: BlobEvent) => {
+				this._recorder.removeEventListener("dataavailable", handleData, false);
+
+				done(e.data);
+			};
+
+			this._recorder.addEventListener("dataavailable", handleData, false);
 		});
 		this._recorder.stop();
 		return await dataPromise;
