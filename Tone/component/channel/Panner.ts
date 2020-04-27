@@ -36,8 +36,10 @@ export class Panner extends ToneAudioNode<TonePannerOptions> {
 	 * @max 1
 	 * @offline 0.5 2
 	 * @example
+	 * // pan hard right
+	 * const panner = new Tone.Panner(1).toDestination();
 	 * // pan hard left
-	 * const panner = new Tone.Panner(-1).toDestination();
+	 * panner.pan.setValueAtTime(-1, 0.25);
 	 * const osc = new Tone.Oscillator(50, "triangle").connect(panner).start();
 	 */
 	readonly pan: Param<"audioRange">;
