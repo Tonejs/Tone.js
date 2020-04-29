@@ -1,10 +1,11 @@
 import { ToneAudioWorklet, ToneAudioWorkletOptions } from "../core/context/ToneAudioWorklet";
 import { Effect, EffectOptions } from "./Effect";
-import { NormalRange, Positive } from "../core/type/Units";
+import { Positive } from "../core/type/Units";
 import { Gain } from "../core/context/Gain";
 import { optionsFromArguments } from "../core/util/Defaults";
 import { connectSeries } from "../core/context/ToneAudioNode";
 import { Param } from "../core/context/Param";
+import { workletName } from "./BitCrusher.worklet";
 
 export interface BitCrusherOptions extends EffectOptions {
 	bits: Positive;
@@ -38,7 +39,7 @@ export class BitCrusher extends Effect<BitCrusherOptions> {
 	 */
 	private _bitCrusherWorklet: BitCrusherWorklet;
 
-	constructor(bits?: Positive, frequencyReduction?: NormalRange);
+	constructor(bits?: Positive);
 	constructor(options?: Partial<BitCrusherWorkletOptions>);
 	constructor() {
 		super(optionsFromArguments(BitCrusher.getDefaults(), arguments, ["bits"]));
@@ -57,7 +58,6 @@ export class BitCrusher extends Effect<BitCrusherOptions> {
 	static getDefaults(): BitCrusherOptions {
 		return Object.assign(Effect.getDefaults(), {
 			bits: 4,
-			frequencyReduction: 0.5,
 		});
 	}
 
@@ -84,11 +84,6 @@ class BitCrusherWorklet extends ToneAudioWorklet<BitCrusherWorkletOptions> {
 
 	readonly bits: Param<"positive">;
 
-	protected workletOptions: Partial<AudioWorkletNodeOptions> = {
-		numberOfInputs: 1,
-		numberOfOutputs: 1,
-	}
-
 	constructor(options?: Partial<BitCrusherWorkletOptions>);
 	constructor() {
 		super(optionsFromArguments(BitCrusherWorklet.getDefaults(), arguments));
@@ -97,15 +92,13 @@ class BitCrusherWorklet extends ToneAudioWorklet<BitCrusherWorkletOptions> {
 		this.input = new Gain({ context: this.context });
 		this.output = new Gain({ context: this.context });
 
-		const dummyGain = this.context.createGain();
-
 		this.bits = new Param<"positive">({
 			context: this.context,
 			value: options.bits,
 			units: "positive",
 			minValue: 1,
 			maxValue: 16,
-			param: dummyGain.gain,
+			param: this._dummyParam,
 			swappable: true,
 		});
 	}
@@ -117,46 +110,12 @@ class BitCrusherWorklet extends ToneAudioWorklet<BitCrusherWorkletOptions> {
 	}
 
 	protected _audioWorkletName(): string {
-		return "bit-crusher";
-	}
-
-	protected _audioWorklet(): string {
-		return /* javascript */` 
-		registerProcessor("${this._audioWorkletName()}", class extends AudioWorkletProcessor {
-			static get parameterDescriptors () {
-				return [{
-					name: 'bits',
-					defaultValue: 12,
-					minValue: 1,
-					maxValue: 16
-				}];
-			}
-			
-			process (inputs, outputs, parameters) {
-				const input = inputs[0];
-				const output = outputs[0];
-				if (input && output && input.length === output.length) {
-					const bits = parameters.bits;
-					for (let channelNum = 0; channelNum < input.length; channelNum++) {
-						const inputChannel = input[channelNum];
-						for (let index = 0; index < inputChannel.length; index++) {
-							const value = inputChannel[index];
-							const step = bits.length > 1 ? Math.pow(0.5, bits[index]) : Math.pow(0.5, bits[0]);
-							const val = step * Math.floor(value / step + 0.5);
-							output[channelNum][index] = val;
-						}
-					}
-				}
-				return true;
-			}
-		});
-		`;
+		return workletName;
 	}
 
 	onReady(node: AudioWorkletNode) {
 		connectSeries(this.input, node, this.output);
-		// @ts-ignore
-		const bits = node.parameters.get("bits");
+		const bits = node.parameters.get("bits") as AudioParam;
 		this.bits.setParam(bits);
 	}
 

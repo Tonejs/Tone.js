@@ -5,6 +5,7 @@ import { NormalRange, Time } from "../../core/type/Units";
 import { optionsFromArguments } from "../../core/util/Defaults";
 import { readOnly, RecursivePartial } from "../../core/util/Interface";
 import { ToneAudioWorklet } from "../../core/context/ToneAudioWorklet";
+import { workletName } from "./FeedbackCombFilter.worklet";
 
 export interface FeedbackCombFilterOptions extends ToneAudioNodeOptions {
 	delayTime: Time;
@@ -38,15 +39,6 @@ export class FeedbackCombFilter extends ToneAudioWorklet<FeedbackCombFilterOptio
 	readonly output: Gain;
 
 	/**
-	 * Default constructor options for the filter
-	 */
-	protected workletOptions: Partial<AudioWorkletNodeOptions> = {
-		numberOfInputs: 1,
-		numberOfOutputs: 1,
-		channelCount: 1,
-	}
-
-	/**
 	 * @param delayTime The delay time of the filter.
 	 * @param resonance The amount of feedback the filter has.
 	 */
@@ -59,15 +51,13 @@ export class FeedbackCombFilter extends ToneAudioWorklet<FeedbackCombFilterOptio
 		this.input = new Gain({ context: this.context });
 		this.output = new Gain({ context: this.context });
 
-		const dummyGain = this.context.createGain();
-
 		this.delayTime = new Param<"time">({
 			context: this.context,
 			value: options.delayTime,
 			units: "time",
 			minValue: 0,
 			maxValue: 1,
-			param: dummyGain.gain,
+			param: this._dummyParam,
 			swappable: true,
 		});
 
@@ -75,7 +65,7 @@ export class FeedbackCombFilter extends ToneAudioWorklet<FeedbackCombFilterOptio
 			context: this.context,
 			value: options.resonance,
 			units: "normalRange",
-			param: dummyGain.gain,
+			param: this._dummyParam,
 			swappable: true,
 		});
 
@@ -83,70 +73,7 @@ export class FeedbackCombFilter extends ToneAudioWorklet<FeedbackCombFilterOptio
 	}
 
 	protected _audioWorkletName(): string {
-		return "feedback-comb-filter";
-	}
-
-	protected _audioWorklet(): string {
-		return /* javascript */` 
-			registerProcessor("${this._audioWorkletName()}", class extends AudioWorkletProcessor {
-				static get parameterDescriptors() {
-					return [{
-						name: "delayTime",
-						defaultValue: 0.1,
-						minValue: 0,
-						maxValue: 1,
-					},
-					{
-						name: "feedback",
-						defaultValue: 0.5,
-						minValue: 0,
-						maxValue: 0.9999,
-					}];
-				}
-			
-				constructor(options) {
-					super(options);
-					this.delayBuffer = new Float32Array(sampleRate);
-					this.fallbackInput = new Float32Array(128)
-				}
-			
-				getParameter(parameter, index) {
-					if (parameter.length > 1) {
-						return parameter[index];
-					} else {
-						return parameter[0];
-					}
-				}
-			
-				process(inputs, outputs, parameters) {
-					const input = inputs[0];
-					const output = outputs[0];
-					const delayLength = this.delayBuffer.length;
-					const outputChannel = output[0];
-					const inputChannel = input[0] || this.fallbackInput;
-					const delayTimeParam = parameters.delayTime;
-					const feedbackParam = parameters.feedback;
-					inputChannel.forEach((value, index) => {
-						const delayTime = this.getParameter(delayTimeParam, index);
-						const feedback = this.getParameter(feedbackParam, index);
-						const delaySamples = Math.floor(delayTime * sampleRate);
-						const currentIndex = (currentFrame + index) % delayLength;
-						const delayedIndex = (currentFrame + index + delaySamples) % delayLength;
-						
-						// the current value to output
-						const currentValue = this.delayBuffer[currentIndex];
-						
-						// write the current value to the delayBuffer in the future
-						this.delayBuffer[delayedIndex] = value + currentValue * feedback;
-
-						// set all of the output channels to the same value
-						outputChannel[index] = delaySamples > 0 ? currentValue : value;
-					});
-					// keep the processing alive
-					return true;
-				}
-			});
-		`;
+		return workletName;
 	}
 
 	/**
@@ -161,11 +88,9 @@ export class FeedbackCombFilter extends ToneAudioWorklet<FeedbackCombFilterOptio
 
 	onReady(node: AudioWorkletNode) {
 		connectSeries(this.input, node, this.output);
-		// @ts-ignore
-		const delayTime = node.parameters.get("delayTime");
+		const delayTime = node.parameters.get("delayTime") as AudioParam;;
 		this.delayTime.setParam(delayTime);
-		// @ts-ignore
-		const feedback = node.parameters.get("feedback");
+		const feedback = node.parameters.get("feedback") as AudioParam;;
 		this.resonance.setParam(feedback);
 	}
 

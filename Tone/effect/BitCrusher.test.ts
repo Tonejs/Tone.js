@@ -14,7 +14,7 @@ describe("BitCrusher", () => {
 
 		it("matches a file", () => {
 			return CompareToFile(() => {
-				const crusher = new BitCrusher({ bits: 2 }).toDestination();
+				const crusher = new BitCrusher({ bits: 4 }).toDestination();
 				const osc = new Oscillator(110).connect(crusher);
 				osc.start(0);
 			}, "bitCrusher.wav", 0.01);
