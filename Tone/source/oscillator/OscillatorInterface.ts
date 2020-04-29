@@ -22,8 +22,9 @@ export interface ToneOscillatorInterface {
 	 * The oscillator's type. Also capable of setting the first x number of partials of the oscillator. 
 	 * For example: "sine4" would set be the first 4 partials of the sine wave and "triangle8" would 
 	 * set the first 8 partials of the triangle wave.
+	 * @offline 0.1 1
 	 * @example
-	 * const osc = new Tone.Oscillator();
+	 * const osc = new Tone.Oscillator().toDestination().start();
 	 * osc.type = "sine2";
 	 */
 	type: ExtendedToneOscillatorType;
@@ -51,6 +52,12 @@ export interface ToneOscillatorInterface {
 	/**
 	 * The phase is the starting position within the oscillator's cycle. For example
 	 * a phase of 180 would start halfway through the oscillator's cycle. 
+	 * @offline 0.1 1
+	 * @example
+	 * const osc = new Tone.Oscillator({
+	 * 	frequency: 20,
+	 * 	phase: 90
+	 * }).toDestination().start();
 	 */
 	phase: Degrees;
 
@@ -64,7 +71,10 @@ export interface ToneOscillatorInterface {
 	 * The value is an empty array when the type is not "custom".
 	 * @example
 	 * const osc = new Tone.Oscillator("F3").toDestination().start();
-	 * osc.partials = [1, 0, 0.4, 1, 0.2];
+	 * setInterval(() => {
+	 * 	// generate 8 random partials
+	 * 	osc.partials = new Float32Array(8).map(() => Math.random());
+	 * }, 1000);
 	 */
 	partials: number[];
 
@@ -77,7 +87,11 @@ export interface ToneOscillatorInterface {
 	 * can limit the number of harmonics which are used to generate the waveform.
 	 * @example
 	 * const osc = new Tone.Oscillator("C3", "square").toDestination().start();
-	 * osc.partialCount = 5;
+	 * osc.partialCount = 1;
+	 * setInterval(() => {
+	 * 	osc.partialCount++;
+	 * 	console.log(osc.partialCount);
+	 * }, 500);
 	 */
 	partialCount?: number;
 
