@@ -28,7 +28,7 @@ if (process.env.BROWSER === "chrome") {
 	BROWSERS = ["HeadlessChrome", "HeadlessFirefox"];
 }
 
-module.exports = function(config) {
+module.exports = function (config) {
 	const configuration = {
 
 		// base path that will be used to resolve all patterns (eg. files, exclude)
@@ -59,7 +59,7 @@ module.exports = function(config) {
 				entrypoints: entryPoints
 			},
 			coverageOptions: {
-				exclude: /(.*\.test\.ts|test\/.*\.ts)$/i,
+				exclude: /(.*\.test\.ts|test\/.*\.ts|.*\.worklet\.ts)$/i,
 			},
 			reports: {
 				html: path.resolve(__dirname, "../coverage"),
