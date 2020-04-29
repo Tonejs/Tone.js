@@ -7,6 +7,13 @@ import { ToneAudioBuffer } from "./ToneAudioBuffer";
 /**
  * Wrapper around the OfflineAudioContext
  * @category Core
+ * @example
+ * // generate a single channel, 0.5 second buffer
+ * const context = new Tone.OfflineContext(1, 0.5);
+ * const osc = new Tone.Oscillator({ context });
+ * context.render().then(buffer => {
+ * 	console.log(buffer.numberOfChannels, buffer.duration);
+ * });
  */
 export class OfflineContext extends Context {
 
@@ -74,13 +81,13 @@ export class OfflineContext extends Context {
 	private async _renderClock(asynchronous: boolean): Promise<void> {
 		let index = 0;
 		while (this._duration - this._currentTime >= 0) {
-			
+
 			// invoke all the callbacks on that time
 			this.emit("tick");
-			
+
 			// increment the clock in block-sized chunks
 			this._currentTime += 128 / this.sampleRate;
-			
+
 			// yield once a second of audio
 			index++;
 			const yieldEvery = Math.floor(this.sampleRate / 128);
