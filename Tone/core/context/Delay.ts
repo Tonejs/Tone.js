@@ -12,6 +12,13 @@ export interface DelayOptions extends ToneAudioNodeOptions {
 /**
  * Wrapper around Web Audio's native [DelayNode](http://webaudio.github.io/web-audio-api/#the-delaynode-interface).
  * @category Core
+ * @offline 0.5 1
+ * @example
+ * const delay = new Tone.Delay(0.1).toDestination();
+ * // connect the signal to both the delay and the destination
+ * const pulse = new Tone.PulseOscillator().fan(delay, Tone.Destination);
+ * // start and stop the pulse
+ * pulse.start(0).stop(0.01);
  */
 export class Delay extends ToneAudioNode<DelayOptions> {
 
@@ -24,6 +31,11 @@ export class Delay extends ToneAudioNode<DelayOptions> {
 
 	/**
 	 * The amount of time the incoming signal is delayed.
+	 * @example
+	 * const delay = new Tone.Delay().toDestination();
+	 * delay.delayTime.value = 0.5; 
+	 * // play a short blip
+	 * const pulse = new Tone.PulseOscillator().fan(delay, Tone.Destination).start().stop("+0.01");
 	 */
 	readonly delayTime: Param<"time">;
 

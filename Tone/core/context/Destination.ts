@@ -24,7 +24,6 @@ interface DestinationOptions extends ToneAudioNodeOptions {
  * oscillator.connect(Tone.Destination);
  * // a convenience for connecting to the master output is also provided:
  * oscillator.toDestination();
- * // these two are equivalent.
  * @category Core
  */
 export class Destination extends ToneAudioNode<DestinationOptions> {
@@ -62,13 +61,14 @@ export class Destination extends ToneAudioNode<DestinationOptions> {
 	 * Mute the output.
 	 * @example
 	 * const oscillator = new Tone.Oscillator().start().toDestination();
-	 * // mute the output
-	 * Tone.Destination.mute = true;
+	 * setTimeout(() => {
+	 * 	// mute the output
+	 * 	Tone.Destination.mute = true;
+	 * }, 1000);
 	 */
 	get mute(): boolean {
 		return this.input.mute;
 	}
-
 	set mute(mute: boolean) {
 		this.input.mute = mute;
 	}
@@ -77,19 +77,11 @@ export class Destination extends ToneAudioNode<DestinationOptions> {
 	 * Add a master effects chain. NOTE: this will disconnect any nodes which were previously
 	 * chained in the master effects chain.
 	 * @param args All arguments will be connected in a row and the Master will be routed through it.
-	 * @return  {Destination}  this
 	 * @example
-	 * // some overall compression to keep the levels in check
-	 * const masterCompressor = new Tone.Compressor({
-	 * 	threshold: -6,
-	 * 	ratio: 3,
-	 * 	attack: 0.5,
-	 * 	release: 0.1
-	 * });
-	 * // give a little boost to the lows
-	 * const lowBump = new Tone.Filter(200, "lowshelf");
-	 * // route everything through the filter and compressor before going to the speakers
-	 * Tone.Destination.chain(lowBump, masterCompressor);
+	 * // route all audio through a filter and compressor
+	 * const lowpass = new Tone.Filter(800, "lowpass");
+	 * const compressor = new Tone.Compressor(-18);
+	 * Tone.Destination.chain(lowpass, compressor);
 	 */
 	chain(...args: Array<AudioNode | ToneAudioNode>): this {
 		this.input.disconnect();
@@ -101,6 +93,8 @@ export class Destination extends ToneAudioNode<DestinationOptions> {
 
 	/**
 	 * The maximum number of channels the system can output
+	 * @example
+	 * console.log(Tone.Destination.maxChannelCount);
 	 */
 	get maxChannelCount(): number {
 		return this.context.rawContext.destination.maxChannelCount;
