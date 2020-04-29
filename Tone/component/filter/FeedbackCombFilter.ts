@@ -4,7 +4,7 @@ import { connectSeries, ToneAudioNode, ToneAudioNodeOptions } from "../../core/c
 import { NormalRange, Time } from "../../core/type/Units";
 import { optionsFromArguments } from "../../core/util/Defaults";
 import { readOnly, RecursivePartial } from "../../core/util/Interface";
-import { ToneAudioWorklet } from "../../core/context/ToneAudioWorklet";
+import { ToneAudioWorklet } from "../../core/worklet/ToneAudioWorklet";
 import { workletName } from "./FeedbackCombFilter.worklet";
 
 export interface FeedbackCombFilterOptions extends ToneAudioNodeOptions {

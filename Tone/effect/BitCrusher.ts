@@ -1,4 +1,4 @@
-import { ToneAudioWorklet, ToneAudioWorkletOptions } from "../core/context/ToneAudioWorklet";
+import { ToneAudioWorklet, ToneAudioWorkletOptions } from "../core/worklet/ToneAudioWorklet";
 import { Effect, EffectOptions } from "./Effect";
 import { Positive } from "../core/type/Units";
 import { Gain } from "../core/context/Gain";
