@@ -29,7 +29,7 @@ export { FMOscillatorOptions } from "./OscillatorInterface";
  * @offline 0.1 1
  * @example
  * const fmOsc = new Tone.FMOscillator({
- * 	frequency: 20,
+ * 	frequency: 200,
  * 	type: "square",
  * 	modulationType: "triangle",
  * 	harmonicity: 0.2,
