@@ -54,7 +54,7 @@ describe("FeedbackCombFilter", () => {
 			}, 0.2).then(buffer => {
 				expect(buffer.getValueAtTime(0)).to.equal(0);
 				expect(buffer.getValueAtTime(0.999)).to.equal(0);
-				expect(buffer.getValueAtTime(0.1)).to.equal(1);
+				expect(buffer.getValueAtTime(0.101)).to.equal(1);
 				expect(buffer.getValueAtTime(0.15)).to.equal(1);
 			});
 		});
@@ -70,9 +70,9 @@ describe("FeedbackCombFilter", () => {
 				sig.setValueAtTime(0, 0.1);
 			}, 0.4).then(buffer => {
 				expect(buffer.getValueAtTime(0)).to.equal(0);
-				expect(buffer.getValueAtTime(0.1)).to.equal(1);
-				expect(buffer.getValueAtTime(0.2)).to.equal(0.5);
-				expect(buffer.getValueAtTime(0.3)).to.equal(0.25);
+				expect(buffer.getValueAtTime(0.101)).to.equal(1);
+				expect(buffer.getValueAtTime(0.201)).to.equal(0.5);
+				expect(buffer.getValueAtTime(0.301)).to.equal(0.25);
 			});
 		});
 	});
