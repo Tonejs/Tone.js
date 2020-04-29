@@ -89,7 +89,7 @@
 		"tmp-promise": "^2.0.2",
 		"ts-loader": "^7.0.1",
 		"ts-node": "^8.4.1",
-		"typedoc": "^0.15.0",
+		"typedoc": "^0.17.6",
 		"typescript": "^3.8.3",
 		"ua-parser-js": "^0.7.20",
 		"webpack": "^4.42.0",
