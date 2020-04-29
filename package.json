@@ -87,7 +87,7 @@
 		"semver": "^5.5.0",
 		"teoria": "^2.5.0",
 		"tmp-promise": "^2.0.2",
-		"ts-loader": "^6.0.4",
+		"ts-loader": "^7.0.1",
 		"ts-node": "^8.4.1",
 		"typedoc": "^0.15.0",
 		"typescript": "^3.8.3",
