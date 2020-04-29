@@ -16,11 +16,13 @@ interface DrawEvent extends TimelineEvent {
  * callbacks using the AudioContext time and uses requestAnimationFrame.
  * @example
  * Tone.Transport.schedule((time) => {
- *  	// use the time argument to schedule a callback with Draw
- *  	Tone.Draw.schedule(() => {
- *  		// do drawing or DOM manipulation here
- *  	}, time);
+ * 	// use the time argument to schedule a callback with Draw
+ * 	Tone.Draw.schedule(() => {
+ * 		// do drawing or DOM manipulation here
+ * 		console.log(time);
+ * 	}, time);
  * }, "+0.5");
+ * Tone.Transport.start();
  * @category Core
  */
 export class Draw extends ToneWithContext<ToneWithContextOptions> {
@@ -59,6 +61,11 @@ export class Draw extends ToneWithContext<ToneWithContextOptions> {
 	 * on the nearest animation frame.
 	 * @param  callback  Callback is invoked at the given time.
 	 * @param  time      The time relative to the AudioContext time to invoke the callback.
+	 * @example
+	 * Tone.Transport.scheduleRepeat(time => {
+	 * 	Tone.Draw.schedule(() => console.log(time), time);
+	 * }, 1);
+	 * Tone.Transport.start();
 	 */
 	schedule(callback: () => void, time: Time): this {
 		this._events.add({
