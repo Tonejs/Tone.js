@@ -9,10 +9,11 @@ export abstract class AbstractParam<TypeName extends UnitName> {
 	 * Schedules a parameter value change at the given time.
 	 * @param value The value to set the signal.
 	 * @param time The time when the change should occur.
+	 * @offline 0.5 1
 	 * @example
-	 * const osc = new Tone.Oscillator().toDestination().start();
-	 * // set the frequency to "G4" in exactly 1 second from now.
-	 * osc.frequency.setValueAtTime("G4", "+1");
+	 * const osc = new Tone.Oscillator(20).toDestination().start();
+	 * // set the frequency to 40 at exactly 0.25 seconds
+	 * osc.frequency.setValueAtTime(40, 0.25);
 	 */
 	abstract setValueAtTime(value: UnitMap[TypeName], time: Time): this;
 
@@ -21,12 +22,14 @@ export abstract class AbstractParam<TypeName extends UnitName> {
 	 * may invalidate the returned value.
 	 * @param time When to get the value
 	 * @example
-	 * const osc = new Tone.Oscillator().toDestination().start();
-	 * // set the frequency to "G4" in exactly 1 second from now.
-	 * osc.frequency.setValueAtTime("G4", "+1");
+	 * const signal = new Tone.Signal().toDestination();
+	 * // ramp up to '8' over 3 seconds
+	 * signal.rampTo(8, 3);
+	 * // ramp back down to '0' over 3 seconds
+	 * signal.rampTo(0, 3, "+3");
 	 * setInterval(() => {
 	 * 	// check the value every 100 ms
-	 * 	osc.frequency.getValueAtTime(Tone.now());
+	 * 	console.log(signal.getValueAtTime(Tone.now()));
 	 * }, 100);
 	 */
 	abstract getValueAtTime(time: Time): UnitMap[TypeName];
@@ -49,12 +52,24 @@ export abstract class AbstractParam<TypeName extends UnitName> {
 	/**
 	 * Schedules a linear continuous change in parameter value from the
 	 * previous scheduled parameter value to the given value.
+	 * @offline 0.5 1
+	 * @example
+	 * const signal = new Tone.Signal(0).toDestination();
+	 * // the ramp is starts from the previously scheduled value
+	 * signal.setValueAtTime(0, 0.1);
+	 * signal.linearRampToValueAtTime(1, 0.4);
 	 */
 	abstract linearRampToValueAtTime(value: UnitMap[TypeName], time: Time): this;
 
 	/**
 	 * Schedules an exponential continuous change in parameter value from
 	 * the previous scheduled parameter value to the given value.
+	 * @offline 0.5 1
+	 * @example
+	 * const signal = new Tone.Signal(0).toDestination();
+	 * // the ramp is starts from the previously scheduled value
+	 * signal.setValueAtTime(0, 0.1);
+	 * signal.exponentialRampToValueAtTime(1, 0.4);
 	 */
 	abstract exponentialRampToValueAtTime(value: UnitMap[TypeName], time: Time): this;
 
@@ -85,12 +100,10 @@ export abstract class AbstractParam<TypeName extends UnitName> {
 	 *                              value to ramp from it's current value
 	 * @param startTime 	When the ramp should start.
 	 * @returns {Param} this
+	 * @offline 0.5 1
 	 * @example
-	 * const delay = new Tone.FeedbackDelay(0.5, 0.98).toDestination();
-	 * // a short burst of noise through the feedback delay
-	 * const noise = new Tone.Noise().connect(delay).start().stop("+0.1");
-	 * // linearly ramp to the value 4 over 3 seconds.
-	 * delay.delayTime.linearRampTo(4, 3);
+	 * const signal = new Tone.Signal(1).toDestination();
+	 * signal.linearRampTo(0, 0.3, 0.1);
 	 */
 	abstract linearRampTo(value: UnitMap[TypeName], rampTime: Time, startTime?: Time): this;
 
@@ -103,9 +116,10 @@ export abstract class AbstractParam<TypeName extends UnitName> {
 	 *                              value to ramp from it's current value
 	 * @param startTime 	When the ramp should start.
 	 * @example
-	 * import { Oscillator } from "tone";
-	 * const osc = new Oscillator().toDestination().start();
-	 * osc.frequency.targetRampTo("C4", 4);
+	 * @offline 0.5 1
+	 * @example
+	 * const signal = new Tone.Signal(1).toDestination();
+	 * signal.targetRampTo(0, 0.3, 0.1);
 	 */
 	abstract targetRampTo(value: UnitMap[TypeName], rampTime: Time, startTime?: Time): this;
 
@@ -141,18 +155,36 @@ export abstract class AbstractParam<TypeName extends UnitName> {
 	 * @param startTime
 	 * @param duration
 	 * @param scaling If the values in the curve should be scaled by some value
+	 * @offline 0.5 1
+	 * @example
+	 * const signal = new Tone.Signal(1).toDestination();
+	 * signal.setValueCurveAtTime([1, 0.2, 0.8, 0.1, 0], 0.2, 0.3);
 	 */
 	abstract setValueCurveAtTime(values: UnitMap[TypeName][], startTime: Time, duration: Time, scaling?: number): this;
 
 	/**
 	 * Cancels all scheduled parameter changes with times greater than or
 	 * equal to startTime.
+	 * @offline 0.5 1
+	 * @example
+	 * const signal = new Tone.Signal(0).toDestination();
+	 * signal.setValueAtTime(0.1, 0.1);
+	 * signal.setValueAtTime(0.2, 0.2);
+	 * signal.setValueAtTime(0.3, 0.3);
+	 * signal.setValueAtTime(0.4, 0.4);
+	 * // cancels the last two scheduled changes
+	 * signal.cancelScheduledValues(0.3);
 	 */
 	abstract cancelScheduledValues(time: Time): this;
 
 	/**
 	 * This is similar to [[cancelScheduledValues]] except
 	 * it holds the automated value at time until the next automated event.
+	 * @offline 0.5 1
+	 * @example
+	 * const signal = new Tone.Signal(0).toDestination();
+	 * signal.linearRampTo(1, 0.5, 0);
+	 * signal.cancelAndHoldAtTime(0.3);
 	 */
 	abstract cancelAndHoldAtTime(time: Time): this;
 
