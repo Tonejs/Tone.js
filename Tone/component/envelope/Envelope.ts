@@ -37,12 +37,12 @@ export interface EnvelopeOptions extends ToneAudioNodeOptions {
  *    /                         \
  *   /                           \
  * ```
- * @offline 2 1
+ * @offline 1.5 1
  * @example
  * const env = new Tone.Envelope({
  * 	attack: 0.1,
  * 	decay: 0.2,
- * 	sustain: 1,
+ * 	sustain: 0.5,
  * 	release: 0.8,
  * }).toDestination();
  * env.triggerAttackRelease(0.5);
@@ -277,13 +277,8 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	 * interpolated over the duration of the attack.
 	 * @offline 1 1
 	 * @example
-	 * const env = new Tone.Envelope().toDestination();
+	 * const env = new Tone.Envelope(0.4).toDestination();
 	 * env.attackCurve = "linear";
-	 * env.triggerAttack();
-	 * @example
-	 * const env = new Tone.Envelope().toDestination();
-	 * // can also be an array
-	 * env.attackCurve = [0, 0.2, 0.3, 0.4, 1];
 	 * env.triggerAttack();
 	 */
 	get attackCurve(): EnvelopeCurve {
@@ -298,11 +293,12 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	 * @offline 1 1
 	 * @example
 	 * const env = new Tone.Envelope({
-	 * 	release: 0.5
-	 * });
-	 * env.releaseCurve = "linear";
+	 * 	release: 0.8
+	 * }).toDestination();
 	 * env.triggerAttack();
-	 * env.triggerRelease(0.5);
+	 * // release curve could also be defined by an array
+	 * env.releaseCurve = [1, 0.3, 0.4, 0.2, 0.7, 0];
+	 * env.triggerRelease(0.2);
 	 */
 	get releaseCurve(): EnvelopeCurve {
 		return this._getCurve(this._releaseCurve, "Out");
@@ -318,7 +314,7 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	 * const env = new Tone.Envelope({
 	 * 	sustain: 0.1,
 	 * 	decay: 0.5
-	 * });
+	 * }).toDestination();
 	 * env.decayCurve = "linear";
 	 * env.triggerAttack();
 	 */
@@ -430,6 +426,10 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	/**
 	 * Get the scheduled value at the given time. This will
 	 * return the unconverted (raw) value.
+	 * @example
+	 * const env = new Tone.Envelope(0.5, 1, 0.4, 2);
+	 * env.triggerAttackRelease(2);
+	 * setInterval(() => console.log(env.getValueAtTime), 100);
 	 */
 	getValueAtTime(time: Time): NormalRange {
 		return this._sig.getValueAtTime(time);
