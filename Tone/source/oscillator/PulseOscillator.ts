@@ -39,8 +39,9 @@ export { PulseOscillatorOptions } from "./OscillatorInterface";
  *       | |                                         | |
  * +-----+ +-------+                                 +-+
  * ```
+ * @offline 0.1 1
  * @example
- * const pulse = new Tone.PulseOscillator("E5", 0.4).toDestination().start();
+ * const pulse = new Tone.PulseOscillator(50, 0.4).toDestination().start();
  * @category Source
  */
 export class PulseOscillator extends Source<PulseOscillatorOptions> implements ToneOscillatorInterface {
@@ -49,6 +50,9 @@ export class PulseOscillator extends Source<PulseOscillatorOptions> implements T
 
 	/**
 	 * The width of the pulse.
+	 * @offline 0.1 1
+	 * @example
+	 * const pulse = new Tone.PulseOscillator(20, 0.8).toDestination().start();
 	 */
 	readonly width: Signal<"audioRange">;
 

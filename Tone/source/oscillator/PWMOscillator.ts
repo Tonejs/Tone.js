@@ -15,8 +15,9 @@ export { PWMOscillatorOptions } from "./OscillatorInterface";
  * at the modulationFrequency. This has the effect of continuously
  * changing the timbre of the oscillator by altering the harmonics
  * generated.
+ * @offline 0.1 1
  * @example
- * const pwm = new Tone.PWMOscillator("Ab3", 0.3).toDestination().start();
+ * const pwm = new Tone.PWMOscillator(60, 0.3).toDestination().start();
  * @category Source
  */
 export class PWMOscillator extends Source<PWMOscillatorOptions> implements ToneOscillatorInterface {
@@ -54,7 +55,10 @@ export class PWMOscillator extends Source<PWMOscillatorOptions> implements ToneO
 	readonly detune: Signal<"cents">;
 
 	/**
-	 * The modulation rate of the oscillator.
+	 * The width modulation rate of the oscillator.
+	 * @offline 0.1 example
+	 * @example
+	 * const osc = new Tone.PWMOscillator(20, 2).toDestination().start();
 	 */
 	readonly modulationFrequency: Signal<"frequency">;
 
