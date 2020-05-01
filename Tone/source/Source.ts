@@ -208,9 +208,9 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 					this._syncedStart(this.now(), this.context.transport.seconds);
 				}
 			} else {
+				assertContextRunning(this.context);
 				this._start(computedTime, offset, duration);
 			}
-			assertContextRunning(this.context);
 		}
 		return this;
 	}
