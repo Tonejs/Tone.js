@@ -66,12 +66,12 @@ export class GrainPlayer extends Source<GrainPlayerOptions> {
 	/**
 	 * Internal grain size reference;
 	 */
-	private _grainSize: Seconds; 
+	private _grainSize: Seconds;
 
 	/**
 	 * Internal overlap reference;
 	 */
-	private _overlap: Seconds; 
+	private _overlap: Seconds;
 
 	/**
 	 * Adjust the pitch independently of the playbackRate.
@@ -82,7 +82,7 @@ export class GrainPlayer extends Source<GrainPlayerOptions> {
 	 * If the buffer should loop back to the loopStart when completed
 	 */
 	loop: boolean;
-		
+
 	/**
 	 * @param url Either the AudioBuffer or the url from which to load the AudioBuffer
 	 * @param onload The function to invoke when the buffer is loaded.
@@ -102,7 +102,7 @@ export class GrainPlayer extends Source<GrainPlayerOptions> {
 		});
 		this._clock = new Clock({
 			context: this.context,
-			callback: this._tick.bind(this), 
+			callback: this._tick.bind(this),
 			frequency: 1 / options.grainSize
 		});
 		this._playbackRate = options.playbackRate;
@@ -151,7 +151,7 @@ export class GrainPlayer extends Source<GrainPlayerOptions> {
 			this.stop(time + this.toSeconds(duration));
 		}
 	}
-	
+
 	/**
 	 * Stop and then restart the player from the beginning (or offset)
 	 * @param  time When the player should start.
@@ -194,8 +194,7 @@ export class GrainPlayer extends Source<GrainPlayerOptions> {
 	private _tick(time: Seconds): void {
 		// check if it should stop looping
 		const ticks = this._clock.getTicksAtTime(time);
-		const grainSize = 1 / this._clock.frequency.getValueAtTime(time);
-		const offset = ticks * grainSize;
+		const offset = ticks * this._grainSize;
 		this.log("offset", offset);
 
 		if (!this.loop && offset > this.buffer.duration) {
@@ -311,7 +310,7 @@ export class GrainPlayer extends Source<GrainPlayerOptions> {
 		return this.buffer.loaded;
 	}
 
-	dispose(): this{
+	dispose(): this {
 		super.dispose();
 		this.buffer.dispose();
 		this._clock.dispose();
