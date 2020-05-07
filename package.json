@@ -92,7 +92,7 @@
 		"typedoc": "^0.17.6",
 		"typescript": "^3.8.3",
 		"ua-parser-js": "^0.7.20",
-		"webpack": "^4.42.0",
+		"webpack": "^4.43.0",
 		"webpack-cli": "^3.3.11",
 		"yargs": "^13.2.0"
 	},
