@@ -20,7 +20,7 @@ interface GainOptions<TypeName extends UnitName> extends ToneAudioNodeOptions {
  * @offline 0.7 1
  * @example
  * const gainNode = new Tone.Gain(0).toDestination();
- * const osc = new Tone.Oscillator().connect(gainNode);
+ * const osc = new Tone.Oscillator(30).connect(gainNode).start();
  * gainNode.gain.rampTo(1, 0.1);
  * gainNode.gain.rampTo(0, 0.4, 0.2);
  */
