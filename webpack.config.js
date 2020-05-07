@@ -80,6 +80,6 @@ module.exports = env => {
 	} else if (env.production) {
 		return production;
 	} else {
-		return scratch;		
+		return scratch;
 	}
 };
