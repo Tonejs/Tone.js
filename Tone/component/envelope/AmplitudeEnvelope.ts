@@ -10,6 +10,7 @@ import { Envelope, EnvelopeOptions } from "./Envelope";
  * of the signal.
  * Read more about ADSR Envelopes on [Wikipedia](https://en.wikipedia.org/wiki/Synthesizer#ADSR_envelope).
  *
+ * @offline 1.5 1
  * @example
  * const ampEnv = new Tone.AmplitudeEnvelope({
  * 	attack: 0.1,
