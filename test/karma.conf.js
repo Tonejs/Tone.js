@@ -59,7 +59,7 @@ module.exports = function (config) {
 				entrypoints: entryPoints
 			},
 			coverageOptions: {
-				exclude: /(.*\.test\.ts|test\/.*\.ts|.*\.worklet\.ts)$/i,
+				exclude: /(.*\.test\.ts|test\/.*\.ts)$/i,
 			},
 			reports: {
 				html: path.resolve(__dirname, "../coverage"),
