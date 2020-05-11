@@ -23,7 +23,7 @@ export interface SamplerOptions extends InstrumentOptions {
 	onerror: (error: Error) => void;
 	baseUrl: string;
 	curve: ToneBufferSourceCurve;
-	urls: SamplesMap;
+	urls: SamplesMap | ToneAudioBuffers;
 }
 
 /**
@@ -102,27 +102,31 @@ export class Sampler extends Instrument<SamplerOptions> {
 		super(optionsFromArguments(Sampler.getDefaults(), arguments, ["urls", "onload", "baseUrl"], "urls"));
 		const options = optionsFromArguments(Sampler.getDefaults(), arguments, ["urls", "onload", "baseUrl"], "urls");
 
-		const urlMap = {};
-		Object.keys(options.urls).forEach((note) => {
-			const noteNumber = parseInt(note, 10);
-			assert(isNote(note)
-				|| (isNumber(noteNumber) && isFinite(noteNumber)), `url key is neither a note or midi pitch: ${note}`);
-			if (isNote(note)) {
-				// convert the note name to MIDI
-				const mid = new FrequencyClass(this.context, note).toMidi();
-				urlMap[mid] = options.urls[note];
-			} else if (isNumber(noteNumber) && isFinite(noteNumber)) {
-				// otherwise if it's numbers assume it's midi
-				urlMap[noteNumber] = options.urls[noteNumber];
-			}
-		});
+		if (options.urls instanceof ToneAudioBuffers) {
+			this._buffers = options.urls;
+		} else {
+			const urlMap = {};
+			Object.keys(options.urls).forEach((note) => {
+				const noteNumber = parseInt(note, 10);
+				assert(isNote(note)
+					|| (isNumber(noteNumber) && isFinite(noteNumber)), `url key is neither a note or midi pitch: ${note}`);
+				if (isNote(note)) {
+					// convert the note name to MIDI
+					const mid = new FrequencyClass(this.context, note).toMidi();
+					urlMap[mid] = options.urls[note];
+				} else if (isNumber(noteNumber) && isFinite(noteNumber)) {
+					// otherwise if it's numbers assume it's midi
+					urlMap[noteNumber] = options.urls[noteNumber];
+				}
+			});
 
-		this._buffers = new ToneAudioBuffers({
-			urls: urlMap,
-			onload: options.onload,
-			baseUrl: options.baseUrl,
-			onerror: options.onerror,
-		});
+			this._buffers = new ToneAudioBuffers({
+				urls: urlMap,
+				onload: options.onload,
+				baseUrl: options.baseUrl,
+				onerror: options.onerror,
+			});
+		}
 		this.attack = options.attack;
 		this.release = options.release;
 		this.curve = options.curve;

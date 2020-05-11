@@ -6,6 +6,7 @@ import { InstrumentTest } from "test/helper/InstrumentTests";
 import { atTime, Offline } from "test/helper/Offline";
 import { ToneAudioBuffer } from "Tone/core/context/ToneAudioBuffer";
 import { Sampler } from "Tone/instrument/Sampler";
+import { ToneAudioBuffers } from "Tone/core/context/ToneAudioBuffers";
 
 describe("Sampler", () => {
 
@@ -142,6 +143,33 @@ describe("Sampler", () => {
 				sampler.triggerRelease("A4", 0.2);
 				sampler.dispose();
 			}, 0.3);
+		});
+
+		it("can be constructed with a ToneAudioBuffers in an object", () => {
+			const sampler = new Sampler({
+				urls: new ToneAudioBuffers({
+					A4: A4_buffer
+				})
+			});
+			sampler.dispose();
+		});
+
+		it("can be constructed with unloaded a ToneAudioBuffers", (done) => {
+			const sampler = new Sampler({
+				urls: new ToneAudioBuffers({
+					A4: "./audio/sine.wav",
+				}, () => {
+					sampler.dispose();
+					done();
+				})
+			});
+		});
+
+		it("can be constructed with ToneAudioBuffers", () => {
+			const sampler = new Sampler(new ToneAudioBuffers({
+				A4: A4_buffer,
+			}));
+			sampler.dispose();
 		});
 
 	});
