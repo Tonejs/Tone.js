@@ -8,7 +8,7 @@ type Transport = import("../clock/Transport").Transport;
 type Listener = import("./Listener").Listener;
 type BaseAudioContextSubset = import("./Context").BaseAudioContextSubset;
 
-export type ContextLatencyHint = AudioContextLatencyCategory | "fastest";
+export type ContextLatencyHint = AudioContextLatencyCategory;
 
 export abstract class BaseContext extends Emitter<"statechange" | "tick"> implements BaseAudioContextSubset {
 

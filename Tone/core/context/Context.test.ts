@@ -43,6 +43,7 @@ describe("Context", () => {
 			expect(ctx.createDelay()).to.be.have.property("delayTime");
 			expect(ctx).to.have.property("createConstantSource");
 			ctx.dispose();
+			return ctx.close();
 		});
 
 		if (ONLINE_TESTING) {
@@ -61,25 +62,28 @@ describe("Context", () => {
 			expect(ctx.rawContext).has.property("destination");
 			expect(ctx.rawContext).has.property("sampleRate");
 			ctx.dispose();
+			return ctx.close();
 		});
 
 		it("can be constructed with an options object", () => {
 			const ctx = new Context({
 				clockSource: "timeout",
-				latencyHint: "fastest",
+				latencyHint: "playback",
 				lookAhead: 0.2,
 			});
 			expect(ctx.lookAhead).to.equal(0.2);
-			expect(ctx.latencyHint).to.equal("fastest");
+			expect(ctx.latencyHint).to.equal("playback");
 			expect(ctx.clockSource).to.equal("timeout");
 			ctx.dispose();
+			return ctx.close();
 		});
-		
+
 		it("returns 'now' and 'immediate' time", () => {
 			const ctx = new Context();
 			expect(ctx.now()).to.be.a("number");
 			expect(ctx.immediate()).to.be.a("number");
 			ctx.dispose();
+			return ctx.close();
 		});
 	});
 
@@ -296,60 +300,6 @@ describe("Context", () => {
 		});
 	});
 
-	// 	context("Tone", () => {
-
-	// 		it("has a context", () => {
-	// 			expect(Tone.context).to.exist;
-	// 			expect(Tone.context).to.be.instanceOf(Context);
-	// 		});
-
-	// 		it("can set a new context", () => {
-	// 			const originalContext = Tone.context;
-	// 			Tone.context = new Context();
-	// 			return Tone.context.dispose().then(() => {
-	// 				Tone.context = originalContext;
-	// 			});
-	// 		});
-
-	// 		it("has a consistent context after offline rendering", () => {
-	// 			const initialContext = Tone.context;
-	// 			const initialTransport = Tone.Transport;
-	// 			return Offline(() => { }).then(() => {
-	// 				expect(Tone.context).to.equal(initialContext);
-	// 				expect(Tone.Transport).to.equal(initialTransport);
-	// 			});
-	// 		});
-
-	// 		it("invokes the resume promise", () => {
-	// 			return Tone.context.resume();
-	// 		});
-
-	// 		it("invokes init when a new context is set", done => {
-	// 			this.timeout(200);
-	// 			const initFn = function(context) {
-	// 				expect(Tone.context).to.equal(context);
-	// 				Context.off("init", initFn);
-	// 				done();
-	// 			};
-	// 			Context.on("init", initFn);
-	// 			Tone.context = new Context();
-	// 		});
-
-	// 		it("invokes close when a context is disposed", done => {
-	// 			this.timeout(200);
-	// 			const closeFn = function(context) {
-	// 				expect(context).to.be.instanceOf(Context);
-	// 				Context.off("close", closeFn);
-	// 				// set a new context
-	// 				Tone.context = new Context();
-	// 				done();
-	// 			};
-	// 			Context.on("close", closeFn);
-	// 			Tone.context.dispose();
-	// 		});
-
-	// 	});
-
 	context("get/set", () => {
 
 		let ctx;
@@ -371,19 +321,6 @@ describe("Context", () => {
 		it("can set the updateInterval", () => {
 			ctx.updateInterval = 0.05;
 			expect(ctx.updateInterval).to.equal(0.05);
-		});
-
-		it("can set the latencyHint", () => {
-			ctx.latencyHint = "fastest";
-			expect(ctx.latencyHint).to.equal("fastest");
-			expect(ctx.lookAhead).to.be.closeTo(0.01, 0.05);
-			expect(ctx.updateInterval).to.be.closeTo(0.01, 0.05);
-			// test all other latency hints
-			const latencyHints = ["interactive", "playback", "balanced", 0.2];
-			latencyHints.forEach(hint => {
-				ctx.latencyHint = hint;
-				expect(ctx.latencyHint).to.equal(hint);
-			});
 		});
 
 		it("gets a constant signal", () => {

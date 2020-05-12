@@ -9,8 +9,8 @@ import { isDefined } from "../util/TypeCheck";
 /**
  * Create a new AudioContext
  */
-export function createAudioContext(): AudioContext {
-	return new stdAudioContext() as unknown as AudioContext;
+export function createAudioContext(options?: AudioContextOptions): AudioContext {
+	return new stdAudioContext(options) as unknown as AudioContext;
 }
 
 /**

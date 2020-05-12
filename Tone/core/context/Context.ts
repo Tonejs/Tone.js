@@ -65,7 +65,7 @@ export class Context extends BaseContext {
 	/**
 	 * The default latency hint
 	 */
-	private _latencyHint: ContextLatencyHint | Seconds;
+	private _latencyHint!: ContextLatencyHint | Seconds;
 
 	/**
 	 * An object containing all of the constants AudioBufferSourceNodes
@@ -121,10 +121,10 @@ export class Context extends BaseContext {
 		if (options.context) {
 			this._context = options.context;
 		} else {
-			this._context = createAudioContext();
+			this._context = createAudioContext({
+				latencyHint: options.latencyHint,
+			});
 		}
-		this._latencyHint = options.latencyHint;
-		this.lookAhead = options.lookAhead;
 
 		this._ticker = new Ticker(this.emit.bind(this, "tick"), options.clockSource, options.updateInterval);
 		this.on("tick", this._timeoutLoop.bind(this));
@@ -133,6 +133,9 @@ export class Context extends BaseContext {
 		this._context.onstatechange = () => {
 			this.emit("statechange", this.state);
 		};
+
+		this._setLatencyHint(options.latencyHint);
+		this.lookAhead = options.lookAhead;
 	}
 
 	static getDefaults(): ContextOptions {
@@ -375,13 +378,19 @@ export class Context extends BaseContext {
 	 * "playback" (prioritizes sustained playback), "balanced" (balances
 	 * latency and performance), and "fastest" (lowest latency, might glitch more often).
 	 * @example
-	 * // set the latencyHint to prioritize smooth playback at the expensive of latency
-	 * Tone.context.latencyHint = "playback";
+	 * // prioritize sustained playback
+	 * const context = new Tone.Context({ latencyHint: "playback" });
+	 * // set this context as the global Context
+	 * Tone.setContext(context);
 	 */
 	get latencyHint(): ContextLatencyHint | Seconds {
 		return this._latencyHint;
 	}
-	set latencyHint(hint: ContextLatencyHint | Seconds) {
+
+	/**
+	 * Update the lookAhead and updateInterval based on the latencyHint
+	 */
+	private _setLatencyHint(hint: ContextLatencyHint | Seconds): void {
 		let lookAheadValue = 0;
 		this._latencyHint = hint;
 		if (isString(hint)) {
@@ -390,13 +399,10 @@ export class Context extends BaseContext {
 					lookAheadValue = 0.1;
 					break;
 				case "playback":
-					lookAheadValue = 0.8;
+					lookAheadValue = 0.5;
 					break;
 				case "balanced":
 					lookAheadValue = 0.25;
-					break;
-				case "fastest":
-					lookAheadValue = 0.01;
 					break;
 			}
 		}
@@ -405,7 +411,7 @@ export class Context extends BaseContext {
 	}
 
 	/**
-	 * The unwrapped AudioContext.
+	 * The unwrapped AudioContext or OfflineAudioContext
 	 */
 	get rawContext(): AnyAudioContext {
 		return this._context;
