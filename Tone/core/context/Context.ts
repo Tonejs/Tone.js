@@ -437,7 +437,7 @@ export class Context extends BaseContext {
 
 	/**
 	 * Starts the audio context from a suspended state. This is required
-	 * to initially start the AudioContext.
+	 * to initially start the AudioContext. See [[Tone.start]]
 	 */
 	resume(): Promise<void> {
 		if (this._context.state === "suspended" && isAudioContext(this._context)) {
@@ -448,8 +448,8 @@ export class Context extends BaseContext {
 	}
 
 	/**
-	 * Promise which is invoked when the context is running.
-	 * Tries to resume the context if it's not started.
+	 * Close the context. Once closed, the context can no longer be used and
+	 * any AudioNodes created from the context will be silent. 
 	 */
 	async close(): Promise<void> {
 		if (isAudioContext(this._context)) {
@@ -461,7 +461,7 @@ export class Context extends BaseContext {
 	}
 
 	/**
-	 * Generate a looped buffer at some constant value.
+	 * **Internal** Generate a looped buffer at some constant value. 
 	 */
 	getConstant(val: number): AudioBufferSourceNode {
 		if (this._constants.has(val)) {
