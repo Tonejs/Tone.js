@@ -108,8 +108,8 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 			partialCount: 0,
 			partials: [],
 			phase: 0,
-			type: "sine",
-		}) as ToneOscillatorOptions;
+			type: "sine" as const,
+		});
 	}
 
 	/**
