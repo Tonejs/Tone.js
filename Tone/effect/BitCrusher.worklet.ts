@@ -11,7 +11,8 @@ export const bitCrusherWorklet = /* javascript */`
 				name: "bits",
 				defaultValue: 12,
 				minValue: 1,
-				maxValue: 16
+				maxValue: 16,
+				automationRate: 'k-rate'
 			}];
 		}
 

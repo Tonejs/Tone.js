@@ -17,12 +17,14 @@ const feedbackCombFilter = /* javascript */`
 				name: "delayTime",
 				defaultValue: 0.1,
 				minValue: 0,
-				maxValue: 1
+				maxValue: 1,
+				automationRate: "k-rate"
 			}, {
 				name: "feedback",
 				defaultValue: 0.5,
 				minValue: 0,
 				maxValue: 0.9999,
+				automationRate: "k-rate"
 			}];
 		}
 
