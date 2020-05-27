@@ -201,7 +201,7 @@ export abstract class ToneAudioNode<Options extends ToneAudioNodeOptions = ToneA
 	/**
 	 * Connect the output to the context's destination node.
 	 * @example
-	 * const osc = new Tone.Oscillator().start();
+	 * const osc = new Tone.Oscillator("C2").start();
 	 * osc.toDestination();
 	 */
 	toDestination(): this {
@@ -230,11 +230,12 @@ export abstract class ToneAudioNode<Options extends ToneAudioNodeOptions = ToneA
 	/**
 	 * Connect the output of this node to the rest of the nodes in series.
 	 * @example
-	 * const osc = new Tone.Oscillator().start();
-	 * const filter = new Tone.Filter();
-	 * const volume = new Tone.Volume(-8);
-	 * // connect a node to the filter, volume and then to the master output
-	 * osc.chain(filter, volume, Tone.Destination);
+	 * const player = new Tone.Player("https://tonejs.github.io/examples/audio/FWDL.mp3");
+	 * player.autostart = true;
+	 * const filter = new Tone.AutoFilter(4).start();
+	 * const distortion = new Tone.Distortion(0.5);
+	 * // connect the player to the filter, distortion and then to the master output
+	 * player.chain(filter, distortion, Tone.Destination);
 	 */
 	chain(...nodes: InputNode[]): this {
 		connectSeries(this, ...nodes);
@@ -243,6 +244,13 @@ export abstract class ToneAudioNode<Options extends ToneAudioNodeOptions = ToneA
 
 	/**
 	 * connect the output of this node to the rest of the nodes in parallel.
+	 * @example
+	 * const player = new Tone.Player("https://tonejs.github.io/examples/audio/FWDL.mp3");
+	 * player.autostart = true;
+	 * const pitchShift = new Tone.PitchShift(4).toDestination();
+	 * const filter = new Tone.Filter("G5").toDestination();
+	 * // connect a node to the pitch shift and filter in parallel
+	 * osc.fan(pitchShift, filter);
 	 */
 	fan(...nodes: InputNode[]): this {
 		nodes.forEach(node => this.connect(node));

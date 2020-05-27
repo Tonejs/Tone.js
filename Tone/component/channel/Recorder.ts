@@ -10,6 +10,8 @@ export interface RecorderOptions extends ToneAudioNodeOptions {
 }
 
 /**
+ * A wrapper around the MediaRecorder API. Unlike the rest of Tone.js, this module does not offer
+ * any sample-accurate scheduling because it is not a feature of the MediaRecorder API.
  * This is only natively supported in Chrome and Firefox. 
  * For a cross-browser shim, install (audio-recorder-polyfill)[https://www.npmjs.com/package/audio-recorder-polyfill]. 
  * @example
@@ -102,6 +104,10 @@ export class Recorder extends ToneAudioNode<RecorderOptions> {
 		}
 	}
 
+	/**
+	 * Start the Recorder. Returns a promise which resolves
+	 * when the recorder has started.
+	 */
 	async start() {
 		assert(this.state !== "started", "Recorder is already started");
 		const startPromise = new Promise(done => {
@@ -118,6 +124,10 @@ export class Recorder extends ToneAudioNode<RecorderOptions> {
 		return await startPromise;
 	}
 
+	/**
+	 * Stop the recorder. Returns a promise with the recorded content until this point
+	 * encoded as [[mimeType]]
+	 */
 	async stop(): Promise<Blob> {
 		assert(this.state !== "stopped", "Recorder is not started");
 		const dataPromise: Promise<Blob> = new Promise(done => {
@@ -133,6 +143,9 @@ export class Recorder extends ToneAudioNode<RecorderOptions> {
 		return await dataPromise;
 	}
 
+	/**
+	 * Pause the recorder
+	 */
 	pause(): this {
 		assert(this.state === "started", "Recorder must be started");
 		this._recorder.pause();

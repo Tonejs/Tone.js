@@ -32,7 +32,7 @@ export class Gain<TypeName extends "gain" | "decibels" | "normalRange" = "gain">
 	 * The gain parameter of the gain node.
 	 * @example
 	 * const gainNode = new Tone.Gain(0).toDestination();
-	 * const osc = new Tone.Oscillator().connect(gainNode);
+	 * const osc = new Tone.Oscillator().connect(gainNode).start();
 	 * gainNode.gain.rampTo(1, 0.1);
 	 * gainNode.gain.rampTo(0, 2, "+0.5");
 	 */

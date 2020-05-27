@@ -16,7 +16,7 @@ export interface DelayOptions extends ToneAudioNodeOptions {
  * @example
  * const delay = new Tone.Delay(0.1).toDestination();
  * // connect the signal to both the delay and the destination
- * const pulse = new Tone.PulseOscillator().fan(delay, Tone.Destination);
+ * const pulse = new Tone.PulseOscillator().connect(delay).toDestination();
  * // start and stop the pulse
  * pulse.start(0).stop(0.01);
  */
@@ -33,9 +33,10 @@ export class Delay extends ToneAudioNode<DelayOptions> {
 	 * The amount of time the incoming signal is delayed.
 	 * @example
 	 * const delay = new Tone.Delay().toDestination();
-	 * delay.delayTime.value = 0.5; 
-	 * // play a short blip
-	 * const pulse = new Tone.PulseOscillator().fan(delay, Tone.Destination).start().stop("+0.01");
+	 * // modulate the delayTime between 0.1 and 1 seconds
+	 * const delayLFO = new Tone.LFO(0.5, 0.1, 1).start().connect(delay.delayTime);
+	 * const pulse = new Tone.PulseOscillator().connect(delay).start();
+	 * // the change in delayTime causes the pitch to go up and down
 	 */
 	readonly delayTime: Param<"time">;
 

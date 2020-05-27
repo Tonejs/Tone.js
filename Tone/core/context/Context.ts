@@ -376,7 +376,7 @@ export class Context extends BaseContext {
 	 * In addition to setting the value in seconds, the latencyHint also
 	 * accepts the strings "interactive" (prioritizes low latency),
 	 * "playback" (prioritizes sustained playback), "balanced" (balances
-	 * latency and performance), and "fastest" (lowest latency, might glitch more often).
+	 * latency and performance).
 	 * @example
 	 * // prioritize sustained playback
 	 * const context = new Tone.Context({ latencyHint: "playback" });
