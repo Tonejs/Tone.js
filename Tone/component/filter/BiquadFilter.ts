@@ -1,5 +1,5 @@
 import { ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
-import { Cents, Frequency, GainFactor, Positive } from "../../core/type/Units";
+import { Cents, Frequency, GainFactor } from "../../core/type/Units";
 import { optionsFromArguments } from "../../core/util/Defaults";
 import { Param } from "../../core/context/Param";
 import { assert } from "../../core/util/Debug";
