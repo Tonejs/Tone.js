@@ -35,3 +35,4 @@ export * from "./filter/OnePoleFilter";
 export * from "./filter/FeedbackCombFilter";
 export * from "./filter/LowpassCombFilter";
 export * from "./filter/Convolver";
+export * from "./filter/BiquadFilter";
