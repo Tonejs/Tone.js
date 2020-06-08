@@ -203,8 +203,10 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 				}, computedTime);
 				this._scheduled.push(sched);
 
-				// if it's already started
-				if (this.context.transport.state === "started") {
+				// if the transport is already started
+				// and the time is greater than where the transport is
+				if (this.context.transport.state === "started" && 
+					this.context.transport.getSecondsAtTime(this.immediate()) > computedTime) {
 					this._syncedStart(this.now(), this.context.transport.seconds);
 				}
 			} else {
@@ -279,7 +281,7 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 					if (stateEvent && stateEvent.state === "started" && stateEvent.time !== offset) {
 						// get the offset
 						const startOffset = offset - this.toSeconds(stateEvent.time);
-						let duration;
+						let duration: number | undefined;
 						if (stateEvent.duration) {
 							duration = this.toSeconds(stateEvent.duration) - startOffset;
 						}
@@ -318,6 +320,8 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 		this._scheduled.forEach(id => this.context.transport.clear(id));
 		this._scheduled = [];
 		this._state.cancel(0);
+		// stop it also
+		this._stop(0);
 		return this;
 	}
 
