@@ -22,7 +22,7 @@ interface ToneAudioBufferOptions {
  * provides events which keep track of the loading progress
  * of _all_ of the buffers. These are ToneAudioBuffer.on("load" / "progress" / "error")
  * @example
- * const buffer = new Tone.ToneAudioBuffer("https://tonejs.github.io/examples/audio/FWDL.mp3", () => {
+ * const buffer = new Tone.ToneAudioBuffer("https://tonejs.github.io/audio/casio/A1.mp3", () => {
  * 	console.log("loaded");
  * });
  * @category Core
