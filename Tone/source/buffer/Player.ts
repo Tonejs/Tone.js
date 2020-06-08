@@ -25,7 +25,7 @@ export interface PlayerOptions extends SourceOptions {
 /**
  * Player is an audio file player with start, loop, and stop functions.
  * @example
- * const player = new Tone.Player("https://tonejs.github.io/examples/audio/FWDL.mp3").toDestination();
+ * const player = new Tone.Player("https://tonejs.github.io/audio/berklee/gong_1.mp3").toDestination();
  * // play as soon as the buffer is loaded
  * player.autostart = true;
  * @category Source
@@ -274,7 +274,7 @@ export class Player extends Source<PlayerOptions> {
 	 * @param offset The time to seek to.
 	 * @param when The time for the seek event to occur.
 	 * @example
-	 * const player = new Tone.Player("https://tonejs.github.io/examples/audio/FWDL.mp3", () => {
+	 * const player = new Tone.Player("https://tonejs.github.io/audio/berklee/gurgling_theremin_1.mp3", () => {
 	 * 	player.start();
 	 * 	// seek to the offset in 1 second from now
 	 * 	player.seek(0.4, "+1");
@@ -297,7 +297,7 @@ export class Player extends Source<PlayerOptions> {
 	 * @param loopStart The loop start time
 	 * @param loopEnd The loop end time
 	 * @example
-	 * const player = new Tone.Player("https://tonejs.github.io/examples/audio/FWDL.mp3").toDestination();
+	 * const player = new Tone.Player("https://tonejs.github.io/audio/berklee/malevoices_aa2_F3.mp3").toDestination();
 	 * // loop between the given points
 	 * player.setLoopPoints(0.2, 0.3);
 	 * player.loop = true;
@@ -355,6 +355,10 @@ export class Player extends Source<PlayerOptions> {
 
 	/**
 	 * If the buffer should loop once it's over.
+	 * @example
+	 * const player = new Tone.Player("https://tonejs.github.io/audio/drum-samples/breakbeat.mp3").toDestination();
+	 * player.loop = true;
+	 * player.autostart = true;
 	 */
 	get loop(): boolean {
 		return this._loop;
@@ -379,8 +383,13 @@ export class Player extends Source<PlayerOptions> {
 	}
 
 	/**
-	 * The playback speed. 1 is normal speed. This is not a signal because
-	 * Safari and iOS currently don't support playbackRate as a signal.
+	 * Normal speed is 1. The pitch will change with the playback rate.
+	 * @example
+	 * const player = new Tone.Player("https://tonejs.github.io/audio/berklee/femalevoices_aa2_A5.mp3").toDestination();
+	 * // play at 1/4 speed
+	 * player.playbackRate = 0.25;
+	 * // play as soon as the buffer is loaded
+	 * player.autostart = true;
 	 */
 	get playbackRate(): Positive {
 		return this._playbackRate;
@@ -403,7 +412,11 @@ export class Player extends Source<PlayerOptions> {
 	}
 
 	/**
-	 * The direction the buffer should play in
+	 * If the buffer should be reversed
+	 * @example
+	 * const player = new Tone.Player("https://tonejs.github.io/audio/berklee/chime_1.mp3").toDestination();
+	 * player.autostart = true;
+	 * player.reverse = true;
 	 */
 	get reverse(): boolean {
 		return this._buffer.reverse;
