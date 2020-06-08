@@ -35,6 +35,13 @@ describe("FFT", () => {
 		fft.dispose();
 	});
 
+	it("can get the frequency values of each index of the return array", () => {
+		const fft = new FFT(32);
+		expect(fft.getFrequencyOfIndex(0)).to.be.closeTo(0, 1);
+		expect(fft.getFrequencyOfIndex(16)).to.be.closeTo(fft.context.sampleRate / 4, 1);
+		fft.dispose();
+	});
+
 	it("can run waveform analysis", (done) => {
 		const noise = new Noise();
 		const fft = new FFT(256);

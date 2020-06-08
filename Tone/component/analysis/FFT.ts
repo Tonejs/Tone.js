@@ -1,8 +1,9 @@
 import { ToneAudioNode } from "../../core/context/ToneAudioNode";
 import { dbToGain } from "../../core/type/Conversions";
-import { NormalRange, PowerOfTwo } from "../../core/type/Units";
+import { Hertz, NormalRange, PowerOfTwo } from "../../core/type/Units";
 import { optionsFromArguments } from "../../core/util/Defaults";
 import { MeterBase, MeterBaseOptions } from "./MeterBase";
+import { assert } from "../../core/util/Debug";
 
 export interface FFTOptions extends MeterBaseOptions {
 	size: PowerOfTwo;
@@ -76,5 +77,16 @@ export class FFT extends MeterBase<FFTOptions> {
 	}
 	set smoothing(val) {
 		this._analyser.smoothing = val;
+	}
+
+	/**
+	 * Returns the frequency value in hertz of each of the indices of the FFT's [[getValue]] response.
+	 * @example
+	 * const fft = new Tone.FFT(32);
+	 * console.log(fft.getIndexFrequency());
+	 */
+	getFrequencyOfIndex(index: number): Hertz {
+		assert(0 <= index && index < this.size, `index must be greater than or equal to 0 and less than ${this.size}`);
+		return index * this.context.sampleRate / (this.size * 2);
 	}
 }
