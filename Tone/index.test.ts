@@ -22,9 +22,9 @@ describe("Tone", () => {
 	});
 
 	it("exports the global singleton getters", () => {
-		expect(Tone.getDestination).to.be.an.instanceOf(Destination);
-		expect(Tone.getDraw).to.be.an.instanceOf(Draw);
-		expect(Tone.getTransport).to.be.an.instanceOf(Transport);
+		expect(Tone.getDestination()).to.be.an.instanceOf(Destination);
+		expect(Tone.getDraw()).to.be.an.instanceOf(Draw);
+		expect(Tone.getTransport()).to.be.an.instanceOf(Transport);
 	});
 
 	it("can start the global context", () => {
