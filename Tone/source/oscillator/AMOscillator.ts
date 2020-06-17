@@ -101,7 +101,7 @@ export class AMOscillator extends Source<AMOscillatorOptions> implements ToneOsc
 			type: options.type,
 		} as OscillatorOptions);
 		this.frequency = this._carrier.frequency,
-			this.detune = this._carrier.detune;
+		this.detune = this._carrier.detune;
 
 		this._modulator = new Oscillator({
 			context: this.context,

@@ -63,7 +63,7 @@ export class Meter extends MeterBase<MeterOptions> {
 		});
 
 		this.smoothing = options.smoothing,
-			this.normalRange = options.normalRange;
+		this.normalRange = options.normalRange;
 	}
 
 	static getDefaults(): MeterOptions {

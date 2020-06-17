@@ -59,7 +59,7 @@ export abstract class ToneWithContext<Options extends ToneWithContextOptions> ex
 	 * @example
 	 * setInterval(() => {
 	 * 	console.log(Tone.now());
-	 * }, 100)
+	 * }, 100);
 	 */
 	now(): Seconds {
 		return this.context.currentTime + this.context.lookAhead;
@@ -70,7 +70,7 @@ export abstract class ToneWithContext<Options extends ToneWithContextOptions> ex
 	 * @example
 	 * setInterval(() => {
 	 * 	console.log(Tone.immediate());
-	 * }, 100)
+	 * }, 100);
 	 */
 	immediate(): Seconds {
 		return this.context.currentTime;

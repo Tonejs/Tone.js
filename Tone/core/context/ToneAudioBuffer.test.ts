@@ -265,7 +265,7 @@ describe("ToneAudioBuffer", () => {
 			expect(sliced2.duration).to.be.closeTo(0.5, 0.01);
 			const sliced3 = buffer.slice(2);
 			expect(sliced3.toArray(0)[Math.floor(0.5 * buffer.sampleRate) + 1])
-				.to.equal(buffer.toArray(0)[Math.floor(2.5 * buffer.sampleRate) + 1]);
+					.to.equal(buffer.toArray(0)[Math.floor(2.5 * buffer.sampleRate) + 1]);
 			buffer.dispose();
 			sliced1.dispose();
 			sliced2.dispose();

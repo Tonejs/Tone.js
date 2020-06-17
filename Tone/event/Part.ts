@@ -11,8 +11,8 @@ type CallbackType<T> =
 		time: Time;
 		[key: string]: any;
 	} ? T :
-	T extends ArrayLike<any> ? T[1] :
-	T extends Time ? null : never;
+		T extends ArrayLike<any> ? T[1] :
+			T extends Time ? null : never;
 
 interface PartOptions<T> extends Omit<ToneEventOptions<CallbackType<T>>, "value"> {
 	events: T[];

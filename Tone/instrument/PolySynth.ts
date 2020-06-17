@@ -20,11 +20,11 @@ type OmitMonophonicOptions<T> = Omit<T, "context" | "onsilence">;
 
 type VoiceOptions<T> =
 	T extends MembraneSynth ? MembraneSynthOptions :
-	T extends MetalSynth ? MetalSynthOptions :
-	T extends FMSynth ? FMSynthOptions :
-	T extends AMSynth ? AMSynthOptions :
-	T extends Synth ? SynthOptions :
-	never;
+		T extends MetalSynth ? MetalSynthOptions :
+			T extends FMSynth ? FMSynthOptions :
+				T extends AMSynth ? AMSynthOptions :
+					T extends Synth ? SynthOptions :
+						never;
 
 /**
  * The settable synth options. excludes monophonic options.
