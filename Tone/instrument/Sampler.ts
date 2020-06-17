@@ -1,6 +1,6 @@
 import { ToneAudioBuffer } from "../core/context/ToneAudioBuffer";
 import { ToneAudioBuffers } from "../core/context/ToneAudioBuffers";
-import { intervalToFrequencyRatio } from "../core/type/Conversions";
+import { ftomf, intervalToFrequencyRatio } from "../core/type/Conversions";
 import { FrequencyClass } from "../core/type/Frequency";
 import { Frequency, Interval, MidiNote, NormalRange, Note, Time } from "../core/type/Units";
 import { optionsFromArguments } from "../core/util/Defaults";
@@ -176,12 +176,14 @@ export class Sampler extends Instrument<SamplerOptions> {
 			notes = [notes];
 		}
 		notes.forEach(note => {
-			const midi = new FrequencyClass(this.context, note).toMidi();
+			const midiFloat = ftomf(new FrequencyClass(this.context, note).toFrequency());
+			const midi = Math.round(midiFloat) as MidiNote;
+			const remainder = midiFloat - midi;
 			// find the closest note pitch
 			const difference = this._findClosest(midi);
 			const closestNote = midi - difference;
 			const buffer = this._buffers.get(closestNote);
-			const playbackRate = intervalToFrequencyRatio(difference);
+			const playbackRate = intervalToFrequencyRatio(difference + remainder);
 			// play that note
 			const source = new ToneBufferSource({
 				url: buffer,
