@@ -17,9 +17,16 @@ export interface UserMediaOptions extends ToneAudioNodeOptions {
  * to see which browsers are supported. Access to an external input
  * is limited to secure (HTTPS) connections.
  * @example
- * const mic = new Tone.UserMedia();
+ * const meter = new Tone.Meter();
+ * const mic = new Tone.UserMedia().connect(meter);
  * mic.open().then(() => {
  * 	// promise resolves when input is available
+ * 	console.log("mic open");
+ * 	// print the incoming mic levels in decibels
+ * 	setInterval(() => console.log(meter.getValue()), 100);
+ * }).catch(e => {
+ * 	// promise is rejected when the user doesn't have or allow mic access
+ * 	console.log("mic not open");
  * });
  * @category Source
  */
