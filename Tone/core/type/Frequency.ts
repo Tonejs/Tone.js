@@ -9,7 +9,7 @@ export type FrequencyUnit = TimeBaseUnit | "midi";
 
 /**
  * Frequency is a primitive type for encoding Frequency values.
- * Eventually all time values are evaluated to hertz using the `eval` method.
+ * Eventually all time values are evaluated to hertz using the `valueOf` method.
  * @example
  * Tone.Frequency("C3"); // 261
  * Tone.Frequency(38, "midi");
@@ -237,6 +237,12 @@ const scaleIndexToNote = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", 
 /**
  * Convert a value into a FrequencyClass object.
  * @category Unit
+ * @example
+ * const midi = Tone.Frequency("C3").toMidi();
+ * console.log(midi);
+ * @example
+ * const hertz = Tone.Frequency(38, "midi").toFrequency();
+ * console.log(hertz);
  */
 export function Frequency(value?: TimeValue | Frequency, units?: FrequencyUnit): FrequencyClass {
 	return new FrequencyClass(getContext(), value, units);
