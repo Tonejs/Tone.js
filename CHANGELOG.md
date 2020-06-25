@@ -1,23 +1,28 @@
-# [14.4.0](https://github.com/Tonejs/Tone.js/compare/13.8.25...14.4.0) (2019-11-16)
+# 14.7.0
 
 
 ### Features
 
+* **Converted to typescript!!!**
 * adding AudioWorkletNode constructors to Context ([f7bdd75](https://github.com/Tonejs/Tone.js/commit/f7bdd75))
+* adding ability to get the frequency at the FFT index ([22cecdc](https://github.com/Tonejs/Tone.js/commit/22cecdc281c8076c054affaef9dc422665acda2e))
+* adding AudioWorkletNode constructors to Context ([f7bdd75](https://github.com/Tonejs/Tone.js/commit/f7bdd7528fa9549740dc514df6308303c060e091))
+* adding BiquadFilter ([75617d3](https://github.com/Tonejs/Tone.js/commit/75617d341fe44ca5d332ea4e547f07c266a54753)), closes [#686](https://github.com/Tonejs/Tone.js/issues/686)
 * adding linting to jsdocs ([10ef513](https://github.com/Tonejs/Tone.js/commit/10ef513))
 * adding send/receive to Channel ([703f27a](https://github.com/Tonejs/Tone.js/commit/703f27a))
 * Adding triggerRelease to PluckSynth ([04405af](https://github.com/Tonejs/Tone.js/commit/04405af))
 * Can set the parameter after constructing Param ([23ca0f9](https://github.com/Tonejs/Tone.js/commit/23ca0f9))
+* adding onerror to Sampler ([7236600](https://github.com/Tonejs/Tone.js/commit/7236600182d336d6598f86d7d7afe8761e733774)), closes [#605](https://github.com/Tonejs/Tone.js/issues/605)
 * Chorus extends StereoFeedbackEffect ([a28f1af](https://github.com/Tonejs/Tone.js/commit/a28f1af)), closes [#575](https://github.com/Tonejs/Tone.js/issues/575)
 * Convolver is just a wrapper around the ConvolverNode, no longer an effect ([1668dec](https://github.com/Tonejs/Tone.js/commit/1668dec))
 * Get an oscillator wave as an array ([9ad519e](https://github.com/Tonejs/Tone.js/commit/9ad519e))
 * OfflineContext returns a ToneAudioBuffer ([889dafa](https://github.com/Tonejs/Tone.js/commit/889dafa))
 * OfflineContext yields thread every second of audio rendered ([1154470](https://github.com/Tonejs/Tone.js/commit/1154470)), closes [#436](https://github.com/Tonejs/Tone.js/issues/436)
 * Renaming TransportTimelineSignal to SyncedSignal ([86853fb](https://github.com/Tonejs/Tone.js/commit/86853fb))
+* es6 output ([e5d28ba](https://github.com/Tonejs/Tone.js/commit/e5d28baa5f02c19a6f1c8c50c99e98bd1551d15b))
 * Render a segment of the envelope as an array ([fc5b6f7](https://github.com/Tonejs/Tone.js/commit/fc5b6f7))
 * testing examples in jsdocs ([e306319](https://github.com/Tonejs/Tone.js/commit/e306319))
 * Wrapper around the AudioWorkletNode ([2ee8cb1](https://github.com/Tonejs/Tone.js/commit/2ee8cb1))
-* **Converted to typescript!!! (WIP)**
 * Input/Outputs are no longer arrays.
 	* simplifies connect/disconnect logic greatly. Simplifies API to just have clearly named inputs/outputs instead of overloading input/output connect numbers
 * Using "Destination" instead of "Master" for output
@@ -28,6 +33,9 @@
 * MetalSynth and MembraneSynth extends Monophonic enabling them to be used in PolySynth
 * OnePoleFilter is a 6b-per-octave lowpass or highpass filter
 	* Using OnePoleFilter in PluckSynth and LowpassCombFilter
+* latencyHint is now set in constructor ([ba8e82b](https://github.com/Tonejs/Tone.js/commit/ba8e82b1ca8a841a23d6e774641916019c37cc92)), closes [#658](https://github.com/Tonejs/Tone.js/issues/658)
+* meter output can be normalRange in addition to decibels ([2625a13](https://github.com/Tonejs/Tone.js/commit/2625a134b62af117c1c525a4e631e4e52b25ba90))
+* option to pass in the number of input channels to Panner ([d966735](https://github.com/Tonejs/Tone.js/commit/d966735bd97bddc70039bce5a48f26413054eddc)), closes [#609](https://github.com/Tonejs/Tone.js/issues/609)
 
 
 ### BREAKING CHANGES
@@ -36,6 +44,8 @@
 * Master renamed Destination
 * Buffer renamed ToneAudioBuffer
 * Buffer.on("loaded") is should now use: `Tone.loaded(): Promise<void>`
+* Removing bower ([71c8b3b](https://github.com/Tonejs/Tone.js/commit/71c8b3bbb96e45cfc4aa2cce8a2d8c61a092c91e)), closes [#197](https://github.com/Tonejs/Tone.js/issues/197)
+* Removing Ctrl classes ([51d06bd](https://github.com/Tonejs/Tone.js/commit/51d06bd9873b2f1936a3169930f9696f1ccfb845))
 
 # 13.8.25
 
