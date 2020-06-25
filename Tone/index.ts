@@ -49,6 +49,11 @@ export function getTransport(): import("./core/clock/Transport").Transport {
 export const Destination = getContext().destination;
 
 /**
+ * @deprecated Use [[Destination]]
+ */
+export const Master = getContext().destination;
+
+/**
  * The Destination (output) belonging to the global Tone.js Context.
  * See [[Destination]]
  * @category Core
@@ -79,6 +84,7 @@ export function getListener(): import("./core/context/Listener").Listener {
 export const Draw = getContext().draw;
 
 /**
+ * Get the singleton attached to the global context. 
  * Draw is used to synchronize the draw frame with the Transport's callbacks. 
  * See [[Draw]]
  * @category Core
@@ -90,7 +96,6 @@ export function getDraw(): import("./core/util/Draw").Draw {
 /**
  * A reference to the global context
  * See [[Context]]
- * @category Core
  */
 export const context = getContext();
 
@@ -99,7 +104,9 @@ export const context = getContext();
  * Alias for static [[ToneAudioBuffer.loaded]] method.
  * @category Core
  */
-export const loaded = ToneAudioBuffer.loaded.bind(ToneAudioBuffer);
+export function loaded() {
+	return ToneAudioBuffer.loaded();
+}
 
 // this fills in name changes from 13.x to 14.x
 import { ToneAudioBuffers } from "./core/context/ToneAudioBuffers";
