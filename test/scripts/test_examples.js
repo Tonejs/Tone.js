@@ -41,9 +41,9 @@ function execPromise(cmd) {
 	return new Promise((done, error) => {
 		exec(cmd, (e, output) => {
 			if (e) {
-				error(e);
+				error(output);
 			} else {
-				done(output);
+				done();
 			}
 		});
 	});
