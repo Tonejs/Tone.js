@@ -8,8 +8,10 @@
 	<link rel="icon" type="image/png" sizes="174x174" href="./favicon.png">
 
 	<script src="https://unpkg.com/@webcomponents/webcomponentsjs@^2/webcomponents-bundle.js"></script>
+	<link href="https://fonts.googleapis.com/css?family=Material+Icons&display=block" rel="stylesheet"/>
 	<script src="../build/Tone.js"></script>
-	<script src="./js/tonejs-ui.js"></script>
+	<script src="../../examples/dist/tone-gui.js"></script>
+	<script src="../../examples/dist/components.js"></script>
 	<style type="text/css">
 		tone-play-toggle {
 			margin-bottom: 10px;
@@ -17,18 +19,16 @@
 	</style>
 </head>
 <body>
-	<tone-example>
+	<tone-example label="Player">
 		<tone-loader></tone-loader>
-
-		<tone-explanation label="Player">
+		<div slot="explanation">
 			Click on the button to play the audio file on loop
 			using <a href="https://tonejs.github.io/docs/Player">Tone.Player</a>. 
-		</tone-explanation>
+		</div>
 
-		<tone-content>
+		<div id="content">
 			<tone-play-toggle></tone-play-toggle>
-			<tone-player></tone-player>
-		</tone-content>
+		</div>
 	</tone-example>
 	
 	<script type="text/javascript">
@@ -38,11 +38,16 @@
 			"loop" : true,
 			"loopStart" : 0.5,
 			"loopEnd" : 0.7,
-		}).toMaster();
+		}).toDestination();
+
+		ui({
+			tone: player,
+			parent: document.querySelector('#content')
+		})
 
 		//bind the interface
-		document.querySelector("tone-player").bind(player);
-		document.querySelector("tone-play-toggle").bind(player);
+		document.querySelector("tone-play-toggle").addEventListener('start', () => player.start());
+		document.querySelector("tone-play-toggle").addEventListener('stop', () => player.stop());
 	</script>
 
 </body>

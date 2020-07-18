@@ -8,8 +8,10 @@
 	<link rel="icon" type="image/png" sizes="174x174" href="./favicon.png">
 
 	<script src="https://unpkg.com/@webcomponents/webcomponentsjs@^2/webcomponents-bundle.js"></script>
+	<link href="https://fonts.googleapis.com/css?family=Material+Icons&display=block" rel="stylesheet"/>
 	<script src="../build/Tone.js"></script>
-	<script src="./js/tonejs-ui.js"></script>
+	<script src="../../examples/dist/tone-gui.js"></script>
+	<script src="../../examples/dist/components.js"></script>
 </head>
 <body>
 	<style>
@@ -21,46 +23,55 @@
 			flex-grow: 1;
 			margin: 5px;
 		}
+		#progress {
+			margin: 10px;
+			color: #8c8c8c;
+		}
 	</style>
-	<tone-example>
-		<tone-explanation label="Quantization">
+	<tone-example label="Quantization">
+		<div slot="explanation">
 			Using the "@" symbol, <a href="https://github.com/Tonejs/Tone.js/wiki/Time" target="_blank">Time</a> 
 			expressions can be <a href="https://en.wikipedia.org/wiki/Quantization_(music)" target="_blank">quantized</a> 
 			(aligned to a subdivision). In this example, a note's start time is aligned to the given subdivision. 
 			<br><br>
 			The Transport must be started
-		</tone-explanation>
+		</div>
 
-		<tone-content>
-			<tone-transport></tone-transport>
+		<div id="content">
+			<div id="progress"></div>
+			<tone-play-toggle></tone-play-toggle>
 			<div id="buttons">
-				<tone-button disabled id="at8n" label="@8n"></tone-button>
-				<tone-button disabled id="at4n" label="@4n"></tone-button>
-				<tone-button disabled id="at2n" label="@2n"></tone-button>
-				<tone-button disabled id="at1m" label="@1m"></tone-button>
+				<tone-button disabled id="at8n" label="@8n">@8n</tone-button>
+				<tone-button disabled id="at4n" label="@4n">@4n</tone-button>
+				<tone-button disabled id="at2n" label="@2n">@2n</tone-button>
+				<tone-button disabled id="at1m" label="@1m">@1m</tone-button>
 			</div>
-		</tone-content>
-
-		<tone-drawer collapsed>
-			<tone-synth polyphonic collapsed></tone-synth>
-		</tone-drawer>
+		</div>
 	</tone-example>
 
 	<script type="text/javascript">
-		var polySynth = new Tone.PolySynth(4, Tone.Synth).toMaster();
+		var polySynth = new Tone.PolySynth(Tone.Synth).toDestination();
+
+		function loop(){
+			requestAnimationFrame(loop)
+			const [bar, beat, sixteenth] = Tone.Transport.position.split(':')
+			document.querySelector('#progress').textContent = `
+				bar: ${bar}, beat: ${beat}, sixteenth: ${sixteenth}
+			`
+		}
+		loop()
 
 		//bind the interface
-		document.querySelector("tone-transport").bind(Tone.Transport);
-		document.querySelector("tone-transport").addEventListener("play", e => {
+		document.querySelector("tone-play-toggle").addEventListener("start", e => {
+			Tone.Transport.start()
 			//enable all of the buttons if it's playing		
-			Array.from(document.querySelectorAll("tone-button")).forEach(el => {
-				if (e.detail){
-					el.removeAttribute("disabled");
-				} else {
-					el.setAttribute("disabled", "");
-				}
-			});
+			Array.from(document.querySelectorAll("tone-button")).forEach(el => el.disabled = false);
 		});
+		document.querySelector("tone-play-toggle").addEventListener('stop', () => {
+			Tone.Transport.stop()
+			//disable all of the buttons if it's not playing		
+			Array.from(document.querySelectorAll("tone-button")).forEach(el => el.disabled = true);
+		})
 		document.querySelector("#at8n").addEventListener("click", e => {
 			polySynth.triggerAttackRelease("B4", "8n", "@8n");
 		});

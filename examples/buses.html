@@ -8,77 +8,79 @@
 	<link rel="icon" type="image/png" sizes="174x174" href="./favicon.png">
 
 	<script src="https://unpkg.com/@webcomponents/webcomponentsjs@^2/webcomponents-bundle.js"></script>
+	<link href="https://fonts.googleapis.com/css?family=Material+Icons&display=block" rel="stylesheet"/>
 	<script src="../build/Tone.js"></script>
-	<script src="./js/tonejs-ui.js"></script>
-	<style>
-		tone-content tone-slider {
-			display: block;
-			margin-top: 10px;
-		}
-	</style>
+	<script src="../../examples/dist/tone-gui.js"></script>
+	<script src="../../examples/dist/components.js"></script>
 </head>
 <body>
-	<tone-example>
-		<tone-explanation label="Buses">
+	<tone-example label="Buses">
+		<div slot="explanation">
 			Buses make it easy to share effects across many instruments. <code>send</code>
 			audio to a named bus from an instrument and then <code>receive</code> that
 			channel on your effect. The gain values are all in decibels.
 			<br><br>
-			Docs on <a href="https://tonejs.github.io/docs/Tone.send">send</a> and 
-			<a href="https://tonejs.github.io/docs/Tone.receive">receive</a>.
-		</tone-explanation>
-		<tone-content>
-			<tone-piano></tone-piano>
-			<tone-slider label="Chorus Send" min="-100" max="0" value="-100" units="db"></tone-slider>
-			<tone-slider label="Chebyshev Send" min="-100" max="0" value="-100" units="db"></tone-slider>
-			<tone-slider label="Freeverb Send" min="-100" max="0" value="-100" units="db"></tone-slider>
-		</tone-content>
-
-		<tone-drawer collapsed>
-			<tone-chorus collapsed></tone-chorus>
-			<tone-chebyshev collapsed></tone-chebyshev>
-			<tone-freeverb collapsed></tone-freeverb>
-			<tone-synth collapsed></tone-synth>
-		</tone-drawer>
+			Docs on <a href="https://tonejs.github.io/docs/Channel.html#send">send</a> and 
+			<a href="https://tonejs.github.io/docs/Channel.html#receive">receive</a>.
+		</div>
+		<div id="content">
+			<tone-play-toggle></tone-play-toggle>
+			<tone-slider label="Chorus Send" min="-60" max="6" value="-60" units="db"></tone-slider>
+			<tone-slider label="Chebyshev Send" min="-60" max="6" value="-60" units="db"></tone-slider>
+			<tone-slider label="Reverb Send" min="-60" max="6" value="-60" units="db"></tone-slider>
+		</div>
 	</tone-example>
 
 	<script type="text/javascript">
-		//the synth
-		var synth = new Tone.Synth().toMaster().set("envelope.attack", 0.04);
-
-		//send audio to each of the effect channels
-		var chorusSend = synth.send("chorus", -Infinity);
-		var chebySend = synth.send("cheby", -Infinity);
-		var reverbSend = synth.send("reverb", -Infinity);
-
-		//make some effects
-		var chorus = new Tone.Chorus()
-			.receive("chorus")
-			.toMaster();
-
-		var cheby = new Tone.Chebyshev(50)
-			.receive("cheby")
-			.toMaster();
-
-		var reverb = new Tone.Freeverb(0.8, 4000)
-			.receive("reverb")
-			.toMaster();
-
-		//bind the interface
-		document.querySelector("tone-chorus").bind(chorus);
-		document.querySelector("tone-chebyshev").bind(cheby);
-		document.querySelector("tone-freeverb").bind(reverb);
-		document.querySelector("tone-synth").bind(synth);
-		document.querySelector("tone-piano").bind(synth);
-		document.querySelector("[label=\"Chorus Send\"]").addEventListener("change", e => {
-			chorusSend.gain.value = e.detail;
+				
+		// the source
+		const player = new Tone.Player({
+			url: "https://tonejs.github.io/audio/berklee/femalevoice_oo_A4.mp3",
+			loop: true,
 		});
-		document.querySelector("[label=\"Chebyshev Send\"]").addEventListener("change", e => {
-			chebySend.gain.value = e.detail;
+
+		// make some effects
+		const chorus = new Tone.Chorus({
+			wet: 1,
+		}).toDestination().start();
+		const chorusChannel = new Tone.Channel({volume: -60}).connect(chorus);
+		chorusChannel.receive("chorus");
+
+		const cheby = new Tone.Chebyshev(50).toDestination();
+		const chebyChannel = new Tone.Channel({volume: -60}).connect(cheby);
+		chebyChannel.receive("cheby");
+
+		const reverb = new Tone.Reverb(3).toDestination();
+		const reverbChannel = new Tone.Channel({volume: -60}).connect(reverb);
+		reverbChannel.receive("reverb");
+
+		// send the player to all of the channels
+		const playerChannel = new Tone.Channel().toDestination();
+		playerChannel.send("chorus");
+		playerChannel.send("cheby");
+		playerChannel.send("reverb");
+		player.connect(playerChannel);
+
+		drawer().add({
+			tone: chorus,
+		}).add({
+			tone: reverb,
+		}).add({
+			tone: cheby,
 		});
-		document.querySelector("[label=\"Freeverb Send\"]").addEventListener("change", e => {
-			reverbSend.gain.value = e.detail;
+		document.querySelector("tone-play-toggle").addEventListener("start", () => player.start());
+		document.querySelector("tone-play-toggle").addEventListener("stop", () => player.stop());
+		// bind the interface
+		document.querySelector("[label=\"Chorus Send\"]").addEventListener("input", e => {
+			chorusChannel.volume.value = parseFloat(e.target.value);
 		});
+		document.querySelector("[label=\"Chebyshev Send\"]").addEventListener("input", e => {
+			chebyChannel.volume.value = parseFloat(e.target.value);
+		});
+		document.querySelector("[label=\"Reverb Send\"]").addEventListener("input", e => {
+			reverbChannel.volume.value = parseFloat(e.target.value);
+		});
+
 	</script>
 </body>
 </html>

@@ -8,8 +8,10 @@
 	<link rel="icon" type="image/png" sizes="174x174" href="./favicon.png">
 
 	<script src="https://unpkg.com/@webcomponents/webcomponentsjs@^2/webcomponents-bundle.js"></script>
+	<link href="https://fonts.googleapis.com/css?family=Material+Icons&display=block" rel="stylesheet"/>
 	<script src="../build/Tone.js"></script>
-	<script src="./js/tonejs-ui.js"></script>
+	<script src="../../examples/dist/tone-gui.js"></script>
+	<script src="../../examples/dist/components.js"></script>
 	<style type="text/css">
 		tone-play-toggle {
 			margin-bottom: 10px;
@@ -25,217 +27,232 @@
 		<tone-loader></tone-loader>
 		<tone-explanation label="Play Along">
 			Touch/Mouse and drag to play along with the probabilistic backtrack. X = pitch, Y = modulation.
-		</tone-explanation>
+		</div>
 
-		<tone-content>
+		<div id="content">
 			<tone-play-toggle></tone-play-toggle>
-			<tone-slider-2d></tone-slider-2d>
-		</tone-content>
-
-		<tone-drawer collapsed>
-			<tone-compressor collapsed id="compressor" label="Drum Compressor"></tone-compressor>
-			<tone-distortion collapsed id="distortion" label="HH/Snare Distortion"></tone-distortion>
-			<tone-player collapsed  id="hats" label="Hats"></tone-player>
-			<tone-player collapsed id="snare" label="Snare"></tone-player>
-			<tone-membrane-synth collapsed id="kick" label="Kick"></tone-membrane-synth>
-			<tone-fm-synth collapsed id="bass" label="Bass"></tone-fm-synth>
-			<tone-duo-synth collapsed id="lead" label="Lead"></tone-duo-synth>
-		</tone-drawer>
-
+			<tone-slider-pad></tone-slider-pad>
+		</div>
 	</tone-example>
 
 	<script type="text/javascript">
-		//a compressor
-		var drumCompress = new Tone.Compressor({
-			"threshold" : -30,
-			"ratio" : 6,
-			"attack" : 0.3,
-			"release" : 0.1
-		}).toMaster();
+			
+		// a compressor
+		const drumCompress = new Tone.Compressor({
+			threshold: -30,
+			ratio: 10,
+			attack: 0.01,
+			release: 0.2
+		}).toDestination();
 
-		var distortion = new Tone.Distortion({
-			"distortion" : 0.4,
-			"wet" : 0.4
+		const distortion = new Tone.Distortion({
+			distortion: 0.4,
+			wet: 0.4
 		});
 
-		//hats
-		var hats = new Tone.Player({
-			"url" : "./audio/505/hh.[mp3|ogg]",
-			"volume" : -10,
-			"fadeOut" : 0.05
+		// hats
+		const hats = new Tone.Player({
+			url: "https://tonejs.github.io/audio/drum-samples/CR78/hihat.mp3",
+			volume: -10,
+			fadeOut: 0.01
 		}).chain(distortion, drumCompress);
 
-		var hatsLoop = new Tone.Loop({
-			"callback" : function(time){
+		const hatsLoop = new Tone.Loop({
+			callback: function (time) {
 				hats.start(time).stop(time + 0.05);
 			},
-			"interval" : "16n",
-			"probability" : 0.8
+			interval: "16n",
+			probability: 0.8
 		}).start("1m");
 
-		//SNARE PART
-		var snare = new Tone.Player({
-			"url" : "./audio/505/snare.[mp3|ogg]", 
-			"fadeOut" : 0.1
+		// SNARE PART
+		const snare = new Tone.Player({
+			url: "https://tonejs.github.io/audio/drum-samples/CR78/snare.mp3",
+			fadeOut: 0.1
 		}).chain(distortion, drumCompress);
 
-		var snarePart = new Tone.Sequence(function(time, velocity){
+		const snarePart = new Tone.Sequence(((time, velocity) => {
 			snare.volume.value = Tone.gainToDb(velocity);
 			snare.start(time).stop(time + 0.1);
-		}, [null, 1, null, [1, 0.3]]).start(0);
+		}), [null, 1, null, [1, 0.3]], "4n").start(0);
 
-		var kick = new Tone.MembraneSynth({
-			"pitchDecay" : 0.01,
-			"octaves" : 6,
-			"oscillator" : {
-				"type" : "square4"
+		const kick = new Tone.MembraneSynth({
+			pitchDecay: 0.02,
+			octaves: 6,
+			oscillator: {
+				type: "square4"
 			},
-			"envelope" : {
-				"attack" : 0.001,
-				"decay" : 0.2,
-				"sustain" : 0
+			envelope: {
+				attack: 0.001,
+				decay: 0.2,
+				sustain: 0
 			}
 		}).connect(drumCompress);
 
-		var kickPart = new Tone.Sequence(function(time, probability){
-			if (Math.random() < probability){
+		const kickPart = new Tone.Sequence(((time, probability) => {
+			if (Math.random() < probability) {
 				kick.triggerAttack("C1", time);
 			}
-		}, [1, [1, [null, 0.3]], 1, [1, [null, 0.5]], 1, 1, 1, [1, [null, 0.8]]], "2n").start(0);
-		
-		// BASS
-		var bass = new Tone.FMSynth({
-			"harmonicity" : 1,
-			"modulationIndex" : 3.5,
-			"carrier" : {
-				"oscillator" : {
-					"type" : "custom",
-					"partials" : [0, 1, 0, 2]
-				},
-				"envelope" : {
-					"attack" : 0.08,
-					"decay" : 0.3,
-					"sustain" : 0,
-				},
-			},
-			"modulator" : {
-				"oscillator" : {
-					"type" : "square"
-				},
-				"envelope" : {
-					"attack" : 0.1,
-					"decay" : 0.2,
-					"sustain" : 0.3,
-					"release" : 0.01
-				},
-			}
-		}).toMaster();
+		}), [1, [1, [null, 0.3]], 1, [1, [null, 0.5]], 1, 1, 1, [1, [null, 0.8]]], "2n").start(0);
 
-		var bassPart = new Tone.Part(function(time, event){
-			if (Math.random() < event.prob){
+		// BASS
+		const bass = new Tone.FMSynth({
+			harmonicity: 1,
+			modulationIndex: 3.5,
+			oscillator: {
+				type: "custom",
+				partials: [0, 1, 0, 2]
+			},
+			envelope: {
+				attack: 0.08,
+				decay: 0.3,
+				sustain: 0,
+			},
+			modulation: {
+				type: "square"
+			},
+			modulationEnvelope: {
+				attack: 0.1,
+				decay: 0.2,
+				sustain: 0.3,
+				release: 0.01
+			},
+		}).toDestination();
+
+		const bassPart = new Tone.Part(((time, event) => {
+			if (Math.random() < event.prob) {
 				bass.triggerAttackRelease(event.note, event.dur, time);
 			}
-		}, [{ time : "0:0", note : "C2", dur : "4n.", prob : 1 }, { time : "0:2", note : "C2", dur : "8n", prob : 0.6 }, 
-			{ time : "0:2.6666", note : "C2", dur : "8n", prob : 0.4 }, { time : "0:3.33333", note : "C2", dur : "8n", prob : 0.9 },
-			{ time : "1:0", note : "C2", dur : "4n.", prob : 1 }, { time : "1:2", note : "C2", dur : "8n", prob : 0.6 }, 
-			{ time : "1:2.6666", note : "C2", dur : "8n", prob : 0.4 }, { time : "1:3.33333", note : "E2", dur : "8n", prob : 0.9 },
-			{ time : "2:0", note : "F2", dur : "4n.", prob : 1 }, { time : "2:2", note : "F2", dur : "8n", prob : 0.6 }, 
-			{ time : "2:2.6666", note : "F2", dur : "8n", prob : 0.4 }, { time : "2:3.33333", note : "F2", dur : "8n", prob : 0.9 },
-			{ time : "3:0", note : "F2", dur : "4n.", prob : 1 }, { time : "3:2", note : "F2", dur : "8n", prob : 0.6 }, 
-			{ time : "3:2.6666", note : "F2", dur : "8n", prob : 0.4 }, { time : "3:3.33333", note : "B1", dur : "8n", prob : 0.9 }]).start(0);
+		}), [{ time: "0:0", note: "C2", dur: "4n.", prob: 1 }, { time: "0:2", note: "C2", dur: "8n", prob: 0.6 },
+		{ time: "0:2.6666", note: "C2", dur: "8n", prob: 0.4 }, { time: "0:3.33333", note: "C2", dur: "8n", prob: 0.9 },
+		{ time: "1:0", note: "C2", dur: "4n.", prob: 1 }, { time: "1:2", note: "C2", dur: "8n", prob: 0.6 },
+		{ time: "1:2.6666", note: "C2", dur: "8n", prob: 0.4 }, { time: "1:3.33333", note: "E2", dur: "8n", prob: 0.9 },
+		{ time: "2:0", note: "F2", dur: "4n.", prob: 1 }, { time: "2:2", note: "F2", dur: "8n", prob: 0.6 },
+		{ time: "2:2.6666", note: "F2", dur: "8n", prob: 0.4 }, { time: "2:3.33333", note: "F2", dur: "8n", prob: 0.9 },
+		{ time: "3:0", note: "F2", dur: "4n.", prob: 1 }, { time: "3:2", note: "F2", dur: "8n", prob: 0.6 },
+		{ time: "3:2.6666", note: "F2", dur: "8n", prob: 0.4 }, { time: "3:3.33333", note: "B1", dur: "8n", prob: 0.9 }]).start(0);
 
 		bassPart.loop = true;
 		bassPart.loopEnd = "4m";
 
-		//SYNTH
-		var synth = new Tone.DuoSynth({
-			"vibratoAmount" : 0.5,
-			"vibratoRate" : 5,
-			"portamento" : 0.1,
-			"harmonicity" : 1.005,
-			"volume" : 5,
-			"voice0" : {
-				"volume" : -2,
-				"oscillator" : {
-					"type" : "sawtooth"
+		// SYNTH
+		const synth = new Tone.DuoSynth({
+			vibratoAmount: 0.5,
+			vibratoRate: 5,
+			portamento: 0.1,
+			harmonicity: 1.005,
+			volume: 5,
+			voice0: {
+				oscillator: {
+					type: "sawtooth"
 				},
-				"filter" : {
-					"Q" : 1,
-					"type" : "lowpass",
-					"rolloff" : -24
+				filter: {
+					Q: 1,
+					type: "lowpass",
+					rolloff: -24
 				},
-				"envelope" : {
-					"attack" : 0.01,
-					"decay" : 0.25,
-					"sustain" : 0.4,
-					"release" : 1.2
+				envelope: {
+					attack: 0.01,
+					decay: 0.25,
+					sustain: 0.4,
+					release: 1.2
 				},
-				"filterEnvelope" : {
-					"attack" : 0.001,
-					"decay" : 0.05,
-					"sustain" : 0.3,
-					"release" : 2,
-					"baseFrequency" : 100,
-					"octaves" : 4
+				filterEnvelope: {
+					attack: 0.001,
+					decay: 0.05,
+					sustain: 0.3,
+					release: 2,
+					baseFrequency: 100,
+					octaves: 4
 				}
 			},
-			"voice1" : {
-				"volume" : -10,
-				"oscillator" : {
-					"type" : "sawtooth"
+			voice1: {
+				oscillator: {
+					type: "sawtooth"
 				},
-				"filter" : {
-					"Q" : 2,
-					"type" : "bandpass",
-					"rolloff" : -12
+				filter: {
+					Q: 2,
+					type: "bandpass",
+					rolloff: -12
 				},
-				"envelope" : {
-					"attack" : 0.25,
-					"decay" : 4,
-					"sustain" : 0.1,
-					"release" : 0.8
+				envelope: {
+					attack: 0.25,
+					decay: 4,
+					sustain: 0.1,
+					release: 0.8
 				},
-				"filterEnvelope" : {
-					"attack" : 0.05,
-					"decay" : 0.05,
-					"sustain" : 0.7,
-					"release" : 2,
-					"baseFrequency" : 5000,
-					"octaves" : -1.5
+				filterEnvelope: {
+					attack: 0.05,
+					decay: 0.05,
+					sustain: 0.7,
+					release: 2,
+					baseFrequency: 5000,
+					octaves: -1.5
 				}
 			}
-		}).toMaster();
+		}).toDestination();
 
-		var synthNotes = ["C2", "E2", "G2", "A2", 
-						  "C3", "D3", "E3", "G3", "A3", "B3", 
-						  "C4", "D4", "E4", "G4", "A4", "B4", "C5"];
+		const synthNotes = ["C2", "E2", "G2", "A2",
+			"C3", "D3", "E3", "G3", "A3", "B3",
+			"C4", "D4", "E4", "G4", "A4", "B4", "C5"];
 
 		Tone.Transport.bpm.value = 125;
 
-		//bind the interface
-		document.querySelector("tone-play-toggle").bind(Tone.Transport);
-		document.querySelector("tone-slider-2d").addEventListener("change", e => {
-			//use the x and y values to set the note and vibrato
-			const note = synthNotes[Math.round(e.detail.x * (synthNotes.length-1))];
+		function move({ x, y }) {
+			// use the x and y values to set the note and vibrato
+			const note = synthNotes[Math.round(x * (synthNotes.length - 1))];
 			synth.setNote(note);
-			synth.vibratoAmount.value = e.detail.y * 3;
-		});
-		document.querySelector("tone-slider-2d").addEventListener("mousedown", e => {
-			const note = synthNotes[Math.round(e.detail.x * (synthNotes.length-1))];
-			synth.vibratoAmount.value = e.detail.y * 3;
+			synth.vibratoAmount.value = y;
+		}
+
+		function triggerAttack({ x, y }) {
+			// use the x and y values to set the note and vibrato
+			const note = synthNotes[Math.round(x * (synthNotes.length - 1))];
 			synth.triggerAttack(note);
+			synth.vibratoAmount.value = y;
+		}
+
+
+		const drwr = drawer({
+			parent: document.querySelector("#content"),
+			open: false,
 		});
-		document.querySelector("tone-slider-2d").addEventListener("mouseup", e => {
-			synth.triggerRelease();
+
+		drwr.folder({
+			name: "Drums"
+		}).add({
+			tone: hats,
+			name: "Hats"
+		}).add({
+			tone: kick,
+			name: "Kick"
+		}).add({
+			tone: snare,
+			name: "Snare"
+		}).add({
+			tone: drumCompress,
+			name: "Compressor"
+		}).add({
+			tone: distortion,
+			name: "Distortion"
 		});
-		//bind the drawer interfaces
-		document.querySelector("#hats").bind(hats);
-		document.querySelector("#snare").bind(snare);
-		document.querySelector("#kick").bind(kick);
-		document.querySelector("#bass").bind(bass);
-		document.querySelector("#distortion").bind(distortion);
-		document.querySelector("#compressor").bind(drumCompress);
-		document.querySelector("#lead").bind(synth);
+
+		drwr.folder({
+			name: "Synths"
+		}).add({
+			tone: bass,
+			name: "Bass"
+		}).add({
+			tone: synth,
+			name: "Synth"
+		});
+
+		document.querySelector('tone-slider-pad').addEventListener('move', e => move(e.detail))
+		document.querySelector('tone-slider-pad').addEventListener('down', e => triggerAttack(e.detail))
+		document.querySelector('tone-slider-pad').addEventListener('up', () => synth.triggerRelease())
+
+		document.querySelector('tone-play-toggle').addEventListener('start', () => Tone.Transport.start())
+		document.querySelector('tone-play-toggle').addEventListener('stop', () => Tone.Transport.stop())
 	</script>
 </body>
 </html>

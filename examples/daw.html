@@ -8,8 +8,10 @@
 	<link rel="icon" type="image/png" sizes="174x174" href="./favicon.png">
 
 	<script src="https://unpkg.com/@webcomponents/webcomponentsjs@^2/webcomponents-bundle.js"></script>
+	<link href="https://fonts.googleapis.com/css?family=Material+Icons&display=block" rel="stylesheet"/>
 	<script src="../build/Tone.js"></script>
-	<script src="./js/tonejs-ui.js"></script>
+	<script src="../../examples/dist/tone-gui.js"></script>
+	<script src="../../examples/dist/components.js"></script>
 	<style type="text/css">
 		tone-play-toggle {
 			margin-bottom: 10px;
@@ -34,22 +36,20 @@
 	</style>
 </head>
 <body>
-	<tone-example>
+	<tone-example label="DAW">
 		<tone-loader></tone-loader>
-		<tone-explanation label="DAW">
+		<div slot="explanation">
 			This beat is composed of 3 independent Players each with a different loop length, synced to the Transport to start at different times and different offsets. The players stay synchronized to the position and offset of the Transport. 
-		</tone-explanation>
+		</div>
 
-		<tone-content>
+		<div id="content">
 			<tone-play-toggle></tone-play-toggle>
 			<div id="tracks">
 				<div id="progress"></div>
 				<img src="./audio/loop/drum_loop.png">
 			</div>
-			<tone-position min="-1"></tone-position>
-		</tone-content>
+		</div>
 	</tone-example>
-
 
 	<script type="text/javascript">
 		//set the transport
@@ -61,24 +61,28 @@
 		var kick = new Tone.Player({
 			url : "./audio/loop/kick.[mp3|ogg]",
 			loop : true
-		}).toMaster().sync().start(0);
+		}).toDestination().sync().start(0);
 
 		var snare = new Tone.Player({
 			url : "./audio/loop/snare.[mp3|ogg]",
 			loop : true
-		}).toMaster().sync().start("2n");
+		}).toDestination().sync().start("2n");
 
 		var hh = new Tone.Player({
 			url : "./audio/loop/hh.[mp3|ogg]",
 			loop : true
-		}).toMaster().sync().start("3:3", "4n"); //start with an offset
+		}).toDestination().sync().start("3:3", "4n"); //start with an offset
 
-		//bind the transport
-		document.querySelector("tone-play-toggle").bind(Tone.Transport);
-		document.querySelector("tone-position").bind(Tone.Transport);
-		document.querySelector("tone-position").addEventListener("position", e => {
-			document.querySelector("#progress").style = `left: ${e.detail*100}%`;
-		});
+		// connect the UI with the components
+		document.querySelector("tone-play-toggle").addEventListener("start", () => Tone.Transport.start());
+		document.querySelector("tone-play-toggle").addEventListener("stop", () => Tone.Transport.stop());
+		
+		// keep the playhead on track
+		setInterval(() => {
+			// scale it between 0-1
+			const progress = (Tone.Transport.progress + 1) / 2
+			document.querySelector("#progress").style = `left: ${progress*100}%`;
+		}, 16)
 	</script>
 </body>
 </html>

@@ -8,95 +8,130 @@
 	<link rel="icon" type="image/png" sizes="174x174" href="./favicon.png">
 
 	<script src="https://unpkg.com/@webcomponents/webcomponentsjs@^2/webcomponents-bundle.js"></script>
+	<link href="https://fonts.googleapis.com/css?family=Material+Icons&display=block" rel="stylesheet"/>
 	<script src="../build/Tone.js"></script>
-	<script src="./js/tonejs-ui.js"></script>
+	<script src="../../examples/dist/tone-gui.js"></script>
+	<script src="../../examples/dist/components.js"></script>
 </head>
 <body>
 	<style type="text/css">
 		#loop {
 			margin-bottom: 10px;
 			display: flex;
-			background-color: #777;
-			border-radius: 20px;
-			padding: 10px;
 		}
-		tone-loop {
+
+		#loop .bar {
 			flex-grow: 1;
 			width: 40%;
-			height: 150px;
+			height: 20px;
+			margin: 10px;
+			background-color: #ececec;
+			border-radius: 4px;
+			overflow: hidden;
+			position: relative;
+		}
+
+		#loop .bar .fill {
+			height: 100%;
+			width: 50%;
+			background-color:#7F33ED;
+			position: absolute;
+			left: 50%;
+			transform: translate(-50%, 0);
 		}
 	</style>
-	<tone-example>
-		<tone-explanation label="Piano Phase">
+	<tone-example label="Piano Phase">
+		<div slot="explanation">
 			By slightly slowing down the playbackRate of the Tone.Sequence in the right channel,
 			the two identical melodies phase against each other in interesting ways.
 			<br><br>
 			Composition by Steve Reich. Inspiration from Alexander Chen.
-		</tone-explanation>
+		</div>
 
-		<tone-content>
+		<div id="content">
 			<div id="loop">
-				<tone-loop id="left" color="#7F33ED"></tone-loop>
-				<tone-loop id="right" color="#1EDF3E"></tone-loop>
+				<div class="bar">
+					<div class="fill"  id="left"></div>
+				</div>
+				<div class="bar">
+					<div class="fill" id="right"></div>
+				</div>
 			</div>
 			<tone-play-toggle></tone-play-toggle>
-		</tone-content>
+		</div>
 	</tone-example>
 
 	<script type="text/javascript">
-		//set the bpm and time signature first
+
+		// set the bpm and time signature first
 		Tone.Transport.timeSignature = [6, 4];
 		Tone.Transport.bpm.value = 180;
+				
+		// L/R channel merging
+		const merge = new Tone.Merge();
 
-		//L/R channel merging
-		var merge = new Tone.Merge();
-
-		//a little reverb
-		var reverb = new Tone.Freeverb({
-			"roomSize" : 0.2,
-			"wet" : 0.3
+		// a little reverb
+		const reverb = new Tone.Reverb({
+			wet: 0.3
 		});
 
-		merge.chain(reverb, Tone.Master);
+		merge.chain(reverb, Tone.Destination);
 
-		//the synth settings
-		var synthSettings = {
-			"oscillator" : {
-				"detune" : 0,
-				"type" : "custom",
-				"partials" : [2, 1, 2, 2],
-				"phase" : 0,
-				"volume" : 0
+		// the synth settings
+		const synthSettings = {
+			oscillator: {
+				detune: 0,
+				type: "custom",
+				partials: [2, 1, 2, 2],
+				phase: 0,
+				volume: 0
 			},
-			"envelope" : {
-				"attack" : 0.005,
-				"decay" : 0.3,
-				"sustain" : 0.2,
-				"release" : 1,
+			envelope: {
+				attack: 0.005,
+				decay: 0.3,
+				sustain: 0.2,
+				release: 1,
 			},
-			"portamento" : 0.01,
-			"volume" : -20
+			portamento: 0.01,
+			volume: -20
 		};
 
-		//left and right synthesizers
-		var synthL = new Tone.Synth(synthSettings).connect(merge.left);
-		var synthR = new Tone.Synth(synthSettings).connect(merge.right);
+		// left and right synthesizers
+		const synthL = new Tone.Synth(synthSettings).connect(merge, 0, 0);
+		const synthR = new Tone.Synth(synthSettings).connect(merge, 0, 1);
 
-		//the two Tone.Sequences
-		var partL = new Tone.Sequence(function(time, note){
+		// the two Tone.Sequences
+		const partL = new Tone.Sequence(((time, note) => {
 			synthL.triggerAttackRelease(note, "8n", time);
-		}, ["E4", "F#4", "B4", "C#5", "D5", "F#4", "E4", "C#5", "B4", "F#4", "D5", "C#5"], "8n").start();
+		}), ["E4", "F#4", "B4", "C#5", "D5", "F#4", "E4", "C#5", "B4", "F#4", "D5", "C#5"], "8n").start();
 
-		var partR = new Tone.Sequence(function(time, note){
+		const partR = new Tone.Sequence(((time, note) => {
 			synthR.triggerAttackRelease(note, "8n", time);
-		}, ["E4", "F#4", "B4", "C#5", "D5", "F#4", "E4", "C#5", "B4", "F#4", "D5", "C#5"], "8n").start("2m");
-		
-		//set the playback rate of the right part to be slightly slower
+		}), ["E4", "F#4", "B4", "C#5", "D5", "F#4", "E4", "C#5", "B4", "F#4", "D5", "C#5"], "8n").start("2m");
+
+		// set the playback rate of the right part to be slightly slower
 		partR.playbackRate = 0.985;
 
-		document.querySelector("tone-play-toggle").bind(Tone.Transport);
-		document.querySelector("#left").bind(partL);
-		document.querySelector("#right").bind(partR);
+
+		//bind the interface
+		document.querySelector('tone-play-toggle').addEventListener('start', () => Tone.Transport.start())
+		document.querySelector('tone-play-toggle').addEventListener('stop', () => Tone.Transport.stop())
+
+		// update the width of the fill bars to reflect the left and right progress
+		function progressToWidth(progress){
+			progress = Math.cos(progress * Math.PI * 2 + Math.PI)
+			progress = (progress + 1) / 2
+			return `${progress * 100}%`
+		}
+		function loop(){
+			requestAnimationFrame(loop)
+			// make it go out and back for each loop
+			document.querySelector("#left").style.width = progressToWidth(partL.progress)
+			document.querySelector("#right").style.width = progressToWidth(partR.progress)
+		}
+		loop()
+		// document.querySelector("#left").bind(partL);
+		// document.querySelector("#right").bind(partR);
 		/*// GUI //
 
 		Interface.Button({

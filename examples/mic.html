@@ -8,8 +8,10 @@
 	<link rel="icon" type="image/png" sizes="174x174" href="./favicon.png">
 
 	<script src="https://unpkg.com/@webcomponents/webcomponentsjs@^2/webcomponents-bundle.js"></script>
+	<link href="https://fonts.googleapis.com/css?family=Material+Icons&display=block" rel="stylesheet"/>
 	<script src="../build/Tone.js"></script>
-	<script src="./js/tonejs-ui.js"></script>
+	<script src="../../examples/dist/tone-gui.js"></script>
+	<script src="../../examples/dist/components.js"></script>
 </head>
 <body>
 	<style type="text/css">
@@ -21,15 +23,14 @@
 			margin-bottom: 10px;
 		}
 	</style>
-	<tone-example>
-		<tone-explanation label="Microphone">
+	<tone-example label="Microphone">
+		<div slot="explanation">
 			If supported, Tone.UserMedia uses <code>getUserMedia</code> to open the user's microphone where it can then be processed with Tone.js. Only works on https domains.
-		</tone-explanation>
+		</div>
 
-		<tone-content>
-			<tone-oscilloscope></tone-oscilloscope>
-			<tone-microphone></tone-microphone>
-		</tone-content>
+		<div id="content">
+			<tone-mic-button></tone-mic-button>
+		</div>
 	</tone-example>
 	
 	<script type="text/javascript">
@@ -37,9 +38,19 @@
 		//directly to the master output because of feedback.
 		var mic = new Tone.UserMedia();
 
+		const micFFT = new Tone.FFT()
+		mic.connect(micFFT)
+
+		fft({
+			tone: micFFT,
+			parent: document.querySelector('#content')
+		})
+
 		//bind the interface
-		document.querySelector("tone-microphone").bind(mic);
-		document.querySelector("tone-oscilloscope").bind(mic);
+		const micButton = document.querySelector('tone-mic-button')
+		micButton.supported = Tone.UserMedia.supported
+		micButton.addEventListener('open', () => mic.open())
+		micButton.addEventListener('close', () => mic.close())
 
 	</script>
 

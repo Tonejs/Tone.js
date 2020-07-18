@@ -8,76 +8,75 @@
 	<link rel="icon" type="image/png" sizes="174x174" href="./favicon.png">
 
 	<script src="https://unpkg.com/@webcomponents/webcomponentsjs@^2/webcomponents-bundle.js"></script>
+	<link href="https://fonts.googleapis.com/css?family=Material+Icons&display=block" rel="stylesheet"/>
 	<script src="../build/Tone.js"></script>
-	<script src="./js/tonejs-ui.js"></script>
+	<script src="../../examples/dist/tone-gui.js"></script>
+	<script src="../../examples/dist/components.js"></script>
 
 </head>
 <body>	
-	<tone-example>
-		<tone-explanation label="Bembe">
+	<tone-example label="Bembe">
+		<div slot="explanation">
 			<a href="https://tonejs.github.io/docs/MetalSynth">Tone.MetalSynth</a> 
 			creates metallic, inharmonic sounds using 6 
 			<a href="https://tonejs.github.io/docs/FMOscillator">Tone.FMOscillators</a>
 			with a tuning based on the TR-808 Cymbal. 
 			<a href="https://tonejs.github.io/docs/MembraneSynth">Tone.MembraneSynth</a>
 			makes kick and tom-like sounds using a frequency envelope which is triggered on notes attack. 
-		</tone-explanation>
+		</div>
 
-		<tone-content>
+		<div id="content">
 			<tone-play-toggle></tone-play-toggle>
-		</tone-content>
-
-		<tone-drawer>
-			<tone-metal-synth collapsed></tone-metal-synth>
-			<tone-membrane-synth collapsed></tone-membrane-synth>
-		</tone-drawer>
+		</div>
 	</tone-example>
 
 	<script type="text/javascript">
-		var bell = new Tone.MetalSynth({
-			"harmonicity" : 12,
-			"resonance" : 800,
-			"modulationIndex" : 20,
-			"envelope" : {
-				"decay" : 0.4,
+		const bell = new Tone.MetalSynth({
+			harmonicity: 12,
+			resonance: 800,
+			modulationIndex: 20,
+			envelope: {
+				decay: 0.4,
 			},
-			"volume" : -15
-		}).toMaster();
+			volume: -15
+		}).toDestination();
 
-		var bellPart = new Tone.Sequence(function(time, freq){
+		const bellPart = new Tone.Sequence(((time, freq) => {
 			bell.triggerAttack(freq, time, Math.random()*0.5 + 0.5);
-		}, [[300, null, 200], 
+		}), [[300, null, 200], 
 			[null, 200, 200], 
 			[null, 200, null], 
 			[200, null, 200]
 		], "4n").start(0);
 
-		// bellPart.loop = true;
-		// bellPart.loopEnd = "1m";
-
-		var conga = new Tone.MembraneSynth({
-			"pitchDecay" : 0.008,
-			"octaves" : 2,
-			"envelope" : {
-				"attack" : 0.0006,
-				"decay" : 0.5,
-				"sustain" : 0
+		const conga = new Tone.MembraneSynth({
+			pitchDecay: 0.008,
+			octaves: 2,
+			envelope: {
+				attack: 0.0006,
+				decay: 0.5,
+				sustain: 0
 			}
-		}).toMaster();
+		}).toDestination();
 
-		var congaPart = new Tone.Sequence(function(time, pitch){
+		const congaPart = new Tone.Sequence(((time, pitch) => {
 			conga.triggerAttack(pitch, time, Math.random()*0.5 + 0.5);
-		}, ["G3", "C4", "C4", "C4"], "4n").start(0);
-
-		// congaPart.loop = true;
-		// congaPart.loopEnd = "1m";
+		}), ["G3", "C4", "C4", "C4"], "4n").start(0);
 
 		Tone.Transport.bpm.value = 115;
 
-		//bind the interface
-		document.querySelector("tone-play-toggle").bind(Tone.Transport);
-		document.querySelector("tone-metal-synth").bind(bell);
-		document.querySelector("tone-membrane-synth").bind(conga);
+		drawer().add({
+			tone: conga,
+			title: "Conga"
+		}).add({
+			tone: bell,
+			title: "Bell"
+		});
+
+		// connect the UI with the components
+		document.querySelector("tone-play-toggle").addEventListener("start", () => Tone.Transport.start());
+		document.querySelector("tone-play-toggle").addEventListener("stop", () => Tone.Transport.stop());
+
 		
 	</script>
 </body>

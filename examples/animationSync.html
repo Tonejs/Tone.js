@@ -8,8 +8,10 @@
 	<link rel="icon" type="image/png" sizes="174x174" href="./favicon.png">
 
 	<script src="https://unpkg.com/@webcomponents/webcomponentsjs@^2/webcomponents-bundle.js"></script>
+	<link href="https://fonts.googleapis.com/css?family=Material+Icons&display=block" rel="stylesheet"/>
 	<script src="../build/Tone.js"></script>
-	<script src="./js/tonejs-ui.js"></script>
+	<script src="../../examples/dist/tone-gui.js"></script>
+	<script src="../../examples/dist/components.js"></script>
 
 </head>
 <body>	
@@ -34,13 +36,13 @@
 			transition-duration: 0.1s;
 		}
 	</style>
-	<tone-example>
-		<tone-explanation label="Synchronizing Visuals">
+	<tone-example label="Synchronizing Visuals">
+		<div slot="explanation">
 			 Audio scheduling and rendering visuals should always be kept separate. Instead of triggering visuals from within a scheduled event callback, schedule a 'deferred' callback using Tone.Draw which will be invoked on an animation frame at the exact moment of the scheduled event.
 			 <br><br>
 			 For more information see <a href="https://github.com/Tonejs/Tone.js/wiki/Performance">this wiki article</a>. 
-		</tone-explanation>
-		<tone-content>
+		</div>
+		<div id="content">
 			<div id="Notes">
 				<div id="C4" class="Note"></div>
 				<div id="E4" class="Note"></div>
@@ -49,11 +51,7 @@
 				<div id="D5" class="Note"></div>
 			</div>
 			<tone-play-toggle></tone-play-toggle>
-		</tone-content>
-
-		<tone-drawer>
-			<tone-synth collapsed></tone-synth>
-		</tone-drawer>
+		</div>
 	</tone-example>
 	
 	<script type="text/javascript">
@@ -62,7 +60,7 @@
 				"type" : "fmsine4",
 				"modulationType" : "square"
 			}
-		}).toMaster();
+		}).toDestination();
 
 		var loop = new Tone.Pattern(function(time, note){
 			piano.triggerAttackRelease(note, "16n", time);
@@ -82,9 +80,14 @@
 
 		Tone.Transport.lookAhead = 0.5;
 
+		drawer().add({
+			tone: piano,
+			title: 'Piano',
+		})
+
 		//connect the UI with the components
-		document.querySelector("tone-play-toggle").bind(Tone.Transport);
-		document.querySelector("tone-synth").bind(piano);
+		document.querySelector("tone-play-toggle").addEventListener("start", () => Tone.Transport.start());
+		document.querySelector("tone-play-toggle").addEventListener("stop", () => Tone.Transport.stop());
 
 	</script>
 </body>

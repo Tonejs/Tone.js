@@ -8,8 +8,10 @@
 	<link rel="icon" type="image/png" sizes="174x174" href="./favicon.png">
 
 	<script src="https://unpkg.com/@webcomponents/webcomponentsjs@^2/webcomponents-bundle.js"></script>
+	<link href="https://fonts.googleapis.com/css?family=Material+Icons&display=block" rel="stylesheet"/>
 	<script src="../build/Tone.js"></script>
-	<script src="./js/tonejs-ui.js"></script>
+	<script src="../../examples/dist/tone-gui.js"></script>
+	<script src="../../examples/dist/components.js"></script>
 </head>
 <body>
 	<style>
@@ -22,30 +24,40 @@
 			width: 100%;
 		}
 	</style>
-	<tone-example>
-		<tone-explanation label="Noise">
+	<tone-example label="Noise">
+		<div slot="explanation">
 			<a href="https://tonejs.github.io/docs/Noise">Tone.Noise</a>
 			has 3 different types of noise. Careful, it's loud!
-		</tone-explanation>
+		</div>
 
-		<tone-content>
-			<tone-oscilloscope></tone-oscilloscope>
-			<tone-trigger></tone-trigger>
-			<tone-noise></tone-noise>
-		</tone-content>
+		<div id="content">
+			<tone-momentary-button></tone-momentary-button>
+		</div>
 	</tone-example>
 
 	<script type="text/javascript">
 		//make the noise and connect it to the output
-		var noise = new Tone.Noise({
-			"volume" : -10,
-			"type" : "brown"
-		}).toMaster();
+		const noise = new Tone.Noise({
+			volume : -10,
+			type : "brown"
+		}).toDestination();
+
+		const toneWaveform = new Tone.Waveform()
+		noise.connect(toneWaveform)
+
+		waveform({
+			parent: document.querySelector('#content'),
+			tone: toneWaveform,
+		})
+		
+		ui({
+			parent: document.querySelector('#content'),
+			tone: noise,
+		})
 
 		//bind the inteface
-		document.querySelector("tone-oscilloscope").bind(noise);
-		document.querySelector("tone-trigger").bind(noise);
-		document.querySelector("tone-noise").bind(noise);
+		document.querySelector("tone-momentary-button").addEventListener('down', () => noise.start())
+		document.querySelector("tone-momentary-button").addEventListener('up', () => noise.stop())
 	</script>
 </body>
 </html>
