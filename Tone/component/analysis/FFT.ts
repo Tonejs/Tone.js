@@ -83,7 +83,7 @@ export class FFT extends MeterBase<FFTOptions> {
 	 * Returns the frequency value in hertz of each of the indices of the FFT's [[getValue]] response.
 	 * @example
 	 * const fft = new Tone.FFT(32);
-	 * console.log(fft.getIndexFrequency());
+	 * console.log(fft.getFrequencyOfIndex());
 	 */
 	getFrequencyOfIndex(index: number): Hertz {
 		assert(0 <= index && index < this.size, `index must be greater than or equal to 0 and less than ${this.size}`);
