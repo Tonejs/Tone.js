@@ -59,9 +59,9 @@ async function testExampleString(str) {
 		${str}
 	`;
 	const { path, cleanup } = await file({ postfix: ".ts" });
-	// work with file here in fd
-	await writeFile(path, str);
 	try {
+		// work with file here in fd
+		await writeFile(path, str);
 		await execPromise(`tsc  --noEmit --target es5 --lib dom,ES2015 ${path}`);
 	} finally {
 		cleanup();
