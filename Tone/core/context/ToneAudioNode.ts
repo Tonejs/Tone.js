@@ -250,7 +250,7 @@ export abstract class ToneAudioNode<Options extends ToneAudioNodeOptions = ToneA
 	 * const pitchShift = new Tone.PitchShift(4).toDestination();
 	 * const filter = new Tone.Filter("G5").toDestination();
 	 * // connect a node to the pitch shift and filter in parallel
-	 * osc.fan(pitchShift, filter);
+	 * player.fan(pitchShift, filter);
 	 */
 	fan(...nodes: InputNode[]): this {
 		nodes.forEach(node => this.connect(node));
