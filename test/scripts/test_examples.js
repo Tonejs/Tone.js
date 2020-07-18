@@ -41,9 +41,9 @@ function execPromise(cmd) {
 	return new Promise((done, error) => {
 		exec(cmd, (e, output) => {
 			if (e) {
-				error(output);
+				error(e);
 			} else {
-				done();
+				done(output);
 			}
 		});
 	});
@@ -54,7 +54,10 @@ function execPromise(cmd) {
  */
 async function testExampleString(str) {
 	// str = str.replace("from \"tone\"", `from "${resolve(__dirname, "../../")}"`);
-	str = `import * as Tone from "${resolve(__dirname, "../../")}"`;
+	str = `
+		import * as Tone from "${resolve(__dirname, "../../")}"
+		${str}
+	`;
 	const { path, cleanup } = await file({ postfix: ".ts" });
 	// work with file here in fd
 	await writeFile(path, str);
