@@ -121,7 +121,7 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 	/**
 	 * Returns the playback state of the source, either "started" or "stopped".
 	 * @example
-	 * const player = new Tone.Player("https://tonejs.github.io/examples/audio/FWDL.mp3", () => {
+	 * const player = new Tone.Player("https://tonejs.github.io/audio/berklee/ahntone_c3.mp3", () => {
 	 * 	player.start();
 	 * 	console.log(player.state);
 	 * }).toDestination();
