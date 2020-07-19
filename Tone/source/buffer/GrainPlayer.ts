@@ -300,7 +300,9 @@ export class GrainPlayer extends Source<GrainPlayerOptions> {
 		return this._overlap;
 	}
 	set overlap(time) {
-		this._overlap = this.toSeconds(time);
+		const computedTime = this.toSeconds(time);
+		assertRange(computedTime, 0);
+		this._overlap = computedTime;
 	}
 
 	/**
