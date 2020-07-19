@@ -245,8 +245,10 @@
 			name: "Synth"
 		});
 
-		document.querySelector("tone-slider-pad").addEventListener("move", e => move(e.detail));
-		document.querySelector("tone-slider-pad").addEventListener("down", e => triggerAttack(e.detail));
+		// @ts-ignore
+		document.querySelector("tone-slider-pad").addEventListener("move", e => move(parseFloat(e.target.value)));
+		// @ts-ignore
+		document.querySelector("tone-slider-pad").addEventListener("down", e => triggerAttack(parseFloat(e.target.value)));
 		document.querySelector("tone-slider-pad").addEventListener("up", () => synth.triggerRelease());
 
 		document.querySelector("tone-play-toggle").addEventListener("start", () => Tone.Transport.start());

@@ -54,6 +54,7 @@
 
 		function loop() {
 			requestAnimationFrame(loop);
+			// @ts-ignore
 			const [bar, beat, sixteenth] = Tone.Transport.position.split(":");
 			document.querySelector("#progress").textContent = `
 				bar: ${bar}, beat: ${beat}, sixteenth: ${sixteenth}
@@ -64,12 +65,14 @@
 		// bind the interface
 		document.querySelector("tone-play-toggle").addEventListener("start", e => {
 			Tone.Transport.start();
-			// enable all of the buttons if it's playing		
+			// enable all of the buttons if it's playing
+			// @ts-ignore		
 			Array.from(document.querySelectorAll("tone-button")).forEach(el => el.disabled = false);
 		});
 		document.querySelector("tone-play-toggle").addEventListener("stop", () => {
 			Tone.Transport.stop();
-			// disable all of the buttons if it's not playing		
+			// disable all of the buttons if it's not playing
+			// @ts-ignore		
 			Array.from(document.querySelectorAll("tone-button")).forEach(el => el.disabled = true);
 		});
 		document.querySelector("#at8n").addEventListener("click", e => {
