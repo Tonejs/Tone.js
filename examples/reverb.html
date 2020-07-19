@@ -34,7 +34,7 @@
 	</tone-example>
 	
 	<script type="text/javascript">
-		var reverb = new Tone.Reverb().toDestination();
+		const reverb = new Tone.Reverb().toDestination();
 
 		const player = new Tone.Player({
 			url: "https://tonejs.github.io/audio/berklee/shaker_slow_1.mp3",
@@ -43,13 +43,13 @@
 		}).connect(reverb);
 
 		ui({
-			parent: document.querySelector('#content'),
+			parent: document.querySelector("#content"),
 			tone: reverb
-		})
+		});
 
-		//bind the interface
-		document.querySelector("tone-play-toggle").addEventListener('start', () => player.start())
-		document.querySelector("tone-play-toggle").addEventListener('stop', () => player.stop())
+		// bind the interface
+		document.querySelector("tone-play-toggle").addEventListener("start", () => player.start());
+		document.querySelector("tone-play-toggle").addEventListener("stop", () => player.stop());
 
 	</script>
 </body>

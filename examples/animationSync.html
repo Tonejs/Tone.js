@@ -55,26 +55,26 @@
 	</tone-example>
 	
 	<script type="text/javascript">
-		var piano = new Tone.Synth({
-			"oscillator" : {
-				"type" : "fmsine4",
-				"modulationType" : "square"
+		const piano = new Tone.Synth({
+			oscillator: {
+				type: "fmsine4",
+				modulationType: "square"
 			}
 		}).toDestination();
 
-		var loop = new Tone.Pattern(function(time, note){
+		const loop = new Tone.Pattern(((time, note) => {
 			piano.triggerAttackRelease(note, "16n", time);
 
 			// Draw.schedule takes a callback and a time to invoke the callback
-			Tone.Draw.schedule(function(){
-				//the callback synced to the animation frame at the given time
+			Tone.Draw.schedule(() => {
+				// the callback synced to the animation frame at the given time
 				const noteElement = document.querySelector("#"+note);
 				noteElement.classList.add("active");
 				setTimeout(() => {
 					noteElement.classList.remove("active");
 				}, 100);
 			}, time);
-		}, ["C4", "E4", "G4", "B4", "D5"]).start(0);
+		}), ["C4", "E4", "G4", "B4", "D5"]).start(0);
 
 		loop.interval = "16n";
 
@@ -82,10 +82,10 @@
 
 		drawer().add({
 			tone: piano,
-			title: 'Piano',
-		})
+			title: "Piano",
+		});
 
-		//connect the UI with the components
+		// connect the UI with the components
 		document.querySelector("tone-play-toggle").addEventListener("start", () => Tone.Transport.start());
 		document.querySelector("tone-play-toggle").addEventListener("stop", () => Tone.Transport.stop());
 

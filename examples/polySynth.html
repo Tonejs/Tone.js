@@ -34,23 +34,23 @@
 	</tone-example>
 	
 	<script type="text/javascript">
-		var synth = new Tone.PolySynth(Tone.Synth, {
-			"oscillator" : {
-				"partials" : [0, 2, 3, 4],
+		const synth = new Tone.PolySynth(Tone.Synth, {
+			oscillator: {
+				partials: [0, 2, 3, 4],
 			}
 		}).toDestination();
 
 		piano({
-			parent: document.querySelector('#content'),
+			parent: document.querySelector("#content"),
 			polyphonic: true,
 			noteon: note => synth.triggerAttack(note.name),
 			noteoff: note => synth.triggerRelease(note.name)
-		})
+		});
 		
 		ui({
 			tone: synth,
-			parent: document.querySelector('#content'),
-		})
+			parent: document.querySelector("#content"),
+		});
 	</script>
 </body>
 </html>

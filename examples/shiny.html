@@ -36,7 +36,6 @@
 	</tone-example>
 
 	<script type="text/javascript">
-			
 		// a compressor
 		const drumCompress = new Tone.Compressor({
 			threshold: -30,
@@ -58,7 +57,7 @@
 		}).chain(distortion, drumCompress);
 
 		const hatsLoop = new Tone.Loop({
-			callback: function (time) {
+			callback: function(time) {
 				hats.start(time).stop(time + 0.05);
 			},
 			interval: "16n",
@@ -124,13 +123,13 @@
 				bass.triggerAttackRelease(event.note, event.dur, time);
 			}
 		}), [{ time: "0:0", note: "C2", dur: "4n.", prob: 1 }, { time: "0:2", note: "C2", dur: "8n", prob: 0.6 },
-		{ time: "0:2.6666", note: "C2", dur: "8n", prob: 0.4 }, { time: "0:3.33333", note: "C2", dur: "8n", prob: 0.9 },
-		{ time: "1:0", note: "C2", dur: "4n.", prob: 1 }, { time: "1:2", note: "C2", dur: "8n", prob: 0.6 },
-		{ time: "1:2.6666", note: "C2", dur: "8n", prob: 0.4 }, { time: "1:3.33333", note: "E2", dur: "8n", prob: 0.9 },
-		{ time: "2:0", note: "F2", dur: "4n.", prob: 1 }, { time: "2:2", note: "F2", dur: "8n", prob: 0.6 },
-		{ time: "2:2.6666", note: "F2", dur: "8n", prob: 0.4 }, { time: "2:3.33333", note: "F2", dur: "8n", prob: 0.9 },
-		{ time: "3:0", note: "F2", dur: "4n.", prob: 1 }, { time: "3:2", note: "F2", dur: "8n", prob: 0.6 },
-		{ time: "3:2.6666", note: "F2", dur: "8n", prob: 0.4 }, { time: "3:3.33333", note: "B1", dur: "8n", prob: 0.9 }]).start(0);
+			{ time: "0:2.6666", note: "C2", dur: "8n", prob: 0.4 }, { time: "0:3.33333", note: "C2", dur: "8n", prob: 0.9 },
+			{ time: "1:0", note: "C2", dur: "4n.", prob: 1 }, { time: "1:2", note: "C2", dur: "8n", prob: 0.6 },
+			{ time: "1:2.6666", note: "C2", dur: "8n", prob: 0.4 }, { time: "1:3.33333", note: "E2", dur: "8n", prob: 0.9 },
+			{ time: "2:0", note: "F2", dur: "4n.", prob: 1 }, { time: "2:2", note: "F2", dur: "8n", prob: 0.6 },
+			{ time: "2:2.6666", note: "F2", dur: "8n", prob: 0.4 }, { time: "2:3.33333", note: "F2", dur: "8n", prob: 0.9 },
+			{ time: "3:0", note: "F2", dur: "4n.", prob: 1 }, { time: "3:2", note: "F2", dur: "8n", prob: 0.6 },
+			{ time: "3:2.6666", note: "F2", dur: "8n", prob: 0.4 }, { time: "3:3.33333", note: "B1", dur: "8n", prob: 0.9 }]).start(0);
 
 		bassPart.loop = true;
 		bassPart.loopEnd = "4m";
@@ -212,7 +211,6 @@
 			synth.vibratoAmount.value = y;
 		}
 
-
 		const drwr = drawer({
 			parent: document.querySelector("#content"),
 			open: false,
@@ -247,12 +245,12 @@
 			name: "Synth"
 		});
 
-		document.querySelector('tone-slider-pad').addEventListener('move', e => move(e.detail))
-		document.querySelector('tone-slider-pad').addEventListener('down', e => triggerAttack(e.detail))
-		document.querySelector('tone-slider-pad').addEventListener('up', () => synth.triggerRelease())
+		document.querySelector("tone-slider-pad").addEventListener("move", e => move(e.detail));
+		document.querySelector("tone-slider-pad").addEventListener("down", e => triggerAttack(e.detail));
+		document.querySelector("tone-slider-pad").addEventListener("up", () => synth.triggerRelease());
 
-		document.querySelector('tone-play-toggle').addEventListener('start', () => Tone.Transport.start())
-		document.querySelector('tone-play-toggle').addEventListener('stop', () => Tone.Transport.stop())
+		document.querySelector("tone-play-toggle").addEventListener("start", () => Tone.Transport.start());
+		document.querySelector("tone-play-toggle").addEventListener("stop", () => Tone.Transport.stop());
 	</script>
 </body>
 </html>

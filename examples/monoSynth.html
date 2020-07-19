@@ -31,7 +31,6 @@
 	</tone-example>
 
 	<script type="text/javascript">
-				
 		const synth = new Tone.PolySynth(Tone.MonoSynth, {
 			volume: -8,
 			oscillator: {
@@ -56,14 +55,14 @@
 		piano({
 			noteon: (note) => synth.triggerAttack(note.name),
 			noteoff: (note) => synth.triggerRelease(note.name),
-			parent: document.querySelector('#content')
-		})
-		
+			parent: document.querySelector("#content")
+		});
+				
 		ui({
 			tone: synth,
-			parent: document.querySelector('#content'),
-			name: 'MonoSynth'
-		})
+			parent: document.querySelector("#content"),
+			name: "MonoSynth"
+		});
 
 	</script>
 </body>

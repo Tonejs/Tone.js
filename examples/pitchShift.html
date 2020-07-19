@@ -35,20 +35,20 @@
 	</tone-example>
 
 	<script type="text/javascript">
-		const pitchShift = new Tone.PitchShift().toDestination()
-		const player = new Tone.Player("https://tonejs.github.io/audio/berklee/groovin_analogsynth1.mp3").connect(pitchShift)
+		const pitchShift = new Tone.PitchShift().toDestination();
+		const player = new Tone.Player("https://tonejs.github.io/audio/berklee/groovin_analogsynth1.mp3").connect(pitchShift);
 		player.loop = true;
 
-		const toneFFT = new Tone.FFT()
-		pitchShift.connect(toneFFT)
+		const toneFFT = new Tone.FFT();
+		pitchShift.connect(toneFFT);
 		fft({
-			parent: document.querySelector('#content'),
+			parent: document.querySelector("#content"),
 			tone: toneFFT,
-		})
+		});
 
-		//bind the interface
-		document.querySelector("tone-play-toggle").addEventListener('start', () => player.start());
-		document.querySelector("tone-play-toggle").addEventListener('stop', () => player.stop());
+		// bind the interface
+		document.querySelector("tone-play-toggle").addEventListener("start", () => player.start());
+		document.querySelector("tone-play-toggle").addEventListener("stop", () => player.stop());
 		// document.querySelector("tone-play-toggle").addEventListener('start', () => {
 		// 	debugger;
 		// });

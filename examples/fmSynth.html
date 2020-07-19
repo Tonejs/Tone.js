@@ -47,13 +47,13 @@
 			parent: document.querySelector("#content"),
 			noteon: (note) => synth.triggerAttack(note.name),
 			noteoff: (note) => synth.triggerRelease()
-		})
+		});
 
 		ui({
 			tone: synth,
 			name: "FMSynth",
 			parent: document.querySelector("#content"),
-		})
+		});
 	</script>
 </body>
 </html>

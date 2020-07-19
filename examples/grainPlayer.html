@@ -43,20 +43,20 @@
 	</tone-example>
 
 	<script type="text/javascript">
-		//the player
-		var player = new Tone.GrainPlayer({
-			"url" : "https://tonejs.github.io/audio/berklee/arpeggio3crazy.mp3",
-			"loop" : true,
-			"grainSize" : 0.1,
-			"overlap" : 0.05,
+		// the player
+		const player = new Tone.GrainPlayer({
+			url: "https://tonejs.github.io/audio/berklee/arpeggio3crazy.mp3",
+			loop: true,
+			grainSize: 0.1,
+			overlap: 0.05,
 		}).toDestination();
 
 		ui({
-			parent: document.querySelector('#content'),
+			parent: document.querySelector("#content"),
 			tone: player,
-		})
+		});
 
-		//bind the interface
+		// bind the interface
 		document.querySelector("tone-play-toggle").addEventListener("start", () => player.start());
 		document.querySelector("tone-play-toggle").addEventListener("stop", () => player.stop());
 

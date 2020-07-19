@@ -78,9 +78,8 @@
 		createPlayerPlusPanner("https://tonejs.github.io/audio/berklee/tapping1.mp3", -2, 0, 2);
 		createPlayerPlusPanner("https://tonejs.github.io/audio/berklee/thump1.mp3", -2, 0, -2);
 
-		document.querySelector("tone-play-toggle").addEventListener('start', () => Tone.Transport.start());
-		document.querySelector("tone-play-toggle").addEventListener('stop', () => Tone.Transport.stop());
-		
+		document.querySelector("tone-play-toggle").addEventListener("start", () => Tone.Transport.start());
+		document.querySelector("tone-play-toggle").addEventListener("stop", () => Tone.Transport.stop());
 		
 		function setRotation(angle) {
 			Tone.Listener.forwardX.value = Math.sin(angle);
@@ -88,9 +87,9 @@
 			Tone.Listener.forwardZ.value = -Math.cos(angle);
 		}
 		
-		document.querySelector("#xSlider").addEventListener('input', (e) => Tone.Listener.positionX.value = parseFloat(e.target.value));
-		document.querySelector("#zSlider").addEventListener('input', (e) => Tone.Listener.positionY.value = parseFloat(e.target.value));
-		document.querySelector("#rotation").addEventListener('input', (e) => setRotation(parseFloat(e.target.value)));
+		document.querySelector("#xSlider").addEventListener("input", (e) => Tone.Listener.positionX.value = parseFloat(e.target.value));
+		document.querySelector("#zSlider").addEventListener("input", (e) => Tone.Listener.positionY.value = parseFloat(e.target.value));
+		document.querySelector("#rotation").addEventListener("input", (e) => setRotation(parseFloat(e.target.value)));
 
 	</script>
 

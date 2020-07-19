@@ -93,10 +93,10 @@
 
 		// set the buffer when it's done
 		renderingPromise.then(buffer => player.buffer = buffer);
-		renderingPromise.then(() => document.querySelector('tone-play-toggle').disabled = false)
+		renderingPromise.then(() => document.querySelector("tone-play-toggle").disabled = false);
 
-		document.querySelector('tone-play-toggle').addEventListener('start', () => player.start())
-		document.querySelector('tone-play-toggle').addEventListener('stop', () => player.stop())
+		document.querySelector("tone-play-toggle").addEventListener("start", () => player.start());
+		document.querySelector("tone-play-toggle").addEventListener("stop", () => player.stop());
 
 	</script>
 </body>

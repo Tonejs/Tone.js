@@ -50,28 +50,28 @@
 	</tone-example>
 
 	<script type="text/javascript">
-		var polySynth = new Tone.PolySynth(Tone.Synth).toDestination();
+		const polySynth = new Tone.PolySynth(Tone.Synth).toDestination();
 
-		function loop(){
-			requestAnimationFrame(loop)
-			const [bar, beat, sixteenth] = Tone.Transport.position.split(':')
-			document.querySelector('#progress').textContent = `
+		function loop() {
+			requestAnimationFrame(loop);
+			const [bar, beat, sixteenth] = Tone.Transport.position.split(":");
+			document.querySelector("#progress").textContent = `
 				bar: ${bar}, beat: ${beat}, sixteenth: ${sixteenth}
-			`
+			`;
 		}
-		loop()
+		loop();
 
-		//bind the interface
+		// bind the interface
 		document.querySelector("tone-play-toggle").addEventListener("start", e => {
-			Tone.Transport.start()
-			//enable all of the buttons if it's playing		
+			Tone.Transport.start();
+			// enable all of the buttons if it's playing		
 			Array.from(document.querySelectorAll("tone-button")).forEach(el => el.disabled = false);
 		});
-		document.querySelector("tone-play-toggle").addEventListener('stop', () => {
-			Tone.Transport.stop()
-			//disable all of the buttons if it's not playing		
+		document.querySelector("tone-play-toggle").addEventListener("stop", () => {
+			Tone.Transport.stop();
+			// disable all of the buttons if it's not playing		
 			Array.from(document.querySelectorAll("tone-button")).forEach(el => el.disabled = true);
-		})
+		});
 		document.querySelector("#at8n").addEventListener("click", e => {
 			polySynth.triggerAttackRelease("B4", "8n", "@8n");
 		});

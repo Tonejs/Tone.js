@@ -36,7 +36,6 @@
 	</tone-example>
 
 	<script type="text/javascript">
-				
 		function makeChannel(name, url, pan) {
 			const channel = new Tone.Channel({
 				pan
@@ -54,23 +53,22 @@
 				parent: document.querySelector("#content")
 			});
 		}
-		
+					
 		// create a meter on the destination node
-		const toneMeter = new Tone.Meter({channels: 2})
-		Tone.Destination.chain(toneMeter)
+		const toneMeter = new Tone.Meter({ channels: 2 });
+		Tone.Destination.chain(toneMeter);
 		meter({
 			tone: toneMeter,
 			parent: document.querySelector("#content")
-		})
+		});
 
 		makeChannel("Guitar 0", "comping1", 1);
 		makeChannel("Guitar 1", "comping2", -1);
 		makeChannel("Guitar 2", "comping3", 0.25);
 		makeChannel("Guitar 3", "comping4", -0.25);
 
-
-		document.querySelector('tone-play-toggle').addEventListener('start', () => Tone.Transport.start())
-		document.querySelector('tone-play-toggle').addEventListener('stop', () => Tone.Transport.stop())
+		document.querySelector("tone-play-toggle").addEventListener("start", () => Tone.Transport.start());
+		document.querySelector("tone-play-toggle").addEventListener("stop", () => Tone.Transport.stop());
 	</script>
 </body>
 </html>

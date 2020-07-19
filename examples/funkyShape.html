@@ -28,16 +28,15 @@
 	</tone-example>
 
 	<script type="text/javascript">
-
 		new p5((p5) => {
 
 			class FunkyShape {
 				/*
-				FunkyShape init gives initial and offset values for 
-				the perlin noise functions in update.
-				Giving different initial values ensures that 
-				each funky shape follows its own funky path
-				*/
+					FunkyShape init gives initial and offset values for 
+					the perlin noise functions in update.
+					Giving different initial values ensures that 
+					each funky shape follows its own funky path
+					*/
 				init(xInc, yInc, xOff, yOff, radius) {
 					this.xInc = xInc;
 					this.yInc = yInc;
@@ -61,7 +60,7 @@
 					};
 				};
 			}
-				
+					
 			// using our FunkyShape class
 			// to create a funkyCircle class
 			const funkyCircle = new FunkyShape();
@@ -191,7 +190,7 @@
 		bleep.start();
 
 		const bleepLoop = new Tone.Loop(((time) => {
-					bleepEnvelope.triggerAttack(time);
+			bleepEnvelope.triggerAttack(time);
 		}), "2n").start(0);
 
 		// KICK
@@ -221,7 +220,7 @@
 		Tone.Transport.loopEnd = "1:0";
 		Tone.Transport.loop = true;
 
-		//bind the interface
+		// bind the interface
 		document.querySelector("tone-play-toggle").addEventListener("start", e => Tone.Transport.start());
 		document.querySelector("tone-play-toggle").addEventListener("stop", e => Tone.Transport.stop());
 

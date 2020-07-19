@@ -29,26 +29,26 @@
 	</tone-example>
 	
 	<script type="text/javascript">
-		//the feedback delay
-		var feedbackDelay = new Tone.PingPongDelay({
-			"delayTime" : "8n",
-			"feedback" : 0.6,
-			"wet" : 0.5
+		// the feedback delay
+		const feedbackDelay = new Tone.PingPongDelay({
+			delayTime: "8n",
+			feedback: 0.6,
+			wet: 0.5
 		}).toDestination();
 
-		//play a snare sound through it
+		// play a snare sound through it
 		const player = new Tone.Player("https://tonejs.github.io/audio/drum-samples/CR78/snare.mp3").connect(feedbackDelay);
 
-		const toneMeter = new Tone.Meter({channels: 2})
-		feedbackDelay.connect(toneMeter)
+		const toneMeter = new Tone.Meter({ channels: 2 });
+		feedbackDelay.connect(toneMeter);
 
 		meter({
 			tone: toneMeter,
-			parent: document.querySelector('#content')
-		})
+			parent: document.querySelector("#content")
+		});
 
-		document.querySelector("tone-momentary-button").addEventListener('down', () => player.start())
-		document.querySelector("tone-momentary-button").addEventListener('up', () => player.stop())
+		document.querySelector("tone-momentary-button").addEventListener("down", () => player.start());
+		document.querySelector("tone-momentary-button").addEventListener("up", () => player.stop());
 	</script>
 </body>
 </html>

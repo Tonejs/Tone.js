@@ -36,28 +36,28 @@
 	</tone-example>
 
 	<script type="text/javascript">
-		//make the noise and connect it to the output
+		// make the noise and connect it to the output
 		const noise = new Tone.Noise({
-			volume : -10,
-			type : "brown"
+			volume: -10,
+			type: "brown"
 		}).toDestination();
 
-		const toneWaveform = new Tone.Waveform()
-		noise.connect(toneWaveform)
+		const toneWaveform = new Tone.Waveform();
+		noise.connect(toneWaveform);
 
 		waveform({
-			parent: document.querySelector('#content'),
+			parent: document.querySelector("#content"),
 			tone: toneWaveform,
-		})
+		});
 		
 		ui({
-			parent: document.querySelector('#content'),
+			parent: document.querySelector("#content"),
 			tone: noise,
-		})
+		});
 
-		//bind the inteface
-		document.querySelector("tone-momentary-button").addEventListener('down', () => noise.start())
-		document.querySelector("tone-momentary-button").addEventListener('up', () => noise.stop())
+		// bind the inteface
+		document.querySelector("tone-momentary-button").addEventListener("down", () => noise.start());
+		document.querySelector("tone-momentary-button").addEventListener("up", () => noise.stop());
 	</script>
 </body>
 </html>

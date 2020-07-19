@@ -31,10 +31,8 @@
 	</tone-example>
 
 	<script type="text/javascript">
-		
 		const sampler = new Tone.Sampler({
 			urls: {
-
 				A0: "A0.mp3",
 				C1: "C1.mp3",
 				"D#1": "Ds1.mp3",
@@ -71,10 +69,10 @@
 		}).toDestination();
 
 		piano({
-			parent: document.querySelector('#content'),
+			parent: document.querySelector("#content"),
 			noteon: note => sampler.triggerAttack(note.name),
 			noteoff: note => sampler.triggerRelease(note.name),
-		})
+		});
 	</script>
 
 </body>

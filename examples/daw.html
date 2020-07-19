@@ -52,26 +52,26 @@
 	</tone-example>
 
 	<script type="text/javascript">
-		//set the transport
+		// set the transport
 		Tone.Transport.bpm.value = 108;
 		Tone.Transport.loop = true;
 		Tone.Transport.loopStart = "4m";
 		Tone.Transport.loopEnd = "8m";
 		
-		var kick = new Tone.Player({
-			url : "./audio/loop/kick.[mp3|ogg]",
-			loop : true
+		const kick = new Tone.Player({
+			url: "./audio/loop/kick.[mp3|ogg]",
+			loop: true
 		}).toDestination().sync().start(0);
 
-		var snare = new Tone.Player({
-			url : "./audio/loop/snare.[mp3|ogg]",
-			loop : true
+		const snare = new Tone.Player({
+			url: "./audio/loop/snare.[mp3|ogg]",
+			loop: true
 		}).toDestination().sync().start("2n");
 
-		var hh = new Tone.Player({
-			url : "./audio/loop/hh.[mp3|ogg]",
-			loop : true
-		}).toDestination().sync().start("3:3", "4n"); //start with an offset
+		const hh = new Tone.Player({
+			url: "./audio/loop/hh.[mp3|ogg]",
+			loop: true
+		}).toDestination().sync().start("3:3", "4n"); // start with an offset
 
 		// connect the UI with the components
 		document.querySelector("tone-play-toggle").addEventListener("start", () => Tone.Transport.start());
@@ -80,9 +80,9 @@
 		// keep the playhead on track
 		setInterval(() => {
 			// scale it between 0-1
-			const progress = (Tone.Transport.progress + 1) / 2
+			const progress = (Tone.Transport.progress + 1) / 2;
 			document.querySelector("#progress").style = `left: ${progress*100}%`;
-		}, 16)
+		}, 16);
 	</script>
 </body>
 </html>

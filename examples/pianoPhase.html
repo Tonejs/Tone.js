@@ -62,7 +62,6 @@
 	</tone-example>
 
 	<script type="text/javascript">
-
 		// set the bpm and time signature first
 		Tone.Transport.timeSignature = [6, 4];
 		Tone.Transport.bpm.value = 180;
@@ -112,27 +111,26 @@
 		// set the playback rate of the right part to be slightly slower
 		partR.playbackRate = 0.985;
 
-
-		//bind the interface
-		document.querySelector('tone-play-toggle').addEventListener('start', () => Tone.Transport.start())
-		document.querySelector('tone-play-toggle').addEventListener('stop', () => Tone.Transport.stop())
+		// bind the interface
+		document.querySelector("tone-play-toggle").addEventListener("start", () => Tone.Transport.start());
+		document.querySelector("tone-play-toggle").addEventListener("stop", () => Tone.Transport.stop());
 
 		// update the width of the fill bars to reflect the left and right progress
-		function progressToWidth(progress){
-			progress = Math.cos(progress * Math.PI * 2 + Math.PI)
-			progress = (progress + 1) / 2
-			return `${progress * 100}%`
+		function progressToWidth(progress) {
+			progress = Math.cos(progress * Math.PI * 2 + Math.PI);
+			progress = (progress + 1) / 2;
+			return `${progress * 100}%`;
 		}
-		function loop(){
-			requestAnimationFrame(loop)
+		function loop() {
+			requestAnimationFrame(loop);
 			// make it go out and back for each loop
-			document.querySelector("#left").style.width = progressToWidth(partL.progress)
-			document.querySelector("#right").style.width = progressToWidth(partR.progress)
+			document.querySelector("#left").style.width = progressToWidth(partL.progress);
+			document.querySelector("#right").style.width = progressToWidth(partR.progress);
 		}
-		loop()
+		loop();
 		// document.querySelector("#left").bind(partL);
 		// document.querySelector("#right").bind(partR);
-		/*// GUI //
+		/* // GUI //
 
 		Interface.Button({
 			key : 32,
@@ -200,7 +198,7 @@
 			rightContext.stroke();
 			rightContext.restore();
 		}
-		loop();*/
+		loop(); */
 		
 	</script>
 </body>
