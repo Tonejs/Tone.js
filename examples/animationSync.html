@@ -55,7 +55,7 @@
 	</tone-example>
 	
 	<script type="text/javascript">
-		const piano = new Tone.Synth({
+		const synth = new Tone.Synth({
 			oscillator: {
 				type: "fmsine4",
 				modulationType: "square"
@@ -63,7 +63,7 @@
 		}).toDestination();
 
 		const loop = new Tone.Pattern(((time, note) => {
-			piano.triggerAttackRelease(note, "16n", time);
+			synth.triggerAttackRelease(note, "16n", time);
 
 			// Draw.schedule takes a callback and a time to invoke the callback
 			Tone.Draw.schedule(() => {
@@ -78,10 +78,8 @@
 
 		loop.interval = "16n";
 
-		Tone.Transport.lookAhead = 0.5;
-
 		drawer().add({
-			tone: piano,
+			tone: synth,
 			title: "Piano",
 		});
 
