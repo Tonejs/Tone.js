@@ -42,6 +42,11 @@ jobs:
         - npm run docs
         - npm run test:examples
       env : TEST_EXAMPLES=1
+    - stage: test
+      script: 
+        - npm run build
+        - npm run test:html
+      env : TEST_HTML=1
     - stage: deploy
       os: linux
       script: npm run build
