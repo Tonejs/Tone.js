@@ -27,6 +27,7 @@
 		"test": "npm run karma",
 		"test:browser": "npm run karma:browser",
 		"test:examples": "node ./test/scripts/test_examples",
+		"test:html": "node ./test/scripts/test_html",
 		"test:node": "node ./test/scripts/node_test.js",
 		"test:travis": "npm run build && npm run lint && npm run test",
 		"test:watch": "npm run collect:tests && npm run karma:watch",
@@ -68,12 +69,14 @@
 		"codecov": "^3.1.0",
 		"cross-var": "^1.1.0",
 		"eslint": "^6.6.0",
+		"eslint-plugin-html": "^6.0.2",
 		"eslint-plugin-jsdoc": "^15.12.0",
 		"fs-extra": "^8.1.0",
 		"glob": "^7.1.5",
 		"html-webpack-plugin": "^3.2.0",
 		"http-server": "^0.12.3",
 		"istanbul-instrumenter-loader": "^3.0.1",
+		"jsdom": "^16.3.0",
 		"karma": "^4.4.1",
 		"karma-chrome-launcher": "^2.2.0",
 		"karma-coverage": "^2.0.2",
@@ -99,5 +102,12 @@
 	"dependencies": {
 		"standardized-audio-context": "^24.1.5",
 		"tslib": "^1.10.0"
+	},
+	"prettier": {
+		"trailingComma": "es5",
+		"tabWidth": 4,
+		"semi": true,
+		"useTabs": true,
+		"singleQuote": false
 	}
 }
