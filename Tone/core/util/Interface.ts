@@ -43,10 +43,3 @@ export type RecursivePartial<T> = {
 		T[P] extends object ? RecursivePartial<T[P]> :
 			T[P];
 };
-
-/**
- * Recursive Omit modified from here: https://stackoverflow.com/a/54487392/1146428
- */
-type OmitDistributive<T, K extends string | number> = T extends any ? (T extends object ? Id<RecursiveOmit<T, K>> : T) : never;
-type Id<T> = {} & { [P in keyof T]: T[P]} // Cosmetic use only makes the tooltips expand the type can be removed 
-export type RecursiveOmit<T extends any, K extends string | number> = Omit<{ [P in keyof T]: OmitDistributive<T[P], K> }, K>;
