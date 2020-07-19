@@ -7,52 +7,64 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<link rel="icon" type="image/png" sizes="174x174" href="./favicon.png">
 
-	<script src="https://unpkg.com/@webcomponents/webcomponentsjs@^2/webcomponents-bundle.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/2.4.3/webcomponents-bundle.js"></script>
+	<link href="https://fonts.googleapis.com/css?family=Material+Icons&display=block" rel="stylesheet"/>
 	<script src="../build/Tone.js"></script>
-	<script src="./js/tonejs-ui.js"></script>
+	<script src="./js/tone-ui.js"></script>
+	<script src="./js/components.js"></script>
 
 </head>
 <body>
-	<style>
-		tone-oscilloscope, tone-fft {
-			width: 100%;
-			height: 44px;
-			border-radius: 22px;
-			background-color: black;
-		}
-	</style>
-	<tone-example>
+	<tone-example label="Analyser">
 		<tone-loader></tone-loader>
 
-		<tone-explanation label="Analyser">
+		<div slot="explanation">
 			<a href="https://tonejs.github.io/docs/FFT" target="_blank">Tone.FFT</a>
 			returns the amplitude of the incoming signal at different frequencies.
-			<a href="https://tonejs.github.io/docs/FFT" target="_blank">Tone.Waveform</a>
+			<a href="https://tonejs.github.io/docs/Waveform" target="_blank">Tone.Waveform</a>
 			returns the signal value between 0-1.
-		</tone-explanation>
+		</div>
 
-		<tone-content>
-			<tone-oscilloscope></tone-oscilloscope>
-			<tone-fft></tone-fft>
+		<div id="content">
 			<tone-play-toggle></tone-play-toggle>
-		</tone-content>
-
-		<tone-drawer label="Components">
-			<tone-player collapsed></tone-player>
-		</tone-drawer>
+		</div>
 	</tone-example>
 
 	<script type="text/javascript">
-		var player = new Tone.Player({
-			"url" : "./audio/FWDL.[mp3|ogg]",
-			"loop" : true
-		}).toMaster();
+		const player = new Tone.Player({
+			url: "https://tonejs.github.io/audio/berklee/arpeggio2.mp3",
+			loop: true
+		}).toDestination();
 
-		//connect the UI with the components
-		document.querySelector("tone-player").bind(player);
-		document.querySelector("tone-play-toggle").bind(player);
-		document.querySelector("tone-oscilloscope").bind(player);
-		document.querySelector("tone-fft").bind(player);
+		const toneMeter = new Tone.Meter();
+		player.connect(toneMeter);
+
+		const toneFFT = new Tone.FFT();
+		player.connect(toneFFT);
+
+		const toneWaveform = new Tone.Waveform();
+		player.connect(toneWaveform);
+
+		// bind the GUI
+		drawer().add({
+			tone: player,
+			title: "Player",
+		});
+		meter({
+			tone: toneMeter,
+			parent: document.querySelector("#content")
+		});
+		fft({
+			tone: toneFFT,
+			parent: document.querySelector("#content")
+		});
+		waveform({
+			tone: toneWaveform,
+			parent: document.querySelector("#content")
+		});
+
+		document.querySelector("tone-play-toggle").addEventListener("start", () => player.start());
+		document.querySelector("tone-play-toggle").addEventListener("stop", () => player.stop());
 
 	</script>
 </body>

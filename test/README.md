@@ -1,20 +1,23 @@
-I am currently using two test runners: [mocha](https://mochajs.org/) and [karma](https://github.com/karma-runner/karma) + mocha. 
+Both Chrome and Firefox are required to run the run the full set of tests. 
 
-From within the gulp folder, run `gulp karma-test` to collect all of the files, launch a local server and run the tests.
+## Basic
 
-Be sure that the browser window is in focus while tests are running. 
+To run tests in both browsers headlessly and report the results: 
 
-Individual files can be tested by running `gulp collectTests -f [Tone class name]` which will update the test/Main.js with the given class' tests. You can then refresh the `test/index.html` page to rerun those tests. 
+`npm run test` 
 
-You can also test groups of classes by folder by adding another flag. For example to test all of the signals run `gulp collectTests --signal`. or the shorthand form: `gulp collectTests -s`. 
+## Browser
 
-* `-s` = `--signal`
-* `-i` = `--instrument`
-* `-o` = `--source`
-* `-v` = `--event`
-* `-e` = `--effect`
-* `-c` = `--core`
-* `-m` = `--component`
-* `-t` = `--control`
+To run tests in a Chrome browser not in headless mode which allows you to debug from the console: 
 
-The tests target the latest [specification](https://webaudio.github.io/web-audio-api/) and not any specific browser. I have been keeping a list of which features browsers/versions currently support in `test/helper/Supports.js`. Some tests are only conditionally run if that feature is supported on the platform. 
+`npm run test:browser`
+
+## Selective Testing
+
+To test only an individual file: 
+
+`npm run test --file=Signal`
+
+Or to run on an entire directory: 
+
+`npm run test --dir=signal`

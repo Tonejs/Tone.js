@@ -7,9 +7,11 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<link rel="icon" type="image/png" sizes="174x174" href="./favicon.png">
 
-	<script src="https://unpkg.com/@webcomponents/webcomponentsjs@^2/webcomponents-bundle.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/2.4.3/webcomponents-bundle.js"></script>
+	<link href="https://fonts.googleapis.com/css?family=Material+Icons&display=block" rel="stylesheet"/>
 	<script src="../build/Tone.js"></script>
-	<script src="./js/tonejs-ui.js"></script>
+	<script src="./js/tone-ui.js"></script>
+	<script src="./js/components.js"></script>
 </head>
 <body>	
 	<style type="text/css">
@@ -23,52 +25,47 @@
 			margin-bottom: 10px;
 		}
 	</style>
-	<tone-example>
-		<tone-explanation label="Envelope">
+	<tone-example label="Envelope">
+		<div slot="explanation">
 			Envelopes ramp amplitude, frequency or any other parameter over time. 
 			<a href="https://tonejs.github.io/docs/Envelope">Tone.Envelope</a> and the classes that extend it
 			implement an <a href="https://en.wikipedia.org/wiki/Synthesizer#ADSR_envelope" target="_blank">ADSR</a> envelope type
 			which splits its ramp into four distinct phases: Attack, Decay, Sustain, Release.
 			<img src="https://upload.wikimedia.org/wikipedia/commons/e/ea/ADSR_parameter.svg">
-		</tone-explanation>
+		</div>
 
-		<tone-content>
-			<tone-trigger></tone-trigger>
-			<tone-envelope><tone-envelope>
-		</tone-content>
+		<div id="content">
+			<tone-momentary-button></tone-momentary-button>
+		</div>
 
-		<tone-drawer collapsed>
-			<tone-oscillator collapsed frequency><tone-oscillator>
-		</tone-drawer>
 	</tone-example>
 
 	<script type="text/javascript">
-		var env = new Tone.AmplitudeEnvelope({
-			"attack" : 0.11,
-			"decay" : 0.21,
-			"sustain" : 0.5,
-			"release" : 1.2
-		}).toMaster();
+		const env = new Tone.AmplitudeEnvelope({
+			attack: 0.11,
+			decay: 0.21,
+			sustain: 0.5,
+			release: 1.2
+		}).toDestination();
 
-		//create an oscillator and connect it to the envelope
-		var osc = new Tone.Oscillator({
-			"partials" : [3, 2, 1],
-			"type" : "custom",
-			"frequency" : "C#4",
-			"volume" : -8,
+		// create an oscillator and connect it to the envelope
+		const osc = new Tone.Oscillator({
+			partials: [3, 2, 1],
+			type: "custom",
+			frequency: "C#4",
+			volume: -8,
 		}).connect(env).start();
 
-		//bind the interface
-		document.querySelector("tone-envelope").bind(env);
-		document.querySelector("tone-oscillator").bind(osc);
-
-		document.querySelector("tone-trigger").addEventListener("change", e => {
-			if (e.detail){
-				env.triggerAttack();
-			} else {
-				env.triggerRelease();
-			}
+		// bind the interface
+		drawer().add({
+			tone: env,
+			name: "Envelope"
+		}).add({
+			tone: osc,
 		});
+
+		document.querySelector("tone-momentary-button").addEventListener("down", e => env.triggerAttack());
+		document.querySelector("tone-momentary-button").addEventListener("up", e => env.triggerRelease());
 	</script>
 </body>
 </html>

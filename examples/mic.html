@@ -7,9 +7,11 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<link rel="icon" type="image/png" sizes="174x174" href="./favicon.png">
 
-	<script src="https://unpkg.com/@webcomponents/webcomponentsjs@^2/webcomponents-bundle.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/2.4.3/webcomponents-bundle.js"></script>
+	<link href="https://fonts.googleapis.com/css?family=Material+Icons&display=block" rel="stylesheet"/>
 	<script src="../build/Tone.js"></script>
-	<script src="./js/tonejs-ui.js"></script>
+	<script src="./js/tone-ui.js"></script>
+	<script src="./js/components.js"></script>
 </head>
 <body>
 	<style type="text/css">
@@ -21,25 +23,34 @@
 			margin-bottom: 10px;
 		}
 	</style>
-	<tone-example>
-		<tone-explanation label="Microphone">
+	<tone-example label="Microphone">
+		<div slot="explanation">
 			If supported, Tone.UserMedia uses <code>getUserMedia</code> to open the user's microphone where it can then be processed with Tone.js. Only works on https domains.
-		</tone-explanation>
+		</div>
 
-		<tone-content>
-			<tone-oscilloscope></tone-oscilloscope>
-			<tone-microphone></tone-microphone>
-		</tone-content>
+		<div id="content">
+			<tone-mic-button></tone-mic-button>
+		</div>
 	</tone-example>
 	
 	<script type="text/javascript">
-		//you probably DONT want to connect the microphone
-		//directly to the master output because of feedback.
-		var mic = new Tone.UserMedia();
+		// you probably DONT want to connect the microphone
+		// directly to the master output because of feedback.
+		const mic = new Tone.UserMedia();
 
-		//bind the interface
-		document.querySelector("tone-microphone").bind(mic);
-		document.querySelector("tone-oscilloscope").bind(mic);
+		const micFFT = new Tone.FFT();
+		mic.connect(micFFT);
+
+		fft({
+			tone: micFFT,
+			parent: document.querySelector("#content")
+		});
+
+		// bind the interface
+		const micButton = document.querySelector("tone-mic-button");
+		micButton.supported = Tone.UserMedia.supported;
+		micButton.addEventListener("open", () => mic.open());
+		micButton.addEventListener("close", () => mic.close());
 
 	</script>
 

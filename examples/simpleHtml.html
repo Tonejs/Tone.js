@@ -2,12 +2,15 @@
 <html>
 	<head>	
 		<meta charset="utf-8" />
-		<title>App</title>
+		<title>Simple HTML</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/tone/13.8.3/Tone.js"></script>
+		<!-- LOAD Tone.js from unpkg -->
+		<script src="http://unpkg.com/tone"></script>
 		<script>
 			function playNote() {
-				var synth = new Tone.Synth().toMaster();
+				// create a synth
+				const synth = new Tone.Synth().toDestination();
+				// play a note from that synth
 				synth.triggerAttackRelease("C4", "8n");
 			}
 		</script>

@@ -8,22 +8,24 @@
 	<link rel="icon" type="image/png" sizes="174x174" href="./favicon.png">
 
 	<script type="text/javascript">
-		//forward links with hashes
-		if (window.location.hash !== ""){
-			var hash = window.location.hash.substring(1);
+		// forward links with hashes
+		if (window.location.hash !== "") {
+			const hash = window.location.hash.substring(1);
 			window.location.href = window.location.pathname+hash;
 		}
 	</script>
 
-	<script src="https://unpkg.com/@webcomponents/webcomponentsjs@^2/webcomponents-bundle.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/2.4.3/webcomponents-bundle.js"></script>
+	<link href="https://fonts.googleapis.com/css?family=Material+Icons&display=block" rel="stylesheet"/>
 	<script src="../build/Tone.js"></script>
-	<script src="./js/tonejs-ui.js"></script>
+	<script src="./js/tone-ui.js"></script>
+	<script src="./js/components.js"></script>
 </head>
 <body>
-	<tone-example open>
-		<tone-explanation label="Examples">
+	<tone-example label="Examples" open>
+		<div slot="explanation">
 			Choose an example from the side panel.
-		</tone-explanation>
+		</div>
 	</tone-example>
 
 </body>

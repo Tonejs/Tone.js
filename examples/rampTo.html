@@ -7,9 +7,11 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<link rel="icon" type="image/png" sizes="174x174" href="./favicon.png">
 
-	<script src="https://unpkg.com/@webcomponents/webcomponentsjs@^2/webcomponents-bundle.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/2.4.3/webcomponents-bundle.js"></script>
+	<link href="https://fonts.googleapis.com/css?family=Material+Icons&display=block" rel="stylesheet"/>
 	<script src="../build/Tone.js"></script>
-	<script src="./js/tonejs-ui.js"></script>
+	<script src="./js/tone-ui.js"></script>
+	<script src="./js/components.js"></script>
 </head>
 <body>
 	<style>
@@ -18,51 +20,53 @@
 			margin-top: 10px;
 		}
 	</style>
-	<tone-example>
-		<tone-explanation label="rampTo">
+	<tone-example label="rampTo">
+		<div slot="explanation">
 			Working with signals is different than working with numbers or strings:
 			Signals are values which are updated at audio rate,
 			which allows for sample-accurate scheduling and ramping. <code>.rampTo(value, rampTime)</code>
 			smoothly changes the signal from the current value to the target value over the duration of the rampTime.
 			This example uses <code>.rampTo</code> in to smooth out changes in volume and frequency.
-		</tone-explanation>
+		</div>
 
-		<tone-content>
+		<div id="content">
 			<tone-play-toggle></tone-play-toggle>
-			<tone-slider bare min="0.5" max="2" value="1"></tone-slider>
-		</tone-content>
+			<tone-slider label="harmonicity" min="0.5" max="2" value="1"></tone-slider>
+		</div>
 	</tone-example>
 
 	<script type="text/javascript">
-		var oscillators = [];
+		const oscillators = [];
 
-		var bassFreq = 32;
+		const bassFreq = 32;
 
-		for (var i = 0; i < 8; i++){
+		for (let i = 0; i < 8; i++) {
 			oscillators.push(new Tone.Oscillator({
-				"frequency" : bassFreq * i,
-				"type" : "sawtooth10",
-				"volume" : -Infinity,
-				"detune" : Math.random() * 30 - 15,
-			}).toMaster());
+				frequency: bassFreq * i,
+				type: "sawtooth4",
+				volume: -Infinity,
+				detune: Math.random() * 30 - 15,
+			}).toDestination());
 		}
 
-		//bind the interface
-		document.querySelector("tone-play-toggle").addEventListener("play", e => {
+		// bind the interface
+		document.querySelector("tone-play-toggle").addEventListener("start", e => {
 			oscillators.forEach(o => {
-				if (e.detail){
-					o.start();
-					o.volume.rampTo(0, 1);
-				} else {
-					o.stop("+1.2");
-					o.volume.rampTo(-Infinity, 1);
-				}
+				o.start();
+				o.volume.rampTo(-20, 1);
+			});
+		});
+		
+		document.querySelector("tone-play-toggle").addEventListener("stop", e => {
+			oscillators.forEach(o => {
+				o.stop("+1.2");
+				o.volume.rampTo(-Infinity, 1);
 			});
 		});
 
-		document.querySelector("tone-slider").addEventListener("change", e => {
+		document.querySelector("tone-slider").addEventListener("input", e => {
 			oscillators.forEach((osc, i) => {
-				osc.frequency.rampTo(bassFreq * i * e.detail, 0.4);
+				osc.frequency.rampTo(bassFreq * i * parseFloat(e.target.value), 0.4);
 			});
 		});
 

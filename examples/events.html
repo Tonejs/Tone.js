@@ -7,13 +7,15 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<link rel="icon" type="image/png" sizes="174x174" href="./favicon.png">
 
-	<script src="https://unpkg.com/@webcomponents/webcomponentsjs@^2/webcomponents-bundle.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/2.4.3/webcomponents-bundle.js"></script>
+	<link href="https://fonts.googleapis.com/css?family=Material+Icons&display=block" rel="stylesheet"/>
 	<script src="../build/Tone.js"></script>
-	<script src="./js/tonejs-ui.js"></script>
+	<script src="./js/tone-ui.js"></script>
+	<script src="./js/components.js"></script>
 </head>
 <body>	
-	<tone-example>
-		<tone-explanation label="Events">
+	<tone-example label="Events">
+		<div slot="explanation">
 			Tone's Event classes (<a href="https://tonejs.github.io/docs/Event">Tone.Event</a>, 
 				<a href="https://tonejs.github.io/docs/Loop">Tone.Loop</a>, 
 				<a href="https://tonejs.github.io/docs/Part">Tone.Part</a> and 
@@ -22,115 +24,119 @@
 				<a href="https://tonejs.github.io/docs/Transport.schedule">Transport.schedule</a> or 
 				<a href="https://tonejs.github.io/docs/Transport.scheduleRepeat">scheduleRepeat</a>
 			and lets you create precise, rhythmic events which are startable, stoppable and loopable. 
-		</tone-explanation>
+		</div>
 
-		<tone-content>
+		<div id="content">
 			<tone-play-toggle></tone-play-toggle>
-		</tone-content>
-
-		<tone-drawer>
-			<tone-membrane-synth collapsed label="Kick"></tone-membrane-synth>
-			<tone-noise-synth collapsed label="Snare"></tone-noise-synth>
-			<tone-mono-synth collapsed label="Bass"></tone-mono-synth>
-			<tone-synth collapsed polyphonic label="Keys"></tone-synth>
-		</tone-drawer>
+		</div>
 	</tone-example>
 
 	<script type="text/javascript">
-		/*
-		 KICK
+		/**
+		 * KICK
 		 */
-		var kick = new Tone.MembraneSynth({
-			"envelope" : {
-				"sustain" : 0,
-				"attack" : 0.02,
-				"decay" : 0.8
+		const kick = new Tone.MembraneSynth({
+			envelope: {
+				sustain: 0,
+				attack: 0.02,
+				decay: 0.8
 			},
-			"octaves" : 10
-		}).toMaster();
+			octaves: 10,
+			pitchDecay: 0.01,
+		}).toDestination();
 
-		var kickPart = new Tone.Loop(function(time){
+		const kickPart = new Tone.Loop(((time) => {
 			kick.triggerAttackRelease("C2", "8n", time);
-		}, "2n").start(0);
-		
-		/*
-		 SNARE
+		}), "2n").start(0);
+				
+		/**
+		 * SNARE
 		 */
-		var snare = new Tone.NoiseSynth({
-			"volume" : -5,
-			"envelope" : {
-				"attack" : 0.001,
-				"decay" : 0.2,
-				"sustain" : 0
-			},
-			"filterEnvelope" : {
-				"attack" : 0.001,
-				"decay" : 0.1,
-				"sustain" : 0
+		const snare = new Tone.NoiseSynth({
+			volume: -10,
+			envelope: {
+				attack: 0.001,
+				decay: 0.2,
+				sustain: 0
 			}
-		}).toMaster();
+		}).toDestination();
 
-		var snarePart = new Tone.Loop(function(time){
+		const snarePart = new Tone.Loop(((time) => {
 			snare.triggerAttack(time);
-		}, "2n").start("4n");
+		}), "2n").start("4n");
 
 		/**
-		 *  PIANO
+		 * PIANO
 		 */
-		var piano = new Tone.PolySynth(4, Tone.Synth, {
-			"volume" : -8,
-			"oscillator" : {
-				"partials" : [1, 2, 1],
+		const keys = new Tone.PolySynth(Tone.Synth, {
+			volume: -8,
+			oscillator: {
+				partials: [1, 2, 1],
 			},
-			"portamento" : 0.05
-		}).toMaster();
+		}).toDestination();
 
-		var cChord = ["C4", "E4", "G4", "B4"];
-		var dChord = ["D4", "F4", "A4", "C5"];
-		var gChord = ["B3", "D4", "E4", "A4"];
+		const cChord = ["C4", "E4", "G4", "B4"];
+		const dChord = ["D4", "F4", "A4", "C5"];
+		const gChord = ["B3", "D4", "E4", "A4"];
 
-		var pianoPart = new Tone.Part(function(time, chord){
-			piano.triggerAttackRelease(chord, "8n", time);
-		}, [["0:0:2", cChord], ["0:1", cChord], ["0:1:3", dChord], ["0:2:2", cChord], ["0:3", cChord], ["0:3:2", gChord]]).start("2m");
+		const pianoPart = new Tone.Part(((time, chord) => {
+			keys.triggerAttackRelease(chord, "8n", time);
+		}), [["0:0:2", cChord], ["0:1", cChord], ["0:1:3", dChord], ["0:2:2", cChord], ["0:3", cChord], ["0:3:2", gChord]]).start("2m");
 
 		pianoPart.loop = true;
 		pianoPart.loopEnd = "1m";
 		pianoPart.humanize = true;
 
-		/*
-		 BASS
+		/**
+		 * BASS
 		 */
-		var bass = new Tone.MonoSynth({
-			"volume" : -10,
-			"envelope" : {
-				"attack" : 0.1,
-				"decay" : 0.3,
-				"release" : 2,
+		const bass = new Tone.MonoSynth({
+			volume: -10,
+			envelope: {
+				attack: 0.1,
+				decay: 0.3,
+				release: 2,
 			},
-			"filterEnvelope" : {
-				"attack" : 0.001,
-				"decay" : 0.01,
-				"sustain" : 0.5,
-				"baseFrequency" : 200,
-				"octaves" : 2.6
+			filterEnvelope: {
+				attack: 0.001,
+				decay: 0.01,
+				sustain: 0.5,
+				baseFrequency: 200,
+				octaves: 2.6
 			}
-		}).toMaster();
+		}).toDestination();
 
-		var bassPart = new Tone.Sequence(function(time, note){
+		const bassPart = new Tone.Sequence(((time, note) => {
 			bass.triggerAttackRelease(note, "16n", time);
-		}, ["C2", ["C3", ["C3", "D2"]], "E2", ["D2", "A1"]]).start(0);
+		}), ["C2", ["C3", ["C3", "D2"]], "E2", ["D2", "A1"]], "4n").start(0);
 
 		bassPart.probability = 0.9;
 
-		//set the transport 
+		// set the transport 
 		Tone.Transport.bpm.value = 90;
 
-		//bind the interface
-		document.querySelector("tone-play-toggle").bind(Tone.Transport);
-		document.querySelector("tone-membrane-synth").bind(kick);
-		document.querySelector("tone-mono-synth").bind(bass);
-		document.querySelector("tone-synth").bind(piano);
-		document.querySelector("tone-noise-synth").bind(snare);
+		drawer().add({
+			name: "Kick",
+			tone: kick,
+			open: false,
+		}).add({
+			name: "Snare",
+			tone: snare,
+			open: false,
+		}).add({
+			name: "Bass",
+			tone: bass,
+			open: false,
+		}).add({
+			name: "Keys",
+			tone: keys,
+			open: false,
+		});
+
+		// bind the interface
+		document.querySelector("tone-play-toggle").addEventListener("start", e => Tone.Transport.start());
+		document.querySelector("tone-play-toggle").addEventListener("stop", e => Tone.Transport.stop());
+				
 	</script>
 </body>
 </html>

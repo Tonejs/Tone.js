@@ -7,138 +7,86 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<link rel="icon" type="image/png" sizes="174x174" href="./favicon.png">
 
-	<script src="https://unpkg.com/@webcomponents/webcomponentsjs@^2/webcomponents-bundle.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/2.4.3/webcomponents-bundle.js"></script>
+	<link href="https://fonts.googleapis.com/css?family=Material+Icons&display=block" rel="stylesheet"/>
 	<script src="../build/Tone.js"></script>
-	<script src="./js/tonejs-ui.js"></script>
-	<script src="./js/three.min.js"></script>
-	<script src="./js/OrbitControls.js"></script>
-	<script src="./js/WebGLDetector.js"></script>
-	<script src="./js/THREE.Tone.js"></script>
+	<script src="./js/tone-ui.js"></script>
+	<script src="./js/components.js"></script>
 
 	<style type="text/css">
 		tone-play-toggle {
 			margin-bottom: 10px;
 		}
-
-		#three {
-			width: 100%;
-			height: 400px;
-		}
 	</style>
 </head>
 <body>
-	<tone-example>
+	<tone-example label="3D Panning">
 		<tone-loader></tone-loader>
-		<tone-explanation label="3D Panning">
+		<div slot="explanation">
 			Tone.Panner3D and Tone.Listener work together to create 3D audio. Connect your synths and sources to Panner3D and then to the master output, anything you connect to the panner will be spatialized according the position of the panner relative to the position of the listener. This example synchronizes the position of the camera with Tone.Listener and the position of each of the spheres with a track.
 			<br><br>
 			Note: the 3D panning effect is more effective with headphones.
-		</tone-explanation>
+		</div>
 
-		<tone-content>
+		<div id="content">
 			<tone-play-toggle></tone-play-toggle>
-			<div id="three"></div>
-		</tone-content>
+			<tone-slider 
+				label="x"
+				id="xSlider"
+				min="-2"
+				max="2"
+				value="0"
+			></tone-slider>
+			<tone-slider 
+				id="zSlider"
+				label="z"
+				min="-2"
+				max="2"
+				value="0"
+			></tone-slider>
+			<tone-slider 
+				id="rotation"
+				label="rotation"
+				min="0"
+				max="6.28"
+				value="0"
+				units="rad"
+			></tone-slider>
+		</div>
 	</tone-example>
 
 	<script type="text/javascript">
-		var greenSphere = new Tone.Panner3D().toMaster();
-		var drone = new Tone.Player({
-			url : "./audio/loop/drone.[mp3|ogg]",
-			loop : true,
-		}).connect(greenSphere).sync().start(0);
+		function createPlayerPlusPanner(url, positionX, positionY, positionZ) {
+			const panner = new Tone.Panner3D({
+				panningModel: "HRTF",
+				positionX,
+				positionY,
+				positionZ,
+			}).toDestination();
 
-		var blueSphere = new Tone.Panner3D().toMaster();
-		var repeat = new Tone.Player({
-			url : "./audio/loop/bass.[mp3|ogg]",
-			loop : true,
-		}).connect(blueSphere).sync().start(0);
-
-		var whiteSphere = new Tone.Panner3D().toMaster();
-		var chords = new Tone.Player({
-			url : "./audio/loop/chords.[mp3|ogg]",
-			loop : true,
-		}).connect(whiteSphere).sync().start(0);
-
-		//bind the interface
-		document.querySelector("tone-play-toggle").bind(Tone.Transport);
-				
-		// THREE.JS //
-		
-		if (Detector.webgl){
-
-			var SCREEN_WIDTH = document.querySelector("#three").clientWidth;
-			var SCREEN_HEIGHT = document.querySelector("#three").clientHeight;
-			var aspect = SCREEN_WIDTH / SCREEN_HEIGHT;
-
-			console.log(SCREEN_WIDTH, SCREEN_HEIGHT, aspect);
-
-			var scene = new THREE.Scene();
-			var camera = new THREE.PerspectiveCamera(50, aspect, 1, 10000);
-			camera.position.z = 1;
-			camera.updateMatrixWorld();
-
-			var bassMesh = new THREE.Mesh(
-				new THREE.SphereBufferGeometry(2, 16, 8),
-				new THREE.MeshBasicMaterial({ color : 0xffffff, wireframe : true })
-			);
-			scene.add(bassMesh);
-			bassMesh.position.z = -10;
-
-			var dronMesh = new THREE.Mesh(
-				new THREE.SphereBufferGeometry(1, 16, 8),
-				new THREE.MeshBasicMaterial({ color : 0xff0000, wireframe : true })
-			);
-			scene.add(dronMesh);
-
-			var chordMesh = new THREE.Mesh(
-				new THREE.SphereBufferGeometry(1, 16, 8),
-				new THREE.MeshBasicMaterial({ color : 0xff00ff, wireframe : true })
-			);
-			scene.add(chordMesh);
-
-			var renderer = new THREE.WebGLRenderer({ antialias : true });
-			renderer.setPixelRatio(window.devicePixelRatio);
-			onWindowResize();
-			renderer.domElement.style.position = "relative";
-			document.querySelector("#three").appendChild(renderer.domElement);
-
-			controls = new THREE.OrbitControls(camera, renderer.domElement);
-			controls.addEventListener("change", function(){
-				Tone.Listener.updatePosition(camera);
-			});
-			//set the camer initially
-			Tone.Listener.updatePosition(camera);
-
-			function onWindowResize(event){
-				SCREEN_WIDTH = document.querySelector("#three").clientWidth;
-				SCREEN_HEIGHT = document.querySelector("#three").clientHeight;
-				aspect = SCREEN_WIDTH / SCREEN_HEIGHT;
-				camera.aspect = aspect;
-				renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
-				camera.updateProjectionMatrix();
-			}
-
-			window.addEventListener("resize", onWindowResize);
-
-			function animate(){
-				requestAnimationFrame(animate);
-				var r = Date.now() * 0.0005;
-				chordMesh.position.x = 3 * Math.cos(r);
-				chordMesh.position.z = 3 * Math.cos(r);
-				chordMesh.position.y = 3 * Math.sin(r);
-				dronMesh.position.x = 4 * Math.cos(2 * r);
-				dronMesh.position.z = 4 * Math.sin(2 * r);
-				renderer.render(scene, camera);
-				controls.update();
-
-				greenSphere.updatePosition(dronMesh);
-				blueSphere.updatePosition(bassMesh);
-				whiteSphere.updatePosition(chordMesh);
-			}
-
-			animate();
+			const player = new Tone.Player({
+				url,
+				loop: true,
+			}).connect(panner).sync().start(0);
 		}
+		createPlayerPlusPanner("https://tonejs.github.io/audio/berklee/taps_1c.mp3", 2, 0, 0);
+		createPlayerPlusPanner("https://tonejs.github.io/audio/berklee/tinkle3.mp3", 0, 0, 2);
+		createPlayerPlusPanner("https://tonejs.github.io/audio/berklee/tapping1.mp3", -2, 0, 2);
+		createPlayerPlusPanner("https://tonejs.github.io/audio/berklee/thump1.mp3", -2, 0, -2);
+
+		document.querySelector("tone-play-toggle").addEventListener("start", () => Tone.Transport.start());
+		document.querySelector("tone-play-toggle").addEventListener("stop", () => Tone.Transport.stop());
+		
+		function setRotation(angle) {
+			Tone.Listener.forwardX.value = Math.sin(angle);
+			Tone.Listener.forwardY.value = 0;
+			Tone.Listener.forwardZ.value = -Math.cos(angle);
+		}
+
+		document.querySelector("#xSlider").addEventListener("input", (e) => Tone.Listener.positionX.value = parseFloat(e.target.value));
+		document.querySelector("#zSlider").addEventListener("input", (e) => Tone.Listener.positionY.value = parseFloat(e.target.value));
+		document.querySelector("#rotation").addEventListener("input", (e) => setRotation(parseFloat(e.target.value)));
+
 	</script>
 
 	</style>

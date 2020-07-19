@@ -1,0 +1,12 @@
+{
+	"name" : "Tone.js",
+	"mode": "file",
+	"defaultCategory" : "Global",
+	"categorizeByGroup" : true,
+	"categoryOrder" : ["Core", "Source", "Instrument", "Effect", "Component", "Signal"],
+	"exclude" : ["./Tone/**/*.test.ts", "./test/**/*.ts"],
+	"excludeProtected" : true,
+	"excludePrivate" : true,
+	"listInvalidSymbolLinks" : true,
+	"excludeNotExported" : false
+}

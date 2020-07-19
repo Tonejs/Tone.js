@@ -7,151 +7,80 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<link rel="icon" type="image/png" sizes="174x174" href="./favicon.png">
 
-	<script src="https://unpkg.com/@webcomponents/webcomponentsjs@^2/webcomponents-bundle.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/2.4.3/webcomponents-bundle.js"></script>
+	<link href="https://fonts.googleapis.com/css?family=Material+Icons&display=block" rel="stylesheet"/>
 	<script src="../build/Tone.js"></script>
-	<script src="./js/tonejs-ui.js"></script>
+	<script src="./js/tone-ui.js"></script>
+	<script src="./js/components.js"></script>
 </head>
 <body>
-	<style type="text/css">
-		tone-content * {
-			margin-bottom: 50px;
-		}
-		tone-play-toggle {
-			margin-bottom: 10px;
-		}
-	</style>
-	<tone-example>
-		<tone-explanation label="LFO Effects">
+	<tone-example label="LFO Effects">
+		<div slot="explanation">
 			These effects use an <a href="https://tonejs.github.io/docs/LFO">LFO</a> (Low Frequency Oscillator) to modulate the effect. Click and drag the dot to change the frequency and depth of the effect. 
 			<br><br>
 			Docs on <a href="https://tonejs.github.io/docs/AutoPanner">Tone.AutoPanner</a>, 
 			<a href="https://tonejs.github.io/docs/AutoFilter">Tone.AutoFilter</a>, and
 			<a href="https://tonejs.github.io/docs/Tremolo">Tone.Tremolo</a>
-		</tone-explanation>
+		</div>
 
-		<tone-content>
+		<div id="content">
+			<tone-slider label="Panner" id="panner" units="hz" value="4" step="0.5" min="1" max="15"></tone-slider>
 			<tone-play-toggle id="osc0"></tone-play-toggle>
-			<tone-auto-panner collapsed></tone-auto-panner>
+			<tone-slider label="Filter" id="filter" units="hz" value="4" step="0.5" min="1" max="15"></tone-slider>
 			<tone-play-toggle id="osc1"></tone-play-toggle>
-			<tone-auto-filter collapsed></tone-auto-filter>
+			<tone-slider label="Tremolo" id="tremolo" units="hz" value="4" step="0.5" min="1" max="15"></tone-slider>
 			<tone-play-toggle id="osc2"></tone-play-toggle>
-			<tone-tremolo collapsed></tone-tremolo>
 		</tone-content>
 	</tone-example>
 
 	<script type="text/javascript">
-		//AutoPanner - a panning modulation effect
-		var panner = new Tone.AutoPanner({
-			"frequency" : 4,
-			"depth" : 1
-		}).toMaster().start();
+		// AutoPanner - a panning modulation effect
+		const panner = new Tone.AutoPanner({
+			frequency: 4,
+			depth: 1
+		}).toDestination().start();
 
-		//AutoFilter - a filter modulation effect
-		var filter = new Tone.AutoFilter({
-			"frequency" : 2,
-			"depth" : 0.6
-		}).toMaster().start();
+		// AutoFilter - a filter modulation effect
+		const filter = new Tone.AutoFilter({
+			frequency: 2,
+			depth: 0.6
+		}).toDestination().start();
 
-		//Tremolo - an amplitude modulation effect
-		var tremolo = new Tone.Tremolo({
-			"frequency" : 0.6,
-			"depth" : 0.7
-		}).toMaster().start();
+		// Tremolo - an amplitude modulation effect
+		const tremolo = new Tone.Tremolo({
+			frequency: 0.6,
+			depth: 0.7
+		}).toDestination().start();
 
-		//the input oscillators
-		var osc0 = new Tone.Oscillator({ 
-			"volume" : -Infinity, 
-			"type" : "square6",
-			"frequency" : "C4"
-		}).connect(panner).start();
+		// the input oscillators
+		const pannerOsc = new Tone.Oscillator({ 
+			volume: -12,
+			type: "square6",
+			frequency: "C4"
+		}).connect(panner);
 
-		var osc1 = new Tone.Oscillator({ 
-			"volume" : -Infinity, 
-			"type" : "square6",
-			"frequency" : "E4"
-		}).connect(filter).start();
+		const filterOsc = new Tone.Oscillator({ 
+			volume: -12,
+			type: "square6",
+			frequency: "E4"
+		}).connect(filter);
 
-		var osc2 = new Tone.Oscillator({ 
-			"volume" : -Infinity, 
-			"type" : "square6",
-			"frequency" : "A4"
-		}).connect(tremolo).start();
+		const tremoloOsc = new Tone.Oscillator({ 
+			volume: -12,
+			type: "square6",
+			frequency: "A4"
+		}).connect(tremolo);
 
-		//bind the interface
-		document.querySelector("#osc0").addEventListener("change", e => {
-			osc0.volume.rampTo(e.detail ? 0 : -Infinity, 0.1);
-		});
-		document.querySelector("#osc1").addEventListener("change", e => {
-			osc1.volume.rampTo(e.detail ? 0 : -Infinity, 0.1);
-		});
-		document.querySelector("#osc2").addEventListener("change", e => {
-			osc2.volume.rampTo(e.detail ? 0 : -Infinity, 0.1);
-		});
-		document.querySelector("tone-tremolo").bind(tremolo);
-		document.querySelector("tone-auto-filter").bind(filter);
-		document.querySelector("tone-auto-panner").bind(panner);
-
-		/*// GUI //
-
-		Interface.Dragger({
-			tone : panner,
-			x : {
-				param : "frequency",
-				min : 0.1,
-				max : 8
-			},
-			y : {
-				param : "depth",
-				min : 0.5,
-				max : 1
-			},
-			start : function(){
-				osc0.volume.rampTo(0, 0.1);
-			},
-			end : function(){
-				osc0.volume.rampTo(-Infinity, 0.1);
-			}
-		});
-
-		Interface.Dragger({
-			tone : filter, 
-			x : {
-				param : "frequency",
-				min : 0.1,
-				max : 8
-			},
-			y : {
-				param : "depth",
-				min : 0.5,
-				max : 1
-			},
-			start : function(){
-				osc1.volume.rampTo(0, 0.1);
-			},
-			end : function(){
-				osc1.volume.rampTo(-Infinity, 0.1);
-			}
-		});
-
-		Interface.Dragger({
-			tone : tremolo,
-			x : {
-				param : "frequency",
-				min : 0.1,
-				max : 8
-			},
-			y : {
-				param : "depth",
-				min : 0.5,
-				max : 1
-			},
-			start : function(){
-				osc2.volume.rampTo(0, 0.1);
-			},
-			end : function(){
-				osc2.volume.rampTo(-Infinity, 0.1);
-			}
-		});*/
+		// bind the interface
+		document.querySelector("#osc0").addEventListener("start", () => pannerOsc.start());
+		document.querySelector("#osc0").addEventListener("stop", () => pannerOsc.stop());
+		document.querySelector("#panner").addEventListener("input", (e) => panner.frequency.value = parseFloat(e.target.value));
+		document.querySelector("#osc1").addEventListener("start", () => filterOsc.start());
+		document.querySelector("#osc1").addEventListener("stop", () => filterOsc.stop());
+		document.querySelector("#filter").addEventListener("input", (e) => filter.frequency.value = parseFloat(e.target.value));
+		document.querySelector("#osc2").addEventListener("start", () => tremoloOsc.start());
+		document.querySelector("#osc2").addEventListener("stop", () => tremoloOsc.stop());
+		document.querySelector("#tremolo").addEventListener("input", (e) => tremolo.frequency.value = parseFloat(e.target.value));
 	</script>
 	
 </body>

@@ -21,12 +21,16 @@ test/supports.html
 coverage/
 
 build/*
+dist/*
 
 examples/scratch.js
+examples/scratch.ts
 Tone/version.js
+Tone/version.ts
 Tone/index.js
 test/test.js
 
 docs
 .vscode
 tone.d.ts
+examples/scratch.ts

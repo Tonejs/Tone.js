@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+	<title>Pitch Shift</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<link rel="icon" type="image/png" sizes="174x174" href="./favicon.png">
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/2.4.3/webcomponents-bundle.js"></script>
+	<link href="https://fonts.googleapis.com/css?family=Material+Icons&display=block" rel="stylesheet"/>
+	<script src="../build/Tone.js"></script>
+	<script src="./js/tone-ui.js"></script>
+	<script src="./js/components.js"></script>
+</head>
+<body>
+	<style>
+		tone-slider {
+			width: 100%;
+			margin-top: 10px;
+		}
+	</style>
+	<tone-example label="Pitch Shift">
+		<div slot="explanation">
+			This example demonstrates the Pitch Shift effect.
+			<br><br>
+			<a href="https://tonejs.github.io/docs/PitchShift">Tone.Pitch Shift</a> docs.
+		</div>
+		
+		<tone-loader></tone-loader>
+		<div id="content">
+			<tone-play-toggle></tone-play-toggle>
+			<tone-slider label="pitch" min="-12" max="12" value="0" units="hz"></tone-slider>
+		</div>
+	</tone-example>
+
+	<script type="text/javascript">
+		const pitchShift = new Tone.PitchShift().toDestination();
+		const player = new Tone.Player("https://tonejs.github.io/audio/berklee/groovin_analogsynth1.mp3").connect(pitchShift);
+		player.loop = true;
+
+		const toneFFT = new Tone.FFT();
+		pitchShift.connect(toneFFT);
+		fft({
+			parent: document.querySelector("#content"),
+			tone: toneFFT,
+		});
+
+		// bind the interface
+		document.querySelector("tone-play-toggle").addEventListener("start", () => player.start());
+		document.querySelector("tone-play-toggle").addEventListener("stop", () => player.stop());
+		// document.querySelector("tone-play-toggle").addEventListener('start', () => {
+		// 	debugger;
+		// });
+
+		document.querySelector("tone-slider").addEventListener("input", e => {
+			pitchShift.pitch = parseFloat(e.target.value);
+		});
+	</script>
+</body>
+</html>
