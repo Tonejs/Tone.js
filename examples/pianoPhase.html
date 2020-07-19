@@ -76,14 +76,11 @@
 
 		merge.chain(reverb, Tone.Destination);
 
-		// the synth settings
-		const synthSettings = {
+		// left and right synthesizers
+		const synthL = new Tone.Synth({
 			oscillator: {
-				detune: 0,
 				type: "custom",
 				partials: [2, 1, 2, 2],
-				phase: 0,
-				volume: 0
 			},
 			envelope: {
 				attack: 0.005,
@@ -93,11 +90,21 @@
 			},
 			portamento: 0.01,
 			volume: -20
-		};
-
-		// left and right synthesizers
-		const synthL = new Tone.Synth(synthSettings).connect(merge, 0, 0);
-		const synthR = new Tone.Synth(synthSettings).connect(merge, 0, 1);
+		}).connect(merge, 0, 0);
+		const synthR = new Tone.Synth({
+			oscillator: {
+				type: "custom",
+				partials: [2, 1, 2, 2],
+			},
+			envelope: {
+				attack: 0.005,
+				decay: 0.3,
+				sustain: 0.2,
+				release: 1,
+			},
+			portamento: 0.01,
+			volume: -20
+		}).connect(merge, 0, 1);
 
 		// the two Tone.Sequences
 		const partL = new Tone.Sequence(((time, note) => {
@@ -124,81 +131,12 @@
 		function loop() {
 			requestAnimationFrame(loop);
 			// make it go out and back for each loop
+			// @ts-ignore
 			document.querySelector("#left").style.width = progressToWidth(partL.progress);
+			// @ts-ignore
 			document.querySelector("#right").style.width = progressToWidth(partR.progress);
 		}
 		loop();
-		// document.querySelector("#left").bind(partL);
-		// document.querySelector("#right").bind(partR);
-		/* // GUI //
-
-		Interface.Button({
-			key : 32,
-			type : "toggle",
-			text : "Start",
-			activeText : "Stop",
-			start : function(){
-				Tone.Transport.start("+0.1");
-			},
-			end : function(){
-				Tone.Transport.stop();
-			}
-		});
-
-		//draw two circles
-		var leftCanvas = $("#Left");
-		var rightCanvas = $("#Right");
-		var leftContext = leftCanvas.get(0).getContext("2d");
-		var rightContext = rightCanvas.get(0).getContext("2d");
-		var canvasWidth = leftCanvas.width() * 2;
-		var canvasHeight = leftCanvas.height() * 2;
-		var radius = Math.min(canvasWidth, canvasHeight);
-
-		function sizeCanvas(){
-			canvasWidth = leftCanvas.width() * 2;
-			canvasHeight = leftCanvas.height() * 2;
-			radius = Math.min(canvasWidth, canvasHeight) * 0.8;
-
-			leftContext.canvas.width = canvasWidth;
-			leftContext.canvas.height = canvasHeight;
-
-			rightContext.canvas.width = canvasWidth;
-			rightContext.canvas.height = canvasHeight;
-		}
-
-		$(window).on("resize", sizeCanvas);
-
-		sizeCanvas();
-
-		var twoPi = Math.PI * 2;
-
-		function loop(){
-			requestAnimationFrame(loop);
-			leftContext.lineWidth = radius * 0.1;
-			rightContext.lineWidth = radius * 0.1;
-			//draw the left progress
-			leftContext.clearRect(0, 0, canvasWidth, canvasHeight);
-			leftContext.strokeStyle = "#7F33ED";
-			leftContext.save();
-			leftContext.translate(canvasWidth / 2, canvasHeight / 2);
-			leftContext.rotate(-Math.PI / 2);
-			leftContext.beginPath();
-			leftContext.arc(0, 0, radius/2, 0, twoPi * partL.progress, false);
-			leftContext.stroke();
-			leftContext.restore();
-
-			//draw the left progress
-			rightContext.clearRect(0, 0, canvasWidth, canvasHeight);
-			rightContext.strokeStyle = "#1EDF3E";
-			rightContext.save();
-			rightContext.translate(canvasWidth / 2, canvasHeight / 2);
-			rightContext.rotate(-Math.PI / 2);
-			rightContext.beginPath();
-			rightContext.arc(0, 0, radius/2, 0, twoPi * partR.progress, false);
-			rightContext.stroke();
-			rightContext.restore();
-		}
-		loop(); */
 		
 	</script>
 </body>
