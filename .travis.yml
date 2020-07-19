@@ -45,6 +45,12 @@ jobs:
     - stage: test
       script: 
         - npm run build
+        - npm run docs
+        - npm run test:examples
+      env : TEST_EXAMPLES=2
+    - stage: test
+      script: 
+        - npm run build
         - npm run test:html
       env : TEST_HTML=1
     - stage: deploy

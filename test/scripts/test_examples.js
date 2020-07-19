@@ -6,6 +6,8 @@ const { file } = require("tmp-promise");
 const { writeFile } = require("fs-extra");
 const toneJson = require("../../docs/tone.json");
 
+const testSplit = parseInt(process.env.TEST_EXAMPLES || "0");
+
 /**
  * Get all of the examples
  */
@@ -70,7 +72,15 @@ async function testExampleString(str) {
 }
 
 async function main() {
-	const examples = findExamples(toneJson);
+	let examples = findExamples(toneJson);
+	if (testSplit > 0) {
+		// split it in half and choose either the first or second half
+		const halfLength = Math.ceil(examples.length / 2);
+		const splitStart = (testSplit - 1) * halfLength;
+		const splitEnd = (testSplit) * halfLength;
+		examples = examples.slice(splitStart, splitEnd);
+		console.log(`texting examples ${splitStart} - ${splitEnd}`);
+	}
 	let passed = 0;
 	for (let i = 0; i < examples.length; i++) {
 		const example = examples[i];
