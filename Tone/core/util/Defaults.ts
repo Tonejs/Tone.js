@@ -56,10 +56,10 @@ export function deepEquals(arrayA: number[] | string[], arrayB: number[] | strin
 export function optionsFromArguments<T extends object>(
 	defaults: T,
 	argsArray: IArguments,
-	keys: string[] = [],
-	objKey?: string,
+	keys: Array<keyof T> = [],
+	objKey?: keyof T,
 ): T {
-	const opts: any = {};
+	const opts: Partial<T> = {};
 	const args = Array.from(argsArray);
 	// if the first argument is an object and has an object key
 	if (isObject(args[0]) && objKey && !Reflect.has(args[0], objKey)) {
