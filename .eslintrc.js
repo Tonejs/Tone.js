@@ -2,7 +2,8 @@ module.exports = {
 	"parser": '@typescript-eslint/parser',
 	"plugins": [
 		'@typescript-eslint',
-		"jsdoc"
+		"jsdoc",
+		"html"
 	],
 	"extends": ["plugin:@typescript-eslint/recommended"],
 	"rules": {
