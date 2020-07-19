@@ -12,10 +12,6 @@
 	<script src="../build/Tone.js"></script>
 	<script src="./js/tone-ui.js"></script>
 	<script src="./js/components.js"></script>
-	<script src="./js/three.min.js"></script>
-	<script src="./js/OrbitControls.js"></script>
-	<script src="./js/WebGLDetector.js"></script>
-	<script src="./js/THREE.Tone.js"></script>
 
 	<style type="text/css">
 		tone-play-toggle {
@@ -86,7 +82,7 @@
 			Tone.Listener.forwardY.value = 0;
 			Tone.Listener.forwardZ.value = -Math.cos(angle);
 		}
-		
+
 		document.querySelector("#xSlider").addEventListener("input", (e) => Tone.Listener.positionX.value = parseFloat(e.target.value));
 		document.querySelector("#zSlider").addEventListener("input", (e) => Tone.Listener.positionY.value = parseFloat(e.target.value));
 		document.querySelector("#rotation").addEventListener("input", (e) => setRotation(parseFloat(e.target.value)));
