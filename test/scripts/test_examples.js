@@ -16,13 +16,15 @@ function findExamples(obj) {
 	let examples = [];
 	for (const prop in obj) {
 		if (Array.isArray(obj[prop])) {
-			obj[prop].forEach(child => {
+			obj[prop].forEach((child) => {
 				examples = [...examples, ...findExamples(child)];
 			});
 		} else if (prop === "comment" && obj[prop].tags) {
 			examples = [
 				...examples,
-				...obj[prop].tags.filter(tag => tag.tag === "example").map(tag => tag.text)
+				...obj[prop].tags
+						.filter((tag) => tag.tag === "example")
+						.map((tag) => tag.text),
 			];
 		} else if (typeof obj[prop] === "object") {
 			examples = [...examples, ...findExamples(obj[prop])];
@@ -39,8 +41,8 @@ function findExamples(obj) {
  */
 function execPromise(cmd) {
 	return new Promise((done, error) => {
-		exec(cmd, (e, output) => {
-			if (e) {
+		exec(cmd, (_, output) => {
+			if (output) {
 				error(output);
 			} else {
 				done();
@@ -62,7 +64,9 @@ async function testExampleString(str) {
 	try {
 		// work with file here in fd
 		await writeFile(path, str);
-		await execPromise(`tsc  --noEmit --target es5 --lib dom,ES2015 ${path}`);
+		await execPromise(
+			`tsc  --noEmit --target es5 --lib dom,ES2015 ${path}`
+		);
 	} finally {
 		cleanup();
 	}
@@ -71,7 +75,7 @@ async function testExampleString(str) {
 async function main() {
 	const examples = findExamples(toneJson);
 	let passed = 0;
-	await eachLimit(examples, cpuCount, async example => {
+	await eachLimit(examples, cpuCount, async (example) => {
 		try {
 			await testExampleString(example);
 			passed++;
@@ -87,6 +91,8 @@ async function main() {
 		}
 	});
 	console.log(`valid examples ${passed}/${examples.length}`);
+	if (passed !== examples.length) {
+		throw new Error("didn't pass all tests");
+	}
 }
 main();
-
