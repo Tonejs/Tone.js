@@ -90,7 +90,7 @@ async function main() {
 			throw e;
 		}
 	});
-	console.log(`valid examples ${passed}/${examples.length}`);
+	console.log(`\nvalid examples ${passed}/${examples.length}`);
 	if (passed !== examples.length) {
 		throw new Error("didn't pass all tests");
 	}
