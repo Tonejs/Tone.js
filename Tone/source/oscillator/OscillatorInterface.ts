@@ -45,7 +45,7 @@ export interface ToneOscillatorInterface {
 	 * osc.detune.setValueAtTime(-1200, Tone.now());
 	 * osc.detune.setValueAtTime(1200, Tone.now() + 0.5);
 	 * osc.detune.linearRampToValueAtTime(0, Tone.now() + 1);
-	 * osc.stop(now() + 1.5);
+	 * osc.stop(Tone.now() + 1.5);
 	 */
 	readonly detune: Signal<"cents">;
 
