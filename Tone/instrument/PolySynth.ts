@@ -7,6 +7,7 @@ import { Instrument, InstrumentOptions } from "./Instrument";
 import { MembraneSynth, MembraneSynthOptions } from "./MembraneSynth";
 import { FMSynth, FMSynthOptions } from "./FMSynth";
 import { AMSynth, AMSynthOptions } from "./AMSynth";
+import { MonoSynth, MonoSynthOptions } from "./MonoSynth";
 import { MetalSynth, MetalSynthOptions } from "./MetalSynth";
 import { Monophonic } from "./Monophonic";
 import { Synth, SynthOptions } from "./Synth";
@@ -22,9 +23,10 @@ type VoiceOptions<T> =
 	T extends MembraneSynth ? MembraneSynthOptions :
 		T extends MetalSynth ? MetalSynthOptions :
 			T extends FMSynth ? FMSynthOptions :
-				T extends AMSynth ? AMSynthOptions :
-					T extends Synth ? SynthOptions :
-						never;
+				T extends MonoSynth ? MonoSynthOptions :
+					T extends AMSynth ? AMSynthOptions :
+						T extends Synth ? SynthOptions :
+							never;
 
 /**
  * The settable synth options. excludes monophonic options.
