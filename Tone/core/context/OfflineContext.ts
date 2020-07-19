@@ -9,7 +9,7 @@ import { ToneAudioBuffer } from "./ToneAudioBuffer";
  * @category Core
  * @example
  * // generate a single channel, 0.5 second buffer
- * const context = new Tone.OfflineContext(1, 0.5);
+ * const context = new Tone.OfflineContext(1, 0.5, 44100);
  * const osc = new Tone.Oscillator({ context });
  * context.render().then(buffer => {
  * 	console.log(buffer.numberOfChannels, buffer.duration);
@@ -43,7 +43,8 @@ export class OfflineContext extends Context {
 	 */
 	constructor(
 		channels: number,
-		duration: Seconds, sampleRate: number,
+		duration: Seconds, 
+		sampleRate: number,
 	);
 	constructor(context: OfflineAudioContext);
 	constructor() {
