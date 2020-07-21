@@ -1,5 +1,8 @@
 import { Gain } from "../core/context/Gain";
-import { ToneAudioNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
+import {
+	ToneAudioNode,
+	ToneAudioNodeOptions,
+} from "../core/context/ToneAudioNode";
 import { GainFactor, Seconds, Time } from "../core/type/Units";
 import { noOp } from "../core/util/Interface";
 import { assert } from "../core/util/Debug";
@@ -19,8 +22,9 @@ export interface OneShotSourceOptions extends ToneAudioNodeOptions {
 /**
  * Base class for fire-and-forget nodes
  */
-export abstract class OneShotSource<Options extends ToneAudioNodeOptions> extends ToneAudioNode<Options> {
-
+export abstract class OneShotSource<
+	Options extends ToneAudioNodeOptions
+> extends ToneAudioNode<Options> {
 	/**
 	 * The callback to invoke after the
 	 * source is done playing.
@@ -108,7 +112,10 @@ export abstract class OneShotSource<Options extends ToneAudioNodeOptions> extend
 	 * @param  time When to start the source
 	 */
 	protected _startGain(time: Seconds, gain: GainFactor = 1): this {
-		assert(this._startTime === -1, "Source cannot be started more than once");
+		assert(
+			this._startTime === -1,
+			"Source cannot be started more than once"
+		);
 		// apply a fade in envelope
 		const fadeInTime = this.toSeconds(this._fadeIn);
 
@@ -120,9 +127,16 @@ export abstract class OneShotSource<Options extends ToneAudioNodeOptions> extend
 		if (fadeInTime > 0) {
 			this._gainNode.gain.setValueAtTime(0, time);
 			if (this._curve === "linear") {
-				this._gainNode.gain.linearRampToValueAtTime(gain, time + fadeInTime);
+				this._gainNode.gain.linearRampToValueAtTime(
+					gain,
+					time + fadeInTime
+				);
 			} else {
-				this._gainNode.gain.exponentialApproachValueAtTime(gain, time, fadeInTime);
+				this._gainNode.gain.exponentialApproachValueAtTime(
+					gain,
+					time,
+					fadeInTime
+				);
 			}
 		} else {
 			this._gainNode.gain.setValueAtTime(gain, time);
@@ -170,7 +184,8 @@ export abstract class OneShotSource<Options extends ToneAudioNodeOptions> extend
 		this.context.clearTimeout(this._timeout);
 		this._timeout = this.context.setTimeout(() => {
 			// allow additional time for the exponential curve to fully decay
-			const additionalTail = this._curve === "exponential" ? fadeOutTime * 2 : 0;
+			const additionalTail =
+				this._curve === "exponential" ? fadeOutTime * 2 : 0;
 			this._stopSource(this.now() + additionalTail);
 			this._onended();
 		}, this._stopTime - this.context.currentTime);
@@ -187,7 +202,14 @@ export abstract class OneShotSource<Options extends ToneAudioNodeOptions> extend
 			this.onended = noOp;
 			// dispose when it's ended to free up for garbage collection only in the online context
 			if (!this.context.isOffline) {
-				setTimeout(() => this.dispose(), 1000);
+				const disposeCallback = () => this.dispose();
+				// @ts-ignore
+				if (typeof window.requestIdleCallback !== "undefined") {
+					// @ts-ignore
+					window.requestIdleCallback(disposeCallback);
+				} else {
+					setTimeout(disposeCallback, 1000);
+				}
 			}
 		}
 	}
@@ -197,8 +219,11 @@ export abstract class OneShotSource<Options extends ToneAudioNodeOptions> extend
 	 */
 	getStateAtTime = function(time: Time): BasicPlaybackState {
 		const computedTime = this.toSeconds(time);
-		if (this._startTime !== -1 && computedTime >= this._startTime &&
-			(this._stopTime === -1 || computedTime <= this._stopTime)) {
+		if (
+			this._startTime !== -1 &&
+			computedTime >= this._startTime &&
+			(this._stopTime === -1 || computedTime <= this._stopTime)
+		) {
 			return "started";
 		} else {
 			return "stopped";
@@ -219,7 +244,9 @@ export abstract class OneShotSource<Options extends ToneAudioNodeOptions> extend
 		this.log("cancelStop");
 		assert(this._startTime !== -1, "Source is not started");
 		// cancel the stop envelope
-		this._gainNode.gain.cancelScheduledValues(this._startTime + this.sampleTime);
+		this._gainNode.gain.cancelScheduledValues(
+			this._startTime + this.sampleTime
+		);
 		this.context.clearTimeout(this._timeout);
 		this._stopTime = -1;
 		return this;
