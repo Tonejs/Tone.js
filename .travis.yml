@@ -52,6 +52,7 @@ jobs:
       script: 
         - npm run build
         - npm run test:html
+        - npm run test:readme
       env : TEST_HTML=1
     - stage: deploy
       os: linux
