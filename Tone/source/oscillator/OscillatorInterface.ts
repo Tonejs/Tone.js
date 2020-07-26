@@ -22,10 +22,11 @@ export interface ToneOscillatorInterface {
 	 * The oscillator's type. Also capable of setting the first x number of partials of the oscillator. 
 	 * For example: "sine4" would set be the first 4 partials of the sine wave and "triangle8" would 
 	 * set the first 8 partials of the triangle wave.
-	 * @offline 0.1 1
 	 * @example
-	 * const osc = new Tone.Oscillator().toDestination().start();
-	 * osc.type = "sine2";
+	 * return Tone.Offline(() => {
+	 * 	const osc = new Tone.Oscillator().toDestination().start();
+	 * 	osc.type = "sine2";
+	 * }, 0.1, 1);
 	 */
 	type: ExtendedToneOscillatorType;
 
@@ -52,12 +53,13 @@ export interface ToneOscillatorInterface {
 	/**
 	 * The phase is the starting position within the oscillator's cycle. For example
 	 * a phase of 180 would start halfway through the oscillator's cycle. 
-	 * @offline 0.1 1
 	 * @example
-	 * const osc = new Tone.Oscillator({
-	 * 	frequency: 20,
-	 * 	phase: 90
-	 * }).toDestination().start();
+	 * return Tone.Offline(() => {
+	 * 	const osc = new Tone.Oscillator({
+	 * 		frequency: 20,
+	 * 		phase: 90
+	 * 	}).toDestination().start();
+	 * }, 0.1, 1);
 	 */
 	phase: Degrees;
 

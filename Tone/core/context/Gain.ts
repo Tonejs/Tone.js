@@ -17,12 +17,13 @@ interface GainOptions<TypeName extends UnitName> extends ToneAudioNodeOptions {
  * The GainNode is a basic building block of the Web Audio
  * API and is useful for routing audio and adjusting gains.
  * @category Core
- * @offline 0.7 1
  * @example
- * const gainNode = new Tone.Gain(0).toDestination();
- * const osc = new Tone.Oscillator(30).connect(gainNode).start();
- * gainNode.gain.rampTo(1, 0.1);
- * gainNode.gain.rampTo(0, 0.4, 0.2);
+ * return Tone.Offline(() => {
+ * 	const gainNode = new Tone.Gain(0).toDestination();
+ * 	const osc = new Tone.Oscillator(30).connect(gainNode).start();
+ * 	gainNode.gain.rampTo(1, 0.1);
+ * 	gainNode.gain.rampTo(0, 0.4, 0.2);
+ * }, 0.7, 1);
  */
 export class Gain<TypeName extends "gain" | "decibels" | "normalRange" = "gain"> extends ToneAudioNode<GainOptions<TypeName>> {
 

@@ -8,11 +8,12 @@ export type GreaterThanZeroOptions = SignalOperatorOptions
 
 /**
  * GreaterThanZero outputs 1 when the input is strictly greater than zero
- * @offline 0.1 1
  * @example
- * const gt0 = new Tone.GreaterThanZero().toDestination();
- * const sig = new Tone.Signal(0.5).connect(gt0);
- * sig.setValueAtTime(-1, 0.05);
+ * return Tone.Offline(() => {
+ * 	const gt0 = new Tone.GreaterThanZero().toDestination();
+ * 	const sig = new Tone.Signal(0.5).connect(gt0);
+ * 	sig.setValueAtTime(-1, 0.05);
+ * }, 0.1, 1);
  */
 export class GreaterThanZero extends SignalOperator<GreaterThanZeroOptions> {
 

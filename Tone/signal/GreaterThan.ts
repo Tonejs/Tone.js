@@ -12,10 +12,11 @@ export type GreaterThanOptions = SignalOptions<"number">;
  * Output 1 if the signal is greater than the value, otherwise outputs 0.
  * can compare two signals or a signal and a number.
  * 
- * @offline 0.1 1
  * @example
- * const gt = new Tone.GreaterThan(2).toDestination();
- * const sig = new Tone.Signal(4).connect(gt);
+ * return Tone.Offline(() => {
+ * 	const gt = new Tone.GreaterThan(2).toDestination();
+ * 	const sig = new Tone.Signal(4).connect(gt);
+ * }, 0.1, 1);
  */
 export class GreaterThan extends Signal<"number"> {
 
@@ -38,12 +39,13 @@ export class GreaterThan extends Signal<"number"> {
 
 	/**
 	 * The signal to compare to the incoming signal against.
-	 * @offline 0.5 1
 	 * @example
-	 * // change the comparison value
-	 * const gt = new Tone.GreaterThan(1.5).toDestination();
-	 * const signal = new Tone.Signal(1).connect(gt);
-	 * gt.comparator.setValueAtTime(0.5, 0.1);
+	 * return Tone.Offline(() => {
+	 * 	// change the comparison value
+	 * 	const gt = new Tone.GreaterThan(1.5).toDestination();
+	 * 	const signal = new Tone.Signal(1).connect(gt);
+	 * 	gt.comparator.setValueAtTime(0.5, 0.1);
+	 * }, 0.5, 1);
 	 */
 	readonly comparator: Param<"number">
 

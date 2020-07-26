@@ -57,7 +57,10 @@ async function testExampleString(str) {
 	// str = str.replace("from \"tone\"", `from "${resolve(__dirname, "../../")}"`);
 	str = `
 		import * as Tone from "${resolve(__dirname, "../../")}"
-		${str}
+		function main(){
+			${str}
+		}
+		main();
 	`;
 	const { path, cleanup } = await file({ postfix: ".ts" });
 	try {

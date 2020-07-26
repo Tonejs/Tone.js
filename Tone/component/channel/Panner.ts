@@ -11,12 +11,13 @@ interface TonePannerOptions extends ToneAudioNodeOptions {
 
 /**
  * Panner is an equal power Left/Right Panner. It is a wrapper around the StereoPannerNode.
- * @offline 0.5 2
  * @example
- * // move the input signal from right to left
- * const panner = new Tone.Panner(1).toDestination();
- * panner.pan.rampTo(-1, 0.5);
- * const osc = new Tone.Oscillator(100).connect(panner).start();
+ * return Tone.Offline(() => {
+	* // move the input signal from right to left
+	* const panner = new Tone.Panner(1).toDestination();
+	* panner.pan.rampTo(-1, 0.5);
+	* const osc = new Tone.Oscillator(100).connect(panner).start();
+ * }, 0.5, 2);
  * @category Component
  */
 export class Panner extends ToneAudioNode<TonePannerOptions> {
@@ -34,13 +35,14 @@ export class Panner extends ToneAudioNode<TonePannerOptions> {
 	 * The pan control. -1 = hard left, 1 = hard right.
 	 * @min -1
 	 * @max 1
-	 * @offline 0.5 2
 	 * @example
-	 * // pan hard right
-	 * const panner = new Tone.Panner(1).toDestination();
-	 * // pan hard left
-	 * panner.pan.setValueAtTime(-1, 0.25);
-	 * const osc = new Tone.Oscillator(50, "triangle").connect(panner).start();
+	 * return Tone.Offline(() => {
+	 * 	// pan hard right
+	 * 	const panner = new Tone.Panner(1).toDestination();
+	 * 	// pan hard left
+	 * 	panner.pan.setValueAtTime(-1, 0.25);
+	 * 	const osc = new Tone.Oscillator(50, "triangle").connect(panner).start();
+	 * }, 0.5, 2);
 	 */
 	readonly pan: Param<"audioRange">;
 

@@ -26,15 +26,16 @@ export { FMOscillatorOptions } from "./OscillatorInterface";
  * +-----------------+
  * ```
  *
- * @offline 0.1 1
  * @example
- * const fmOsc = new Tone.FMOscillator({
- * 	frequency: 200,
- * 	type: "square",
- * 	modulationType: "triangle",
- * 	harmonicity: 0.2,
- * 	modulationIndex: 3
- * }).toDestination().start();
+ * return Tone.Offline(() => {
+ * 	const fmOsc = new Tone.FMOscillator({
+ * 		frequency: 200,
+ * 		type: "square",
+ * 		modulationType: "triangle",
+ * 		harmonicity: 0.2,
+ * 		modulationIndex: 3
+ * 	}).toDestination().start();
+ * }, 0.1, 1);
  * @category Source
  */
 export class FMOscillator extends Source<FMOscillatorOptions> implements ToneOscillatorInterface {

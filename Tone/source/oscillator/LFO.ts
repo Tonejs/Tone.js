@@ -26,9 +26,10 @@ export interface LFOOptions extends ToneAudioNodeOptions {
  * which can be attached to an AudioParam or Tone.Signal
  * in order to modulate that parameter with an oscillator. The LFO can
  * also be synced to the transport to start/stop and change when the tempo changes.
- * @offline 0.5 1
  * @example
- * const lfo = new Tone.LFO("4n", 400, 4000).start().toDestination();
+ * return Tone.Offline(() => {
+ * 	const lfo = new Tone.LFO("4n", 400, 4000).start().toDestination();
+ * }, 0.5, 1);
  * @category Source
  */
 export class LFO extends ToneAudioNode<LFOOptions> {

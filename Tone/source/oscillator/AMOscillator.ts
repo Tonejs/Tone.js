@@ -29,9 +29,10 @@ export { AMOscillatorOptions } from "./OscillatorInterface";
  * | Modulator Osc +>---+
  * +---------------+
  * ```
- * @offline 0.2 1
  * @example
- * const amOsc = new Tone.AMOscillator(30, "sine", "square").toDestination().start();
+ * return Tone.Offline(() => {
+ * 	const amOsc = new Tone.AMOscillator(30, "sine", "square").toDestination().start();
+ * }, 0.2, 1);
  * @category Source
  */
 export class AMOscillator extends Source<AMOscillatorOptions> implements ToneOscillatorInterface {

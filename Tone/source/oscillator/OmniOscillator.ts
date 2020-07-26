@@ -62,9 +62,10 @@ const OmniOscillatorSourceMap: {
 
 /**
  * OmniOscillator aggregates all of the oscillator types into one. 
- * @offline 0.1 1
  * @example
- * const omniOsc = new Tone.OmniOscillator("C#4", "pwm").toDestination().start();
+ * return Tone.Offline(() => {
+ * 	const omniOsc = new Tone.OmniOscillator("C#4", "pwm").toDestination().start();
+ * }, 0.1, 1);
  * @category Source
  */
 export class OmniOscillator<OscType extends AnyOscillator>

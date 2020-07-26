@@ -9,14 +9,15 @@ import { Signal, SignalOptions } from "./Signal";
  * passed into the constructor, Tone.Add will sum input and `addend`
  * If a value is passed into the constructor, the it will be added to the input.
  *
- * @offline 0.5 1
  * @example
- * const add = new Tone.Add(2).toDestination();
- * add.addend.setValueAtTime(1, 0.2);
- * const signal = new Tone.Signal(2);
- * // add a signal and a scalar
- * signal.connect(add);
- * signal.setValueAtTime(1, 0.1);
+ * return Tone.Offline(() => {
+ * 	const add = new Tone.Add(2).toDestination();
+ * 	add.addend.setValueAtTime(1, 0.2);
+ * 	const signal = new Tone.Signal(2);
+ * 	// add a signal and a scalar
+ * 	signal.connect(add);
+ * 	signal.setValueAtTime(1, 0.1);
+ * }, 0.5, 1);
  * @category Signal
  */
 export class Add extends Signal {
