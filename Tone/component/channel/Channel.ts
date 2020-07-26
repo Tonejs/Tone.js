@@ -12,6 +12,7 @@ export interface ChannelOptions extends ToneAudioNodeOptions {
 	volume: Decibels;
 	solo: boolean;
 	mute: boolean;
+	channelCount: number;
 }
 
 /**
@@ -68,6 +69,7 @@ export class Channel extends ToneAudioNode<ChannelOptions> {
 			pan: options.pan,
 			volume: options.volume,
 			mute: options.mute,
+			channelCount: options.channelCount
 		});
 		this.pan = this._panVol.pan;
 		this.volume = this._panVol.volume;
@@ -81,7 +83,8 @@ export class Channel extends ToneAudioNode<ChannelOptions> {
 			pan: 0,
 			volume: 0,
 			mute: false,
-			solo: false
+			solo: false,
+			channelCount: 1,
 		});
 	}
 

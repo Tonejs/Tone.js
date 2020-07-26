@@ -46,7 +46,7 @@
 			<tone-play-toggle></tone-play-toggle>
 			<div id="tracks">
 				<div id="progress"></div>
-				<img src="./audio/loop/drum_loop.png">
+				<img src="https://tonejs.github.io/audio/loop/drum_loop.png">
 			</div>
 		</div>
 	</tone-example>
@@ -59,17 +59,17 @@
 		Tone.Transport.loopEnd = "8m";
 		
 		const kick = new Tone.Player({
-			url: "./audio/loop/kick.[mp3|ogg]",
+			url: "https://tonejs.github.io/audio/loop/kick.mp3",
 			loop: true
 		}).toDestination().sync().start(0);
 
 		const snare = new Tone.Player({
-			url: "./audio/loop/snare.[mp3|ogg]",
+			url: "https://tonejs.github.io/audio/loop/snare.mp3",
 			loop: true
 		}).toDestination().sync().start("2n");
 
 		const hh = new Tone.Player({
-			url: "./audio/loop/hh.[mp3|ogg]",
+			url: "https://tonejs.github.io/audio/loop/hh.mp3",
 			loop: true
 		}).toDestination().sync().start("3:3", "4n"); // start with an offset
 

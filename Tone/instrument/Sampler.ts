@@ -37,14 +37,14 @@ export interface SamplerOptions extends InstrumentOptions {
  * @example
  * const sampler = new Tone.Sampler({
  * 	urls: {
- * 		C1: "C1.mp3",
- * 		C2: "C2.mp3",
+ * 		A1: "A1.mp3",
+ * 		A2: "A2.mp3",
  * 	},
- * 	baseUrl: "https://tonejs.github.io/examples/audio/casio/",
+ * 	baseUrl: "https://tonejs.github.io/audio/casio/",
  * 	onload: () => {
  * 		sampler.triggerAttackRelease(["C1", "E1", "G1", "B1"], 0.5);
- * 	},
- * });
+ * 	}
+ * }).toDestination();
  * @category Instrument
  */
 export class Sampler extends Instrument<SamplerOptions> {
