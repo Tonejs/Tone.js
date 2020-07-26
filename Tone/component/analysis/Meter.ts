@@ -22,7 +22,7 @@ export interface MeterOptions extends MeterBaseOptions {
  * // connect mic to the meter
  * mic.connect(meter);
  * // the current level of the mic
- * setInterval(() => console.log(meter.getValue().toFixed(2) + " db"), 100);
+ * setInterval(() => console.log(meter.getValue()), 100);
  * @category Component
  */
 export class Meter extends MeterBase<MeterOptions> {
