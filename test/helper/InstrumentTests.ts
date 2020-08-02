@@ -218,5 +218,17 @@ export function InstrumentTest(Constr, note, constrArg?, optionsIndex?): void {
 				}
 			}, 3);
 		});
+
+		it("can do portamento glide between notes", () => {
+			return Offline(() => {
+				const instance = new Constr(constrArg);
+				if (instance instanceof Monophonic) {
+					instance.portamento = 0.5;
+					instance.triggerAttackRelease("C4", 0.2, 0);
+					expect(instance.getLevelAtTime(0.4)).to.be.greaterThan(0);
+					instance.triggerAttackRelease("C2", 0.2, 0.4);
+				}
+			}, 0.5);
+		});
 	});
 }
