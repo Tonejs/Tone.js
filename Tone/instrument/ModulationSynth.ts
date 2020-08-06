@@ -140,7 +140,7 @@ export abstract class ModulationSynth<Options extends ModulationSynthOptions> ex
 				{
 					type: "sine"
 				}
-			),
+			) as OmniOscillatorSynthOptions,
 			envelope: Object.assign(
 				omitFromObject(
 					Envelope.getDefaults(),
@@ -162,7 +162,7 @@ export abstract class ModulationSynth<Options extends ModulationSynthOptions> ex
 				{
 					type: "square"
 				}
-			),
+			) as OmniOscillatorSynthOptions,
 			modulationEnvelope: Object.assign(
 				omitFromObject(
 					Envelope.getDefaults(),

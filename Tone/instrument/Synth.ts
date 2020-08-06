@@ -7,7 +7,7 @@ import { readOnly } from "../core/util/Interface";
 import { RecursivePartial } from "../core/util/Interface";
 import { Signal } from "../signal/Signal";
 import { OmniOscillator } from "../source/oscillator/OmniOscillator";
-import { OmniOscillatorSynthOptions } from "../source/oscillator/OscillatorInterface";
+import { OmniOscillatorOptions, OmniOscillatorSynthOptions } from "../source/oscillator/OscillatorInterface";
 import { Source } from "../source/Source";
 import { Monophonic, MonophonicOptions } from "./Monophonic";
 
@@ -94,7 +94,7 @@ export class Synth<Options extends SynthOptions = SynthOptions> extends Monophon
 				{
 					type: "triangle",
 				},
-			),
+			) as OmniOscillatorOptions,
 		});
 	}
 

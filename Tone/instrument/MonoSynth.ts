@@ -131,7 +131,7 @@ export class MonoSynth extends Monophonic<MonoSynthOptions> {
 				{
 					type: "sawtooth",
 				},
-			),
+			) as OmniOscillatorSynthOptions,
 		});
 	}
 
