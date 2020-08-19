@@ -442,7 +442,9 @@ export class Context extends BaseContext {
 	 * to initially start the AudioContext. See [[Tone.start]]
 	 */
 	resume(): Promise<void> {
-		if (this._context.state === "suspended" && isAudioContext(this._context)) {
+		// @ts-ignore
+		if ((this._context.state === "suspended" || this._context.state === "interrupted")
+				&& isAudioContext(this._context)) {
 			return this._context.resume();
 		} else {
 			return Promise.resolve();
