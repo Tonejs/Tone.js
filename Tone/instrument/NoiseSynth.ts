@@ -103,8 +103,10 @@ export class NoiseSynth extends Instrument<NoiseSynthOptions> {
 	}
 
 	sync(): this {
-		this._syncMethod("triggerAttack", 0);
-		this._syncMethod("triggerRelease", 0);
+		if (this._syncState()) {
+			this._syncMethod("triggerAttack", 0);
+			this._syncMethod("triggerRelease", 0);
+		}
 		return this;
 	}
 

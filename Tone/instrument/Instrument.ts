@@ -80,12 +80,23 @@ export abstract class Instrument<Options extends InstrumentOptions> extends Tone
 	 * Tone.Transport.start();
 	 */
 	sync(): this {
-		if (!this._synced) {
-			this._synced = true;
+		if (this._syncState()) {
 			this._syncMethod("triggerAttack", 1);
 			this._syncMethod("triggerRelease", 0);
 		}
 		return this;
+	}
+
+	/**
+	 * set _sync
+	 */
+	protected _syncState(): boolean {
+		let changed = false;
+		if (!this._synced) {
+			this._synced = true;
+			changed = true;
+		}
+		return changed;
 	}
 
 	/**
