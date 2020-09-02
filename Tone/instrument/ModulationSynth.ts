@@ -20,7 +20,6 @@ export interface ModulationSynthOptions extends SynthOptions {
 }
 /**
  * Base class for both AM and FM synths
- * @category Instrument
  */
 export abstract class ModulationSynth<Options extends ModulationSynthOptions> extends Monophonic<Options> {
 

@@ -12,7 +12,6 @@ export interface StateTimelineEvent extends TimelineEvent {
 /**
  * A Timeline State. Provides the methods: `setStateAtTime("state", time)` and `getValueAtTime(time)`
  * @param initial The initial state of the StateTimeline.  Defaults to `undefined`
- * @category Core
  */
 export class StateTimeline<AdditionalOptions extends {} = {}> extends Timeline<StateTimelineEvent & AdditionalOptions> {
 

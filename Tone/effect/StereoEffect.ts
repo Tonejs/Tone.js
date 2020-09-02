@@ -11,7 +11,6 @@ export type StereoEffectOptions = EffectOptions;
 
 /**
  * Base class for Stereo effects.
- * @category Effect
  */
 export class StereoEffect<Options extends StereoEffectOptions> extends ToneAudioNode<Options> {
 

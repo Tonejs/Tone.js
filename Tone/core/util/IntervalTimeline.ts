@@ -20,7 +20,6 @@ type IteratorCallback = (event: IntervalTimelineEvent) => void;
  * for querying an intersection point with the timeline
  * events. Internally uses an [Interval Tree](https://en.wikipedia.org/wiki/Interval_tree)
  * to represent the data.
- * @category Core
  */
 export class IntervalTimeline extends Tone {
 

@@ -12,7 +12,6 @@ export interface StereoFeedbackEffectOptions extends StereoEffectOptions {
 
 /**
  * Base class for stereo feedback effects where the effectReturn is fed back into the same channel.
- * @category Effect
  */
 export class StereoFeedbackEffect<Options extends StereoFeedbackEffectOptions> extends StereoEffect<Options> {
 	

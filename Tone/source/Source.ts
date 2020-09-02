@@ -35,7 +35,6 @@ export interface SourceOptions extends ToneAudioNodeOptions {
  * // BAD
  * state.start("+0.3").stop("+0.2");
  * ```
- * @category Source
  */
 export abstract class Source<Options extends SourceOptions> extends ToneAudioNode<Options> {
 
