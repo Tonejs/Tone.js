@@ -34,6 +34,7 @@ export interface RecorderOptions extends ToneAudioNodeOptions {
  * 	anchor.href = url;
  * 	anchor.click();
  * }, 4000);
+ * @category Component
  */
 export class Recorder extends ToneAudioNode<RecorderOptions> {
 

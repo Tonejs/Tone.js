@@ -21,6 +21,7 @@ export interface FeedbackEffectOptions extends EffectOptions {
 /**
  * FeedbackEffect provides a loop between an audio source and its own output.
  * This is a base-class for feedback effects.
+ * @category Effect
  */
 export abstract class FeedbackEffect<Options extends FeedbackEffectOptions> extends Effect<Options> {
 

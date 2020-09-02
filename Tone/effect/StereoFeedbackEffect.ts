@@ -11,17 +11,8 @@ export interface StereoFeedbackEffectOptions extends StereoEffectOptions {
 }
 
 /**
- * Just like a stereo feedback effect, but the feedback is routed from left to right
- * and right to left instead of on the same channel.
- * ```
- * +--------------------------------+ feedbackL <-----------------------------------+
- * |                                                                                |
- * +-->                          +----->        +---->                          +---+
- *      feedbackMerge +--> split        (EFFECT)       merge +--> feedbackSplit
- * +-->                          +----->        +---->                          +---+
- * |                                                                                |
- * +--------------------------------+ feedbackR <-----------------------------------+
- * ```
+ * Base class for stereo feedback effects where the effectReturn is fed back into the same channel.
+ * @category Effect
  */
 export class StereoFeedbackEffect<Options extends StereoFeedbackEffectOptions> extends StereoEffect<Options> {
 	

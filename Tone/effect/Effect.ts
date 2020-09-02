@@ -12,6 +12,7 @@ export interface EffectOptions extends ToneAudioNodeOptions {
  * Effect is the base class for effects. Connect the effect between
  * the effectSend and effectReturn GainNodes, then control the amount of
  * effect which goes to the output using the wet control.
+ * @category Effect
  */
 export abstract class Effect<Options extends EffectOptions>
 	extends ToneAudioNode<Options> {

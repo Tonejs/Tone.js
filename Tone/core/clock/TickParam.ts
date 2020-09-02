@@ -16,6 +16,7 @@ interface TickParamOptions<TypeName extends UnitName> extends ParamOptions<TypeN
  * A Param class just for computing ticks. Similar to the [[Param]] class,
  * but offers conversion to BPM values as well as ability to compute tick
  * duration and elapsed ticks
+ * @category Core
  */
 export class TickParam<TypeName extends "hertz" | "bpm"> extends Param<TypeName> {
 

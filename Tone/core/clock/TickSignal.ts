@@ -17,6 +17,7 @@ interface TickSignalOptions<TypeName extends UnitName> extends SignalOptions<Typ
  * Thank you Bruno Dias, H. Sofia Pinto, and David M. Matos,
  * for your [WAC paper](https://smartech.gatech.edu/bitstream/handle/1853/54588/WAC2016-49.pdf)
  * describing integrating timing functions for tempo calculations.
+ * @category Signal
  */
 export class TickSignal<TypeName extends "hertz" | "bpm"> extends Signal<TypeName> {
 

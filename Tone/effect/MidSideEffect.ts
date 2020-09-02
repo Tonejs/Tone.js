@@ -13,6 +13,7 @@ export type MidSideEffectOptions = EffectOptions;
  * Applies a Mid/Side seperation and recombination.
  * Algorithm found in [kvraudio forums](http://www.kvraudio.com/forum/viewtopic.php?t=212587).
  * This is a base-class for Mid/Side Effects.
+ * @category Effect
  */
 export abstract class MidSideEffect<Options extends MidSideEffectOptions> extends Effect<Options> {
 

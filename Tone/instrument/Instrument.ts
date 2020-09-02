@@ -11,6 +11,7 @@ export interface InstrumentOptions extends ToneAudioNodeOptions {
 
 /**
  * Base-class for all instruments
+ * @category Instrument
  */
 export abstract class Instrument<Options extends InstrumentOptions> extends ToneAudioNode<Options> {
 
