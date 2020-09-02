@@ -10,7 +10,7 @@ To contribute examples, please follow the current style of the examples. Add you
 
 There is always more work that can be done on documentation. Especially adding good examples to methods and members to make the docs more informative and useful for people coming from diverse musical and technical backgrounds.
 
-All of the docs are written in [jsdoc](http://usejsdoc.org/)-style comments in the source code. If you catch a mistake, please send a pull request.
+All of the docs are written in [TypeDoc](https://typedoc.org/)-style comments in the source code. If you catch a mistake, please send a pull request.
 
 Along with this, it'd be great to integrate more visuals and references in the docs to help illustrate concepts.
 
