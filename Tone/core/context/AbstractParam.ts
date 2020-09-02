@@ -56,7 +56,7 @@ export abstract class AbstractParam<TypeName extends UnitName> {
 	 * @example
 	 * return Tone.Offline(() => {
 	 * 	const signal = new Tone.Signal(0).toDestination();
-	 * 	// the ramp is starts from the previously scheduled value
+	 * 	// the ramp starts from the previously scheduled value
 	 * 	signal.setValueAtTime(0, 0.1);
 	 * 	signal.linearRampToValueAtTime(1, 0.4);
 	 * }, 0.5, 1);
@@ -68,10 +68,10 @@ export abstract class AbstractParam<TypeName extends UnitName> {
 	 * the previous scheduled parameter value to the given value.
 	 * @example
 	 * return Tone.Offline(() => {
-	 * 	const signal = new Tone.Signal(0).toDestination();
-	 * 	// the ramp is starts from the previously scheduled value
-	 * 	signal.setValueAtTime(0, 0.1);
-	 * 	signal.exponentialRampToValueAtTime(1, 0.4);
+	 * 	const signal = new Tone.Signal(1).toDestination();
+	 * 	// the ramp starts from the previously scheduled value, which must be positive
+	 * 	signal.setValueAtTime(1, 0.1);
+	 * 	signal.exponentialRampToValueAtTime(0, 0.4);
 	 * }, 0.5, 1);
 	 */
 	abstract exponentialRampToValueAtTime(value: UnitMap[TypeName], time: Time): this;
@@ -90,6 +90,11 @@ export abstract class AbstractParam<TypeName extends UnitName> {
 	 * const noise = new Tone.Noise().connect(delay).start().stop("+0.1");
 	 * // making the delay time shorter over time will also make the pitch rise
 	 * delay.delayTime.exponentialRampTo(0.01, 20);
+	 * @example
+	 * return Tone.Offline(() => {
+	 * 	const signal = new Tone.Signal(.1).toDestination();
+	 * 	signal.exponentialRampTo(5, 0.3, 0.1);
+	 * }, 0.5, 1);
 	 */
 	abstract exponentialRampTo(value: UnitMap[TypeName], rampTime: Time, startTime?: Time): this;
 
@@ -103,6 +108,12 @@ export abstract class AbstractParam<TypeName extends UnitName> {
 	 *                              value to ramp from it's current value
 	 * @param startTime 	When the ramp should start.
 	 * @returns {Param} this
+	 * @example
+	 * const delay = new Tone.FeedbackDelay(0.5, 0.98).toDestination();
+	 * // a short burst of noise through the feedback delay
+	 * const noise = new Tone.Noise().connect(delay).start().stop("+0.1");
+	 * // making the delay time shorter over time will also make the pitch rise
+	 * delay.delayTime.linearRampTo(0.01, 20);
 	 * @example
 	 * return Tone.Offline(() => {
 	 * 	const signal = new Tone.Signal(1).toDestination();

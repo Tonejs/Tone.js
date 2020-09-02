@@ -27,7 +27,7 @@ interface ToneAudioBuffersOptions {
  * }, () => {
  * 	const player = new Tone.Player().toDestination();
  * 	// play one of the samples when they all load
- * 	player.buffer = pianoSamples.get("C2");
+ * 	player.buffer = pianoSamples.get("A2");
  * 	player.start();
  * });
  * @example
