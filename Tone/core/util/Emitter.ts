@@ -73,7 +73,7 @@ export class Emitter<EventType extends string = string> extends Tone {
 					this._events[event] = [];
 				} else {
 					const eventList = this._events[event];
-					for (let i = 0; i < eventList.length; i++) {
+					for (let i = eventList.length - 1; i >= 0; i--) {
 						if (eventList[i] === callback) {
 							eventList.splice(i, 1);
 						}
