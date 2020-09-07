@@ -14,6 +14,7 @@ export type MidSideSplitOptions = ToneAudioNodeOptions;
  * Mid = (Left+Right)/sqrt(2);   // obtain mid-signal from left and right
  * Side = (Left-Right)/sqrt(2);   // obtain side-signal from left and right
  * ```
+ * @category Component
  */
 export class MidSideSplit extends ToneAudioNode<MidSideSplitOptions> {
 	

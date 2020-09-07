@@ -23,6 +23,7 @@ export interface FrequencyEnvelopeOptions extends EnvelopeOptions {
  * });
  * freqEnv.connect(oscillator.frequency);
  * freqEnv.triggerAttack();
+ * @category Component
  */
 export class FrequencyEnvelope extends Envelope {
 

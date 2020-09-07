@@ -5,6 +5,10 @@ import { Offline } from "./Offline";
 import { OutputAudio } from "./OutputAudio";
 import { Monophonic } from "Tone/instrument/Monophonic";
 
+function wait(time) {
+	return new Promise(done => setTimeout(done, time));
+}
+
 export function InstrumentTest(Constr, note, constrArg?, optionsIndex?): void {
 
 	context("Instrument Tests", () => {
@@ -164,6 +168,35 @@ export function InstrumentTest(Constr, note, constrArg?, optionsIndex?): void {
 				transport.start(0.1);
 			}, 0.3).then((buffer) => {
 				expect(buffer.isSilent()).to.be.true;
+			});
+		});
+
+
+		it("can unsync and re-sync triggerAttack to the Transport", () => {
+			return Offline(async ({ transport }) => {
+				const instance = new Constr(constrArg);
+				instance.toDestination();
+
+				instance.sync();
+				if (note) {
+					instance.triggerAttack(note, 0.1);
+				} else {
+					instance.triggerAttack(0.1);
+				}
+				transport.start(0.1);
+				await wait(100);
+				instance.unsync();
+				transport.stop();
+
+				instance.sync();
+				if (note) {
+					instance.triggerAttack(note, 0.1);
+				} else {
+					instance.triggerAttack(0.1);
+				}
+				transport.start(0.1);
+			}, 1).then((buffer) => {
+				expect(buffer.getTimeOfFirstSound()).to.be.within(0.19, 0.25);
 			});
 		});
 

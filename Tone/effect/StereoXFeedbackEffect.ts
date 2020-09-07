@@ -18,6 +18,7 @@ export interface StereoXFeedbackEffectOptions extends StereoFeedbackEffectOption
  * |                                                                                  |
  * +--------------------------------+ feedbackR <-------------------------------------+
  * ```
+ * @category Effect
  */
 export class StereoXFeedbackEffect<Options extends StereoXFeedbackEffectOptions> extends StereoFeedbackEffect<Options> {
 	

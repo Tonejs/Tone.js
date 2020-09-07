@@ -10,6 +10,7 @@ export interface EmitterEventObject {
  * the ability to listen for and emit events.
  * Inspiration and reference from Jerome Etienne's [MicroEvent](https://github.com/jeromeetienne/microevent.js).
  * MIT (c) 2011 Jerome Etienne.
+ * @category Core
  */
 export class Emitter<EventType extends string = string> extends Tone {
 
@@ -73,7 +74,7 @@ export class Emitter<EventType extends string = string> extends Tone {
 					this._events[event] = [];
 				} else {
 					const eventList = this._events[event];
-					for (let i = 0; i < eventList.length; i++) {
+					for (let i = eventList.length - 1; i >= 0; i--) {
 						if (eventList[i] === callback) {
 							eventList.splice(i, 1);
 						}
