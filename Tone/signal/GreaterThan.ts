@@ -17,6 +17,7 @@ export type GreaterThanOptions = SignalOptions<"number">;
  * 	const gt = new Tone.GreaterThan(2).toDestination();
  * 	const sig = new Tone.Signal(4).connect(gt);
  * }, 0.1, 1);
+ * @category Signal
  */
 export class GreaterThan extends Signal<"number"> {
 
