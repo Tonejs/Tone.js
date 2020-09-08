@@ -206,7 +206,7 @@ export class FatOscillator extends Source<FatOscillatorOptions> implements ToneO
 	}
 	set phase(phase: Degrees) {
 		this._phase = phase;
-		this._forEach(osc => osc.phase = phase);
+		this._forEach((osc, i) => osc.phase = this._phase + (i / this.count) * 360);
 	}
 
 	get baseType(): OscillatorType {
