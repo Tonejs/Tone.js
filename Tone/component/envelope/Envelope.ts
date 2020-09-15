@@ -433,7 +433,7 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	 * @example
 	 * const env = new Tone.Envelope(0.5, 1, 0.4, 2);
 	 * env.triggerAttackRelease(2);
-	 * setInterval(() => console.log(env.getValueAtTime), 100);
+	 * setInterval(() => console.log(env.getValueAtTime(Tone.now())), 100);
 	 */
 	getValueAtTime(time: Time): NormalRange {
 		return this._sig.getValueAtTime(time);
