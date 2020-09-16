@@ -24,6 +24,12 @@ Or to install the 'next' version
 npm install tone@next
 ```
 
+To import Tone.js:
+
+```js
+import * as Tone from 'tone'
+```
+
 # Hello Tone
 
 ```javascript
