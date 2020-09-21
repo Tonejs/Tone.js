@@ -5,7 +5,7 @@ import { expect } from "chai";
 import { CompareToFile } from "test/helper/CompareToFile";
 import { Oscillator } from "Tone/source/oscillator/Oscillator";
 
-describe("Effect", () => {
+describe("Vibrato", () => {
 	BasicTests(Vibrato);
 	EffectTests(Vibrato);
 
@@ -13,7 +13,7 @@ describe("Effect", () => {
 		return CompareToFile(() => {
 			const vibrato = new Vibrato(4, 1).toDestination();
 			const osc = new Oscillator().connect(vibrato).start();
-		}, "vibrato.wav", 0.01);
+		}, "vibrato.wav", 0.02);
 	});
 
 	context("API", () => {
