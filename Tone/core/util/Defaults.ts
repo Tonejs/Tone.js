@@ -46,7 +46,7 @@ export function deepMerge(target: any, ...sources: any[]): any {
 /**
  * Returns true if the two arrays have the same value for each of the elements
  */
-export function deepEquals(arrayA: any[], arrayB: any[]): boolean {
+export function deepEquals<T>(arrayA: T[], arrayB: T[]): boolean {
 	return arrayA.length === arrayB.length && arrayA.every((element, index) => arrayB[index] === element);
 }
 
