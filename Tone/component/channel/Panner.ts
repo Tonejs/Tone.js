@@ -13,10 +13,10 @@ interface TonePannerOptions extends ToneAudioNodeOptions {
  * Panner is an equal power Left/Right Panner. It is a wrapper around the StereoPannerNode.
  * @example
  * return Tone.Offline(() => {
-	* // move the input signal from right to left
-	* const panner = new Tone.Panner(1).toDestination();
-	* panner.pan.rampTo(-1, 0.5);
-	* const osc = new Tone.Oscillator(100).connect(panner).start();
+ * // move the input signal from right to left
+ * 	const panner = new Tone.Panner(1).toDestination();
+ * 	panner.pan.rampTo(-1, 0.5);
+ * 	const osc = new Tone.Oscillator(100).connect(panner).start();
  * }, 0.5, 2);
  * @category Component
  */
