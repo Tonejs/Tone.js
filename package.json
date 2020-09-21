@@ -102,8 +102,8 @@
 		"yargs": "^13.2.0"
 	},
 	"dependencies": {
-		"standardized-audio-context": "^25.0.3",
-		"tslib": "^1.10.0"
+		"standardized-audio-context": "^25.0.4",
+		"tslib": "^2.0.1"
 	},
 	"prettier": {
 		"trailingComma": "es5",
