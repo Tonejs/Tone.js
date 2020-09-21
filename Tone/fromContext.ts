@@ -10,7 +10,7 @@ import { TimeClass } from "./core/type/Time";
 import { TransportTimeClass } from "./core/type/TransportTime";
 import { isDefined, isFunction } from "./core/util/TypeCheck";
 import { omitFromObject } from "./core/util/Defaults";
-import { Draw } from "./classes";
+import { Draw } from "./core/util/Draw";
 
 type ClassesWithoutSingletons = Omit<typeof Classes, "Transport" | "Destination" | "Draw">;
 
