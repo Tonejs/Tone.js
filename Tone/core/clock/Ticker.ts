@@ -81,7 +81,7 @@ export class Ticker {
 		this._timeout = setTimeout(() => {
 			this._createTimeout();
 			this._callback();
-		}, this._updateInterval * 1000);
+		}, this._updateInterval * 1000).valueOf();
 	}
 
 	/**
