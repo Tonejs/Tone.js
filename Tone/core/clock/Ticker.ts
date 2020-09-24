@@ -26,7 +26,7 @@ export class Ticker {
 	/**
 	 * track the callback interval
 	 */
-	private _timeout!: number;
+	private _timeout!: ReturnType<typeof setTimeout>;
 
 	/**
 	 * private reference to the worker
@@ -81,7 +81,7 @@ export class Ticker {
 		this._timeout = setTimeout(() => {
 			this._createTimeout();
 			this._callback();
-		}, this._updateInterval * 1000).valueOf();
+		}, this._updateInterval * 1000);
 	}
 
 	/**
