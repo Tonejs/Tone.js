@@ -26,7 +26,7 @@ export class Ticker {
 	/**
 	 * track the callback interval
 	 */
-	private _timeout!: number;
+	private _timeout!: ReturnType<typeof setTimeout>;
 
 	/**
 	 * private reference to the worker

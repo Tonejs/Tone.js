@@ -254,8 +254,10 @@ export class Sampler extends Instrument<SamplerOptions> {
 	}
 
 	sync(): this {
-		this._syncMethod("triggerAttack", 1);
-		this._syncMethod("triggerRelease", 1);
+		if (this._syncState()) {
+			this._syncMethod("triggerAttack", 1);
+			this._syncMethod("triggerRelease", 1);
+		}
 		return this;
 	}
 

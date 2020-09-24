@@ -5,6 +5,10 @@ import { Offline } from "./Offline";
 import { OutputAudio } from "./OutputAudio";
 import { Monophonic } from "Tone/instrument/Monophonic";
 
+function wait(time) {
+	return new Promise(done => setTimeout(done, time));
+}
+
 export function InstrumentTest(Constr, note, constrArg?, optionsIndex?): void {
 
 	context("Instrument Tests", () => {
@@ -167,6 +171,35 @@ export function InstrumentTest(Constr, note, constrArg?, optionsIndex?): void {
 			});
 		});
 
+
+		it("can unsync and re-sync triggerAttack to the Transport", () => {
+			return Offline(async ({ transport }) => {
+				const instance = new Constr(constrArg);
+				instance.toDestination();
+
+				instance.sync();
+				if (note) {
+					instance.triggerAttack(note, 0.1);
+				} else {
+					instance.triggerAttack(0.1);
+				}
+				transport.start(0.1);
+				await wait(100);
+				instance.unsync();
+				transport.stop();
+
+				instance.sync();
+				if (note) {
+					instance.triggerAttack(note, 0.1);
+				} else {
+					instance.triggerAttack(0.1);
+				}
+				transport.start(0.1);
+			}, 1).then((buffer) => {
+				expect(buffer.getTimeOfFirstSound()).to.be.within(0.19, 0.25);
+			});
+		});
+
 		it("calling sync and unsync multiple times has no effect", () => {
 			return Offline(({ transport }) => {
 				const instance = new Constr(constrArg);
@@ -217,6 +250,18 @@ export function InstrumentTest(Constr, note, constrArg?, optionsIndex?): void {
 					done();
 				}
 			}, 3);
+		});
+
+		it("can do portamento glide between notes", () => {
+			return Offline(() => {
+				const instance = new Constr(constrArg);
+				if (instance instanceof Monophonic) {
+					instance.portamento = 0.5;
+					instance.triggerAttackRelease("C4", 0.2, 0);
+					expect(instance.getLevelAtTime(0.4)).to.be.greaterThan(0);
+					instance.triggerAttackRelease("C2", 0.2, 0.4);
+				}
+			}, 0.5);
 		});
 	});
 }

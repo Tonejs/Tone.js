@@ -442,20 +442,11 @@ export type OmniOscillatorType =
 	"amsine" | "amsquare" | "amsawtooth" | "amtriangle" | "amcustom" | AMTypeWithPartials |
 	TypeWithPartials | OscillatorType | "pulse" | "pwm";
 
-export type OmniOscillatorConstructorOptions =
+export type OmniOscillatorOptions =
 	PulseOscillatorOptions | PWMOscillatorOptions |
 	OmniFatCustomOscillatorOptions | OmniFatTypeOscillatorOptions | OmniFatPartialsOscillatorOptions |
 	OmniFMCustomOscillatorOptions | OmniFMTypeOscillatorOptions | OmniFMPartialsOscillatorOptions |
 	OmniAMCustomOscillatorOptions | OmniAMTypeOscillatorOptions | OmniAMPartialsOscillatorOptions |
-	ToneOscillatorConstructorOptions;
-
-// export type OmniOscillatorSourceOptions = OmniOscillatorConstructorOptions & SourceOptions;
-
-export type OmniOscillatorOptions =
-	PulseOscillatorOptions & PWMOscillatorOptions &
-	OmniFatCustomOscillatorOptions & OmniFatTypeOscillatorOptions & OmniFatPartialsOscillatorOptions &
-	OmniFMCustomOscillatorOptions & OmniFMTypeOscillatorOptions & OmniFMPartialsOscillatorOptions &
-	OmniAMCustomOscillatorOptions & OmniAMTypeOscillatorOptions & OmniAMPartialsOscillatorOptions &
 	ToneOscillatorConstructorOptions;
 
 type OmitSourceOptions<T extends BaseOscillatorOptions> = Omit<T, "frequency" | "detune" | "context">;

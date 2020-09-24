@@ -2,9 +2,9 @@
 // Karma configuration
 const path = require("path");
 const argv = require("yargs")
-	.alias("i", "file")
-	.alias("d", "dir")
-	.argv;
+		.alias("i", "file")
+		.alias("d", "dir")
+		.argv;
 
 let BROWSERS = ["HeadlessChrome", "HeadlessFirefox", "Safari"];
 
@@ -28,7 +28,7 @@ if (process.env.BROWSER === "chrome") {
 	BROWSERS = ["HeadlessChrome", "HeadlessFirefox"];
 }
 
-module.exports = function (config) {
+module.exports = function(config) {
 	const configuration = {
 
 		// base path that will be used to resolve all patterns (eg. files, exclude)

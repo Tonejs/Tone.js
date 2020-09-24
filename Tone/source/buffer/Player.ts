@@ -159,6 +159,8 @@ export class Player extends Source<PlayerOptions> {
 		this._activeSources.delete(source);
 		if (this._activeSources.size === 0 && !this._synced &&
 			this._state.getValueAtTime(this.now()) === "started") {
+			// remove the 'implicitEnd' event and replace with an explicit end
+			this._state.cancel(this.now());
 			this._state.setStateAtTime("stopped", this.now());
 		}
 	}

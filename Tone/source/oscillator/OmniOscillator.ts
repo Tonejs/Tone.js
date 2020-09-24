@@ -10,7 +10,7 @@ import { FMOscillator } from "./FMOscillator";
 import { Oscillator } from "./Oscillator";
 import {
 	generateWaveform,
-	OmniOscillatorConstructorOptions, OmniOscillatorOptions,
+	OmniOscillatorOptions, 
 	OmniOscillatorType, ToneOscillatorInterface, ToneOscillatorType
 } from "./OscillatorInterface";
 import { PulseOscillator } from "./PulseOscillator";
@@ -69,7 +69,7 @@ const OmniOscillatorSourceMap: {
  * @category Source
  */
 export class OmniOscillator<OscType extends AnyOscillator>
-	extends Source<OmniOscillatorConstructorOptions>
+	extends Source<OmniOscillatorOptions>
 	implements Omit<ToneOscillatorInterface, "type"> {
 
 	readonly name: string = "OmniOscillator";
@@ -92,7 +92,7 @@ export class OmniOscillator<OscType extends AnyOscillator>
 	 * @param type The type of the oscillator.
 	 */
 	constructor(frequency?: Frequency, type?: OmniOscillatorType);
-	constructor(options?: Partial<OmniOscillatorConstructorOptions>);
+	constructor(options?: Partial<OmniOscillatorOptions>);
 	constructor() {
 
 		super(optionsFromArguments(OmniOscillator.getDefaults(), arguments, ["frequency", "type"]));
@@ -212,7 +212,7 @@ export class OmniOscillator<OscType extends AnyOscillator>
 		}
 	}
 
-	set(props: Partial<OmniOscillatorConstructorOptions>): this {
+	set(props: Partial<OmniOscillatorOptions>): this {
 		// make sure the type is set first
 		if (Reflect.has(props, "type") && props.type) {
 			this.type = props.type;

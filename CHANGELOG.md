@@ -46,6 +46,7 @@
 * Buffer.on("loaded") is should now use: `Tone.loaded(): Promise<void>`
 * Removing bower ([71c8b3b](https://github.com/Tonejs/Tone.js/commit/71c8b3bbb96e45cfc4aa2cce8a2d8c61a092c91e)), closes [#197](https://github.com/Tonejs/Tone.js/issues/197)
 * Removing Ctrl classes ([51d06bd](https://github.com/Tonejs/Tone.js/commit/51d06bd9873b2f1936a3169930f9696f1ccfb845))
+* `Players.get(name: string)` is renamed to `Players.player(name: string)`
 
 # 13.8.25
 

@@ -28,6 +28,7 @@ interface PartOptions<T> extends Omit<ToneEventOptions<CallbackType<T>>, "value"
  * 	// will be passed in as the second argument
  * 	synth.triggerAttackRelease(note, "8n", time);
  * }), [[0, "C2"], ["0:2", "C3"], ["0:3:2", "G2"]]);
+ * Tone.Transport.start();
  * @example
  * const synth = new Tone.Synth().toDestination();
  * // use an array of objects as long as the object has a "time" attribute
@@ -37,6 +38,7 @@ interface PartOptions<T> extends Omit<ToneEventOptions<CallbackType<T>>, "value"
  * }), [{ time: 0, note: "C3", velocity: 0.9 },
  * 	{ time: "0:2", note: "C4", velocity: 0.5 }
  * ]).start(0);
+ * Tone.Transport.start();
  * @category Event
  */
 export class Part<ValueType = any> extends ToneEvent<ValueType> {
