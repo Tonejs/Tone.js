@@ -337,4 +337,23 @@ describe("Context", () => {
 		});
 
 	});
+
+	context("Methods", () => {
+		let ctx;
+		beforeEach(() => {
+			ctx = new Context();
+			return ctx.resume();
+		});
+
+		afterEach(() => {
+			ctx.dispose();
+			return ctx.close();
+		});
+
+		it("can create a MediaElementAudioSourceNode", () => {
+			const audioNode = document.createElement("audio");
+			const node = ctx.createMediaElementSource(audioNode);
+			expect(node).is.not.undefined;
+		});
+	});
 });

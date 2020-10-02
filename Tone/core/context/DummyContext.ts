@@ -8,6 +8,7 @@ type Transport = import("../clock/Transport").Transport;
 type Listener = import("./Listener").Listener;
 
 export class DummyContext extends BaseContext {
+
 	//---------------------------
 	// BASE AUDIO CONTEXT METHODS
 	//---------------------------
@@ -87,6 +88,10 @@ export class DummyContext extends BaseContext {
 		return {} as MediaStreamAudioSourceNode;
 	}
 
+	createMediaElementSource(_element: HTMLMediaElement): MediaElementAudioSourceNode {
+		return {} as MediaElementAudioSourceNode;
+	}
+	
 	createMediaStreamDestination(): MediaStreamAudioDestinationNode {
 		return {} as MediaStreamAudioDestinationNode;
 	}

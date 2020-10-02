@@ -6,7 +6,12 @@ type Draw = import("../util/Draw").Draw;
 type Destination = import("./Destination").Destination;
 type Transport = import("../clock/Transport").Transport;
 type Listener = import("./Listener").Listener;
-type BaseAudioContextSubset = import("./Context").BaseAudioContextSubset;
+
+// these are either not used in Tone.js or deprecated and not implemented.
+export type ExcludedFromBaseAudioContext = "onstatechange" | "addEventListener" | "removeEventListener" | "listener" | "dispatchEvent" | "audioWorklet" | "destination" | "createScriptProcessor";
+
+// the subset of the BaseAudioContext which Tone.Context implements.
+export type BaseAudioContextSubset = Omit<BaseAudioContext, ExcludedFromBaseAudioContext>;
 
 export type ContextLatencyHint = AudioContextLatencyCategory;
 
@@ -54,7 +59,9 @@ export abstract class BaseContext extends Emitter<"statechange" | "tick"> implem
 	abstract createWaveShaper(): WaveShaperNode
 
 	abstract createMediaStreamSource(_stream: MediaStream): MediaStreamAudioSourceNode
-
+	
+	abstract createMediaElementSource(_element: HTMLMediaElement): MediaElementAudioSourceNode
+	
 	abstract createMediaStreamDestination(): MediaStreamAudioDestinationNode
 
 	abstract decodeAudioData(_audioData: ArrayBuffer): Promise<AudioBuffer>

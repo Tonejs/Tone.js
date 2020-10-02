@@ -15,14 +15,6 @@ type Destination = import("./Destination").Destination;
 type Listener = import("./Listener").Listener;
 type Draw = import("../util/Draw").Draw;
 
-// these are either not used in Tone.js or deprecated and not implemented.
-export type ExcludedFromBaseAudioContext = "onstatechange" | "addEventListener" | "removeEventListener" | "listener" | "dispatchEvent" | "audioWorklet" | "destination" | "createScriptProcessor";
-// "createMediaStreamSource" | "createMediaElementSource" | "createMediaStreamTrackSource" |
-// "baseLatency" | "suspend" |
-
-// the subset of the BaseAudioContext which Tone.Context implements.
-export type BaseAudioContextSubset = Omit<BaseAudioContext, ExcludedFromBaseAudioContext>;
-
 export interface ContextOptions {
 	clockSource: TickerClockSource;
 	latencyHint: ContextLatencyHint;
@@ -223,6 +215,11 @@ export class Context extends BaseContext {
 		assert(isAudioContext(this._context), "Not available if OfflineAudioContext");
 		const context = this._context as AudioContext;
 		return context.createMediaStreamSource(stream);
+	}
+	createMediaElementSource(element: HTMLMediaElement): MediaElementAudioSourceNode {
+		assert(isAudioContext(this._context), "Not available if OfflineAudioContext");
+		const context = this._context as AudioContext;
+		return context.createMediaElementSource(element);
 	}
 	createMediaStreamDestination(): MediaStreamAudioDestinationNode {
 		assert(isAudioContext(this._context), "Not available if OfflineAudioContext");
