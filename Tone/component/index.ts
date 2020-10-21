@@ -10,6 +10,7 @@ export * from "./channel/CrossFade";
 export * from "./channel/Merge";
 export * from "./channel/MidSideMerge";
 export * from "./channel/MidSideSplit";
+export * from "./channel/Mono";
 export * from "./channel/MultibandSplit";
 export * from "./channel/Panner";
 export * from "./channel/Panner3D";
