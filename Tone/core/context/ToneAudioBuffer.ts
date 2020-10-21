@@ -356,7 +356,7 @@ export class ToneAudioBuffer extends Tone {
 	static async load(url: string): Promise<AudioBuffer> {
 
 		// test if the url contains multiple extensions
-		const matches = url.match(/\[(.+\|?)+\]$/);
+		const matches = url.match(/\[([^\]\[]+\|.+)\]$/);
 		if (matches) {
 			const extensions = matches[1].split("|");
 			let extension = extensions[0];
