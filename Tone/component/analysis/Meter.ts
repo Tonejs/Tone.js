@@ -14,6 +14,9 @@ export interface MeterOptions extends MeterBaseOptions {
 /**
  * Meter gets the [RMS](https://en.wikipedia.org/wiki/Root_mean_square)
  * of an input signal. It can also get the raw value of the input signal.
+ * Setting `normalRange` to `true` will covert the output to a range of
+ * 0-1. See an example using a graphical display 
+ * [here](https://tonejs.github.io/examples/meter).
  *
  * @example
  * const meter = new Tone.Meter();
