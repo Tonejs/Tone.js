@@ -4,7 +4,9 @@ import { MeterBase, MeterBaseOptions } from "./MeterBase";
 export type DCMeterOptions = MeterBaseOptions;
 
 /**
- * DCMeter gets the raw value of the input signal at the current time.
+ * DCMeter gets the raw value of the input signal's waveform amplitude
+ * at the current time and displays it as a value between 0 and 1.
+ * See also {@link Meter}.
  *
  * @example
  * const meter = new Tone.DCMeter();
