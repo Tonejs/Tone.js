@@ -11,11 +11,8 @@ export interface LimiterOptions extends ToneAudioNodeOptions {
 
 /**
  * Limiter will limit the loudness of an incoming signal.
- * It is composed of a [[Compressor]] with a fast attack
- * and release and max ratio. Limiters are commonly used to safeguard against
- * signal clipping. Unlike a compressor, limiters do not provide
- * smooth gain reduction and almost completely prevent
- * additional gain above the threshold.
+ * Under the hood it's composed of a [[Compressor]] with a fast attack
+ * and release and max compression ratio. 
  *
  * @example
  * const limiter = new Tone.Limiter(-20).toDestination();
@@ -49,8 +46,8 @@ export class Limiter extends ToneAudioNode<LimiterOptions> {
 		this._compressor = this.input = this.output = new Compressor({
 			context: this.context,
 			ratio: 20,
-			attack: 0,
-			release: 0,
+			attack: 0.003,
+			release: 0.01,
 			threshold: options.threshold
 		});
 
