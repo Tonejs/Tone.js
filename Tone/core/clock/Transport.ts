@@ -207,15 +207,6 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 	 * @param  tickTime clock relative tick time
 	 */
 	private _processTick(tickTime: Seconds, ticks: Ticks): void {
-		// handle swing
-		if (this._swingAmount > 0 &&
-			ticks % this._ppq !== 0 && // not on a downbeat
-			ticks % (this._swingTicks * 2) !== 0) {
-			// add some swing
-			const progress = (ticks % (this._swingTicks * 2)) / (this._swingTicks * 2);
-			const amount = Math.sin((progress) * Math.PI) * this._swingAmount;
-			tickTime += new TicksClass(this.context, this._swingTicks * 2 / 3).toSeconds() * amount;
-		}
 		// do the loop test
 		if (this._loop.get(tickTime)) {
 			if (ticks >= this._loopEnd) {
@@ -225,6 +216,15 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 				this.emit("loopStart", tickTime, this._clock.getSecondsAtTime(tickTime));
 				this.emit("loop", tickTime);
 			}
+		}
+		// handle swing
+		if (this._swingAmount > 0 &&
+			ticks % this._ppq !== 0 && // not on a downbeat
+			ticks % (this._swingTicks * 2) !== 0) {
+			// add some swing
+			const progress = (ticks % (this._swingTicks * 2)) / (this._swingTicks * 2);
+			const amount = Math.sin((progress) * Math.PI) * this._swingAmount;
+			tickTime += new TicksClass(this.context, this._swingTicks * 2 / 3).toSeconds() * amount;
 		}
 		// invoke the timeline events scheduled on this tick
 		this._timeline.forEachAtTime(ticks, event => event.invoke(tickTime));
