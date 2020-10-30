@@ -196,5 +196,29 @@ describe("LFO", () => {
 				expect(buffer.getValueAtTime(0.05)).to.be.closeTo(2, 0.1);
 			});
 		});
+
+		it("can adjust the amplitude", () => {
+			return Offline(({ transport }) => {
+				const lfo = new LFO(10, -10, 10);
+				lfo.amplitude.value = 0.5;
+				lfo.toDestination();
+				lfo.start();
+			}, 0.1).then((buffer) => {
+				expect(buffer.min()).to.be.closeTo(-5, 0.1);
+				expect(buffer.max()).to.be.closeTo(5, 0.1);
+			});
+		});
+
+		it("can adjust the amplitude not centered at 0", () => {
+			return Offline(({ transport }) => {
+				const lfo = new LFO(10, 400, 4000);
+				lfo.amplitude.value = 0.5;
+				lfo.toDestination();
+				lfo.start();
+			}, 0.1).then((buffer) => {
+				expect(buffer.min()).to.be.closeTo(1300, 1);
+				expect(buffer.max()).to.be.closeTo(3100, 1);
+			});
+		});
 	});
 });
