@@ -1,5 +1,5 @@
 import { optionsFromArguments } from "../../core/util/Defaults";
-import { Frequency, Hertz, NormalRange, Positive, Time } from "../../core/type/Units";
+import { Frequency, Hertz, NormalRange, Time } from "../../core/type/Units";
 import { Envelope, EnvelopeOptions } from "./Envelope";
 import { Scale } from "../../signal/Scale";
 import { Pow } from "../../signal/Pow";
