@@ -75,7 +75,7 @@ export interface ToneOscillatorInterface {
 	 * const osc = new Tone.Oscillator("F3").toDestination().start();
 	 * setInterval(() => {
 	 * 	// generate 8 random partials
-	 * 	osc.partials = new Array(8).map(() => Math.random());
+	 * 	osc.partials = new Array(8).fill().map(() => Math.random());
 	 * }, 1000);
 	 */
 	partials: number[];
