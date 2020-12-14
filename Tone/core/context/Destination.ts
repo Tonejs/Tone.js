@@ -21,7 +21,7 @@ interface DestinationOptions extends ToneAudioNodeOptions {
  * @example
  * const oscillator = new Tone.Oscillator().start();
  * // the audio will go from the oscillator to the speakers
- * oscillator.connect(Tone.Destination);
+ * oscillator.connect(Tone.getDestination());
  * // a convenience for connecting to the master output is also provided:
  * oscillator.toDestination();
  * @category Core
@@ -34,7 +34,12 @@ export class Destination extends ToneAudioNode<DestinationOptions> {
 	output: Gain = new Gain({ context: this.context });
 
 	/**
-	 * The volume of the master output.
+	 * The volume of the master output in decibels. -Infinity is silent, and 0 is no change. 
+	 * @example
+	 * const osc = new Tone.Oscillator().toDestination();
+	 * osc.start();
+	 * // ramp the volume down to silent over 10 seconds
+	 * Tone.getDestination().volume.rampTo(-Infinity, 10);
 	 */
 	volume: Param<"decibels"> = this.input.volume;
 
