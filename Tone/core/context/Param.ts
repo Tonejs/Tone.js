@@ -321,7 +321,8 @@ export class Param<TypeName extends UnitName = "number">
 
 	exponentialRampToValueAtTime(value: UnitMap[TypeName], endTime: Time): this {
 		let numericValue = this._fromType(value);
-		numericValue = Math.max(this._minOutput, numericValue);
+		// the value can't be 0
+		numericValue = EQ(numericValue, 0) ? this._minOutput : numericValue;
 		this._assertRange(numericValue);
 		const computedTime = this.toSeconds(endTime);
 		assert(isFinite(numericValue) && isFinite(computedTime),
