@@ -4,7 +4,11 @@ import { isAudioContext } from "../util/AdvancedTypeCheck";
 import { optionsFromArguments } from "../util/Defaults";
 import { Timeline } from "../util/Timeline";
 import { isDefined, isString } from "../util/TypeCheck";
-import { AnyAudioContext, createAudioContext, createAudioWorkletNode } from "./AudioContext";
+import {
+	AnyAudioContext,
+	createAudioContext,
+	createAudioWorkletNode,
+} from "./AudioContext";
 import { closeContext, initializeContext } from "./ContextInitialization";
 import { BaseContext, ContextLatencyHint } from "./BaseContext";
 import { assert } from "../util/Debug";
@@ -33,7 +37,6 @@ export interface ContextTimeoutEvent {
  * @category Core
  */
 export class Context extends BaseContext {
-
 	readonly name: string = "Context";
 
 	/**
@@ -107,7 +110,9 @@ export class Context extends BaseContext {
 	constructor(options?: Partial<ContextOptions>);
 	constructor() {
 		super();
-		const options = optionsFromArguments(Context.getDefaults(), arguments, ["context"]);
+		const options = optionsFromArguments(Context.getDefaults(), arguments, [
+			"context",
+		]);
 
 		if (options.context) {
 			this._context = options.context;
@@ -117,7 +122,11 @@ export class Context extends BaseContext {
 			});
 		}
 
-		this._ticker = new Ticker(this.emit.bind(this, "tick"), options.clockSource, options.updateInterval);
+		this._ticker = new Ticker(
+			this.emit.bind(this, "tick"),
+			options.clockSource,
+			options.updateInterval
+		);
 		this.on("tick", this._timeoutLoop.bind(this));
 
 		// fwd events from the context
@@ -166,13 +175,21 @@ export class Context extends BaseContext {
 	createBiquadFilter(): BiquadFilterNode {
 		return this._context.createBiquadFilter();
 	}
-	createBuffer(numberOfChannels: number, length: number, sampleRate: number): AudioBuffer {
+	createBuffer(
+		numberOfChannels: number,
+		length: number,
+		sampleRate: number
+	): AudioBuffer {
 		return this._context.createBuffer(numberOfChannels, length, sampleRate);
 	}
-	createChannelMerger(numberOfInputs?: number | undefined): ChannelMergerNode {
+	createChannelMerger(
+		numberOfInputs?: number | undefined
+	): ChannelMergerNode {
 		return this._context.createChannelMerger(numberOfInputs);
 	}
-	createChannelSplitter(numberOfOutputs?: number | undefined): ChannelSplitterNode {
+	createChannelSplitter(
+		numberOfOutputs?: number | undefined
+	): ChannelSplitterNode {
 		return this._context.createChannelSplitter(numberOfOutputs);
 	}
 	createConstantSource(): ConstantSourceNode {
@@ -190,7 +207,10 @@ export class Context extends BaseContext {
 	createGain(): GainNode {
 		return this._context.createGain();
 	}
-	createIIRFilter(feedForward: number[] | Float32Array, feedback: number[] | Float32Array): IIRFilterNode {
+	createIIRFilter(
+		feedForward: number[] | Float32Array,
+		feedback: number[] | Float32Array
+	): IIRFilterNode {
 		// @ts-ignore
 		return this._context.createIIRFilter(feedForward, feedback);
 	}
@@ -200,7 +220,7 @@ export class Context extends BaseContext {
 	createPeriodicWave(
 		real: number[] | Float32Array,
 		imag: number[] | Float32Array,
-		constraints?: PeriodicWaveConstraints | undefined,
+		constraints?: PeriodicWaveConstraints | undefined
 	): PeriodicWave {
 		return this._context.createPeriodicWave(real, imag, constraints);
 	}
@@ -211,17 +231,28 @@ export class Context extends BaseContext {
 		return this._context.createWaveShaper();
 	}
 	createMediaStreamSource(stream: MediaStream): MediaStreamAudioSourceNode {
-		assert(isAudioContext(this._context), "Not available if OfflineAudioContext");
+		assert(
+			isAudioContext(this._context),
+			"Not available if OfflineAudioContext"
+		);
 		const context = this._context as AudioContext;
 		return context.createMediaStreamSource(stream);
 	}
-	createMediaElementSource(element: HTMLMediaElement): MediaElementAudioSourceNode {
-		assert(isAudioContext(this._context), "Not available if OfflineAudioContext");
+	createMediaElementSource(
+		element: HTMLMediaElement
+	): MediaElementAudioSourceNode {
+		assert(
+			isAudioContext(this._context),
+			"Not available if OfflineAudioContext"
+		);
 		const context = this._context as AudioContext;
 		return context.createMediaElementSource(element);
 	}
 	createMediaStreamDestination(): MediaStreamAudioDestinationNode {
-		assert(isAudioContext(this._context), "Not available if OfflineAudioContext");
+		assert(
+			isAudioContext(this._context),
+			"Not available if OfflineAudioContext"
+		);
 		const context = this._context as AudioContext;
 		return context.createMediaStreamDestination();
 	}
@@ -256,7 +287,10 @@ export class Context extends BaseContext {
 		return this._listener;
 	}
 	set listener(l) {
-		assert(!this._initialized, "The listener cannot be set after initialization.");
+		assert(
+			!this._initialized,
+			"The listener cannot be set after initialization."
+		);
 		this._listener = l;
 	}
 
@@ -268,7 +302,10 @@ export class Context extends BaseContext {
 		return this._transport;
 	}
 	set transport(t: Transport) {
-		assert(!this._initialized, "The transport cannot be set after initialization.");
+		assert(
+			!this._initialized,
+			"The transport cannot be set after initialization."
+		);
 		this._transport = t;
 	}
 
@@ -292,7 +329,10 @@ export class Context extends BaseContext {
 		return this._destination;
 	}
 	set destination(d: Destination) {
-		assert(!this._initialized, "The destination cannot be set after initialization.");
+		assert(
+			!this._initialized,
+			"The destination cannot be set after initialization."
+		);
 		this._destination = d;
 	}
 
@@ -303,11 +343,11 @@ export class Context extends BaseContext {
 	/**
 	 * Maps a module name to promise of the addModule method
 	 */
-	private _workletModules: Map<string, Promise<void>> = new Map()
+	private _workletModules: Map<string, Promise<void>> = new Map();
 
 	/**
 	 * Create an audio worklet node from a name and options. The module
-	 * must first be loaded using [[addAudioWorkletModule]]. 
+	 * must first be loaded using [[addAudioWorkletModule]].
 	 */
 	createAudioWorkletNode(
 		name: string,
@@ -322,9 +362,15 @@ export class Context extends BaseContext {
 	 * @param name The name of the module
 	 */
 	async addAudioWorkletModule(url: string, name: string): Promise<void> {
-		assert(isDefined(this.rawContext.audioWorklet), "AudioWorkletNode is only available in a secure context (https or localhost)");
+		assert(
+			isDefined(this.rawContext.audioWorklet),
+			"AudioWorkletNode is only available in a secure context (https or localhost)"
+		);
 		if (!this._workletModules.has(name)) {
-			this._workletModules.set(name, this.rawContext.audioWorklet.addModule(url));
+			this._workletModules.set(
+				name,
+				this.rawContext.audioWorklet.addModule(url)
+			);
 		}
 		await this._workletModules.get(name);
 	}
@@ -334,7 +380,7 @@ export class Context extends BaseContext {
 	 */
 	protected async workletsAreReady(): Promise<void> {
 		const promises: Promise<void>[] = [];
-		this._workletModules.forEach(promise => promises.push(promise));
+		this._workletModules.forEach((promise) => promises.push(promise));
 		await Promise.all(promises);
 	}
 
@@ -423,7 +469,7 @@ export class Context extends BaseContext {
 	}
 
 	/**
-	 * The current audio context time without the [[lookAhead]]. 
+	 * The current audio context time without the [[lookAhead]].
 	 * In most cases it is better to use [[now]] instead of [[immediate]] since
 	 * with [[now]] the [[lookAhead]] is applied equally to _all_ components including internal components,
 	 * to making sure that everything is scheduled in sync. Mixing [[now]] and [[immediate]]
@@ -447,7 +493,7 @@ export class Context extends BaseContext {
 
 	/**
 	 * Close the context. Once closed, the context can no longer be used and
-	 * any AudioNodes created from the context will be silent. 
+	 * any AudioNodes created from the context will be silent.
 	 */
 	async close(): Promise<void> {
 		if (isAudioContext(this._context)) {
@@ -459,13 +505,17 @@ export class Context extends BaseContext {
 	}
 
 	/**
-	 * **Internal** Generate a looped buffer at some constant value. 
+	 * **Internal** Generate a looped buffer at some constant value.
 	 */
 	getConstant(val: number): AudioBufferSourceNode {
 		if (this._constants.has(val)) {
 			return this._constants.get(val) as AudioBufferSourceNode;
 		} else {
-			const buffer = this._context.createBuffer(1, 128, this._context.sampleRate);
+			const buffer = this._context.createBuffer(
+				1,
+				128,
+				this._context.sampleRate
+			);
 			const arr = buffer.getChannelData(0);
 			for (let i = 0; i < arr.length; i++) {
 				arr[i] = val;
@@ -488,7 +538,9 @@ export class Context extends BaseContext {
 		super.dispose();
 		this._ticker.dispose();
 		this._timeouts.dispose();
-		Object.keys(this._constants).map(val => this._constants[val].disconnect());
+		Object.keys(this._constants).map((val) =>
+			this._constants[val].disconnect()
+		);
 		return this;
 	}
 
@@ -536,7 +588,7 @@ export class Context extends BaseContext {
 	 * @param  id  The ID returned from setTimeout
 	 */
 	clearTimeout(id: number): this {
-		this._timeouts.forEach(event => {
+		this._timeouts.forEach((event) => {
 			if (event.id === id) {
 				this._timeouts.remove(event);
 			}
@@ -572,5 +624,14 @@ export class Context extends BaseContext {
 		// kick it off
 		intervalFn();
 		return id;
+	}
+
+	/*
+	 * This is a placeholder so that JSON.stringify does not throw an error
+	 * This matches what JSON.stringify(audioContext) returns on a native
+	 * audioContext instance.
+	 */
+	toJSON() {
+		return {};
 	}
 }

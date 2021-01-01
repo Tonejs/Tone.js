@@ -12,7 +12,6 @@ import { Draw } from "../util/Draw";
 import { connect } from "./ToneAudioNode";
 
 describe("Context", () => {
-
 	it("creates and disposes the classes attached to the context", async () => {
 		const ac = createAudioContext();
 		const context = new Context(ac);
@@ -32,7 +31,6 @@ describe("Context", () => {
 	});
 
 	context("AudioContext", () => {
-
 		it("extends the AudioContext methods", () => {
 			const ctx = new Context(createAudioContext());
 			expect(ctx).to.have.property("createGain");
@@ -46,8 +44,15 @@ describe("Context", () => {
 			return ctx.close();
 		});
 
+		it("can be stringified", () => {
+			const ctx = new Context(createAudioContext());
+			expect(JSON.stringify(ctx)).to.equal("{}");
+			ctx.dispose();
+			return ctx.close();
+		});
+
 		if (ONLINE_TESTING) {
-			it("clock is running", done => {
+			it("clock is running", (done) => {
 				const interval = setInterval(() => {
 					if (getContext().currentTime > 0.5) {
 						clearInterval(interval);
@@ -88,7 +93,6 @@ describe("Context", () => {
 	});
 
 	context("state", () => {
-
 		it("can suspend and resume the state", async () => {
 			const ac = createAudioContext();
 			const context = new Context(ac);
@@ -105,14 +109,14 @@ describe("Context", () => {
 			const ac = createAudioContext();
 			const context = new Context(ac);
 			let triggerChange = false;
-			context.on("statechange", state => {
+			context.on("statechange", (state) => {
 				if (!triggerChange) {
 					triggerChange = true;
 					expect(state).to.equal("running");
 				}
 			});
 			await context.resume();
-			await new Promise(done => setTimeout(() => done(), 10));
+			await new Promise((done) => setTimeout(() => done(), 10));
 			expect(triggerChange).to.equal(true);
 			context.dispose();
 			return ac.close();
@@ -120,9 +124,7 @@ describe("Context", () => {
 	});
 
 	if (ONLINE_TESTING) {
-
 		context("clockSource", () => {
-
 			let ctx;
 			beforeEach(() => {
 				ctx = new Context();
@@ -138,14 +140,14 @@ describe("Context", () => {
 				expect(ctx.clockSource).to.equal("worker");
 			});
 
-			it("provides callback", done => {
+			it("provides callback", (done) => {
 				expect(ctx.clockSource).to.equal("worker");
 				ctx.setTimeout(() => {
 					done();
 				}, 0.1);
 			});
 
-			it("can be set to 'timeout'", done => {
+			it("can be set to 'timeout'", (done) => {
 				ctx.clockSource = "timeout";
 				expect(ctx.clockSource).to.equal("timeout");
 				ctx.setTimeout(() => {
@@ -153,7 +155,7 @@ describe("Context", () => {
 				}, 0.1);
 			});
 
-			it("can be set to 'offline'", done => {
+			it("can be set to 'offline'", (done) => {
 				ctx.clockSource = "offline";
 				expect(ctx.clockSource).to.equal("offline");
 				// provides no callback
@@ -167,9 +169,7 @@ describe("Context", () => {
 		});
 	}
 	context("setTimeout", () => {
-
 		if (ONLINE_TESTING) {
-
 			let ctx;
 			beforeEach(() => {
 				ctx = new Context();
@@ -181,19 +181,19 @@ describe("Context", () => {
 				return ctx.close();
 			});
 
-			it("can set a timeout", done => {
+			it("can set a timeout", (done) => {
 				ctx.setTimeout(() => {
 					done();
 				}, 0.1);
 			});
 
 			it("returns an id", () => {
-				expect(ctx.setTimeout(() => { }, 0.1)).to.be.a("number");
+				expect(ctx.setTimeout(() => {}, 0.1)).to.be.a("number");
 				// try clearing a random ID, shouldn't cause any errors
 				ctx.clearTimeout(-2);
 			});
 
-			it("timeout is not invoked when cancelled", done => {
+			it("timeout is not invoked when cancelled", (done) => {
 				const id = ctx.setTimeout(() => {
 					throw new Error("shouldn't be invoked");
 				}, 0.01);
@@ -203,7 +203,7 @@ describe("Context", () => {
 				}, 0.02);
 			});
 
-			it("order is maintained", done => {
+			it("order is maintained", (done) => {
 				let wasInvoked = false;
 				ctx.setTimeout(() => {
 					expect(wasInvoked).to.equal(true);
@@ -216,7 +216,7 @@ describe("Context", () => {
 		}
 
 		it("is invoked in the offline context", () => {
-			return Offline(context => {
+			return Offline((context) => {
 				const transport = new Transport({ context });
 				transport.context.setTimeout(() => {
 					expect(transport.now()).to.be.closeTo(0.01, 0.005);
@@ -226,9 +226,7 @@ describe("Context", () => {
 	});
 
 	context("setInterval", () => {
-
 		if (ONLINE_TESTING) {
-
 			let ctx;
 			beforeEach(() => {
 				ctx = new Context();
@@ -240,19 +238,19 @@ describe("Context", () => {
 				return ctx.close();
 			});
 
-			it("can set an interval", done => {
+			it("can set an interval", (done) => {
 				ctx.setInterval(() => {
 					done();
 				}, 0.1);
 			});
 
 			it("returns an id", () => {
-				expect(ctx.setInterval(() => { }, 0.1)).to.be.a("number");
+				expect(ctx.setInterval(() => {}, 0.1)).to.be.a("number");
 				// try clearing a random ID, shouldn't cause any errors
 				ctx.clearInterval(-2);
 			});
 
-			it("timeout is not invoked when cancelled", done => {
+			it("timeout is not invoked when cancelled", (done) => {
 				const id = ctx.setInterval(() => {
 					throw new Error("shouldn't be invoked");
 				}, 0.01);
@@ -262,7 +260,7 @@ describe("Context", () => {
 				}, 0.02);
 			});
 
-			it("order is maintained", done => {
+			it("order is maintained", (done) => {
 				let wasInvoked = false;
 				ctx.setInterval(() => {
 					expect(wasInvoked).to.equal(true);
@@ -276,7 +274,7 @@ describe("Context", () => {
 
 		it("is invoked in the offline context", () => {
 			let invocationCount = 0;
-			return Offline(context => {
+			return Offline((context) => {
 				context.setInterval(() => {
 					invocationCount++;
 				}, 0.01);
@@ -287,10 +285,13 @@ describe("Context", () => {
 
 		it("is invoked in with the right interval", () => {
 			let numberOfInvocations = 0;
-			return Offline(context => {
+			return Offline((context) => {
 				let intervalTime = context.now();
 				context.setInterval(() => {
-					expect(context.now() - intervalTime).to.be.closeTo(0.01, 0.005);
+					expect(context.now() - intervalTime).to.be.closeTo(
+						0.01,
+						0.005
+					);
 					intervalTime = context.now();
 					numberOfInvocations++;
 				}, 0.01);
@@ -301,7 +302,6 @@ describe("Context", () => {
 	});
 
 	context("get/set", () => {
-
 		let ctx;
 		beforeEach(() => {
 			ctx = new Context();
@@ -324,7 +324,7 @@ describe("Context", () => {
 		});
 
 		it("gets a constant signal", () => {
-			return ConstantOutput(context => {
+			return ConstantOutput((context) => {
 				const bufferSrc = context.getConstant(1);
 				connect(bufferSrc, context.destination);
 			}, 1);
@@ -335,7 +335,6 @@ describe("Context", () => {
 			const bufferB = ctx.getConstant(2);
 			expect(bufferA).to.equal(bufferB);
 		});
-
 	});
 
 	context("Methods", () => {
