@@ -20,8 +20,8 @@ export type ExcludedFromBaseAudioContext =
 
 // the subset of the BaseAudioContext which Tone.Context implements.
 export type BaseAudioContextSubset = Omit<
-	BaseAudioContext,
-	ExcludedFromBaseAudioContext
+BaseAudioContext,
+ExcludedFromBaseAudioContext
 >;
 
 export type ContextLatencyHint = AudioContextLatencyCategory;
@@ -149,7 +149,14 @@ export abstract class BaseContext
 
 	abstract immediate(): Seconds;
 
-	abstract toJSON(): Record<string, any>;
+	/*
+	 * This is a placeholder so that JSON.stringify does not throw an error
+	 * This matches what JSON.stringify(audioContext) returns on a native
+	 * audioContext instance.
+	 */
+	toJSON(): Record<string, any> {
+		return {};
+	}
 
 	readonly isOffline: boolean = false;
 }

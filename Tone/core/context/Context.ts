@@ -625,13 +625,4 @@ export class Context extends BaseContext {
 		intervalFn();
 		return id;
 	}
-
-	/*
-	 * This is a placeholder so that JSON.stringify does not throw an error
-	 * This matches what JSON.stringify(audioContext) returns on a native
-	 * audioContext instance.
-	 */
-	toJSON() {
-		return {};
-	}
 }

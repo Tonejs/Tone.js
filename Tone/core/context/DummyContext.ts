@@ -197,9 +197,5 @@ export class DummyContext extends BaseContext {
 		return 0;
 	}
 
-	toJSON() {
-		return {};
-	}
-
 	readonly isOffline: boolean = false;
 }
