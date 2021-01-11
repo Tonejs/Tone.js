@@ -220,5 +220,15 @@ describe("LFO", () => {
 				expect(buffer.max()).to.be.closeTo(3100, 1);
 			});
 		});
+
+		it("can pass in partials to the constructor", () => {
+			const lfo = new LFO({
+				type: "custom",
+				partials: [0, 2, 3]
+			});
+			expect(lfo.partials).to.deep.equal([0, 2, 3]);
+			lfo.partials = [1, 2, 3];
+			expect(lfo.partials).to.deep.equal([1, 2, 3]);
+		});
 	});
 });
