@@ -167,8 +167,6 @@ export class ToneEvent<ValueType = any> extends ToneWithContext<ToneEventOptions
 						duration = Math.min(duration, nextEvent.time - startTick);
 					}
 					if (duration !== Infinity) {
-						// schedule a stop since it's finite duration
-						this._state.setStateAtTime("stopped", startTick + duration + 1, { id: -1 });
 						duration = new TicksClass(this.context, duration);
 					}
 					const interval = new TicksClass(this.context, this._getLoopDuration());
