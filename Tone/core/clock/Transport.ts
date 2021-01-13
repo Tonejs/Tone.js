@@ -32,7 +32,7 @@ interface TransportOptions extends ToneWithContextOptions {
 	ppq: number;
 }
 
-type TransportEventNames = "start" | "stop" | "pause" | "loop" | "loopEnd" | "loopStart";
+type TransportEventNames = "start" | "stop" | "pause" | "loop" | "loopEnd" | "loopStart" | "ticks";
 
 interface SyncedSignalEvent {
 	signal: Signal;
@@ -576,6 +576,7 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 				// restart it with the new time
 				this.emit("start", time, this._clock.getSecondsAtTime(time));
 			} else {
+				this.emit("ticks", now);
 				this._clock.setTicksAtTime(t, now);
 			}
 		}
@@ -587,7 +588,7 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 	 * @return The tick value at the given time.
 	 */
 	getTicksAtTime(time?: Time): Ticks {
-		return Math.round(this._clock.getTicksAtTime(time));
+		return this._clock.getTicksAtTime(time);
 	}
 
 	/**

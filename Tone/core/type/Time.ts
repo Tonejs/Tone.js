@@ -113,7 +113,7 @@ export class TimeClass<Type extends Seconds | Ticks = Seconds, Unit extends stri
 	toTicks(): Ticks {
 		const quarterTime = this._beatsToUnits(1);
 		const quarters = this.valueOf() / quarterTime;
-		return Math.round(quarters * this._getPPQ());
+		return quarters * this._getPPQ();
 	}
 
 	/**

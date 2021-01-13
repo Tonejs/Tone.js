@@ -251,11 +251,11 @@ export class ToneEvent<ValueType = any> extends ToneWithContext<ToneEventOptions
 		if (this._state.getValueAtTime(ticks) === "started") {
 			this._state.setStateAtTime("stopped", ticks, { id: -1 });
 			const previousEvent = this._state.getBefore(ticks);
-			let reschedulTime = ticks;
+			let rescheduleTime = ticks;
 			if (previousEvent !== null) {
-				reschedulTime = previousEvent.time;
+				rescheduleTime = previousEvent.time;
 			}
-			this._rescheduleEvents(reschedulTime);
+			this._rescheduleEvents(rescheduleTime);
 		}
 		return this;
 	}
@@ -300,7 +300,7 @@ export class ToneEvent<ValueType = any> extends ToneWithContext<ToneEventOptions
 	 * Get the duration of the loop.
 	 */
 	protected _getLoopDuration(): Ticks {
-		return Math.round((this._loopEnd - this._loopStart) / this._playbackRate);
+		return (this._loopEnd - this._loopStart) / this._playbackRate;
 	}
 
 	/**
@@ -322,7 +322,7 @@ export class ToneEvent<ValueType = any> extends ToneWithContext<ToneEventOptions
 	}
 
 	/**
-	 * The playback rate of the note. Defaults to 1.
+	 * The playback rate of the event. Defaults to 1.
 	 * @example
 	 * const note = new Tone.ToneEvent();
 	 * note.loop = true;

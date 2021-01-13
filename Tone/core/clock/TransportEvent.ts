@@ -42,6 +42,12 @@ export class TransportEvent {
 	private _once: boolean;
 
 	/**
+	 * The remaining value between the passed in time, and Math.floor(time).
+	 * This value is later added back when scheduling to get sub-tick precision. 
+	 */
+	protected _remainderTime = 0;
+
+	/**
 	 * @param transport The transport object which the event belongs to
 	 */
 	constructor(transport: Transport, opts: Partial<TransportEventOptions>) {
@@ -51,7 +57,8 @@ export class TransportEvent {
 		this.transport = transport;
 		this.callback = options.callback;
 		this._once = options.once;
-		this.time = options.time;
+		this.time = Math.floor(options.time);
+		this._remainderTime = options.time - this.time;
 	}
 
 	static getDefaults(): TransportEventOptions {
@@ -68,12 +75,20 @@ export class TransportEvent {
 	private static _eventId = 0;
 
 	/**
+	 * Get the time and remainder time.
+	 */
+	protected get floatTime(): number {
+		return this.time + this._remainderTime;
+	}
+
+	/**
 	 * Invoke the event callback.
 	 * @param  time  The AudioContext time in seconds of the event
 	 */
 	invoke(time: Seconds): void {
 		if (this.callback) {
-			this.callback(time);
+			const tickDuration = this.transport.bpm.getDurationOfTicks(1, time);
+			this.callback(time + this._remainderTime * tickDuration);
 			if (this._once) {
 				this.transport.clear(this.id);
 			}

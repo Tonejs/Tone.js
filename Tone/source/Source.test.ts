@@ -368,7 +368,7 @@ describe("Source", () => {
 			}, 0.7).then(output => {
 				expect(output.getValueAtTime(0.01)).to.be.closeTo(0.2, 0.01);
 				expect(output.getValueAtTime(0.1)).to.be.closeTo(0.3, 0.01);
-				expect(output.getValueAtTime(0.2)).to.be.closeTo(0.4, 0.01);
+				expect(output.getValueAtTime(0.199)).to.be.closeTo(0.4, 0.01);
 				expect(output.getValueAtTime(0.31)).to.be.equal(0);
 			});
 		});
