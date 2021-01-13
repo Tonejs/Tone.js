@@ -580,7 +580,7 @@ describe("Player", () => {
 				// start halfway through
 				transport.start(0, 0.15);
 			}, 0.05).then((buff) => {
-				expect(buff.getValueAtTime(0)).to.be.closeTo(0.25, 0.03);
+				expect(buff.getValueAtTime(0)).to.be.closeTo(0.5, 0.05);
 			});
 		});
 

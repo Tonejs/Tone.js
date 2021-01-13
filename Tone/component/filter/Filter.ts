@@ -90,6 +90,7 @@ export class Filter extends ToneAudioNode<FilterOptions> {
 		this.gain = new Signal({
 			context: this.context,
 			units: "decibels",
+			convert: false,
 			value: options.gain,
 		});
 		this._type = options.type;

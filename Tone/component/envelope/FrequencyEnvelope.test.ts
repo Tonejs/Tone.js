@@ -60,6 +60,12 @@ describe("FrequencyEnvelope", () => {
 			env1.dispose();
 		});
 
+		it("can set a negative octave", () => {
+			const freqEnv = new FrequencyEnvelope();
+			freqEnv.octaves = -2;
+			freqEnv.dispose();
+		});
+
 		it("goes to the scaled range", async () => {
 			const e = {
 				attack: 0.01,

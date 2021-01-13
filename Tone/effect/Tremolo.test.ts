@@ -14,7 +14,7 @@ describe("Tremolo", () => {
 		return CompareToFile(() => {
 			const tremolo = new Tremolo().toDestination().start(0.2);
 			const osc = new Oscillator().connect(tremolo).start();
-		}, "tremolo.wav", 0.01);
+		}, "tremolo.wav", 0.05);
 	});
 
 	context("API", () => {

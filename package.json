@@ -31,7 +31,7 @@
 		"test:node": "node ./test/scripts/node_test.js",
 		"test:readme": "node ./test/scripts/test_readme.js",
 		"test:travis": "npm run build && npm run lint && npm run test",
-		"test:watch": "npm run collect:tests && npm run karma:watch",
+		"test:watch": "npm run karma:watch",
 		"ts:build": "tsc --project ./scripts/tsconfig.build.json",
 		"watch": "tsc --watch",
 		"webpack:watch": "webpack -w --env.production --mode=development",
@@ -102,7 +102,7 @@
 		"yargs": "^13.2.0"
 	},
 	"dependencies": {
-		"standardized-audio-context": "^25.0.4",
+		"standardized-audio-context": "^25.1.8",
 		"tslib": "^2.0.1"
 	},
 	"prettier": {

@@ -27,15 +27,23 @@ export class DummyContext extends BaseContext {
 		return {} as BiquadFilterNode;
 	}
 
-	createBuffer(_numberOfChannels: number, _length: number, _sampleRate: number): AudioBuffer {
+	createBuffer(
+		_numberOfChannels: number,
+		_length: number,
+		_sampleRate: number
+	): AudioBuffer {
 		return {} as AudioBuffer;
 	}
 
-	createChannelMerger(_numberOfInputs?: number | undefined): ChannelMergerNode {
+	createChannelMerger(
+		_numberOfInputs?: number | undefined
+	): ChannelMergerNode {
 		return {} as ChannelMergerNode;
 	}
 
-	createChannelSplitter(_numberOfOutputs?: number | undefined): ChannelSplitterNode {
+	createChannelSplitter(
+		_numberOfOutputs?: number | undefined
+	): ChannelSplitterNode {
 		return {} as ChannelSplitterNode;
 	}
 
@@ -59,7 +67,10 @@ export class DummyContext extends BaseContext {
 		return {} as GainNode;
 	}
 
-	createIIRFilter(_feedForward: number[] | Float32Array, _feedback: number[] | Float32Array): IIRFilterNode {
+	createIIRFilter(
+		_feedForward: number[] | Float32Array,
+		_feedback: number[] | Float32Array
+	): IIRFilterNode {
 		return {} as IIRFilterNode;
 	}
 
@@ -70,7 +81,7 @@ export class DummyContext extends BaseContext {
 	createPeriodicWave(
 		_real: number[] | Float32Array,
 		_imag: number[] | Float32Array,
-		_constraints?: PeriodicWaveConstraints | undefined,
+		_constraints?: PeriodicWaveConstraints | undefined
 	): PeriodicWave {
 		return {} as PeriodicWave;
 	}
@@ -85,6 +96,12 @@ export class DummyContext extends BaseContext {
 
 	createMediaStreamSource(_stream: MediaStream): MediaStreamAudioSourceNode {
 		return {} as MediaStreamAudioSourceNode;
+	}
+
+	createMediaElementSource(
+		_element: HTMLMediaElement
+	): MediaElementAudioSourceNode {
+		return {} as MediaElementAudioSourceNode;
 	}
 
 	createMediaStreamDestination(): MediaStreamAudioDestinationNode {
@@ -165,12 +182,12 @@ export class DummyContext extends BaseContext {
 	get draw(): Draw {
 		return {} as Draw;
 	}
-	set draw(_d) { }
+	set draw(_d) {}
 
 	get destination(): Destination {
 		return {} as Destination;
 	}
-	set destination(_d: Destination) { }
+	set destination(_d: Destination) {}
 
 	now() {
 		return 0;

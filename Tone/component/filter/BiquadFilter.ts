@@ -47,7 +47,7 @@ export class BiquadFilter extends ToneAudioNode<BiquadFilterOptions> {
 	/**
 	 * The gain of the filter. Its value is in dB units. The gain is only used for lowshelf, highshelf, and peaking filters.
 	 */
-	readonly gain: Param<"gain">;
+	readonly gain: Param<"decibels">;
 
 	private readonly _filter: BiquadFilterNode;
 
@@ -87,7 +87,8 @@ export class BiquadFilter extends ToneAudioNode<BiquadFilterOptions> {
 		
 		this.gain = new Param({
 			context: this.context,
-			units: "gain",
+			units: "decibels",
+			convert: false,
 			value: options.gain,
 			param: this._filter.gain,
 		});

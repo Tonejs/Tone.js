@@ -1,5 +1,5 @@
 import { optionsFromArguments } from "../../core/util/Defaults";
-import { Frequency, Hertz, NormalRange, Positive, Time } from "../../core/type/Units";
+import { Frequency, Hertz, NormalRange, Time } from "../../core/type/Units";
 import { Envelope, EnvelopeOptions } from "./Envelope";
 import { Scale } from "../../signal/Scale";
 import { Pow } from "../../signal/Pow";
@@ -37,7 +37,7 @@ export class FrequencyEnvelope extends Envelope {
 	/**
 	 * The number of octaves
 	 */
-	private _octaves: Positive;
+	private _octaves: number;
 
 	/**
 	 * Internal scaler from 0-1 to the final output range
@@ -104,11 +104,10 @@ export class FrequencyEnvelope extends Envelope {
 	 * The number of octaves above the baseFrequency that the
 	 * envelope will scale to.
 	 */
-	get octaves(): Positive {
+	get octaves(): number {
 		return this._octaves;
 	}
-	set octaves(octaves: Positive) {
-		assertRange(octaves, 0);
+	set octaves(octaves: number) {
 		this._octaves = octaves;
 		this._scale.max = this._baseFrequency * Math.pow(2, octaves);
 	}
