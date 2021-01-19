@@ -102,7 +102,7 @@ export class Sequence<ValueType = any> extends ToneEvent<ValueType> {
 	 * The internal callback for when an event is invoked
 	 */
 	private _seqCallback(time: Seconds, value: any): void {
-		if (value !== null) {
+		if (value !== null && !this.mute) {
 			this.callback(time, value);
 		}
 	}
