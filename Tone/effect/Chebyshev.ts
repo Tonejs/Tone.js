@@ -2,7 +2,7 @@ import { Effect, EffectOptions } from "./Effect";
 import { Positive } from "../core/type/Units";
 import { optionsFromArguments } from "../core/util/Defaults";
 import { WaveShaper } from "../signal/WaveShaper";
-import { assert } from "Tone/core/util/Debug";
+import { assert } from "../core/util/Debug";
 
 export interface ChebyshevOptions extends EffectOptions {
 	order: Positive;
