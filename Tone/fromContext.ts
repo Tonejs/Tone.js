@@ -18,7 +18,7 @@ type ClassesWithoutSingletons = Omit<typeof Classes, "Transport" | "Destination"
  * The exported Tone object. Contains all of the classes that default
  * to the same context and contains a singleton Transport and Destination node.
  */
-type Tone = {
+type ToneObject = {
 	Transport: Transport;
 	Destination: Destination;
 	Listener: Listener;
@@ -39,7 +39,7 @@ function bindTypeClass(context: Context, type) {
  * Return an object with all of the classes bound to the passed in context
  * @param context The context to bind all of the nodes to
  */
-export function fromContext(context: Context): Tone {
+export function fromContext(context: Context): ToneObject {
 
 	const classesWithContext: Partial<ClassesWithoutSingletons> = {};
 	Object.keys(omitFromObject(Classes, ["Transport", "Destination", "Draw"])).map(key => {
@@ -56,7 +56,7 @@ export function fromContext(context: Context): Tone {
 		}
 	});
 
-	const toneFromContext: Tone = {
+	const toneFromContext: ToneObject = {
 		...(classesWithContext as ClassesWithoutSingletons),
 		now: context.now.bind(context),
 		immediate: context.immediate.bind(context),
