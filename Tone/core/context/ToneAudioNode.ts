@@ -257,6 +257,7 @@ export abstract class ToneAudioNode<Options extends ToneAudioNodeOptions = ToneA
 		return this;
 	}
 
+
 	/**
 	 * Dispose and disconnect
 	 */
@@ -375,4 +376,17 @@ export function disconnect(
 	} else {
 		srcNode.disconnect();
 	}
+}
+
+/**
+ * connect the output of this node to the rest of the nodes in parallel.
+ * @example
+ * const player = new Tone.Player("https://tonejs.github.io/audio/drum-samples/conga-rhythm.mp3");
+ * const player1 = new Tone.Player("https://tonejs.github.io/audio/drum-samples/conga-rhythm.mp3");
+ * const filter = new Tone.Filter("G5").toDestination();
+ * // connect nodes to a common destination
+ * fanIn(filter, player, player1);
+ */
+export function fanIn(dstNode: InputNode, ...srcNodes: OutputNode[]): void {
+	srcNodes.forEach(srcNode => connect(srcNode, dstNode));
 }
