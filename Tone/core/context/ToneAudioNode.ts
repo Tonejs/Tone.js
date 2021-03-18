@@ -257,7 +257,6 @@ export abstract class ToneAudioNode<Options extends ToneAudioNodeOptions = ToneA
 		return this;
 	}
 
-
 	/**
 	 * Dispose and disconnect
 	 */
@@ -379,7 +378,8 @@ export function disconnect(
 }
 
 /**
- * connect the output of this node to the rest of the nodes in parallel.
+ * Connect the output of this node to the rest of the nodes in parallel.
+ * @param nodes One or more source nodes followed by one destination node
  * @example
  * const player = new Tone.Player("https://tonejs.github.io/audio/drum-samples/conga-rhythm.mp3");
  * const player1 = new Tone.Player("https://tonejs.github.io/audio/drum-samples/conga-rhythm.mp3");
@@ -387,6 +387,7 @@ export function disconnect(
  * // connect nodes to a common destination
  * fanIn(filter, player, player1);
  */
-export function fanIn(dstNode: InputNode, ...srcNodes: OutputNode[]): void {
-	srcNodes.forEach(srcNode => connect(srcNode, dstNode));
+export function fanIn(...nodes: any[]): void {
+	const dstNode = nodes.pop();
+	nodes.forEach(node => connect(node, dstNode));
 }
