@@ -121,6 +121,20 @@ describe("PolySynth", () => {
 			});
 		});
 
+		it("can stop all sounds scheduled to start in the future when disposed", () => {
+			return Offline(() => {
+				const polySynth = new PolySynth();
+				polySynth.set({ envelope: { release: 0.1 } });
+				polySynth.toDestination();
+				polySynth.triggerAttackRelease(["C4", "E4", "G4", "B4"], 0.2);
+				return atTime(0.1, () => {
+					polySynth.dispose();
+				});
+			}, 0.3).then((buffer) => {
+				expect(buffer.isSilent()).to.be.true;
+			});
+		});
+
 		it("can be synced to the transport", () => {
 			return Offline(({ transport }) => {
 				const polySynth = new PolySynth(Synth, {

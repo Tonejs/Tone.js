@@ -250,7 +250,9 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 		} else {
 			// schedule it to start in the future
 			this.context.setTimeout(() => {
-				this._scheduleEvent(type, notes, time, velocity);
+				if (!this.disposed) {
+					this._scheduleEvent(type, notes, time, velocity);
+				}
 			}, time - this.now());
 		}
 	}
