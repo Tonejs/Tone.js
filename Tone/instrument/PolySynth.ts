@@ -250,7 +250,9 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 		} else {
 			// schedule it to start in the future
 			this.context.setTimeout(() => {
-				this._scheduleEvent(type, notes, time, velocity);
+				if (!this.disposed) {
+					this._scheduleEvent(type, notes, time, velocity);
+				}
 			}, time - this.now());
 		}
 	}
@@ -284,7 +286,7 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 	 * @example
 	 * const poly = new Tone.PolySynth(Tone.AMSynth).toDestination();
 	 * poly.triggerAttack(["Ab3", "C4", "F5"]);
-	 * // trigger the release of the given notes. 
+	 * // trigger the release of the given notes.
 	 * poly.triggerRelease(["Ab3", "C4"], "+1");
 	 * poly.triggerRelease("F5", "+3");
 	 */
