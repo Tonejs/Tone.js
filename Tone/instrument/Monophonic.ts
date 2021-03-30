@@ -62,7 +62,7 @@ export abstract class Monophonic<Options extends MonophonicOptions> extends Inst
 	 * Trigger the attack of the note optionally with a given velocity.
 	 * @param  note The note to trigger.
 	 * @param  time When the note should start.
-	 * @param  velocity The velocity scaler determines how "loud" the note will be triggered.
+	 * @param  velocity The velocity determines how "loud" the note will be.
 	 * @example
 	 * const synth = new Tone.Synth().toDestination();
 	 * // trigger the note a half second from now at half velocity
@@ -77,8 +77,8 @@ export abstract class Monophonic<Options extends MonophonicOptions> extends Inst
 	}
 
 	/**
-	 * Trigger the release portion of the envelope
-	 * @param  time If no time is given, the release happens immediatly
+	 * Trigger the release portion of the envelope.
+	 * @param  time If no time is given, the release happens immediately.
 	 * @example
 	 * const synth = new Tone.Synth().toDestination();
 	 * synth.triggerAttack("C4");
