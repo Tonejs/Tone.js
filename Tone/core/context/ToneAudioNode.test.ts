@@ -219,13 +219,13 @@ describe("ToneAudioNode", () => {
 			}, false);
 		});
 
-		it("can fan in multiple nodes to a destination", async () => {
+		it("can fan in multiple nodes to a destination", () => {
 			return PassAudio(input => {
-				const input0 = new Gain();
-				const input1 = new Gain();
-				const input2 = new Gain();
-				const output = new Gain();
-				fanIn(output, input0, input1, input2);
+				const context = input.context;
+				const gain0 = context.createGain();
+				const gain1 = context.createGain();
+				const output = context.destination;
+				fanIn(gain0, gain1, input, output);
 			});
 		});
 		
@@ -332,12 +332,13 @@ describe("ToneAudioNode", () => {
 		});
 
 		it("can fan in multiple nodes to a destination", async () => {
-			const output = new Gain();
-			const input0 = new Gain();
-			const input1 = new Gain();
-			const input2 = new Gain();
-			fanIn(output, input0, input1, input2);
-			expect(output.numberOfInputs).to.equal(3);
+			await Offline(() => {
+				const output = new Gain();
+				const input0 = new Gain();
+				const input1 = new Gain();
+				const input2 = new Gain();
+				fanIn(input0, input1, input2, output);
+			});
 		});
 	});
 
