@@ -376,3 +376,21 @@ export function disconnect(
 		srcNode.disconnect();
 	}
 }
+
+/**
+ * Connect the output of one or more source nodes to a single destination node
+ * @param nodes One or more source nodes followed by one destination node
+ * @example
+ * const player = new Tone.Player("https://tonejs.github.io/audio/drum-samples/conga-rhythm.mp3");
+ * const player1 = new Tone.Player("https://tonejs.github.io/audio/drum-samples/conga-rhythm.mp3");
+ * const filter = new Tone.Filter("G5").toDestination();
+ * // connect nodes to a common destination
+ * fanIn(player, player1, filter);
+ */
+export function fanIn(...nodes: OutputNode[]): void {
+	const dstNode = nodes.pop();
+
+	if (isDefined(dstNode)) {
+		nodes.forEach(node => connect(node, dstNode));
+	}
+}
