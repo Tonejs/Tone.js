@@ -46,7 +46,7 @@ export async function Offline(
 	const originalContext = getContext();
 
 	const context = new OfflineContext(channels, duration, sampleRate);
-	setContext(context);
+	setContext(context, false);
 
 	// invoke the callback/scheduling
 	await callback(context);

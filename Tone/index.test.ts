@@ -38,7 +38,7 @@ describe("Tone", () => {
 	it("can set the global context from a raw online context", async () => {
 		const ctx = new AudioContext();
 		const origContext = Tone.getContext();
-		Tone.setContext(ctx);
+		Tone.setContext(ctx, false);
 		expect(Tone.getContext().rawContext).to.equal(ctx);
 		await ctx.close();
 		Tone.setContext(origContext);
@@ -47,7 +47,7 @@ describe("Tone", () => {
 	it("can set the global context from a raw offline context", async () => {
 		const ctx = new OfflineAudioContext(2, 44100, 44100);
 		const origContext = Tone.getContext();
-		Tone.setContext(ctx);
+		Tone.setContext(ctx, false);
 		expect(Tone.getContext().rawContext).to.equal(ctx);
 		Tone.setContext(origContext);
 	});

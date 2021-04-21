@@ -34,7 +34,7 @@ export function getContext(): BaseContext {
  * @param disposeOld Pass `true` if you don't need the old context to dispose it.
  * @category Core
  */
-export function setContext(context: BaseContext | AnyAudioContext, disposeOld = false): void {
+export function setContext(context: BaseContext | AnyAudioContext, disposeOld = true): void {
 	if (disposeOld) {
 		globalContext.dispose();
 	}
