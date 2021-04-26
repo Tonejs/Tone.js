@@ -153,8 +153,8 @@ export abstract class Instrument<Options extends InstrumentOptions> extends Tone
 	/**
 	 * Start the instrument's note.
 	 * @param note the note to trigger
-	 * @param time the time to trigger the ntoe
-	 * @param velocity the velocity to trigger the note (betwee 0-1)
+	 * @param time the time to trigger the note
+	 * @param velocity the velocity to trigger the note (between 0-1)
 	 */
 	abstract triggerAttack(note: Frequency, time?: Time, velocity?: NormalRange): this;
 	private _original_triggerAttack = this.triggerAttack;
