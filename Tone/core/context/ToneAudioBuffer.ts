@@ -240,6 +240,7 @@ export class ToneAudioBuffer extends Tone {
 	 * @param end The end time to slice. If none is given will default to the end of the buffer
 	 */
 	slice(start: Seconds, end: Seconds = this.duration): ToneAudioBuffer {
+		assert(this.loaded, "Buffer is not loaded");
 		const startSamples = Math.floor(start * this.sampleRate);
 		const endSamples = Math.floor(end * this.sampleRate);
 		assert(startSamples < endSamples, "The start time must be less than the end time");
