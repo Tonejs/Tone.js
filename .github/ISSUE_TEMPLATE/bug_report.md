@@ -19,11 +19,11 @@ Note: Browsers' [Autoplay Policy](https://github.com/Tonejs/Tone.js/wiki/Autopla
 
 Please include a way to reproduce your issue. If possible, please includes a link to some example code using a platform like jsfiddle or codesandbox where the code can be edited. This makes it much easier to debug the issue and also create a validation test to verify the bug was fixed. 
 
-https://jsfiddle.net/n2kh5zus/ (tone@latest)
-https://jsfiddle.net/4tohcn08/ (tone@next)
-
 **Expected behavior**
 A description of what you expected to happen.
+
+**What I've tried**
+How have you tried resolving/debugging this issue? This can be helpful context for getting to the heart of the issue faster and not duplicating effort. 
 
 **Additional context**
 Add any other context about the problem here.
