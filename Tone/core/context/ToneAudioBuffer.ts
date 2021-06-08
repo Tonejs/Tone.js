@@ -378,7 +378,7 @@ export class ToneAudioBuffer extends Tone {
 		location.href = (baseUrl + url);
 		location.pathname = (location.pathname + location.hash).split("/").map(encodeURIComponent).join("/");
 
-		const response = yield fetch(location.href);
+		const response = await fetch(location.href);
 		if (!response.ok) {
 			throw new Error(`could not load url: ${url}`);
 		}
