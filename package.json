@@ -4,6 +4,7 @@
 	"description": "A Web Audio framework for making interactive music in the browser.",
 	"main": "build/Tone.js",
 	"module": "build/esm/index.js",
+	"type": "module",
 	"types": "build/esm/index.d.ts",
 	"files": [
 		"README.md",
