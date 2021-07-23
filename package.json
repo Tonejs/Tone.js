@@ -6,6 +6,7 @@
 	"main": "build/esm/index.js",
 	"module": "build/esm/index.js",
 	"type": "module",
+	"unpkg": "build/Tone.js",
 	"types": "build/esm/index.d.ts",
 	"files": [
 		"README.md",
