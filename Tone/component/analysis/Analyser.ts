@@ -79,6 +79,7 @@ export class Analyser extends ToneAudioNode<AnalyserOptions> {
 		// set the values initially
 		this.size = options.size;
 		this.type = options.type;
+		this.smoothing = options.smoothing;
 	}
 
 	static getDefaults(): AnalyserOptions {
