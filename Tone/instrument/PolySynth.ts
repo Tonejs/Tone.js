@@ -26,7 +26,8 @@ type VoiceOptions<T> =
 				T extends MonoSynth ? MonoSynthOptions :
 					T extends AMSynth ? AMSynthOptions :
 						T extends Synth ? SynthOptions :
-							never;
+							T extends Monophonic<infer U> ? U :
+								never;
 
 /**
  * The settable synth options. excludes monophonic options.
