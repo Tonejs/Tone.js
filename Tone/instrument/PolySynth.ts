@@ -341,9 +341,19 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 		if (this._syncState()) {
 			this._syncMethod("triggerAttack", 1);
 			this._syncMethod("triggerRelease", 1);
+
+			// make sure that the sound doesn't play after its been stopped
+			this.context.transport.on("stop", this._syncedRelease);
+			this.context.transport.on("pause", this._syncedRelease);
+			this.context.transport.on("loopEnd", this._syncedRelease);
 		}
 		return this;
 	}
+
+	/**
+	 * The release which is scheduled to the timeline. 
+	 */
+	 protected _syncedRelease = (time: number) => this.releaseAll(time);
 
 	/**
 	 * Set a member/attribute of the voices
@@ -382,7 +392,7 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 		});
 		return this;
 	}
-
+	
 	dispose(): this {
 		super.dispose();
 		this._dummyVoice.dispose();
