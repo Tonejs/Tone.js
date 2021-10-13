@@ -30,7 +30,7 @@ describe("Meter", () => {
 
 		it("returns an array of channels if channels > 1", () => {
 			const meter = new Meter({
-				channels: 4,
+				channelCount: 4,
 			});
 			expect((meter.getValue() as number[]).length).to.equal(4);
 			meter.dispose();

@@ -8,7 +8,7 @@ import { Analyser } from "./Analyser";
 export interface MeterOptions extends MeterBaseOptions {
 	smoothing: NormalRange;
 	normalRange: boolean;
-	channels: number;
+	channelCount: number;
 }
 
 /**
@@ -59,7 +59,7 @@ export class Meter extends MeterBase<MeterOptions> {
 			context: this.context,
 			size: 256,
 			type: "waveform",
-			channels: options.channels,
+			channels: options.channelCount,
 		});
 
 		this.smoothing = options.smoothing,
@@ -70,7 +70,7 @@ export class Meter extends MeterBase<MeterOptions> {
 		return Object.assign(MeterBase.getDefaults(), {
 			smoothing: 0.8,
 			normalRange: false,
-			channels: 1,
+			channelCount: 1,
 		});
 	}
 
