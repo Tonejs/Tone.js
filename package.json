@@ -29,7 +29,7 @@
 		"test:browser": "npm run karma:browser",
 		"test:examples": "node ./test/scripts/test_examples.cjs",
 		"test:html": "node ./test/scripts/test_html.cjs",
-		"test:node": "node ./test/scripts/node_test.js",
+		"test:node": "node ./test/scripts/node_test.cjs",
 		"test:readme": "node ./test/scripts/test_readme.cjs",
 		"test:travis": "npm run build && npm run lint && npm run test",
 		"test:watch": "npm run karma:watch",
