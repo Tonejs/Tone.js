@@ -463,6 +463,10 @@ export class Context extends BaseContext {
 
 	/**
 	 * The current audio context time plus a short [[lookAhead]].
+	 * @example
+	 * setInterval(() => {
+	 * 	console.log("now", Tone.now());
+	 * }, 100);
 	 */
 	now(): Seconds {
 		return this._context.currentTime + this.lookAhead;
