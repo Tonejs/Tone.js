@@ -64,7 +64,7 @@ export class AutoFilter extends LFOEffect<AutoFilterOptions> {
 			baseFrequency: 200,
 			octaves: 2.6,
 			filter: {
-				type: "lowpass" as "lowpass",
+				type: "lowpass" as const,
 				rolloff: -12 as -12,
 				Q: 1,
 			}

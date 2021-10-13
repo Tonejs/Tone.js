@@ -66,7 +66,7 @@ export class TickSource<TypeName extends "bpm" | "hertz"> extends ToneWithContex
 	static getDefaults(): TickSourceOptions {
 		return Object.assign({
 			frequency: 1,
-			units: "hertz" as "hertz",
+			units: "hertz" as const,
 		}, ToneWithContext.getDefaults());
 	}
 

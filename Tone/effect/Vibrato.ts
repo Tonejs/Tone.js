@@ -79,7 +79,7 @@ export class Vibrato extends Effect<VibratoOptions> {
 			maxDelay: 0.005,
 			frequency: 5,
 			depth: 0.1,
-			type: "sine" as "sine"
+			type: "sine" as const
 		});
 	}
 

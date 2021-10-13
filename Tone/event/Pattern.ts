@@ -73,7 +73,7 @@ export class Pattern<ValueType> extends Loop<PatternOptions<ValueType>> {
 
 	static getDefaults(): PatternOptions<any> {
 		return Object.assign(Loop.getDefaults(), {
-			pattern: "up" as "up",
+			pattern: "up" as const,
 			values: [],
 			callback: noOp,
 		});

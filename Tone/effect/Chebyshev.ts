@@ -61,7 +61,7 @@ export class Chebyshev extends Effect<ChebyshevOptions> {
 	static getDefaults(): ChebyshevOptions {
 		return Object.assign(Effect.getDefaults(), {
 			order: 1,
-			oversample: "none" as "none"
+			oversample: "none" as const
 		});
 	}
 

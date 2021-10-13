@@ -118,7 +118,7 @@ export class Chorus extends StereoFeedbackEffect<ChorusOptions> {
 			frequency: 1.5,
 			delayTime: 3.5,
 			depth: 0.7,
-			type: "sine" as "sine",
+			type: "sine" as const,
 			spread: 180,
 			feedback: 0,
 			wet: 0.5,

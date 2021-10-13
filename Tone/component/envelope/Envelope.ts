@@ -605,8 +605,8 @@ const EnvelopeCurves: EnvelopeCurveMap = (() => {
 			In: cosineCurve,
 			Out: reverseCurve(cosineCurve),
 		},
-		exponential: "exponential" as "exponential",
-		linear: "linear" as "linear",
+		exponential: "exponential" as const,
+		linear: "linear" as const,
 		ripple: {
 			In: rippleCurve,
 			Out: invertCurve(rippleCurve),

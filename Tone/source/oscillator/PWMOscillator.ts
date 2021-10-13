@@ -106,7 +106,7 @@ export class PWMOscillator extends Source<PWMOscillatorOptions> implements ToneO
 			frequency: 440,
 			modulationFrequency: 0.4,
 			phase: 0,
-			type: "pwm" as "pwm",
+			type: "pwm" as const,
 		});
 	}
 	/**
