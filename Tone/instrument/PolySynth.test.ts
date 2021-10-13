@@ -278,6 +278,13 @@ describe("PolySynth", () => {
 			polySynth.dispose();
 		});
 
+		it("throws an error when used without a monophonic synth", () => {
+			expect(() => {
+				// @ts-ignore
+				new PolySynth(PluckSynth);
+			}).throws(Error)
+		});
+
 		it("can pass in the volume", () => {
 			const polySynth = new PolySynth({
 				volume: -12,

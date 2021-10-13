@@ -176,6 +176,7 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 				context: this.context,
 				onsilence: this._makeVoiceAvailable.bind(this),
 			}));
+			assert(voice instanceof Monophonic, "Voice must extend Monophonic class");
 			voice.connect(this.output);
 			this._voices.push(voice);
 			return voice;
