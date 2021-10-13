@@ -2,9 +2,11 @@
 	"name": "tone",
 	"version": "14.8.0",
 	"description": "A Web Audio framework for making interactive music in the browser.",
-	"main": "build/Tone.js",
+	"browser": "build/Tone.js",
+	"main": "build/esm/index.js",
 	"module": "build/esm/index.js",
 	"type": "module",
+	"unpkg": "build/Tone.js",
 	"types": "build/esm/index.d.ts",
 	"files": [
 		"README.md",
