@@ -3,7 +3,7 @@
  * @param statement
  * @param error The message which is passed into an Error
  */
-export function assert(statement: boolean, error: string): void {
+export function assert(statement: boolean, error: string): asserts statement {
 	if (!statement) {
 		throw new Error(error);
 	}
