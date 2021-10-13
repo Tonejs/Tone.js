@@ -24,7 +24,7 @@
 		"karma:watch": "cross-var karma start ./test/karma.conf.cjs --auto-watch --file $npm_config_file --dir $npm_config_dir",
 		"lint": "eslint --ignore-pattern ./Tone/**/*.test.ts --ext ts ./Tone",
 		"lint:fix": "eslint --ext ts --fix ./Tone",
-		"scratch": "webpack -w --env.scratch --mode=development",
+		"scratch": "webpack -w --env scratch=1 --mode=development",
 		"test": "npm run karma",
 		"test:browser": "npm run karma:browser",
 		"test:examples": "node ./test/scripts/test_examples",
@@ -35,8 +35,8 @@
 		"test:watch": "npm run karma:watch",
 		"ts:build": "tsc --project ./scripts/tsconfig.build.json",
 		"watch": "tsc --watch",
-		"webpack:watch": "webpack -w --env.production --mode=development --config ./webpack.config.cjs",
-		"webpack:build": "webpack -p --env.production --config ./webpack.config.cjs"
+		"webpack:watch": "webpack -w --env production=1 --mode=development --config ./webpack.config.cjs",
+		"webpack:build": "webpack --env production=1 --config ./webpack.config.cjs"
 	},
 	"repository": {
 		"type": "git",
@@ -60,14 +60,13 @@
 	},
 	"devDependencies": {
 		"@tonejs/plot": "0.0.35",
-		"@types/chai": "^4.1.7",
-		"@types/dom-mediacapture-record": "^1.0.4",
+		"@types/chai": "^4.2.22",
 		"@types/mocha": "^5.2.6",
 		"@types/ua-parser-js": "^0.7.32",
 		"@typescript-eslint/eslint-plugin": "^2.28.0",
 		"@typescript-eslint/parser": "^2.28.0",
 		"async": "^3.1.0",
-		"chai": "^1.10.0",
+		"chai": "^4.3.4",
 		"codecov": "^3.1.0",
 		"cross-var": "^1.1.0",
 		"eslint": "^8.0.0",
