@@ -140,7 +140,7 @@ describe("SyncedSignal", () => {
 				sched = new SyncedSignal(0).toDestination();
 				sched.linearRampTo(1, 1, 1);
 				transport.start(0);
-			}, 3).then((buffer) => {
+			}, 1).then((buffer) => {
 				expect(buffer.getValueAtTime(0)).to.closeTo(0, 0.1);
 				expect(buffer.getValueAtTime(0.5)).to.closeTo(0, 0.1);
 				expect(buffer.getValueAtTime(1)).to.closeTo(0, 0.1);
@@ -155,7 +155,7 @@ describe("SyncedSignal", () => {
 				sched = new SyncedSignal(1).toDestination();
 				sched.exponentialRampTo(3, 1, 1);
 				transport.start(0);
-			}, 3).then((buffer) => {
+			}, 1).then((buffer) => {
 				buffer.forEach((sample, time) => {
 					expect(sample).to.be.closeTo(sched.getValueAtTime(time), 0.02);
 				});
