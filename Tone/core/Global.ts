@@ -30,9 +30,15 @@ export function getContext(): BaseContext {
 
 /**
  * Set the default audio context
+ * @param context
+ * @param disposeOld Pass `true` if you don't need the old context to dispose it.
  * @category Core
  */
-export function setContext(context: BaseContext | AnyAudioContext): void {
+export function setContext(context: BaseContext | AnyAudioContext, disposeOld = false): void {
+	if (disposeOld) {
+		globalContext.dispose();
+	}
+
 	if (isAudioContext(context)) {
 		globalContext = new Context(context);
 	} else if (isOfflineAudioContext(context)) {
