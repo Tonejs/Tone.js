@@ -254,7 +254,8 @@ export abstract class OneShotSource<
 
 	dispose(): this {
 		super.dispose();
-		this._gainNode.disconnect();
+		this._gainNode.dispose();
+		this.onended = noOp;
 		return this;
 	}
 }
