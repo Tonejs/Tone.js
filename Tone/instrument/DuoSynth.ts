@@ -177,7 +177,7 @@ export class DuoSynth extends Monophonic<DuoSynthOptions> {
 						release: 0.5
 					}
 				}),
-		}) as DuoSynthOptions;
+		}) as unknown as DuoSynthOptions;
 	}
 	/**
 	 * Trigger the attack portion of the note

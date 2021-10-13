@@ -116,7 +116,7 @@ describe("Context", () => {
 				}
 			});
 			await context.resume();
-			await new Promise((done) => setTimeout(() => done(), 10));
+			await new Promise<void>((done) => setTimeout(() => done(), 10));
 			expect(triggerChange).to.equal(true);
 			context.dispose();
 			return ac.close();
