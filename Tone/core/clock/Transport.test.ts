@@ -7,6 +7,8 @@ import { TransportTime } from "../type/TransportTime";
 import { Transport } from "./Transport";
 // importing for side affects
 import "../context/Destination";
+import { warns } from "test/helper/Basic";
+import { Synth } from "Tone/instrument/Synth";
 
 describe("Transport", () => {
 
@@ -543,6 +545,19 @@ describe("Transport", () => {
 				};
 			}, 0.3).then(() => {
 				expect(wasCalled).to.equal(true);
+			});
+		});
+
+		it("warns if the scheduled time was not used in the callback", async () => {
+			return Offline(({ transport }) => {
+				const synth = new Synth();
+				transport.schedule(() => {
+					warns(() => {
+						synth.triggerAttackRelease("C2", 0.1);
+					});
+				}, 0);
+				transport.start(0);
+			}, 0.3).then(() => {
 			});
 		});
 
