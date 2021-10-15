@@ -168,8 +168,7 @@ export abstract class OneShotSource<
 
 		// schedule the stop callback
 		this._stopTime = this.toSeconds(time) + fadeOutTime;
-		const nowTime = this.now();
-		this._stopTime = Math.max(this._stopTime, nowTime);
+		this._stopTime = Math.max(this._stopTime, this.context.currentTime);
 		if (fadeOutTime > 0) {
 			// start the fade out curve at the given time
 			if (this._curve === "linear") {
@@ -189,7 +188,7 @@ export abstract class OneShotSource<
 				this._curve === "exponential" ? fadeOutTime * 2 : 0;
 			this._stopSource(this.now() + additionalTail);
 			this._onended();
-		}, this._stopTime - nowTime);
+		}, this._stopTime - this.context.currentTime);
 		return this;
 	}
 
