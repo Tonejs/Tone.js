@@ -261,7 +261,7 @@ export class Player extends Source<PlayerOptions> {
 	}
 
 	protected _restart(time?: Seconds, offset?: Time, duration?: Time): void {
-		this._stop(time);
+		[...this._activeSources].pop()?.stop(time); // explicitly stop only the most recently created source, to avoid edge case when > 1 source exists and _stop() erroneously sets all stop times past original end offset
 		this._start(time, offset, duration);
 	}
 
