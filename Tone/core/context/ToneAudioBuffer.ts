@@ -374,7 +374,7 @@ export class ToneAudioBuffer extends Tone {
 		const baseUrl = ToneAudioBuffer.baseUrl === "" || ToneAudioBuffer.baseUrl.endsWith("/") ? ToneAudioBuffer.baseUrl : ToneAudioBuffer.baseUrl + "/";		
 		let href = baseUrl + url;
 		
-		if (!href.startsWith("file:/")) { // if file:/// scheme, assume already URL encoded
+		if ( !href.startsWith("file:/") && (decodeURIComponent(href) === href) ) { // if file:/ scheme, assume already encoded, otherwise use decodeURIComponent to check if already encoded
 			// encode special characters in file path
 			const location = document.createElement("a");
 			location.href = href;
