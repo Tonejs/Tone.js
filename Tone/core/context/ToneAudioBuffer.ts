@@ -378,7 +378,9 @@ export class ToneAudioBuffer extends Tone {
 			// encode special characters in file path
 			const location = document.createElement("a");
 			location.href = href;
-			location.pathname = (location.pathname + location.hash).split("/").map(encodeURIComponent).join("/");
+			if (!location.href.startsWith("file:/")) { // catch local file:/ relative path, that's already encoded
+				location.pathname = (location.pathname + location.hash).split("/").map(encodeURIComponent).join("/");
+			}
 			href = location.href;
 		}
 
