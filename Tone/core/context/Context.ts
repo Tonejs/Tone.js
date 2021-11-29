@@ -420,8 +420,8 @@ export class Context extends BaseContext {
 	}
 	set lookAhead(time: Seconds) {
 		this._lookAhead = time;
-		// if lookAhead is 0, default to .025 updateInterval
-		this.updateInterval = time ? (time / 2) : .025;
+		// if lookAhead is 0, default to .0125 updateInterval
+		this.updateInterval = time ? (time / 2) : .0125;
 	}	
 	private _lookAhead!: Seconds;
 
