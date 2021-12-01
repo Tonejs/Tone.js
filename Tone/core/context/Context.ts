@@ -414,6 +414,7 @@ export class Context extends BaseContext {
 	 * The amount of time into the future events are scheduled. Giving Web Audio
 	 * a short amount of time into the future to schedule events can reduce clicks and
 	 * improve performance. This value can be set to 0 to get the lowest latency.
+	 * Adjusting this value also affects the [[updateInterval]].
 	 */
 	get lookAhead(): Seconds {
 		return this._lookAhead;
