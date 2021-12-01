@@ -647,5 +647,30 @@ describe("Player", () => {
 				expect(buff.getRmsAtTime(duration + 0.1)).to.be.closeTo(0, 0.1);
 			});
 		});
+
+		it("stops only last activeSource when restarting at intervals < latencyHint", (done) => {
+			const originalLookAhead = getContext().lookAhead;
+			getContext().lookAhead = .3;
+			const player = new Player({
+				onload(): void {
+					player.start(undefined, undefined, 1);
+					setTimeout(() => player.restart(undefined, undefined, 1), 50);
+					setTimeout(() => player.restart(undefined, undefined, 1), 100);
+					setTimeout(() => player.restart(undefined, undefined, 1), 150);
+					setTimeout(() => {
+						player.restart(undefined, undefined, 1);
+						const checkStopTimes = new Set();
+						player["_activeSources"].forEach(source => {
+							checkStopTimes.add(source["_stopTime"]);
+						});
+						getContext().lookAhead = originalLookAhead;
+						// ensure each source has a different stopTime
+						expect(checkStopTimes.size).to.equal(player["_activeSources"].size);
+						done();
+					}, 250);
+				},
+				url: "./audio/sine.wav",
+			});
+		});
 	});
 });
