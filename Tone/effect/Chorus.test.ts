@@ -7,25 +7,29 @@ import { Oscillator } from "Tone/source";
 import { Offline } from "test/helper/Offline";
 
 describe("Chorus", () => {
-
 	BasicTests(Chorus);
 	EffectTests(Chorus);
 
 	it("matches a file", () => {
-		return CompareToFile(() => {
-			const chorus = new Chorus().toDestination().start();
-			const osc = new Oscillator(220, "sawtooth").connect(chorus).start();
-		}, "chorus.wav", 0.1);
+		return CompareToFile(
+			() => {
+				const chorus = new Chorus().toDestination().start();
+				const osc = new Oscillator(220, "sawtooth")
+					.connect(chorus)
+					.start();
+			},
+			"chorus.wav",
+			0.25
+		);
 	});
 
 	context("API", () => {
-
 		it("can pass in options in the constructor", () => {
 			const chorus = new Chorus({
 				frequency: 2,
 				delayTime: 1,
 				depth: 0.4,
-				spread: 90
+				spread: 90,
 			});
 			expect(chorus.frequency.value).to.be.closeTo(2, 0.01);
 			expect(chorus.delayTime).to.be.closeTo(1, 0.01);
@@ -84,4 +88,3 @@ describe("Chorus", () => {
 		});
 	});
 });
-
