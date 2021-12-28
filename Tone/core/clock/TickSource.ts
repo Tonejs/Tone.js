@@ -3,7 +3,7 @@ import { Seconds, Ticks, Time } from "../type/Units";
 import { optionsFromArguments } from "../util/Defaults";
 import { readOnly } from "../util/Interface";
 import { PlaybackState, StateTimeline, StateTimelineEvent } from "../util/StateTimeline";
-import { Timeline } from "../util/Timeline";
+import { Timeline, TimelineEvent } from "../util/Timeline";
 import { isDefined } from "../util/TypeCheck";
 import { TickSignal } from "./TickSignal";
 import { EQ } from "../util/Math";
@@ -15,6 +15,18 @@ interface TickSourceOptions extends ToneWithContextOptions {
 
 interface TickSourceOffsetEvent {
 	ticks: number;
+	time: number;
+	seconds: number;
+}
+
+interface TickSourceTicksAtTimeEvent {
+	state: PlaybackState;
+	time: number;
+	ticks: number;
+}
+
+interface TickSourceSecondsAtTimeEvent {
+	state: PlaybackState;
 	time: number;
 	seconds: number;
 }
@@ -40,6 +52,16 @@ export class TickSource<TypeName extends "bpm" | "hertz"> extends ToneWithContex
 	 * The offset values of the ticks
 	 */
 	private _tickOffset: Timeline<TickSourceOffsetEvent> = new Timeline();
+
+	/**
+	 * Memoized values of getTicksAtTime at events with state other than "started"
+	 */
+	private _ticksAtTime: Timeline<TickSourceTicksAtTimeEvent> = new Timeline<TickSourceTicksAtTimeEvent>();
+
+	/**
+	 * Memoized values of getSecondsAtTime at events with state other than "started"
+	 */
+	private _secondsAtTime: Timeline<TickSourceSecondsAtTimeEvent> = new Timeline<TickSourceSecondsAtTimeEvent>();
 
 	/**
 	 * @param frequency The initial frequency that the signal ticks at
@@ -145,16 +167,21 @@ export class TickSource<TypeName extends "bpm" | "hertz"> extends ToneWithContex
 	getTicksAtTime(time?: Time): Ticks {
 		const computedTime = this.toSeconds(time);
 		const stopEvent = this._state.getLastState("stopped", computedTime) as StateTimelineEvent;
+
+		// get previously memoized ticks if available
+		const memoizedEvent = this._ticksAtTime.get(computedTime);
+
 		// this event allows forEachBetween to iterate until the current time
 		const tmpEvent: StateTimelineEvent = { state: "paused", time: computedTime };
 		this._state.add(tmpEvent);
 
 		// keep track of the previous offset event
-		let lastState = stopEvent;
-		let elapsedTicks = 0;
+		let lastState = memoizedEvent ? memoizedEvent : stopEvent;
+		let elapsedTicks = memoizedEvent ? memoizedEvent.ticks : 0;
+		let eventToMemoize : TickSourceTicksAtTimeEvent | null = null;
 
 		// iterate through all the events since the last stop
-		this._state.forEachBetween(stopEvent.time, computedTime + this.sampleTime, e => {
+		this._state.forEachBetween(lastState.time, computedTime + this.sampleTime, e => {
 			let periodStartTime = lastState.time;
 			// if there is an offset event in this period use that
 			const offsetEvent = this._tickOffset.get(e.time);
@@ -164,12 +191,21 @@ export class TickSource<TypeName extends "bpm" | "hertz"> extends ToneWithContex
 			}
 			if (lastState.state === "started" && e.state !== "started") {
 				elapsedTicks += this.frequency.getTicksAtTime(e.time) - this.frequency.getTicksAtTime(periodStartTime);
+				// do not memoize the temporary event
+				if (e.time != tmpEvent.time) {
+					eventToMemoize = { state: e.state, time: e.time, ticks: elapsedTicks };
+				}
 			}
 			lastState = e;
 		});
 
 		// remove the temporary event
 		this._state.remove(tmpEvent);
+
+		// memoize the ticks at the most recent event with state other than "started"
+		if (eventToMemoize) {
+			this._ticksAtTime.add(eventToMemoize);
+		}
 
 		// return the ticks
 		return elapsedTicks;
@@ -211,12 +247,16 @@ export class TickSource<TypeName extends "bpm" | "hertz"> extends ToneWithContex
 		const tmpEvent: StateTimelineEvent = { state: "paused", time };
 		this._state.add(tmpEvent);
 
+		// get previously memoized seconds if available
+		const memoizedEvent = this._secondsAtTime.get(time);
+
 		// keep track of the previous offset event
-		let lastState = stopEvent;
-		let elapsedSeconds = 0;
+		let lastState = memoizedEvent ? memoizedEvent : stopEvent;
+		let elapsedSeconds = memoizedEvent ? memoizedEvent.seconds : 0;
+		let eventToMemoize : TickSourceSecondsAtTimeEvent | null = null;
 
 		// iterate through all the events since the last stop
-		this._state.forEachBetween(stopEvent.time, time + this.sampleTime, e => {
+		this._state.forEachBetween(lastState.time, time + this.sampleTime, e => {
 			let periodStartTime = lastState.time;
 			// if there is an offset event in this period use that
 			const offsetEvent = this._tickOffset.get(e.time);
@@ -226,6 +266,10 @@ export class TickSource<TypeName extends "bpm" | "hertz"> extends ToneWithContex
 			}
 			if (lastState.state === "started" && e.state !== "started") {
 				elapsedSeconds += e.time - periodStartTime;
+				// do not memoize the temporary event
+				if (e.time != tmpEvent.time) {
+					eventToMemoize = { state: e.state, time: e.time, seconds: elapsedSeconds };
+				}
 			}
 			lastState = e;
 		});
@@ -233,7 +277,12 @@ export class TickSource<TypeName extends "bpm" | "hertz"> extends ToneWithContex
 		// remove the temporary event
 		this._state.remove(tmpEvent);
 
-		// return the ticks
+		// memoize the seconds at the most recent event with state other than "started"
+		if (eventToMemoize) {
+			this._secondsAtTime.add(eventToMemoize);
+		}
+
+		// return the seconds
 		return elapsedSeconds;
 	}
 
@@ -332,6 +381,8 @@ export class TickSource<TypeName extends "bpm" | "hertz"> extends ToneWithContex
 		super.dispose();
 		this._state.dispose();
 		this._tickOffset.dispose();
+		this._ticksAtTime.dispose();
+		this._secondsAtTime.dispose();
 		this.frequency.dispose();
 		return this;
 	}
