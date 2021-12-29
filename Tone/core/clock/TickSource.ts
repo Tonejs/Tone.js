@@ -13,19 +13,19 @@ interface TickSourceOptions extends ToneWithContextOptions {
 	units: "bpm" | "hertz";
 }
 
-interface TickSourceOffsetEvent {
+interface TickSourceOffsetEvent extends TimelineEvent {
 	ticks: number;
 	time: number;
 	seconds: number;
 }
 
-interface TickSourceTicksAtTimeEvent {
+interface TickSourceTicksAtTimeEvent extends TimelineEvent {
 	state: PlaybackState;
 	time: number;
 	ticks: number;
 }
 
-interface TickSourceSecondsAtTimeEvent {
+interface TickSourceSecondsAtTimeEvent extends TimelineEvent {
 	state: PlaybackState;
 	time: number;
 	seconds: number;
@@ -112,6 +112,8 @@ export class TickSource<TypeName extends "bpm" | "hertz"> extends ToneWithContex
 			if (isDefined(offset)) {
 				this.setTicksAtTime(offset, computedTime);
 			}
+			this._ticksAtTime.cancel(computedTime);
+			this._secondsAtTime.cancel(computedTime);
 		}
 		return this;
 	}
@@ -133,6 +135,8 @@ export class TickSource<TypeName extends "bpm" | "hertz"> extends ToneWithContex
 		this._state.cancel(computedTime);
 		this._state.setStateAtTime("stopped", computedTime);
 		this.setTicksAtTime(0, computedTime);
+		this._ticksAtTime.cancel(computedTime);
+		this._secondsAtTime.cancel(computedTime);
 		return this;
 	}
 
@@ -144,6 +148,8 @@ export class TickSource<TypeName extends "bpm" | "hertz"> extends ToneWithContex
 		const computedTime = this.toSeconds(time);
 		if (this._state.getValueAtTime(computedTime) === "started") {
 			this._state.setStateAtTime("paused", computedTime);
+			this._ticksAtTime.cancel(computedTime);
+			this._secondsAtTime.cancel(computedTime);
 		}
 		return this;
 	}
@@ -156,6 +162,8 @@ export class TickSource<TypeName extends "bpm" | "hertz"> extends ToneWithContex
 		time = this.toSeconds(time);
 		this._state.cancel(time);
 		this._tickOffset.cancel(time);
+		this._ticksAtTime.cancel(time);
+		this._secondsAtTime.cancel(time);
 		return this;
 	}
 
@@ -299,6 +307,8 @@ export class TickSource<TypeName extends "bpm" | "hertz"> extends ToneWithContex
 			ticks,
 			time,
 		});
+		this._ticksAtTime.cancel(time);
+		this._secondsAtTime.cancel(time);
 		return this;
 	}
 
