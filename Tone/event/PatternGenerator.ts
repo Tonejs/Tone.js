@@ -117,16 +117,16 @@ function* randomOnce<T>(numValues: number): IterableIterator<number> {
 }
 
 /**
- * Randomly choose to walk up or down 1 index in the values array
+ * Randomly choose to walk up or down 1 index
  */
 function* randomWalk<T>(numValues: number): IterableIterator<number> {
-	// randomly choose a starting index in the values array
+	// randomly choose a starting index
 	let index = Math.floor(Math.random() * numValues);
 	while (true) {
 		if (index === 0) {
-			index++; // at bottom of array, so force upward step
+			index++; // at bottom, so force upward step
 		} else if (index === numValues - 1) {
-			index--; // at top of array, so force downward step
+			index--; // at top, so force downward step
 		} else if (Math.random() < 0.5) { // else choose random downward or upward step
 			index--;
 		} else {
