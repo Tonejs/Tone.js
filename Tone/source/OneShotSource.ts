@@ -168,7 +168,7 @@ export abstract class OneShotSource<
 
 		// schedule the stop callback
 		this._stopTime = this.toSeconds(time) + fadeOutTime;
-		this._stopTime = Math.max(this._stopTime, this.context.currentTime);
+		this._stopTime = Math.max(this._stopTime, this.now());
 		if (fadeOutTime > 0) {
 			// start the fade out curve at the given time
 			if (this._curve === "linear") {
