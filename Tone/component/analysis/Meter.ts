@@ -42,9 +42,9 @@ export class Meter extends MeterBase<MeterOptions> {
 	smoothing: number;
 
 	/**
-	 * The previous frame's value
+	 * The previous frame's value for each channel.
 	 */
-	private _rms = 0;
+	private _rms: number[];
 
 	/**
 	 * @param smoothing The amount of smoothing applied between frames.
@@ -64,6 +64,8 @@ export class Meter extends MeterBase<MeterOptions> {
 
 		this.smoothing = options.smoothing,
 		this.normalRange = options.normalRange;
+		this._rms = new Array(options.channelCount);
+		this._rms.fill(0);
 	}
 
 	static getDefaults(): MeterOptions {
@@ -93,13 +95,13 @@ export class Meter extends MeterBase<MeterOptions> {
 	getValue(): number | number[] {
 		const aValues = this._analyser.getValue();
 		const channelValues = this.channels === 1 ? [aValues as Float32Array] : aValues as Float32Array[];
-		const vals = channelValues.map(values => {
+		const vals = channelValues.map((values, index) => {
 			const totalSquared = values.reduce((total, current) => total + current * current, 0);
 			const rms = Math.sqrt(totalSquared / values.length);
 			// the rms can only fall at the rate of the smoothing
 			// but can jump up instantly
-			this._rms = Math.max(rms, this._rms * this.smoothing);
-			return this.normalRange ? this._rms : gainToDb(this._rms);
+			this._rms[index] = Math.max(rms, this._rms[index]  * this.smoothing);
+			return this.normalRange ? this._rms[index] : gainToDb(this._rms[index]);
 		});
 		if (this.channels === 1) {
 			return vals[0];
