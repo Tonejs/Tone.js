@@ -376,12 +376,13 @@ export class ToneAudioBuffer extends Tone {
 		
 		if ( !href.startsWith("file:/") && (decodeURIComponent(href) === href) ) { // if file:/ scheme, assume already encoded, otherwise use decodeURIComponent to check if already encoded
 			// encode special characters in file path
-			const location = document.createElement("a");
-			location.href = href;
-			if (!location.href.startsWith("file:/")) { // catch local file:/ relative path, that's already encoded
-				location.pathname = (location.pathname + location.hash).split("/").map(encodeURIComponent).join("/");
+			const anchorElement = document.createElement("a");
+			anchorElement.href = href;
+			// check if already encoded one more time since in many cases setting the .href automatically encodes the string
+			if (!anchorElement.href.startsWith("file:/") && (decodeURIComponent(anchorElement.href) === anchorElement.href)) {
+				anchorElement.pathname = (anchorElement.pathname + anchorElement.hash).split("/").map(encodeURIComponent).join("/");
 			}
-			href = location.href;
+			href = anchorElement.href;
 		}
 
 		const response = await fetch(href);
