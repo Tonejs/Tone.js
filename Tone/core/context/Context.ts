@@ -536,6 +536,7 @@ export class Context extends BaseContext {
 		Object.keys(this._constants).map((val) =>
 			this._constants[val].disconnect()
 		);
+		this.close();
 		return this;
 	}
 
