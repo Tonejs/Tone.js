@@ -20,7 +20,8 @@ type Draw = import("../util/Draw").Draw;
 
 export interface ContextOptions {
 	clockSource: TickerClockSource;
-	latencyHint: ContextLatencyHint;
+	latencyHint: ContextLatencyHint | number;
+	sampleRate: number;
 	lookAhead: Seconds;
 	updateInterval: Seconds;
 	context: AnyAudioContext;
@@ -114,6 +115,7 @@ export class Context extends BaseContext {
 		} else {
 			this._context = createAudioContext({
 				latencyHint: options.latencyHint,
+				sampleRate: options.sampleRate,
 			});
 			this._latencyHint = options.latencyHint;
 		}
@@ -130,9 +132,13 @@ export class Context extends BaseContext {
 		this._context.onstatechange = () => {
 			this.emit("statechange", this.state);
 		};
-		
+
 		// if no custom updateInterval provided, updateInterval will be derived by lookAhead setter
-		this[arguments[0]?.hasOwnProperty("updateInterval") ? "_lookAhead" : "lookAhead"] = options.lookAhead;
+		this[
+			arguments[0]?.hasOwnProperty("updateInterval")
+				? "_lookAhead"
+				: "lookAhead"
+		] = options.lookAhead;
 	}
 
 	static getDefaults(): ContextOptions {
@@ -422,8 +428,8 @@ export class Context extends BaseContext {
 	set lookAhead(time: Seconds) {
 		this._lookAhead = time;
 		// if lookAhead is 0, default to .01 updateInterval
-		this.updateInterval = time ? (time / 2) : .01;
-	}	
+		this.updateInterval = time ? time / 2 : 0.01;
+	}
 	private _lookAhead!: Seconds;
 
 	/**

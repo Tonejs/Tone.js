@@ -392,16 +392,29 @@ export class ToneAudioBuffer extends Tone {
 			ToneAudioBuffer.baseUrl.endsWith("/")
 				? ToneAudioBuffer.baseUrl
 				: ToneAudioBuffer.baseUrl + "/";
+		let href = baseUrl + url;
 
-		// encode special characters in file path
-		const location = document.createElement("a");
-		location.href = baseUrl + url;
-		location.pathname = (location.pathname + location.hash)
-			.split("/")
-			.map(encodeURIComponent)
-			.join("/");
+		if (!href.startsWith("file:/") && decodeURIComponent(href) === href) {
+			// if file:/ scheme, assume already encoded, otherwise use decodeURIComponent to check if already encoded
+			// encode special characters in file path
+			const anchorElement = document.createElement("a");
+			anchorElement.href = href;
+			// check if already encoded one more time since in many cases setting the .href automatically encodes the string
+			if (
+				!anchorElement.href.startsWith("file:/") &&
+				decodeURIComponent(anchorElement.href) === anchorElement.href
+			) {
+				anchorElement.pathname = (
+					anchorElement.pathname + anchorElement.hash
+				)
+					.split("/")
+					.map(encodeURIComponent)
+					.join("/");
+			}
+			href = anchorElement.href;
+		}
 
-		const response = await fetch(location.href);
+		const response = await fetch(href);
 		if (!response.ok) {
 			throw new Error(`could not load url: ${url}`);
 		}

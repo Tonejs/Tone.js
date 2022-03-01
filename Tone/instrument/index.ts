@@ -8,4 +8,5 @@ export * from "./NoiseSynth";
 export * from "./PluckSynth";
 export * from "./PolySynth";
 export * from "./Sampler";
+export * from "./MediaElementSampler";
 export * from "./Synth";
