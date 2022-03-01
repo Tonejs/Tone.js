@@ -3,8 +3,6 @@ import { Tone } from "../Tone";
 import { Samples, Seconds } from "../type/Units";
 import { optionsFromArguments } from "../util/Defaults";
 import { noOp } from "../util/Interface";
-import { isArray, isNumber, isString } from "../util/TypeCheck";
-import { assert } from "../util/Debug";
 
 interface ToneMediaElementOptions {
 	url?: string;
@@ -57,7 +55,14 @@ export class ToneMediaElement extends Tone {
 
 		if (options.url) {
 			// initiate the download
-			this.load(options.url).catch(options.onerror);
+			const element = ToneMediaElement.load(options.url);
+
+			if (!element) {
+				options.onerror(new Error("Cannot create ToneMediaElement"));
+				return;
+			}
+
+			this._element = element;
 		}
 	}
 
@@ -66,27 +71,6 @@ export class ToneMediaElement extends Tone {
 			onerror: noOp,
 			onload: noOp,
 		};
-	}
-
-	/**
-	 * Pass in an AudioBuffer or ToneAudioBuffer to set the value of this buffer.
-	 */
-	set(buffer: AudioBuffer | ToneMediaElement): this {
-		if (buffer instanceof ToneMediaElement) {
-			// if it's loaded, set it
-			if (buffer.loaded) {
-				this._element = buffer.get();
-			} else {
-				// otherwise when it's loaded, invoke it's callback
-				buffer.onload = () => {
-					this.set(buffer);
-					this.onload(this);
-				};
-			}
-		} else {
-			this._element = buffer;
-		}
-		return this;
 	}
 
 	/**
@@ -105,59 +89,6 @@ export class ToneMediaElement extends Tone {
 		return this;
 	}
 
-	/**
-	 * If the buffer is loaded or not
-	 */
-	get loaded(): boolean {
-		return this.length > 0;
-	}
-
-	/**
-	 * The duration of the buffer in seconds.
-	 */
-	get duration(): Seconds {
-		if (this._buffer) {
-			return this._buffer.duration;
-		} else {
-			return 0;
-		}
-	}
-
-	/**
-	 * The length of the buffer in samples
-	 */
-	get length(): Samples {
-		if (this._buffer) {
-			return this._buffer.length;
-		} else {
-			return 0;
-		}
-	}
-
-	/**
-	 * The number of discrete audio channels. Returns 0 if no buffer is loaded.
-	 */
-	get numberOfChannels(): number {
-		if (this._buffer) {
-			return this._buffer.numberOfChannels;
-		} else {
-			return 0;
-		}
-	}
-
-	/**
-	 * Reverse the buffer.
-	 */
-	get reverse(): boolean {
-		return this._reversed;
-	}
-	set reverse(rev: boolean) {
-		if (this._reversed !== rev) {
-			this._reversed = rev;
-			this._reverse();
-		}
-	}
-
 	//-------------------------------------
 	// STATIC METHODS
 	//-------------------------------------
@@ -168,19 +99,9 @@ export class ToneMediaElement extends Tone {
 	static baseUrl = "";
 
 	/**
-	 * Create a ToneAudioBuffer from the array. To create a multichannel AudioBuffer,
-	 * pass in a multidimensional array.
-	 * @param array The array to fill the audio buffer
-	 * @return A ToneAudioBuffer created from the array
+	 * Loads a url and returns the MediaElementAudioSourceNode.
 	 */
-	static fromArray(array: Float32Array | Float32Array[]): ToneMediaElement {
-		return new ToneMediaElement().fromArray(array);
-	}
-
-	/**
-	 * Loads a url using fetch and returns the AudioBuffer.
-	 */
-	static async load(url: string): Promise<AudioBuffer> {
+	static load(url: string): MediaElementAudioSourceNode {
 		// test if the url contains multiple extensions
 		const matches = url.match(/\[([^\]\[]+\|.+)\]$/);
 		if (matches) {
@@ -226,15 +147,17 @@ export class ToneMediaElement extends Tone {
 		// eslint-disable-next-line no-console
 		console.log("load", url, href);
 
-		const response = await fetch(href);
-		if (!response.ok) {
-			throw new Error(`could not load url: ${url}`);
+		const element = new Audio(href);
+		const mediaElementSource =
+			getContext().createMediaElementSource(element);
+
+		if (!mediaElementSource) {
+			throw new Error(
+				`could not create MediaElementSource for url: ${url}`
+			);
 		}
-		const arrayBuffer = await response.arrayBuffer();
 
-		const audioBuffer = await getContext().decodeAudioData(arrayBuffer);
-
-		return audioBuffer;
+		return mediaElementSource;
 	}
 
 	/**
@@ -253,16 +176,5 @@ export class ToneMediaElement extends Tone {
 			.createElement("audio")
 			.canPlayType("audio/" + extension);
 		return response !== "";
-	}
-
-	/**
-	 * Returns a Promise which resolves when all of the buffers have loaded
-	 */
-	static async loaded(): Promise<void> {
-		// this makes sure that the function is always async
-		await Promise.resolve();
-		while (ToneMediaElement.downloads.length) {
-			await ToneMediaElement.downloads[0];
-		}
 	}
 }
