@@ -24,7 +24,7 @@ export class ToneMediaElement extends Tone {
 	/**
 	 * stores the loaded MediaElement
 	 */
-	private _element?: MediaElementAudioSourceNode;
+	private _element?: HTMLAudioElement;
 
 	/**
 	 * Callback when the element is loaded
@@ -76,7 +76,7 @@ export class ToneMediaElement extends Tone {
 	/**
 	 * The media element stored in the object.
 	 */
-	get(): MediaElementAudioSourceNode | undefined {
+	get(): HTMLAudioElement | undefined {
 		return this._element;
 	}
 
@@ -99,9 +99,9 @@ export class ToneMediaElement extends Tone {
 	static baseUrl = "";
 
 	/**
-	 * Loads a url and returns the MediaElementAudioSourceNode.
+	 * Creates HTMLAudioElement for provided url.
 	 */
-	static load(url: string): MediaElementAudioSourceNode {
+	static load(url: string): HTMLAudioElement {
 		// test if the url contains multiple extensions
 		const matches = url.match(/\[([^\]\[]+\|.+)\]$/);
 		if (matches) {
@@ -148,16 +148,13 @@ export class ToneMediaElement extends Tone {
 		console.log("load", url, href);
 
 		const element = new Audio(href);
-		const mediaElementSource =
-			getContext().createMediaElementSource(element);
-
-		if (!mediaElementSource) {
+		if (!element) {
 			throw new Error(
-				`could not create MediaElementSource for url: ${url}`
+				`could not create HTMLAudioElement for source: ${url}`
 			);
 		}
 
-		return mediaElementSource;
+		return element;
 	}
 
 	/**
