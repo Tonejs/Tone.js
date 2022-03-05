@@ -2,7 +2,7 @@ import { ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudi
 import { optionsFromArguments } from "../../core/util/Defaults";
 import { Gain } from "../../core/context/Gain";
 
-export type DCFilterOptions = ToneAudioNodeOptions;
+export type DCFilterOptions = ToneAudioNodeOptions; 
 
 /**
  * 
