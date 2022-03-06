@@ -1,6 +1,8 @@
 import { TimeClass } from "../../core/type/Time";
 import { PlaybackState } from "../../core/util/StateTimeline";
 import { TimelineValue } from "../../core/util/TimelineValue";
+import { ToneAudioNode } from "../../core/context/ToneAudioNode";
+import { Pow } from "../../signal/Pow";
 import { Signal } from "../../signal/Signal";
 import {
 	onContextClose,
@@ -707,20 +709,37 @@ export class Transport
 	 * 			Otherwise it will be computed based on their current values.
 	 */
 	syncSignal(signal: Signal<any>, ratio?: number): this {
+		const now = this.now();
+		let source : TickParam<"bpm"> | ToneAudioNode<any> = this.bpm;
+		let sourceValue = 1 / (60 / source.getValueAtTime(now) / this.PPQ);
+		// If the signal is in the time domain, sync it to the reciprocal of
+		// the tempo instead of the tempo.
+		if (signal.units === "time") {
+			// The input to Pow should be in the range [1 / 4096, 1], where
+			// where 4096 is half of the buffer size of Pow's waveshaper.
+			// Pick a scaling factor based on the initial tempo that ensures
+			// that the initial input is in this range, while leaving room for
+			// tempo changes.
+			const scaleFactor = 1 / 64 / sourceValue;
+			const scaleBefore = new Gain(scaleFactor);
+			const reciprocal = new Pow(-1);
+			const scaleAfter = new Gain(scaleFactor);
+			// @ts-ignore
+			source.chain(scaleBefore, reciprocal, scaleAfter);
+			source = scaleAfter;
+			sourceValue = 1 / sourceValue;
+		}
 		if (!ratio) {
 			// get the sync ratio
-			const now = this.now();
 			if (signal.getValueAtTime(now) !== 0) {
-				const bpm = this.bpm.getValueAtTime(now);
-				const computedFreq = 1 / (60 / bpm / this.PPQ);
-				ratio = signal.getValueAtTime(now) / computedFreq;
+				ratio = signal.getValueAtTime(now) / sourceValue;
 			} else {
 				ratio = 0;
 			}
 		}
 		const ratioSignal = new Gain(ratio);
 		// @ts-ignore
-		this.bpm.connect(ratioSignal);
+		source.connect(ratioSignal);
 		// @ts-ignore
 		ratioSignal.connect(signal._param);
 		this._syncedSignals.push({
