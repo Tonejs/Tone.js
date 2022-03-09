@@ -1,8 +1,5 @@
-import { ToneAudioBuffer } from "../core/context/ToneAudioBuffer";
-import { ToneAudioBuffers } from "../core/context/ToneAudioBuffers";
 import { ftomf, intervalToFrequencyRatio } from "../core/type/Conversions";
 import { FrequencyClass } from "../core/type/Frequency";
-import { ToneMediaElement } from "../core/context/ToneMediaElement";
 import { ToneMediaElements } from "../core/context/ToneMediaElements";
 import {
 	Frequency,
@@ -59,7 +56,7 @@ export class MediaElementSampler extends Instrument<MediaElementSamplerOptions> 
 	readonly name: string = "MediaElementSampler";
 
 	/**
-	 * The stored and loaded buffers
+	 * The stored MediaElements
 	 */
 	private _elements: ToneMediaElements;
 
@@ -226,7 +223,7 @@ export class MediaElementSampler extends Instrument<MediaElementSamplerOptions> 
 				this._activeSources.set(midi, []);
 			}
 
-			this._activeSources.get(midi).push(source);
+			this._activeSources.get(midi)?.push(source);
 
 			// remove it when it's done
 			source.onended = () => {
@@ -333,11 +330,7 @@ export class MediaElementSampler extends Instrument<MediaElementSamplerOptions> 
 	 * @param  url  Either the url of the buffer, or a buffer which will be added with the given name.
 	 * @param  callback  The callback to invoke when the url is loaded.
 	 */
-	add(
-		note: Note | MidiNote,
-		url: string | ToneAudioBuffer | AudioBuffer,
-		callback?: () => void
-	): this {
+	add(note: Note | MidiNote, url: string, callback?: () => void): this {
 		assert(
 			isNote(note) || isFinite(note),
 			`note must be a pitch or midi: ${note}`
@@ -351,13 +344,6 @@ export class MediaElementSampler extends Instrument<MediaElementSamplerOptions> 
 			this._elements.add(note, url, callback);
 		}
 		return this;
-	}
-
-	/**
-	 * If the buffers are loaded or not
-	 */
-	get loaded(): boolean {
-		return this._elements.loaded;
 	}
 
 	/**

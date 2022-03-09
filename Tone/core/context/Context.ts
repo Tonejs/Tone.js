@@ -114,7 +114,6 @@ export class Context extends BaseContext {
 			this._latencyHint = arguments[0]?.latencyHint || "";
 		} else {
 			// eslint-disable-next-line no-console
-			console.log(options);
 			this._context = createAudioContext({
 				latencyHint: options.latencyHint,
 				sampleRate: options.sampleRate,

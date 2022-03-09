@@ -1,11 +1,9 @@
-import { connect } from "../../core/context/ToneAudioNode";
 import { Param } from "../../core/context/Param";
 import { ToneMediaElement } from "../../core/context/ToneMediaElement";
 import { GainFactor, Positive, Seconds, Time } from "../../core/type/Units";
 import { defaultArg, optionsFromArguments } from "../../core/util/Defaults";
 import { noOp } from "../../core/util/Interface";
 import { isDefined } from "../../core/util/TypeCheck";
-import { assert } from "../../core/util/Debug";
 import { OneShotSource, OneShotSourceOptions } from "../OneShotSource";
 import { EQ, GTE, LT } from "../../core/util/Math";
 

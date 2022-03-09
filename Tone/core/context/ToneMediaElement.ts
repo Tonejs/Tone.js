@@ -144,9 +144,6 @@ export class ToneMediaElement extends Tone {
 			href = anchorElement.href;
 		}
 
-		// eslint-disable-next-line no-console
-		console.log("load", url, href);
-
 		const element = new Audio(href);
 		if (!element) {
 			throw new Error(
