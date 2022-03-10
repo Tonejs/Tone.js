@@ -211,12 +211,7 @@ export class MediaElementSampler extends Instrument<MediaElementSamplerOptions> 
 				playbackRate,
 			}).connect(this.output);
 
-			source.start(
-				time,
-				0,
-				source.duration.value / playbackRate,
-				velocity
-			);
+			source.start(time, 0, source.duration / playbackRate, velocity);
 
 			// add it to the active sources
 			if (!isArray(this._activeSources.get(midi))) {

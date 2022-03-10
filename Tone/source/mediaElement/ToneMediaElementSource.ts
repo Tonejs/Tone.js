@@ -34,12 +34,12 @@ export class ToneMediaElementSource extends OneShotSource<ToneMediaElementSource
 	/**
 	 * The frequency of the oscillator
 	 */
-	readonly playbackRate: Param<"positive">;
+	readonly playbackRate: Positive;
 
 	/**
 	 * Playback speed
 	 */
-	readonly duration: Param<"positive">;
+	readonly duration: Positive;
 
 	/**
 	 * indicators if the source has started/stopped
@@ -48,8 +48,15 @@ export class ToneMediaElementSource extends OneShotSource<ToneMediaElementSource
 	private _sourceStopped = false;
 
 	/**
-	 * @param url The buffer to play or url to load
-	 * @param onload The callback to invoke when the buffer is done playing.
+	 * loop params
+	 */
+	loop: boolean;
+	loopStart: Positive;
+	loopEnd: Positive;
+
+	/**
+	 * @param url The url to load
+	 * @param onload The callback to invoke when the source is done playing.
 	 */
 	constructor(mediaElement?: ToneMediaElement, onload?: () => void);
 	constructor(options?: Partial<ToneMediaElementSourceOptions>);
@@ -72,23 +79,14 @@ export class ToneMediaElementSource extends OneShotSource<ToneMediaElementSource
 			audioElement
 		) as MediaElementAudioSourceNode;
 
-		this.duration = new Param({
-			context: this.context,
-			units: "positive",
-			value: 10, // TODO: get duration from mediaElement
-		});
-
 		audioElement.playbackRate = options.playbackRate;
-		this.playbackRate = new Param({
-			context: this.context,
-			units: "positive",
-			value: options.playbackRate,
-		});
+		this.playbackRate = options.playbackRate;
+		this.duration = 10; // TODO: get duration from mediaElement
 
 		// set some values initially
 		this.loop = options.loop;
-		this.loopStart = options.loopStart;
-		this.loopEnd = options.loopEnd;
+		this.loopStart = this.toSeconds(options.loopStart);
+		this.loopEnd = this.toSeconds(options.loopEnd);
 	}
 
 	static getDefaults(): ToneMediaElementSourceOptions {
@@ -124,11 +122,11 @@ export class ToneMediaElementSource extends OneShotSource<ToneMediaElementSource
 	}
 
 	/**
-	 * Start the buffer
+	 * Start the source
 	 * @param  time When the player should start.
 	 * @param  offset The offset from the beginning of the sample to start at.
 	 * @param  duration How long the sample should play. If no duration is given, it will default to the full length of the sample (minus any offset)
-	 * @param  gain  The gain to play the buffer back at.
+	 * @param  gain  The gain to play the source back at.
 	 */
 	start(
 		time?: Time,
@@ -155,10 +153,10 @@ export class ToneMediaElementSource extends OneShotSource<ToneMediaElementSource
 		// make sure the offset is not less than 0
 		let computedOffset = Math.max(this.toSeconds(offset), 0);
 
-		// start the buffer source
+		// start the media element source
 		if (this.loop) {
 			// modify the offset if it's greater than the loop time
-			const loopEnd = this.toSeconds(this.loopEnd) || this.duration.value;
+			const loopEnd = this.toSeconds(this.loopEnd) || this.duration;
 			const loopStart = this.toSeconds(this.loopStart);
 			const loopDuration = loopEnd - loopStart;
 			// move the offset back
@@ -167,12 +165,12 @@ export class ToneMediaElementSource extends OneShotSource<ToneMediaElementSource
 					((computedOffset - loopStart) % loopDuration) + loopStart;
 			}
 			// when the offset is very close to the duration, set it to 0
-			if (EQ(computedOffset, this.duration.value)) {
+			if (EQ(computedOffset, this.duration)) {
 				computedOffset = 0;
 			}
 		}
 
-		if (LT(computedOffset, this.duration.value)) {
+		if (LT(computedOffset, this.duration)) {
 			this._sourceStarted = true;
 			this.start(computedTime, computedOffset);
 		}
@@ -197,46 +195,12 @@ export class ToneMediaElementSource extends OneShotSource<ToneMediaElementSource
 	}
 
 	/**
-	 * If loop is true, the loop will start at this position.
-	 */
-	get loopStart(): Time {
-		return this.loopStart;
-	}
-	set loopStart(loopStart: Time) {
-		this.loopStart = this.toSeconds(loopStart);
-	}
-
-	/**
-	 * If loop is true, the loop will end at this position.
-	 */
-	get loopEnd(): Time {
-		return this.loopEnd;
-	}
-	set loopEnd(loopEnd: Time) {
-		this.loopEnd = this.toSeconds(loopEnd);
-	}
-
-	/**
-	 * If the buffer should loop once it's over.
-	 */
-	get loop(): boolean {
-		return this.loop;
-	}
-	set loop(loop: boolean) {
-		this.loop = loop;
-		if (this._sourceStarted) {
-			this.cancelStop();
-		}
-	}
-
-	/**
 	 * Clean up.
 	 */
 	dispose(): this {
 		super.dispose();
 		this.onended = noOp;
 		this.disconnect();
-		this.playbackRate.dispose();
 		return this;
 	}
 }
