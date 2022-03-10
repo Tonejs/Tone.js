@@ -75,7 +75,7 @@ export class ToneMediaElementSource extends OneShotSource<ToneMediaElementSource
 		this.duration = new Param({
 			context: this.context,
 			units: "positive",
-			value: options.playbackRate, // TODO: get duration from mediaElement
+			value: 10, // TODO: get duration from mediaElement
 		});
 
 		audioElement.playbackRate = options.playbackRate;
