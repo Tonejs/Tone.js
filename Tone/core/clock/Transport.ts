@@ -60,7 +60,7 @@ type TransportEventNames =
 interface SyncedSignalEvent {
 	signal: Signal;
 	initial: number;
-	ratio: Gain;
+	nodes: ToneAudioNode<any>[];
 }
 
 type TransportCallback = (time: Seconds) => void;
@@ -712,6 +712,7 @@ export class Transport
 		const now = this.now();
 		let source : TickParam<"bpm"> | ToneAudioNode<any> = this.bpm;
 		let sourceValue = 1 / (60 / source.getValueAtTime(now) / this.PPQ);
+		let nodes : ToneAudioNode<any>[] = [];
 		// If the signal is in the time domain, sync it to the reciprocal of
 		// the tempo instead of the tempo.
 		if (signal.units === "time") {
@@ -728,6 +729,7 @@ export class Transport
 			source.chain(scaleBefore, reciprocal, scaleAfter);
 			source = scaleAfter;
 			sourceValue = 1 / sourceValue;
+			nodes = [scaleBefore, reciprocal, scaleAfter];
 		}
 		if (!ratio) {
 			// get the sync ratio
@@ -742,9 +744,10 @@ export class Transport
 		source.connect(ratioSignal);
 		// @ts-ignore
 		ratioSignal.connect(signal._param);
+		nodes.push(ratioSignal);
 		this._syncedSignals.push({
 			initial: signal.value,
-			ratio: ratioSignal,
+			nodes: nodes,
 			signal,
 		});
 		signal.value = 0;
@@ -759,7 +762,7 @@ export class Transport
 		for (let i = this._syncedSignals.length - 1; i >= 0; i--) {
 			const syncedSignal = this._syncedSignals[i];
 			if (syncedSignal.signal === signal) {
-				syncedSignal.ratio.dispose();
+				syncedSignal.nodes.forEach((node) => node.dispose());
 				syncedSignal.signal.value = syncedSignal.initial;
 				this._syncedSignals.splice(i, 1);
 			}
