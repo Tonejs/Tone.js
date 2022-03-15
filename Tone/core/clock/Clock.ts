@@ -253,10 +253,11 @@ export class Clock<TypeName extends "bpm" | "hertz" = "hertz">
 		const endTime = this.now();
 		this._lastUpdate = endTime;
 		this.log("loop", startTime, endTime);
-
+		
 		if (startTime !== endTime) {
 			// the state change events
 			this._state.forEachBetween(startTime, endTime, e => {
+				
 				switch (e.state) {
 					case "started":
 						const offset = this._tickSource.getTicksAtTime(e.time);
