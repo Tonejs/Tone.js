@@ -7,6 +7,7 @@ import { PlaybackState, StateTimeline } from "../util/StateTimeline";
 import { TickSignal } from "./TickSignal";
 import { TickSource } from "./TickSource";
 import { assertContextRunning } from "../util/Debug";
+import { PassAudio } from "test/helper/PassAudio";
 
 type ClockCallback = (time: Seconds, ticks?: Ticks) => void;
 
@@ -257,20 +258,13 @@ export class Clock<TypeName extends "bpm" | "hertz" = "hertz">
 		if (startTime !== endTime) {
 			// the state change events
 			this._state.forEachBetween(startTime, endTime, e => {
-				
-				switch (e.state) {
-					case "started":
-						const offset = this._tickSource.getTicksAtTime(e.time);
-						this.emit("start", e.time, offset);
-						break;
-					case "stopped":
-						if (e.time !== 0) {
-							this.emit("stop", e.time);
-						}
-						break;
-					case "paused":
-						this.emit("pause", e.time);
-						break;
+				if (e.state === "started") {
+					const offset = this._tickSource.getTicksAtTime(e.time);
+					this.emit("start", e.time, offset);
+				} else if (e.state === "stopped" && e.time !== 0) {
+					this.emit("stop", e.time);
+				} else if (e.state === "paused") {
+					this.emit("pause", e.time);
 				}
 			});
 			// the tick callbacks
