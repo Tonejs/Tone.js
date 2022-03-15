@@ -342,6 +342,11 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 			this._partials = [];
 		}
 
+		this.sampleWave(periodicWaveSize, type, partialCount, real, phase, imag);
+		return [real, imag];
+	}
+
+	private sampleWave(periodicWaveSize: number, type: string, partialCount: number, real: Float32Array, phase: number, imag: Float32Array) {
 		for (let n = 1; n < periodicWaveSize; ++n) {
 			const piFactor = 2 / (n * Math.PI);
 			let b;
@@ -380,7 +385,6 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 				imag[n] = 0;
 			}
 		}
-		return [real, imag];
 	}
 
 	/**
