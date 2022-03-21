@@ -127,7 +127,7 @@ export class DummyContext extends BaseContext {
 		return {} as AnyAudioContext;
 	}
 
-	async addAudioWorkletModule(_url: string, _name: string): Promise<void> {
+	async addAudioWorkletModule(_url: string): Promise<void> {
 		return Promise.resolve();
 	}
 

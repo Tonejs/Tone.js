@@ -1,5 +1,6 @@
 import { expect } from "chai";
 import { FeedbackCombFilter } from "./FeedbackCombFilter";
+import { BitCrusher } from "Tone/effect/BitCrusher";
 import { BasicTests } from "test/helper/Basic";
 import { PassAudio } from "test/helper/PassAudio";
 import { Offline } from "test/helper/Offline";
@@ -75,6 +76,21 @@ describe("FeedbackCombFilter", () => {
 				expect(buffer.getValueAtTime(0.301)).to.equal(0.25);
 			});
 		});
+	});
+
+	it("should be usable with the BitCrusher", (done) => {
+		new FeedbackCombFilter();
+		new BitCrusher(4);
+
+		const handle = setTimeout(() => {
+			window.onunhandledrejection = null;
+			done();
+		}, 100);
+
+		window.onunhandledrejection = (event) => {
+			done(event.reason);
+			clearTimeout(handle);
+		};
 	});
 });
 

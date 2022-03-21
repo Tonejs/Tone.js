@@ -340,7 +340,7 @@ export class Context extends BaseContext {
 	/**
 	 * Maps a module name to promise of the addModule method
 	 */
-	private _workletModules: Map<string, Promise<void>> = new Map();
+	private _workletPromise: null | Promise<void> = null;
 
 	/**
 	 * Create an audio worklet node from a name and options. The module
@@ -356,29 +356,23 @@ export class Context extends BaseContext {
 	/**
 	 * Add an AudioWorkletProcessor module
 	 * @param url The url of the module
-	 * @param name The name of the module
 	 */
-	async addAudioWorkletModule(url: string, name: string): Promise<void> {
+	async addAudioWorkletModule(url: string): Promise<void> {
 		assert(
 			isDefined(this.rawContext.audioWorklet),
 			"AudioWorkletNode is only available in a secure context (https or localhost)"
 		);
-		if (!this._workletModules.has(name)) {
-			this._workletModules.set(
-				name,
-				this.rawContext.audioWorklet.addModule(url)
-			);
+		if (!this._workletPromise) {
+			this._workletPromise = this.rawContext.audioWorklet.addModule(url);
 		}
-		await this._workletModules.get(name);
+		await this._workletPromise;
 	}
 
 	/**
 	 * Returns a promise which resolves when all of the worklets have been loaded on this context
 	 */
 	protected async workletsAreReady(): Promise<void> {
-		const promises: Promise<void>[] = [];
-		this._workletModules.forEach((promise) => promises.push(promise));
-		await Promise.all(promises);
+		await this._workletPromise ? this._workletPromise : Promise.resolve();
 	}
 
 	//---------------------------
