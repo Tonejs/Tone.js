@@ -20,7 +20,7 @@ interface SequenceOptions<T> extends Omit<ToneEventOptions<T>, "value"> {
  * in an array of events which will be spaced at the
  * given subdivision. Sub-arrays will subdivide that beat
  * by the number of items are in the array.
- * Sequence notation inspiration from [Tidal](http://yaxu.org/tidal/)
+ * Sequence notation inspiration from [Tidal Cycles](http://tidalcycles.org)
  * @example
  * const synth = new Tone.Synth().toDestination();
  * const seq = new Tone.Sequence((time, note) => {
