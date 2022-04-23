@@ -2,6 +2,7 @@ import { Effect, EffectOptions } from "./Effect";
 import { Positive } from "../core/type/Units";
 import { optionsFromArguments } from "../core/util/Defaults";
 import { WaveShaper } from "../signal/WaveShaper";
+import { assert } from "../core/util/Debug";
 
 export interface ChebyshevOptions extends EffectOptions {
 	order: Positive;
@@ -60,7 +61,7 @@ export class Chebyshev extends Effect<ChebyshevOptions> {
 	static getDefaults(): ChebyshevOptions {
 		return Object.assign(Effect.getDefaults(), {
 			order: 1,
-			oversample: "none" as "none"
+			oversample: "none" as const
 		});
 	}
 
@@ -85,7 +86,7 @@ export class Chebyshev extends Effect<ChebyshevOptions> {
 
 	/**
 	 * The order of the Chebyshev polynomial which creates the equation which is applied to the incoming 
-	 * signal through a Tone.WaveShaper. The equations are in the form:
+	 * signal through a Tone.WaveShaper. Must be an integer. The equations are in the form:
 	 * ```
 	 * order 2: 2x^2 + 1
 	 * order 3: 4x^3 + 3x 
@@ -97,6 +98,7 @@ export class Chebyshev extends Effect<ChebyshevOptions> {
 		return this._order;
 	}
 	set order(order) {
+		assert(Number.isInteger(order), "'order' must be an integer");
 		this._order = order;
 		this._shaper.setMap((x => {
 			return this._getCoefficient(x, order, new Map());

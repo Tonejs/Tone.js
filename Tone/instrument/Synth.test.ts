@@ -106,6 +106,69 @@ describe("Synth", () => {
 		});
 	});
 
+	context("Transport sync", () => {
+		it("is silent until the transport is started", () => {
+			return Offline(({ transport }) => {
+				const synth = new Synth().sync().toDestination();
+				synth.triggerAttackRelease("C4", 0.5);
+				transport.start(0.5);
+			}, 1).then((buffer) => {
+				expect(buffer.getTimeOfFirstSound()).is.closeTo(0.5, 0.1);
+			});
+		});
+
+		it("stops when the transport is stopped", () => {
+			return Offline(({ transport }) => {
+				const synth = new Synth({
+					envelope: {
+						release: 0
+					}
+				}).sync().toDestination();
+				synth.triggerAttackRelease("C4", 0.5);
+				transport.start(0.5).stop(1);
+			}, 1.5).then((buffer) => {
+				expect(buffer.getTimeOfLastSound()).is.closeTo(1, 0.1);
+			});
+		});
+
+		it("goes silent at the loop boundary", () => {
+			return Offline(({ transport }) => {
+				const synth = new Synth({
+					envelope: {
+						release: 0
+					}
+				}).sync().toDestination();
+				synth.triggerAttackRelease("C4", 0.8, 0.5);
+				transport.loopEnd = 1;
+				transport.loop = true;
+				transport.start();
+			}, 2).then((buffer) => {
+				expect(buffer.getRmsAtTime(0)).to.be.closeTo(0, 0.05);
+				expect(buffer.getRmsAtTime(0.6)).to.be.closeTo(0.2, 0.05);
+				expect(buffer.getRmsAtTime(1.1)).to.be.closeTo(0, 0.05);
+				expect(buffer.getRmsAtTime(1.6)).to.be.closeTo(0.2, 0.05);
+			});
+		});
+
+		it("can unsync", () => {
+			return Offline(({ transport }) => {
+				const synth = new Synth({
+					envelope: {
+						sustain: 1,
+						release: 0
+					}
+				}).sync().toDestination().unsync();
+				synth.triggerAttackRelease("C4", 1, 0.5);
+				transport.start().stop(1);
+			}, 2).then((buffer) => {
+				expect(buffer.getRmsAtTime(0)).to.be.closeTo(0, 0.05);
+				expect(buffer.getRmsAtTime(0.6)).to.be.closeTo(0.6, 0.05);
+				expect(buffer.getRmsAtTime(1.4)).to.be.closeTo(0.6, 0.05);
+				expect(buffer.getRmsAtTime(1.6)).to.be.closeTo(0, 0.05);
+			});
+		});
+	});
+
 	context("Portamento", () => {
 		it("can play notes with a portamento", () => {
 			return Offline(() => {

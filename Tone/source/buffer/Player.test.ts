@@ -8,7 +8,6 @@ import { getContext } from "Tone/core/Global";
 import { Player } from "./Player";
 
 describe("Player", () => {
-
 	const buffer = new ToneAudioBuffer();
 
 	beforeEach(() => {
@@ -20,15 +19,18 @@ describe("Player", () => {
 	SourceTests(Player, buffer);
 
 	it("matches a file", () => {
-		return CompareToFile(() => {
-			const player = new Player(buffer).toDestination();
-			player.start(0.1).stop(0.2);
-			player.playbackRate = 2;
-		}, "player.wav", 0.005);
+		return CompareToFile(
+			() => {
+				const player = new Player(buffer).toDestination();
+				player.start(0.1).stop(0.2);
+				player.playbackRate = 2;
+			},
+			"player.wav",
+			0.005
+		);
 	});
 
 	context("Constructor", () => {
-
 		it("can be constructed with a Tone.Buffer", () => {
 			const player = new Player(buffer);
 			expect(player.buffer.get()).to.equal(buffer.get());
@@ -60,7 +62,6 @@ describe("Player", () => {
 	});
 
 	context("onstop", () => {
-
 		it("invokes the onstop method when the player is explicitly stopped", () => {
 			let wasInvoked = false;
 			return Offline(() => {
@@ -105,7 +106,6 @@ describe("Player", () => {
 	});
 
 	context("Loading", () => {
-
 		it("loads a url which was passed in", (done) => {
 			const player = new Player("./audio/sine.wav", () => {
 				expect(player.loaded).to.be.true;
@@ -131,12 +131,12 @@ describe("Player", () => {
 
 		it("invokes onerror if no url", (done) => {
 			const source = new Player({
-				url: "./nosuchfile.wav", 
+				url: "./nosuchfile.wav",
 				onerror(e) {
 					expect(e).to.be.instanceOf(Error);
 					source.dispose();
 					done();
-				}
+				},
 			});
 		});
 
@@ -152,11 +152,9 @@ describe("Player", () => {
 				url: "./audio/sine.wav",
 			});
 		});
-
 	});
 
 	context("Reverse", () => {
-
 		it("can get/set reverse", () => {
 			const player = new Player();
 			player.reverse = true;
@@ -166,7 +164,9 @@ describe("Player", () => {
 
 		it("can be played in reverse", () => {
 			const shorterBuffer = buffer.slice(0, buffer.duration / 2);
-			const audioBuffer = (shorterBuffer.get() as AudioBuffer).getChannelData(0);
+			const audioBuffer = (
+				shorterBuffer.get() as AudioBuffer
+			).getChannelData(0);
 			const lastSample = audioBuffer[audioBuffer.length - 1];
 			expect(lastSample).to.not.equal(0);
 			return Offline(() => {
@@ -180,11 +180,9 @@ describe("Player", () => {
 				expect(firstSample).to.equal(lastSample);
 			});
 		});
-
 	});
 
 	context("Looping", () => {
-
 		beforeEach(() => {
 			return buffer.load("./audio/short_sine.wav");
 		});
@@ -243,7 +241,7 @@ describe("Player", () => {
 				player.toDestination();
 				player.start(0);
 				player.loop = true;
-			}, buffer.duration * 1.5).then(buff => {
+			}, buffer.duration * 1.5).then((buff) => {
 				expect(buff.getRmsAtTime(0)).to.be.above(0);
 				expect(buff.getRmsAtTime(buffer.duration * 0.5)).to.be.above(0);
 				expect(buff.getRmsAtTime(buffer.duration)).to.be.above(0);
@@ -252,7 +250,8 @@ describe("Player", () => {
 		});
 
 		it("offset is the loopStart when set to loop", () => {
-			const testSample = buffer.toArray(0)[Math.floor(0.1 * getContext().sampleRate)];
+			const testSample =
+				buffer.toArray(0)[Math.floor(0.1 * getContext().sampleRate)];
 			return Offline(() => {
 				const player = new Player(buffer);
 				player.loopStart = 0.1;
@@ -271,10 +270,10 @@ describe("Player", () => {
 				player.loop = true;
 				player.toDestination();
 				player.start(0, 0, playDur);
-			}, buffer.duration * 2).then(buff => {
+			}, buffer.duration * 2).then((buff) => {
 				for (let time = 0; time < buffer.duration * 2; time += 0.1) {
 					const val = buff.getRmsAtTime(time);
-					if (time < (playDur - 0.01)) {
+					if (time < playDur - 0.01) {
 						expect(val).to.be.greaterThan(0);
 					} else if (time > playDur) {
 						expect(val).to.equal(0);
@@ -286,9 +285,11 @@ describe("Player", () => {
 		it("correctly compensates if the offset is greater than the loopEnd", () => {
 			return Offline(() => {
 				// make a ramp between 0-1
-				const ramp = new Float32Array(Math.floor(getContext().sampleRate * 0.3));
+				const ramp = new Float32Array(
+					Math.floor(getContext().sampleRate * 0.3)
+				);
 				for (let i = 0; i < ramp.length; i++) {
-					ramp[i] = (i / (ramp.length)) * 0.3;
+					ramp[i] = (i / ramp.length) * 0.3;
 				}
 				const buff = ToneAudioBuffer.fromArray(ramp);
 				const player = new Player(buff).toDestination();
@@ -306,7 +307,6 @@ describe("Player", () => {
 				});
 			});
 		});
-
 	});
 
 	context("PlaybackRate", () => {
@@ -344,7 +344,6 @@ describe("Player", () => {
 	});
 
 	context("Get/Set", () => {
-
 		it("can be set with an options object", () => {
 			const player = new Player();
 			expect(player.loop).to.be.false;
@@ -399,13 +398,12 @@ describe("Player", () => {
 			expect(player.playbackRate).to.equal(0.5);
 			player.dispose();
 		});
-
 	});
 
 	context("Start Scheduling", () => {
-
 		it("can be start with an offset", () => {
-			const testSample = buffer.toArray(0)[Math.floor(0.1 * getContext().sampleRate)];
+			const testSample =
+				buffer.toArray(0)[Math.floor(0.1 * getContext().sampleRate)];
 			return Offline(() => {
 				const player = new Player(buffer.get());
 				player.toDestination();
@@ -418,9 +416,11 @@ describe("Player", () => {
 		it("is stopped and restarted when start is called twice", () => {
 			return Offline(() => {
 				// make a ramp between 0-1
-				const ramp = new Float32Array(Math.floor(getContext().sampleRate * 0.3));
+				const ramp = new Float32Array(
+					Math.floor(getContext().sampleRate * 0.3)
+				);
 				for (let i = 0; i < ramp.length; i++) {
-					ramp[i] = (i / (ramp.length - 1));
+					ramp[i] = i / (ramp.length - 1);
 				}
 				const buff = new ToneAudioBuffer().fromArray(ramp);
 				const player = new Player(buff).toDestination();
@@ -442,9 +442,11 @@ describe("Player", () => {
 
 		it("can seek to a position at the given time", () => {
 			return Offline(() => {
-				const ramp = new Float32Array(Math.floor(getContext().sampleRate * 0.3));
+				const ramp = new Float32Array(
+					Math.floor(getContext().sampleRate * 0.3)
+				);
 				for (let i = 0; i < ramp.length; i++) {
-					ramp[i] = (i / (ramp.length)) * 0.3;
+					ramp[i] = (i / ramp.length) * 0.3;
 				}
 				const buff = new ToneAudioBuffer().fromArray(ramp);
 				const player = new Player(buff).toDestination();
@@ -466,7 +468,7 @@ describe("Player", () => {
 				const player = new Player(buffer);
 				player.toDestination();
 				player.start(0).stop(0.1);
-				return time => {
+				return (time) => {
 					whenBetween(time, 0.1, Infinity, () => {
 						expect(player.state).to.equal("stopped");
 					});
@@ -475,9 +477,13 @@ describe("Player", () => {
 					});
 				};
 			}, 0.3).then((buff) => {
-				buff.forEachBetween((sample) => {
-					expect(sample).to.equal(0);
-				}, 0.11, 0.15);
+				buff.forEachBetween(
+					(sample) => {
+						expect(sample).to.equal(0);
+					},
+					0.11,
+					0.15
+				);
 			});
 		});
 
@@ -495,7 +501,10 @@ describe("Player", () => {
 			return Offline(() => {
 				const player = new Player(buffer);
 				player.toDestination();
-				player.start(0, 0, 0.05).start(0.1, 0, 0.05).start(0.2, 0, 0.05);
+				player
+					.start(0, 0, 0.05)
+					.start(0.1, 0, 0.05)
+					.start(0.2, 0, 0.05);
 				player.stop(0.1);
 			}, 0.3).then((buff) => {
 				expect(buff.getTimeOfLastSound()).to.be.closeTo(0.1, 0.02);
@@ -518,7 +527,7 @@ describe("Player", () => {
 				const player = new Player(buffer);
 				player.toDestination();
 				player.start(0, 0, 0.1);
-				return time => {
+				return (time) => {
 					whenBetween(time, 0.1, Infinity, () => {
 						expect(player.state).to.equal("stopped");
 					});
@@ -549,17 +558,42 @@ describe("Player", () => {
 
 		it("plays synced to the Transport", () => {
 			return Offline(({ transport }) => {
-				const player = new Player(buffer).sync().start(0).toDestination();
+				const player = new Player(buffer)
+					.sync()
+					.start(0)
+					.toDestination();
 				transport.start(0);
 			}, 0.05).then((buff) => {
 				expect(buff.isSilent()).to.be.false;
 			});
 		});
 
+		it("does not play twice when the offset is very small", () => {
+			// addresses #999 and #944
+			return CompareToFile(
+				() => {
+					const player = new Player(buffer).toDestination();
+					player.sync().start(0);
+					getContext().transport.bpm.value = 125;
+					getContext().transport.setLoopPoints(0, "1:0:0");
+					getContext().transport.loop = true;
+					getContext().transport.start(0);
+				},
+				"playerSyncLoop.wav",
+				0.01
+			);
+		});
+
 		it("offsets correctly when started by the Transport", () => {
-			const testSample = buffer.toArray(0)[Math.floor(0.13125 * getContext().sampleRate)];
+			const testSample =
+				buffer.toArray(0)[
+					Math.floor(0.13125 * getContext().sampleRate)
+				];
 			return Offline(({ transport }) => {
-				const player = new Player(buffer).sync().start(0, 0.1).toDestination();
+				const player = new Player(buffer)
+					.sync()
+					.start(0, 0.1)
+					.toDestination();
 				transport.start(0, 0.03125);
 			}, 0.05).then((buff) => {
 				expect(buff.toArray()[0][0]).to.equal(testSample);
@@ -569,9 +603,11 @@ describe("Player", () => {
 		it("starts at the correct position when Transport is offset and playbackRate is not 1", () => {
 			return Offline(({ transport }) => {
 				// make a ramp between 0-1
-				const ramp = new Float32Array(Math.floor(getContext().sampleRate * 0.3));
+				const ramp = new Float32Array(
+					Math.floor(getContext().sampleRate * 0.3)
+				);
 				for (let i = 0; i < ramp.length; i++) {
-					ramp[i] = (i / (ramp.length));
+					ramp[i] = i / ramp.length;
 				}
 				const buff = ToneAudioBuffer.fromArray(ramp);
 				const player = new Player(buff).toDestination();
@@ -586,9 +622,11 @@ describe("Player", () => {
 
 		it("starts with an offset when synced and started after Transport is running", () => {
 			return Offline(({ transport }) => {
-				const ramp = new Float32Array(Math.floor(getContext().sampleRate * 0.3));
+				const ramp = new Float32Array(
+					Math.floor(getContext().sampleRate * 0.3)
+				);
 				for (let i = 0; i < ramp.length; i++) {
-					ramp[i] = (i / (ramp.length)) * 0.3;
+					ramp[i] = (i / ramp.length) * 0.3;
 				}
 				const buff = new ToneAudioBuffer().fromArray(ramp);
 				const player = new Player(buff).toDestination();
@@ -606,9 +644,11 @@ describe("Player", () => {
 
 		it("can pass in an offset when synced and started after Transport is running", () => {
 			return Offline(({ transport }) => {
-				const ramp = new Float32Array(Math.floor(getContext().sampleRate * 0.3));
+				const ramp = new Float32Array(
+					Math.floor(getContext().sampleRate * 0.3)
+				);
 				for (let i = 0; i < ramp.length; i++) {
-					ramp[i] = (i / (ramp.length)) * 0.3;
+					ramp[i] = (i / ramp.length) * 0.3;
 				}
 				const buff = new ToneAudioBuffer().fromArray(ramp);
 				const player = new Player(buff).toDestination();
@@ -630,12 +670,18 @@ describe("Player", () => {
 		it("fades in and out correctly", () => {
 			let duration = 0.5;
 			return Offline(() => {
-				const onesArray = new Float32Array(getContext().sampleRate * duration);
+				const onesArray = new Float32Array(
+					getContext().sampleRate * duration
+				);
 				onesArray.forEach((sample, index) => {
 					onesArray[index] = 1;
 				});
 				const onesBuffer = ToneAudioBuffer.fromArray(onesArray);
-				const player = new Player({ url: onesBuffer, fadeOut: 0.1, fadeIn: 0.1 }).toDestination();
+				const player = new Player({
+					url: onesBuffer,
+					fadeOut: 0.1,
+					fadeIn: 0.1,
+				}).toDestination();
 				player.start(0);
 			}, 0.6).then((buff) => {
 				expect(buff.getRmsAtTime(0)).to.be.closeTo(0, 0.1);
@@ -643,8 +689,36 @@ describe("Player", () => {
 				expect(buff.getRmsAtTime(0.1)).to.be.closeTo(1, 0.1);
 				duration -= 0.1;
 				expect(buff.getRmsAtTime(duration)).to.be.closeTo(1, 0.1);
-				expect(buff.getRmsAtTime(duration + 0.05)).to.be.closeTo(0.5, 0.1);
+				expect(buff.getRmsAtTime(duration + 0.05)).to.be.closeTo(
+					0.5,
+					0.1
+				);
 				expect(buff.getRmsAtTime(duration + 0.1)).to.be.closeTo(0, 0.1);
+			});
+		});
+
+		it("stops only last activeSource when restarting at intervals < latencyHint", (done) => {
+			const originalLookAhead = getContext().lookAhead;
+			getContext().lookAhead = .3;
+			const player = new Player({
+				onload(): void {
+					player.start(undefined, undefined, 1);
+					setTimeout(() => player.restart(undefined, undefined, 1), 50);
+					setTimeout(() => player.restart(undefined, undefined, 1), 100);
+					setTimeout(() => player.restart(undefined, undefined, 1), 150);
+					setTimeout(() => {
+						player.restart(undefined, undefined, 1);
+						const checkStopTimes = new Set();
+						player["_activeSources"].forEach(source => {
+							checkStopTimes.add(source["_stopTime"]);
+						});
+						getContext().lookAhead = originalLookAhead;
+						// ensure each source has a different stopTime
+						expect(checkStopTimes.size).to.equal(player["_activeSources"].size);
+						done();
+					}, 250);
+				},
+				url: "./audio/sine.wav",
 			});
 		});
 	});

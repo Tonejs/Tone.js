@@ -16,7 +16,8 @@ import { log } from "./util/Debug";
 export interface BaseToneOptions { }
 
 /**
- * @class  Tone is the base class of all other classes.
+ * Tone is the base class of all other classes.
+ * 
  * @category Core
  * @constructor
  */

@@ -3,7 +3,7 @@ import { Merge } from "Tone/component";
 import { Split } from "Tone/component/channel/Split";
 import { Oscillator } from "Tone/source";
 import { Gain } from "./Gain";
-import { connect, disconnect } from "./ToneAudioNode";
+import { connect, disconnect, fanIn } from "./ToneAudioNode";
 import { PassAudio } from "test/helper/PassAudio";
 import { Offline } from "test/helper/Offline";
 
@@ -218,6 +218,16 @@ describe("ToneAudioNode", () => {
 				disconnect(input);
 			}, false);
 		});
+
+		it("can fan in multiple nodes to a destination", () => {
+			return PassAudio(input => {
+				const context = input.context;
+				const gain0 = context.createGain();
+				const gain1 = context.createGain();
+				const output = context.destination;
+				fanIn(gain0, gain1, input, output);
+			});
+		});
 		
 		it("can connect one channel to another", () => {
 			return PassAudio(input => {
@@ -318,6 +328,16 @@ describe("ToneAudioNode", () => {
 				connect(input, gain);
 				connect(gain, output);
 				disconnect(gain, output);
+			});
+		});
+
+		it("can fan in multiple nodes to a destination", async () => {
+			await Offline(() => {
+				const output = new Gain();
+				const input0 = new Gain();
+				const input1 = new Gain();
+				const input2 = new Gain();
+				fanIn(input0, input1, input2, output);
 			});
 		});
 	});

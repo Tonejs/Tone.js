@@ -16,7 +16,12 @@ export class Ticker {
 	/**
 	 * The update interval of the worker
 	 */
-	private _updateInterval: Seconds;
+	private _updateInterval!: Seconds;
+
+	/**
+	 * The lowest allowable interval, preferably calculated from context sampleRate
+	 */
+	private _minimumUpdateInterval: Seconds;
 
 	/**
 	 * The callback to invoke at regular intervals
@@ -33,11 +38,12 @@ export class Ticker {
 	 */
 	private _worker!: Worker;
 
-	constructor(callback: () => void, type: TickerClockSource, updateInterval: Seconds) {
+	constructor(callback: () => void, type: TickerClockSource, updateInterval: Seconds, contextSampleRate?: number) {
 
 		this._callback = callback;
 		this._type = type;
-		this._updateInterval = updateInterval;
+		this._minimumUpdateInterval = Math.max( 128/(contextSampleRate || 44100), .001 );
+		this.updateInterval = updateInterval;
 
 		// create the clock source for the first time
 		this._createClock();
@@ -107,7 +113,6 @@ export class Ticker {
 	private _disposeClock(): void {
 		if (this._timeout) {
 			clearTimeout(this._timeout);
-			this._timeout = 0;
 		}
 		if (this._worker) {
 			this._worker.terminate();
@@ -122,9 +127,9 @@ export class Ticker {
 		return this._updateInterval;
 	}
 	set updateInterval(interval: Seconds) {
-		this._updateInterval = Math.max(interval, 128 / 44100);
+		this._updateInterval = Math.max(interval, this._minimumUpdateInterval);
 		if (this._type === "worker") {
-			this._worker.postMessage(Math.max(interval * 1000, 1));
+			this._worker?.postMessage(this._updateInterval * 1000);
 		}
 	}
 

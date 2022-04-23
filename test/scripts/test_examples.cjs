@@ -22,8 +22,8 @@ function findExamples(obj) {
 			examples = [
 				...examples,
 				...obj[prop].tags
-						.filter((tag) => tag.tag === "example")
-						.map((tag) => tag.text),
+					.filter((tag) => tag.tag === "example")
+					.map((tag) => tag.text),
 			];
 		} else if (typeof obj[prop] === "object") {
 			examples = [...examples, ...findExamples(obj[prop])];
@@ -80,9 +80,9 @@ async function main() {
 		// split it in half and choose either the first or second half
 		const halfLength = Math.ceil(examples.length / 2);
 		const splitStart = (testSplit - 1) * halfLength;
-		const splitEnd = (testSplit) * halfLength;
+		const splitEnd = testSplit * halfLength;
 		examples = examples.slice(splitStart, splitEnd);
-		console.log(`texting examples ${splitStart} - ${splitEnd}`);
+		console.log(`testing examples ${splitStart} - ${splitEnd}`);
 	}
 	let passed = 0;
 	for (let i = 0; i < examples.length; i++) {

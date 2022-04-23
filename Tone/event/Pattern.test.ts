@@ -89,19 +89,21 @@ describe("Pattern", () => {
 		it("is invoked after it's started", () => {
 			let invoked = false;
 			return Offline(({ transport }) => {
+				const values = ["a", "b", "c"];
 				let index = 0;
 				const pattern = new Pattern((() => {
 					invoked = true;
-					expect(pattern.value).to.equal(index);
+					expect(pattern.value).to.equal(values[index]);
+					expect(pattern.index).to.equal(index);
 					index++;
-				}), [0, 1, 2]).start(0);
+				}), values).start(0);
 				transport.start();
 			}, 0.2).then(() => {
 				expect(invoked).to.be.true;
 			});
 		});
 
-		it("passes in the scheduled time and pattern index to the callback", () => {
+		it("passes in the scheduled time and pattern note to the callback", () => {
 			let invoked = false;
 			return Offline(({ transport }) => {
 				const startTime = 0.05;
@@ -109,6 +111,8 @@ describe("Pattern", () => {
 					expect(time).to.be.a("number");
 					expect(time - startTime).to.be.closeTo(0.3, 0.01);
 					expect(note).to.be.equal("a");
+					expect(pattern.value).to.equal("a");
+					expect(pattern.index).to.be.equal(0);
 					invoked = true;
 				}), ["a"], "up");
 				transport.start(startTime);
@@ -121,11 +125,33 @@ describe("Pattern", () => {
 		it("passes in the next note of the pattern", () => {
 			let counter = 0;
 			return Offline(({ transport }) => {
+				const values = ["a", "b", "c"];
 				const pattern = new Pattern(((time, note) => {
-					expect(note).to.equal(counter % 3);
+					expect(note).to.equal(values[counter % 3]);
+					expect(pattern.value).to.equal(values[counter % 3]);
+					expect(pattern.index).to.be.equal(counter % 3);
 					counter++;
-				}), [0, 1, 2], "up").start(0);
+				}), values, "up").start(0);
 				pattern.interval = "16n";
+				transport.start(0);
+			}, 0.7).then(() => {
+				expect(counter).to.equal(6);
+			});
+		});
+
+		it("can modify the pattern type and values", () => {
+			let counter = 0;
+			return Offline(({ transport }) => {
+				const values = ["a", "b", "c"];
+				const pattern = new Pattern(((time, note) => {
+					expect(note).to.equal(values[counter % 3]);
+					expect(pattern.value).to.equal(values[counter % 3]);
+					expect(pattern.index).to.be.equal(counter % 3);
+					counter++;
+				}), ["a"], "down").start(0);
+				pattern.interval = "16n";
+				pattern.pattern = "up";
+				pattern.values = values;
 				transport.start(0);
 			}, 0.7).then(() => {
 				expect(counter).to.equal(6);

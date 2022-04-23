@@ -3,7 +3,7 @@ import { Seconds } from "../type/Units";
 import { isAudioContext } from "../util/AdvancedTypeCheck";
 import { optionsFromArguments } from "../util/Defaults";
 import { Timeline } from "../util/Timeline";
-import { isDefined, isString } from "../util/TypeCheck";
+import { isDefined } from "../util/TypeCheck";
 import {
 	AnyAudioContext,
 	createAudioContext,
@@ -38,13 +38,6 @@ export interface ContextTimeoutEvent {
  */
 export class Context extends BaseContext {
 	readonly name: string = "Context";
-
-	/**
-	 * The amount of time into the future events are scheduled. Giving Web Audio
-	 * a short amount of time into the future to schedule events can reduce clicks and
-	 * improve performance. This value can be set to 0 to get the lowest latency.
-	 */
-	lookAhead: Seconds;
 
 	/**
 	 * private reference to the BaseAudioContext
@@ -116,16 +109,20 @@ export class Context extends BaseContext {
 
 		if (options.context) {
 			this._context = options.context;
+			// custom context provided, latencyHint unknown (unless explicitly provided in options)
+			this._latencyHint = arguments[0]?.latencyHint || "";
 		} else {
 			this._context = createAudioContext({
 				latencyHint: options.latencyHint,
 			});
+			this._latencyHint = options.latencyHint;
 		}
 
 		this._ticker = new Ticker(
 			this.emit.bind(this, "tick"),
 			options.clockSource,
-			options.updateInterval
+			options.updateInterval,
+			this._context.sampleRate
 		);
 		this.on("tick", this._timeoutLoop.bind(this));
 
@@ -133,9 +130,9 @@ export class Context extends BaseContext {
 		this._context.onstatechange = () => {
 			this.emit("statechange", this.state);
 		};
-
-		this._setLatencyHint(options.latencyHint);
-		this.lookAhead = options.lookAhead;
+		
+		// if no custom updateInterval provided, updateInterval will be derived by lookAhead setter
+		this[arguments[0]?.hasOwnProperty("updateInterval") ? "_lookAhead" : "lookAhead"] = options.lookAhead;
 	}
 
 	static getDefaults(): ContextOptions {
@@ -391,8 +388,9 @@ export class Context extends BaseContext {
 	/**
 	 * How often the interval callback is invoked.
 	 * This number corresponds to how responsive the scheduling
-	 * can be. context.updateInterval + context.lookAhead gives you the
-	 * total latency between scheduling an event and hearing it.
+	 * can be. Setting to 0 will result in the lowest practial interval
+	 * based on context properties. context.updateInterval + context.lookAhead
+	 * gives you the total latency between scheduling an event and hearing it.
 	 */
 	get updateInterval(): Seconds {
 		return this._ticker.updateInterval;
@@ -411,6 +409,22 @@ export class Context extends BaseContext {
 	set clockSource(type: TickerClockSource) {
 		this._ticker.type = type;
 	}
+
+	/**
+	 * The amount of time into the future events are scheduled. Giving Web Audio
+	 * a short amount of time into the future to schedule events can reduce clicks and
+	 * improve performance. This value can be set to 0 to get the lowest latency.
+	 * Adjusting this value also affects the [[updateInterval]].
+	 */
+	get lookAhead(): Seconds {
+		return this._lookAhead;
+	}
+	set lookAhead(time: Seconds) {
+		this._lookAhead = time;
+		// if lookAhead is 0, default to .01 updateInterval
+		this.updateInterval = time ? (time / 2) : .01;
+	}	
+	private _lookAhead!: Seconds;
 
 	/**
 	 * The type of playback, which affects tradeoffs between audio
@@ -432,29 +446,6 @@ export class Context extends BaseContext {
 	}
 
 	/**
-	 * Update the lookAhead and updateInterval based on the latencyHint
-	 */
-	private _setLatencyHint(hint: ContextLatencyHint | Seconds): void {
-		let lookAheadValue = 0;
-		this._latencyHint = hint;
-		if (isString(hint)) {
-			switch (hint) {
-				case "interactive":
-					lookAheadValue = 0.1;
-					break;
-				case "playback":
-					lookAheadValue = 0.5;
-					break;
-				case "balanced":
-					lookAheadValue = 0.25;
-					break;
-			}
-		}
-		this.lookAhead = lookAheadValue;
-		this.updateInterval = lookAheadValue / 2;
-	}
-
-	/**
 	 * The unwrapped AudioContext or OfflineAudioContext
 	 */
 	get rawContext(): AnyAudioContext {
@@ -463,9 +454,13 @@ export class Context extends BaseContext {
 
 	/**
 	 * The current audio context time plus a short [[lookAhead]].
+	 * @example
+	 * setInterval(() => {
+	 * 	console.log("now", Tone.now());
+	 * }, 100);
 	 */
 	now(): Seconds {
-		return this._context.currentTime + this.lookAhead;
+		return this._context.currentTime + this._lookAhead;
 	}
 
 	/**

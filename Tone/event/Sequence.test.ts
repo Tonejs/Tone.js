@@ -299,6 +299,17 @@ describe("Sequence", () => {
 			});
 		});
 
+		it("can mute the callback", () => {
+			return Offline(({ transport }) => {
+				const seq = new Sequence(() => {
+					throw new Error("shouldn't call this callback");
+				}, [0, 0.1, 0.2, 0.3]).start();
+				seq.mute = true;
+				expect(seq.mute).to.be.true;
+				transport.start();
+			}, 0.5);
+		});
+
 	});
 
 	context("Looping", () => {

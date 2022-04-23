@@ -111,7 +111,7 @@ export class Tremolo extends StereoEffect<TremoloOptions> {
 	static getDefaults(): TremoloOptions {
 		return Object.assign(StereoEffect.getDefaults(), {
 			frequency: 10,
-			type: "sine" as "sine",
+			type: "sine" as const,
 			depth: 0.5,
 			spread: 180,
 		});

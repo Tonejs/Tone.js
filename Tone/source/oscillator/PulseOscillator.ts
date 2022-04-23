@@ -128,7 +128,7 @@ export class PulseOscillator extends Source<PulseOscillatorOptions> implements T
 			detune: 0,
 			frequency: 440,
 			phase: 0,
-			type: "pulse" as "pulse",
+			type: "pulse" as const,
 			width: 0.2,
 		});
 	}

@@ -104,7 +104,7 @@ export abstract class BaseContext
 
 	abstract get rawContext(): AnyAudioContext;
 
-	abstract async addAudioWorkletModule(
+	abstract addAudioWorkletModule(
 		_url: string,
 		_name: string
 	): Promise<void>;

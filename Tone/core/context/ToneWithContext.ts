@@ -4,6 +4,7 @@ import { FrequencyClass } from "../type/Frequency";
 import { TimeClass } from "../type/Time";
 import { TransportTimeClass } from "../type/TransportTime";
 import { Frequency, Hertz, Seconds, Ticks, Time } from "../type/Units";
+import { assertUsedScheduleTime } from "../util/Debug";
 import { getDefaultsFromInstance, optionsFromArguments } from "../util/Defaults";
 import { RecursivePartial } from "../util/Interface";
 import { isArray, isBoolean, isDefined, isNumber, isString, isUndef } from "../util/TypeCheck";
@@ -104,6 +105,7 @@ export abstract class ToneWithContext<Options extends ToneWithContextOptions> ex
 	 * Tone.getTransport().bpm.rampTo(60, 30);
 	 */
 	toSeconds(time?: Time): Seconds {
+		assertUsedScheduleTime(time);
 		return new TimeClass(this.context, time).toSeconds();
 	}
 

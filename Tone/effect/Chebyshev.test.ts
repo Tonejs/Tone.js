@@ -36,6 +36,14 @@ describe("Chebyshev", () => {
 			expect(cheby.get().order).to.equal(40);
 			cheby.dispose();
 		});
+
+		it("throws an error if order is not an integer", () => {
+			const cheby = new Chebyshev();
+			expect(() => {
+				cheby.order = 0.2;
+			}).to.throw(Error);
+			cheby.dispose();
+		});
 	});
 });
 

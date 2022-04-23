@@ -2,7 +2,7 @@ sudo: false
 dist: bionic
 language: node_js
 node_js:
-- '11'
+- '14'
 install:
 - npm install
 - git config --global user.email "travis@travis-ci.org"
@@ -11,7 +11,7 @@ script:
   - npm run test
   - npm run codecov
 before_deploy: 
-  - npm run test:node
+#   - npm run test:node
   - npm run increment
   - npm run docs
 jobs:

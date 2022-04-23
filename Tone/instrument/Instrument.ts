@@ -83,6 +83,10 @@ export abstract class Instrument<Options extends InstrumentOptions> extends Tone
 		if (this._syncState()) {
 			this._syncMethod("triggerAttack", 1);
 			this._syncMethod("triggerRelease", 0);
+
+			this.context.transport.on("stop", this._syncedRelease);
+			this.context.transport.on("pause", this._syncedRelease);
+			this.context.transport.on("loopEnd", this._syncedRelease);
 		}
 		return this;
 	}
@@ -126,6 +130,10 @@ export abstract class Instrument<Options extends InstrumentOptions> extends Tone
 			this._synced = false;
 			this.triggerAttack = this._original_triggerAttack;
 			this.triggerRelease = this._original_triggerRelease;
+
+			this.context.transport.off("stop", this._syncedRelease);
+			this.context.transport.off("pause", this._syncedRelease);
+			this.context.transport.off("loopEnd", this._syncedRelease);
 		}
 		return this;
 	}
@@ -153,8 +161,8 @@ export abstract class Instrument<Options extends InstrumentOptions> extends Tone
 	/**
 	 * Start the instrument's note.
 	 * @param note the note to trigger
-	 * @param time the time to trigger the ntoe
-	 * @param velocity the velocity to trigger the note (betwee 0-1)
+	 * @param time the time to trigger the note
+	 * @param velocity the velocity to trigger the note (between 0-1)
 	 */
 	abstract triggerAttack(note: Frequency, time?: Time, velocity?: NormalRange): this;
 	private _original_triggerAttack = this.triggerAttack;
@@ -165,6 +173,11 @@ export abstract class Instrument<Options extends InstrumentOptions> extends Tone
 	 */
 	abstract triggerRelease(...args: any[]): this;
 	private _original_triggerRelease = this.triggerRelease;
+
+	/**
+	 * The release which is scheduled to the timeline. 
+	 */
+	protected _syncedRelease = (time: number) => this._original_triggerRelease(time);
 
 	/**
 	 * clean up

@@ -1,7 +1,6 @@
 import { getContext } from "../Global";
 import { Tone } from "../Tone";
 import { Samples, Seconds } from "../type/Units";
-import { isAudioBuffer } from "../util/AdvancedTypeCheck";
 import { optionsFromArguments } from "../util/Defaults";
 import { noOp } from "../util/Interface";
 import { isArray, isNumber, isString } from "../util/TypeCheck";
@@ -25,7 +24,6 @@ interface ToneAudioBufferOptions {
  * @category Core
  */
 export class ToneAudioBuffer extends Tone {
-
 	readonly name: string = "ToneAudioBuffer";
 
 	/**
@@ -54,23 +52,26 @@ export class ToneAudioBuffer extends Tone {
 	constructor(
 		url?: string | ToneAudioBuffer | AudioBuffer,
 		onload?: (buffer: ToneAudioBuffer) => void,
-		onerror?: (error: Error) => void,
+		onerror?: (error: Error) => void
 	);
 	constructor(options?: Partial<ToneAudioBufferOptions>);
 	constructor() {
-
 		super();
 
-		const options = optionsFromArguments(ToneAudioBuffer.getDefaults(), arguments, ["url", "onload", "onerror"]);
+		const options = optionsFromArguments(
+			ToneAudioBuffer.getDefaults(),
+			arguments,
+			["url", "onload", "onerror"]
+		);
 
 		this.reverse = options.reverse;
 		this.onload = options.onload;
 
-		if (options.url && isAudioBuffer(options.url) || options.url instanceof ToneAudioBuffer) {
-			this.set(options.url);
-		} else if (isString(options.url)) {
+		if (isString(options.url)) {
 			// initiate the download
 			this.load(options.url).catch(options.onerror);
+		} else if (options.url) {
+			this.set(options.url);
 		}
 	}
 
@@ -132,11 +133,13 @@ export class ToneAudioBuffer extends Tone {
 	 * @returns A Promise which resolves with this ToneAudioBuffer
 	 */
 	async load(url: string): Promise<this> {
-		const doneLoading: Promise<void> = ToneAudioBuffer.load(url).then(audioBuffer => {
-			this.set(audioBuffer);
-			// invoke the onload method
-			this.onload(this);
-		});
+		const doneLoading: Promise<void> = ToneAudioBuffer.load(url).then(
+			(audioBuffer) => {
+				this.set(audioBuffer);
+				// invoke the onload method
+				this.onload(this);
+			}
+		);
 		ToneAudioBuffer.downloads.push(doneLoading);
 		try {
 			await doneLoading;
@@ -165,11 +168,15 @@ export class ToneAudioBuffer extends Tone {
 	fromArray(array: Float32Array | Float32Array[]): this {
 		const isMultidimensional = isArray(array) && array[0].length > 0;
 		const channels = isMultidimensional ? array.length : 1;
-		const len = isMultidimensional ? (array[0] as Float32Array).length : array.length;
+		const len = isMultidimensional
+			? (array[0] as Float32Array).length
+			: array.length;
 		const context = getContext();
 		const buffer = context.createBuffer(channels, len, context.sampleRate);
-		const multiChannelArray: Float32Array[] = !isMultidimensional && channels === 1 ?
-			[array as Float32Array] : array as Float32Array[];
+		const multiChannelArray: Float32Array[] =
+			!isMultidimensional && channels === 1
+				? [array as Float32Array]
+				: (array as Float32Array[]);
 
 		for (let c = 0; c < channels; c++) {
 			buffer.copyToChannel(multiChannelArray[c], c);
@@ -195,7 +202,7 @@ export class ToneAudioBuffer extends Tone {
 				}
 			}
 			// divide by the number of channels
-			outputArray = outputArray.map(sample => sample / numChannels);
+			outputArray = outputArray.map((sample) => sample / numChannels);
 			this.fromArray(outputArray);
 		}
 		return this;
@@ -240,13 +247,24 @@ export class ToneAudioBuffer extends Tone {
 	 * @param end The end time to slice. If none is given will default to the end of the buffer
 	 */
 	slice(start: Seconds, end: Seconds = this.duration): ToneAudioBuffer {
+		assert(this.loaded, "Buffer is not loaded");
 		const startSamples = Math.floor(start * this.sampleRate);
 		const endSamples = Math.floor(end * this.sampleRate);
-		assert(startSamples < endSamples, "The start time must be less than the end time");
+		assert(
+			startSamples < endSamples,
+			"The start time must be less than the end time"
+		);
 		const length = endSamples - startSamples;
-		const retBuffer = getContext().createBuffer(this.numberOfChannels, length, this.sampleRate);
+		const retBuffer = getContext().createBuffer(
+			this.numberOfChannels,
+			length,
+			this.sampleRate
+		);
 		for (let channel = 0; channel < this.numberOfChannels; channel++) {
-			retBuffer.copyToChannel(this.getChannelData(channel).subarray(startSamples, endSamples), channel);
+			retBuffer.copyToChannel(
+				this.getChannelData(channel).subarray(startSamples, endSamples),
+				channel
+			);
 		}
 		return new ToneAudioBuffer(retBuffer);
 	}
@@ -332,7 +350,7 @@ export class ToneAudioBuffer extends Tone {
 	 * @return A ToneAudioBuffer created from the array
 	 */
 	static fromArray(array: Float32Array | Float32Array[]): ToneAudioBuffer {
-		return (new ToneAudioBuffer()).fromArray(array);
+		return new ToneAudioBuffer().fromArray(array);
 	}
 
 	/**
@@ -354,7 +372,6 @@ export class ToneAudioBuffer extends Tone {
 	 * Loads a url using fetch and returns the AudioBuffer.
 	 */
 	static async load(url: string): Promise<AudioBuffer> {
-
 		// test if the url contains multiple extensions
 		const matches = url.match(/\[([^\]\[]+\|.+)\]$/);
 		if (matches) {
@@ -370,8 +387,21 @@ export class ToneAudioBuffer extends Tone {
 		}
 
 		// make sure there is a slash between the baseUrl and the url
-		const baseUrl = ToneAudioBuffer.baseUrl === "" || ToneAudioBuffer.baseUrl.endsWith("/") ? ToneAudioBuffer.baseUrl : ToneAudioBuffer.baseUrl + "/";
-		const response = await fetch(baseUrl + url);
+		const baseUrl =
+			ToneAudioBuffer.baseUrl === "" ||
+			ToneAudioBuffer.baseUrl.endsWith("/")
+				? ToneAudioBuffer.baseUrl
+				: ToneAudioBuffer.baseUrl + "/";
+
+		// encode special characters in file path
+		const location = document.createElement("a");
+		location.href = baseUrl + url;
+		location.pathname = (location.pathname + location.hash)
+			.split("/")
+			.map(encodeURIComponent)
+			.join("/");
+
+		const response = await fetch(location.href);
 		if (!response.ok) {
 			throw new Error(`could not load url: ${url}`);
 		}
@@ -394,7 +424,9 @@ export class ToneAudioBuffer extends Tone {
 	static supportsType(url: string): boolean {
 		const extensions = url.split(".");
 		const extension = extensions[extensions.length - 1];
-		const response = document.createElement("audio").canPlayType("audio/" + extension);
+		const response = document
+			.createElement("audio")
+			.canPlayType("audio/" + extension);
 		return response !== "";
 	}
 

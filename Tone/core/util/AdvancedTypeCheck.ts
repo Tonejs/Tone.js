@@ -1,6 +1,7 @@
 import {
-	isAnyAudioContext, isAnyAudioNode,
-	isAnyAudioParam, isAnyOfflineAudioContext,
+	AudioBuffer, isAnyAudioContext,
+	isAnyAudioNode, isAnyAudioParam,
+	isAnyOfflineAudioContext
 } from "standardized-audio-context";
 
 /**
