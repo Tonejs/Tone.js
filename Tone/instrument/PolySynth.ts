@@ -42,7 +42,7 @@ export interface PolySynthOptions<Voice> extends InstrumentOptions {
 
 /**
  * PolySynth handles voice creation and allocation for any
- * instruments passed in as the second paramter. PolySynth is
+ * instruments passed in as the second parameter. PolySynth is
  * not a synthesizer by itself, it merely manages voices of
  * one of the other types of synths, allowing any of the
  * monophonic synthesizers to be polyphonic.
