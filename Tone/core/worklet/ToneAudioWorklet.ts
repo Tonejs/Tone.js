@@ -53,7 +53,7 @@ export abstract class ToneAudioWorklet<Options extends ToneAudioWorkletOptions> 
 		this._dummyParam = this._dummyGain.gain;
 
 		// Register the processor
-		this.context.addAudioWorkletModule(blobUrl, name).then(() => {
+		this.context.addAudioWorkletModule(blobUrl).then(() => {
 			// create the worklet when it's read
 			if (!this.disposed) {
 				this._worklet = this.context.createAudioWorkletNode(name, this.workletOptions);

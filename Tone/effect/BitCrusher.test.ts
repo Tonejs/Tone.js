@@ -1,4 +1,5 @@
 import { BitCrusher } from "./BitCrusher";
+import { FeedbackCombFilter } from "Tone/component/filter/FeedbackCombFilter";
 import { Oscillator } from "Tone/source/oscillator/Oscillator";
 import { BasicTests } from "test/helper/Basic";
 import { EffectTests } from "test/helper/EffectTests";
@@ -37,6 +38,21 @@ describe("BitCrusher", () => {
 			expect(crusher.get().bits).to.equal(5);
 			crusher.dispose();
 		});
+	});
+
+	it("should be usable with the FeedbackCombFilter", (done) => {
+		new BitCrusher(4);
+		new FeedbackCombFilter();
+
+		const handle = setTimeout(() => {
+			window.onunhandledrejection = null;
+			done();
+		}, 100);
+
+		window.onunhandledrejection = (event) => {
+			done(event.reason);
+			clearTimeout(handle);
+		};
 	});
 });
 

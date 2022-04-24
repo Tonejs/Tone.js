@@ -25,7 +25,7 @@ describe("DummyContext", () => {
 		context.decodeAudioData(new Float32Array(100));
 		context.createAudioWorkletNode("test.js");
 		context.rawContext;
-		context.addAudioWorkletModule("test.js", "test");
+		context.addAudioWorkletModule("test.js");
 		context.resume();
 		context.setTimeout(() => {}, 1);
 		context.clearTimeout(1);
