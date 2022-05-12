@@ -1,6 +1,6 @@
 {
 	"name": "@azgaar/tone",
-	"version": "14.8.63",
+	"version": "14.8.7",
 	"description": "A fork of Web Audio framework for making interactive music in the browser.",
 	"browser": "build/Tone.js",
 	"main": "build/esm/index.js",
