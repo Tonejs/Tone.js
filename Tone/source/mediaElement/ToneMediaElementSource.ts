@@ -1,4 +1,3 @@
-import { Param } from "../../core/context/Param";
 import { ToneMediaElement } from "../../core/context/ToneMediaElement";
 import { GainFactor, Positive, Seconds, Time } from "../../core/type/Units";
 import { defaultArg, optionsFromArguments } from "../../core/util/Defaults";
