@@ -3,8 +3,6 @@ import { Tone } from "../Tone";
 import { Samples, Seconds } from "../type/Units";
 import { optionsFromArguments } from "../util/Defaults";
 import { noOp } from "../util/Interface";
-import { isArray, isNumber, isString } from "../util/TypeCheck";
-import { assert } from "../util/Debug";
 
 interface ToneMediaElementOptions {
 	url?: string;
