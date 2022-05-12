@@ -1,6 +1,4 @@
-import { getContext } from "../Global";
 import { Tone } from "../Tone";
-import { Samples, Seconds } from "../type/Units";
 import { optionsFromArguments } from "../util/Defaults";
 import { noOp } from "../util/Interface";
 
