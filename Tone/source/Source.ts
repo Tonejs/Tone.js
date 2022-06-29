@@ -53,7 +53,7 @@ export abstract class Source<
 	private _volume: Volume;
 
 	/**
-	 * The output note
+	 * The output node
 	 */
 	output: OutputNode;
 
