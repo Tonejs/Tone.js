@@ -34,22 +34,22 @@ import * as Tone from 'tone'
 
 ```javascript
 //create a synth and connect it to the main output (your speakers)
-const synth = new Tone.Synth().toDestination();
+const synth = new Synth().toDestination();
 
 //play a middle 'C' for the duration of an 8th note
 synth.triggerAttackRelease("C4", "8n");
 ```
 
-#### Tone.Synth
+#### Synth
 
-[Tone.Synth](https://tonejs.github.io/docs/Synth) is a basic synthesizer with a single [oscillator](https://tonejs.github.io/docs/OmniOscillator) and an [ADSR envelope](https://tonejs.github.io/docs/Envelope).
+[Synth](https://tonejs.github.io/docs/Synth) is a basic synthesizer with a single [oscillator](https://tonejs.github.io/docs/OmniOscillator) and an [ADSR envelope](https://tonejs.github.io/docs/Envelope).
 
 #### triggerAttack / triggerRelease
 
 `triggerAttack` starts the note (the amplitude is rising), and `triggerRelease` is when the amplitude is going back to 0 (i.e. **note off**).
 
 ```javascript
-const synth = new Tone.Synth().toDestination();
+const synth = new Synth().toDestination();
 const now = Tone.now()
 // trigger the attack immediately
 synth.triggerAttack("C4", now)
@@ -68,7 +68,7 @@ The second argument is the duration that the note is held. This value can either
 The third (optional) argument of `triggerAttackRelease` is _when_ along the AudioContext time the note should play. It can be used to schedule events in the future.
 
 ```javascript
-const synth = new Tone.Synth().toDestination();
+const synth = new Synth().toDestination();
 const now = Tone.now()
 synth.triggerAttackRelease("C4", "8n", now)
 synth.triggerAttackRelease("E4", "8n", now + 0.5)
@@ -139,7 +139,7 @@ To create a **polyphonic** synthesizer, use [Tone.PolySynth](https://tonejs.gith
 
 ```javascript
 //pass in some initial values for the filter and filter envelope
-const synth = new Tone.PolySynth(Tone.Synth).toDestination();
+const synth = new Tone.PolySynth(Synth).toDestination();
 const now = Tone.now()
 synth.triggerAttack("D4", now);
 synth.triggerAttack("F4", now + 0.5);
