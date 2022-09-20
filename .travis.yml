@@ -5,7 +5,7 @@ node_js:
     - "14"
 install:
     - npm install
-    - git config --global user.email "travis@travis-ci.org"
+    - git config --global user.email "travis@travis-ci.com"
     - git config --global user.name "Travis CI"
 script:
     - npm run test
