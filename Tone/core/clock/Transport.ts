@@ -596,7 +596,7 @@ export class Transport
 
 	/**
 	 * The Transport's loop position as a normalized value. Always
-	 * returns 0 if the transport if loop is not true.
+	 * returns 0 if the Transport.loop = false.
 	 */
 	get progress(): NormalRange {
 		if (this.loop) {
