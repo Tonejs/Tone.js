@@ -582,7 +582,7 @@ export class Transport
 	}
 
 	/**
-	 * The Transport's position in seconds
+	 * The Transport's position in seconds.
 	 * Setting the value will jump to that position right away.
 	 */
 	get seconds(): Seconds {
