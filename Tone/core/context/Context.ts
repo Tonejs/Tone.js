@@ -95,6 +95,11 @@ export class Context extends BaseContext {
 	private _initialized = false;
 
 	/**
+	 * Private indicator if a close() has been called on the context, since close is async
+	 */
+	private _closeStarted = false;
+
+	/**
 	 * Indicates if the context is an OfflineAudioContext or an AudioContext
 	 */
 	readonly isOffline: boolean = false;
@@ -485,7 +490,8 @@ export class Context extends BaseContext {
 	 * any AudioNodes created from the context will be silent.
 	 */
 	async close(): Promise<void> {
-		if (isAudioContext(this._context)) {
+		if (isAudioContext(this._context) && (this.state !== "closed") && !this._closeStarted) {
+			this._closeStarted = true;
 			await this._context.close();
 		}
 		if (this._initialized) {
@@ -530,6 +536,7 @@ export class Context extends BaseContext {
 		Object.keys(this._constants).map((val) =>
 			this._constants[val].disconnect()
 		);
+		this.close();
 		return this;
 	}
 
