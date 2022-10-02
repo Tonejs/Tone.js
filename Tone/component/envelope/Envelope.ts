@@ -141,7 +141,7 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	/**
 	 * The automation curve type for the decay
 	 */
-	private _decayCurve!: BasicEnvelopeCurve;
+	private _decayCurve!: InternalEnvelopeCurve;
 
 	/**
 	 * The automation curve type for the release
@@ -322,12 +322,11 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	 * 	env.triggerAttack();
 	 * }, 1, 1);
 	 */
-	get decayCurve(): BasicEnvelopeCurve {
-		return this._decayCurve;
+	get decayCurve(): EnvelopeCurve {
+		return this._getCurve(this._decayCurve, "Out");
 	}
 	set decayCurve(curve) {
-		assert(["linear", "exponential"].some(c => c === curve), `Invalid envelope curve: ${curve}`);
-		this._decayCurve = curve;
+		this._setCurve("_decayCurve", "Out", curve);
 	}
 
 	/**
@@ -475,7 +474,7 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	}
 
 	/**
-	 * Render the envelope curve to an array of the given length. 
+	 * Render the envelope curve to an array of the given length.
 	 * Good for visualizing the envelope curve. Rescales the duration of the
 	 * envelope to fit the length.
 	 */
