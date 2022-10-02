@@ -611,7 +611,7 @@ export class Transport
 	}
 
 	/**
-	 * The transports current tick position.
+	 * The Transport's current tick position.
 	 */
 	get ticks(): Ticks {
 		return this._clock.ticks;
