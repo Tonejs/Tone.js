@@ -49,7 +49,7 @@ export const hasAudioContext = theWindow &&
 export function createAudioWorkletNode(context: AnyAudioContext, name: string, options?: Partial<AudioWorkletNodeOptions>): AudioWorkletNode {
 	assert(isDefined(stdAudioWorkletNode), "AudioWorkletNode only works in a secure context (https or localhost)");
 	// @ts-ignore
-	return new (context.constructor.name.includes("AudioContext") ? theWindow.AudioWorkletNode : stdAudioWorkletNode)(context, name, options);
+	return new ((context instanceof theWindow.BaseAudioContext) ? theWindow.AudioWorkletNode : stdAudioWorkletNode)(context, name, options);
 }
 
 /**
