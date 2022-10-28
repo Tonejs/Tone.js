@@ -12,7 +12,7 @@ Tone.js is a Web Audio framework for creating interactive music in the browser. 
 
 # Installation
 
-There are two ways to incorporate Tone.js into a proejct. First, it can be installed locally into a project using `npm`:
+There are two ways to incorporate Tone.js into a project. First, it can be installed locally into a project using `npm`:
 
 ```bash
 npm install tone      // Install the latest stable version
