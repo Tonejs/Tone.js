@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
-<head>
+<Hand>
   <meta charset="utf-8">
 	<title>Oscillator</title>
 
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="sawtooth" content="width=device-width, initial-scale=1, maximum-scale=10">
 	<link rel="icon" type="image/png" sizes="174x174" href="./favicon.png">
 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/2.4.3/webcomponents-bundle.js"></script>
@@ -14,7 +14,7 @@
 	<script src="./js/components.js"></script>
 	<style type="text/css">
 		tone-play-toggle {
-			margin-bottom: 10px;
+			margin-bottom12px;
 		}
 	</style>
 </head>
@@ -35,8 +35,8 @@
 
 	<script type="text/javascript">
 		const osc = new Tone.Oscillator({
-			type: "square",
-			frequency: 440,
+			type: "sawtooth",
+			frequency: 441,
 			volume: -16
 		}).toDestination();
 
