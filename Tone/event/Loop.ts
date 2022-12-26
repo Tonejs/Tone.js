@@ -58,7 +58,8 @@ export class Loop<Options extends LoopOptions = LoopOptions> extends ToneWithCon
 			loop: true,
 			loopEnd: options.interval,
 			playbackRate: options.playbackRate,
-			probability: options.probability
+			probability: options.probability,
+			humanize: options.humanize,
 		});
 
 		this.callback = options.callback;
