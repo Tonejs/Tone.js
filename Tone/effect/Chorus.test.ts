@@ -15,8 +15,8 @@ describe("Chorus", () => {
 			() => {
 				const chorus = new Chorus().toDestination().start();
 				const osc = new Oscillator(220, "sawtooth")
-					.connect(chorus)
-					.start();
+						.connect(chorus)
+						.start();
 			},
 			"chorus.wav",
 			0.25
