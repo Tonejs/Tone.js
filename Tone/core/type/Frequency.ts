@@ -1,3 +1,4 @@
+/* eslint-disable key-spacing */
 import { getContext } from "../Global";
 import { intervalToFrequencyRatio, mtof } from "./Conversions";
 import { ftom, getA4, setA4 } from "./Conversions";
@@ -215,7 +216,7 @@ export class FrequencyClass<Type extends number = Hertz> extends TimeClass<Type,
 //-------------------------------------
 
 /**
- * Note to scale index. 
+ * Note to scale index.
  * @hidden
  */
 const noteToScaleIndex = {

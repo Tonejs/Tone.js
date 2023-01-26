@@ -103,7 +103,7 @@
 		"yargs": "^17.3.0"
 	},
 	"dependencies": {
-		"standardized-audio-context": "^25.3.29",
+		"standardized-audio-context": "^25.3.37",
 		"tslib": "^2.3.1"
 	},
 	"prettier": {

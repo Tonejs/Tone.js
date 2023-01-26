@@ -5,7 +5,7 @@ module.exports = {
 	rules: {
 		"prefer-rest-params": "off",
 		"@typescript-eslint/ban-ts-ignore": "off",
-		"@typescript-eslint/ban-ts-comment" : "off",
+		"@typescript-eslint/ban-ts-comment": "off",
 		"@typescript-eslint/no-empty-function": "off",
 		"jsdoc/check-alignment": 1,
 		"jsdoc/check-param-names": ["error"],
