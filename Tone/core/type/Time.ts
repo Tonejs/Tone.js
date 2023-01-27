@@ -92,19 +92,29 @@ export class TimeClass<Type extends Seconds | Ticks = Seconds, Unit extends stri
 	 * Return the time encoded as Bars:Beats:Sixteenths.
 	 */
 	toBarsBeatsSixteenths(): BarsBeatsSixteenths {
-		const quarterTime = this._beatsToUnits(1);
-		let quarters = this.valueOf() / quarterTime;
-		quarters = parseFloat(quarters.toFixed(4));
-		const measures = Math.floor(quarters / this._getTimeSignature());
-		let sixteenths = (quarters % 1) * 4;
-		quarters = Math.floor(quarters) % this._getTimeSignature();
-		const sixteenthString = sixteenths.toString();
+		const [measures, quarters, sixteenths] = this.toBarsBeatsSixteenthsValues();
+		const measureString = measures.toFixed(0);
+		const quarterString = quarters.toFixed(4);
+		let sixteenthString = sixteenths.toFixed(3);
 		if (sixteenthString.length > 3) {
 			// the additional parseFloat removes insignificant trailing zeroes
-			sixteenths = parseFloat(parseFloat(sixteenthString).toFixed(3));
+			sixteenthString = parseFloat(sixteenthString).toString();
 		}
-		const progress = [measures, quarters, sixteenths];
-		return progress.join(":");
+		const parts = [measureString, quarterString, sixteenthString];
+		return parts.join(":");
+	}
+
+	/**
+	 * Return the time as a tuple of [bars, beats, sixteenths].
+	 */
+	toBarsBeatsSixteenthsValues(): [number, number, number] {
+		const quarterTime = this._beatsToUnits(1);
+		const totalQuarters = this.valueOf() / quarterTime;
+		const timeSignature = this._getTimeSignature();
+		const measures = Math.floor(totalQuarters / timeSignature);
+		const quarters = Math.floor(totalQuarters) % timeSignature;
+		const sixteenths = (totalQuarters % 1) * 4;
+		return [measures, quarters, sixteenths];
 	}
 
 	/**
@@ -136,7 +146,7 @@ export class TimeClass<Type extends Seconds | Ticks = Seconds, Unit extends stri
 }
 
 /**
- * Create a TimeClass from a time string or number. The time is computed against the 
+ * Create a TimeClass from a time string or number. The time is computed against the
  * global Tone.Context. To use a specific context, use [[TimeClass]]
  * @param value A value which represents time
  * @param units The value's units if they can't be inferred by the value.
