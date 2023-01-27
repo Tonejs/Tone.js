@@ -237,6 +237,35 @@ describe("TickSource", () => {
 			expect(source.getTicksAtTime(6)).to.be.closeTo(6, 0.01);
 			source.dispose();
 		});
+
+		it("will recompute memoized values when events are modified", () => {
+			const source = new TickSource(1);
+			source.start(3).pause(4);
+			expect(source.getTicksAtTime(1)).to.be.closeTo(0, 0.01);
+			expect(source.getTicksAtTime(2)).to.be.closeTo(0, 0.01);
+			expect(source.getTicksAtTime(3)).to.be.closeTo(0, 0.01);
+			expect(source.getTicksAtTime(4)).to.be.closeTo(1, 0.01);
+			expect(source.getTicksAtTime(5)).to.be.closeTo(1, 0.01);
+			source.start(1).pause(2);
+			expect(source.getTicksAtTime(1)).to.be.closeTo(0, 0.01);
+			expect(source.getTicksAtTime(2)).to.be.closeTo(1, 0.01);
+			expect(source.getTicksAtTime(3)).to.be.closeTo(1, 0.01);
+			expect(source.getTicksAtTime(4)).to.be.closeTo(2, 0.01);
+			expect(source.getTicksAtTime(5)).to.be.closeTo(2, 0.01);
+			source.setTicksAtTime(3, 1);
+			expect(source.getTicksAtTime(1)).to.be.closeTo(3, 0.01);
+			expect(source.getTicksAtTime(2)).to.be.closeTo(4, 0.01);
+			expect(source.getTicksAtTime(3)).to.be.closeTo(4, 0.01);
+			expect(source.getTicksAtTime(4)).to.be.closeTo(5, 0.01);
+			expect(source.getTicksAtTime(5)).to.be.closeTo(5, 0.01);
+			source.cancel(4);
+			expect(source.getTicksAtTime(1)).to.be.closeTo(3, 0.01);
+			expect(source.getTicksAtTime(2)).to.be.closeTo(4, 0.01);
+			expect(source.getTicksAtTime(3)).to.be.closeTo(4, 0.01);
+			expect(source.getTicksAtTime(4)).to.be.closeTo(5, 0.01);
+			expect(source.getTicksAtTime(5)).to.be.closeTo(6, 0.01);
+			source.dispose();
+		});
 	});
 
 	context("forEachTickBetween", () => {
@@ -589,6 +618,29 @@ describe("TickSource", () => {
 			expect(source.getSecondsAtTime(1)).to.be.closeTo(0, 0.01);
 			expect(source.getSecondsAtTime(1.4)).to.be.closeTo(0.4, 0.01);
 			expect(source.getSecondsAtTime(1.5)).to.be.closeTo(0, 0.01);
+			source.dispose();
+		});
+
+		it("will recompute memoized values when events are modified", () => {
+			const source = new TickSource(1);
+			source.start(3).pause(4);
+			expect(source.getSecondsAtTime(1)).to.be.closeTo(0, 0.01);
+			expect(source.getSecondsAtTime(2)).to.be.closeTo(0, 0.01);
+			expect(source.getSecondsAtTime(3)).to.be.closeTo(0, 0.01);
+			expect(source.getSecondsAtTime(4)).to.be.closeTo(1, 0.01);
+			expect(source.getSecondsAtTime(5)).to.be.closeTo(1, 0.01);
+			source.start(1).pause(2);
+			expect(source.getSecondsAtTime(1)).to.be.closeTo(0, 0.01);
+			expect(source.getSecondsAtTime(2)).to.be.closeTo(1, 0.01);
+			expect(source.getSecondsAtTime(3)).to.be.closeTo(1, 0.01);
+			expect(source.getSecondsAtTime(4)).to.be.closeTo(2, 0.01);
+			expect(source.getSecondsAtTime(5)).to.be.closeTo(2, 0.01);
+			source.cancel(4);
+			expect(source.getSecondsAtTime(1)).to.be.closeTo(0, 0.01);
+			expect(source.getSecondsAtTime(2)).to.be.closeTo(1, 0.01);
+			expect(source.getSecondsAtTime(3)).to.be.closeTo(1, 0.01);
+			expect(source.getSecondsAtTime(4)).to.be.closeTo(2, 0.01);
+			expect(source.getSecondsAtTime(5)).to.be.closeTo(3, 0.01);
 			source.dispose();
 		});
 	});

@@ -1,9 +1,11 @@
+import { isUndef } from "./TypeCheck";
+
 /**
  * Assert that the statement is true, otherwise invoke the error.
  * @param statement
  * @param error The message which is passed into an Error
  */
-export function assert(statement: boolean, error: string): void {
+export function assert(statement: boolean, error: string): asserts statement {
 	if (!statement) {
 		throw new Error(error);
 	}
@@ -14,17 +16,48 @@ export function assert(statement: boolean, error: string): void {
  */
 export function assertRange(value: number, gte: number, lte = Infinity): void {
 	if (!(gte <= value && value <= lte)) {
-		throw new RangeError(`Value must be within [${gte}, ${lte}], got: ${value}`);
+		throw new RangeError(
+			`Value must be within [${gte}, ${lte}], got: ${value}`
+		);
 	}
 }
 
 /**
- * Make sure that the given value is within the range
+ * Warn if the context is not running.
  */
-export function assertContextRunning(context: import("../context/BaseContext").BaseContext): void {
+export function assertContextRunning(
+	context: import("../context/BaseContext").BaseContext
+): void {
 	// add a warning if the context is not started
 	if (!context.isOffline && context.state !== "running") {
-		warn("The AudioContext is \"suspended\". Invoke Tone.start() from a user action to start the audio.");
+		warn(
+			"The AudioContext is \"suspended\". Invoke Tone.start() from a user action to start the audio."
+		);
+	}
+}
+
+/**
+ * If it is currently inside a scheduled callback
+ */
+let isInsideScheduledCallback = false;
+let printedScheduledWarning = false;
+
+/**
+ * Notify that the following block of code is occurring inside a Transport callback.
+ */
+export function enterScheduledCallback(insideCallback: boolean): void {
+	isInsideScheduledCallback = insideCallback;
+}
+
+/**
+ * Make sure that a time was passed into
+ */
+export function assertUsedScheduleTime(
+	time?: import("../type/Units").Time
+): void {
+	if (isUndef(time) && isInsideScheduledCallback && !printedScheduledWarning) {
+		printedScheduledWarning = true;
+		warn("Events scheduled inside of scheduled callbacks should use the passed in scheduling time. See https://github.com/Tonejs/Tone.js/wiki/Accurate-Timing");
 	}
 }
 

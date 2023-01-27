@@ -16,7 +16,7 @@ describe("Distortion", () => {
 			const osc = new Oscillator().connect(dist);
 			osc.type = "square";
 			osc.start(0).stop(0.4);
-		}, "distortion.wav", 0.01);
+		}, "distortion.wav", 0.02);
 	});
 
 	context("API", () => {

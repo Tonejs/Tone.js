@@ -1,7 +1,7 @@
 Tone.js
 =========
 
-[![Build Status](https://travis-ci.org/Tonejs/Tone.js.svg?branch=dev)](https://travis-ci.org/Tonejs/Tone.js) [![codecov](https://codecov.io/gh/Tonejs/Tone.js/branch/dev/graph/badge.svg)](https://codecov.io/gh/Tonejs/Tone.js)
+[![Build Status](https://travis-ci.com/Tonejs/Tone.js.svg?branch=dev)](https://app.travis-ci.com/github/Tonejs/Tone.js) [![codecov](https://codecov.io/gh/Tonejs/Tone.js/branch/dev/graph/badge.svg)](https://codecov.io/gh/Tonejs/Tone.js)
 
 
 Tone.js is a Web Audio framework for creating interactive music in the browser. The architecture of Tone.js aims to be familiar to both musicians and audio programmers creating web-based audio applications. On the high-level, Tone offers common DAW (digital audio workstation) features like a global transport for synchronizing and scheduling events as well as prebuilt synths and effects. Additionally, Tone provides high-performance building blocks to create your own synthesizers, effects, and complex control signals.
@@ -12,22 +12,24 @@ Tone.js is a Web Audio framework for creating interactive music in the browser. 
 
 # Installation
 
-To install the latest stable version.
+There are two ways to incorporate Tone.js into a project. First, it can be installed locally into a project using `npm`:
 
 ```bash
-npm install tone
+npm install tone      // Install the latest stable version
+npm install tone@next // Or, alternatively, use the 'next' version
 ```
 
-Or to install the 'next' version
-
-```bash
-npm install tone@next
-```
-
-To import Tone.js:
+Add Tone.js to a project using the JavaScript `import` syntax:
 
 ```js
-import * as Tone from 'tone'
+import * as Tone from 'tone';
+```
+
+Tone.js is also hosted at unpkg.com. It can be added directly within an HTML document, as long as it precedes any project scripts. [See the example here](https://github.com/Tonejs/Tone.js/blob/master/examples/simpleHtml.html) for more details.
+
+```html
+<script src="http://unpkg.com/tone"></script>
+<script src="myScript.js"></script>
 ```
 
 # Hello Tone
@@ -253,7 +255,7 @@ Tone.js makes extensive use of the native Web Audio Nodes such as the GainNode a
 
 # Testing
 
-Tone.js runs an extensive test suite using [mocha](https://mochajs.org/) and [chai](http://chaijs.com/) with nearly 100% coverage. Each commit and pull request is run on [Travis-CI](https://travis-ci.org/Tonejs/Tone.js/) across browsers and versions. Passing builds on the 'dev' branch are published on npm as `tone@next`. 
+Tone.js runs an extensive test suite using [mocha](https://mochajs.org/) and [chai](http://chaijs.com/) with nearly 100% coverage. Each commit and pull request is run on [Travis-CI](https://app.travis-ci.com/github/Tonejs/Tone.js) across browsers and versions. Passing builds on the 'dev' branch are published on npm as `tone@next`. 
 
 # Contributing
 

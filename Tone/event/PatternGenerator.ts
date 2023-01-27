@@ -9,11 +9,11 @@ export type PatternName = "up" | "down" | "upDown" | "downUp" | "alternateUp" | 
 /**
  * Start at the first value and go up to the last
  */
-function* upPatternGen<T>(values: T[]): IterableIterator<T> {
+function* upPatternGen<T>(numValues: number): IterableIterator<number> {
 	let index = 0;
-	while (index < values.length) {
-		index = clampToArraySize(index, values);
-		yield values[index];
+	while (index < numValues) {
+		index = clamp(index, 0, numValues - 1);
+		yield index;
 		index++;
 	}
 }
@@ -21,11 +21,11 @@ function* upPatternGen<T>(values: T[]): IterableIterator<T> {
 /**
  * Start at the last value and go down to 0
  */
-function* downPatternGen<T>(values: T[]): IterableIterator<T> {
-	let index = values.length - 1;
+function* downPatternGen<T>(numValues: number): IterableIterator<number> {
+	let index = numValues - 1;
 	while (index >= 0) {
-		index = clampToArraySize(index, values);
-		yield values[index];
+		index = clamp(index, 0, numValues - 1);
+		yield index;
 		index--;
 	}
 }
@@ -33,30 +33,23 @@ function* downPatternGen<T>(values: T[]): IterableIterator<T> {
 /**
  * Infinitely yield the generator
  */
-function* infiniteGen<T>(values: T[], gen: typeof upPatternGen): IterableIterator<T> {
+function* infiniteGen<T>(numValues: number, gen: typeof upPatternGen): IterableIterator<number> {
 	while (true) {
-		yield* gen(values);
+		yield* gen(numValues);
 	}
-}
-
-/**
- * Make sure that the index is in the given range
- */
-function clampToArraySize(index: number, values: any[]): number {
-	return clamp(index, 0, values.length - 1);
 }
 
 /**
  * Alternate between two generators
  */
-function* alternatingGenerator<T>(values: T[], directionUp: boolean): IterableIterator<T> {
-	let index = directionUp ? 0 : values.length - 1;
+function* alternatingGenerator<T>(numValues: number, directionUp: boolean): IterableIterator<number> {
+	let index = directionUp ? 0 : numValues - 1;
 	while (true) {
-		index = clampToArraySize(index, values);
-		yield values[index];
+		index = clamp(index, 0, numValues - 1);
+		yield index;
 		if (directionUp) {
 			index++;
-			if (index >= values.length - 1) {
+			if (index >= numValues - 1) {
 				directionUp = false;
 			}
 		} else {
@@ -71,12 +64,12 @@ function* alternatingGenerator<T>(values: T[], directionUp: boolean): IterableIt
 /**
  * Starting from the bottom move up 2, down 1
  */
-function* jumpUp<T>(values: T[]): IterableIterator<T> {
+function* jumpUp<T>(numValues: number): IterableIterator<number> {
 	let index = 0;
 	let stepIndex = 0;
-	while (index < values.length) {
-		index = clampToArraySize(index, values);
-		yield values[index];
+	while (index < numValues) {
+		index = clamp(index, 0, numValues - 1);
+		yield index;
 		stepIndex++;
 		index += (stepIndex % 2 ? 2 : -1);
 	}
@@ -85,12 +78,12 @@ function* jumpUp<T>(values: T[]): IterableIterator<T> {
 /**
  * Starting from the top move down 2, up 1
  */
-function* jumpDown<T>(values: T[]): IterableIterator<T> {
-	let index = values.length - 1;
+function* jumpDown<T>(numValues: number): IterableIterator<number> {
+	let index = numValues - 1;
 	let stepIndex = 0;
 	while (index >= 0) {
-		index = clampToArraySize(index, values);
-		yield values[index];
+		index = clamp(index, 0, numValues - 1);
+		yield index;
 		stepIndex++;
 		index += (stepIndex % 2 ? -2 : 1);
 	}
@@ -99,78 +92,78 @@ function* jumpDown<T>(values: T[]): IterableIterator<T> {
 /**
  * Choose a random index each time
  */
-function* randomGen<T>(values: T[]): IterableIterator<T> {
+function* randomGen<T>(numValues: number): IterableIterator<number> {
 	while (true) {
-		const randomIndex = Math.floor(Math.random() * values.length);
-		yield values[randomIndex];
+		const randomIndex = Math.floor(Math.random() * numValues);
+		yield randomIndex;
 	}
 }
 
 /**
  * Randomly go through all of the values once before choosing a new random order
  */
-function* randomOnce<T>(values: T[]): IterableIterator<T> {
+function* randomOnce<T>(numValues: number): IterableIterator<number> {
 	// create an array of indices
 	const copy: number[] = [];
-	for (let i = 0; i < values.length; i++) {
+	for (let i = 0; i < numValues; i++) {
 		copy.push(i);
 	}
 	while (copy.length > 0) {
 		// random choose an index, and then remove it so it's not chosen again
 		const randVal = copy.splice(Math.floor(copy.length * Math.random()), 1);
-		const index = clampToArraySize(randVal[0], values);
-		yield values[index];
+		const index = clamp(randVal[0], 0, numValues - 1);
+		yield index;
 	}
 }
 
 /**
- * Randomly choose to walk up or down 1 index in the values array
+ * Randomly choose to walk up or down 1 index
  */
-function* randomWalk<T>(values: T[]): IterableIterator<T> {
-	// randomly choose a starting index in the values array
-	let index = Math.floor(Math.random() * values.length);
+function* randomWalk<T>(numValues: number): IterableIterator<number> {
+	// randomly choose a starting index
+	let index = Math.floor(Math.random() * numValues);
 	while (true) {
 		if (index === 0) {
-			index++; // at bottom of array, so force upward step
-		} else if (index === values.length - 1) {
-			index--; // at top of array, so force downward step
+			index++; // at bottom, so force upward step
+		} else if (index === numValues - 1) {
+			index--; // at top, so force downward step
 		} else if (Math.random() < 0.5) { // else choose random downward or upward step
 			index--;
 		} else {
 			index++;
 		}
-		yield values[index];
+		yield index;
 	}
 }
 
 /**
- * PatternGenerator returns a generator which will iterate over the given array
- * of values and yield the items according to the passed in pattern
- * @param values An array of values to iterate over
+ * PatternGenerator returns a generator which will yield numbers between 0 and numValues
+ * according to the passed in pattern that can be used as indexes into an array of size numValues.
+ * @param numValues The size of the array to emit indexes for
  * @param pattern The name of the pattern use when iterating over
  * @param index Where to start in the offset of the values array
  */
-export function* PatternGenerator<T>(values: T[], pattern: PatternName = "up", index = 0): Iterator<T> {
+export function* PatternGenerator(numValues: number, pattern: PatternName = "up", index = 0): Iterator<number> {
 	// safeguards
-	assert(values.length > 0, "The array must have more than one value in it");
+	assert(numValues >= 1, "The number of values must be at least one");
 	switch (pattern) {
 		case "up" :
-			yield* infiniteGen(values, upPatternGen);
+			yield* infiniteGen(numValues, upPatternGen);
 		case "down" :
-			yield* infiniteGen(values, downPatternGen);
+			yield* infiniteGen(numValues, downPatternGen);
 		case "upDown" :
-			yield* alternatingGenerator(values, true);
+			yield* alternatingGenerator(numValues, true);
 		case "downUp" :
-			yield* alternatingGenerator(values, false);
+			yield* alternatingGenerator(numValues, false);
 		case "alternateUp":
-			yield* infiniteGen(values, jumpUp);
+			yield* infiniteGen(numValues, jumpUp);
 		case "alternateDown":
-			yield* infiniteGen(values, jumpDown);
+			yield* infiniteGen(numValues, jumpDown);
 		case "random":
-			yield* randomGen(values);
+			yield* randomGen(numValues);
 		case "randomOnce":
-			yield* infiniteGen(values, randomOnce);
+			yield* infiniteGen(numValues, randomOnce);
 		case "randomWalk":
-			yield* randomWalk(values);
+			yield* randomWalk(numValues);
 	}
 }

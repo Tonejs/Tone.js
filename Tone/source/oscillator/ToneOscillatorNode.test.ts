@@ -191,7 +191,7 @@ describe("ToneOscillatorNode", () => {
 				expect(osc.getStateAtTime(0)).to.equal("stopped");
 				expect(osc.getStateAtTime(currentTime)).to.equal("started");
 				setTimeout(() => {
-					currentTime = osc.context.currentTime;
+					currentTime = osc.now();
 					osc.stop(0);
 					expect(osc.getStateAtTime(currentTime + 0.01)).to.equal("stopped");
 					osc.dispose();

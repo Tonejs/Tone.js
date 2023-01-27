@@ -152,7 +152,7 @@ describe("ToneConstantSource", () => {
 				expect(source.getStateAtTime(0)).to.equal("stopped");
 				expect(source.getStateAtTime(currentTime)).to.equal("started");
 				setTimeout(() => {
-					currentTime = source.context.currentTime;
+					currentTime = source.now();
 					source.stop(0);
 					expect(source.getStateAtTime(currentTime + 0.01)).to.equal("stopped");
 					source.dispose();

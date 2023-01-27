@@ -4,7 +4,7 @@ import { MeterBase, MeterBaseOptions } from "./MeterBase";
 export type DCMeterOptions = MeterBaseOptions;
 
 /**
- * DCMeter gets the raw value of the input signal at the current time.
+ * DCMeter gets the raw value of the input signal at the current time. See also {@link Meter}.
  *
  * @example
  * const meter = new Tone.DCMeter();

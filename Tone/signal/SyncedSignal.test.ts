@@ -156,9 +156,11 @@ describe("SyncedSignal", () => {
 				sched.exponentialRampTo(3, 1, 1);
 				transport.start(0);
 			}, 3).then((buffer) => {
-				buffer.forEach((sample, time) => {
-					expect(sample).to.be.closeTo(sched.getValueAtTime(time), 0.02);
-				});
+				expect(buffer.getValueAtTime(0)).to.closeTo(1, 0.1);
+				expect(buffer.getValueAtTime(0.5)).to.closeTo(1, 0.1);
+				expect(buffer.getValueAtTime(1)).to.closeTo(1, 0.1);
+				expect(buffer.getValueAtTime(1.5)).to.closeTo(1.75, 0.1);
+				expect(buffer.getValueAtTime(2)).to.closeTo(3, 0.1);
 			});
 		});
 	

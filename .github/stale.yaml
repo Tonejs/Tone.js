@@ -1,0 +1,9 @@
+daysUntilStale: 90
+daysUntilClose: 14
+onlyLabels:
+  - feature request
+staleLabel: stale
+markComment: >
+  Feature requests which don't have any contributors or activity in the past 
+  90 days are marked as stale. Comment on this issue if you intend on contributing 
+  to this feature, otherwise it will be closed in two weeks. 

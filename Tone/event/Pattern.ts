@@ -27,12 +27,17 @@ export class Pattern<ValueType> extends Loop<PatternOptions<ValueType>> {
 	/**
 	 * The pattern generator function
 	 */
-	private _pattern: Iterator<ValueType>;
+	private _pattern: Iterator<number>;
+
+	/**
+	 * The current index
+	 */
+	 private _index?: number;
 
 	/**
 	 * The current value
 	 */
-	private _value?: ValueType;
+	 private _value?: ValueType;
 
 	/**
 	 * Hold the pattern type
@@ -67,13 +72,13 @@ export class Pattern<ValueType> extends Loop<PatternOptions<ValueType>> {
 
 		this.callback = options.callback;
 		this._values = options.values;
-		this._pattern = PatternGenerator(options.values, options.pattern);
+		this._pattern = PatternGenerator(options.values.length, options.pattern);
 		this._type = options.pattern;
 	}
 
 	static getDefaults(): PatternOptions<any> {
 		return Object.assign(Loop.getDefaults(), {
-			pattern: "up" as "up",
+			pattern: "up" as const,
 			values: [],
 			callback: noOp,
 		});
@@ -83,8 +88,9 @@ export class Pattern<ValueType> extends Loop<PatternOptions<ValueType>> {
 	 * Internal function called when the notes should be called
 	 */
 	protected _tick(time: Seconds): void {
-		const value = this._pattern.next() as IteratorResult<ValueType>;
-		this._value = value.value;
+		const index = this._pattern.next() as IteratorResult<ValueType>;
+		this._index = index.value;
+		this._value = this._values[index.value];
 		this.callback(time, this._value);
 	}
 
@@ -108,6 +114,13 @@ export class Pattern<ValueType> extends Loop<PatternOptions<ValueType>> {
 	}
 
 	/**
+	 * The current index of the pattern.
+	 */
+	 get index(): number | undefined {
+		return this._index;
+	}
+
+	/**
 	 * The pattern type. See Tone.CtrlPattern for the full list of patterns.
 	 */
 	get pattern(): PatternName {
@@ -115,7 +128,7 @@ export class Pattern<ValueType> extends Loop<PatternOptions<ValueType>> {
 	}
 	set pattern(pattern) {
 		this._type = pattern;
-		this._pattern = PatternGenerator(this._values, this._type);
+		this._pattern = PatternGenerator(this._values.length, this._type);
 	}
 }
 

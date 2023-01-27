@@ -75,8 +75,10 @@ describe("Context", () => {
 				clockSource: "timeout",
 				latencyHint: "playback",
 				lookAhead: 0.2,
+				updateInterval: 0.1
 			});
 			expect(ctx.lookAhead).to.equal(0.2);
+			expect(ctx.updateInterval).to.equal(0.1);
 			expect(ctx.latencyHint).to.equal("playback");
 			expect(ctx.clockSource).to.equal("timeout");
 			ctx.dispose();
@@ -116,10 +118,9 @@ describe("Context", () => {
 				}
 			});
 			await context.resume();
-			await new Promise((done) => setTimeout(() => done(), 10));
+			await new Promise<void>((done) => setTimeout(() => done(), 10));
 			expect(triggerChange).to.equal(true);
-			context.dispose();
-			return ac.close();
+			return context.dispose();
 		});
 	});
 

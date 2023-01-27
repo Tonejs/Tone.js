@@ -5,6 +5,8 @@ import { ONLINE_TESTING } from "test/helper/Supports";
 import { Signal } from "Tone/signal/Signal";
 import { Oscillator } from "Tone/source/oscillator/Oscillator";
 import { Meter } from "./Meter";
+import { Panner } from "Tone/component/channel/Panner";
+import { Merge } from "Tone/component/channel/Merge";
 
 describe("Meter", () => {
 
@@ -30,7 +32,7 @@ describe("Meter", () => {
 
 		it("returns an array of channels if channels > 1", () => {
 			const meter = new Meter({
-				channels: 4,
+				channelCount: 4,
 			});
 			expect((meter.getValue() as number[]).length).to.equal(4);
 			meter.dispose();
@@ -83,6 +85,29 @@ describe("Meter", () => {
 					expect(meter.getValue()).to.be.closeTo(0.35, 0.15);
 					meter.dispose();
 					osc.dispose();
+					done();
+				}, 400);
+			});
+
+			it("can get the rms levels for multiple channels", (done) => {
+				const meter = new Meter({
+					channelCount: 2,
+					smoothing: 0.5,
+				});
+				const merge = new Merge().connect(meter);
+				const osc0 = new Oscillator().connect(merge, 0, 0).start();
+				const osc1 = new Oscillator().connect(merge, 0, 1).start();
+				osc0.volume.value = -6;
+				osc1.volume.value = -18;
+				setTimeout(() => {
+					const values = meter.getValue();
+					expect(values).to.have.lengthOf(2);
+					expect(values[0]).to.be.closeTo(-9, 1);
+					expect(values[1]).to.be.closeTo(-21, 1);
+					meter.dispose();
+					merge.dispose();
+					osc0.dispose();
+					osc1.dispose();
 					done();
 				}, 400);
 			});

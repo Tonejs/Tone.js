@@ -480,6 +480,15 @@ describe("Signal", () => {
 			}, 10);
 		});
 
+		it("keeps the ratio of a time signal when the bpm changes", () => {
+			return ConstantOutput(({ transport }) => {
+				transport.bpm.value = 120;
+				const sig = new Signal("4n", "time").toDestination();
+				transport.syncSignal(sig);
+				transport.bpm.value = 240;
+			}, 0.25);
+		});
+
 		it("outputs 0 when the signal is 0", () => {
 			return ConstantOutput(({ transport }) => {
 				transport.bpm.value = 120;
