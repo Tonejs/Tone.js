@@ -573,12 +573,12 @@ export class Transport
 	 * The Transport's position in Bars:Beats:Sixteenths.
 	 * Setting the value will jump to that position right away.
 	 */
-	get position(): BarsBeatsSixteenths | Time {
+	get position(): TransportTime {
 		const now = this.now();
 		const ticks = this._clock.getTicksAtTime(now);
 		return new TicksClass(this.context, ticks).toBarsBeatsSixteenths();
 	}
-	set position(progress: Time) {
+	set position(progress: TransportTime) {
 		const ticks = this.toTicks(progress);
 		this.ticks = ticks;
 	}
