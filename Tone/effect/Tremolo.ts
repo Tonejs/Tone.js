@@ -23,7 +23,7 @@ export interface TremoloOptions extends StereoEffectOptions {
  * const tremolo = new Tone.Tremolo(9, 0.75).toDestination().start();
  * // route an oscillator through the tremolo and start it
  * const oscillator = new Tone.Oscillator().connect(tremolo).start();
- * 
+ *
  * @category Effect
  */
 export class Tremolo extends StereoEffect<TremoloOptions> {

@@ -17,7 +17,7 @@ export interface BaseToneOptions { }
 
 /**
  * Tone is the base class of all other classes.
- * 
+ *
  * @category Core
  * @constructor
  */
@@ -61,7 +61,7 @@ export abstract class Tone {
 	 * // calls to start/stop will print in the console
 	 * osc.start();
 	 */
-	protected log(...args: any[]): void {
+	protected log(...args: unknown[]): void {
 		// if the object is either set to debug = true
 		// or if there is a string on the Tone.global.with the class name
 		if (this.debug || (theWindow && this.toString() === theWindow.TONE_DEBUG_CLASS)) {

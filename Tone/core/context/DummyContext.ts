@@ -139,7 +139,7 @@ export class DummyContext extends BaseContext {
 		return Promise.resolve();
 	}
 
-	setTimeout(_fn: (...args: any[]) => void, _timeout: Seconds): number {
+	setTimeout(_fn: (...args: unknown[]) => void, _timeout: Seconds): number {
 		return 0;
 	}
 
@@ -147,7 +147,7 @@ export class DummyContext extends BaseContext {
 		return this;
 	}
 
-	setInterval(_fn: (...args: any[]) => void, _interval: Seconds): number {
+	setInterval(_fn: (...args: unknown[]) => void, _interval: Seconds): number {
 		return 0;
 	}
 

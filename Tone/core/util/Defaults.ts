@@ -6,7 +6,7 @@ type BaseToneOptions = import("../Tone").BaseToneOptions;
 /**
  * Some objects should not be merged
  */
-function noCopy(key: string, arg: any): boolean {
+function noCopy(key: string, arg: unknown): boolean {
 	return key === "value" || isAudioParam(arg) || isAudioNode(arg) || isAudioBuffer(arg);
 }
 
@@ -19,9 +19,9 @@ export function deepMerge<T>(target: T): T;
 export function deepMerge<T, U>(target: T, source1: U): T & U;
 export function deepMerge<T, U, V>(target: T, source1: U, source2: V): T & U & V;
 export function deepMerge<T, U, V, W>(target: T, source1: U, source2: V, source3: W): T & U & V & W;
-export function deepMerge(target: any, ...sources: any[]): any {
+export function deepMerge(target: unknown, ...sources: unknown[]): unknown {
 	if (!sources.length) {
-		return target; 
+		return target;
 	}
 	const source = sources.shift();
 
@@ -31,7 +31,7 @@ export function deepMerge(target: any, ...sources: any[]): any {
 				target[key] = source[key];
 			} else if (isObject(source[key])) {
 				if (!target[key]) {
-					Object.assign(target, { [key]: {} }); 
+					Object.assign(target, { [key]: {} });
 				}
 				deepMerge(target[key], source[key] as any);
 			} else {
@@ -39,8 +39,8 @@ export function deepMerge(target: any, ...sources: any[]): any {
 			}
 		}
 	}
-	// @ts-ignore
-	return deepMerge(target, ...sources);
+
+	return deepMerge(target, sources);
 }
 
 /**

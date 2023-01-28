@@ -30,7 +30,7 @@ interface SequenceOptions<T> extends Omit<ToneEventOptions<T>, "value"> {
  * Tone.Transport.start();
  * @category Event
  */
-export class Sequence<ValueType = any> extends ToneEvent<ValueType> {
+export class Sequence<ValueType extends Time | null = Time | null> extends ToneEvent<ValueType> {
 
 	readonly name: string = "Sequence";
 
@@ -101,7 +101,7 @@ export class Sequence<ValueType = any> extends ToneEvent<ValueType> {
 	/**
 	 * The internal callback for when an event is invoked
 	 */
-	private _seqCallback(time: Seconds, value: any): void {
+	private _seqCallback(time: Seconds, value: ValueType): void {
 		if (value !== null && !this.mute) {
 			this.callback(time, value);
 		}
@@ -110,7 +110,7 @@ export class Sequence<ValueType = any> extends ToneEvent<ValueType> {
 	/**
 	 * The sequence
 	 */
-	get events(): any[] {
+	get events(): SequenceEventDescription<ValueType> {
 		return this._events;
 	}
 	set events(s) {

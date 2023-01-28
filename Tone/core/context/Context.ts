@@ -27,7 +27,7 @@ export interface ContextOptions {
 }
 
 export interface ContextTimeoutEvent {
-	callback: (...args: any[]) => void;
+	callback: (...args: unknown[]) => void;
 	id: number;
 	time: Seconds;
 }
@@ -135,7 +135,7 @@ export class Context extends BaseContext {
 		this._context.onstatechange = () => {
 			this.emit("statechange", this.state);
 		};
-		
+
 		// if no custom updateInterval provided, updateInterval will be derived by lookAhead setter
 		this[arguments[0]?.hasOwnProperty("updateInterval") ? "_lookAhead" : "lookAhead"] = options.lookAhead;
 	}
@@ -422,7 +422,7 @@ export class Context extends BaseContext {
 		this._lookAhead = time;
 		// if lookAhead is 0, default to .01 updateInterval
 		this.updateInterval = time ? (time / 2) : .01;
-	}	
+	}
 	private _lookAhead!: Seconds;
 
 	/**
@@ -568,7 +568,7 @@ export class Context extends BaseContext {
 	 * @param  timeout  The timeout in seconds
 	 * @returns ID to use when invoking Context.clearTimeout
 	 */
-	setTimeout(fn: (...args: any[]) => void, timeout: Seconds): number {
+	setTimeout(fn: (...args: unknown[]) => void, timeout: Seconds): number {
 		this._timeoutIds++;
 		const now = this.now();
 		this._timeouts.add({
@@ -602,7 +602,7 @@ export class Context extends BaseContext {
 	/**
 	 * Adds a repeating event to the context's callback clock
 	 */
-	setInterval(fn: (...args: any[]) => void, interval: Seconds): number {
+	setInterval(fn: (...args: unknown[]) => void, interval: Seconds): number {
 		const id = ++this._timeoutIds;
 		const intervalFn = () => {
 			const now = this.now();

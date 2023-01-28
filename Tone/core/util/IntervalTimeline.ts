@@ -8,7 +8,7 @@ import { assert } from "./Debug";
 export interface IntervalTimelineEvent {
 	time: number;
 	duration: number;
-	[propName: string]: any;
+	[propName: string]: unknown;
 }
 
 type IteratorCallback = (event: IntervalTimelineEvent) => void;

@@ -88,7 +88,7 @@ export class Param<TypeName extends UnitName = "number">
 
 	/**
 	 * If the underlying AudioParam can be swapped out
-	 * using the setParam method. 
+	 * using the setParam method.
 	 */
 	protected readonly _swappable: boolean;
 
@@ -181,7 +181,7 @@ export class Param<TypeName extends UnitName = "number">
 	/**
 	 * Type guard based on the unit name
 	 */
-	private _is<T>(arg: any, type: UnitName): arg is T {
+	private _is<T>(arg: unknown, type: UnitName): arg is T {
 		return this.units === type;
 	}
 
@@ -418,7 +418,7 @@ export class Param<TypeName extends UnitName = "number">
 		assert(isFinite(computedTime), `Invalid argument to cancelAndHoldAtTime: ${JSON.stringify(time)}`);
 
 		this.log(this.units, "cancelAndHoldAtTime", computedTime, "value=" + valueAtTime);
-		
+
 		// if there is an event at the given computedTime
 		// and that even is not a "set"
 		const before = this._events.get(computedTime);
@@ -496,7 +496,7 @@ export class Param<TypeName extends UnitName = "number">
 	}
 
 	/**
-	 * Replace the Param's internal AudioParam. Will apply scheduled curves 
+	 * Replace the Param's internal AudioParam. Will apply scheduled curves
 	 * onto the parameter and replace the connections.
 	 */
 	setParam(param: AudioParam): this {

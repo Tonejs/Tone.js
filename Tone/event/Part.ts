@@ -9,9 +9,9 @@ import { ToneEvent, ToneEventCallback, ToneEventOptions } from "./ToneEvent";
 type CallbackType<T> =
 	T extends {
 		time: Time;
-		[key: string]: any;
+		[key: string]: unknown;
 	} ? T :
-		T extends ArrayLike<any> ? T[1] :
+		T extends ArrayLike<unknown> ? T[1] :
 			T extends Time ? null : never;
 
 interface PartOptions<T> extends Omit<ToneEventOptions<CallbackType<T>>, "value"> {
@@ -75,7 +75,7 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 		// add the events
 		options.events.forEach(event => {
 			if (isArray(event)) {
-				this.add(event[0], event[1]);
+				this.add(event[0] as Time, event[1]);
 			} else {
 				this.add(event);
 			}

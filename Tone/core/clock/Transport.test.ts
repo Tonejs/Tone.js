@@ -861,7 +861,7 @@ describe("Transport", () => {
 			let wasCalled = false;
 			return Offline(context => {
 				const transport = new Transport({ context });
-				transport.on("start", (time, offset) => {
+				transport.on("start", (time: number, offset: number) => {
 					expect(time).to.be.closeTo(0.2, 0.01);
 					expect(offset).to.be.closeTo(0.5, 0.001);
 					wasCalled = true;
@@ -876,7 +876,7 @@ describe("Transport", () => {
 			let invoked = false;
 			return Offline(context => {
 				const transport = new Transport({ context });
-				transport.on("start", (time, offset) => {
+				transport.on("start", (time: number, offset: number) => {
 					expect(time - transport.context.currentTime).to.be.closeTo(0, 0.01);
 					expect(offset).to.equal(0);
 					invoked = true;
@@ -892,11 +892,11 @@ describe("Transport", () => {
 			return Offline(context => {
 				const transport = new Transport({ context });
 				const now = transport.now();
-				transport.on("start", time => {
+				transport.on("start", (time: number) => {
 					invocations++;
 					expect(time).to.be.closeTo(now + 0.1, 0.01);
 				});
-				transport.on("stop", time => {
+				transport.on("stop", (time: number) => {
 					invocations++;
 					expect(time).to.be.closeTo(now + 0.2, 0.01);
 				});
@@ -914,7 +914,7 @@ describe("Transport", () => {
 				transport.setLoopPoints(0, sixteenth);
 				transport.loop = true;
 				let lastLoop = -1;
-				transport.on("loop", time => {
+				transport.on("loop", (time: number) => {
 					loops++;
 					if (lastLoop !== -1) {
 						expect(time - lastLoop).to.be.closeTo(sixteenth, 0.001);

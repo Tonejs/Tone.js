@@ -3,7 +3,7 @@ import { Tone } from "../Tone";
 import { isDefined, isObject, isString, isUndef } from "../util/TypeCheck";
 import { BPM, Hertz, MidiNote, Milliseconds, Samples, Seconds, Ticks, Time } from "./Units";
 
-export type TimeValue = Time | TimeBaseClass<any, any>;
+export type TimeValue = Time | TimeBaseClass<number, string>;
 
 /**
  * The units that the TimeBase can accept. extended by other classes
@@ -267,7 +267,7 @@ export abstract class TimeBaseClass<Type extends number, Unit extends string> ex
 	 * Coerce a time type into this units type.
 	 * @param type Any time type units
 	 */
-	fromType(type: TimeBaseClass<any, any>): this {
+	fromType(type: TimeBaseClass<number, string>): this {
 		this._units = undefined;
 		switch (this.defaultUnits) {
 			case "s":
