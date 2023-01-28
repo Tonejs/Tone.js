@@ -103,7 +103,7 @@ export class Meter extends MeterBase<MeterOptions> {
 			const rms = Math.sqrt(totalSquared / values.length);
 			// the rms can only fall at the rate of the smoothing
 			// but can jump up instantly
-			this._rms[index] = Math.max(rms, this._rms[index]  * this.smoothing);
+			this._rms[index] = Math.max(rms, this._rms[index] * this.smoothing);
 			return this.normalRange ? this._rms[index] : gainToDb(this._rms[index]);
 		});
 		if (this.channels === 1) {

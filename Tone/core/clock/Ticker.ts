@@ -42,7 +42,7 @@ export class Ticker {
 
 		this._callback = callback;
 		this._type = type;
-		this._minimumUpdateInterval = Math.max( 128/(contextSampleRate || 44100), .001 );
+		this._minimumUpdateInterval = Math.max(128/(contextSampleRate || 44100), .001);
 		this.updateInterval = updateInterval;
 
 		// create the clock source for the first time

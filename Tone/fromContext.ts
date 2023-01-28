@@ -32,7 +32,7 @@ type ToneObject = {
  * Bind the TimeBaseClass to the context
  */
 function bindTypeClass(context: Context, type) {
-	return (...args: any[]) => new type(context, ...args);
+	return (...args: unknown[]) => new type(context, ...args);
 }
 
 /**
