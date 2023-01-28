@@ -1,7 +1,6 @@
 /* eslint-disable key-spacing */
 import { getContext } from "../Global";
-import { intervalToFrequencyRatio, mtof } from "./Conversions";
-import { ftom, getA4, setA4 } from "./Conversions";
+import { ftom, ftomf, getA4, intervalToFrequencyRatio, mtof, setA4 } from "./Conversions";
 import { TimeClass } from "./Time";
 import { TimeBaseUnit, TimeExpression, TimeValue } from "./TimeBase";
 import { Frequency, Hertz, Interval, MidiNote, Note, Seconds, Ticks } from "./Units";
@@ -122,6 +121,15 @@ export class FrequencyClass<Type extends number = Hertz> extends TimeClass<Type,
 	}
 
 	/**
+	 * Return the fractional value (i.e. unrounded) of the frequency as a MIDI note
+	 * @example
+	 * Tone.Frequency(439, "hz").toMidi(); // 68.96
+	 */
+	toFractionalMidi(): number {
+		return ftomf(this.valueOf());
+	}
+
+	/**
 	 * Return the value of the frequency in Scientific Pitch Notation
 	 * @example
 	 * Tone.Frequency(69, "midi").toNote(); // "A4"
@@ -204,7 +212,7 @@ export class FrequencyClass<Type extends number = Hertz> extends TimeClass<Type,
 
 	/**
 	 * Convert a frequency value to a MIDI note.
-	 * @param frequency The value to frequency value to convert.
+	 * @param frequency The frequency value to convert.
 	 */
 	static ftom(frequency: Hertz): MidiNote {
 		return ftom(frequency);

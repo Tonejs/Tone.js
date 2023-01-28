@@ -205,10 +205,16 @@ describe("FrequencyClass", () => {
 			expect(Frequency(4979).toNote()).to.equal("D#8");
 		});
 
-		it("can convert note to midi values", () => {
+		it("can convert note to MIDI values", () => {
 			expect(Frequency("C4").toMidi()).to.equal(teoria.note("C4").midi());
 			expect(Frequency("C#0").toMidi()).to.equal(teoria.note("C#0").midi());
 			expect(Frequency("A-4").toMidi()).to.equal(teoria.note("A-4").midi());
+		});
+
+		it("can convert hertz to fractional MIDI values", () => {
+			expect(Frequency(439).toFractionalMidi().toFixed(2)).to.equal("68.96");
+			expect(Frequency(440).toFractionalMidi().toFixed(2)).to.equal("69.00");
+			expect(Frequency(441).toFractionalMidi().toFixed(2)).to.equal("69.04");
 		});
 
 		it("can convert hertz to seconds", () => {

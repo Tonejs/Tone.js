@@ -42,11 +42,11 @@ const synth = new Tone.Synth().toDestination();
 synth.triggerAttackRelease("C4", "8n");
 ```
 
-#### Tone.Synth
+## Tone.Synth
 
 [Tone.Synth](https://tonejs.github.io/docs/Synth) is a basic synthesizer with a single [oscillator](https://tonejs.github.io/docs/OmniOscillator) and an [ADSR envelope](https://tonejs.github.io/docs/Envelope).
 
-#### triggerAttack / triggerRelease
+### triggerAttack / triggerRelease
 
 `triggerAttack` starts the note (the amplitude is rising), and `triggerRelease` is when the amplitude is going back to 0 (i.e. **note off**).
 
@@ -59,7 +59,7 @@ synth.triggerAttack("C4", now)
 synth.triggerRelease(now + 1)
 ```
 
-#### triggerAttackRelease
+### triggerAttackRelease
 
 `triggerAttackRelease` is a combination of `triggerAttack` and `triggerRelease`
 
@@ -77,7 +77,7 @@ synth.triggerAttackRelease("E4", "8n", now + 0.5)
 synth.triggerAttackRelease("G4", "8n", now + 1)
 ```
 
-#### Time
+## Time
 
 Web Audio has advanced, sample accurate scheduling capabilities. The AudioContext time is what the Web Audio API uses to schedule events, starts at 0 when the page loads and counts up in **seconds**.
 
@@ -107,7 +107,7 @@ document.querySelector('button')?.addEventListener('click', async () => {
 
 # Scheduling
 
-### Transport
+## Transport
 
 [Tone.Transport](https://tonejs.github.io/docs/Transport) is the main timekeeper. Unlike the AudioContext clock, it can be started, stopped, looped and adjusted on the fly. You can think of it like the arrangement view in a Digital Audio Workstation or channels in a Tracker. 
 
@@ -125,8 +125,10 @@ const loopA = new Tone.Loop(time => {
 const loopB = new Tone.Loop(time => {
 	synthB.triggerAttackRelease("C4", "8n", time);
 }, "4n").start("8n");
-// all loops start until the Transport is started
+// the loops start when the Transport is started
 Tone.Transport.start()
+// ramp up to 800 bpm over 10 seconds
+Tone.Transport.bpm.rampTo(800, 10);
 ```
 
 Since Javascript callbacks are **not precisely timed**, the sample-accurate time of the event is passed into the callback function. **Use this time value to schedule the events**.
@@ -140,15 +142,14 @@ All of these instruments are **monophonic** (single voice) which means that they
 To create a **polyphonic** synthesizer, use [Tone.PolySynth](https://tonejs.github.io/docs/PolySynth), which accepts a monophonic synth as its first parameter and automatically handles the note allocation so you can pass in multiple notes. The API is similar to the monophonic synths, except `triggerRelease` must be given a note or array of notes. 
 
 ```javascript
-//pass in some initial values for the filter and filter envelope
 const synth = new Tone.PolySynth(Tone.Synth).toDestination();
 const now = Tone.now()
 synth.triggerAttack("D4", now);
 synth.triggerAttack("F4", now + 0.5);
 synth.triggerAttack("A4", now + 1);
-synth.triggerAttack("C4", now + 1.5);
-synth.triggerAttack("E4", now + 2);
-synth.triggerRelease(["D4", "F4", "A4", "C4", "E4"], now + 4);
+synth.triggerAttack("C5", now + 1.5);
+synth.triggerAttack("E5", now + 2);
+synth.triggerRelease(["D4", "F4", "A4", "C5", "E5"], now + 4);
 ```
 
 # Samples
@@ -164,7 +165,7 @@ Tone.loaded().then(() => {
 
 `Tone.loaded()` returns a promise which resolves when _all_ audio files are loaded. It's a helpful shorthand instead of waiting on each individual audio buffer's `onload` event to resolve. 
 
-## Sampler
+## Tone.Sampler
 
 Multiple samples can also be combined into an instrument. If you have audio files organized by note, [Tone.Sampler](https://tonejs.github.io/docs/Sampler) will pitch shift the samples to fill in gaps between notes. So for example, if you only have every 3rd note on a piano sampled, you could turn that into a full piano sample. 
 
@@ -178,11 +179,12 @@ const sampler = new Tone.Sampler({
 		"F#4": "Fs4.mp3",
 		"A4": "A4.mp3",
 	},
+	release: 1,
 	baseUrl: "https://tonejs.github.io/audio/salamander/",
 }).toDestination();
 
 Tone.loaded().then(() => {
-	sampler.triggerAttackRelease(["Eb4", "G4", "Bb4"], 0.5);
+	sampler.triggerAttackRelease(["Eb4", "G4", "Bb4"], 4);
 })
 ```
 
@@ -202,9 +204,22 @@ const distortion = new Tone.Distortion(0.4).toDestination();
 player.connect(distortion);
 ```
 
-The connection routing is very flexible. For example, you can connect multiple sources to the same effect and then route the effect through a network of other effects either serially or in parallel. 
+The connection routing is very flexible. Connections can run serially or in parallel. 
 
-[Tone.Gain](https://tonejs.github.io/docs/Gain) is very useful in creating complex routing. 
+```javascript
+const player = new Tone.Player({
+	url: "https://tonejs.github.io/audio/drum-samples/loops/ominous.mp3",
+	autostart: true,
+});
+const filter = new Tone.Filter(400, 'lowpass').toDestination();
+const feedbackDelay = new Tone.FeedbackDelay(0.125, 0.5).toDestination();
+
+// connect the player to the feedback delay and filter in parallel
+player.connect(filter);
+player.connect(feedbackDelay);
+```
+
+Multiple nodes can be connected to the same input enabling sources to share effects. [Tone.Gain](https://tonejs.github.io/docs/Gain) is very useful utility node for creating complex routing. 
 
 # Signals
 
@@ -218,8 +233,10 @@ For example, the `frequency` parameter on [Oscillator](https://tonejs.github.io/
 const osc = new Tone.Oscillator().toDestination();
 // start at "C4"
 osc.frequency.value = "C4";
-// ramp to "C5" over 2 seconds
-osc.frequency.rampTo("C5", 2)
+// ramp to "C2" over 2 seconds
+osc.frequency.rampTo("C2", 2);
+// start the oscillator for 2 seconds
+osc.start().stop("+3");
 ```
 
 # AudioContext
