@@ -709,15 +709,15 @@ describe("Player", () => {
 					setTimeout(() => {
 						player.restart(undefined, undefined, 1);
 						const checkStopTimes = new Set();
-						// @ts-ignore
-						player._activeSources.forEach(source => {
-							// @ts-ignore
-							checkStopTimes.add(source._stopTime);
+						// eslint-disable-next-line dot-notation
+						player["_activeSources"].forEach(source => {
+							// eslint-disable-next-line dot-notation
+							checkStopTimes.add(source["_stopTime"]);
 						});
 						getContext().lookAhead = originalLookAhead;
 						// ensure each source has a different stopTime
-						// @ts-ignore
-						expect(checkStopTimes.size).to.equal(player._activeSources.size);
+						// eslint-disable-next-line dot-notation
+						expect(checkStopTimes.size).to.equal(player["_activeSources"].size);
 						done();
 					}, 250);
 				},
