@@ -78,7 +78,7 @@ export function createAudioWorkletNode(
 
 /**
  * This promise resolves to a boolean which indicates if the
- * functionality is supported within the currently used browse.
+ * functionality is supported within the currently used browsee.
  * Taken from [standardized-audio-context](https://github.com/chrisguttandin/standardized-audio-context#issupported)
  */
 export { isSupported as supported } from "standardized-audio-context";
