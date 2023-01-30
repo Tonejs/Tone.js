@@ -1,8 +1,9 @@
 import { AudioRange, Cents, Degrees, Frequency, Positive } from "../../core/type/Units";
 import { Omit } from "../../core/util/Interface";
 import { Signal } from "../../signal/Signal";
-import { SourceOptions } from "../Source";
+import { Source, SourceOptions } from "../Source";
 import { OfflineContext } from "../../core/context/OfflineContext";
+import { ToneAudioNode, ToneAudioNodeOptions } from "Tone/core";
 
 /**
  * The common interface of all Oscillators
@@ -19,8 +20,8 @@ export interface ToneOscillatorInterface {
 	baseType: OscillatorType | "pulse" | "pwm";
 
 	/**
-	 * The oscillator's type. Also capable of setting the first x number of partials of the oscillator. 
-	 * For example: "sine4" would set be the first 4 partials of the sine wave and "triangle8" would 
+	 * The oscillator's type. Also capable of setting the first x number of partials of the oscillator.
+	 * For example: "sine4" would set be the first 4 partials of the sine wave and "triangle8" would
 	 * set the first 8 partials of the triangle wave.
 	 * @example
 	 * return Tone.Offline(() => {
@@ -52,7 +53,7 @@ export interface ToneOscillatorInterface {
 
 	/**
 	 * The phase is the starting position within the oscillator's cycle. For example
-	 * a phase of 180 would start halfway through the oscillator's cycle. 
+	 * a phase of 180 would start halfway through the oscillator's cycle.
 	 * @example
 	 * return Tone.Offline(() => {
 	 * 	const osc = new Tone.Oscillator({
@@ -64,11 +65,11 @@ export interface ToneOscillatorInterface {
 	phase: Degrees;
 
 	/**
-	 * The partials describes the relative amplitude of each of the harmonics of the oscillator. 
-	 * The first value in the array is the first harmonic (i.e. the fundamental frequency), the 
+	 * The partials describes the relative amplitude of each of the harmonics of the oscillator.
+	 * The first value in the array is the first harmonic (i.e. the fundamental frequency), the
 	 * second harmonic is an octave up, the third harmonic is an octave and a fifth, etc. The resulting
-	 * oscillator output is composed of a sine tone at the relative amplitude at each of the harmonic intervals. 
-	 * 
+	 * oscillator output is composed of a sine tone at the relative amplitude at each of the harmonic intervals.
+	 *
 	 * Setting this value will automatically set the type to "custom".
 	 * The value is an empty array when the type is not "custom".
 	 * @example
@@ -107,10 +108,10 @@ export interface ToneOscillatorInterface {
 /**
  * Render a segment of the oscillator to an offline context and return the results as an array
  */
-export async function generateWaveform(instance: any, length: number): Promise<Float32Array> {
+export async function generateWaveform<T extends ToneAudioNode & Source<SourceOptions>>(instance: T, length: number): Promise<Float32Array> {
 	const duration = length / instance.context.sampleRate;
 	const context = new OfflineContext(1, duration, instance.context.sampleRate);
-	const clone = new instance.constructor(Object.assign(instance.get(), {
+	const clone = new (instance.constructor as { new(options: ToneAudioNodeOptions): T })(Object.assign(instance.get(), {
 		// should do 2 iterations
 		frequency: 2 / duration,
 		// zero out the detune

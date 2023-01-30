@@ -1,10 +1,11 @@
+import { UnitName } from "../type/Units";
 import { isAudioNode, isAudioParam } from "../util/AdvancedTypeCheck";
+import { assert, warn } from "../util/Debug";
 import { isDefined } from "../util/TypeCheck";
 import { Param } from "./Param";
 import { ToneWithContext, ToneWithContextOptions } from "./ToneWithContext";
-import { assert, warn } from "../util/Debug";
 
-export type InputNode = ToneAudioNode | AudioNode | Param<any> | AudioParam;
+export type InputNode = ToneAudioNode | AudioNode | Param<UnitName> | AudioParam;
 export type OutputNode = ToneAudioNode | AudioNode;
 
 interface ChannelProperties {
@@ -86,7 +87,7 @@ export abstract class ToneAudioNode<Options extends ToneAudioNodeOptions = ToneA
 	/**
 	 * Used to decide which nodes to get/set properties on
 	 */
-	private _isAudioNode(node: any): node is AudioNode | ToneAudioNode {
+	private _isAudioNode(node: unknown): node is AudioNode | ToneAudioNode {
 		return isDefined(node) && (node instanceof ToneAudioNode || isAudioNode(node));
 	}
 

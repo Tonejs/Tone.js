@@ -19,7 +19,7 @@ import { isDefined, isUndef } from "../core/util/TypeCheck";
 import { assert, assertContextRunning } from "../core/util/Debug";
 import { GT } from "../core/util/Math";
 
-type onStopCallback = (source: Source<any>) => void;
+type onStopCallback = (source: Source<SourceOptions>) => void;
 
 export interface SourceOptions extends ToneAudioNodeOptions {
 	volume: Decibels;

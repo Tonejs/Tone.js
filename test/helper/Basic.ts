@@ -14,7 +14,7 @@ import { noOp } from "Tone/core/util/Interface";
 
 export const testAudioContext = new OfflineContext(1, 1, 11025);
 
-export function BasicTests(Constr, ...args: any[]): void {
+export function BasicTests(Constr, ...args: unknown[]): void {
 
 	context("Basic", () => {
 
@@ -91,7 +91,7 @@ export function BasicTests(Constr, ...args: any[]): void {
 /**
  * Assert that the function triggers a warning
  */
-export async function warns(fn: (...args: any[]) => any): Promise<void> {
+export async function warns(fn: (...args: unknown[]) => unknown): Promise<void> {
 	let wasInvoked = false;
 	setLogger({
 		log: () => {},

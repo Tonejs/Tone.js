@@ -9,7 +9,7 @@ export function connectTo(): Gain {
 	return new Gain();
 }
 
-export function ConnectTest(constr, ...args: any[]): void {
+export function ConnectTest(constr, ...args: unknown[]): void {
 
 	it("handles input and output connections", () => {
 		const instance = new constr(...args);

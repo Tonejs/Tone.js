@@ -308,10 +308,10 @@ export class Clock<TypeName extends "bpm" | "hertz" = "hertz">
 	// EMITTER MIXIN TO SATISFY COMPILER
 	//-------------------------------------
 
-	on!: (event: ClockEvent, callback: (...args: any[]) => void) => this;
-	once!: (event: ClockEvent, callback: (...args: any[]) => void) => this;
-	off!: (event: ClockEvent, callback?: ((...args: any[]) => void) | undefined) => this;
-	emit!: (event: any, ...args: any[]) => this;
+	on!: (event: ClockEvent, callback: (...args: unknown[]) => void) => this;
+	once!: (event: ClockEvent, callback: (...args: unknown[]) => void) => this;
+	off!: (event: ClockEvent, callback?: ((...args: unknown[]) => void) | undefined) => this;
+	emit!: (event: string, ...args: unknown[]) => this;
 }
 
 Emitter.mixin(Clock);

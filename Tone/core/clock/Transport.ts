@@ -60,7 +60,7 @@ type TransportEventNames =
 interface SyncedSignalEvent {
 	signal: Signal;
 	initial: number;
-	nodes: ToneAudioNode<any>[];
+	nodes: ToneAudioNode[];
 }
 
 type TransportCallback = (time: Seconds) => void;
@@ -387,7 +387,7 @@ export class Transport
 			this.clear(event.id)
 		);
 		this._repeatedEvents.forEachFrom(computedAfter, (event) =>
-			this.clear(event.id)
+			this.clear(event.id as number)
 		);
 		return this;
 	}
@@ -400,16 +400,16 @@ export class Transport
 	 * Bind start/stop/pause events from the clock and emit them.
 	 */
 	private _bindClockEvents(): void {
-		this._clock.on("start", (time, offset) => {
+		this._clock.on("start", (time: TransportTime, offset: TransportTime) => {
 			offset = new TicksClass(this.context, offset).toSeconds();
 			this.emit("start", time, offset);
 		});
 
-		this._clock.on("stop", (time) => {
+		this._clock.on("stop", (time: TransportTime) => {
 			this.emit("stop", time);
 		});
 
-		this._clock.on("pause", (time) => {
+		this._clock.on("pause", (time: TransportTime) => {
 			this.emit("pause", time);
 		});
 	}
@@ -710,9 +710,9 @@ export class Transport
 	 */
 	syncSignal(signal: Signal<any>, ratio?: number): this {
 		const now = this.now();
-		let source : TickParam<"bpm"> | ToneAudioNode<any> = this.bpm;
+		let source : TickParam<"bpm"> | ToneAudioNode = this.bpm;
 		let sourceValue = 1 / (60 / source.getValueAtTime(now) / this.PPQ);
-		let nodes : ToneAudioNode<any>[] = [];
+		let nodes : ToneAudioNode[] = [];
 		// If the signal is in the time domain, sync it to the reciprocal of
 		// the tempo instead of the tempo.
 		if (signal.units === "time") {
@@ -788,17 +788,17 @@ export class Transport
 
 	on!: (
 		event: TransportEventNames,
-		callback: (...args: any[]) => void
+		callback: (...args: unknown[]) => void
 	) => this;
 	once!: (
 		event: TransportEventNames,
-		callback: (...args: any[]) => void
+		callback: (...args: unknown[]) => void
 	) => this;
 	off!: (
 		event: TransportEventNames,
-		callback?: ((...args: any[]) => void) | undefined
+		callback?: ((...args: unknown[]) => void) | undefined
 	) => this;
-	emit!: (event: any, ...args: any[]) => this;
+	emit!: (event: string, ...args: unknown[]) => this;
 }
 
 Emitter.mixin(Transport);

@@ -15,7 +15,7 @@ import { assert, warn } from "../core/util/Debug";
 
 type VoiceConstructor<V> = {
 	getDefaults: () => VoiceOptions<V>;
-} & (new (...args: any[]) => V);
+} & (new (...args: unknown[]) => V);
 
 type OmitMonophonicOptions<T> = Omit<T, "context" | "onsilence">;
 
@@ -351,7 +351,7 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 	}
 
 	/**
-	 * The release which is scheduled to the timeline. 
+	 * The release which is scheduled to the timeline.
 	 */
 	 protected _syncedRelease = (time: number) => this.releaseAll(time);
 
@@ -392,7 +392,7 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 		});
 		return this;
 	}
-	
+
 	dispose(): this {
 		super.dispose();
 		this._dummyVoice.dispose();

@@ -65,8 +65,8 @@ export function assertUsedScheduleTime(
  * A basic logging interface
  */
 interface Logger {
-	log: (args?: any[]) => void;
-	warn: (args?: any[]) => void;
+	log: (args?: unknown[]) => void;
+	warn: (args?: unknown[]) => void;
 }
 
 /**
@@ -84,13 +84,13 @@ export function setLogger(logger: Logger): void {
 /**
  * Log anything
  */
-export function log(...args: any[]): void {
-	defaultLogger.log(...args);
+export function log(...args: unknown[]): void {
+	defaultLogger.log(args);
 }
 
 /**
  * Warn anything
  */
-export function warn(...args: any[]): void {
-	defaultLogger.warn(...args);
+export function warn(...args: unknown[]): void {
+	defaultLogger.warn(args);
 }

@@ -1,12 +1,12 @@
 import { FrequencyClass } from "../core/type/Frequency";
 import { Cents, Frequency, NormalRange, Seconds, Time } from "../core/type/Units";
+import { timeRange } from "../core/util/Decorator";
 import { optionsFromArguments } from "../core/util/Defaults";
 import { noOp } from "../core/util/Interface";
 import { Instrument, InstrumentOptions } from "../instrument/Instrument";
 import { Signal } from "../signal/Signal";
-import { timeRange } from "../core/util/Decorator";
 
-type onSilenceCallback = (instrument: Monophonic<any>) => void;
+type onSilenceCallback = (instrument: Monophonic<MonophonicOptions>) => void;
 
 export interface MonophonicOptions extends InstrumentOptions {
 	portamento: Seconds;

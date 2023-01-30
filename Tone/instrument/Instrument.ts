@@ -110,8 +110,8 @@ export abstract class Instrument<Options extends InstrumentOptions> extends Tone
 	 */
 	protected _syncMethod(method: string, timePosition: number): void {
 		const originalMethod = this["_original_" + method] = this[method];
-		this[method] = (...args: any[]) => {
-			const time = args[timePosition];
+		this[method] = (...args: unknown[]) => {
+			const time = args[timePosition] as Time;
 			const id = this.context.transport.schedule((t) => {
 				args[timePosition] = t;
 				originalMethod.apply(this, args);
@@ -171,11 +171,11 @@ export abstract class Instrument<Options extends InstrumentOptions> extends Tone
 	 * Trigger the release phase of the current note.
 	 * @param time when to trigger the release
 	 */
-	abstract triggerRelease(...args: any[]): this;
+	abstract triggerRelease(...args: unknown[]): this;
 	private _original_triggerRelease = this.triggerRelease;
 
 	/**
-	 * The release which is scheduled to the timeline. 
+	 * The release which is scheduled to the timeline.
 	 */
 	protected _syncedRelease = (time: number) => this._original_triggerRelease(time);
 

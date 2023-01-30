@@ -2,8 +2,10 @@ import { Tone } from "../Tone";
 import { isUndef } from "./TypeCheck";
 
 export interface EmitterEventObject {
-	[event: string]: Array<(...args: any[]) => void>;
+	[event: string]: Array<(...args: unknown[]) => void>;
 }
+
+type Constructor<T> = { new (): T };
 
 /**
  * Emitter gives classes which extend it
@@ -13,7 +15,6 @@ export interface EmitterEventObject {
  * @category Core
  */
 export class Emitter<EventType extends string = string> extends Tone {
-
 	readonly name: string = "Emitter";
 
 	/**
@@ -26,7 +27,7 @@ export class Emitter<EventType extends string = string> extends Tone {
 	 * @param  event     The name of the event to listen for.
 	 * @param  callback  The callback to invoke when the event is emitted
 	 */
-	on(event: EventType, callback: (...args: any[]) => void): this {
+	on(event: EventType, callback: (...args: unknown[]) => void): this {
 		// split the event
 		const events = event.split(/\W+/);
 		events.forEach(eventName => {
@@ -46,8 +47,8 @@ export class Emitter<EventType extends string = string> extends Tone {
 	 * @param  event     The name of the event to listen for.
 	 * @param  callback  The callback to invoke when the event is emitted
 	 */
-	once(event: EventType, callback: (...args: any[]) => void): this {
-		const boundCallback = (...args: any[]) => {
+	once(event: EventType, callback: (...args: unknown[]) => void): this {
+		const boundCallback = (...args: unknown[]) => {
 			// invoke the callback
 			callback(...args);
 			// remove the event
@@ -63,9 +64,9 @@ export class Emitter<EventType extends string = string> extends Tone {
 	 * @param  callback  The callback which was bound to the event with Emitter.on.
 	 *                   If no callback is given, all callbacks events are removed.
 	 */
-	off(event: EventType, callback?: (...args: any[]) => void): this {
+	off(event: EventType, callback?: (...args: unknown[]) => void): this {
 		const events = event.split(/\W+/);
-		events.forEach(eventName => {
+		events.forEach((eventName) => {
 			if (isUndef(this._events)) {
 				this._events = {};
 			}
@@ -91,7 +92,7 @@ export class Emitter<EventType extends string = string> extends Tone {
 	 * @param  event  The name of the event.
 	 * @param args The arguments to pass to the functions listening.
 	 */
-	emit(event, ...args: any[]): this {
+	emit(event, ...args: unknown[]): this {
 		if (this._events) {
 			if (this._events.hasOwnProperty(event)) {
 				const eventList = this._events[event].slice(0);
@@ -106,10 +107,13 @@ export class Emitter<EventType extends string = string> extends Tone {
 	/**
 	 * Add Emitter functions (on/off/emit) to the object
 	 */
-	static mixin(constr: any): void {
+	static mixin<T>(constr: Constructor<T>): void {
 		// instance._events = {};
-		["on", "once", "off", "emit"].forEach(name => {
-			const property = Object.getOwnPropertyDescriptor(Emitter.prototype, name) as PropertyDescriptor;
+		["on", "once", "off", "emit"].forEach((name) => {
+			const property = Object.getOwnPropertyDescriptor(
+				Emitter.prototype,
+				name
+			) as PropertyDescriptor;
 			Object.defineProperty(constr.prototype, name, property);
 		});
 	}

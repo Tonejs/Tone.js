@@ -115,14 +115,14 @@ export abstract class BaseContext
 	abstract resume(): Promise<void>;
 
 	abstract setTimeout(
-		_fn: (...args: any[]) => void,
+		_fn: (...args: unknown[]) => void,
 		_timeout: Seconds
 	): number;
 
 	abstract clearTimeout(_id: number): this;
 
 	abstract setInterval(
-		_fn: (...args: any[]) => void,
+		_fn: (...args: unknown[]) => void,
 		_interval: Seconds
 	): number;
 
@@ -153,7 +153,7 @@ export abstract class BaseContext
 	 * This matches what JSON.stringify(audioContext) returns on a native
 	 * audioContext instance.
 	 */
-	toJSON(): Record<string, any> {
+	toJSON(): Record<string, unknown> {
 		return {};
 	}
 

@@ -10,7 +10,7 @@ import { FMOscillator } from "./FMOscillator";
 import { Oscillator } from "./Oscillator";
 import {
 	generateWaveform,
-	OmniOscillatorOptions, 
+	OmniOscillatorOptions,
 	OmniOscillatorType, ToneOscillatorInterface, ToneOscillatorType
 } from "./OscillatorInterface";
 import { PulseOscillator } from "./PulseOscillator";
@@ -47,7 +47,7 @@ type IsPWMOscillator<Osc, Ret> = Osc extends PWMOscillator ? Ret : undefined;
 type IsPulseOscillator<Osc, Ret> = Osc extends PulseOscillator ? Ret : undefined;
 type IsFMOscillator<Osc, Ret> = Osc extends FMOscillator ? Ret : undefined;
 
-type AnyOscillatorConstructor = new (...args: any[]) => AnyOscillator;
+type AnyOscillatorConstructor = new (...args: unknown[]) => AnyOscillator;
 
 const OmniOscillatorSourceMap: {
 	[key in OmniOscSourceType]: AnyOscillatorConstructor
@@ -61,7 +61,7 @@ const OmniOscillatorSourceMap: {
 };
 
 /**
- * OmniOscillator aggregates all of the oscillator types into one. 
+ * OmniOscillator aggregates all of the oscillator types into one.
  * @example
  * return Tone.Offline(() => {
  * 	const omniOsc = new Tone.OmniOscillator("C#4", "pwm").toDestination().start();
@@ -149,7 +149,7 @@ export class OmniOscillator<OscType extends AnyOscillator>
 	 * prefix the basic types with "fm", "am", or "fat" to use the FMOscillator, AMOscillator or FatOscillator
 	 * types. The oscillator could also be set to "pwm" or "pulse". All of the parameters of the
 	 * oscillator's class are accessible when the oscillator is set to that type, but throws an error
-	 * when it's not. 
+	 * when it's not.
 	 * @example
 	 * const omniOsc = new Tone.OmniOscillator().toDestination().start();
 	 * omniOsc.type = "pwm";
@@ -360,7 +360,7 @@ export class OmniOscillator<OscType extends AnyOscillator>
 	}
 
 	/**
-	 * The type of the modulator oscillator. Only if the oscillator is set to "am" or "fm" types. 
+	 * The type of the modulator oscillator. Only if the oscillator is set to "am" or "fm" types.
 	 * See [[AMOscillator]] or [[FMOscillator]]
 	 */
 	get modulationType(): IsAmOrFmOscillator<OscType, ToneOscillatorType> {

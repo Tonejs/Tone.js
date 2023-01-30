@@ -30,7 +30,7 @@ export function writable(target: object, property: string | string[]): void {
 	}
 }
 
-export const noOp: (...args: any[]) => any = () => {
+export const noOp: (...args: unknown[]) => any = () => {
 	// no operation here!
 };
 

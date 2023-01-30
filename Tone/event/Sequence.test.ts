@@ -129,7 +129,7 @@ describe("Sequence", () => {
 
 		it("can add a subsequence and remove the entire subsequence", () => {
 			return Offline(() => {
-				const seq = new Sequence(noOp, [0, 1, 2]);
+				const seq = new Sequence<number>(noOp, [0, 1, 2]);
 				expect(seq.length).to.equal(3);
 				seq.events.shift();
 				seq.events[0] = [1, 2];
