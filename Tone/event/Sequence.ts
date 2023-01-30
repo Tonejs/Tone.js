@@ -30,7 +30,7 @@ interface SequenceOptions<T> extends Omit<ToneEventOptions<T>, "value"> {
  * Tone.Transport.start();
  * @category Event
  */
-export class Sequence<ValueType extends Time | null = Time | null> extends ToneEvent<ValueType> {
+export class Sequence<ValueType> extends ToneEvent<ValueType> {
 
 	readonly name: string = "Sequence";
 

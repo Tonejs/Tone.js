@@ -43,7 +43,7 @@ describe("Sequence", () => {
 		it("can pass in arguments in options object", () => {
 			return Offline(() => {
 				const callback = noOp;
-				const seq = new Sequence<number | null>({
+				const seq = new Sequence({
 					callback,
 					events: [0, 1, 2],
 					humanize: true,
@@ -129,7 +129,7 @@ describe("Sequence", () => {
 
 		it("can add a subsequence and remove the entire subsequence", () => {
 			return Offline(() => {
-				const seq = new Sequence(noOp, [0, 1, 2]);
+				const seq = new Sequence<number>(noOp, [0, 1, 2]);
 				expect(seq.length).to.equal(3);
 				seq.events.shift();
 				seq.events[0] = [1, 2];
@@ -280,7 +280,7 @@ describe("Sequence", () => {
 		it("starts an event added after the seq was started", () => {
 			let invoked = false;
 			return Offline(({ transport }) => {
-				const seq = new Sequence<number | null>({
+				const seq = new Sequence({
 					callback(time, value): void {
 						if (value === 1) {
 							seq.dispose();
@@ -317,7 +317,7 @@ describe("Sequence", () => {
 		it("can be set to loop", () => {
 			let callCount = 0;
 			return Offline(({ transport }) => {
-				const seq = new Sequence<number | null>({
+				const seq = new Sequence({
 					events: [0, 1],
 					loop: true,
 					loopEnd: 0.2,
@@ -337,7 +337,7 @@ describe("Sequence", () => {
 		it("can loop between loopStart and loopEnd", () => {
 			let invokations = 0;
 			return Offline(({ transport }) => {
-				const seq = new Sequence<number | null>({
+				const seq = new Sequence({
 					events: [0, [1, 2, 3], [4, 5]],
 					loopEnd: 2,
 					loopStart: 1,
@@ -358,7 +358,7 @@ describe("Sequence", () => {
 			let invoked = false;
 			return Offline(({ transport }) => {
 				let switched = false;
-				const seq = new Sequence<number | null>({
+				const seq = new Sequence({
 					callback(time, value): void {
 						if (value === 4) {
 							seq.loopStart = 2;
@@ -386,7 +386,7 @@ describe("Sequence", () => {
 			let invoked = false;
 			return Offline(({ transport }) => {
 				let lastCall;
-				new Sequence<number | null>({
+				new Sequence({
 					events: [0, 1],
 					playbackRate: 2,
 					subdivision: "4n",
@@ -408,7 +408,7 @@ describe("Sequence", () => {
 			let invoked = false;
 			return Offline(({ transport }) => {
 				let lastCall;
-				new Sequence<number | null>({
+				new Sequence({
 					events: [[0, 1], [2, 3]],
 					playbackRate: 0.5,
 					subdivision: "8n",
@@ -430,7 +430,7 @@ describe("Sequence", () => {
 			let invoked = false;
 			return Offline(({ transport }) => {
 				let lastCall;
-				const seq = new Sequence<number | null>({
+				const seq = new Sequence({
 					events: [0, 1],
 					playbackRate: 1,
 					subdivision: "8n",
