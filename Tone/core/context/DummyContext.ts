@@ -108,8 +108,8 @@ export class DummyContext extends BaseContext {
 		return {} as MediaStreamAudioDestinationNode;
 	}
 
-	decodeAudioData(_audioData: ArrayBuffer): Promise<AudioBuffer> {
-		return Promise.resolve({} as AudioBuffer);
+	async decodeAudioData(_audioData: ArrayBuffer): Promise<AudioBuffer> {
+		return {} as AudioBuffer;
 	}
 
 	//---------------------------
@@ -127,17 +127,13 @@ export class DummyContext extends BaseContext {
 		return {} as AnyAudioContext;
 	}
 
-	async addAudioWorkletModule(_url: string): Promise<void> {
-		return Promise.resolve();
-	}
+	async addAudioWorkletModule(_url: string): Promise<void> {}
 
 	lookAhead = 0;
 
 	latencyHint = 0;
 
-	resume(): Promise<void> {
-		return Promise.resolve();
-	}
+	async resume(): Promise<void> {}
 
 	setTimeout(_fn: (...args: any[]) => void, _timeout: Seconds): number {
 		return 0;
