@@ -5,6 +5,7 @@ import { optionsFromArguments } from "../util/Defaults";
 import { noOp } from "../util/Interface";
 import { isArray, isNumber, isString } from "../util/TypeCheck";
 import { assert } from "../util/Debug";
+import { encodeUnencodedURIComponent } from "../util/URI";
 
 interface ToneAudioBufferOptions {
 	url?: string | AudioBuffer | ToneAudioBuffer;
@@ -398,7 +399,7 @@ export class ToneAudioBuffer extends Tone {
 		location.href = baseUrl + url;
 		location.pathname = (location.pathname + location.hash)
 				.split("/")
-				.map(encodeURIComponent)
+				.map(encodeUnencodedURIComponent)
 				.join("/");
 
 		const response = await fetch(location.href);
