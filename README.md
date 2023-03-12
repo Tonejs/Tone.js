@@ -105,6 +105,8 @@ document.querySelector('button')?.addEventListener('click', async () => {
 })
 ``` 
 
+For iOS specifically consider using `unmute.js` in addition to an explicit user action.
+
 # Scheduling
 
 ### Transport
