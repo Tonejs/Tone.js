@@ -104,7 +104,7 @@ export class TimeClass<Type extends Seconds | Ticks = Seconds, Unit extends stri
 			sixteenths = parseFloat(parseFloat(sixteenthString).toFixed(3));
 		}
 		const progress = [measures, quarters, sixteenths];
-		return progress.join(":");
+		return progress.join(":") as BarsBeatsSixteenths;
 	}
 
 	/**
