@@ -8,6 +8,7 @@ on:
   push:
     branches:
       - dev
+      - main
 jobs:
   run-tests:
     name: All tests
