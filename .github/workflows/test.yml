@@ -17,6 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       BROWSER: chrome
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v2
