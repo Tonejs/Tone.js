@@ -19,6 +19,10 @@ jobs:
         with:
           node-version: 18.12.0
           registry-url: 'https://registry.npmjs.org'
+      - name: Set git user name/email
+        run: |
+            git config --global user.email "actions@github.com"
+            git config --global user.name "Github Actions Bot"
       - name: Install dependencies
         run: npm install
       - name: Build
@@ -31,3 +35,5 @@ jobs:
       - name: Publish @latest
         run: npm publish
         if: ${{ github.ref == 'refs/heads/main' }}
+      - name: Commit changes
+        run: git push && git push --tags
