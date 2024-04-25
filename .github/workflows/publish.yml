@@ -1,7 +1,6 @@
 name: Publish to NPM
 on:
-  pull_request:
-    types: [opened, reopened, synchronize]
+  push:
     branches:
       - dev
 jobs:
@@ -25,4 +24,4 @@ jobs:
         run: npm run increment
       - name: Publish Dev
         run: npm publish --tag next --dry-run
-        if: ${{ github.ref == 'refs/heads/feat/publish-workflow' }}
+        if: ${{ github.ref == 'refs/heads/dev' }}
