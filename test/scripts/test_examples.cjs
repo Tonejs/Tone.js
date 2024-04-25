@@ -2,11 +2,9 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { resolve } = require("path");
 const { exec } = require("child_process");
-const { file } = require("tmp-promise");
+const { dir } = require("tmp-promise");
 const { writeFile } = require("fs-extra");
 const toneJson = require("../../docs/tone.json");
-const { parallelLimit } = require("async");
-const { cpus } = require("os");
 
 /**
  * Get all of the examples
@@ -63,7 +61,7 @@ function execPromise(cmd) {
 /**
  * Run the string through the typescript compiler
  */
-async function testExampleString(str) {
+async function testExampleString(str, tmpDir, index) {
 	// str = str.replace("from \"tone\"", `from "${resolve(__dirname, "../../")}"`);
 	str = `
 		import * as Tone from "${resolve(__dirname, "../../")}"
@@ -72,45 +70,24 @@ async function testExampleString(str) {
 		}
 		main();
 	`;
-	const { path, cleanup } = await file({ postfix: ".ts" });
-	try {
-		// work with file here in fd
-		await writeFile(path, str);
-		await execPromise(
-			`tsc  --noEmit --target es5 --lib dom,ES2015 ${path}`
-		);
-	} finally {
-		cleanup();
-	}
+	await writeFile(resolve(tmpDir, index + ".ts"), str);
 }
 
 async function main() {
 	const examples = findExamples(toneJson);
 	let passed = 0;
 
-	await parallelLimit(
-		examples.map((example) => {
-			return async () => {
-				try {
-					await testExampleString(example);
-					passed++;
-					// print a dot for each passed example
-					process.stdout.write(".");
-					// add a new line occasionally
-					if (passed % 100 === 0) {
-						process.stdout.write("\n");
-					}
-				} catch (e) {
-					console.log(example + "\n" + e);
-					throw e;
-				} 
-			};
-		}), cpus().length
+	const tmp = await dir({ unsafeCleanup: true });
+	await Promise.all(
+		examples.map((e, i) => testExampleString(e, tmp.path, i))
 	);
-	
-	console.log(`\nvalid examples ${passed}/${examples.length}`);
-	if (passed !== examples.length) {
-		throw new Error("didn't pass all tests");
-	}
+
+	await execPromise(
+		`tsc --noEmit --target es5 --lib dom,ES2015 ${tmp.path}/*.ts`
+	);
+
+	await tmp.cleanup();
+
+	console.log(`Tested ${examples.length} examples`);
 }
 main();
