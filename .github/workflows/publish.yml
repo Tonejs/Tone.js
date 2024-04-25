@@ -25,4 +25,4 @@ jobs:
         run: npm run increment
       - name: Publish Dev
         run: npm publish --tag next --dry-run
-        if: github.ref == 'refs/heads/dev'
+        if: ${{ github.ref == 'refs/heads/dev' }}
