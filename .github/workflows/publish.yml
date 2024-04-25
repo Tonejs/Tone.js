@@ -1,8 +1,9 @@
-name: Publish to NPM
+name: Publish
 on:
-  push:
-    branches:
-      - dev
+  workflow_run:
+    workflows: ["Tests"]
+    types:
+      - completed
 jobs:
   publish:
     runs-on: ubuntu-latest
