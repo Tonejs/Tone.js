@@ -31,6 +31,8 @@ jobs:
         run: npm run build
       - name: All tests
         run: npm run test
+      - name: Upload coverage
+        uses: codecov/codecov-action@v3
   test-code-examples:
     name: Check typedocs
     permissions:
