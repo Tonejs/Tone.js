@@ -1,111 +1,111 @@
 name: Run tests
 
 on:
-    pull_request:
-        types: [opened, reopened, synchronize]
-        branches:
-            - dev
-    push:
-        branches:
-            - dev
+  pull_request:
+    types: [opened, reopened, synchronize]
+    branches:
+      - dev
+  push:
+    branches:
+      - dev
 jobs:
-    run-tests:
-        name: All tests
-        permissions:
-            contents: read
-            id-token: write
-        runs-on: ubuntu-latest
-        env:
-            BROWSER: chrome
-        steps:
-            - name: Check out Git repository
-              uses: actions/checkout@v2
-            - name: Setup Nodejs
-              uses: actions/setup-node@v4
-              with:
-                  node-version: 18.12.0
-                  cache: 'npm'
-            - name: Install dependencies
-              run: npm install
-            - name: Build
-              run: npm run build
-            - name: All tests
-              run: npm run test
-    test-code-examples:
-        name: Check typedocs
-        permissions:
-            contents: read
-            id-token: write
-        runs-on: ubuntu-latest
-        steps:
-            - name: Check out Git repository
-              uses: actions/checkout@v2
-            - name: Setup Nodejs
-              uses: actions/setup-node@v4
-              with:
-                  node-version: 18.12.0
-                  cache: 'npm'
-            - name: Install dependencies
-              run: npm install
-            - name: Build Docs
-              run: npm run build && npm run docs:json
-            - name: tsdoc @example checks
-              run: npm run test:examples
-    test-html-examples:
-        name: Run HTML Examples
-        permissions:
-            contents: read
-            id-token: write
-        runs-on: ubuntu-latest
-        steps:
-            - name: Check out Git repository
-              uses: actions/checkout@v2
-            - name: Setup Nodejs
-              uses: actions/setup-node@v4
-              with:
-                  node-version: 18.12.0
-                  cache: 'npm'
-            - name: Install dependencies
-              run: npm install
-            - name: Build
-              run: npm run build
-            - name: Code example tests
-              run: npm run test:html
-    test-lint:
-        name: Linting and environment checks
-        permissions:
-            contents: read
-            id-token: write
-        runs-on: ubuntu-latest
-        steps:
-            - name: Check out Git repository
-              uses: actions/checkout@v2
-            - name: Setup Nodejs
-              uses: actions/setup-node@v4
-              with:
-                  node-version: 18.12.0
-                  cache: 'npm'
-            - name: Install dependencies
-              run: npm install
-            - name: Linting
-              run: npm run lint
-    test-readme:
-        name: Ensure that examples in the README compile
-        permissions:
-            contents: read
-            id-token: write
-        runs-on: ubuntu-latest
-        steps:
-            - name: Check out Git repository
-              uses: actions/checkout@v2
-            - name: Setup Nodejs
-              uses: actions/setup-node@v4
-              with:
-                  node-version: 18.12.0
-                  cache: 'npm'
-            - name: Install dependencies
-              run: npm install
-            - name: Build
-              run: npm run build
-            - name: Test
-              run: npm run test:readme
+  run-tests:
+    name: All tests
+    permissions:
+      contents: read
+      id-token: write
+    runs-on: ubuntu-latest
+    env:
+      BROWSER: chrome
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v2
+      - name: Setup Nodejs
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18.12.0
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm install
+      - name: Build
+        run: npm run build
+      - name: All tests
+        run: npm run test
+  test-code-examples:
+    name: Check typedocs
+    permissions:
+      contents: read
+      id-token: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v2
+      - name: Setup Nodejs
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18.12.0
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm install
+      - name: Build Docs
+        run: npm run build && npm run docs:json
+      - name: tsdoc @example checks
+        run: npm run test:examples
+  test-html-examples:
+    name: Run HTML Examples
+    permissions:
+      contents: read
+      id-token: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v2
+      - name: Setup Nodejs
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18.12.0
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm install
+      - name: Build
+        run: npm run build
+      - name: Code example tests
+        run: npm run test:html
+  test-lint:
+    name: Linting and environment checks
+    permissions:
+      contents: read
+      id-token: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v2
+      - name: Setup Nodejs
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18.12.0
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm install
+      - name: Linting
+        run: npm run lint
+  test-readme:
+    name: Ensure that examples in the README compile
+    permissions:
+      contents: read
+      id-token: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v2
+      - name: Setup Nodejs
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18.12.0
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm install
+      - name: Build
+        run: npm run build
+      - name: Test
+        run: npm run test:readme
