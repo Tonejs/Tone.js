@@ -1,0 +1,25 @@
+name: Publish to NPM
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+    branches:
+      - dev
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    env:
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        GITHUB_CI: true
+    steps:
+      - uses: actions/checkout@v4
+      # Setup .npmrc file to publish to npm
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18.12.0
+          registry-url: 'https://registry.npmjs.org'
+      - name: Install dependencies
+        run: npm install
+      - name: Increment version
+        run: npm run increment
+      - name: Publish
+        run: npm publish --dry-run
