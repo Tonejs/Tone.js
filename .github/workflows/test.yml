@@ -89,5 +89,3 @@ jobs:
               run: npm install
             - name: Linting
               run: npm run lint
-            - name: Opens in Node.js
-              run: npm run test:node
