@@ -32,7 +32,7 @@ jobs:
             - name: All tests
               run: npm run test
     test-code-examples:
-        name: Test inline typedoc examples
+        name: Check @examples
         permissions:
             contents: read
             id-token: write
@@ -52,7 +52,7 @@ jobs:
             - name: Code example tests
               run: npm run test:examples
     test-html-examples:
-        name: Test HTML Examples
+        name: Run HTML Examples
         permissions:
             contents: read
             id-token: write
