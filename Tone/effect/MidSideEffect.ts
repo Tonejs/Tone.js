@@ -68,14 +68,14 @@ export abstract class MidSideEffect<Options extends MidSideEffectOptions> extend
 	/**
 	 * Connect the mid chain of the effect
 	 */
-	protected connectEffectMid(...nodes: OutputNode[]): void{
+	protected connectEffectMid(...nodes: OutputNode[]): void {
 		this._midSend.chain(...nodes, this._midReturn);
 	}
 	
 	/**
 	 * Connect the side chain of the effect
 	 */
-	protected connectEffectSide(...nodes: OutputNode[]): void{
+	protected connectEffectSide(...nodes: OutputNode[]): void {
 		this._sideSend.chain(...nodes, this._sideReturn);
 	}
 

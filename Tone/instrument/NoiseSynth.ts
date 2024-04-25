@@ -4,7 +4,10 @@ import { omitFromObject, optionsFromArguments } from "../core/util/Defaults";
 import { RecursivePartial } from "../core/util/Interface";
 import { Noise, NoiseOptions } from "../source/Noise";
 import { Instrument, InstrumentOptions } from "./Instrument";
-import { ToneAudioNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
+import {
+	ToneAudioNode,
+	ToneAudioNodeOptions,
+} from "../core/context/ToneAudioNode";
 import { Envelope, EnvelopeOptions } from "../component/envelope/Envelope";
 import { Source } from "../source/Source";
 
@@ -14,7 +17,7 @@ export interface NoiseSynthOptions extends InstrumentOptions {
 }
 
 /**
- * Tone.NoiseSynth is composed of [[Noise]] through an [[AmplitudeEnvelope]]. 
+ * Tone.NoiseSynth is composed of [[Noise]] through an [[AmplitudeEnvelope]].
  * ```
  * +-------+   +-------------------+
  * | Noise +>--> AmplitudeEnvelope +>--> Output
@@ -26,7 +29,6 @@ export interface NoiseSynthOptions extends InstrumentOptions {
  * @category Instrument
  */
 export class NoiseSynth extends Instrument<NoiseSynthOptions> {
-
 	readonly name = "NoiseSynth";
 
 	/**
@@ -39,17 +41,30 @@ export class NoiseSynth extends Instrument<NoiseSynthOptions> {
 	 */
 	readonly envelope: AmplitudeEnvelope;
 
-	constructor(options?: RecursivePartial<NoiseSynthOptions>)
+	constructor(options?: RecursivePartial<NoiseSynthOptions>);
 	constructor() {
 		super(optionsFromArguments(NoiseSynth.getDefaults(), arguments));
-		const options = optionsFromArguments(NoiseSynth.getDefaults(), arguments);
-		this.noise = new Noise(Object.assign({
-			context: this.context,
-		}, options.noise));
+		const options = optionsFromArguments(
+			NoiseSynth.getDefaults(),
+			arguments
+		);
+		this.noise = new Noise(
+			Object.assign(
+				{
+					context: this.context,
+				},
+				options.noise
+			)
+		);
 
-		this.envelope = new AmplitudeEnvelope(Object.assign({
-			context: this.context,
-		}, options.envelope));
+		this.envelope = new AmplitudeEnvelope(
+			Object.assign(
+				{
+					context: this.context,
+				},
+				options.envelope
+			)
+		);
 
 		// connect the noise to the output
 		this.noise.chain(this.envelope, this.output);
@@ -58,17 +73,23 @@ export class NoiseSynth extends Instrument<NoiseSynthOptions> {
 	static getDefaults(): NoiseSynthOptions {
 		return Object.assign(Instrument.getDefaults(), {
 			envelope: Object.assign(
-				omitFromObject(Envelope.getDefaults(), Object.keys(ToneAudioNode.getDefaults())),
+				omitFromObject(
+					Envelope.getDefaults(),
+					Object.keys(ToneAudioNode.getDefaults())
+				),
 				{
 					decay: 0.1,
 					sustain: 0.0,
-				},
+				}
 			),
 			noise: Object.assign(
-				omitFromObject(Noise.getDefaults(), Object.keys(Source.getDefaults())),
+				omitFromObject(
+					Noise.getDefaults(),
+					Object.keys(Source.getDefaults())
+				),
 				{
 					type: "white",
-				},
+				}
 			),
 		});
 	}
@@ -87,7 +108,11 @@ export class NoiseSynth extends Instrument<NoiseSynthOptions> {
 		// start the noise
 		this.noise.start(time);
 		if (this.envelope.sustain === 0) {
-			this.noise.stop(time + this.toSeconds(this.envelope.attack) + this.toSeconds(this.envelope.decay));
+			this.noise.stop(
+				time +
+					this.toSeconds(this.envelope.attack) +
+					this.toSeconds(this.envelope.decay)
+			);
 		}
 		return this;
 	}
@@ -110,7 +135,21 @@ export class NoiseSynth extends Instrument<NoiseSynthOptions> {
 		return this;
 	}
 
-	triggerAttackRelease(duration: Time, time?: Time, velocity: NormalRange = 1): this {
+	/**
+	 * Trigger the attack and then the release after the duration.
+	 * @param duration The amount of time to hold the note for
+	 * @param time The time the note should start
+	 * @param velocity The volume of the note (0-1)
+	 * @example
+	 * const noiseSynth = new Tone.NoiseSynth().toDestination();
+	 * // hold the note for 0.5 seconds
+	 * noiseSynth.triggerAttackRelease(0.5);
+	 */
+	triggerAttackRelease(
+		duration: Time,
+		time?: Time,
+		velocity: NormalRange = 1
+	): this {
 		time = this.toSeconds(time);
 		duration = this.toSeconds(duration);
 		this.triggerAttack(time, velocity);

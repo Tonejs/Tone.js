@@ -355,11 +355,11 @@ describe("ToneEvent", () => {
 
 		it("can be started and stopped multiple times", () => {
 			return Offline(({ transport }) => {
-				const eventTimes = [0.3, 0.4, 0.9, 1.0, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9];
+				const eventTimes = [0.3, 0.39, 0.9, 0.99, 1.3, 1.39, 1.48, 1.57, 1.66, 1.75, 1.84];
 				let eventTimeIndex = 0;
 				new ToneEvent({
 					loop: true,
-					loopEnd: 0.1,
+					loopEnd: 0.09,
 					callback(time): void {
 						expect(eventTimes.length).to.be.gt(eventTimeIndex);
 						expect(eventTimes[eventTimeIndex]).to.be.closeTo(time, 0.05);

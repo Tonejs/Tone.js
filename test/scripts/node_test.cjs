@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 // test the tone.js build
-const Tone = require("../../");
+const Tone = require("../../build/esm");
 const assert = require("assert");
 const semver = require("semver");
 const { version } = require("../../package.json");

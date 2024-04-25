@@ -10,6 +10,7 @@
 		"removeComments": false,
 		"outDir": "./build/esm",
 		"sourceMap": true,
+		"skipLibCheck": true,
 		"moduleResolution": "node",
 		"strictPropertyInitialization": true,
 		"downlevelIteration": true,
@@ -24,5 +25,6 @@
 	"include": [
 		"Tone/**/*.ts",
 		"test/**/*.ts"
-	]
+	],
+	"exclude": ["node_modules"]
 }

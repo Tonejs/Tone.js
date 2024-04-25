@@ -18,7 +18,7 @@ export interface DuoSynthOptions extends MonophonicOptions {
 }
 
 /**
- * DuoSynth is a monophonic synth composed of two [[MonoSynths]] run in parallel with control over the
+ * DuoSynth is a monophonic synth composed of two [[MonoSynth]]s run in parallel with control over the
  * frequency ratio between the two voices and vibrato effect.
  * @example
  * const duoSynth = new Tone.DuoSynth().toDestination();
@@ -177,7 +177,7 @@ export class DuoSynth extends Monophonic<DuoSynthOptions> {
 						release: 0.5
 					}
 				}),
-		}) as DuoSynthOptions;
+		}) as unknown as DuoSynthOptions;
 	}
 	/**
 	 * Trigger the attack portion of the note

@@ -17,15 +17,15 @@ export interface ChorusOptions extends StereoFeedbackEffectOptions {
 
 /**
  * Chorus is a stereo chorus effect composed of a left and right delay with an [[LFO]] applied to the delayTime of each channel.
- * When [[feedback]] is set to a value larger than 0, you also get Flanger-type effects. 
+ * When [[feedback]] is set to a value larger than 0, you also get Flanger-type effects.
  * Inspiration from [Tuna.js](https://github.com/Dinahmoe/tuna/blob/master/tuna.js).
- * Read more on the chorus effect on [SoundOnSound](http://www.soundonsound.com/sos/jun04/articles/synthsecrets.htm).
+ * Read more on the chorus effect on [Sound On Sound](http://www.soundonsound.com/sos/jun04/articles/synthsecrets.htm).
  *
  * @example
  * const chorus = new Tone.Chorus(4, 2.5, 0.5).toDestination().start();
  * const synth = new Tone.PolySynth().connect(chorus);
  * synth.triggerAttackRelease(["C3", "E3", "G3"], "8n");
- * 
+ *
  * @category Effect
  */
 export class Chorus extends StereoFeedbackEffect<ChorusOptions> {
@@ -118,7 +118,7 @@ export class Chorus extends StereoFeedbackEffect<ChorusOptions> {
 			frequency: 1.5,
 			delayTime: 3.5,
 			depth: 0.7,
-			type: "sine" as "sine",
+			type: "sine" as const,
 			spread: 180,
 			feedback: 0,
 			wet: 0.5,

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import { expect } from "chai";
 import { BasicTests } from "test/helper/Basic";
 import { CompareToFile } from "test/helper/CompareToFile";

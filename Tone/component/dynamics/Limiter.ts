@@ -7,7 +7,7 @@ import { readOnly } from "../../core/util/Interface";
 
 export interface LimiterOptions extends ToneAudioNodeOptions {
 	threshold: Decibels;
-};
+}
 
 /**
  * Limiter will limit the loudness of an incoming signal.

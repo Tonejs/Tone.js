@@ -1,16 +1,32 @@
 import { TimeClass } from "../../core/type/Time";
 import { PlaybackState } from "../../core/util/StateTimeline";
 import { TimelineValue } from "../../core/util/TimelineValue";
+import { ToneAudioNode } from "../../core/context/ToneAudioNode";
+import { Pow } from "../../signal/Pow";
 import { Signal } from "../../signal/Signal";
-import { onContextClose, onContextInit } from "../context/ContextInitialization";
+import {
+	onContextClose,
+	onContextInit,
+} from "../context/ContextInitialization";
 import { Gain } from "../context/Gain";
-import { ToneWithContext, ToneWithContextOptions } from "../context/ToneWithContext";
+import {
+	ToneWithContext,
+	ToneWithContextOptions,
+} from "../context/ToneWithContext";
 import { TicksClass } from "../type/Ticks";
 import { TransportTimeClass } from "../type/TransportTime";
 import {
-	BarsBeatsSixteenths, BPM, NormalRange, Seconds,
-	Subdivision, Ticks, Time, TimeSignature, TransportTime
+	BarsBeatsSixteenths,
+	BPM,
+	NormalRange,
+	Seconds,
+	Subdivision,
+	Ticks,
+	Time,
+	TimeSignature,
+	TransportTime,
 } from "../type/Units";
+import { enterScheduledCallback } from "../util/Debug";
 import { optionsFromArguments } from "../util/Defaults";
 import { Emitter } from "../util/Emitter";
 import { readOnly, writable } from "../util/Interface";
@@ -32,12 +48,19 @@ interface TransportOptions extends ToneWithContextOptions {
 	ppq: number;
 }
 
-type TransportEventNames = "start" | "stop" | "pause" | "loop" | "loopEnd" | "loopStart";
+type TransportEventNames =
+	| "start"
+	| "stop"
+	| "pause"
+	| "loop"
+	| "loopEnd"
+	| "loopStart"
+	| "ticks";
 
 interface SyncedSignalEvent {
 	signal: Signal;
 	initial: number;
-	ratio: Gain;
+	nodes: ToneAudioNode<any>[];
 }
 
 type TransportCallback = (time: Seconds) => void;
@@ -64,8 +87,9 @@ type TransportCallback = (time: Seconds) => void;
  * Tone.Transport.start();
  * @category Core
  */
-export class Transport extends ToneWithContext<TransportOptions> implements Emitter<TransportEventNames> {
-
+export class Transport
+	extends ToneWithContext<TransportOptions>
+	implements Emitter<TransportEventNames> {
 	readonly name: string = "Transport";
 
 	//-------------------------------------
@@ -163,9 +187,11 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 
 	constructor(options?: Partial<TransportOptions>);
 	constructor() {
-
 		super(optionsFromArguments(Transport.getDefaults(), arguments));
-		const options = optionsFromArguments(Transport.getDefaults(), arguments);
+		const options = optionsFromArguments(
+			Transport.getDefaults(),
+			arguments
+		);
 
 		// CLOCK/TEMPO
 		this._ppq = options.ppq;
@@ -213,21 +239,34 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 				this.emit("loopEnd", tickTime);
 				this._clock.setTicksAtTime(this._loopStart, tickTime);
 				ticks = this._loopStart;
-				this.emit("loopStart", tickTime, this._clock.getSecondsAtTime(tickTime));
+				this.emit(
+					"loopStart",
+					tickTime,
+					this._clock.getSecondsAtTime(tickTime)
+				);
 				this.emit("loop", tickTime);
 			}
 		}
 		// handle swing
-		if (this._swingAmount > 0 &&
+		if (
+			this._swingAmount > 0 &&
 			ticks % this._ppq !== 0 && // not on a downbeat
-			ticks % (this._swingTicks * 2) !== 0) {
+			ticks % (this._swingTicks * 2) !== 0
+		) {
 			// add some swing
-			const progress = (ticks % (this._swingTicks * 2)) / (this._swingTicks * 2);
-			const amount = Math.sin((progress) * Math.PI) * this._swingAmount;
-			tickTime += new TicksClass(this.context, this._swingTicks * 2 / 3).toSeconds() * amount;
+			const progress =
+				(ticks % (this._swingTicks * 2)) / (this._swingTicks * 2);
+			const amount = Math.sin(progress * Math.PI) * this._swingAmount;
+			tickTime +=
+				new TicksClass(
+					this.context,
+					(this._swingTicks * 2) / 3
+				).toSeconds() * amount;
 		}
 		// invoke the timeline events scheduled on this tick
-		this._timeline.forEachAtTime(ticks, event => event.invoke(tickTime));
+		enterScheduledCallback(true);
+		this._timeline.forEachAtTime(ticks, (event) => event.invoke(tickTime));
+		enterScheduledCallback(false);
 	}
 
 	//-------------------------------------
@@ -246,7 +285,10 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 	 * 	console.log("measure 16!");
 	 * }, "16:0:0");
 	 */
-	schedule(callback: TransportCallback, time: TransportTime | TransportTimeClass): number {
+	schedule(
+		callback: TransportCallback,
+		time: TransportTime | TransportTimeClass
+	): number {
 		const event = new TransportEvent(this, {
 			callback,
 			time: new TransportTimeClass(this.context, time).toTicks(),
@@ -274,7 +316,7 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 		callback: TransportCallback,
 		interval: Time | TimeClass,
 		startTime?: TransportTime | TransportTimeClass,
-		duration: Time = Infinity,
+		duration: Time = Infinity
 	): number {
 		const event = new TransportRepeatEvent(this, {
 			callback,
@@ -293,7 +335,10 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 	 * @param time The time the callback should be invoked.
 	 * @returns The ID of the scheduled event.
 	 */
-	scheduleOnce(callback: TransportCallback, time: TransportTime | TransportTimeClass): number {
+	scheduleOnce(
+		callback: TransportCallback,
+		time: TransportTime | TransportTimeClass
+	): number {
 		const event = new TransportEvent(this, {
 			callback,
 			once: true,
@@ -338,8 +383,12 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 	 */
 	cancel(after: TransportTime = 0): this {
 		const computedAfter = this.toTicks(after);
-		this._timeline.forEachFrom(computedAfter, event => this.clear(event.id));
-		this._repeatedEvents.forEachFrom(computedAfter, event => this.clear(event.id));
+		this._timeline.forEachFrom(computedAfter, (event) =>
+			this.clear(event.id)
+		);
+		this._repeatedEvents.forEachFrom(computedAfter, (event) =>
+			this.clear(event.id)
+		);
 		return this;
 	}
 
@@ -381,6 +430,8 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 	 * Tone.Transport.start("+1", "4:0:0");
 	 */
 	start(time?: Time, offset?: TransportTime): this {
+		// start the context
+		this.context.resume();
 		let offsetTicks;
 		if (isDefined(offset)) {
 			offsetTicks = this.toTicks(offset);
@@ -486,7 +537,10 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 	 * Tone.Transport.setLoopPoints(0, "1m");
 	 * Tone.Transport.loop = true;
 	 */
-	setLoopPoints(startPosition: TransportTime, endPosition: TransportTime): this {
+	setLoopPoints(
+		startPosition: TransportTime,
+		endPosition: TransportTime
+	): this {
 		this.loopStart = startPosition;
 		this.loopEnd = endPosition;
 		return this;
@@ -530,7 +584,7 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 	}
 
 	/**
-	 * The Transport's position in seconds
+	 * The Transport's position in seconds.
 	 * Setting the value will jump to that position right away.
 	 */
 	get seconds(): Seconds {
@@ -544,20 +598,22 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 
 	/**
 	 * The Transport's loop position as a normalized value. Always
-	 * returns 0 if the transport if loop is not true.
+	 * returns 0 if the Transport.loop = false.
 	 */
 	get progress(): NormalRange {
 		if (this.loop) {
 			const now = this.now();
 			const ticks = this._clock.getTicksAtTime(now);
-			return (ticks - this._loopStart) / (this._loopEnd - this._loopStart);
+			return (
+				(ticks - this._loopStart) / (this._loopEnd - this._loopStart)
+			);
 		} else {
 			return 0;
 		}
 	}
 
 	/**
-	 * The transports current tick position.
+	 * The Transport's current tick position.
 	 */
 	get ticks(): Ticks {
 		return this._clock.ticks;
@@ -576,6 +632,7 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 				// restart it with the new time
 				this.emit("start", time, this._clock.getSecondsAtTime(time));
 			} else {
+				this.emit("ticks", now);
 				this._clock.setTicksAtTime(t, now);
 			}
 		}
@@ -587,7 +644,7 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 	 * @return The tick value at the given time.
 	 */
 	getTicksAtTime(time?: Time): Ticks {
-		return Math.round(this._clock.getTicksAtTime(time));
+		return this._clock.getTicksAtTime(time);
 	}
 
 	/**
@@ -625,7 +682,7 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 	 * @return  The context time of the next subdivision.
 	 * @example
 	 * // the transport must be started, otherwise returns 0
-	 * Tone.Transport.start(); 
+	 * Tone.Transport.start();
 	 * Tone.Transport.nextSubdivision("4n");
 	 */
 	nextSubdivision(subdivision?: Time): Seconds {
@@ -637,7 +694,7 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 			const now = this.now();
 			// the remainder of the current ticks and the subdivision
 			const transportPos = this.getTicksAtTime(now);
-			const remainingTicks = subdivision - transportPos % subdivision;
+			const remainingTicks = subdivision - (transportPos % subdivision);
 			return this._clock.nextTickTime(remainingTicks, now);
 		}
 	}
@@ -652,25 +709,45 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 	 * 			Otherwise it will be computed based on their current values.
 	 */
 	syncSignal(signal: Signal<any>, ratio?: number): this {
+		const now = this.now();
+		let source : TickParam<"bpm"> | ToneAudioNode<any> = this.bpm;
+		let sourceValue = 1 / (60 / source.getValueAtTime(now) / this.PPQ);
+		let nodes : ToneAudioNode<any>[] = [];
+		// If the signal is in the time domain, sync it to the reciprocal of
+		// the tempo instead of the tempo.
+		if (signal.units === "time") {
+			// The input to Pow should be in the range [1 / 4096, 1], where
+			// where 4096 is half of the buffer size of Pow's waveshaper.
+			// Pick a scaling factor based on the initial tempo that ensures
+			// that the initial input is in this range, while leaving room for
+			// tempo changes.
+			const scaleFactor = 1 / 64 / sourceValue;
+			const scaleBefore = new Gain(scaleFactor);
+			const reciprocal = new Pow(-1);
+			const scaleAfter = new Gain(scaleFactor);
+			// @ts-ignore
+			source.chain(scaleBefore, reciprocal, scaleAfter);
+			source = scaleAfter;
+			sourceValue = 1 / sourceValue;
+			nodes = [scaleBefore, reciprocal, scaleAfter];
+		}
 		if (!ratio) {
 			// get the sync ratio
-			const now = this.now();
 			if (signal.getValueAtTime(now) !== 0) {
-				const bpm = this.bpm.getValueAtTime(now);
-				const computedFreq = 1 / (60 / bpm / this.PPQ);
-				ratio = signal.getValueAtTime(now) / computedFreq;
+				ratio = signal.getValueAtTime(now) / sourceValue;
 			} else {
 				ratio = 0;
 			}
 		}
 		const ratioSignal = new Gain(ratio);
 		// @ts-ignore
-		this.bpm.connect(ratioSignal);
+		source.connect(ratioSignal);
 		// @ts-ignore
 		ratioSignal.connect(signal._param);
+		nodes.push(ratioSignal);
 		this._syncedSignals.push({
 			initial: signal.value,
-			ratio: ratioSignal,
+			nodes: nodes,
 			signal,
 		});
 		signal.value = 0;
@@ -685,7 +762,7 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 		for (let i = this._syncedSignals.length - 1; i >= 0; i--) {
 			const syncedSignal = this._syncedSignals[i];
 			if (syncedSignal.signal === signal) {
-				syncedSignal.ratio.dispose();
+				syncedSignal.nodes.forEach((node) => node.dispose());
 				syncedSignal.signal.value = syncedSignal.initial;
 				this._syncedSignals.splice(i, 1);
 			}
@@ -709,9 +786,18 @@ export class Transport extends ToneWithContext<TransportOptions> implements Emit
 	// EMITTER MIXIN TO SATISFY COMPILER
 	//-------------------------------------
 
-	on!: (event: TransportEventNames, callback: (...args: any[]) => void) => this;
-	once!: (event: TransportEventNames, callback: (...args: any[]) => void) => this;
-	off!: (event: TransportEventNames, callback?: ((...args: any[]) => void) | undefined) => this;
+	on!: (
+		event: TransportEventNames,
+		callback: (...args: any[]) => void
+	) => this;
+	once!: (
+		event: TransportEventNames,
+		callback: (...args: any[]) => void
+	) => this;
+	off!: (
+		event: TransportEventNames,
+		callback?: ((...args: any[]) => void) | undefined
+	) => this;
 	emit!: (event: any, ...args: any[]) => this;
 }
 
@@ -721,10 +807,10 @@ Emitter.mixin(Transport);
 // 	INITIALIZATION
 //-------------------------------------
 
-onContextInit(context => {
+onContextInit((context) => {
 	context.transport = new Transport({ context });
 });
 
-onContextClose(context => {
+onContextClose((context) => {
 	context.transport.dispose();
 });

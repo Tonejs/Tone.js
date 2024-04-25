@@ -138,7 +138,7 @@ export class Sampler extends Instrument<SamplerOptions> {
 		return Object.assign(Instrument.getDefaults(), {
 			attack: 0,
 			baseUrl: "",
-			curve: "exponential" as "exponential",
+			curve: "exponential" as const,
 			onload: noOp,
 			onerror: noOp,
 			release: 0.1,

@@ -575,6 +575,25 @@ describe("Part", () => {
 			});
 		});
 
+		it("can loop a specific number of times (different set order)", () => {
+			let callCount = 0;
+			const times = [0.1, 0.2, 0.4, 0.5];
+			return Offline(({ transport }) => {
+				const part = new Part({
+					events: [0, 0.1],
+					callback(time): void {
+						expect(times[callCount]).to.be.closeTo(time, 0.01);
+						callCount++;
+					},
+				}).start(0.1);
+				part.loop = 2;
+				part.loopEnd = 0.3;
+				transport.start();
+			}, 0.8).then(() => {
+				expect(callCount).to.equal(4);
+			});
+		});
+
 		it("plays once when loop is 1", () => {
 			let callCount = 0;
 			return Offline(({ transport }) => {

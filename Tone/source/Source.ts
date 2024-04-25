@@ -2,11 +2,19 @@ import { Volume } from "../component/channel/Volume";
 import "../core/context/Destination";
 import "../core/clock/Transport";
 import { Param } from "../core/context/Param";
-import { OutputNode, ToneAudioNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
+import {
+	OutputNode,
+	ToneAudioNode,
+	ToneAudioNodeOptions,
+} from "../core/context/ToneAudioNode";
 import { Decibels, Seconds, Time } from "../core/type/Units";
 import { defaultArg } from "../core/util/Defaults";
 import { noOp, readOnly } from "../core/util/Interface";
-import { BasicPlaybackState, StateTimeline, StateTimelineEvent } from "../core/util/StateTimeline";
+import {
+	BasicPlaybackState,
+	StateTimeline,
+	StateTimelineEvent,
+} from "../core/util/StateTimeline";
 import { isDefined, isUndef } from "../core/util/TypeCheck";
 import { assert, assertContextRunning } from "../core/util/Debug";
 import { GT } from "../core/util/Math";
@@ -20,9 +28,9 @@ export interface SourceOptions extends ToneAudioNodeOptions {
 }
 
 /**
- * Base class for sources. 
+ * Base class for sources.
  * start/stop of this.context.transport.
- * 
+ *
  * ```
  * // Multiple state change events can be chained together,
  * // but must be set in the correct order and with ascending times
@@ -36,15 +44,16 @@ export interface SourceOptions extends ToneAudioNodeOptions {
  * state.start("+0.3").stop("+0.2");
  * ```
  */
-export abstract class Source<Options extends SourceOptions> extends ToneAudioNode<Options> {
-
+export abstract class Source<
+	Options extends SourceOptions
+> extends ToneAudioNode<Options> {
 	/**
 	 * The output volume node
 	 */
 	private _volume: Volume;
 
 	/**
-	 * The output note
+	 * The output node
 	 */
 	output: OutputNode;
 
@@ -129,7 +138,9 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 	get state(): BasicPlaybackState {
 		if (this._synced) {
 			if (this.context.transport.state === "started") {
-				return this._state.getValueAtTime(this.context.transport.seconds) as BasicPlaybackState;
+				return this._state.getValueAtTime(
+					this.context.transport.seconds
+				) as BasicPlaybackState;
 			} else {
 				return "stopped";
 			}
@@ -155,7 +166,11 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 	// overwrite these functions
 	protected abstract _start(time: Time, offset?: Time, duration?: Time): void;
 	protected abstract _stop(time: Time): void;
-	protected abstract _restart(time: Seconds, offset?: Time, duration?: Time): void;
+	protected abstract _restart(
+		time: Seconds,
+		offset?: Time,
+		duration?: Time
+	): void;
 
 	/**
 	 * Ensure that the scheduled time is not before the current time.
@@ -178,12 +193,24 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 	 * source.start("+0.5"); // starts the source 0.5 seconds from now
 	 */
 	start(time?: Time, offset?: Time, duration?: Time): this {
-		let computedTime = isUndef(time) && this._synced ? this.context.transport.seconds : this.toSeconds(time);
+		let computedTime =
+			isUndef(time) && this._synced
+				? this.context.transport.seconds
+				: this.toSeconds(time);
 		computedTime = this._clampToCurrentTime(computedTime);
 		// if it's started, stop it and restart it
-		if (!this._synced && this._state.getValueAtTime(computedTime) === "started") {
+		if (
+			!this._synced &&
+			this._state.getValueAtTime(computedTime) === "started"
+		) {
 			// time should be strictly greater than the previous start time
-			assert(GT(computedTime, (this._state.get(computedTime) as StateTimelineEvent).time), "Start time must be strictly greater than previous start time");
+			assert(
+				GT(
+					computedTime,
+					(this._state.get(computedTime) as StateTimelineEvent).time
+				),
+				"Start time must be strictly greater than previous start time"
+			);
 			this._state.cancel(computedTime);
 			this._state.setStateAtTime("started", computedTime);
 			this.log("restart", computedTime);
@@ -196,18 +223,26 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 				const event = this._state.get(computedTime);
 				if (event) {
 					event.offset = this.toSeconds(defaultArg(offset, 0));
-					event.duration = duration ? this.toSeconds(duration) : undefined;
+					event.duration = duration
+						? this.toSeconds(duration)
+						: undefined;
 				}
-				const sched = this.context.transport.schedule(t => {
+				const sched = this.context.transport.schedule((t) => {
 					this._start(t, offset, duration);
 				}, computedTime);
 				this._scheduled.push(sched);
 
 				// if the transport is already started
 				// and the time is greater than where the transport is
-				if (this.context.transport.state === "started" && 
-					this.context.transport.getSecondsAtTime(this.immediate()) > computedTime) {
-					this._syncedStart(this.now(), this.context.transport.seconds);
+				if (
+					this.context.transport.state === "started" &&
+					this.context.transport.getSecondsAtTime(this.immediate()) >
+						computedTime
+				) {
+					this._syncedStart(
+						this.now(),
+						this.context.transport.seconds
+					);
 				}
 			} else {
 				assertContextRunning(this.context);
@@ -227,14 +262,23 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 	 * source.stop("+0.5"); // stops the source 0.5 seconds from now
 	 */
 	stop(time?: Time): this {
-		let computedTime = isUndef(time) && this._synced ? this.context.transport.seconds : this.toSeconds(time);
+		let computedTime =
+			isUndef(time) && this._synced
+				? this.context.transport.seconds
+				: this.toSeconds(time);
 		computedTime = this._clampToCurrentTime(computedTime);
-		if (this._state.getValueAtTime(computedTime) === "started" || isDefined(this._state.getNextState("started", computedTime))) {
+		if (
+			this._state.getValueAtTime(computedTime) === "started" ||
+			isDefined(this._state.getNextState("started", computedTime))
+		) {
 			this.log("stop", computedTime);
 			if (!this._synced) {
 				this._stop(computedTime);
 			} else {
-				const sched = this.context.transport.schedule(this._stop.bind(this), computedTime);
+				const sched = this.context.transport.schedule(
+					this._stop.bind(this),
+					computedTime
+				);
 				this._scheduled.push(sched);
 			}
 			this._state.cancel(computedTime);
@@ -274,23 +318,36 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 		if (!this._synced) {
 			this._synced = true;
 			this._syncedStart = (time, offset) => {
-				if (offset > 0) {
+				if (GT(offset, 0)) {
 					// get the playback state at that time
 					const stateEvent = this._state.get(offset);
 					// listen for start events which may occur in the middle of the sync'ed time
-					if (stateEvent && stateEvent.state === "started" && stateEvent.time !== offset) {
+					if (
+						stateEvent &&
+						stateEvent.state === "started" &&
+						stateEvent.time !== offset
+					) {
 						// get the offset
-						const startOffset = offset - this.toSeconds(stateEvent.time);
+						const startOffset =
+							offset - this.toSeconds(stateEvent.time);
 						let duration: number | undefined;
 						if (stateEvent.duration) {
-							duration = this.toSeconds(stateEvent.duration) - startOffset;
+							duration =
+								this.toSeconds(stateEvent.duration) -
+								startOffset;
 						}
-						this._start(time, this.toSeconds(stateEvent.offset) + startOffset, duration);
+						this._start(
+							time,
+							this.toSeconds(stateEvent.offset) + startOffset,
+							duration
+						);
 					}
 				}
 			};
-			this._syncedStop = time => {
-				const seconds = this.context.transport.getSecondsAtTime(Math.max(time - this.sampleTime, 0));
+			this._syncedStop = (time) => {
+				const seconds = this.context.transport.getSecondsAtTime(
+					Math.max(time - this.sampleTime, 0)
+				);
 				if (this._state.getValueAtTime(seconds) === "started") {
 					this._stop(time);
 				}
@@ -317,7 +374,7 @@ export abstract class Source<Options extends SourceOptions> extends ToneAudioNod
 		}
 		this._synced = false;
 		// clear all of the scheduled ids
-		this._scheduled.forEach(id => this.context.transport.clear(id));
+		this._scheduled.forEach((id) => this.context.transport.clear(id));
 		this._scheduled = [];
 		this._state.cancel(0);
 		// stop it also

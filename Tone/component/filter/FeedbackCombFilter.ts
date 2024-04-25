@@ -88,9 +88,9 @@ export class FeedbackCombFilter extends ToneAudioWorklet<FeedbackCombFilterOptio
 
 	onReady(node: AudioWorkletNode) {
 		connectSeries(this.input, node, this.output);
-		const delayTime = node.parameters.get("delayTime") as AudioParam;;
+		const delayTime = node.parameters.get("delayTime") as AudioParam;
 		this.delayTime.setParam(delayTime);
-		const feedback = node.parameters.get("feedback") as AudioParam;;
+		const feedback = node.parameters.get("feedback") as AudioParam;
 		this.resonance.setParam(feedback);
 	}
 

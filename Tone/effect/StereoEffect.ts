@@ -68,7 +68,7 @@ export class StereoEffect<Options extends StereoEffectOptions> extends ToneAudio
 	/**
 	 * Connect the left part of the effect
 	 */
-	protected connectEffectLeft(...nodes: OutputNode[]): void{
+	protected connectEffectLeft(...nodes: OutputNode[]): void {
 		this._split.connect(nodes[0], 0, 0);
 		connectSeries(...nodes);
 		connect(nodes[nodes.length-1], this._merge, 0, 0);
@@ -77,7 +77,7 @@ export class StereoEffect<Options extends StereoEffectOptions> extends ToneAudio
 	/**
 	 * Connect the right part of the effect
 	 */
-	protected connectEffectRight(...nodes: OutputNode[]): void{
+	protected connectEffectRight(...nodes: OutputNode[]): void {
 		this._split.connect(nodes[0], 1, 0);
 		connectSeries(...nodes);
 		connect(nodes[nodes.length-1], this._merge, 0, 1);

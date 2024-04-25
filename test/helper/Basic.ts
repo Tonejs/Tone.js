@@ -9,6 +9,8 @@ import { setLogger } from "Tone/core/util/Debug";
 import { ToneAudioNode } from "Tone/core/context/ToneAudioNode";
 import { getContext } from "Tone/core/Global";
 import * as Classes from "Tone/classes";
+import { isFunction } from "Tone/core/util/TypeCheck";
+import { noOp } from "Tone/core/util/Interface";
 
 export const testAudioContext = new OfflineContext(1, 1, 11025);
 
@@ -31,6 +33,13 @@ export function BasicTests(Constr, ...args: any[]): void {
 					expect(instance[member].disposed, `member ${member}`).to.equal(true);
 				}
 			}
+			// check that all callback functions are assigned to noOp
+			for (const member in instance) {
+				if (isFunction(instance[member]) && member.startsWith("on")) {
+					expect(instance[member]).to.equal(noOp);
+				}
+			}
+
 		});
 
 		it("extends Tone", () => {
@@ -69,7 +78,7 @@ export function BasicTests(Constr, ...args: any[]): void {
 
 	it("exports its class name", () => {
 		// find the constructor
-		for (let className in Classes) {
+		for (const className in Classes) {
 			if (Classes[className] === Constr) {
 				const instance = new Constr(...args);
 				expect(instance.toString()).to.equal(className);

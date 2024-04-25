@@ -111,7 +111,7 @@ export class Recorder extends ToneAudioNode<RecorderOptions> {
 	 */
 	async start() {
 		assert(this.state !== "started", "Recorder is already started");
-		const startPromise = new Promise(done => {
+		const startPromise = new Promise<void>(done => {
 			const handleStart = () => {
 				this._recorder.removeEventListener("start", handleStart, false);
 

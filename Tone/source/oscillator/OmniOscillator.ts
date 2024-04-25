@@ -315,7 +315,7 @@ export class OmniOscillator<OscType extends AnyOscillator>
 
 	/**
 	 * The width of the oscillator when sourceType === "pulse".
-	 * See [[PWMOscillator.width]]
+	 * See [[PWMOscillator]]
 	 */
 	get width(): IsPulseOscillator<OscType, Signal<"audioRange">> {
 		if (this._getOscType(this._oscillator, "pulse")) {

@@ -235,7 +235,7 @@ describe("Loop", () => {
 					}
 				}).start(0);
 				transport.start();
-			}, 0.8).then(() => {
+			}, 0.81).then(() => {
 				expect(callCount).to.equal(9);
 			});
 		});
@@ -326,7 +326,7 @@ describe("Loop", () => {
 				loop.playbackRate = 1.5;
 				expect(loop.playbackRate).to.equal(1.5);
 				transport.start();
-			}, 0.8).then(() => {
+			}, 0.81).then(() => {
 				expect(callCount).to.equal(13);
 			});
 		});

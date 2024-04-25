@@ -25,7 +25,7 @@ export function initializeContext(ctx: Context): void {
 }
 
 /**
- * Array of callbacks to invoke when a new context is created
+ * Array of callbacks to invoke when a new context is closed
  */
 const notifyCloseContext: Array<(ctx: Context) => void> = [];
 
@@ -37,6 +37,6 @@ export function onContextClose(cb: (ctx: Context) => void): void {
 }
 
 export function closeContext(ctx: Context): void {
-	// add any additional modules
+	// remove any additional modules
 	notifyCloseContext.forEach(cb => cb(ctx));
 }
