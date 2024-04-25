@@ -55,7 +55,7 @@
 		}
 					
 		// create a meter on the destination node
-		const toneMeter = new Tone.Meter({ channels: 2 });
+		const toneMeter = new Tone.Meter({ channelCount: 2 });
 		Tone.Destination.chain(toneMeter);
 		meter({
 			tone: toneMeter,

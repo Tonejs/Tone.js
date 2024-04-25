@@ -1,6 +1,6 @@
 {
 	"name": "tone",
-	"version": "14.8.0",
+	"version": "14.9.0",
 	"description": "A Web Audio framework for making interactive music in the browser.",
 	"browser": "build/Tone.js",
 	"main": "build/esm/index.js",
@@ -19,7 +19,7 @@
 		"build": "npm run increment && rm -rf build && npm run ts:build && npm run webpack:build",
 		"codecov": "codecov",
 		"docs": "node scripts/generate_docs.cjs",
-		"docs:json": "cross-var typedoc --options \"./scripts/typedoc.json\" --json \"$npm_config_docs_json\"",
+		"docs:json": "cross-var typedoc --options \"./scripts/typedoc.json\" --json \"./docs/tone.json\"",
 		"increment": "node scripts/increment_version.cjs",
 		"karma": "cross-var karma start ./test/karma.conf.cjs --single-run --file $npm_config_file --dir $npm_config_dir",
 		"karma:browser": "cross-var karma start ./test/karma.conf.cjs --auto-watch --browsers OnlineChrome --file $npm_config_file --dir $npm_config_dir",
@@ -95,7 +95,7 @@
 		"tmp-promise": "^2.1.1",
 		"ts-loader": "^7.0.5",
 		"ts-node": "^8.10.2",
-		"typedoc": "^0.23.24",
+		"typedoc": "^0.25.13",
 		"typescript": "^4.4.4",
 		"ua-parser-js": "^0.7.31",
 		"webpack": "^5.65.0",
@@ -103,7 +103,7 @@
 		"yargs": "^17.3.0"
 	},
 	"dependencies": {
-		"standardized-audio-context": "^25.3.37",
+		"standardized-audio-context": "^25.3.70",
 		"tslib": "^2.3.1"
 	},
 	"prettier": {
