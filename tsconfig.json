@@ -10,6 +10,7 @@
 		"removeComments": false,
 		"outDir": "./build/esm",
 		"sourceMap": true,
+		"skipLibCheck": true,
 		"moduleResolution": "node",
 		"strictPropertyInitialization": true,
 		"downlevelIteration": true,
