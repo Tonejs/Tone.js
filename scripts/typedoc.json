@@ -5,7 +5,7 @@
 	"defaultCategory" : "Global",
 	"categorizeByGroup" : true,
 	"categoryOrder" : ["Core", "Source", "Instrument", "Effect", "Component", "Signal"],
-	"exclude" : ["./Tone/**/*.test.ts", "./test/**/*.ts"],
+	"externalPattern": ["**/node_modules/**"],
 	"excludeProtected" : true,
 	"excludePrivate" : true,
 	"hideGenerator": true,
