@@ -16,6 +16,8 @@ jobs:
             id-token: write
         runs-on: ubuntu-latest
         steps:
+            - env:
+              BROWSER: chrome
             - name: Check out Git repository
               uses: actions/checkout@v2
             - name: Setup Nodejs
