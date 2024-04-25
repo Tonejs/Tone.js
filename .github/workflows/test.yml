@@ -120,7 +120,7 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     # make sure all the tests pass first
-    needs: [run-tests, test-code-examples, test-html-examples, test-lint]
+    needs: [run-tests, test-code-examples, test-html-examples, test-lint, test-readme]
     # not on PRs
     if: github.event_name != 'pull_request'
     env:
