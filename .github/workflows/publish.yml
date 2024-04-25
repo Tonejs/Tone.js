@@ -22,6 +22,9 @@ jobs:
         run: npm run build
       - name: Increment version
         run: npm run increment
-      - name: Publish Dev
-        run: npm publish --tag next --dry-run
+      - name: Publish @next
+        run: npm publish --tag next
         if: ${{ github.ref == 'refs/heads/dev' }}
+      - name: Publish @latest
+        run: npm publish
+        if: ${{ github.ref == 'refs/heads/main' }}
