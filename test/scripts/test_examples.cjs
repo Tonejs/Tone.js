@@ -5,6 +5,8 @@ const { exec } = require("child_process");
 const { file } = require("tmp-promise");
 const { writeFile } = require("fs-extra");
 const toneJson = require("../../docs/tone.json");
+const { parallelLimit } = require("async");
+const { cpus } = require("os");
 
 /**
  * Get all of the examples
@@ -85,22 +87,27 @@ async function testExampleString(str) {
 async function main() {
 	const examples = findExamples(toneJson);
 	let passed = 0;
-	for (let i = 0; i < examples.length; i++) {
-		const example = examples[i];
-		try {
-			await testExampleString(example);
-			passed++;
-			// print a dot for each passed example
-			process.stdout.write(".");
-			// add a new line occasionally
-			if (passed % 100 === 0) {
-				process.stdout.write("\n");
-			}
-		} catch (e) {
-			console.log(example + "\n" + e);
-			throw e;
-		}
-	}
+
+	await parallelLimit(
+		examples.map((example) => {
+			return async () => {
+				try {
+					await testExampleString(example);
+					passed++;
+					// print a dot for each passed example
+					process.stdout.write(".");
+					// add a new line occasionally
+					if (passed % 100 === 0) {
+						process.stdout.write("\n");
+					}
+				} catch (e) {
+					console.log(example + "\n" + e);
+					throw e;
+				} 
+			};
+		}), cpus().length
+	);
+	
 	console.log(`\nvalid examples ${passed}/${examples.length}`);
 	if (passed !== examples.length) {
 		throw new Error("didn't pass all tests");
