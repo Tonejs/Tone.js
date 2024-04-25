@@ -32,7 +32,10 @@ export function isNumber(arg: any): arg is number {
  * Test if the given argument is an object literal (i.e. `{}`);
  */
 export function isObject(arg: any): arg is object {
-	return Object.prototype.toString.call(arg) === "[object Object]" && arg.constructor === Object;
+	return (
+		Object.prototype.toString.call(arg) === "[object Object]" &&
+		arg.constructor === Object
+	);
 }
 
 /**
@@ -61,5 +64,5 @@ export function isString(arg: any): arg is string {
  * e.g. "C4"
  */
 export function isNote(arg: any): arg is Note {
-	return isString(arg) && /^([a-g](?:b|#|x|bb)?)(-[4321]|[0-9]|10|11)$/.test(arg);
+	return isString(arg) && /^([a-g]{1}(?:b|#|x|bb)?)(-?[0-9]+)/i.test(arg);
 }
