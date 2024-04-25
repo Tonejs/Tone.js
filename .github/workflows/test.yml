@@ -9,7 +9,8 @@ on:
         branches:
             - dev
 jobs:
-    all-tests:
+    run-tests:
+        name: All tests
         permissions:
             contents: read
             id-token: write
@@ -26,3 +27,45 @@ jobs:
               run: npm install
             - name: Build
               run: npm run build
+            - name: All tests
+              run: npm run test
+    test-code-examples:
+        name: Test inline typedoc examples
+        permissions:
+            contents: read
+            id-token: write
+        runs-on: ubuntu-latest
+        steps:
+            - name: Check out Git repository
+              uses: actions/checkout@v2
+            - name: Setup Nodejs
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 18.12.0
+                  cache: 'npm'
+            - name: Install dependencies
+              run: npm install
+            - name: Build Docs
+              run: npm run build && npm run docs:json
+            - name: Code example tests
+              run: npm run test:examples
+    test-html-examples:
+        name: Test HTML Examples
+        permissions:
+            contents: read
+            id-token: write
+        runs-on: ubuntu-latest
+        steps:
+            - name: Check out Git repository
+              uses: actions/checkout@v2
+            - name: Setup Nodejs
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 18.12.0
+                  cache: 'npm'
+            - name: Install dependencies
+              run: npm install
+            - name: Build Docs
+              run: npm run build
+            - name: Code example tests
+              run: npm run test:html

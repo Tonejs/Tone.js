@@ -19,7 +19,7 @@
 		"build": "npm run increment && rm -rf build && npm run ts:build && npm run webpack:build",
 		"codecov": "codecov",
 		"docs": "node scripts/generate_docs.cjs",
-		"docs:json": "cross-var typedoc --options \"./scripts/typedoc.json\" --json \"$npm_config_docs_json\"",
+		"docs:json": "cross-var typedoc --options \"./scripts/typedoc.json\" --json \"./docs/tone.json\"",
 		"increment": "node scripts/increment_version.cjs",
 		"karma": "cross-var karma start ./test/karma.conf.cjs --single-run --file $npm_config_file --dir $npm_config_dir",
 		"karma:browser": "cross-var karma start ./test/karma.conf.cjs --auto-watch --browsers OnlineChrome --file $npm_config_file --dir $npm_config_dir",
