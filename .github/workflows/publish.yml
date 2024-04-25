@@ -19,7 +19,10 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
       - name: Install dependencies
         run: npm install
+      - name: Build
+        run: npm run build
       - name: Increment version
         run: npm run increment
-      - name: Publish
-        run: npm publish --dry-run
+      - name: Publish Dev
+        if: ${{ github.ref == 'refs/tags/dev' }}
+        run: npm publish --tag next --dry-run
