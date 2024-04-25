@@ -1,6 +1,6 @@
 {
 	"name": "tone",
-	"version": "14.8.0",
+	"version": "14.9.0",
 	"description": "A Web Audio framework for making interactive music in the browser.",
 	"browser": "build/Tone.js",
 	"main": "build/esm/index.js",
@@ -103,7 +103,7 @@
 		"yargs": "^17.3.0"
 	},
 	"dependencies": {
-		"standardized-audio-context": "^25.3.37",
+		"standardized-audio-context": "^25.3.70",
 		"tslib": "^2.3.1"
 	},
 	"prettier": {

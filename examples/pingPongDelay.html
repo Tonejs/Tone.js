@@ -39,7 +39,7 @@
 		// play a snare sound through it
 		const player = new Tone.Player("https://tonejs.github.io/audio/drum-samples/CR78/snare.mp3").connect(feedbackDelay);
 
-		const toneMeter = new Tone.Meter({ channels: 2 });
+		const toneMeter = new Tone.Meter({ channelCount: 2 });
 		feedbackDelay.connect(toneMeter);
 
 		meter({

@@ -285,7 +285,6 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 	 * @param  notes The notes to play. Accepts a single Frequency or an array of frequencies.
 	 * @param  time  When the release will be triggered.
 	 * @example
-	 * @example
 	 * const poly = new Tone.PolySynth(Tone.AMSynth).toDestination();
 	 * poly.triggerAttack(["Ab3", "C4", "F5"]);
 	 * // trigger the release of the given notes.
