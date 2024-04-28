@@ -222,7 +222,7 @@ osc.frequency.rampTo("C5", 2)
 
 # AudioContext
 
-Tone.js creates an AudioContext when it loads and shims it for maximum browser compatibility using [standardized-audio-context](https://github.com/chrisguttandin/standardized-audio-context). The AudioContext can be accessed at `Tone.context`. Or set your own AudioContext using `Tone.setContext(audioContext)`.
+Tone.js creates an AudioContext when it loads and shims it for maximum browser compatibility using [standardized-audio-context](https://github.com/chrisguttandin/standardized-audio-context). The AudioContext can be accessed at `Tone.getContext`. Or set your own AudioContext using `Tone.setContext(audioContext)`.
 
 # MIDI
 

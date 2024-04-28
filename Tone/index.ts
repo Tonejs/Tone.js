@@ -100,6 +100,7 @@ export function getDraw(): import("./core/util/Draw").DrawClass {
 /**
  * A reference to the global context
  * See [[Context]]
+ * @deprecated Use {@link getContext} instead
  */
 export const context = getContext();
 
