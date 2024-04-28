@@ -38,6 +38,7 @@ jobs:
         uses: codecov/codecov-action@v4
         with:
           fail_ci_if_error: false
+          codecov_yml_path: ./.github/codecov.yml
           token: ${{ secrets.CODECOV_TOKEN }}
   test-code-examples:
     name: Check typedocs

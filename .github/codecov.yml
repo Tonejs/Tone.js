@@ -1,0 +1,6 @@
+coverage:
+  status:
+    project:
+      default:
+        target: 98%
+        threshold: 2%
