@@ -79,8 +79,6 @@ export abstract class ToneWithContext<Options extends ToneWithContextOptions> ex
 
 	/**
 	 * The duration in seconds of one sample.
-	 * @example
-	 * console.log(Tone.Transport.sampleTime);
 	 */
 	get sampleTime(): Seconds {
 		return 1 / this.context.sampleRate;

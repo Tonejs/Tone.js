@@ -29,6 +29,7 @@ export function immediate(): Seconds {
  * The Transport object belonging to the global Tone.js Context.
  * See [[Transport]]
  * @category Core
+ * @deprecated Use {@link getTransport} instead
  */
 export const Transport = getContext().transport;
 
@@ -37,7 +38,7 @@ export const Transport = getContext().transport;
  * See [[Transport]]
  * @category Core
  */
-export function getTransport(): import("./core/clock/Transport").Transport {
+export function getTransport(): import("./core/clock/Transport").TransportClass {
 	return getContext().transport;
 }
 
@@ -45,6 +46,7 @@ export function getTransport(): import("./core/clock/Transport").Transport {
  * The Destination (output) belonging to the global Tone.js Context.
  * See [[Destination]]
  * @category Core
+ * @deprecated Use {@link getDestination} instead
  */
 export const Destination = getContext().destination;
 
@@ -58,13 +60,14 @@ export const Master = getContext().destination;
  * See [[Destination]]
  * @category Core
  */
-export function getDestination(): import("./core/context/Destination").Destination {
+export function getDestination(): import("./core/context/Destination").DestinationClass {
 	return getContext().destination;
 }
 
 /**
  * The [[Listener]] belonging to the global Tone.js Context.
  * @category Core
+ * @deprecated Use {@link getListener} instead
  */
 export const Listener = getContext().listener;
 
@@ -72,7 +75,7 @@ export const Listener = getContext().listener;
  * The [[Listener]] belonging to the global Tone.js Context.
  * @category Core
  */
-export function getListener(): import("./core/context/Listener").Listener {
+export function getListener(): import("./core/context/Listener").ListenerClass {
 	return getContext().listener;
 }
 
@@ -80,6 +83,7 @@ export function getListener(): import("./core/context/Listener").Listener {
  * Draw is used to synchronize the draw frame with the Transport's callbacks. 
  * See [[Draw]]
  * @category Core
+ * @deprecated Use {@link getDraw} instead
  */
 export const Draw = getContext().draw;
 
@@ -89,7 +93,7 @@ export const Draw = getContext().draw;
  * See [[Draw]]
  * @category Core
  */
-export function getDraw(): import("./core/util/Draw").Draw {
+export function getDraw(): import("./core/util/Draw").DrawClass {
 	return getContext().draw;
 }
 
@@ -111,6 +115,9 @@ export function loaded() {
 // this fills in name changes from 13.x to 14.x
 import { ToneAudioBuffers } from "./core/context/ToneAudioBuffers";
 import { ToneBufferSource } from "./source/buffer/ToneBufferSource";
+/** @deprecated Use {@link ToneAudioBuffer} */
 export const Buffer: typeof ToneAudioBuffer = ToneAudioBuffer;
+/** @deprecated Use {@link ToneAudioBuffers} */
 export const Buffers: typeof ToneAudioBuffers = ToneAudioBuffers;
+/** @deprecated Use {@link ToneBufferSource} */
 export const BufferSource: typeof ToneBufferSource = ToneBufferSource;

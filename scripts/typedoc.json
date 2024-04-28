@@ -9,4 +9,6 @@
 	"excludeProtected" : true,
 	"excludePrivate" : true,
 	"hideGenerator": true,
+	"includeVersion": true,
+	"excludeInternal": true
 }

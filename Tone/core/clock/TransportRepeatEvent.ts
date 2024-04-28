@@ -4,7 +4,7 @@ import { Seconds, Ticks, Time } from "../type/Units";
 import { TransportEvent, TransportEventOptions } from "./TransportEvent";
 import { GT, LT } from "../util/Math";
 
-type Transport = import("../clock/Transport").Transport;
+type Transport = import("../clock/Transport").TransportClass;
 
 interface TransportRepeatEventOptions extends TransportEventOptions {
 	interval: Ticks;

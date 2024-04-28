@@ -2,10 +2,10 @@ import { BaseContext } from "./BaseContext";
 import { Seconds } from "../type/Units";
 import { AnyAudioContext } from "./AudioContext";
 
-type Draw = import("../util/Draw").Draw;
-type Destination = import("./Destination").Destination;
-type Transport = import("../clock/Transport").Transport;
-type Listener = import("./Listener").Listener;
+type Draw = import("../util/Draw").DrawClass;
+type Destination = import("./Destination").DestinationClass;
+type Transport = import("../clock/Transport").TransportClass;
+type Listener = import("./Listener").ListenerClass;
 
 export class DummyContext extends BaseContext {
 	//---------------------------

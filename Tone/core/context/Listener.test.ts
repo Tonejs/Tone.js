@@ -1,12 +1,12 @@
 import { expect } from "chai";
 import { Offline } from "test/helper/Offline";
 import { getContext } from "../Global";
-import { Listener } from "./Listener";
+import { ListenerClass } from "./Listener";
 
 describe("Listener", () => {
 
 	it("creates itself on the context", () => {
-		expect(getContext().listener).instanceOf(Listener);
+		expect(getContext().listener).instanceOf(ListenerClass);
 	});
 
 	it("can get and set values as an object", () => {

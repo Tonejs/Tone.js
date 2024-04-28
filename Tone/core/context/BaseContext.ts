@@ -2,10 +2,10 @@ import { Seconds } from "../type/Units";
 import { Emitter } from "../util/Emitter";
 import { AnyAudioContext } from "./AudioContext";
 
-type Draw = import("../util/Draw").Draw;
-type Destination = import("./Destination").Destination;
-type Transport = import("../clock/Transport").Transport;
-type Listener = import("./Listener").Listener;
+type Draw = import("../util/Draw").DrawClass;
+type Destination = import("./Destination").DestinationClass;
+type Transport = import("../clock/Transport").TransportClass;
+type Listener = import("./Listener").ListenerClass;
 
 // these are either not used in Tone.js or deprecated and not implemented.
 export type ExcludedFromBaseAudioContext =

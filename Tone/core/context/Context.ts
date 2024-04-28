@@ -13,10 +13,10 @@ import { closeContext, initializeContext } from "./ContextInitialization";
 import { BaseContext, ContextLatencyHint } from "./BaseContext";
 import { assert } from "../util/Debug";
 
-type Transport = import("../clock/Transport").Transport;
-type Destination = import("./Destination").Destination;
-type Listener = import("./Listener").Listener;
-type Draw = import("../util/Draw").Draw;
+type Transport = import("../clock/Transport").TransportClass;
+type Destination = import("./Destination").DestinationClass;
+type Listener = import("./Listener").ListenerClass;
+type Draw = import("../util/Draw").DrawClass;
 
 export interface ContextOptions {
 	clockSource: TickerClockSource;

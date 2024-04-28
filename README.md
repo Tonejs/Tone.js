@@ -8,7 +8,6 @@ Tone.js is a Web Audio framework for creating interactive music in the browser. 
 
 * [API](https://tonejs.github.io/docs/)
 * [Examples](https://tonejs.github.io/examples/)
-* [Demos](https://tonejs.github.io/demos)
 
 # Installation
 
@@ -29,7 +28,6 @@ Tone.js is also hosted at unpkg.com. It can be added directly within an HTML doc
 
 ```html
 <script src="http://unpkg.com/tone"></script>
-<script src="myScript.js"></script>
 ```
 
 # Hello Tone
@@ -44,7 +42,7 @@ synth.triggerAttackRelease("C4", "8n");
 
 #### Tone.Synth
 
-[Tone.Synth](https://tonejs.github.io/docs/Synth) is a basic synthesizer with a single [oscillator](https://tonejs.github.io/docs/OmniOscillator) and an [ADSR envelope](https://tonejs.github.io/docs/Envelope).
+`Tone.Synth` is a basic synthesizer with a single oscillator and an ADSR envelope.
 
 #### triggerAttack / triggerRelease
 
@@ -109,9 +107,9 @@ document.querySelector('button')?.addEventListener('click', async () => {
 
 ### Transport
 
-[Tone.Transport](https://tonejs.github.io/docs/Transport) is the main timekeeper. Unlike the AudioContext clock, it can be started, stopped, looped and adjusted on the fly. You can think of it like the arrangement view in a Digital Audio Workstation or channels in a Tracker. 
+`Tone.getTransport()` returns the main timekeeper. Unlike the AudioContext clock, it can be started, stopped, looped and adjusted on the fly. You can think of it like the arrangement view in a Digital Audio Workstation.
 
-Multiple events and parts can be arranged and synchronized along the Transport. [Tone.Loop](https://tonejs.github.io/docs/Loop) is a simple way to create a looped callback that can be scheduled to start and stop.
+Multiple events and parts can be arranged and synchronized along the Transport. `Tone.Loop` is a simple way to create a looped callback that can be scheduled to start and stop.
 
 ```javascript
 // create two monophonic synths
@@ -125,19 +123,19 @@ const loopA = new Tone.Loop(time => {
 const loopB = new Tone.Loop(time => {
 	synthB.triggerAttackRelease("C4", "8n", time);
 }, "4n").start("8n");
-// all loops start until the Transport is started
-Tone.Transport.start()
+// all loops start when the Transport is started
+Tone.getTransport().start()
 ```
 
 Since Javascript callbacks are **not precisely timed**, the sample-accurate time of the event is passed into the callback function. **Use this time value to schedule the events**.
 
 # Instruments
 
-There are numerous synths to choose from including [Tone.FMSynth](https://tonejs.github.io/docs/FMSynth), [Tone.AMSynth](https://tonejs.github.io/docs/AMSynth) and [Tone.NoiseSynth](https://tonejs.github.io/docs/NoiseSynth). 
+There are numerous synths to choose from including `Tone.FMSynth`, `Tone.AMSynth` and `Tone.NoiseSynth`. 
 
 All of these instruments are **monophonic** (single voice) which means that they can only play one note at a time. 
 
-To create a **polyphonic** synthesizer, use [Tone.PolySynth](https://tonejs.github.io/docs/PolySynth), which accepts a monophonic synth as its first parameter and automatically handles the note allocation so you can pass in multiple notes. The API is similar to the monophonic synths, except `triggerRelease` must be given a note or array of notes. 
+To create a **polyphonic** synthesizer, use `Tone.PolySynth`, which accepts a monophonic synth as its first parameter and automatically handles the note allocation so you can pass in multiple notes. The API is similar to the monophonic synths, except `triggerRelease` must be given a note or array of notes. 
 
 ```javascript
 //pass in some initial values for the filter and filter envelope
@@ -153,7 +151,7 @@ synth.triggerRelease(["D4", "F4", "A4", "C4", "E4"], now + 4);
 
 # Samples
 
-Sound generation is not limited to synthesized sounds. You can also load a sample and play that back in a number of ways. [Tone.Player](https://tonejs.github.io/docs/Player) is one way to load and play back an audio file. 
+Sound generation is not limited to synthesized sounds. You can also load a sample and play that back in a number of ways. `Tone.Player` is one way to load and play back an audio file. 
 
 ```javascript
 const player = new Tone.Player("https://tonejs.github.io/audio/berklee/gong_1.mp3").toDestination();
@@ -166,7 +164,7 @@ Tone.loaded().then(() => {
 
 ## Sampler
 
-Multiple samples can also be combined into an instrument. If you have audio files organized by note, [Tone.Sampler](https://tonejs.github.io/docs/Sampler) will pitch shift the samples to fill in gaps between notes. So for example, if you only have every 3rd note on a piano sampled, you could turn that into a full piano sample. 
+Multiple samples can also be combined into an instrument. If you have audio files organized by note, `Tone.Sampler` will pitch shift the samples to fill in gaps between notes. So for example, if you only have every 3rd note on a piano sampled, you could turn that into a full piano sample. 
 
 Unlike the other synths, Tone.Sampler is polyphonic so doesn't need to be passed into Tone.PolySynth
 
@@ -188,7 +186,7 @@ Tone.loaded().then(() => {
 
 # Effects
 
-In the above examples, the sources were always connected directly to the [Destination](https://tonejs.github.io/docs/Destination), but the output of the synth could also be routed through one (or more) effects before going to the speakers.
+In the above examples, the sources were always connected directly to the `Destination`, but the output of the synth could also be routed through one (or more) effects before going to the speakers.
 
 ```javascript
 const player = new Tone.Player({
@@ -204,15 +202,15 @@ player.connect(distortion);
 
 The connection routing is very flexible. For example, you can connect multiple sources to the same effect and then route the effect through a network of other effects either serially or in parallel. 
 
-[Tone.Gain](https://tonejs.github.io/docs/Gain) is very useful in creating complex routing. 
+`Tone.Gain` is very useful in creating complex routing. 
 
 # Signals
 
 Like the underlying Web Audio API, Tone.js is built with audio-rate signal control over nearly everything. This is a powerful feature which allows for sample-accurate synchronization and scheduling of parameters.
 
-[Signal](https://tonejs.github.io/docs/Signal) properties have a few built in methods for creating automation curves. 
+`Signal` properties have a few built in methods for creating automation curves. 
 
-For example, the `frequency` parameter on [Oscillator](https://tonejs.github.io/docs/Signal) is a Signal so you can create a smooth ramp from one frequency to another.
+For example, the `frequency` parameter on `Oscillator` is a Signal so you can create a smooth ramp from one frequency to another.
 
 ```javascript
 const osc = new Tone.Oscillator().toDestination();
@@ -238,7 +236,7 @@ Tone.js makes extensive use of the native Web Audio Nodes such as the GainNode a
 
 # Testing
 
-Tone.js runs an extensive test suite using [mocha](https://mochajs.org/) and [chai](http://chaijs.com/) with nearly 100% coverage. Each commit and pull request is run on [Travis-CI](https://app.travis-ci.com/github/Tonejs/Tone.js) across browsers and versions. Passing builds on the 'dev' branch are published on npm as `tone@next`. 
+Tone.js runs an extensive test suite using [mocha](https://mochajs.org/) and [chai](http://chaijs.com/) with nearly 100% coverage. Passing builds on the 'dev' branch are published on npm as `tone@next`. 
 
 # Contributing
 
@@ -248,7 +246,6 @@ If you have questions (or answers) that are not necessarily bugs/issues, please 
 
 # References and Inspiration
 
-* [Tuna.js](https://github.com/Dinahmoe/tuna)
 * [Many of Chris Wilson's Repositories](https://github.com/cwilso)
 * [Many of Mohayonao's Repositories](https://github.com/mohayonao)
 * [The Spec](http://webaudio.github.io/web-audio-api/)
