@@ -140,8 +140,10 @@ jobs:
       - name: Increment version
         run: npm run increment
       - name: Publish @next
+        # dev branch gets published with @next tag
         run: npm publish --tag next
         if: ${{ github.ref == 'refs/heads/dev' }}
       - name: Publish @latest
+        # main branch gets published with @latest tag
         run: npm publish
         if: ${{ github.ref == 'refs/heads/main' }}

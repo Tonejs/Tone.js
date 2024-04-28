@@ -20,7 +20,7 @@ export interface ListenerOptions extends ToneAudioNodeOptions{
  * to place sounds in 3D and Listener allows you to navigate the 3D sound environment from
  * a first-person perspective. There is only one listener per audio context. 
  */
-export class Listener extends ToneAudioNode<ListenerOptions> {
+export class ListenerClass extends ToneAudioNode<ListenerOptions> {
 
 	readonly name: string = "Listener";
 
@@ -109,7 +109,7 @@ export class Listener extends ToneAudioNode<ListenerOptions> {
 //-------------------------------------
 
 onContextInit(context => {
-	context.listener = new Listener({ context });
+	context.listener = new ListenerClass({ context });
 });
 
 onContextClose(context => {

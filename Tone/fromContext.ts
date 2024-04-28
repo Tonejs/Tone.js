@@ -1,8 +1,8 @@
 import * as Classes from "./classes";
-import { Transport } from "./core/clock/Transport";
+import { TransportClass } from "./core/clock/Transport";
 import { Context } from "./core/context/Context";
-import { Listener } from "./core/context/Listener";
-import { Destination } from "./core/context/Destination";
+import { ListenerClass } from "./core/context/Listener";
+import { DestinationClass } from "./core/context/Destination";
 import { FrequencyClass } from "./core/type/Frequency";
 import { MidiClass } from "./core/type/Midi";
 import { TicksClass } from "./core/type/Ticks";
@@ -10,7 +10,7 @@ import { TimeClass } from "./core/type/Time";
 import { TransportTimeClass } from "./core/type/TransportTime";
 import { isDefined, isFunction } from "./core/util/TypeCheck";
 import { omitFromObject } from "./core/util/Defaults";
-import { Draw } from "./core/util/Draw";
+import { DrawClass } from "./core/util/Draw";
 
 type ClassesWithoutSingletons = Omit<typeof Classes, "Transport" | "Destination" | "Draw">;
 
@@ -19,10 +19,10 @@ type ClassesWithoutSingletons = Omit<typeof Classes, "Transport" | "Destination"
  * to the same context and contains a singleton Transport and Destination node.
  */
 type ToneObject = {
-	Transport: Transport;
-	Destination: Destination;
-	Listener: Listener;
-	Draw: Draw;
+	Transport: TransportClass;
+	Destination: DestinationClass;
+	Listener: ListenerClass;
+	Draw: DrawClass;
 	context: Context;
 	now: () => number;
 	immediate: () => number;

@@ -1,12 +1,12 @@
 import { expect } from "chai";
 import { ONLINE_TESTING } from "test/helper/Supports";
-import { Draw } from "./Draw";
+import { DrawClass } from "./Draw";
 
 describe("Draw", () => {
 
 	if (ONLINE_TESTING) {
 
-		const draw = new Draw();
+		const draw = new DrawClass();
 
 		after(() => {
 			draw.dispose();
