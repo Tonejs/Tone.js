@@ -27,7 +27,7 @@ export function immediate(): Seconds {
 
 /**
  * The Transport object belonging to the global Tone.js Context.
- * See [[Transport]]
+ * See [[TransportClass]]
  * @category Core
  * @deprecated Use {@link getTransport} instead
  */
@@ -35,7 +35,7 @@ export const Transport = getContext().transport;
 
 /**
  * The Transport object belonging to the global Tone.js Context.
- * See [[Transport]]
+ * See [[TransportClass]]
  * @category Core
  */
 export function getTransport(): import("./core/clock/Transport").TransportClass {
@@ -44,20 +44,20 @@ export function getTransport(): import("./core/clock/Transport").TransportClass 
 
 /**
  * The Destination (output) belonging to the global Tone.js Context.
- * See [[Destination]]
+ * See [[DestinationClass]]
  * @category Core
  * @deprecated Use {@link getDestination} instead
  */
 export const Destination = getContext().destination;
 
 /**
- * @deprecated Use [[Destination]]
+ * @deprecated Use {@link getDestination} instead
  */
 export const Master = getContext().destination;
 
 /**
  * The Destination (output) belonging to the global Tone.js Context.
- * See [[Destination]]
+ * See [[DestinationClass]]
  * @category Core
  */
 export function getDestination(): import("./core/context/Destination").DestinationClass {
@@ -65,14 +65,14 @@ export function getDestination(): import("./core/context/Destination").Destinati
 }
 
 /**
- * The [[Listener]] belonging to the global Tone.js Context.
+ * The [[ListenerClass]] belonging to the global Tone.js Context.
  * @category Core
  * @deprecated Use {@link getListener} instead
  */
 export const Listener = getContext().listener;
 
 /**
- * The [[Listener]] belonging to the global Tone.js Context.
+ * The [[ListenerClass]] belonging to the global Tone.js Context.
  * @category Core
  */
 export function getListener(): import("./core/context/Listener").ListenerClass {
@@ -81,7 +81,7 @@ export function getListener(): import("./core/context/Listener").ListenerClass {
 
 /**
  * Draw is used to synchronize the draw frame with the Transport's callbacks. 
- * See [[Draw]]
+ * See [[DrawClass]]
  * @category Core
  * @deprecated Use {@link getDraw} instead
  */
@@ -90,7 +90,7 @@ export const Draw = getContext().draw;
 /**
  * Get the singleton attached to the global context. 
  * Draw is used to synchronize the draw frame with the Transport's callbacks. 
- * See [[Draw]]
+ * See [[DrawClass]]
  * @category Core
  */
 export function getDraw(): import("./core/util/Draw").DrawClass {
