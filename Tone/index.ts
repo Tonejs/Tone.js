@@ -1,5 +1,5 @@
 export { getContext, setContext } from "./core/Global";
-import { BaseContext } from "./core/context/BaseContext";
+import { Context } from "./core/context/Context";
 export * from "./classes";
 export * from "./version";
 import { getContext } from "./core/Global";
@@ -10,7 +10,7 @@ export { supported } from "./core/context/AudioContext";
 
 /**
  * The current audio context time of the global {@link BaseContext}. 
- * @see {@link BaseContext.now}
+ * @see {@link Context.now}
  * @category Core
  */
 export function now(): Seconds {
@@ -18,8 +18,8 @@ export function now(): Seconds {
 }
 
 /**
- * The current audio context time of the global {@link BaseContext} without the {@link BaseContext.lookAhead}
- * @see {@link BaseContext.immediate}
+ * The current audio context time of the global {@link Context} without the {@link Context.lookAhead}
+ * @see {@link Context.immediate}
  * @category Core
  */
 export function immediate(): Seconds {
@@ -100,7 +100,7 @@ export function getDraw(): import("./core/util/Draw").DrawClass {
 
 /**
  * A reference to the global context
- * @see {@link BaseContext}
+ * @see {@link Context}
  * @deprecated Use {@link getContext} instead
  */
 export const context = getContext();
