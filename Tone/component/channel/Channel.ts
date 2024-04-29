@@ -17,7 +17,7 @@ export interface ChannelOptions extends ToneAudioNodeOptions {
 
 /**
  * Channel provides a channel strip interface with volume, pan, solo and mute controls. 
- * See {@link PanVol} and {@link Solo}
+ * @see {@link PanVol} and {@link Solo}
  * @example
  * // pan the incoming signal left and drop the volume 12db
  * const channel = new Tone.Channel(-0.25, -12);

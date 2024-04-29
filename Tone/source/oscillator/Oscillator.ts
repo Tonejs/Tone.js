@@ -180,7 +180,7 @@ export class Oscillator extends Source<ToneOscillatorOptions> implements ToneOsc
 
 	/**
 	 * Unsync the oscillator's frequency from the Transport.
-	 * See Oscillator.syncFrequency
+	 * @see {@link syncFrequency}
 	 */
 	unsyncFrequency(): this {
 		this.context.transport.unsyncSignal(this.frequency);

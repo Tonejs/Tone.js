@@ -192,7 +192,7 @@ export class Signal<TypeName extends UnitName = "number"> extends ToneAudioNode<
 	}
 
 	/**
-	 * See {@link Param.apply}.
+	 * @see {@link Param.apply}.
 	 */
 	apply(param: Param | AudioParam): this {
 		this._param.apply(param);

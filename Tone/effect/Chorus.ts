@@ -196,7 +196,8 @@ export class Chorus extends StereoFeedbackEffect<ChorusOptions> {
 	}
 
 	/**
-	 * Sync the filter to the transport. See {@link LFO.sync}
+	 * Sync the filter to the transport. 
+	 * @see {@link LFO.sync}
 	 */
 	sync(): this {
 		this._lfoL.sync();

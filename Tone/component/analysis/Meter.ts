@@ -16,7 +16,8 @@ export interface MeterOptions extends MeterBaseOptions {
  * of an input signal. It can also get the raw value of the input signal.
  * Setting `normalRange` to `true` will covert the output to a range of
  * 0-1. See an example using a graphical display 
- * [here](https://tonejs.github.io/examples/meter). See also {@link DCMeter}.
+ * [here](https://tonejs.github.io/examples/meter). 
+ * @see {@link DCMeter}.
  *
  * @example
  * const meter = new Tone.Meter();
