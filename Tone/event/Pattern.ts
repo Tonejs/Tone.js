@@ -121,7 +121,7 @@ export class Pattern<ValueType> extends Loop<PatternOptions<ValueType>> {
 	}
 
 	/**
-	 * The pattern type. See Tone.CtrlPattern for the full list of patterns.
+	 * The pattern type. 
 	 */
 	get pattern(): PatternName {
 		return this._type;

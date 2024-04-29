@@ -90,7 +90,8 @@ export class Gate extends ToneAudioNode<GateOptions> {
 	}
 
 	/**
-	 * The attack/decay speed of the gate. See {@link Follower.smoothing}
+	 * The attack/decay speed of the gate. 
+	 * @see {@link Follower.smoothing}
 	 */
 	get smoothing(): Time {
 		return this._follower.smoothing;

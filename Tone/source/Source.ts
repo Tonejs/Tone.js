@@ -362,7 +362,8 @@ export abstract class Source<
 	}
 
 	/**
-	 * Unsync the source to the Transport. See Source.sync
+	 * Unsync the source to the Transport. 
+	 * @see {@link sync}
 	 */
 	unsync(): this {
 		if (this._synced) {

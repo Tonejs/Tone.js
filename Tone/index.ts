@@ -1,4 +1,5 @@
 export { getContext, setContext } from "./core/Global";
+import { BaseContext } from "./core/context/BaseContext";
 export * from "./classes";
 export * from "./version";
 import { getContext } from "./core/Global";
@@ -8,8 +9,8 @@ import { Seconds } from "./core/type/Units";
 export { supported } from "./core/context/AudioContext";
 
 /**
- * The current audio context time of the global {@link Context}. 
- * See {@link Context.now}
+ * The current audio context time of the global {@link BaseContext}. 
+ * @see {@link BaseContext.now}
  * @category Core
  */
 export function now(): Seconds {
@@ -17,8 +18,8 @@ export function now(): Seconds {
 }
 
 /**
- * The current audio context time of the global {@link Context} without the {@link Context.lookAhead}
- * See {@link Context.immediate}
+ * The current audio context time of the global {@link BaseContext} without the {@link BaseContext.lookAhead}
+ * @see {@link BaseContext.immediate}
  * @category Core
  */
 export function immediate(): Seconds {
@@ -27,7 +28,7 @@ export function immediate(): Seconds {
 
 /**
  * The Transport object belonging to the global Tone.js Context.
- * See {@link TransportClass}
+ * @see {@link TransportClass}
  * @category Core
  * @deprecated Use {@link getTransport} instead
  */
@@ -35,7 +36,7 @@ export const Transport = getContext().transport;
 
 /**
  * The Transport object belonging to the global Tone.js Context.
- * See {@link TransportClass}
+ * @see {@link TransportClass}
  * @category Core
  */
 export function getTransport(): import("./core/clock/Transport").TransportClass {
@@ -44,7 +45,7 @@ export function getTransport(): import("./core/clock/Transport").TransportClass 
 
 /**
  * The Destination (output) belonging to the global Tone.js Context.
- * See {@link DestinationClass}
+ * @see {@link DestinationClass}
  * @category Core
  * @deprecated Use {@link getDestination} instead
  */
@@ -57,7 +58,7 @@ export const Master = getContext().destination;
 
 /**
  * The Destination (output) belonging to the global Tone.js Context.
- * See {@link DestinationClass}
+ * @see {@link DestinationClass}
  * @category Core
  */
 export function getDestination(): import("./core/context/Destination").DestinationClass {
@@ -81,7 +82,7 @@ export function getListener(): import("./core/context/Listener").ListenerClass {
 
 /**
  * Draw is used to synchronize the draw frame with the Transport's callbacks. 
- * See {@link DrawClass}
+ * @see {@link DrawClass}
  * @category Core
  * @deprecated Use {@link getDraw} instead
  */
@@ -90,7 +91,7 @@ export const Draw = getContext().draw;
 /**
  * Get the singleton attached to the global context. 
  * Draw is used to synchronize the draw frame with the Transport's callbacks. 
- * See {@link DrawClass}
+ * @see {@link DrawClass}
  * @category Core
  */
 export function getDraw(): import("./core/util/Draw").DrawClass {
@@ -99,7 +100,7 @@ export function getDraw(): import("./core/util/Draw").DrawClass {
 
 /**
  * A reference to the global context
- * See {@link Context}
+ * @see {@link BaseContext}
  * @deprecated Use {@link getContext} instead
  */
 export const context = getContext();

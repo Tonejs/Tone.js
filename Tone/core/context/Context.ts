@@ -475,7 +475,8 @@ export class Context extends BaseContext {
 
 	/**
 	 * Starts the audio context from a suspended state. This is required
-	 * to initially start the AudioContext. See {@link start}
+	 * to initially start the AudioContext. 
+	 * @see {@link start}
 	 */
 	resume(): Promise<void> {
 		if (isAudioContext(this._context)) {
