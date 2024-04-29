@@ -6,7 +6,7 @@ import { ToneAudioBuffer } from "./ToneAudioBuffer";
 /**
  * Generate a buffer by rendering all of the Tone.js code within the callback using the OfflineAudioContext.
  * The OfflineAudioContext is capable of rendering much faster than real time in many cases.
- * The callback function also passes in an offline instance of [[Context]] which can be used
+ * The callback function also passes in an offline instance of {@link Context} which can be used
  * to schedule events along the Transport. 
  * @param  callback  All Tone.js nodes which are created and scheduled within this callback are recorded into the output Buffer.
  * @param  duration     the amount of time to record for.

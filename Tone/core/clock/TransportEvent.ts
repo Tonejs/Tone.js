@@ -10,7 +10,7 @@ export interface TransportEventOptions {
 }
 
 /**
- * TransportEvent is an internal class used by [[TransportClass]]
+ * TransportEvent is an internal class used by {@link TransportClass}
  * to schedule events. Do no invoke this class directly, it is
  * handled from within Tone.Transport.
  */

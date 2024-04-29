@@ -8,8 +8,8 @@ import { Seconds } from "./core/type/Units";
 export { supported } from "./core/context/AudioContext";
 
 /**
- * The current audio context time of the global [[Context]]. 
- * See [[Context.now]]
+ * The current audio context time of the global {@link Context}. 
+ * See {@link Context.now}
  * @category Core
  */
 export function now(): Seconds {
@@ -17,8 +17,8 @@ export function now(): Seconds {
 }
 
 /**
- * The current audio context time of the global [[Context]] without the [[Context.lookAhead]]
- * See [[Context.immediate]]
+ * The current audio context time of the global {@link Context} without the {@link Context.lookAhead}
+ * See {@link Context.immediate}
  * @category Core
  */
 export function immediate(): Seconds {
@@ -27,7 +27,7 @@ export function immediate(): Seconds {
 
 /**
  * The Transport object belonging to the global Tone.js Context.
- * See [[TransportClass]]
+ * See {@link TransportClass}
  * @category Core
  * @deprecated Use {@link getTransport} instead
  */
@@ -35,7 +35,7 @@ export const Transport = getContext().transport;
 
 /**
  * The Transport object belonging to the global Tone.js Context.
- * See [[TransportClass]]
+ * See {@link TransportClass}
  * @category Core
  */
 export function getTransport(): import("./core/clock/Transport").TransportClass {
@@ -44,7 +44,7 @@ export function getTransport(): import("./core/clock/Transport").TransportClass 
 
 /**
  * The Destination (output) belonging to the global Tone.js Context.
- * See [[DestinationClass]]
+ * See {@link DestinationClass}
  * @category Core
  * @deprecated Use {@link getDestination} instead
  */
@@ -57,7 +57,7 @@ export const Master = getContext().destination;
 
 /**
  * The Destination (output) belonging to the global Tone.js Context.
- * See [[DestinationClass]]
+ * See {@link DestinationClass}
  * @category Core
  */
 export function getDestination(): import("./core/context/Destination").DestinationClass {
@@ -65,14 +65,14 @@ export function getDestination(): import("./core/context/Destination").Destinati
 }
 
 /**
- * The [[ListenerClass]] belonging to the global Tone.js Context.
+ * The {@link ListenerClass} belonging to the global Tone.js Context.
  * @category Core
  * @deprecated Use {@link getListener} instead
  */
 export const Listener = getContext().listener;
 
 /**
- * The [[ListenerClass]] belonging to the global Tone.js Context.
+ * The {@link ListenerClass} belonging to the global Tone.js Context.
  * @category Core
  */
 export function getListener(): import("./core/context/Listener").ListenerClass {
@@ -81,7 +81,7 @@ export function getListener(): import("./core/context/Listener").ListenerClass {
 
 /**
  * Draw is used to synchronize the draw frame with the Transport's callbacks. 
- * See [[DrawClass]]
+ * See {@link DrawClass}
  * @category Core
  * @deprecated Use {@link getDraw} instead
  */
@@ -90,7 +90,7 @@ export const Draw = getContext().draw;
 /**
  * Get the singleton attached to the global context. 
  * Draw is used to synchronize the draw frame with the Transport's callbacks. 
- * See [[DrawClass]]
+ * See {@link DrawClass}
  * @category Core
  */
 export function getDraw(): import("./core/util/Draw").DrawClass {
@@ -99,14 +99,14 @@ export function getDraw(): import("./core/util/Draw").DrawClass {
 
 /**
  * A reference to the global context
- * See [[Context]]
+ * See {@link Context}
  * @deprecated Use {@link getContext} instead
  */
 export const context = getContext();
 
 /**
  * Promise which resolves when all of the loading promises are resolved. 
- * Alias for static [[ToneAudioBuffer.loaded]] method.
+ * Alias for static {@link ToneAudioBuffer.loaded} method.
  * @category Core
  */
 export function loaded() {

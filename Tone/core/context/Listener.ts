@@ -16,7 +16,7 @@ export interface ListenerOptions extends ToneAudioNodeOptions{
 
 /**
  * Tone.Listener is a thin wrapper around the AudioListener. Listener combined
- * with [[Panner3D]] makes up the Web Audio API's 3D panning system. Panner3D allows you 
+ * with {@link Panner3D} makes up the Web Audio API's 3D panning system. Panner3D allows you 
  * to place sounds in 3D and Listener allows you to navigate the 3D sound environment from
  * a first-person perspective. There is only one listener per audio context. 
  */

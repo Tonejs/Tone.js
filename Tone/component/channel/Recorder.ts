@@ -127,7 +127,7 @@ export class Recorder extends ToneAudioNode<RecorderOptions> {
 
 	/**
 	 * Stop the recorder. Returns a promise with the recorded content until this point
-	 * encoded as [[mimeType]]
+	 * encoded as {@link mimeType}
 	 */
 	async stop(): Promise<Blob> {
 		assert(this.state !== "stopped", "Recorder is not started");

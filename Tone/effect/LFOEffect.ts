@@ -76,7 +76,7 @@ export abstract class LFOEffect<Options extends LFOEffectOptions> extends Effect
 	}
 
 	/**
-	 * Sync the filter to the transport. See [[LFO.sync]]
+	 * Sync the filter to the transport. See {@link LFO.sync}
 	 */
 	sync(): this {
 		this._lfo.sync();
@@ -92,7 +92,7 @@ export abstract class LFOEffect<Options extends LFOEffectOptions> extends Effect
 	}
 
 	/**
-	 * The type of the LFO's oscillator: See [[Oscillator.type]]
+	 * The type of the LFO's oscillator: See {@link Oscillator.type}
 	 * @example
 	 * const autoFilter = new Tone.AutoFilter().start().toDestination();
 	 * const noise = new Tone.Noise().start().connect(autoFilter);

@@ -6,7 +6,7 @@ import { ToneConstantSource } from "./ToneConstantSource";
 import { OutputNode } from "../core/context/ToneAudioNode";
 
 /**
- * Adds the ability to synchronize the signal to the [[TransportClass]]
+ * Adds the ability to synchronize the signal to the {@link TransportClass}
  * @category Signal
  */
 export class SyncedSignal<TypeName extends UnitName = "number"> extends Signal<TypeName> {

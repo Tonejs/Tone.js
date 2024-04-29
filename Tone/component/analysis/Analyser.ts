@@ -92,8 +92,8 @@ export class Analyser extends ToneAudioNode<AnalyserOptions> {
 	}
 
 	/**
-	 * Run the analysis given the current settings. If [[channels]] = 1,
-	 * it will return a Float32Array. If [[channels]] > 1, it will
+	 * Run the analysis given the current settings. If {@link channels} = 1,
+	 * it will return a Float32Array. If {@link channels} > 1, it will
 	 * return an array of Float32Arrays where each index in the array
 	 * represents the analysis done on a channel.
 	 */
@@ -128,7 +128,7 @@ export class Analyser extends ToneAudioNode<AnalyserOptions> {
 
 	/**
 	 * The number of channels the analyser does the analysis on. Channel
-	 * separation is done using [[Split]]
+	 * separation is done using {@link Split}
 	 */
 	get channels(): number {
 		return this._analysers.length;

@@ -19,7 +19,7 @@ export interface AutoWahOptions extends EffectOptions {
 }
 
 /**
- * AutoWah connects a [[Follower]] to a [[Filter]]. 
+ * AutoWah connects a {@link Follower} to a {@link Filter}. 
  * The frequency of the filter, follows the input amplitude curve. 
  * Inspiration from [Tuna.js](https://github.com/Dinahmoe/tuna).
  * 

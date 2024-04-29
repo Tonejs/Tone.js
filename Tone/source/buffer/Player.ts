@@ -432,7 +432,7 @@ export class Player extends Source<PlayerOptions> {
 	}
 
 	/**
-	 * If the buffer should be reversed. Note that this sets the underlying [[ToneAudioBuffer.reverse]], so
+	 * If the buffer should be reversed. Note that this sets the underlying {@link ToneAudioBuffer.reverse}, so
 	 * if multiple players are pointing at the same ToneAudioBuffer, they will all be reversed.
 	 * @example
 	 * const player = new Tone.Player("https://tonejs.github.io/audio/berklee/chime_1.mp3").toDestination();
