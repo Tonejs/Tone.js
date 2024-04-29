@@ -91,7 +91,7 @@ export class MetalSynth extends Monophonic<MetalSynthOptions> {
 	/**
 	 * The envelope which is connected both to the
 	 * amplitude and a highpass filter's cutoff frequency.
-	 * The lower-limit of the filter is controlled by the [[resonance]]
+	 * The lower-limit of the filter is controlled by the {@link resonance}
 	 */
 	readonly envelope: Envelope;
 
@@ -231,7 +231,7 @@ export class MetalSynth extends Monophonic<MetalSynthOptions> {
 
 	/**
 	 * The modulationIndex of the oscillators which make up the source.
-	 * see [[FMOscillator.modulationIndex]]
+	 * see {@link FMOscillator.modulationIndex}
 	 * @min 1
 	 * @max 100
 	 */

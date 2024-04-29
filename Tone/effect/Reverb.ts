@@ -18,7 +18,7 @@ interface ReverbOptions extends EffectOptions {
  * Generates an Impulse Response Buffer
  * with Tone.Offline then feeds the IR into ConvolverNode.
  * The impulse response generation is async, so you have
- * to wait until [[ready]] resolves before it will make a sound. 
+ * to wait until {@link ready} resolves before it will make a sound. 
  *
  * Inspiration from [ReverbGen](https://github.com/adelespinasse/reverbGen).
  * Copyright (c) 2014 Alan deLespinasse Apache 2.0 License.
@@ -45,8 +45,8 @@ export class Reverb extends Effect<ReverbOptions> {
 	private _preDelay: Seconds;
 
 	/**
-	 * Resolves when the reverb buffer is generated. Whenever either [[decay]]
-	 * or [[preDelay]] are set, you have to wait until [[ready]] resolves
+	 * Resolves when the reverb buffer is generated. Whenever either {@link decay}
+	 * or {@link preDelay} are set, you have to wait until {@link ready} resolves
 	 * before the IR is generated with the latest values. 
 	 */
 	ready: Promise<void> = Promise.resolve();

@@ -8,7 +8,7 @@ export interface AutoPannerOptions extends LFOEffectOptions {
 }
 
 /**
- * AutoPanner is a [[Panner]] with an [[LFO]] connected to the pan amount. 
+ * AutoPanner is a {@link Panner} with an {@link LFO} connected to the pan amount. 
  * [Related Reading](https://www.ableton.com/en/blog/autopan-chopper-effect-and-more-liveschool/).
  *
  * @example

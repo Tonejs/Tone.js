@@ -13,7 +13,7 @@ interface TickParamOptions<TypeName extends UnitName> extends ParamOptions<TypeN
 }
 
 /**
- * A Param class just for computing ticks. Similar to the [[Param]] class,
+ * A Param class just for computing ticks. Similar to the {@link Param} class,
  * but offers conversion to BPM values as well as ability to compute tick
  * duration and elapsed ticks
  */
@@ -218,7 +218,7 @@ export class TickParam<TypeName extends "hertz" | "bpm"> extends Param<TypeName>
 	}
 
 	/**
-	 * The inverse of [[ticksToTime]]. Convert a duration in
+	 * The inverse of {@link ticksToTime}. Convert a duration in
 	 * seconds to the corresponding number of ticks accounting for any
 	 * automation curves starting at the given time.
 	 * @param  duration The time interval to convert to ticks.

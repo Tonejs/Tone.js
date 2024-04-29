@@ -211,7 +211,7 @@ export abstract class ToneAudioNode<Options extends ToneAudioNodeOptions = ToneA
 
 	/**
 	 * Connect the output to the context's destination node.
-	 * See [[toDestination]]
+	 * See {@link toDestination}
 	 * @deprecated
 	 */
 	toMaster(): this {

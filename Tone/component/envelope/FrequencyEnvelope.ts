@@ -11,8 +11,8 @@ export interface FrequencyEnvelopeOptions extends EnvelopeOptions {
 	exponent: number;
 }
 /**
- * FrequencyEnvelope is an [[Envelope]] which ramps between [[baseFrequency]]
- * and [[octaves]]. It can also have an optional [[exponent]] to adjust the curve
+ * FrequencyEnvelope is an {@link Envelope} which ramps between {@link baseFrequency}
+ * and {@link octaves}. It can also have an optional {@link exponent} to adjust the curve
  * which it ramps. 
  * @example
  * const oscillator = new Tone.Oscillator().toDestination().start();

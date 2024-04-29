@@ -95,7 +95,7 @@ export abstract class ToneWithContext<Options extends ToneWithContextOptions> ex
 
 	/**
 	 * Convert the incoming time to seconds. 
-	 * This is calculated against the current [[TransportClass]] bpm
+	 * This is calculated against the current {@link TransportClass} bpm
 	 * @example
 	 * const gain = new Tone.Gain();
 	 * setInterval(() => console.log(gain.toSeconds("4n")), 100);

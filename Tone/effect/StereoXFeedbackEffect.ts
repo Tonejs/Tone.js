@@ -7,7 +7,7 @@ export interface StereoXFeedbackEffectOptions extends StereoFeedbackEffectOption
 }
 
 /**
- * Just like a [[StereoFeedbackEffect]], but the feedback is routed from left to right
+ * Just like a {@link StereoFeedbackEffect}, but the feedback is routed from left to right
  * and right to left instead of on the same channel.
  * ```
  * +--------------------------------+ feedbackL <-----------------------------------+
