@@ -52,6 +52,7 @@ export function deepEquals<T>(arrayA: T[], arrayB: T[]): boolean {
 
 /**
  * Convert an args array into an object.
+ * @internal
  */
 export function optionsFromArguments<T extends object>(
 	defaults: T,
@@ -101,6 +102,7 @@ export function getDefaultsFromInstance<T>(instance: T): BaseToneOptions {
 /**
  * Returns the fallback if the given object is undefined.
  * Take an array of arguments and return a formatted options object.
+ * @internal
  */
 export function defaultArg<T>(given: T, fallback: T): T {
 	if (isUndef(given)) {
