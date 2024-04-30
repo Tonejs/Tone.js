@@ -55,7 +55,7 @@ export class WaveShaper extends SignalOperator<WaveShaperOptions> {
 	 *                signal is an AudioRange [-1, 1] value and the output
 	 *                signal can take on any numerical values.
 	 *
-	 * @param bufferLen The length of the WaveShaperNode buffer.
+	 * @param length The length of the WaveShaperNode buffer.
 	 */
 	constructor(mapping?: WaveShaperMapping, length?: number);
 	constructor(options?: Partial<WaveShaperOptions>);

@@ -60,7 +60,7 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 
 	/**
 	 * @param callback The callback to invoke on each event
-	 * @param events the array of events
+	 * @param value the array of events
 	 */
 	constructor(callback?: ToneEventCallback<CallbackType<ValueType>>, value?: ValueType[]);
 	constructor(options?: Partial<PartOptions<ValueType>>);
@@ -209,7 +209,7 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 	 * Add a an event to the part.
 	 * @param time The time the note should start. If an object is passed in, it should
 	 * 		have a 'time' attribute and the rest of the object will be used as the 'value'.
-	 * @param  value
+	 * @param  value Any value to add to the timeline
 	 * @example
 	 * const part = new Tone.Part();
 	 * part.add("1m", "C#+11");

@@ -5,7 +5,7 @@ import { isArray, isString } from "../core/util/TypeCheck";
 import { Part } from "./Part";
 import { ToneEvent, ToneEventCallback, ToneEventOptions } from "./ToneEvent";
 
-type SequenceEventDescription<T> = Array<T | Array<T | Array<T | Array<T | Array<T | T[]>>>>>;
+type SequenceEventDescription<T> = Array<T | SequenceEventDescription<T>>;
 
 interface SequenceOptions<T> extends Omit<ToneEventOptions<T>, "value"> {
 	loopStart: number;
@@ -59,7 +59,7 @@ export class Sequence<ValueType = any> extends ToneEvent<ValueType> {
 
 	/**
 	 * @param  callback  The callback to invoke with every note
-	 * @param  sequence  The sequence
+	 * @param  events  The sequence of events
 	 * @param  subdivision  The subdivision between which events are placed.
 	 */
 	constructor(
