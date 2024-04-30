@@ -20,6 +20,7 @@ export type ToneAudioNodeOptions = ToneWithContextOptions;
 
 /**
  * ToneAudioNode is the base class for classes which process audio.
+ * @category Core
  */
 export abstract class ToneAudioNode<Options extends ToneAudioNodeOptions = ToneAudioNodeOptions>
 	extends ToneWithContext<Options> {
@@ -211,7 +212,7 @@ export abstract class ToneAudioNode<Options extends ToneAudioNodeOptions = ToneA
 
 	/**
 	 * Connect the output to the context's destination node.
-	 * See [[toDestination]]
+	 * @see {@link toDestination}
 	 * @deprecated
 	 */
 	toMaster(): this {

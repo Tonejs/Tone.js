@@ -4,7 +4,7 @@ import { WaveShaper } from "./WaveShaper";
 
 /**
  * GainToAudio converts an input in NormalRange [0,1] to AudioRange [-1,1].
- * See [[AudioToGain]].
+ * @see {@link AudioToGain}.
  * @category Signal
  */
 export class GainToAudio extends SignalOperator<ToneAudioNodeOptions> {

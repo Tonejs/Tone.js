@@ -25,7 +25,7 @@ interface DrawEvent extends TimelineEvent {
  * Tone.Transport.start();
  * @category Core
  */
-export class Draw extends ToneWithContext<ToneWithContextOptions> {
+export class DrawClass extends ToneWithContext<ToneWithContextOptions> {
 
 	readonly name: string = "Draw";
 
@@ -117,7 +117,7 @@ export class Draw extends ToneWithContext<ToneWithContextOptions> {
 //-------------------------------------
 
 onContextInit(context => {
-	context.draw = new Draw({ context });
+	context.draw = new DrawClass({ context });
 });
 
 onContextClose(context => {

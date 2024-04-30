@@ -2,13 +2,13 @@ import { expect } from "chai";
 import { ConstantOutput } from "test/helper/ConstantOutput";
 import { Offline } from "test/helper/Offline";
 import { ONLINE_TESTING } from "test/helper/Supports";
-import { Transport } from "../clock/Transport";
+import { TransportClass } from "../clock/Transport";
 import { getContext } from "../Global";
 import { createAudioContext } from "./AudioContext";
 import { Context } from "./Context";
-import { Destination } from "./Destination";
-import { Listener } from "./Listener";
-import { Draw } from "../util/Draw";
+import { DestinationClass } from "./Destination";
+import { ListenerClass } from "./Listener";
+import { DrawClass } from "../util/Draw";
 import { connect } from "./ToneAudioNode";
 
 describe("Context", () => {
@@ -19,9 +19,9 @@ describe("Context", () => {
 		const ctxDraw = context.draw;
 		const ctxTransport = context.transport;
 		const ctxListener = context.listener;
-		expect(context.destination).is.instanceOf(Destination);
-		expect(context.draw).is.instanceOf(Draw);
-		expect(context.listener).is.instanceOf(Listener);
+		expect(context.destination).is.instanceOf(DestinationClass);
+		expect(context.draw).is.instanceOf(DrawClass);
+		expect(context.listener).is.instanceOf(ListenerClass);
 		await context.close();
 		expect(ctxDest.disposed).to.be.true;
 		expect(ctxDraw.disposed).to.be.true;
@@ -218,7 +218,7 @@ describe("Context", () => {
 
 		it("is invoked in the offline context", () => {
 			return Offline((context) => {
-				const transport = new Transport({ context });
+				const transport = new TransportClass({ context });
 				transport.context.setTimeout(() => {
 					expect(transport.now()).to.be.closeTo(0.01, 0.005);
 				}, 0.01);

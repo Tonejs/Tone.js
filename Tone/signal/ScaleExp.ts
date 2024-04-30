@@ -50,8 +50,8 @@ export class ScaleExp extends Scale<ScaleExpOptions> {
 	}
 
 	/**
-	 * Instead of interpolating linearly between the [[min]] and
-	 * [[max]] values, setting the exponent will interpolate between
+	 * Instead of interpolating linearly between the {@link min} and
+	 * {@link max} values, setting the exponent will interpolate between
 	 * the two values with an exponential curve.
 	 */
 	get exponent(): Positive {

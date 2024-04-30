@@ -2,7 +2,7 @@ import { addToWorklet } from "./WorkletGlobalScope";
 
 const toneAudioWorkletProcessor = /* javascript */ `
 	/**
-	 * The base AudioWorkletProcessor for use in Tone.js. Works with the [[ToneAudioWorklet]]. 
+	 * The base AudioWorkletProcessor for use in Tone.js. Works with the {@link ToneAudioWorklet}. 
 	 */
 	class ToneAudioWorkletProcessor extends AudioWorkletProcessor {
 

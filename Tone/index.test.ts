@@ -1,9 +1,9 @@
 import * as Tone from "./index";
 import { expect } from "chai";
-import { Destination } from "./core/context/Destination";
+import { DestinationClass } from "./core/context/Destination";
 import { Context } from "./core/context/Context";
-import { Transport } from "./core/clock/Transport";
-import { Draw } from "./core/util/Draw";
+import { TransportClass } from "./core/clock/Transport";
+import { DrawClass } from "./core/util/Draw";
 
 describe("Tone", () => {
 	
@@ -15,16 +15,16 @@ describe("Tone", () => {
 	});
 
 	it("exports the global singletons", () => {
-		expect(Tone.Destination).to.be.an.instanceOf(Destination);
-		expect(Tone.Draw).to.be.an.instanceOf(Draw);
-		expect(Tone.Transport).to.be.an.instanceOf(Transport);
+		expect(Tone.Destination).to.be.an.instanceOf(DestinationClass);
+		expect(Tone.Draw).to.be.an.instanceOf(DrawClass);
+		expect(Tone.Transport).to.be.an.instanceOf(TransportClass);
 		expect(Tone.context).to.be.an.instanceOf(Context);
 	});
 
 	it("exports the global singleton getters", () => {
-		expect(Tone.getDestination()).to.be.an.instanceOf(Destination);
-		expect(Tone.getDraw()).to.be.an.instanceOf(Draw);
-		expect(Tone.getTransport()).to.be.an.instanceOf(Transport);
+		expect(Tone.getDestination()).to.be.an.instanceOf(DestinationClass);
+		expect(Tone.getDraw()).to.be.an.instanceOf(DrawClass);
+		expect(Tone.getTransport()).to.be.an.instanceOf(TransportClass);
 	});
 
 	it("can start the global context", () => {

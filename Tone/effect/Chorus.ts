@@ -16,8 +16,8 @@ export interface ChorusOptions extends StereoFeedbackEffectOptions {
 }
 
 /**
- * Chorus is a stereo chorus effect composed of a left and right delay with an [[LFO]] applied to the delayTime of each channel.
- * When [[feedback]] is set to a value larger than 0, you also get Flanger-type effects.
+ * Chorus is a stereo chorus effect composed of a left and right delay with an {@link LFO} applied to the delayTime of each channel.
+ * When {@link feedback} is set to a value larger than 0, you also get Flanger-type effects.
  * Inspiration from [Tuna.js](https://github.com/Dinahmoe/tuna/blob/master/tuna.js).
  * Read more on the chorus effect on [Sound On Sound](http://www.soundonsound.com/sos/jun04/articles/synthsecrets.htm).
  *
@@ -196,7 +196,8 @@ export class Chorus extends StereoFeedbackEffect<ChorusOptions> {
 	}
 
 	/**
-	 * Sync the filter to the transport. See [[LFO.sync]]
+	 * Sync the filter to the transport. 
+	 * @see {@link LFO.sync}
 	 */
 	sync(): this {
 		this._lfoL.sync();

@@ -28,8 +28,8 @@ const allpassFilterFreqs = [347, 113, 37];
 /**
  * JCReverb is a simple [Schroeder Reverberator](https://ccrma.stanford.edu/~jos/pasp/Schroeder_Reverberators.html)
  * tuned by John Chowning in 1970.
- * It is made up of three allpass filters and four [[FeedbackCombFilter]].
- * JCReverb is now implemented with an AudioWorkletNode which may result on performance degradation on some platforms. Consider using [[Reverb]].
+ * It is made up of three allpass filters and four {@link FeedbackCombFilter}.
+ * JCReverb is now implemented with an AudioWorkletNode which may result on performance degradation on some platforms. Consider using {@link Reverb}.
  * @example
  * const reverb = new Tone.JCReverb(0.4).toDestination();
  * const delay = new Tone.FeedbackDelay(0.5);

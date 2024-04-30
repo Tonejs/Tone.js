@@ -4,9 +4,11 @@ import { optionsFromArguments } from "../core/util/Defaults";
 import { TransportTimeClass } from "../core/type/TransportTime";
 import { ToneConstantSource } from "./ToneConstantSource";
 import { OutputNode } from "../core/context/ToneAudioNode";
+import type { TransportClass } from "../core/clock/Transport";
 
 /**
- * Adds the ability to synchronize the signal to the [[Transport]]
+ * Adds the ability to synchronize the signal to the {@link TransportClass}
+ * @category Signal
  */
 export class SyncedSignal<TypeName extends UnitName = "number"> extends Signal<TypeName> {
 

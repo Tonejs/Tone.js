@@ -1,7 +1,7 @@
 import { Time, UnitMap, UnitName } from "../type/Units";
 
 /**
- * Abstract base class for [[Param]] and [[Signal]]
+ * Abstract base class for {@link Param} and {@link Signal}
  */
 export abstract class AbstractParam<TypeName extends UnitName> {
 
@@ -37,8 +37,8 @@ export abstract class AbstractParam<TypeName extends UnitName> {
 
 	/**
 	 * Creates a schedule point with the current value at the current time.
-	 * Automation methods like [[linearRampToValueAtTime]] and [[exponentialRampToValueAtTime]]
-	 * require a starting automation value usually set by [[setValueAtTime]]. This method
+	 * Automation methods like {@link linearRampToValueAtTime} and {@link exponentialRampToValueAtTime}
+	 * require a starting automation value usually set by {@link setValueAtTime}. This method
 	 * is useful since it will do a `setValueAtTime` with whatever the currently computed
 	 * value at the given time is. 
 	 * @param time When to add a ramp point.
@@ -196,7 +196,7 @@ export abstract class AbstractParam<TypeName extends UnitName> {
 	abstract cancelScheduledValues(time: Time): this;
 
 	/**
-	 * This is similar to [[cancelScheduledValues]] except
+	 * This is similar to {@link cancelScheduledValues} except
 	 * it holds the automated value at time until the next automated event.
 	 * @example
 	 * return Tone.Offline(() => {

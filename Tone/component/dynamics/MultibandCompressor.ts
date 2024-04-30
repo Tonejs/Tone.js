@@ -16,7 +16,8 @@ export interface MultibandCompressorOptions extends ToneAudioNodeOptions {
 }
 
 /**
- * A compressor with separate controls over low/mid/high dynamics. See [[Compressor]] and [[MultibandSplit]]
+ * A compressor with separate controls over low/mid/high dynamics. 
+ * @see {@link Compressor} and {@link MultibandSplit}
  *
  * @example
  * const multiband = new Tone.MultibandCompressor({

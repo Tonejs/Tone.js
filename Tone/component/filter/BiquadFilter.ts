@@ -14,7 +14,7 @@ export interface BiquadFilterOptions extends ToneAudioNodeOptions {
 
 /**
  * Thin wrapper around the native Web Audio [BiquadFilterNode](https://webaudio.github.io/web-audio-api/#biquadfilternode). 
- * BiquadFilter is similar to [[Filter]] but doesn't have the option to set the "rolloff" value. 
+ * BiquadFilter is similar to {@link Filter} but doesn't have the option to set the "rolloff" value. 
  * @category Component
  */
 export class BiquadFilter extends ToneAudioNode<BiquadFilterOptions> {

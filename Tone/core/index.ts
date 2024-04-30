@@ -35,4 +35,5 @@ export { Unit };
 
 // export the debug stuff as Debug
 import * as debug from "./util/Debug";
+/** @internal */
 export { debug };

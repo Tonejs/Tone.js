@@ -4,12 +4,12 @@ import { Offline } from "test/helper/Offline";
 import { PassAudio } from "test/helper/PassAudio";
 import { Oscillator } from "Tone/source/oscillator/Oscillator";
 import { getContext } from "../Global";
-import { Destination } from "./Destination";
+import { DestinationClass } from "./Destination";
 
 describe("Destination", () => {
 
 	it("creates itself on the context", () => {
-		expect(getContext().destination).instanceOf(Destination);
+		expect(getContext().destination).instanceOf(DestinationClass);
 	});
 
 	it("can be muted and unmuted", () => {

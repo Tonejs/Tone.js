@@ -17,7 +17,7 @@ export interface ChannelOptions extends ToneAudioNodeOptions {
 
 /**
  * Channel provides a channel strip interface with volume, pan, solo and mute controls. 
- * See [[PanVol]] and [[Solo]]
+ * @see {@link PanVol} and {@link Solo}
  * @example
  * // pan the incoming signal left and drop the volume 12db
  * const channel = new Tone.Channel(-0.25, -12);
@@ -91,7 +91,7 @@ export class Channel extends ToneAudioNode<ChannelOptions> {
 	}
 
 	/**
-	 * Solo/unsolo the channel. Soloing is only relative to other [[Channel]]s and [[Solo]] instances
+	 * Solo/unsolo the channel. Soloing is only relative to other {@link Channel}s and {@link Solo} instances
 	 */
 	get solo(): boolean {
 		return this._solo.solo;
@@ -137,9 +137,9 @@ export class Channel extends ToneAudioNode<ChannelOptions> {
 
 	/**
 	 * Send audio to another channel using a string. `send` is a lot like
-	 * [[connect]], except it uses a string instead of an object. This can 
-	 * be useful in large applications to decouple sections since [[send]]
-	 * and [[receive]] can be invoked separately in order to connect an object
+	 * {@link connect}, except it uses a string instead of an object. This can 
+	 * be useful in large applications to decouple sections since {@link send}
+	 * and {@link receive} can be invoked separately in order to connect an object
 	 * @param name The channel name to send the audio
 	 * @param volume The amount of the signal to send. 
 	 * 	Defaults to 0db, i.e. send the entire signal
@@ -158,7 +158,7 @@ export class Channel extends ToneAudioNode<ChannelOptions> {
 	}
 
 	/**
-	 * Receive audio from a channel which was connected with [[send]]. 
+	 * Receive audio from a channel which was connected with {@link send}. 
 	 * @param name The channel name to receive audio from.
 	 */
 	receive(name: string): this {

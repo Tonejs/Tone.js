@@ -192,7 +192,7 @@ export class OmniOscillator<OscType extends AnyOscillator>
 	/**
 	 * The value is an empty array when the type is not "custom".
 	 * This is not available on "pwm" and "pulse" oscillator types.
-	 * See [[Oscillator.partials]]
+	 * @see {@link Oscillator.partials}
 	 */
 	get partials(): number[] {
 		return this._oscillator.partials;
@@ -297,7 +297,8 @@ export class OmniOscillator<OscType extends AnyOscillator>
 	}
 
 	/**
-	 * The base type of the oscillator. See [[Oscillator.baseType]]
+	 * The base type of the oscillator. 
+	 * @see {@link Oscillator.baseType}
 	 * @example
 	 * const omniOsc = new Tone.OmniOscillator(440, "fmsquare4");
 	 * console.log(omniOsc.sourceType, omniOsc.baseType, omniOsc.partialCount);
@@ -315,7 +316,7 @@ export class OmniOscillator<OscType extends AnyOscillator>
 
 	/**
 	 * The width of the oscillator when sourceType === "pulse".
-	 * See [[PWMOscillator]]
+	 * @see {@link PWMOscillator}
 	 */
 	get width(): IsPulseOscillator<OscType, Signal<"audioRange">> {
 		if (this._getOscType(this._oscillator, "pulse")) {
@@ -327,7 +328,7 @@ export class OmniOscillator<OscType extends AnyOscillator>
 
 	/**
 	 * The number of detuned oscillators when sourceType === "fat".
-	 * See [[FatOscillator.count]]
+	 * @see {@link FatOscillator.count}
 	 */
 	get count(): IsFatOscillator<OscType, number> {
 		if (this._getOscType(this._oscillator, "fat")) {
@@ -344,7 +345,7 @@ export class OmniOscillator<OscType extends AnyOscillator>
 
 	/**
 	 * The detune spread between the oscillators when sourceType === "fat".
-	 * See [[FatOscillator.count]]
+	 * @see {@link FatOscillator.count}
 	 */
 	get spread(): IsFatOscillator<OscType, Cents> {
 		if (this._getOscType(this._oscillator, "fat")) {
@@ -361,7 +362,7 @@ export class OmniOscillator<OscType extends AnyOscillator>
 
 	/**
 	 * The type of the modulator oscillator. Only if the oscillator is set to "am" or "fm" types. 
-	 * See [[AMOscillator]] or [[FMOscillator]]
+	 * @see {@link AMOscillator} or {@link FMOscillator}
 	 */
 	get modulationType(): IsAmOrFmOscillator<OscType, ToneOscillatorType> {
 		if (this._getOscType(this._oscillator, "fm") || this._getOscType(this._oscillator, "am")) {
@@ -378,7 +379,7 @@ export class OmniOscillator<OscType extends AnyOscillator>
 
 	/**
 	 * The modulation index when the sourceType === "fm"
-	 * See [[FMOscillator]].
+	 * @see {@link FMOscillator}.
 	 */
 	get modulationIndex(): IsFMOscillator<OscType, Signal<"positive">> {
 		if (this._getOscType(this._oscillator, "fm")) {
@@ -390,7 +391,7 @@ export class OmniOscillator<OscType extends AnyOscillator>
 
 	/**
 	 * Harmonicity is the frequency ratio between the carrier and the modulator oscillators.
-	 * See [[AMOscillator]] or [[FMOscillator]]
+	 * @see {@link AMOscillator} or {@link FMOscillator}
 	 */
 	get harmonicity(): IsAmOrFmOscillator<OscType, Signal<"positive">> {
 		if (this._getOscType(this._oscillator, "fm") || this._getOscType(this._oscillator, "am")) {
@@ -402,7 +403,7 @@ export class OmniOscillator<OscType extends AnyOscillator>
 
 	/**
 	 * The modulationFrequency Signal of the oscillator when sourceType === "pwm"
-	 * see [[PWMOscillator]]
+	 * see {@link PWMOscillator}
 	 * @min 0.1
 	 * @max 5
 	 */

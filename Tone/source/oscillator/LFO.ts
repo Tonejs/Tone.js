@@ -94,7 +94,7 @@ export class LFO extends ToneAudioNode<LFOOptions> {
 	private _units: UnitName = "number";
 
 	/**
-	 * If the input value is converted using the [[units]]
+	 * If the input value is converted using the {@link units}
 	 */
 	convert = true;
 
@@ -238,7 +238,8 @@ export class LFO extends ToneAudioNode<LFOOptions> {
 	}
 
 	/**
-	 * The type of the oscillator: See [[Oscillator.type]]
+	 * The type of the oscillator.
+	 * @see {@link Oscillator.type}
 	 */
 	get type(): ToneOscillatorType {
 		return this._oscillator.type;
@@ -249,7 +250,8 @@ export class LFO extends ToneAudioNode<LFOOptions> {
 	}
 
 	/**
-	 * The oscillator's partials array: See [[Oscillator.partials]]
+	 * The oscillator's partials array. 
+	 * @see {@link Oscillator.partials}
 	 */
 	get partials(): number[] {
 		return this._oscillator.partials;

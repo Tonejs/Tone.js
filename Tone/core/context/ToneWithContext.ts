@@ -5,10 +5,21 @@ import { TimeClass } from "../type/Time";
 import { TransportTimeClass } from "../type/TransportTime";
 import { Frequency, Hertz, Seconds, Ticks, Time } from "../type/Units";
 import { assertUsedScheduleTime } from "../util/Debug";
-import { getDefaultsFromInstance, optionsFromArguments } from "../util/Defaults";
+import {
+	getDefaultsFromInstance,
+	optionsFromArguments,
+} from "../util/Defaults";
 import { RecursivePartial } from "../util/Interface";
-import { isArray, isBoolean, isDefined, isNumber, isString, isUndef } from "../util/TypeCheck";
+import {
+	isArray,
+	isBoolean,
+	isDefined,
+	isNumber,
+	isString,
+	isUndef,
+} from "../util/TypeCheck";
 import { BaseContext } from "./BaseContext";
+import type { TransportClass } from "../clock/Transport";
 
 /**
  * A unit which process audio
@@ -20,8 +31,9 @@ export interface ToneWithContextOptions {
 /**
  * The Base class for all nodes that have an AudioContext.
  */
-export abstract class ToneWithContext<Options extends ToneWithContextOptions> extends Tone {
-
+export abstract class ToneWithContext<
+	Options extends ToneWithContextOptions
+> extends Tone {
 	/**
 	 * The context belonging to the node.
 	 */
@@ -37,11 +49,15 @@ export abstract class ToneWithContext<Options extends ToneWithContextOptions> ex
 	/**
 	 * Pass in a constructor as the first argument
 	 */
-	constructor(context?: BaseContext)
+	constructor(context?: BaseContext);
 	constructor(options?: Partial<ToneWithContextOptions>);
 	constructor() {
 		super();
-		const options = optionsFromArguments(ToneWithContext.getDefaults(), arguments, ["context"]);
+		const options = optionsFromArguments(
+			ToneWithContext.getDefaults(),
+			arguments,
+			["context"]
+		);
 		if (this.defaultContext) {
 			this.context = this.defaultContext;
 		} else {
@@ -79,8 +95,6 @@ export abstract class ToneWithContext<Options extends ToneWithContextOptions> ex
 
 	/**
 	 * The duration in seconds of one sample.
-	 * @example
-	 * console.log(Tone.Transport.sampleTime);
 	 */
 	get sampleTime(): Seconds {
 		return 1 / this.context.sampleRate;
@@ -96,8 +110,8 @@ export abstract class ToneWithContext<Options extends ToneWithContextOptions> ex
 	}
 
 	/**
-	 * Convert the incoming time to seconds. 
-	 * This is calculated against the current [[Transport]] bpm
+	 * Convert the incoming time to seconds.
+	 * This is calculated against the current {@link TransportClass} bpm
 	 * @example
 	 * const gain = new Tone.Gain();
 	 * setInterval(() => console.log(gain.toSeconds("4n")), 100);
@@ -139,7 +153,7 @@ export abstract class ToneWithContext<Options extends ToneWithContextOptions> ex
 	protected _getPartialProperties(props: Options): Partial<Options> {
 		const options = this.get();
 		// remove attributes from the prop that are not in the partial
-		Object.keys(options).forEach(name => {
+		Object.keys(options).forEach((name) => {
 			if (isUndef(props[name])) {
 				delete options[name];
 			}
@@ -155,15 +169,26 @@ export abstract class ToneWithContext<Options extends ToneWithContextOptions> ex
 	 */
 	get(): Options {
 		const defaults = getDefaultsFromInstance(this) as Options;
-		Object.keys(defaults).forEach(attribute => {
+		Object.keys(defaults).forEach((attribute) => {
 			if (Reflect.has(this, attribute)) {
 				const member = this[attribute];
-				if (isDefined(member) && isDefined(member.value) && isDefined(member.setValueAtTime)) {
+				if (
+					isDefined(member) &&
+					isDefined(member.value) &&
+					isDefined(member.setValueAtTime)
+				) {
 					defaults[attribute] = member.value;
 				} else if (member instanceof ToneWithContext) {
-					defaults[attribute] = member._getPartialProperties(defaults[attribute]);
+					defaults[attribute] = member._getPartialProperties(
+						defaults[attribute]
+					);
 					// otherwise make sure it's a serializable type
-				} else if (isArray(member) || isNumber(member) || isString(member) || isBoolean(member)) {
+				} else if (
+					isArray(member) ||
+					isNumber(member) ||
+					isString(member) ||
+					isBoolean(member)
+				) {
 					defaults[attribute] = member;
 				} else {
 					// remove all undefined and unserializable attributes
@@ -188,9 +213,13 @@ export abstract class ToneWithContext<Options extends ToneWithContextOptions> ex
 	 * player.autostart = true;
 	 */
 	set(props: RecursivePartial<Options>): this {
-		Object.keys(props).forEach(attribute => {
+		Object.keys(props).forEach((attribute) => {
 			if (Reflect.has(this, attribute) && isDefined(this[attribute])) {
-				if (this[attribute] && isDefined(this[attribute].value) && isDefined(this[attribute].setValueAtTime)) {
+				if (
+					this[attribute] &&
+					isDefined(this[attribute].value) &&
+					isDefined(this[attribute].setValueAtTime)
+				) {
 					// small optimization
 					if (this[attribute].value !== props[attribute]) {
 						this[attribute].value = props[attribute];

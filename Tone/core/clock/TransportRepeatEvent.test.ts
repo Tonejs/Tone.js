@@ -1,13 +1,13 @@
 import { expect } from "chai";
 import { Offline } from "test/helper/Offline";
-import { Transport } from "./Transport";
+import { TransportClass } from "./Transport";
 import { TransportRepeatEvent } from "./TransportRepeatEvent";
 
 describe("TransportRepeatEvent", () => {
 
 	it("can be created and disposed", () => {
 		return Offline((context) => {
-			const transport = new Transport({ context });
+			const transport = new TransportClass({ context });
 			const event = new TransportRepeatEvent(transport, {
 				duration: 100,
 				interval: 4,
@@ -19,7 +19,7 @@ describe("TransportRepeatEvent", () => {
 
 	it("generates a unique event ID", () => {
 		return Offline((context) => {
-			const transport = new Transport({ context });
+			const transport = new TransportClass({ context });
 			const event = new TransportRepeatEvent(transport, {
 				time: 0,
 			});
@@ -30,7 +30,7 @@ describe("TransportRepeatEvent", () => {
 
 	it("is removed from the Transport when disposed", () => {
 		return Offline((context) => {
-			const transport = new Transport({ context });
+			const transport = new TransportClass({ context });
 			const event = new TransportRepeatEvent(transport, {
 				time: 0,
 			});
