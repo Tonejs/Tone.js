@@ -191,7 +191,12 @@ export class Sequence<ValueType = any> extends ToneEvent<ValueType> {
 		sequence.forEach((value, index) => {
 			const eventOffset = index * (subdivision) + startOffset;
 			if (isArray(value)) {
-				this._rescheduleSequence(value, subdivision / value.length, eventOffset);
+				if (value.length === 1 && isArray(value[0])){
+					const startTime = new TicksClass(this.context, eventOffset, "i").toSeconds();
+					this._part.add(startTime, value.flat());
+				} else {
+					this._rescheduleSequence(value, subdivision / value.length, eventOffset);
+				}
 			} else {
 				const startTime = new TicksClass(this.context, eventOffset, "i").toSeconds();
 				this._part.add(startTime, value);
