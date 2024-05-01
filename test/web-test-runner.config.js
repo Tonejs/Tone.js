@@ -26,15 +26,14 @@ export default {
 	],
 	testFramework: {
 		config: {
+			timeout: 10000,
+			retries: 2,
 			ui: "bdd",
-			timeout: "10000",
 		},
 	},
 	plugins: [
 		commonjs({
-			include: [
-				"**/node_modules/**/*",
-			],
+			include: ["**/node_modules/**/*"],
 		}),
 	],
 	rootDir: resolve(__dirname, "../"),

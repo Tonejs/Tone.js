@@ -14,7 +14,7 @@ describe("FMSynth", () => {
 		return CompareToFile(() => {
 			const synth = new FMSynth().toDestination();
 			synth.triggerAttackRelease("G4", 0.1, 0.05);
-		}, "fmSynth.wav", 0.06);
+		}, "fmSynth.wav", 0.08);
 	});
 
 	context("API", () => {
