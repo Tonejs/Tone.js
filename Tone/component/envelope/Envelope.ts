@@ -71,7 +71,7 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	 * @max 2
 	 */
 	@timeRange(0)
-	attack: Time;
+		attack: Time;
 
 	/**
 	 * After the attack portion of the envelope, the value will fall
@@ -91,7 +91,7 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	 * @max 2
 	 */
 	@timeRange(0)
-	decay: Time;
+		decay: Time;
 
 	/**
 	 * The sustain value is the value
@@ -110,7 +110,7 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	 * ```
 	 */
 	@range(0, 1)
-	sustain: NormalRange;
+		sustain: NormalRange;
 
 	/**
 	 * After triggerRelease is called, the envelope's
@@ -131,7 +131,7 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	 * @max 5
 	 */
 	@timeRange(0)
-	release: Time;
+		release: Time;
 
 	/**
 	 * The automation curve type for the attack

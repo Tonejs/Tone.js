@@ -1,12 +1,7 @@
 import { expect } from "chai";
-import { BasicTests } from "test/helper/Basic";
-import { ToneAudioBuffer } from "Tone/core/context/ToneAudioBuffer";
+import { BasicTests } from "../../../test/helper/Basic";
+import { ToneAudioBuffer } from "../../core/context/ToneAudioBuffer";
 import { Convolver } from "./Convolver";
-
-// @ts-ignore
-if (window.__karma__) {
-	ToneAudioBuffer.baseUrl = "/base/test/";
-}
 
 describe("Convolver", () => {
 
@@ -14,7 +9,7 @@ describe("Convolver", () => {
 
 	const ir = new ToneAudioBuffer();
 
-	const testFile = "./audio/sineStereo.wav";
+	const testFile = "./test/audio/sineStereo.wav";
 
 	before(() => {
 		return ir.load(testFile);

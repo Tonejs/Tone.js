@@ -1,37 +1,39 @@
 import { AutoFilter } from "./AutoFilter";
-import { BasicTests } from "test/helper/Basic";
-import { EffectTests } from "test/helper/EffectTests";
-import teoria from "teoria";
-import { Offline } from "test/helper/Offline";
+import { BasicTests } from "../../test/helper/Basic";
+import { EffectTests } from "../../test/helper/EffectTests";
+import { Note } from "tonal";
+import { Offline } from "../../test/helper/Offline";
 import { expect } from "chai";
-import { CompareToFile } from "test/helper/CompareToFile";
-import { Noise } from "Tone/source";
+import { CompareToFile } from "../../test/helper/CompareToFile";
+import { Noise } from "../source";
 
 describe("AutoFilter", () => {
-	
 	BasicTests(AutoFilter);
 	EffectTests(AutoFilter);
 
 	it("matches a file", () => {
-		return CompareToFile(() => {
-			const autoFilter = new AutoFilter({
-				baseFrequency: 200,
-				octaves: 4,
-				frequency: 4,
-				type: "sine"
-			}).toDestination();
-			new Noise().connect(autoFilter).start();
-			autoFilter.start(0.2);
-		}, "autoFilter.wav", 0.1);
+		return CompareToFile(
+			() => {
+				const autoFilter = new AutoFilter({
+					baseFrequency: 200,
+					octaves: 4,
+					frequency: 4,
+					type: "sine",
+				}).toDestination();
+				new Noise().connect(autoFilter).start();
+				autoFilter.start(0.2);
+			},
+			"autoFilter.wav",
+			0.1
+		);
 	});
 
 	context("API", () => {
-
 		it("can pass in options in the constructor", () => {
 			const autoFilter = new AutoFilter({
 				baseFrequency: 2000,
 				octaves: 2,
-				type: "sawtooth"
+				type: "sawtooth",
 			});
 			expect(autoFilter.baseFrequency).to.be.closeTo(2000, 0.1);
 			expect(autoFilter.octaves).to.equal(2);
@@ -50,7 +52,7 @@ describe("AutoFilter", () => {
 			autoFilter.set({
 				baseFrequency: 1200,
 				frequency: 2.4,
-				type: "triangle"
+				type: "triangle",
 			});
 			expect(autoFilter.get().baseFrequency).to.be.closeTo(1200, 0.01);
 			expect(autoFilter.get().frequency).to.be.closeTo(2.4, 0.01);
@@ -76,13 +78,15 @@ describe("AutoFilter", () => {
 
 		it("accepts baseFrequency and octaves as frequency values", () => {
 			const autoFilter = new AutoFilter("2n", "C2", 4);
-			expect(autoFilter.baseFrequency).to.be.closeTo(teoria.note("C2").fq(), 0.01);
+			expect(autoFilter.baseFrequency).to.be.closeTo(
+				Note.freq("C2") as number,
+				0.01
+			);
 			expect(autoFilter.octaves).to.equal(4);
 			autoFilter.dispose();
 		});
 
 		it("can sync the frequency to the transport", () => {
-
 			return Offline(({ transport }) => {
 				const autoFilter = new AutoFilter(2);
 				autoFilter.sync();
@@ -96,7 +100,6 @@ describe("AutoFilter", () => {
 		});
 
 		it("can unsync the frequency to the transport", () => {
-
 			return Offline(({ transport }) => {
 				const autoFilter = new AutoFilter(2);
 				autoFilter.sync();
@@ -110,4 +113,3 @@ describe("AutoFilter", () => {
 		});
 	});
 });
-

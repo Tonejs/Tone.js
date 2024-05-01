@@ -1,11 +1,10 @@
 import { StereoWidener } from "./StereoWidener";
-import { BasicTests } from "test/helper/Basic";
-import { EffectTests } from "test/helper/EffectTests";
+import { BasicTests } from "../../test/helper/Basic";
+import { EffectTests } from "../../test/helper/EffectTests";
 import { expect } from "chai";
-import { CompareToFile } from "test/helper/CompareToFile";
-import { ToneAudioBuffer } from "Tone/core/context/ToneAudioBuffer";
-import { Player } from "Tone/source/buffer/Player";
-import "test/helper/ToneAudioBuffer";
+import { CompareToFile } from "../../test/helper/CompareToFile";
+import { ToneAudioBuffer } from "../core/context/ToneAudioBuffer";
+import { Player } from "../source/buffer/Player";
 
 describe("StereoWidener", () => {
 
@@ -13,7 +12,7 @@ describe("StereoWidener", () => {
 	EffectTests(StereoWidener, 0);
 
 	it("matches a file basic", async () => {
-		const buffer = await ToneAudioBuffer.fromUrl("./audio/FWDL.wav");
+		const buffer = await ToneAudioBuffer.fromUrl("./test/audio/FWDL.wav");
 		return CompareToFile(() => {
 			const phaser = new StereoWidener(0.1).toDestination();
 			const player = new Player(buffer).connect(phaser).start();

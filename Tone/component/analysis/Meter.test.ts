@@ -1,12 +1,12 @@
 import { expect } from "chai";
-import { BasicTests, warns } from "test/helper/Basic";
-import { PassAudio } from "test/helper/PassAudio";
-import { ONLINE_TESTING } from "test/helper/Supports";
-import { Signal } from "Tone/signal/Signal";
-import { Oscillator } from "Tone/source/oscillator/Oscillator";
+import { BasicTests, warns } from "../../../test/helper/Basic";
+import { PassAudio } from "../../../test/helper/PassAudio";
+import { ONLINE_TESTING } from "../../../test/helper/Supports";
+import { Signal } from "../../signal/Signal";
+import { Oscillator } from "../../source/oscillator/Oscillator";
 import { Meter } from "./Meter";
-import { Panner } from "Tone/component/channel/Panner";
-import { Merge } from "Tone/component/channel/Merge";
+import { Panner } from "../channel/Panner";
+import { Merge } from "../channel/Merge";
 
 describe("Meter", () => {
 

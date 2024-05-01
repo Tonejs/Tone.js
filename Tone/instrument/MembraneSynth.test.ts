@@ -1,7 +1,7 @@
 import { expect } from "chai";
-import { BasicTests } from "test/helper/Basic";
-import { CompareToFile } from "test/helper/CompareToFile";
-import { InstrumentTest } from "test/helper/InstrumentTests";
+import { BasicTests } from "../../test/helper/Basic";
+import { CompareToFile } from "../../test/helper/CompareToFile";
+import { InstrumentTest } from "../../test/helper/InstrumentTests";
 import { MembraneSynth } from "./MembraneSynth";
 
 describe("MembraneSynth", () => {

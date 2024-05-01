@@ -1,7 +1,7 @@
-import { BasicTests } from "test/helper/Basic";
-import { connectFrom, connectTo } from "test/helper/Connect";
-import { ConstantOutput } from "test/helper/ConstantOutput";
-import { Signal } from "Tone/signal/Signal";
+import { BasicTests } from "../../../test/helper/Basic";
+import { connectFrom, connectTo } from "../../../test/helper/Connect";
+import { ConstantOutput } from "../../../test/helper/ConstantOutput";
+import { Signal } from "../../signal/Signal";
 import { CrossFade } from "./CrossFade";
 
 describe("CrossFade", () => {

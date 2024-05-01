@@ -1,9 +1,9 @@
 import { BitCrusher } from "./BitCrusher";
-import { FeedbackCombFilter } from "Tone/component/filter/FeedbackCombFilter";
-import { Oscillator } from "Tone/source/oscillator/Oscillator";
-import { BasicTests } from "test/helper/Basic";
-import { EffectTests } from "test/helper/EffectTests";
-import { CompareToFile } from "test/helper/CompareToFile";
+import { FeedbackCombFilter } from "../component/filter/FeedbackCombFilter";
+import { Oscillator } from "../source/oscillator/Oscillator";
+import { BasicTests } from "../../test/helper/Basic";
+import { EffectTests } from "../../test/helper/EffectTests";
+import { CompareToFile } from "../../test/helper/CompareToFile";
 import { expect } from "chai";
 
 describe("BitCrusher", () => {

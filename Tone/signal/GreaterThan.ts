@@ -21,7 +21,7 @@ export type GreaterThanOptions = SignalOptions<"number">;
  */
 export class GreaterThan extends Signal<"number"> {
 
-	readonly name: string = "GreaterThan"
+	readonly name: string = "GreaterThan";
 
 	readonly override: boolean = false;
 
@@ -48,7 +48,7 @@ export class GreaterThan extends Signal<"number"> {
 	 * 	gt.comparator.setValueAtTime(0.5, 0.1);
 	 * }, 0.5, 1);
 	 */
-	readonly comparator: Param<"number">
+	readonly comparator: Param<"number">;
 
 	/**
 	 * @param value The value to compare to

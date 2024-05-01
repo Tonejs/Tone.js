@@ -1,19 +1,17 @@
 import { expect } from "chai";
-import teoria from "teoria";
-import { BasicTests } from "test/helper/Basic";
-import { Offline } from "test/helper/Offline";
+import { BasicTests } from "../../../test/helper/Basic";
+import { Offline } from "../../../test/helper/Offline";
 import { Frequency } from "./Frequency";
 import { Midi, MidiClass } from "./Midi";
 import { Ticks } from "./Ticks";
 import { Time } from "./Time";
 import { TransportTime } from "./TransportTime";
+import { Note, Midi as TonalMidi } from "tonal";
 
 describe("MidiClass", () => {
-
 	BasicTests(MidiClass);
 
 	context("Constructor", () => {
-
 		it("can pass in a number in the constructor", () => {
 			const midi = Midi(1);
 			expect(midi).to.be.instanceOf(MidiClass);
@@ -93,28 +91,28 @@ describe("MidiClass", () => {
 	});
 
 	context("Conversions", () => {
-
 		it("can convert frequencies into notes", () => {
-			expect(Midi(48).toNote()).to.equal(teoria.Note.fromMIDI(48).scientific());
-			expect(Midi(90).toNote()).to.equal(teoria.Note.fromMIDI(90).scientific());
+			expect(Midi(48).toNote()).to.equal(TonalMidi.midiToNoteName(48));
+			expect(Midi(90).toNote()).to.equal(
+				TonalMidi.midiToNoteName(90, { sharps: true })
+			);
 			expect(Midi("C#4").toNote()).to.equal("C#4");
 		});
 
 		it("can convert note to midi values", () => {
-			expect(Midi("C4").toMidi()).to.equal(teoria.note("C4").midi());
-			expect(Midi("C#0").toMidi()).to.equal(teoria.note("C#0").midi());
-			expect(Midi("A-4").toMidi()).to.equal(teoria.note("A-4").midi());
+			expect(Midi("C4").toMidi()).to.equal(TonalMidi.toMidi("C4"));
+			expect(Midi("C#0").toMidi()).to.equal(TonalMidi.toMidi("C#0"));
+			expect(Midi("A-1").toMidi()).to.equal(TonalMidi.toMidi("A-1"));
 		});
 
 		it("can convert midi to frequency", () => {
-			expect(Midi(60).toFrequency()).to.equal(teoria.Note.fromMIDI(60).fq());
-			expect(Midi(25).toFrequency()).to.equal(teoria.Note.fromMIDI(25).fq());
-			expect(Midi(108).toFrequency()).to.equal(teoria.Note.fromMIDI(108).fq());
+			expect(Midi(60).toFrequency()).to.equal(TonalMidi.midiToFreq(60));
+			expect(Midi(25).toFrequency()).to.equal(TonalMidi.midiToFreq(25));
+			expect(Midi(108).toFrequency()).to.equal(TonalMidi.midiToFreq(108));
 		});
 	});
 
 	context("transpose/harmonize", () => {
-
 		it("can transpose a value", () => {
 			expect(Midi("A4").transpose(3).toMidi()).to.equal(72);
 			expect(Midi("A4").transpose(-3).toMidi()).to.equal(66);
@@ -129,9 +127,15 @@ describe("MidiClass", () => {
 
 			expect(Midi("A4").harmonize([-12, 0, 12])).to.be.an("array");
 			expect(Midi("A4").harmonize([-12, 0, 12]).length).to.equal(3);
-			expect(Midi("A4").harmonize([-12, 0, 12])[0].toNote()).to.equal("A3");
-			expect(Midi("A4").harmonize([-12, 0, 12])[1].toNote()).to.equal("A4");
-			expect(Midi("A4").harmonize([-12, 0, 12])[2].toNote()).to.equal("A5");
+			expect(Midi("A4").harmonize([-12, 0, 12])[0].toNote()).to.equal(
+				"A3"
+			);
+			expect(Midi("A4").harmonize([-12, 0, 12])[1].toNote()).to.equal(
+				"A4"
+			);
+			expect(Midi("A4").harmonize([-12, 0, 12])[2].toNote()).to.equal(
+				"A5"
+			);
 		});
 	});
 });

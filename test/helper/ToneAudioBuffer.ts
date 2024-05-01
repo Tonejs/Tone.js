@@ -1,9 +1,9 @@
-import { ToneAudioBuffer } from "Tone/core/context/ToneAudioBuffer";
+import { ToneAudioBuffer } from "../../Tone/core/context/ToneAudioBuffer";
 
 // point to the relative path of the audio files
 // @ts-ignore
-if (window.__karma__) {
-	ToneAudioBuffer.baseUrl = "/base/test/";
-} else {
-	ToneAudioBuffer.baseUrl = "../test/";
-}
+// if (window.__karma__) {
+// 	ToneAudioBuffer.baseUrl = "/base/test/";
+// } else {
+// 	ToneAudioBuffer.baseUrl = "../test/";
+// }

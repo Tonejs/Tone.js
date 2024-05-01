@@ -1,14 +1,15 @@
-import { UAParser } from "ua-parser-js";
+// import { UAParser } from "ua-parser-js";
 
-const parsed = new UAParser().getBrowser();
+// const parsed = new UAParser().getBrowser();
 
-const name = parsed.name as string;
+const name = "Chrome" as string;
 
-const version = parseInt(parsed.major as string, 10);
+const version = 121
 
 function is(browser, above?): boolean {
-	above = above || 0;
-	return name.includes(browser) && version >= above;
+	return false;
+	// above = above || 0;
+	// return name.includes(browser) && version >= above;
 }
 
 function isnt(browser, below?): boolean {

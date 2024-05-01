@@ -1,8 +1,8 @@
 import { expect } from "chai";
-import { BasicTests } from "test/helper/Basic";
-import { Offline } from "test/helper/Offline";
-import { PassAudio } from "test/helper/PassAudio";
-import { Signal } from "Tone/signal/Signal";
+import { BasicTests } from "../../../test/helper/Basic";
+import { Offline } from "../../../test/helper/Offline";
+import { PassAudio } from "../../../test/helper/PassAudio";
+import { Signal } from "../../signal/Signal";
 import { Panner } from "./Panner";
 
 describe("Panner", () => {

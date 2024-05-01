@@ -1,5 +1,5 @@
-import { BasicTests } from "test/helper/Basic";
-import { ConstantOutput } from "test/helper/ConstantOutput";
+import { BasicTests } from "../../test/helper/Basic";
+import { ConstantOutput } from "../../test/helper/ConstantOutput";
 import { Negate } from "./Negate";
 import { Signal } from "./Signal";
 

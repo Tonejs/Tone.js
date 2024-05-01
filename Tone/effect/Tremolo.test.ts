@@ -1,10 +1,10 @@
 import { Tremolo } from "./Tremolo";
-import { BasicTests } from "test/helper/Basic";
-import { EffectTests } from "test/helper/EffectTests";
-import { Offline } from "test/helper/Offline";
+import { BasicTests } from "../../test/helper/Basic";
+import { EffectTests } from "../../test/helper/EffectTests";
+import { Offline } from "../../test/helper/Offline";
 import { expect } from "chai";
-import { CompareToFile } from "test/helper/CompareToFile";
-import { Oscillator } from "Tone/source";
+import { CompareToFile } from "../../test/helper/CompareToFile";
+import { Oscillator } from "../source";
 
 describe("Tremolo", () => {
 	BasicTests(Tremolo);

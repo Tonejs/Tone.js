@@ -1,9 +1,8 @@
 import { expect } from "chai";
-import "test/helper/ToneAudioBuffer";
 import { getContext } from "../Global";
 import { ToneAudioBuffer } from "./ToneAudioBuffer";
 
-const testFile = "./audio/sine.wav";
+const testFile = "./test/audio/sine.wav";
 
 describe("ToneAudioBuffer", () => {
 
@@ -141,12 +140,12 @@ describe("ToneAudioBuffer", () => {
 		});
 
 		it("can load a file with fallback extensions", async () => {
-			const buffer = await ToneAudioBuffer.load("./audio/sine.[nope|nada|wav]");
+			const buffer = await ToneAudioBuffer.load("./test/audio/sine.[nope|nada|wav]");
 			expect(buffer).to.exist;
 		});
 
 		it("takes the first supported format when multiple extensions are provided", async () => {
-			const buffer = await ToneAudioBuffer.load("./audio/sine.[wav|nope]");
+			const buffer = await ToneAudioBuffer.load("./test/audio/sine.[wav|nope]");
 			expect(buffer).to.exist;
 		});
 
@@ -163,7 +162,7 @@ describe("ToneAudioBuffer", () => {
 		});
 
 		it("invokes the error callback if the file is corrupt", done => {
-			const buffer = new ToneAudioBuffer("./audio/corrupt.wav", () => {
+			const buffer = new ToneAudioBuffer("./test/audio/corrupt.wav", () => {
 				throw new Error("shouldn't invoke this function");
 			}, e => {
 				buffer.dispose();

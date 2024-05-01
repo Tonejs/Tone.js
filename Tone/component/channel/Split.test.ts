@@ -1,8 +1,8 @@
 import { expect } from "chai";
-import { BasicTests } from "test/helper/Basic";
-import { connectTo } from "test/helper/Connect";
-import { ConstantOutput } from "test/helper/ConstantOutput";
-import { StereoSignal } from "test/helper/StereoSignal";
+import { BasicTests } from "../../../test/helper/Basic";
+import { connectTo } from "../../../test/helper/Connect";
+import { ConstantOutput } from "../../../test/helper/ConstantOutput";
+import { StereoSignal } from "../../../test/helper/StereoSignal";
 import { Split } from "./Split";
 
 describe("Split", () => {

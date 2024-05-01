@@ -1,12 +1,12 @@
 import { expect } from "chai";
-import { BasicTests } from "test/helper/Basic";
-import { connectFrom, connectTo } from "test/helper/Connect";
-// import Test from "test/helper/Test";
-import { ConstantOutput } from "test/helper/ConstantOutput";
+import { BasicTests } from "../../test/helper/Basic";
+import { connectFrom, connectTo } from "../../test/helper/Connect";
+// import Test from "../../test/helper/Test";
+import { ConstantOutput } from "../../test/helper/ConstantOutput";
 import { Multiply } from "./Multiply";
-// import Multiply from "Tone/signal/Multiply";
+// import Multiply from "Multiply";
 import { Signal } from "./Signal";
-// import Oscillator from "Tone/source/Oscillator";
+// import Oscillator from "../source/Oscillator";
 
 describe("Multiply", () => {
 

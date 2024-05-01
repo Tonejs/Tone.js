@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { BasicTests } from "test/helper/Basic";
+import { BasicTests } from "../../../test/helper/Basic";
 import { IntervalTimeline, IntervalTimelineEvent } from "./IntervalTimeline";
 
 describe("IntervalTimeline", () => {

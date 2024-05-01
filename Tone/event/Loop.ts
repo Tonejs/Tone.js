@@ -40,7 +40,7 @@ export class Loop<Options extends LoopOptions = LoopOptions> extends ToneWithCon
 	/**
 	 * The callback to invoke with the next event in the pattern
 	 */
-	callback: (time: Seconds) => void
+	callback: (time: Seconds) => void;
 
 	/**
 	 * @param callback The callback to invoke at the time.

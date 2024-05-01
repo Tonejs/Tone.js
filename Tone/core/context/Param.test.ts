@@ -1,10 +1,10 @@
-import { Compare, Plot } from "@tonejs/plot";
+import { Compare, Plot } from "../../../test/helper/compare/index";
 import { expect } from "chai";
-import { BasicTests, testAudioContext } from "test/helper/Basic";
-import { atTime, Offline } from "test/helper/Offline";
-import { SCHEDULE_RAMP_AFTER_SET_TARGET } from "test/helper/Supports";
-import { BPM, Decibels, Frequency, Positive, Seconds, Time, Unit, UnitName } from "Tone/core/type/Units";
-import { Signal } from "Tone/signal/Signal";
+import { BasicTests, testAudioContext } from "../../../test/helper/Basic";
+import { atTime, Offline } from "../../../test/helper/Offline";
+import { SCHEDULE_RAMP_AFTER_SET_TARGET } from "../../../test/helper/Supports";
+import { BPM, Decibels, Frequency, Positive, Seconds, Time, Unit, UnitName } from "../type/Units";
+import { Signal } from "../../signal/Signal";
 import { getContext } from "../Global";
 import { Param } from "./Param";
 import { connect } from "./ToneAudioNode";
@@ -102,7 +102,7 @@ describe("Param", () => {
 					param.setValueCurveAtTime([0, 0.5, 0, 1, 1.5], 0.1, 0.8, 0.5);
 					expect(param.getValueAtTime(0.91)).to.be.closeTo(0.75, 0.01);
 				}, 1, 1, sampleRate);
-				document.body.appendChild(await Plot.signal(testBuffer));
+				// document.body.appendChild(await Plot.signal(testBuffer));
 				matchesOutputCurve(param, testBuffer);
 			});
 
@@ -132,7 +132,7 @@ describe("Param", () => {
 					param.cancelScheduledValues(1.2);
 					param.linearRampToValueAtTime(1, 1.3);
 				}, 1.5, 1, sampleRate);
-				document.body.appendChild(await Plot.signal(testBuffer));
+				// document.body.appendChild(await Plot.signal(testBuffer));
 				matchesOutputCurve(param, testBuffer);
 			});
 
@@ -289,7 +289,7 @@ describe("Param", () => {
 				for (let time = 0.41; time < 2; time += 0.1) {
 					expect(buffer.getValueAtTime(time)).to.be.closeTo(sig.getValueAtTime(time), 0.01);
 				}
-				// document.body.appendChild(await Plot.signal(buffer));
+				document.body.appendChild(await Plot.signal(buffer));
 			});
 		});
 

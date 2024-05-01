@@ -45,12 +45,12 @@ export class Chorus extends StereoFeedbackEffect<ChorusOptions> {
 	/**
 	 * the lfo which controls the delayTime
 	 */
-	private _lfoL: LFO
+	private _lfoL: LFO;
 
 	/**
 	 * another LFO for the right side with a 180 degree phase diff
 	 */
-	private _lfoR: LFO
+	private _lfoR: LFO;
 
 	/**
 	 * delay for left
@@ -65,7 +65,7 @@ export class Chorus extends StereoFeedbackEffect<ChorusOptions> {
 	/**
 	 * The frequency of the LFO which modulates the delayTime.
 	 */
-	readonly frequency: Signal<"frequency">
+	readonly frequency: Signal<"frequency">;
 
 	/**
 	 * @param frequency The frequency of the LFO.

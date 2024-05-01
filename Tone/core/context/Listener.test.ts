@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { Offline } from "test/helper/Offline";
+import { Offline } from "../../../test/helper/Offline";
 import { getContext } from "../Global";
 import { ListenerClass } from "./Listener";
 

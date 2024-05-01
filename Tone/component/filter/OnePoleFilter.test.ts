@@ -1,10 +1,10 @@
 import { OnePoleFilter } from "./OnePoleFilter";
-import { BasicTests } from "test/helper/Basic";
-import { PassAudio } from "test/helper/PassAudio";
-import { Oscillator } from "Tone/source/oscillator/Oscillator";
+import { BasicTests } from "../../../test/helper/Basic";
+import { PassAudio } from "../../../test/helper/PassAudio";
+import { Oscillator } from "../../source/oscillator/Oscillator";
 import { expect } from "chai";
-import { CompareToFile } from "test/helper/CompareToFile";
-import { atTime, Offline } from "test/helper/Offline";
+import { CompareToFile } from "../../../test/helper/CompareToFile";
+import { atTime, Offline } from "../../../test/helper/Offline";
 
 describe("OnePoleFilter", () => {
 

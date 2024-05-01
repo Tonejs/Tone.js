@@ -1,8 +1,8 @@
 import { expect } from "chai";
-import { BasicTests, warns } from "test/helper/Basic";
-import { CompareToFile } from "test/helper/CompareToFile";
-import { atTime, Offline } from "test/helper/Offline";
-import { OutputAudio } from "test/helper/OutputAudio";
+import { BasicTests, warns } from "../../test/helper/Basic";
+import { CompareToFile } from "../../test/helper/CompareToFile";
+import { atTime, Offline } from "../../test/helper/Offline";
+import { OutputAudio } from "../../test/helper/OutputAudio";
 import { PolySynth } from "./PolySynth";
 import { Synth } from "./Synth";
 import { FMSynth } from "./FMSynth";

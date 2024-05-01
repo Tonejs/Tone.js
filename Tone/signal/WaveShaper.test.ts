@@ -1,7 +1,7 @@
 import { expect } from "chai";
-import { BasicTests } from "test/helper/Basic";
-import { ConstantOutput } from "test/helper/ConstantOutput";
-import { Offline } from "test/helper/Offline";
+import { BasicTests } from "../../test/helper/Basic";
+import { ConstantOutput } from "../../test/helper/ConstantOutput";
+import { Offline } from "../../test/helper/Offline";
 import { Signal } from "./Signal";
 import { WaveShaper } from "./WaveShaper";
 

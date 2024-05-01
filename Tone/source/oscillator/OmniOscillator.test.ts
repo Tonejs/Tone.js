@@ -1,9 +1,9 @@
 import { expect } from "chai";
-import { BasicTests } from "test/helper/Basic";
-import { CompareToFile } from "test/helper/CompareToFile";
-import { OscillatorTests } from "test/helper/OscillatorTests";
-import { OutputAudio } from "test/helper/OutputAudio";
-import { SourceTests } from "test/helper/SourceTests";
+import { BasicTests } from "../../../test/helper/Basic";
+import { CompareToFile } from "../../../test/helper/CompareToFile";
+import { OscillatorTests } from "../../../test/helper/OscillatorTests";
+import { OutputAudio } from "../../../test/helper/OutputAudio";
+import { SourceTests } from "../../../test/helper/SourceTests";
 import { FMOscillator } from "./FMOscillator";
 import { OmniOscillator } from "./OmniOscillator";
 import { OmniOscillatorType } from "./OscillatorInterface";

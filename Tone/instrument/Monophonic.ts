@@ -23,7 +23,7 @@ export abstract class Monophonic<Options extends MonophonicOptions> extends Inst
 	 * The glide time between notes.
 	 */
 	@timeRange(0)
-	portamento: Seconds;
+		portamento: Seconds;
 
 	/**
 	 * Invoked when the release has finished and the output is silent.

@@ -1,5 +1,5 @@
-import { Gain } from "Tone/core/context/Gain";
-import { ToneAudioNode } from "Tone/core/context/ToneAudioNode";
+import { Gain } from "../../Tone/core/context/Gain";
+import { ToneAudioNode } from "../../Tone/core/context/ToneAudioNode";
 
 export function connectFrom(): Gain {
 	return new Gain();

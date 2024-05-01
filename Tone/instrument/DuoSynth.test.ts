@@ -1,9 +1,9 @@
-import { BasicTests } from "test/helper/Basic";
-import { InstrumentTest } from "test/helper/InstrumentTests";
+import { BasicTests } from "../../test/helper/Basic";
+import { InstrumentTest } from "../../test/helper/InstrumentTests";
 import { DuoSynth } from "./DuoSynth";
-import { CompareToFile } from "test/helper/CompareToFile";
+import { CompareToFile } from "../../test/helper/CompareToFile";
 import { expect } from "chai";
-import { MonophonicTest } from "test/helper/MonophonicTests";
+import { MonophonicTest } from "../../test/helper/MonophonicTests";
 
 describe("DuoSynth", () => {
 

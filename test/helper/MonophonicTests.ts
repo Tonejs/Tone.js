@@ -1,6 +1,6 @@
 import { expect } from "chai";
-import { Offline } from "test/helper/Offline";
-import { Monophonic } from "Tone/instrument/Monophonic";
+import { Offline } from "./Offline";
+import { Monophonic } from "../../Tone/instrument/Monophonic";
 
 export function MonophonicTest(Constr, note, constrArg?): void {
 

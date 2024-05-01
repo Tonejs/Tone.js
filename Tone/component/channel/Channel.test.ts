@@ -1,8 +1,8 @@
 import { Channel } from "./Channel";
-import { BasicTests } from "test/helper/Basic";
-import { PassAudio } from "test/helper/PassAudio";
-import { Signal } from "Tone/signal/Signal";
-import { Offline } from "test/helper/Offline";
+import { BasicTests } from "../../../test/helper/Basic";
+import { PassAudio } from "../../../test/helper/PassAudio";
+import { Signal } from "../../signal/Signal";
+import { Offline } from "../../../test/helper/Offline";
 import { expect } from "chai";
 
 describe("Channel", () => {

@@ -1,9 +1,9 @@
 import { expect } from "chai";
-import { BasicTests } from "test/helper/Basic";
-import { connectFrom, connectTo } from "test/helper/Connect";
-import { ConstantOutput } from "test/helper/ConstantOutput";
-import { Offline } from "test/helper/Offline";
-import { Decibels, Frequency, Time } from "Tone/core/type/Units";
+import { BasicTests } from "../../test/helper/Basic";
+import { connectFrom, connectTo } from "../../test/helper/Connect";
+import { ConstantOutput } from "../../test/helper/ConstantOutput";
+import { Offline } from "../../test/helper/Offline";
+import { Decibels, Frequency, Time } from "../core/type/Units";
 import { Gain } from "../core/context/Gain";
 import { Signal } from "./Signal";
 

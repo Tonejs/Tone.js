@@ -1,6 +1,6 @@
 module.exports = {
 	parser: "@typescript-eslint/parser",
-	plugins: ["jsdoc", "html"],
+	plugins: ["jsdoc", "html", "import"],
 	extends: ["plugin:@typescript-eslint/recommended"],
 	rules: {
 		"prefer-rest-params": "off",
@@ -86,5 +86,6 @@ module.exports = {
 			"error",
 			{ functions: "always", keywords: "always", classes: "always" },
 		],
+		"import/no-absolute-path": "error",
 	},
 };

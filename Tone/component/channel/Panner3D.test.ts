@@ -1,6 +1,6 @@
 import { expect } from "chai";
-import { BasicTests } from "test/helper/Basic";
-import { PassAudio } from "test/helper/PassAudio";
+import { BasicTests } from "../../../test/helper/Basic";
+import { PassAudio } from "../../../test/helper/PassAudio";
 import { Panner3D } from "./Panner3D";
 
 describe("Panner3D", () => {

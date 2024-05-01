@@ -1,10 +1,9 @@
 import { expect } from "chai";
-import "test/helper/ToneAudioBuffer";
 import { ToneAudioBuffer } from "./ToneAudioBuffer";
 import { ToneAudioBuffers } from "./ToneAudioBuffers";
 
-const testFile = "./audio/sine.wav";
-const testFile2 = "./audio/hh.wav";
+const testFile = "./test/audio/sine.wav";
+const testFile2 = "./test/audio/hh.wav";
 
 describe("ToneAudioBuffers", () => {
 	it("can be created and disposed", () => {
@@ -60,7 +59,7 @@ describe("ToneAudioBuffers", () => {
 
 	it("can pass in buffers as object and options object in second arg", done => {
 		const buffer = new ToneAudioBuffers({
-			baseUrl: "./audio/",
+			baseUrl: "./test/audio/",
 			onload(): void {
 				expect(buffer.has("sine")).to.be.true;
 				buffer.dispose();
@@ -103,7 +102,7 @@ describe("ToneAudioBuffers", () => {
 			expect(buffer.get("hat")).to.be.instanceof(ToneAudioBuffer);
 			buffer.dispose();
 			done();
-		}, "./audio/");
+		}, "./test/audio/");
 	});
 
 	it("can add a buffer", done => {

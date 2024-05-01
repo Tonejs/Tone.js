@@ -1,6 +1,6 @@
-import { TestAudioBuffer } from "@tonejs/plot";
+import { TestAudioBuffer } from "../../../test/helper/compare/TestAudioBuffer";
 import { expect } from "chai";
-import { ToneOscillatorNode } from "Tone/source/oscillator/ToneOscillatorNode";
+import { ToneOscillatorNode } from "../../source/oscillator/ToneOscillatorNode";
 import { noOp } from "../util/Interface";
 import { Offline } from "./Offline";
 import { ToneAudioBuffer } from "./ToneAudioBuffer";

@@ -1,14 +1,14 @@
 import { expect } from "chai";
-import { atTime, Offline, whenBetween } from "test/helper/Offline";
-import { Time } from "Tone/core/type/Time";
-import { noOp } from "Tone/core/util/Interface";
+import { atTime, Offline, whenBetween } from "../../../test/helper/Offline";
+import { Time } from "../type/Time";
+import { noOp } from "../util/Interface";
 import { Signal } from "../../signal/Signal";
 import { TransportTime } from "../type/TransportTime";
 import { TransportClass } from "./Transport";
 // importing for side affects
 import "../context/Destination";
-import { warns } from "test/helper/Basic";
-import { Synth } from "Tone/instrument/Synth";
+import { warns } from "../../../test/helper/Basic";
+import { Synth } from "../../instrument/Synth";
 
 describe("Transport", () => {
 

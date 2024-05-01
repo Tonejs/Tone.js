@@ -2,7 +2,7 @@ import { expect } from "chai";
 import { ToneOscillatorNode } from "../../source/oscillator/ToneOscillatorNode";
 import { assertRange, setLogger } from "./Debug";
 import { theWindow } from "../context/AudioContext";
-import { Oscillator } from "Tone/source";
+import { Oscillator } from "../../source";
 import { Context } from "../context/Context";
 
 describe("Debug", () => {

@@ -1,6 +1,6 @@
 import { expect } from "chai";
-import { BasicTests } from "test/helper/Basic";
-import { ConstantOutput } from "test/helper/ConstantOutput";
+import { BasicTests } from "../../test/helper/Basic";
+import { ConstantOutput } from "../../test/helper/ConstantOutput";
 import { Zero } from "./Zero";
 
 describe("Zero", () => {

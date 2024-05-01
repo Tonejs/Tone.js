@@ -1,10 +1,10 @@
 import { expect } from "chai";
-import { BasicTests } from "test/helper/Basic";
-import { CompareToFile } from "test/helper/CompareToFile";
-import { Offline } from "test/helper/Offline";
-import { OFFLINE_BUFFERSOURCE_ONENDED, ONLINE_TESTING } from "test/helper/Supports";
-import { ToneAudioBuffer } from "Tone/core/context/ToneAudioBuffer";
-import { getContext } from "Tone/core/Global";
+import { BasicTests } from "../../../test/helper/Basic";
+import { CompareToFile } from "../../../test/helper/CompareToFile";
+import { Offline } from "../../../test/helper/Offline";
+import { OFFLINE_BUFFERSOURCE_ONENDED, ONLINE_TESTING } from "../../../test/helper/Supports";
+import { ToneAudioBuffer } from "../../core/context/ToneAudioBuffer";
+import { getContext } from "../../core/Global";
 import { ToneBufferSource } from "./ToneBufferSource";
 
 const sampleRate = getContext().sampleRate;
@@ -18,7 +18,7 @@ describe("ToneBufferSource", () => {
 	const onesBuffer = ToneAudioBuffer.fromArray(ones);
 
 	beforeEach(() => {
-		return buffer.load("./audio/sine.wav");
+		return buffer.load("./test/audio/sine.wav");
 	});
 
 	// run the common tests
@@ -74,7 +74,7 @@ describe("ToneBufferSource", () => {
 		});
 
 		it("can be constructed with a url and onload", (done) => {
-			const source = new ToneBufferSource("./audio/short_sine.wav", () => {
+			const source = new ToneBufferSource("./test/audio/short_sine.wav", () => {
 				expect(source.buffer.loaded).is.equal(true);
 				source.dispose();
 				done();
@@ -106,7 +106,7 @@ describe("ToneBufferSource", () => {
 	context("Looping", () => {
 
 		beforeEach(() => {
-			return buffer.load("./audio/short_sine.wav");
+			return buffer.load("./test/audio/short_sine.wav");
 		});
 
 		it("can be set to loop", () => {
@@ -230,7 +230,7 @@ describe("ToneBufferSource", () => {
 	context("onended", () => {
 
 		beforeEach(() => {
-			return buffer.load("./audio/sine.wav");
+			return buffer.load("./test/audio/sine.wav");
 		});
 
 		if (ONLINE_TESTING) {
@@ -291,7 +291,7 @@ describe("ToneBufferSource", () => {
 	context("state", () => {
 
 		beforeEach(() => {
-			return buffer.load("./audio/sine.wav");
+			return buffer.load("./test/audio/sine.wav");
 		});
 
 		it("reports the right state when scheduled to stop", () => {
@@ -328,7 +328,7 @@ describe("ToneBufferSource", () => {
 	context("Start/Stop Scheduling", () => {
 
 		beforeEach(() => {
-			return buffer.load("./audio/sine.wav");
+			return buffer.load("./test/audio/sine.wav");
 		});
 
 		it("can play for a specific duration", () => {

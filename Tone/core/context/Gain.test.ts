@@ -1,7 +1,7 @@
 import { expect } from "chai";
-import { BasicTests } from "test/helper/Basic";
-import { connectFrom, connectTo } from "test/helper/Connect";
-import { PassAudio } from "test/helper/PassAudio";
+import { BasicTests } from "../../../test/helper/Basic";
+import { connectFrom, connectTo } from "../../../test/helper/Connect";
+import { PassAudio } from "../../../test/helper/PassAudio";
 import { Gain } from "./Gain";
 
 describe("Gain", () => {

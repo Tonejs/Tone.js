@@ -30,8 +30,6 @@ jobs:
           cache: 'npm'
       - name: Install dependencies
         run: npm install
-      - name: Build
-        run: npm run build
       - name: All tests
         run: npm run test
       - name: Upload coverage

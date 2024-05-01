@@ -1,8 +1,8 @@
 import { expect } from "chai";
-import { BasicTests } from "test/helper/Basic";
-import { atTime, Offline } from "test/helper/Offline";
-import { Time } from "Tone/core/type/Time";
-import { noOp } from "Tone/core/util/Interface";
+import { BasicTests } from "../../test/helper/Basic";
+import { atTime, Offline } from "../../test/helper/Offline";
+import { Time } from "../core/type/Time";
+import { noOp } from "../core/util/Interface";
 import { Sequence } from "./Sequence";
 
 describe("Sequence", () => {

@@ -32,7 +32,7 @@ export class Limiter extends ToneAudioNode<LimiterOptions> {
 	 */
 	private _compressor: Compressor;
 
-	readonly threshold: Param<"decibels">
+	readonly threshold: Param<"decibels">;
 
 	/**
 	 * @param threshold The threshold above which the gain reduction is applied.

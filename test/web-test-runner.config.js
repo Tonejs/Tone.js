@@ -1,0 +1,41 @@
+import { esbuildPlugin } from "@web/dev-server-esbuild";
+import { fromRollup } from "@web/dev-server-rollup";
+import rollupCommonjs from "@rollup/plugin-commonjs";
+import { fileURLToPath } from "url";
+import { resolve } from "path";
+import { puppeteerLauncher } from "@web/test-runner-puppeteer";
+
+const __dirname = fileURLToPath(new URL(".", import.meta.url));
+const commonjs = fromRollup(rollupCommonjs);
+
+export default {
+	files: ["./build/*/Tone/**/*.test.js", "./build/*/Tone/*.test.js"],
+	nodeResolve: true,
+	browsers: [
+		puppeteerLauncher({
+			launchOptions: {
+				headless: true,
+				args: [
+					"--no-sandbox",
+					"--use-fake-ui-for-media-stream",
+					"--use-fake-device-for-media-stream",
+					"--autoplay-policy=no-user-gesture-required",
+				],
+			},
+		}),
+	],
+	testFramework: {
+		config: {
+			ui: "bdd",
+			timeout: "10000",
+		},
+	},
+	plugins: [
+		commonjs({
+			include: [
+				"**/node_modules/**/*",
+			],
+		}),
+	],
+	rootDir: resolve(__dirname, "../"),
+};

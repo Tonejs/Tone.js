@@ -1,8 +1,8 @@
 import { expect } from "chai";
-import { BasicTests } from "test/helper/Basic";
-import { Offline } from "test/helper/Offline";
-import { StereoSignal } from "test/helper/StereoSignal";
-import { Signal } from "Tone/signal/Signal";
+import { BasicTests } from "../../../test/helper/Basic";
+import { Offline } from "../../../test/helper/Offline";
+import { StereoSignal } from "../../../test/helper/StereoSignal";
+import { Signal } from "../../signal/Signal";
 import { Mono } from "./Mono";
 
 describe("Mono", () => {

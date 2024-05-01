@@ -1,9 +1,9 @@
 import { expect } from "chai";
-import { BasicTests } from "test/helper/Basic";
-import { CompareToFile } from "test/helper/CompareToFile";
-import { EffectTests } from "test/helper/EffectTests";
-import { Offline } from "test/helper/Offline";
-import { Oscillator } from "Tone/source/oscillator/Oscillator";
+import { BasicTests } from "../../test/helper/Basic";
+import { CompareToFile } from "../../test/helper/CompareToFile";
+import { EffectTests } from "../../test/helper/EffectTests";
+import { Offline } from "../../test/helper/Offline";
+import { Oscillator } from "../source/oscillator/Oscillator";
 import { FrequencyShifter } from "./FrequencyShifter";
 
 describe("FrequencyShifter", () => {

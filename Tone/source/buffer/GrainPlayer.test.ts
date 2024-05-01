@@ -1,9 +1,9 @@
-import { BasicTests } from "test/helper/Basic";
+import { BasicTests } from "../../../test/helper/Basic";
 import { GrainPlayer } from "./GrainPlayer";
-import { Offline, whenBetween } from "test/helper/Offline";
-import { SourceTests } from "test/helper/SourceTests";
-import { ToneAudioBuffer } from "Tone/core/context/ToneAudioBuffer";
-import { CompareToFile } from "test/helper/CompareToFile";
+import { Offline, whenBetween } from "../../../test/helper/Offline";
+import { SourceTests } from "../../../test/helper/SourceTests";
+import { ToneAudioBuffer } from "../../core/context/ToneAudioBuffer";
+import { CompareToFile } from "../../../test/helper/CompareToFile";
 import { expect } from "chai";
 
 describe("GrainPlayer", () => {
@@ -11,7 +11,7 @@ describe("GrainPlayer", () => {
 	const buffer = new ToneAudioBuffer();
 
 	beforeEach(() => {
-		return buffer.load("./audio/sine.wav");
+		return buffer.load("./test/audio/sine.wav");
 	});
 
 	// run the common tests
@@ -68,7 +68,7 @@ describe("GrainPlayer", () => {
 	context("Loading", () => {
 
 		it("loads a url which was passed in", (done) => {
-			const player = new GrainPlayer("./audio/sine.wav", (() => {
+			const player = new GrainPlayer("./test/audio/sine.wav", (() => {
 				expect(player.loaded).to.be.true;
 				player.dispose();
 				done();
@@ -77,7 +77,7 @@ describe("GrainPlayer", () => {
 
 		it("can be created with an options object", (done) => {
 			const player = new GrainPlayer({
-				url: "./audio/sine.wav",
+				url: "./test/audio/sine.wav",
 				loop: true,
 				onload: function() {
 					expect(player.loop).to.be.true;
@@ -102,7 +102,7 @@ describe("GrainPlayer", () => {
 	context("Looping", () => {
 
 		beforeEach(() => {
-			buffer.load("./audio/short_sine.wav");
+			buffer.load("./test/audio/short_sine.wav");
 		});
 
 		it("can be set to loop", () => {
@@ -117,7 +117,7 @@ describe("GrainPlayer", () => {
 	context("start/stop", () => {
 
 		beforeEach(() => {
-			buffer.load("./audio/short_sine.wav");
+			buffer.load("./test/audio/short_sine.wav");
 		});
 
 		it("can be play for a specific duration", () => {
@@ -209,7 +209,7 @@ describe("GrainPlayer", () => {
 
 		it("can get an options object", () => {
 			const player = new GrainPlayer({
-				url: "./audio/sine.wav",
+				url: "./test/audio/sine.wav",
 				loopStart: 0.2,
 				loopEnd: 0.3,
 				loop: true,

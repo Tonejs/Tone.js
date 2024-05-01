@@ -1,9 +1,9 @@
 import { expect } from "chai";
-import { BasicTests } from "test/helper/Basic";
-import { CompareToFile } from "test/helper/CompareToFile";
-import { Offline, whenBetween } from "test/helper/Offline";
-import { ONLINE_TESTING } from "test/helper/Supports";
-import { Frequency } from "Tone/core/type/Frequency";
+import { BasicTests } from "../../../test/helper/Basic";
+import { CompareToFile } from "../../../test/helper/CompareToFile";
+import { Offline, whenBetween } from "../../../test/helper/Offline";
+import { ONLINE_TESTING } from "../../../test/helper/Supports";
+import { Frequency } from "../../core/type/Frequency";
 import { ToneOscillatorNode } from "./ToneOscillatorNode";
 
 describe("ToneOscillatorNode", () => {

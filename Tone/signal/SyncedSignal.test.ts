@@ -1,10 +1,10 @@
 import { SyncedSignal } from "./SyncedSignal";
-import { Offline } from "test/helper/Offline";
+import { Offline } from "../../test/helper/Offline";
 import { expect } from "chai";
-import { dbToGain } from "Tone/core/type/Conversions";
+import { dbToGain } from "../core/type/Conversions";
 import "../core/clock/Transport";
 import "../core/context/Destination";
-import { BasicTests } from "test/helper/Basic";
+import { BasicTests } from "../../test/helper/Basic";
 
 describe("SyncedSignal", () => {
 

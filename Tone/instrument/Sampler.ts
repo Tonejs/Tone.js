@@ -67,7 +67,7 @@ export class Sampler extends Instrument<SamplerOptions> {
 	 * @max 1
 	 */
 	@timeRange(0)
-	attack: Time;
+		attack: Time;
 
 	/**
 	 * The envelope applied to the end of the envelope.
@@ -75,7 +75,7 @@ export class Sampler extends Instrument<SamplerOptions> {
 	 * @max 1
 	 */
 	@timeRange(0)
-	release: Time;
+		release: Time;
 
 	/**
 	 * The shape of the attack/release curve.

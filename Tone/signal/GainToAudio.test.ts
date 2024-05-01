@@ -1,7 +1,7 @@
-import { BasicTests } from "test/helper/Basic";
-import { connectFrom, connectTo } from "test/helper/Connect";
-import { ConstantOutput } from "test/helper/ConstantOutput";
-import { Zero } from "Tone/signal/Zero";
+import { BasicTests } from "../../test/helper/Basic";
+import { connectFrom, connectTo } from "../../test/helper/Connect";
+import { ConstantOutput } from "../../test/helper/ConstantOutput";
+import { Zero } from "./Zero";
 import { GainToAudio } from "./GainToAudio";
 import { Signal } from "./Signal";
 

@@ -1,8 +1,8 @@
-import { TestAudioBuffer } from "@tonejs/plot";
-import { OfflineContext } from "Tone/core/context/OfflineContext";
-import { getContext, setContext } from "Tone/core/Global";
-import { Seconds } from "Tone/core/type/Units";
-import { isArray, isFunction } from "Tone/core/util/TypeCheck";
+import { TestAudioBuffer } from "./compare/index";
+import { OfflineContext } from "../../Tone/core/context/OfflineContext";
+import { getContext, setContext } from "../../Tone/core/Global";
+import { Seconds } from "../../Tone/core/type/Units";
+import { isArray, isFunction } from "../../Tone/core/util/TypeCheck";
 
 type ReturnFunction = (time: Seconds) => void;
 

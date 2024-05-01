@@ -10,15 +10,15 @@ function noCopy(key: string, arg: any): boolean {
 	return key === "value" || isAudioParam(arg) || isAudioNode(arg) || isAudioBuffer(arg);
 }
 
+export function deepMerge<T>(target: T): T;
+export function deepMerge<T, U>(target: T, source1: U): T & U;
+export function deepMerge<T, U, V>(target: T, source1: U, source2: V): T & U & V;
+export function deepMerge<T, U, V, W>(target: T, source1: U, source2: V, source3: W): T & U & V & W;
 /**
  * Recursively merge an object
  * @param target the object to merge into
  * @param sources the source objects to merge
  */
-export function deepMerge<T>(target: T): T;
-export function deepMerge<T, U>(target: T, source1: U): T & U;
-export function deepMerge<T, U, V>(target: T, source1: U, source2: V): T & U & V;
-export function deepMerge<T, U, V, W>(target: T, source1: U, source2: V, source3: W): T & U & V & W;
 export function deepMerge(target: any, ...sources: any[]): any {
 	if (!sources.length) {
 		return target; 

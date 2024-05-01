@@ -1,7 +1,7 @@
 // import APITest from "helper/APITest";
 import { expect } from "chai";
-import { Offline } from "test/helper/Offline";
-import { OutputAudio } from "test/helper/OutputAudio";
+import { Offline } from "./Offline";
+import { OutputAudio } from "./OutputAudio";
 import { connectFrom, connectTo } from "./Connect";
 
 export function SourceTests(Constr, args?): void {

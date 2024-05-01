@@ -1,6 +1,6 @@
 import { expect } from "chai";
-import { connectFrom } from "test/helper/Connect";
-import { Offline } from "test/helper/Offline";
+import { connectFrom } from "./Connect";
+import { Offline } from "./Offline";
 
 export function OscillatorTests(Constr, args?): void {
 

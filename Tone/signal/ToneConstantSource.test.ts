@@ -1,8 +1,8 @@
 import { expect } from "chai";
-import { BasicTests } from "test/helper/Basic";
-import { CompareToFile } from "test/helper/CompareToFile";
-import { Offline, whenBetween } from "test/helper/Offline";
-import { ONLINE_TESTING } from "test/helper/Supports";
+import { BasicTests } from "../../test/helper/Basic";
+import { CompareToFile } from "../../test/helper/CompareToFile";
+import { Offline, whenBetween } from "../../test/helper/Offline";
+import { ONLINE_TESTING } from "../../test/helper/Supports";
 import { ToneConstantSource } from "./ToneConstantSource";
 
 describe("ToneConstantSource", () => {

@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { OfflineContext } from "Tone/core/context/OfflineContext";
+import { OfflineContext } from "../../Tone/core/context/OfflineContext";
 import { Offline } from "./Offline";
 
 /**

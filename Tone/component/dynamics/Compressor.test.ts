@@ -1,6 +1,6 @@
 import { expect } from "chai";
-import { BasicTests } from "test/helper/Basic";
-import { PassAudio } from "test/helper/PassAudio";
+import { BasicTests } from "../../../test/helper/Basic";
+import { PassAudio } from "../../../test/helper/PassAudio";
 import { Compressor } from "./Compressor";
 
 describe("Compressor", () => {

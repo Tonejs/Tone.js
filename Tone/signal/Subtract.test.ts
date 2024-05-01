@@ -1,6 +1,6 @@
-import { BasicTests } from "test/helper/Basic";
-import { connectFrom, connectTo } from "test/helper/Connect";
-import { ConstantOutput } from "test/helper/ConstantOutput";
+import { BasicTests } from "../../test/helper/Basic";
+import { connectFrom, connectTo } from "../../test/helper/Connect";
+import { ConstantOutput } from "../../test/helper/ConstantOutput";
 import { Signal } from "./Signal";
 import { Subtract } from "./Subtract";
 

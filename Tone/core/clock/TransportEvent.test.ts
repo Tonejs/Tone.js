@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { Offline } from "test/helper/Offline";
+import { Offline } from "../../../test/helper/Offline";
 import { TransportClass } from "./Transport";
 import { TransportEvent } from "./TransportEvent";
 

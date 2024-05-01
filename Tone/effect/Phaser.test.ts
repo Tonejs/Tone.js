@@ -1,10 +1,10 @@
 import { Phaser } from "./Phaser";
-import { BasicTests } from "test/helper/Basic";
-import { EffectTests } from "test/helper/EffectTests";
+import { BasicTests } from "../../test/helper/Basic";
+import { EffectTests } from "../../test/helper/EffectTests";
 import { expect } from "chai";
-import { CompareToFile } from "test/helper/CompareToFile";
-import { ToneAudioBuffer } from "Tone/core";
-import { Player } from "Tone/source/buffer/Player";
+import { CompareToFile } from "../../test/helper/CompareToFile";
+import { ToneAudioBuffer } from "../core";
+import { Player } from "../source/buffer/Player";
 
 describe("Phaser", () => {
 
@@ -12,7 +12,7 @@ describe("Phaser", () => {
 	EffectTests(Phaser);
 
 	it("matches a file basic", async () => {
-		const buffer = await ToneAudioBuffer.fromUrl("./audio/FWDL.wav");
+		const buffer = await ToneAudioBuffer.fromUrl("./test/audio/FWDL.wav");
 		return CompareToFile(() => {
 			const phaser = new Phaser(2, 6, 200).toDestination();
 			const player = new Player(buffer).connect(phaser).start();

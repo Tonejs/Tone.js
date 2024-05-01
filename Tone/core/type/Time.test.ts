@@ -1,6 +1,6 @@
 import { expect } from "chai";
-import { BasicTests } from "test/helper/Basic";
-import { atTime, Offline } from "test/helper/Offline";
+import { BasicTests } from "../../../test/helper/Basic";
+import { atTime, Offline } from "../../../test/helper/Offline";
 import { getContext } from "../Global";
 import { Frequency } from "./Frequency";
 import { Ticks } from "./Ticks";

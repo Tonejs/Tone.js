@@ -91,7 +91,7 @@ export class Emitter<EventType extends string = string> extends Tone {
 	 * @param  event  The name of the event.
 	 * @param args The arguments to pass to the functions listening.
 	 */
-	emit(event, ...args: any[]): this {
+	emit(event: EventType, ...args: any[]): this {
 		if (this._events) {
 			if (this._events.hasOwnProperty(event)) {
 				const eventList = this._events[event].slice(0);

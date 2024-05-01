@@ -1,6 +1,6 @@
 import { expect } from "chai";
-import { BasicTests } from "test/helper/Basic";
-import { Offline } from "test/helper/Offline";
+import { BasicTests } from "../../../test/helper/Basic";
+import { Offline } from "../../../test/helper/Offline";
 import { TickSource } from "./TickSource";
 
 describe("TickSource", () => {

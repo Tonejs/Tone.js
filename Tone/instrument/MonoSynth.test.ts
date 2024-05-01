@@ -1,9 +1,9 @@
-import { BasicTests } from "test/helper/Basic";
+import { BasicTests } from "../../test/helper/Basic";
 import { MonoSynth } from "./MonoSynth";
-import { InstrumentTest } from "test/helper/InstrumentTests";
-import { CompareToFile } from "test/helper/CompareToFile";
+import { InstrumentTest } from "../../test/helper/InstrumentTests";
+import { CompareToFile } from "../../test/helper/CompareToFile";
 import { expect } from "chai";
-import { Offline } from "test/helper/Offline";
+import { Offline } from "../../test/helper/Offline";
 
 describe("MonoSynth", () => {
 

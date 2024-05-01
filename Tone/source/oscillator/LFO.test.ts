@@ -1,8 +1,8 @@
 import { expect } from "chai";
-import { BasicTests } from "test/helper/Basic";
-import { Offline } from "test/helper/Offline";
-import { OutputAudio } from "test/helper/OutputAudio";
-import { Signal } from "Tone/signal/Signal";
+import { BasicTests } from "../../../test/helper/Basic";
+import { Offline } from "../../../test/helper/Offline";
+import { OutputAudio } from "../../../test/helper/OutputAudio";
+import { Signal } from "../../signal/Signal";
 import { LFO, LFOOptions } from "./LFO";
 
 describe("LFO", () => {

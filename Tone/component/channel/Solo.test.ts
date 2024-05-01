@@ -1,7 +1,7 @@
 import { expect } from "chai";
-import { BasicTests } from "test/helper/Basic";
-import { ConstantOutput } from "test/helper/ConstantOutput";
-import { Signal } from "Tone/signal/Signal";
+import { BasicTests } from "../../../test/helper/Basic";
+import { ConstantOutput } from "../../../test/helper/ConstantOutput";
+import { Signal } from "../../signal/Signal";
 import { Solo } from "./Solo";
 
 describe("Solo", () => {

@@ -46,7 +46,7 @@ export class JCReverb extends StereoEffect<JCReverbOptions> {
 	/**
 	 * Room size control values. 
 	 */
-	readonly roomSize: Signal<"normalRange">
+	readonly roomSize: Signal<"normalRange">;
 
 	/**
 	 * Scale the room size

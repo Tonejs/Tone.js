@@ -1,7 +1,7 @@
 import { expect } from "chai";
-import { ConstantOutput } from "test/helper/ConstantOutput";
-import { Offline } from "test/helper/Offline";
-import { ONLINE_TESTING } from "test/helper/Supports";
+import { ConstantOutput } from "../../../test/helper/ConstantOutput";
+import { Offline } from "../../../test/helper/Offline";
+import { ONLINE_TESTING } from "../../../test/helper/Supports";
 import { TransportClass } from "../clock/Transport";
 import { getContext } from "../Global";
 import { createAudioContext } from "./AudioContext";

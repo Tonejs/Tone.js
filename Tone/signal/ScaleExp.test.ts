@@ -1,7 +1,7 @@
-import { ConstantOutput } from "test/helper/ConstantOutput";
+import { ConstantOutput } from "../../test/helper/ConstantOutput";
 import { ScaleExp } from "./ScaleExp";
-import { BasicTests } from "test/helper/Basic";
-import { Signal } from "Tone/signal/Signal";
+import { BasicTests } from "../../test/helper/Basic";
+import { Signal } from "./Signal";
 import { expect } from "chai";
 
 describe("ScaleExp", () => {

@@ -1,17 +1,17 @@
 import { expect } from "chai";
-import { BasicTests } from "test/helper/Basic";
-import { CompareToFile } from "test/helper/CompareToFile";
-import { InstrumentTest } from "test/helper/InstrumentTests";
-import { atTime, Offline } from "test/helper/Offline";
-import { ToneAudioBuffer } from "Tone/core/context/ToneAudioBuffer";
-import { Sampler } from "Tone/instrument/Sampler";
+import { BasicTests } from "../../test/helper/Basic";
+import { CompareToFile } from "../../test/helper/CompareToFile";
+import { InstrumentTest } from "../../test/helper/InstrumentTests";
+import { atTime, Offline } from "../../test/helper/Offline";
+import { ToneAudioBuffer } from "../core/context/ToneAudioBuffer";
+import { Sampler } from "./Sampler";
 
 describe("Sampler", () => {
 
 	const A4_buffer = new ToneAudioBuffer();
 
 	beforeEach(() => {
-		return A4_buffer.load("./audio/sine.wav");
+		return A4_buffer.load("./test/audio/sine.wav");
 	});
 
 	BasicTests(Sampler);
@@ -114,7 +114,7 @@ describe("Sampler", () => {
 
 		it("invokes the callback when loaded", (done) => {
 			const sampler = new Sampler({
-				A4: "./audio/sine.wav",
+				A4: "./test/audio/sine.wav",
 			}, () => {
 				expect(sampler.loaded).to.be.true;
 				done();
@@ -258,7 +258,7 @@ describe("Sampler", () => {
 
 		it("can pass in a url and invokes the callback", (done) => {
 			const sampler = new Sampler();
-			sampler.add("A4", "./audio/sine.wav", () => {
+			sampler.add("A4", "./test/audio/sine.wav", () => {
 				done();
 			});
 		});

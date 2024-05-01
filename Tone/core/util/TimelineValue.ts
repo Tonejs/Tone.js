@@ -16,7 +16,7 @@ export class TimelineValue<Type> extends Tone {
 	/**
 	 * The timeline which stores the values
 	 */
-	private _timeline: Timeline<TimelineValueEvent<Type>> = new Timeline({ memory: 10 })
+	private _timeline: Timeline<TimelineValueEvent<Type>> = new Timeline({ memory: 10 });
 
 	/**
 	 * Hold the value to return if there is no scheduled values

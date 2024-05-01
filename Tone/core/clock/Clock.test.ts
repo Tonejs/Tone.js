@@ -1,7 +1,7 @@
 import { expect } from "chai";
-import { BasicTests } from "test/helper/Basic";
-import { atTime, Offline, whenBetween } from "test/helper/Offline";
-import { ONLINE_TESTING } from "test/helper/Supports";
+import { BasicTests } from "../../../test/helper/Basic";
+import { atTime, Offline, whenBetween } from "../../../test/helper/Offline";
+import { ONLINE_TESTING } from "../../../test/helper/Supports";
 import { noOp } from "../util/Interface";
 import { Clock } from "./Clock";
 

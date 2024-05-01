@@ -34,7 +34,7 @@ export class MembraneSynth extends Synth<MembraneSynthOptions> {
 	 * @max 8
 	 */
 	@range(0)
-	octaves: Positive;
+		octaves: Positive;
 
 	/**
 	 * The amount of time the frequency envelope takes.
@@ -42,7 +42,7 @@ export class MembraneSynth extends Synth<MembraneSynthOptions> {
 	 * @max 0.5
 	 */
 	@timeRange(0)
-	pitchDecay: Time;
+		pitchDecay: Time;
 
 	/**
 	 * Portamento is ignored in this synth. use pitch decay instead.

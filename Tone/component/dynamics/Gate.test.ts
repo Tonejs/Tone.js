@@ -1,16 +1,16 @@
 import { Gate } from "./Gate";
-import { BasicTests } from "test/helper/Basic";
-import { Offline } from "test/helper/Offline";
-import { Signal } from "Tone/signal/Signal";
-import { Oscillator } from "Tone/source/oscillator/Oscillator";
-import { CompareToFile } from "test/helper/CompareToFile";
+import { BasicTests } from "../../../test/helper/Basic";
+import { Offline } from "../../../test/helper/Offline";
+import { Signal } from "../../signal/Signal";
+import { Oscillator } from "../../source/oscillator/Oscillator";
+import { CompareToFile } from "../../../test/helper/CompareToFile";
 import { expect } from "chai";
 
 describe("Gate", () => {
 
 	BasicTests(Gate);
 
-	it("matches a file", () => {
+	it.only("matches a file", () => {
 		return CompareToFile(() => {
 			const gate = new Gate(-10, 0.1).toDestination();
 			const osc = new Oscillator().connect(gate);

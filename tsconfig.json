@@ -9,22 +9,18 @@
 		"noUnusedLocals": false,
 		"removeComments": false,
 		"outDir": "./build/esm",
+		"verbatimModuleSyntax" : false,
 		"sourceMap": true,
+		"esModuleInterop": true,
 		"skipLibCheck": true,
-		"moduleResolution": "node",
+		"moduleResolution": "Bundler",
 		"strictPropertyInitialization": true,
 		"downlevelIteration": true,
 		"experimentalDecorators": true,
-		"lib": [
-			"es6",
-			"dom",
-			"es2015"
-		],
-		"baseUrl": "./"
+		"lib": ["es6", "dom", "es2015"],
+		"baseUrl": "./",
+		"rootDir": "./",
 	},
-	"include": [
-		"Tone/**/*.ts",
-		"test/**/*.ts"
-	],
+	"include": ["Tone/**/*.ts", "test/**/*.ts"],
 	"exclude": ["node_modules"]
 }

@@ -1,6 +1,6 @@
-import { BasicTests } from "test/helper/Basic";
+import { BasicTests } from "../../test/helper/Basic";
 import { Pow } from "./Pow";
-import { ConstantOutput } from "test/helper/ConstantOutput";
+import { ConstantOutput } from "../../test/helper/ConstantOutput";
 import { Signal } from "./Signal";
 
 describe("Pow", () => {

@@ -1,8 +1,8 @@
 import { expect } from "chai";
-import { atTime, Offline } from "test/helper/Offline";
-import { ONLINE_TESTING } from "test/helper/Supports";
-import { ToneAudioBuffer } from "Tone/core";
-import { getContext } from "Tone/core/Global";
+import { atTime, Offline } from "../../test/helper/Offline";
+import { ONLINE_TESTING } from "../../test/helper/Supports";
+import { ToneAudioBuffer } from "../core/context/ToneAudioBuffer";
+import { getContext } from "../core/Global";
 import { Player } from "./buffer/Player";
 import { Oscillator } from "./oscillator/Oscillator";
 

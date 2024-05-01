@@ -1,7 +1,7 @@
-import { BasicTests } from "test/helper/Basic";
+import { BasicTests } from "../../test/helper/Basic";
 import { Pattern } from "./Pattern";
-import { Offline } from "test/helper/Offline";
-import { Time } from "Tone/core/type/Time";
+import { Offline } from "../../test/helper/Offline";
+import { Time } from "../core/type/Time";
 import { expect } from "chai";
 
 describe("Pattern", () => {

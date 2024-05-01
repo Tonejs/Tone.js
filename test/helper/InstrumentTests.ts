@@ -1,9 +1,9 @@
 import { expect } from "chai";
-import { Instrument } from "Tone/instrument/Instrument";
+import { Instrument } from "../../Tone/instrument/Instrument";
 import { connectTo } from "./Connect";
 import { Offline } from "./Offline";
 import { OutputAudio } from "./OutputAudio";
-import { Monophonic } from "Tone/instrument/Monophonic";
+import { Monophonic } from "../../Tone/instrument/Monophonic";
 
 function wait(time) {
 	return new Promise(done => setTimeout(done, time));
