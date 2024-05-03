@@ -1,11 +1,10 @@
 import { BaseContext } from "./BaseContext.js";
 import { Seconds } from "../type/Units.js";
 import { AnyAudioContext } from "./AudioContext.js";
-
-type Draw = import("../util/Draw").DrawClass;
-type Destination = import("./Destination").DestinationClass;
-type Transport = import("../clock/Transport").TransportClass;
-type Listener = import("./Listener").ListenerClass;
+import type { DrawClass as Draw } from "../util/Draw.js";
+import type { DestinationClass as Destination } from "./Destination.js";
+import type { TransportClass as Transport } from "../clock/Transport.js";
+import type { ListenerClass as Listener } from "./Listener.js";
 
 export class DummyContext extends BaseContext {
 	//---------------------------

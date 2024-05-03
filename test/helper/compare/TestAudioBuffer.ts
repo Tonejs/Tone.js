@@ -1,5 +1,5 @@
 import toWav from "audiobuffer-to-wav";
-import type { ToneAudioBuffer } from "../../../Tone/core/context/ToneAudioBuffer";
+import type { ToneAudioBuffer } from "../../../Tone/core/context/ToneAudioBuffer.js";
 
 export class TestAudioBuffer {
 	static async fromUrl(

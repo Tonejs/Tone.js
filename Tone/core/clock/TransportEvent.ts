@@ -1,7 +1,6 @@
 import { Seconds, Ticks } from "../type/Units.js";
 import { noOp } from "../util/Interface.js";
-
-type Transport = import("../clock/Transport").TransportClass;
+import type { TransportClass as Transport } from "./Transport.js";
 
 export interface TransportEventOptions {
 	callback: (time: number) => void;

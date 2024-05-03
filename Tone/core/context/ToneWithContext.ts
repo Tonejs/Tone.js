@@ -19,7 +19,7 @@ import {
 	isUndef,
 } from "../util/TypeCheck.js";
 import { BaseContext } from "./BaseContext.js";
-import type { TransportClass } from "../clock/Transport";
+import type { TransportClass } from "../clock/Transport.js";
 
 /**
  * A unit which process audio

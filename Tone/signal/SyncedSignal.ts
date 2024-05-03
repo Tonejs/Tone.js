@@ -11,7 +11,7 @@ import { optionsFromArguments } from "../core/util/Defaults.js";
 import { TransportTimeClass } from "../core/type/TransportTime.js";
 import { ToneConstantSource } from "./ToneConstantSource.js";
 import { OutputNode } from "../core/context/ToneAudioNode.js";
-import type { TransportClass } from "../core/clock/Transport";
+import type { TransportClass } from "../core/clock/Transport.js";
 
 /**
  * Adds the ability to synchronize the signal to the {@link TransportClass}

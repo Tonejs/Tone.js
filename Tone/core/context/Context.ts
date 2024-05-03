@@ -12,11 +12,10 @@ import {
 import { closeContext, initializeContext } from "./ContextInitialization.js";
 import { BaseContext, ContextLatencyHint } from "./BaseContext.js";
 import { assert } from "../util/Debug.js";
-
-type Transport = import("../clock/Transport").TransportClass;
-type Destination = import("./Destination").DestinationClass;
-type Listener = import("./Listener").ListenerClass;
-type Draw = import("../util/Draw").DrawClass;
+import type { DrawClass as Draw } from "../util/Draw.js";
+import type { DestinationClass as Destination } from "./Destination.js";
+import type { TransportClass as Transport } from "../clock/Transport.js";
+import type { ListenerClass as Listener } from "./Listener.js";
 
 export interface ContextOptions {
 	clockSource: TickerClockSource;

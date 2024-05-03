@@ -3,8 +3,7 @@ import { TicksClass } from "../type/Ticks.js";
 import { Seconds, Ticks, Time } from "../type/Units.js";
 import { TransportEvent, TransportEventOptions } from "./TransportEvent.js";
 import { GT, LT } from "../util/Math.js";
-
-type Transport = import("../clock/Transport").TransportClass;
+import type { TransportClass as Transport } from "./Transport.js";
 
 interface TransportRepeatEventOptions extends TransportEventOptions {
 	interval: Ticks;

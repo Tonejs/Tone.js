@@ -1,4 +1,6 @@
 import { isUndef } from "./TypeCheck.js";
+import type { BaseContext } from "../context/BaseContext.js";
+import type { Time } from "../type/Units.js";
 
 /**
  * Assert that the statement is true, otherwise invoke the error.
@@ -25,9 +27,7 @@ export function assertRange(value: number, gte: number, lte = Infinity): void {
 /**
  * Warn if the context is not running.
  */
-export function assertContextRunning(
-	context: import("../context/BaseContext").BaseContext
-): void {
+export function assertContextRunning(context: BaseContext): void {
 	// add a warning if the context is not started
 	if (!context.isOffline && context.state !== "running") {
 		warn(
@@ -52,9 +52,7 @@ export function enterScheduledCallback(insideCallback: boolean): void {
 /**
  * Make sure that a time was passed into
  */
-export function assertUsedScheduleTime(
-	time?: import("../type/Units").Time
-): void {
+export function assertUsedScheduleTime(time?: Time): void {
 	if (
 		isUndef(time) &&
 		isInsideScheduledCallback &&

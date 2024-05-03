@@ -1,8 +1,7 @@
 //-------------------------------------
 // INITIALIZING NEW CONTEXT
 //-------------------------------------
-
-type Context = import("./Context").Context;
+import type { Context } from "./Context.js";
 
 /**
  * Array of callbacks to invoke when a new context is created

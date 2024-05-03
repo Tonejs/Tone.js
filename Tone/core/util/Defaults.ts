@@ -4,8 +4,7 @@ import {
 	isAudioParam,
 } from "./AdvancedTypeCheck.js";
 import { isDefined, isObject, isUndef } from "./TypeCheck.js";
-
-type BaseToneOptions = import("../Tone").BaseToneOptions;
+import type { BaseToneOptions } from "../Tone.js";
 
 /**
  * Some objects should not be merged

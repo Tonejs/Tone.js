@@ -1,6 +1,6 @@
 import { analyze } from "./Spectrum.js";
 import { TestAudioBuffer } from "./TestAudioBuffer.js";
-import type { ToneAudioBuffer } from "../../../Tone/core/context/ToneAudioBuffer";
+import type { ToneAudioBuffer } from "../../../Tone/core/context/ToneAudioBuffer.js";
 import plotly from "plotly.js-dist";
 import array2d from "array2d";
 
