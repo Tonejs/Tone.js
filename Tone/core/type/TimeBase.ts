@@ -200,8 +200,8 @@ export abstract class TimeBaseClass<
 			for (const typeName in this._val) {
 				if (isDefined(this._val[typeName])) {
 					const quantity = this._val[typeName];
-					// @ts-ignore
 					const time =
+						// @ts-ignore
 						new this.constructor(this.context, typeName).valueOf() *
 						quantity;
 					total += time;

@@ -725,8 +725,8 @@ describe("Player", () => {
 						});
 						getContext().lookAhead = originalLookAhead;
 						// ensure each source has a different stopTime
-						// @ts-ignore
 						expect(checkStopTimes.size).to.equal(
+							// @ts-ignore
 							player._activeSources.size
 						);
 						done();
