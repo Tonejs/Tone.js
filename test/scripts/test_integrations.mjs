@@ -1,7 +1,7 @@
 #!/usr/bin/env zx
 import "zx/globals";
 import { glob } from "glob";
-import { resolve, basename } from "path";
+import { basename, resolve } from "path";
 
 const integrations = await glob(resolve(__dirname, "../integration/*"));
 for (let dir of integrations) {

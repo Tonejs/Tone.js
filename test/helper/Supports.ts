@@ -4,7 +4,7 @@
 
 const name = "Chrome" as string;
 
-const version = 121
+const version = 121;
 
 function is(browser, above?): boolean {
 	return false;

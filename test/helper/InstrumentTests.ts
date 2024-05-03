@@ -1,9 +1,9 @@
 import { expect } from "chai";
-import { Instrument } from "../../Tone/instrument/Instrument";
-import { connectTo } from "./Connect";
-import { Offline } from "./Offline";
-import { OutputAudio } from "./OutputAudio";
-import { Monophonic } from "../../Tone/instrument/Monophonic";
+import { Instrument } from "../../Tone/instrument/Instrument.js";
+import { connectTo } from "./Connect.js";
+import { Offline } from "./Offline.js";
+import { OutputAudio } from "./OutputAudio.js";
+import { Monophonic } from "../../Tone/instrument/Monophonic.js";
 
 function wait(time) {
 	return new Promise(done => setTimeout(done, time));
@@ -170,7 +170,6 @@ export function InstrumentTest(Constr, note, constrArg?, optionsIndex?): void {
 				expect(buffer.isSilent()).to.be.true;
 			});
 		});
-
 
 		it("can unsync and re-sync triggerAttack to the Transport", () => {
 			return Offline(async ({ transport }) => {

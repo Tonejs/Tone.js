@@ -1,6 +1,6 @@
-import { OfflineRender } from "./OfflineRender";
-import { analyze } from "./Spectrum";
-import { TestAudioBuffer } from "./TestAudioBuffer";
+import { OfflineRender } from "./OfflineRender.js";
+import { analyze } from "./Spectrum.js";
+import { TestAudioBuffer } from "./TestAudioBuffer.js";
 
 export function compareSpectra(bufferA: TestAudioBuffer, bufferB: TestAudioBuffer): number {
 

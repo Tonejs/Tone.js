@@ -1,4 +1,4 @@
-import { TestAudioBuffer } from "./TestAudioBuffer";
+import { TestAudioBuffer } from "./TestAudioBuffer.js";
 import windowing from "fft-windowing";
 import ft from "fourier-transform";
 
@@ -12,19 +12,19 @@ export function analyze(
 ) {
 	const spectrogram: number[][] = [];
 	buffer
-		.toMono()
-		.toArray()
-		.forEach((channel) => {
-			for (
-				let index = 0;
-				index < channel.length - fftSize;
-				index += hopSize
-			) {
-				const segment = windowing.blackman_harris(
-					channel.slice(index, index + fftSize)
-				);
-				spectrogram.push(ft(segment));
-			}
-		});
+			.toMono()
+			.toArray()
+			.forEach((channel) => {
+				for (
+					let index = 0;
+					index < channel.length - fftSize;
+					index += hopSize
+				) {
+					const segment = windowing.blackman_harris(
+						channel.slice(index, index + fftSize)
+					);
+					spectrogram.push(ft(segment));
+				}
+			});
 	return spectrogram;
 }

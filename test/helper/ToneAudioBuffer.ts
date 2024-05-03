@@ -1,4 +1,4 @@
-import { ToneAudioBuffer } from "../../Tone/core/context/ToneAudioBuffer";
+import { ToneAudioBuffer } from "../../Tone/core/context/ToneAudioBuffer.js";
 
 // point to the relative path of the audio files
 // @ts-ignore

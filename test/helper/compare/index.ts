@@ -1,8 +1,8 @@
-import * as Compare from "./Compare";
-import * as Plot from "./Plot";
-export { OfflineRender as Offline } from "./OfflineRender";
-export { PassesAudio } from "./OfflineRender";
-export { MakesSound } from "./OfflineRender";
-export { TestAudioBuffer } from "./TestAudioBuffer";
+import * as Compare from "./Compare.js";
+import * as Plot from "./Plot.js";
+export { OfflineRender as Offline } from "./OfflineRender.js";
+export { PassesAudio } from "./OfflineRender.js";
+export { MakesSound } from "./OfflineRender.js";
+export { TestAudioBuffer } from "./TestAudioBuffer.js";
 
 export { Compare, Plot };

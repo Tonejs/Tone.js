@@ -1,8 +1,8 @@
 import { expect } from "chai";
-import { connectFrom, connectTo } from "./Connect";
-import { Offline } from "./Offline";
-import { PassAudio } from "./PassAudio";
-import { Signal } from "../../Tone/signal/Signal";
+import { connectFrom, connectTo } from "./Connect.js";
+import { Offline } from "./Offline.js";
+import { PassAudio } from "./PassAudio.js";
+import { Signal } from "../../Tone/signal/Signal.js";
 
 export function EffectTests(Constr, args?, before?): void {
 

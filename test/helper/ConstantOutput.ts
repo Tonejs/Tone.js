@@ -1,6 +1,6 @@
 import { expect } from "chai";
-import { OfflineContext } from "../../Tone/core/context/OfflineContext";
-import { Offline } from "./Offline";
+import { OfflineContext } from "../../Tone/core/context/OfflineContext.js";
+import { Offline } from "./Offline.js";
 
 /**
  * Test that the output of the callback is a constant value

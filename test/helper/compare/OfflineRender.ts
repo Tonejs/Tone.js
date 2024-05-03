@@ -1,4 +1,4 @@
-import { TestAudioBuffer } from "./TestAudioBuffer";
+import { TestAudioBuffer } from "./TestAudioBuffer.js";
 
 export async function OfflineRender(
 	callback: (context: OfflineAudioContext) => Promise<void> | void,
