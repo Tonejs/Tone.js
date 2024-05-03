@@ -1,0 +1,10 @@
+{
+    "name": "tone-vite-test",
+    "dependencies": {
+        "tone": "file:../../..",
+        "vite": "^5.2.11"
+    },
+    "scripts": {
+        "test": "vite build ./"
+    }
+}

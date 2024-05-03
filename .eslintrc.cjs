@@ -1,7 +1,13 @@
 module.exports = {
 	parser: "@typescript-eslint/parser",
-	plugins: ["jsdoc", "html", "import"],
+	plugins: ["jsdoc", "html", "import", "file-extension-in-import-ts"],
 	extends: ["plugin:@typescript-eslint/recommended"],
+	settings: {
+		"import/extensions": [".js", ".ts"],
+		"import/resolver": {
+			typescript: true,
+		},
+	},
 	rules: {
 		"prefer-rest-params": "off",
 		"@typescript-eslint/ban-ts-ignore": "off",
@@ -86,6 +92,6 @@ module.exports = {
 			"error",
 			{ functions: "always", keywords: "always", classes: "always" },
 		],
-		"import/no-absolute-path": "error",
+		"file-extension-in-import-ts/file-extension-in-import-ts": "error"
 	},
 };

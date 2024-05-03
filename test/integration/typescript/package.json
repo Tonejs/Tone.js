@@ -1,0 +1,11 @@
+{
+    "name": "tone-typescript-test",
+    "dependencies": {
+        "@types/node": "^20.12.8",
+        "tone": "file:../../..",
+        "typescript": "^5.4.5"
+    },
+    "scripts": {
+        "test": "tsc ./test.ts --noEmit --lib dom"
+    }
+}
