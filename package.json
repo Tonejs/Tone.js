@@ -19,7 +19,7 @@
 		"docs": "node scripts/generate_docs.cjs",
 		"docs:json": "typedoc --options \"./scripts/typedoc.json\" --json \"./docs/tone.json\"",
 		"increment": "node scripts/increment_version.cjs",
-		"lint": "eslint --ignore-pattern ./Tone/**/*.test.ts --ext ts ./Tone",
+		"lint": "eslint --ext ts ./Tone",
 		"lint:fix": "eslint --ext ts --fix ./Tone ./test",
 		"pretty": "prettier ./Tone ./test -w",
 		"scratch": "webpack -w --env scratch=1 --mode=development",
