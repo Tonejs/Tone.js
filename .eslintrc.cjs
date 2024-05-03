@@ -1,6 +1,6 @@
 module.exports = {
 	parser: "@typescript-eslint/parser",
-	plugins: ["jsdoc", "html", "import", "file-extension-in-import-ts"],
+	plugins: ["jsdoc", "html", "file-extension-in-import-ts"],
 	extends: ["plugin:@typescript-eslint/recommended"],
 	settings: {
 		"import/extensions": [".js", ".ts"],
