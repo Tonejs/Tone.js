@@ -153,8 +153,7 @@ describe("IntervalTimeline", () => {
 				state: "C",
 				time: 2,
 			});
-			// @ts-ignore
-			expect(sched.get(0.2).state).to.equal("A");
+			expect(sched.get(0.2)?.state).to.equal("A");
 			sched.dispose();
 		});
 
@@ -165,8 +164,7 @@ describe("IntervalTimeline", () => {
 				state: "A",
 				time: 0,
 			});
-			// @ts-ignore
-			expect(sched.get(0.99).state).to.equal("A");
+			expect(sched.get(0.99)?.state).to.equal("A");
 			expect(sched.get(1)).to.equal(null);
 			sched.dispose();
 		});
@@ -201,8 +199,7 @@ describe("IntervalTimeline", () => {
 				state: "C",
 				time: 2,
 			});
-			// @ts-ignore
-			expect(sched.get(0.2).state).to.equal("B");
+			expect(sched.get(0.2)?.state).to.equal("B");
 			sched.dispose();
 		});
 
@@ -228,10 +225,8 @@ describe("IntervalTimeline", () => {
 			sched.add(ev2);
 			sched.remove(ev0);
 			sched.remove(ev1);
-			// @ts-ignore
 			expect(sched.get(0.2)).to.not.equal(null);
-			// @ts-ignore
-			expect(sched.get(0.2).state).to.equal("C");
+			expect(sched.get(0.2)?.state).to.equal("C");
 			sched.dispose();
 		});
 
