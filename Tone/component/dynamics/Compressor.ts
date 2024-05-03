@@ -1,8 +1,11 @@
-import { Param } from "../../core/context/Param";
-import { ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
-import { Decibels, Positive, Time } from "../../core/type/Units";
-import { optionsFromArguments } from "../../core/util/Defaults";
-import { readOnly } from "../../core/util/Interface";
+import { Param } from "../../core/context/Param.js";
+import {
+	ToneAudioNode,
+	ToneAudioNodeOptions,
+} from "../../core/context/ToneAudioNode.js";
+import { Decibels, Positive, Time } from "../../core/type/Units.js";
+import { optionsFromArguments } from "../../core/util/Defaults.js";
+import { readOnly } from "../../core/util/Interface.js";
 
 export interface CompressorOptions extends ToneAudioNodeOptions {
 	attack: Time;
@@ -23,13 +26,13 @@ export interface CompressorOptions extends ToneAudioNodeOptions {
  * @category Component
  */
 export class Compressor extends ToneAudioNode<CompressorOptions> {
-
 	readonly name: string = "Compressor";
 
 	/**
 	 * the compressor node
 	 */
-	private _compressor: DynamicsCompressorNode = this.context.createDynamicsCompressor();
+	private _compressor: DynamicsCompressorNode =
+		this.context.createDynamicsCompressor();
 	readonly input = this._compressor;
 	readonly output = this._compressor;
 
@@ -76,9 +79,17 @@ export class Compressor extends ToneAudioNode<CompressorOptions> {
 	constructor(threshold?: Decibels, ratio?: Positive);
 	constructor(options?: Partial<CompressorOptions>);
 	constructor() {
-
-		super(optionsFromArguments(Compressor.getDefaults(), arguments, ["threshold", "ratio"]));
-		const options = optionsFromArguments(Compressor.getDefaults(), arguments, ["threshold", "ratio"]);
+		super(
+			optionsFromArguments(Compressor.getDefaults(), arguments, [
+				"threshold",
+				"ratio",
+			])
+		);
+		const options = optionsFromArguments(
+			Compressor.getDefaults(),
+			arguments,
+			["threshold", "ratio"]
+		);
 
 		this.threshold = new Param({
 			minValue: this._compressor.threshold.minValue,

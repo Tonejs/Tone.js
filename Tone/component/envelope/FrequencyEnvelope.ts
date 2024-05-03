@@ -1,9 +1,9 @@
-import { optionsFromArguments } from "../../core/util/Defaults";
-import { Frequency, Hertz, NormalRange, Time } from "../../core/type/Units";
-import { Envelope, EnvelopeOptions } from "./Envelope";
-import { Scale } from "../../signal/Scale";
-import { Pow } from "../../signal/Pow";
-import { assertRange } from "../../core/util/Debug";
+import { optionsFromArguments } from "../../core/util/Defaults.js";
+import { Frequency, Hertz, NormalRange, Time } from "../../core/type/Units.js";
+import { Envelope, EnvelopeOptions } from "./Envelope.js";
+import { Scale } from "../../signal/Scale.js";
+import { Pow } from "../../signal/Pow.js";
+import { assertRange } from "../../core/util/Debug.js";
 
 export interface FrequencyEnvelopeOptions extends EnvelopeOptions {
 	baseFrequency: Frequency;
@@ -13,7 +13,7 @@ export interface FrequencyEnvelopeOptions extends EnvelopeOptions {
 /**
  * FrequencyEnvelope is an {@link Envelope} which ramps between {@link baseFrequency}
  * and {@link octaves}. It can also have an optional {@link exponent} to adjust the curve
- * which it ramps. 
+ * which it ramps.
  * @example
  * const oscillator = new Tone.Oscillator().toDestination().start();
  * const freqEnv = new Tone.FrequencyEnvelope({
@@ -26,7 +26,6 @@ export interface FrequencyEnvelopeOptions extends EnvelopeOptions {
  * @category Component
  */
 export class FrequencyEnvelope extends Envelope {
-
 	readonly name: string = "FrequencyEnvelope";
 
 	/**
@@ -55,18 +54,34 @@ export class FrequencyEnvelope extends Envelope {
 	 * @param sustain 	a percentage (0-1) of the full amplitude
 	 * @param release	the release time in seconds
 	 */
-	constructor(attack?: Time, decay?: Time, sustain?: NormalRange, release?: Time);
-	constructor(options?: Partial<FrequencyEnvelopeOptions>)
+	constructor(
+		attack?: Time,
+		decay?: Time,
+		sustain?: NormalRange,
+		release?: Time
+	);
+	constructor(options?: Partial<FrequencyEnvelopeOptions>);
 	constructor() {
-		super(optionsFromArguments(FrequencyEnvelope.getDefaults(), arguments, ["attack", "decay", "sustain", "release"]));
-		const options = optionsFromArguments(FrequencyEnvelope.getDefaults(), arguments, ["attack", "decay", "sustain", "release"]);
+		super(
+			optionsFromArguments(FrequencyEnvelope.getDefaults(), arguments, [
+				"attack",
+				"decay",
+				"sustain",
+				"release",
+			])
+		);
+		const options = optionsFromArguments(
+			FrequencyEnvelope.getDefaults(),
+			arguments,
+			["attack", "decay", "sustain", "release"]
+		);
 
 		this._octaves = options.octaves;
 		this._baseFrequency = this.toFrequency(options.baseFrequency);
 
 		this._exponent = this.input = new Pow({
 			context: this.context,
-			value: options.exponent
+			value: options.exponent,
 		});
 		this._scale = this.output = new Scale({
 			context: this.context,

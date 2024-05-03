@@ -1,8 +1,11 @@
-import { Param } from "../../core/context/Param";
-import { ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
-import { AudioRange } from "../../core/type/Units";
-import { optionsFromArguments } from "../../core/util/Defaults";
-import { readOnly } from "../../core/util/Interface";
+import { Param } from "../../core/context/Param.js";
+import {
+	ToneAudioNode,
+	ToneAudioNodeOptions,
+} from "../../core/context/ToneAudioNode.js";
+import { AudioRange } from "../../core/type/Units.js";
+import { optionsFromArguments } from "../../core/util/Defaults.js";
+import { readOnly } from "../../core/util/Interface.js";
 
 interface TonePannerOptions extends ToneAudioNodeOptions {
 	pan: AudioRange;
@@ -21,7 +24,6 @@ interface TonePannerOptions extends ToneAudioNodeOptions {
  * @category Component
  */
 export class Panner extends ToneAudioNode<TonePannerOptions> {
-
 	readonly name: string = "Panner";
 
 	/**
@@ -52,8 +54,14 @@ export class Panner extends ToneAudioNode<TonePannerOptions> {
 	 */
 	constructor(pan?: AudioRange);
 	constructor() {
-		super(Object.assign(optionsFromArguments(Panner.getDefaults(), arguments, ["pan"])));
-		const options = optionsFromArguments(Panner.getDefaults(), arguments, ["pan"]);
+		super(
+			Object.assign(
+				optionsFromArguments(Panner.getDefaults(), arguments, ["pan"])
+			)
+		);
+		const options = optionsFromArguments(Panner.getDefaults(), arguments, [
+			"pan",
+		]);
 
 		this.pan = new Param({
 			context: this.context,

@@ -1,25 +1,28 @@
 import { expect } from "chai";
-import { BasicTests } from "test/helper/Basic";
-import { CompareToFile } from "test/helper/CompareToFile";
-import { Offline } from "test/helper/Offline";
-import { OscillatorTests } from "test/helper/OscillatorTests";
-import { SourceTests } from "test/helper/SourceTests";
-import { PulseOscillator } from "./PulseOscillator";
+import { BasicTests } from "../../../test/helper/Basic.js";
+import { CompareToFile } from "../../../test/helper/CompareToFile.js";
+import { Offline } from "../../../test/helper/Offline.js";
+import { OscillatorTests } from "../../../test/helper/OscillatorTests.js";
+import { SourceTests } from "../../../test/helper/SourceTests.js";
+import { PulseOscillator } from "./PulseOscillator.js";
 
 describe("PulseOscillator", () => {
-
 	// run the common tests
 	BasicTests(PulseOscillator);
 	SourceTests(PulseOscillator);
 	OscillatorTests(PulseOscillator);
 
 	it("matches a file", () => {
-		return CompareToFile(() => {
-			const osc = new PulseOscillator({
-				width: 0.2,
-			}).toDestination();
-			osc.start(0);
-		}, "pulseOscillator.wav", 0.03);
+		return CompareToFile(
+			() => {
+				const osc = new PulseOscillator({
+					width: 0.2,
+				}).toDestination();
+				osc.start(0);
+			},
+			"pulseOscillator.wav",
+			0.03
+		);
 	});
 
 	context("Phase Rotation", () => {
@@ -62,11 +65,9 @@ describe("PulseOscillator", () => {
 				});
 			});
 		});
-
 	});
 
 	context("Width", () => {
-
 		it("can set the width", () => {
 			const osc = new PulseOscillator({
 				width: 0.2,

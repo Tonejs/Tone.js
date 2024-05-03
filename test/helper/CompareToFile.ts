@@ -1,8 +1,7 @@
-import { Compare, TestAudioBuffer } from "@tonejs/plot";
-import "./ToneAudioBuffer";
-import { ToneAudioBuffer } from "Tone/core/context/ToneAudioBuffer";
-import { Offline } from "Tone/core/context/Offline";
-import { Context } from "Tone/core/context/Context";
+import { Compare, TestAudioBuffer } from "./compare/index.js";
+import { ToneAudioBuffer } from "../../Tone/core/context/ToneAudioBuffer.js";
+import { Offline } from "../../Tone/core/context/Offline.js";
+import { Context } from "../../Tone/core/context/Context.js";
 
 /**
  * Load a file for comparison
@@ -21,27 +20,47 @@ async function getBuffersToCompare(
 	} else {
 		const loadedBuffer = await ToneAudioBuffer.fromUrl(filename);
 		const bufferB = new TestAudioBuffer(loadedBuffer);
-		const renderedBuffer = await Offline(callback, bufferB.duration, bufferB.numberOfChannels, bufferB.sampleRate);
+		const renderedBuffer = await Offline(
+			callback,
+			bufferB.duration,
+			bufferB.numberOfChannels,
+			bufferB.sampleRate
+		);
 		const bufferA = new TestAudioBuffer(renderedBuffer);
 		return {
-			bufferA, bufferB,
+			bufferA,
+			bufferB,
 		};
 	}
 }
 
+/**
+ * Compare the output of the callback to a pre-rendered file
+ */
 export async function CompareToFile(
-	callback, url: string,
+	callback,
+	url: string,
 	threshold = 0.001,
 	RENDER_NEW = false,
-	duration = 0.1, channels = 1,
+	duration = 0.1,
+	channels = 1
 ): Promise<void> {
-	url = "audio/compare/" + url;
-	const response = await getBuffersToCompare(callback, url, duration, channels, 44100, RENDER_NEW);
+	url = "test/audio/compare/" + url;
+	const response = await getBuffersToCompare(
+		callback,
+		url,
+		duration,
+		channels,
+		44100,
+		RENDER_NEW
+	);
 	if (response) {
 		const { bufferA, bufferB } = response;
 		const error = Compare.compareSpectra(bufferA, bufferB);
 		if (error > threshold) {
-			throw new Error(`Error ${error} greater than threshold ${threshold}`);
+			throw new Error(
+				`Error ${error} greater than threshold ${threshold}`
+			);
 		}
 	}
 }

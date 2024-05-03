@@ -1,48 +1,59 @@
 import { expect } from "chai";
-import { BasicTests, warns } from "test/helper/Basic";
-import { CompareToFile } from "test/helper/CompareToFile";
-import { atTime, Offline } from "test/helper/Offline";
-import { OutputAudio } from "test/helper/OutputAudio";
-import { PolySynth } from "./PolySynth";
-import { Synth } from "./Synth";
-import { FMSynth } from "./FMSynth";
-import { PluckSynth } from "./PluckSynth";
-import { MetalSynth } from "./MetalSynth";
-import { MembraneSynth } from "./MembraneSynth";
+import { BasicTests, warns } from "../../test/helper/Basic.js";
+import { CompareToFile } from "../../test/helper/CompareToFile.js";
+import { atTime, Offline } from "../../test/helper/Offline.js";
+import { OutputAudio } from "../../test/helper/OutputAudio.js";
+import { PolySynth } from "./PolySynth.js";
+import { Synth } from "./Synth.js";
+import { FMSynth } from "./FMSynth.js";
+import { PluckSynth } from "./PluckSynth.js";
+import { MetalSynth } from "./MetalSynth.js";
+import { MembraneSynth } from "./MembraneSynth.js";
 
 describe("PolySynth", () => {
-
 	BasicTests(PolySynth);
 
 	it("matches a file", () => {
-		return CompareToFile(() => {
-			const synth = new PolySynth().toDestination();
-			synth.triggerAttackRelease("C4", 0.2, 0);
-			synth.triggerAttackRelease("C4", 0.1, 0.1);
-			synth.triggerAttackRelease("E4", 0.1, 0.2);
-			synth.triggerAttackRelease("E4", 0.1, 0.3);
-			synth.triggerAttackRelease("G4", 0.1, 0.4);
-			synth.triggerAttackRelease("B4", 0.1, 0.4);
-			synth.triggerAttackRelease("C4", 0.2, 0.5);
-		}, "polySynth.wav", 0.6);
+		return CompareToFile(
+			() => {
+				const synth = new PolySynth().toDestination();
+				synth.triggerAttackRelease("C4", 0.2, 0);
+				synth.triggerAttackRelease("C4", 0.1, 0.1);
+				synth.triggerAttackRelease("E4", 0.1, 0.2);
+				synth.triggerAttackRelease("E4", 0.1, 0.3);
+				synth.triggerAttackRelease("G4", 0.1, 0.4);
+				synth.triggerAttackRelease("B4", 0.1, 0.4);
+				synth.triggerAttackRelease("C4", 0.2, 0.5);
+			},
+			"polySynth.wav",
+			0.6
+		);
 	});
 
 	it("matches another file", () => {
-		return CompareToFile(() => {
-			const synth = new PolySynth().toDestination();
-			synth.triggerAttackRelease(["C4", "E4", "G4", "B4"], 0.2, 0);
-			synth.triggerAttackRelease(["C4", "E4", "G4", "B4"], 0.2, 0.3);
-		}, "polySynth2.wav", 0.6);
+		return CompareToFile(
+			() => {
+				const synth = new PolySynth().toDestination();
+				synth.triggerAttackRelease(["C4", "E4", "G4", "B4"], 0.2, 0);
+				synth.triggerAttackRelease(["C4", "E4", "G4", "B4"], 0.2, 0.3);
+			},
+			"polySynth2.wav",
+			0.6
+		);
 	});
 
 	it("matches a file and chooses the right voice", () => {
-		return CompareToFile(() => {
-			const synth = new PolySynth().toDestination();
-			synth.triggerAttackRelease(["C4", "E4"], 1, 0);
-			synth.triggerAttackRelease("G4", 0.1, 0.2);
-			synth.triggerAttackRelease("B4", 0.1, 0.4);
-			synth.triggerAttackRelease("G4", 0.1, 0.6);
-		}, "polySynth3.wav", 0.5);
+		return CompareToFile(
+			() => {
+				const synth = new PolySynth().toDestination();
+				synth.triggerAttackRelease(["C4", "E4"], 1, 0);
+				synth.triggerAttackRelease("G4", 0.1, 0.2);
+				synth.triggerAttackRelease("B4", 0.1, 0.4);
+				synth.triggerAttackRelease("G4", 0.1, 0.6);
+			},
+			"polySynth3.wav",
+			0.5
+		);
 	});
 
 	it("can be constructed with monophonic synths", () => {
@@ -65,7 +76,6 @@ describe("PolySynth", () => {
 	});
 
 	context("Playing Notes", () => {
-
 		it("triggerAttackRelease can take an array of durations", () => {
 			return OutputAudio(() => {
 				const polySynth = new PolySynth();
@@ -81,7 +91,7 @@ describe("PolySynth", () => {
 				polySynth.toDestination();
 				polySynth.triggerAttack("C4", 0);
 				polySynth.triggerRelease("C4", 0.1);
-			}, 0.3).then(buffer => {
+			}, 0.3).then((buffer) => {
 				expect(buffer.getTimeOfFirstSound()).to.be.closeTo(0, 0.01);
 				expect(buffer.getValueAtTime(0.2)).to.be.closeTo(0, 0.01);
 			});
@@ -143,7 +153,11 @@ describe("PolySynth", () => {
 					},
 				});
 				polySynth.toDestination();
-				polySynth.triggerAttackRelease(["C4", "E4", "G4", "B4", "D5"], 0.1, 0);
+				polySynth.triggerAttackRelease(
+					["C4", "E4", "G4", "B4", "D5"],
+					0.1,
+					0
+				);
 				return [
 					atTime(0, () => {
 						expect(polySynth.activeVoices).to.equal(5);
@@ -246,7 +260,6 @@ describe("PolySynth", () => {
 				expect(buffer.getTimeOfLastSound()).to.be.closeTo(0.4, 0.01);
 			});
 		});
-
 	});
 
 	context("Transport sync", () => {
@@ -281,9 +294,11 @@ describe("PolySynth", () => {
 			return Offline(({ transport }) => {
 				const synth = new PolySynth(Synth, {
 					envelope: {
-						release: 0
-					}
-				}).sync().toDestination();
+						release: 0,
+					},
+				})
+					.sync()
+					.toDestination();
 				synth.triggerAttackRelease("C4", 0.5);
 				transport.start(0.5).stop(1);
 			}, 1.5).then((buffer) => {
@@ -295,9 +310,11 @@ describe("PolySynth", () => {
 			return Offline(({ transport }) => {
 				const synth = new PolySynth(Synth, {
 					envelope: {
-						release: 0
-					}
-				}).sync().toDestination();
+						release: 0,
+					},
+				})
+					.sync()
+					.toDestination();
 				synth.triggerAttackRelease("C4", 0.8, 0.5);
 				transport.loopEnd = 1;
 				transport.loop = true;
@@ -315,9 +332,12 @@ describe("PolySynth", () => {
 				const synth = new PolySynth(Synth, {
 					envelope: {
 						sustain: 1,
-						release: 0
-					}
-				}).sync().toDestination().unsync();
+						release: 0,
+					},
+				})
+					.sync()
+					.toDestination()
+					.unsync();
 				synth.triggerAttackRelease("C4", 1, 0.5);
 				transport.start().stop(1);
 			}, 2).then((buffer) => {
@@ -330,7 +350,6 @@ describe("PolySynth", () => {
 	});
 
 	context("API", () => {
-
 		it("can be constructed with an options object", () => {
 			const polySynth = new PolySynth(Synth, {
 				envelope: {

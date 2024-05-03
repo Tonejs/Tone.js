@@ -1,14 +1,13 @@
 import { expect } from "chai";
-import { Merge } from "Tone/component";
-import { Split } from "Tone/component/channel/Split";
-import { Oscillator } from "Tone/source";
-import { Gain } from "./Gain";
-import { connect, disconnect, fanIn } from "./ToneAudioNode";
-import { PassAudio } from "test/helper/PassAudio";
-import { Offline } from "test/helper/Offline";
+import { Merge } from "../../component/index.js";
+import { Split } from "../../component/channel/Split.js";
+import { Oscillator } from "../../source/index.js";
+import { Gain } from "./Gain.js";
+import { connect, disconnect, fanIn } from "./ToneAudioNode.js";
+import { PassAudio } from "../../../test/helper/PassAudio.js";
+import { Offline } from "../../../test/helper/Offline.js";
 
 describe("ToneAudioNode", () => {
-
 	context("constructor", () => {
 		it("can be created and disposed", () => {
 			const node = new Gain();
@@ -17,7 +16,6 @@ describe("ToneAudioNode", () => {
 	});
 
 	context("properties", () => {
-
 		it("reports its inputs and outputs", () => {
 			const node = new Gain();
 			expect(node.numberOfInputs).to.equal(1);
@@ -195,16 +193,15 @@ describe("ToneAudioNode", () => {
 	});
 
 	context("connect native node", () => {
-
 		it("can create a connection", () => {
-			return PassAudio(input => {
+			return PassAudio((input) => {
 				const output = input.context.destination;
 				connect(input, output);
 			});
 		});
 
 		it("can disconnect two nodes", () => {
-			return PassAudio(input => {
+			return PassAudio((input) => {
 				const output = input.context.destination;
 				connect(input, output);
 				disconnect(input, output);
@@ -212,7 +209,7 @@ describe("ToneAudioNode", () => {
 		});
 
 		it("can disconnect a node", () => {
-			PassAudio(input => {
+			PassAudio((input) => {
 				const output = input.context.destination;
 				connect(input, output);
 				disconnect(input);
@@ -220,7 +217,7 @@ describe("ToneAudioNode", () => {
 		});
 
 		it("can fan in multiple nodes to a destination", () => {
-			return PassAudio(input => {
+			return PassAudio((input) => {
 				const context = input.context;
 				const gain0 = context.createGain();
 				const gain1 = context.createGain();
@@ -228,9 +225,9 @@ describe("ToneAudioNode", () => {
 				fanIn(gain0, gain1, input, output);
 			});
 		});
-		
+
 		it("can connect one channel to another", () => {
-			return PassAudio(input => {
+			return PassAudio((input) => {
 				const context = input.context;
 				const output = input.context.destination;
 				const merge = context.createChannelMerger(2);
@@ -240,9 +237,9 @@ describe("ToneAudioNode", () => {
 				connect(split, output, 1, 0);
 			});
 		});
-		
+
 		it("can disconnect from an explicit channel", () => {
-			return PassAudio(input => {
+			return PassAudio((input) => {
 				const context = input.context;
 				const output = input.context.destination;
 				const merge = context.createChannelMerger(2);
@@ -253,7 +250,7 @@ describe("ToneAudioNode", () => {
 				disconnect(split, output, 1, 0);
 			}, false);
 		});
-		
+
 		it("can disconnect from an audio param", () => {
 			return Offline((context) => {
 				const osc = context.createOscillator();
@@ -262,16 +259,16 @@ describe("ToneAudioNode", () => {
 				disconnect(gain, osc.frequency);
 			});
 		});
-		
+
 		it("throws an error if things aren't connected", async () => {
 			let threwError = false;
-			await PassAudio(input => {
+			await PassAudio((input) => {
 				const output = input.context.destination;
 				disconnect(input, output);
-			}).catch(() => threwError = true);
+			}).catch(() => (threwError = true));
 			expect(threwError).to.equal(true);
 		});
-		
+
 		it("throws an error if the destination has no input", () => {
 			const source = new Oscillator();
 			const gain = new Gain();
@@ -281,10 +278,10 @@ describe("ToneAudioNode", () => {
 			gain.dispose();
 			source.dispose();
 		});
-		
+
 		it("throws an error if things aren't connected to a specific channel", async () => {
 			let threwError = false;
-			await PassAudio(input => {
+			await PassAudio((input) => {
 				const context = input.context;
 				const output = input.context.destination;
 				const merge = context.createChannelMerger(2);
@@ -293,7 +290,7 @@ describe("ToneAudioNode", () => {
 				connect(merge, split, 0, 0);
 				connect(split, output, 1, 0);
 				disconnect(split, output, 0, 0);
-			}).catch(() => threwError = true);
+			}).catch(() => (threwError = true));
 			expect(threwError).to.equal(true);
 		});
 	});
@@ -341,5 +338,4 @@ describe("ToneAudioNode", () => {
 			});
 		});
 	});
-
 });

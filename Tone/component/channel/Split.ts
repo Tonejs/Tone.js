@@ -1,5 +1,8 @@
-import { ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
-import { optionsFromArguments } from "../../core/util/Defaults";
+import {
+	ToneAudioNode,
+	ToneAudioNodeOptions,
+} from "../../core/context/ToneAudioNode.js";
+import { optionsFromArguments } from "../../core/util/Defaults.js";
 
 interface SplitOptions extends ToneAudioNodeOptions {
 	channels: number;
@@ -30,10 +33,17 @@ export class Split extends ToneAudioNode<SplitOptions> {
 	constructor(channels?: number);
 	constructor(options?: Partial<SplitOptions>);
 	constructor() {
-		super(optionsFromArguments(Split.getDefaults(), arguments, ["channels"]));
-		const options = optionsFromArguments(Split.getDefaults(), arguments, ["channels"]);
+		super(
+			optionsFromArguments(Split.getDefaults(), arguments, ["channels"])
+		);
+		const options = optionsFromArguments(Split.getDefaults(), arguments, [
+			"channels",
+		]);
 
-		this._splitter = this.input = this.output = this.context.createChannelSplitter(options.channels);
+		this._splitter =
+			this.input =
+			this.output =
+				this.context.createChannelSplitter(options.channels);
 		this._internalChannels = [this._splitter];
 	}
 

@@ -1,10 +1,11 @@
-import { Signal, SignalOptions } from "../../signal/Signal";
-import { InputNode } from "../context/ToneAudioNode";
-import { Seconds, Ticks, Time, UnitMap, UnitName } from "../type/Units";
-import { optionsFromArguments } from "../util/Defaults";
-import { TickParam } from "./TickParam";
+import { Signal, SignalOptions } from "../../signal/Signal.js";
+import { InputNode } from "../context/ToneAudioNode.js";
+import { Seconds, Ticks, Time, UnitMap, UnitName } from "../type/Units.js";
+import { optionsFromArguments } from "../util/Defaults.js";
+import { TickParam } from "./TickParam.js";
 
-interface TickSignalOptions<TypeName extends UnitName> extends SignalOptions<TypeName> {
+interface TickSignalOptions<TypeName extends UnitName>
+	extends SignalOptions<TypeName> {
 	value: UnitMap[TypeName];
 	multiplier: number;
 }
@@ -18,8 +19,9 @@ interface TickSignalOptions<TypeName extends UnitName> extends SignalOptions<Typ
  * for your [WAC paper](https://smartech.gatech.edu/bitstream/handle/1853/54588/WAC2016-49.pdf)
  * describing integrating timing functions for tempo calculations.
  */
-export class TickSignal<TypeName extends "hertz" | "bpm"> extends Signal<TypeName> {
-
+export class TickSignal<
+	TypeName extends "hertz" | "bpm",
+> extends Signal<TypeName> {
 	readonly name: string = "TickSignal";
 
 	/**
@@ -34,9 +36,14 @@ export class TickSignal<TypeName extends "hertz" | "bpm"> extends Signal<TypeNam
 	constructor(value?: UnitMap[TypeName]);
 	constructor(options: Partial<TickSignalOptions<TypeName>>);
 	constructor() {
-
-		super(optionsFromArguments(TickSignal.getDefaults(), arguments, ["value"]));
-		const options = optionsFromArguments(TickSignal.getDefaults(), arguments, ["value"]);
+		super(
+			optionsFromArguments(TickSignal.getDefaults(), arguments, ["value"])
+		);
+		const options = optionsFromArguments(
+			TickSignal.getDefaults(),
+			arguments,
+			["value"]
+		);
 
 		this.input = this._param = new TickParam({
 			context: this.context,

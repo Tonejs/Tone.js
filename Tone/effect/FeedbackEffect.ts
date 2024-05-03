@@ -1,8 +1,8 @@
-import { Gain } from "../core/context/Gain";
-import { Param } from "../core/context/Param";
-import { NormalRange } from "../core/type/Units";
-import { readOnly } from "../core/util/Interface";
-import { Effect, EffectOptions } from "./Effect";
+import { Gain } from "../core/context/Gain.js";
+import { Param } from "../core/context/Param.js";
+import { NormalRange } from "../core/type/Units.js";
+import { readOnly } from "../core/util/Interface.js";
+import { Effect, EffectOptions } from "./Effect.js";
 
 export interface FeedbackEffectOptions extends EffectOptions {
 	/**
@@ -22,8 +22,9 @@ export interface FeedbackEffectOptions extends EffectOptions {
  * FeedbackEffect provides a loop between an audio source and its own output.
  * This is a base-class for feedback effects.
  */
-export abstract class FeedbackEffect<Options extends FeedbackEffectOptions> extends Effect<Options> {
-
+export abstract class FeedbackEffect<
+	Options extends FeedbackEffectOptions,
+> extends Effect<Options> {
 	readonly name: string = "FeedbackEffect";
 
 	/**
@@ -37,7 +38,6 @@ export abstract class FeedbackEffect<Options extends FeedbackEffectOptions> exte
 	feedback: Param<"normalRange">;
 
 	constructor(options: FeedbackEffectOptions) {
-
 		super(options);
 
 		this._feedbackGain = new Gain({

@@ -1,9 +1,9 @@
-import { connectSeries } from "../core/context/ToneAudioNode";
-import { Gain } from "../core/context/Gain";
-import { Param } from "../core/context/Param";
-import { optionsFromArguments } from "../core/util/Defaults";
-import { Negate } from "../signal/Negate";
-import { Signal, SignalOptions } from "../signal/Signal";
+import { connectSeries } from "../core/context/ToneAudioNode.js";
+import { Gain } from "../core/context/Gain.js";
+import { Param } from "../core/context/Param.js";
+import { optionsFromArguments } from "../core/util/Defaults.js";
+import { Negate } from "../signal/Negate.js";
+import { Signal, SignalOptions } from "../signal/Signal.js";
 
 /**
  * Subtract the signal connected to the input is subtracted from the signal connected
@@ -25,7 +25,6 @@ import { Signal, SignalOptions } from "../signal/Signal";
  * @category Signal
  */
 export class Subtract extends Signal {
-
 	override = false;
 
 	readonly name: string = "Subtract";
@@ -54,7 +53,13 @@ export class Subtract extends Signal {
 	constructor(value?: number);
 	constructor(options?: Partial<SignalOptions<"number">>);
 	constructor() {
-		super(Object.assign(optionsFromArguments(Subtract.getDefaults(), arguments, ["value"])));
+		super(
+			Object.assign(
+				optionsFromArguments(Subtract.getDefaults(), arguments, [
+					"value",
+				])
+			)
+		);
 
 		connectSeries(this._constantSource, this._neg, this._sum);
 	}

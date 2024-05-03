@@ -1,14 +1,24 @@
-import { Gain } from "../../core/context/Gain";
-import { AudioRange, Degrees, Frequency, Seconds, Time } from "../../core/type/Units";
-import { optionsFromArguments } from "../../core/util/Defaults";
-import { readOnly } from "../../core/util/Interface";
-import { Signal } from "../../signal/Signal";
-import { WaveShaper } from "../../signal/WaveShaper";
-import { Source } from "../Source";
-import { Oscillator } from "./Oscillator";
-import { generateWaveform, PulseOscillatorOptions, ToneOscillatorInterface } from "./OscillatorInterface";
+import { Gain } from "../../core/context/Gain.js";
+import {
+	AudioRange,
+	Degrees,
+	Frequency,
+	Seconds,
+	Time,
+} from "../../core/type/Units.js";
+import { optionsFromArguments } from "../../core/util/Defaults.js";
+import { readOnly } from "../../core/util/Interface.js";
+import { Signal } from "../../signal/Signal.js";
+import { WaveShaper } from "../../signal/WaveShaper.js";
+import { Source } from "../Source.js";
+import { Oscillator } from "./Oscillator.js";
+import {
+	generateWaveform,
+	PulseOscillatorOptions,
+	ToneOscillatorInterface,
+} from "./OscillatorInterface.js";
 
-export { PulseOscillatorOptions } from "./OscillatorInterface";
+export { PulseOscillatorOptions } from "./OscillatorInterface.js";
 
 /**
  * PulseOscillator is an oscillator with control over pulse width,
@@ -45,8 +55,10 @@ export { PulseOscillatorOptions } from "./OscillatorInterface";
  * }, 0.1, 1);
  * @category Source
  */
-export class PulseOscillator extends Source<PulseOscillatorOptions> implements ToneOscillatorInterface {
-
+export class PulseOscillator
+	extends Source<PulseOscillatorOptions>
+	implements ToneOscillatorInterface
+{
 	readonly name: string = "PulseOscillator";
 
 	/**
@@ -86,7 +98,7 @@ export class PulseOscillator extends Source<PulseOscillatorOptions> implements T
 	 */
 	private _thresh = new WaveShaper({
 		context: this.context,
-		mapping: val => val <= 0 ? -1 : 1,
+		mapping: (val) => (val <= 0 ? -1 : 1),
 	});
 
 	/**
@@ -96,9 +108,17 @@ export class PulseOscillator extends Source<PulseOscillatorOptions> implements T
 	constructor(frequency?: Frequency, width?: AudioRange);
 	constructor(options?: Partial<PulseOscillatorOptions>);
 	constructor() {
-
-		super(optionsFromArguments(PulseOscillator.getDefaults(), arguments, ["frequency", "width"]));
-		const options = optionsFromArguments(PulseOscillator.getDefaults(), arguments, ["frequency", "width"]);
+		super(
+			optionsFromArguments(PulseOscillator.getDefaults(), arguments, [
+				"frequency",
+				"width",
+			])
+		);
+		const options = optionsFromArguments(
+			PulseOscillator.getDefaults(),
+			arguments,
+			["frequency", "width"]
+		);
 
 		this.width = new Signal({
 			context: this.context,
@@ -199,9 +219,9 @@ export class PulseOscillator extends Source<PulseOscillatorOptions> implements T
 	}
 
 	/**
-	 * *Internal use* The carrier oscillator type is fed through the 
+	 * *Internal use* The carrier oscillator type is fed through the
 	 * waveshaper node to create the pulse. Using different carrier oscillators
-	 * changes oscillator's behavior. 
+	 * changes oscillator's behavior.
 	 */
 	set carrierType(type: "triangle" | "sine") {
 		this._triangle.type = type;

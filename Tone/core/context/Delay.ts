@@ -1,8 +1,8 @@
-import { Param } from "../context/Param";
-import { Seconds, Time } from "../type/Units";
-import { optionsFromArguments } from "../util/Defaults";
-import { readOnly } from "../util/Interface";
-import { ToneAudioNode, ToneAudioNodeOptions } from "./ToneAudioNode";
+import { Param } from "../context/Param.js";
+import { Seconds, Time } from "../type/Units.js";
+import { optionsFromArguments } from "../util/Defaults.js";
+import { readOnly } from "../util/Interface.js";
+import { ToneAudioNode, ToneAudioNodeOptions } from "./ToneAudioNode.js";
 
 export interface DelayOptions extends ToneAudioNodeOptions {
 	delayTime: Time;
@@ -22,7 +22,6 @@ export interface DelayOptions extends ToneAudioNodeOptions {
  * }, 0.5, 1);
  */
 export class Delay extends ToneAudioNode<DelayOptions> {
-
 	readonly name: string = "Delay";
 
 	/**
@@ -55,14 +54,28 @@ export class Delay extends ToneAudioNode<DelayOptions> {
 	constructor(delayTime?: Time, maxDelay?: Time);
 	constructor(options?: Partial<DelayOptions>);
 	constructor() {
-		super(optionsFromArguments(Delay.getDefaults(), arguments, ["delayTime", "maxDelay"]));
+		super(
+			optionsFromArguments(Delay.getDefaults(), arguments, [
+				"delayTime",
+				"maxDelay",
+			])
+		);
 
-		const options = optionsFromArguments(Delay.getDefaults(), arguments, ["delayTime", "maxDelay"]);
+		const options = optionsFromArguments(Delay.getDefaults(), arguments, [
+			"delayTime",
+			"maxDelay",
+		]);
 
 		const maxDelayInSeconds = this.toSeconds(options.maxDelay);
-		this._maxDelay = Math.max(maxDelayInSeconds, this.toSeconds(options.delayTime));
+		this._maxDelay = Math.max(
+			maxDelayInSeconds,
+			this.toSeconds(options.delayTime)
+		);
 
-		this._delayNode = this.input = this.output = this.context.createDelay(maxDelayInSeconds);
+		this._delayNode =
+			this.input =
+			this.output =
+				this.context.createDelay(maxDelayInSeconds);
 
 		this.delayTime = new Param({
 			context: this.context,

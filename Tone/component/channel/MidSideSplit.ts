@@ -1,9 +1,12 @@
-import { ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
-import { Split } from "./Split";
-import { Add } from "../../signal/Add";
-import { Multiply } from "../../signal/Multiply";
-import { Subtract } from "../../signal/Subtract";
-import { optionsFromArguments } from "../../core/util/Defaults";
+import {
+	ToneAudioNode,
+	ToneAudioNodeOptions,
+} from "../../core/context/ToneAudioNode.js";
+import { Split } from "./Split.js";
+import { Add } from "../../signal/Add.js";
+import { Multiply } from "../../signal/Multiply.js";
+import { Subtract } from "../../signal/Subtract.js";
+import { optionsFromArguments } from "../../core/util/Defaults.js";
 
 export type MidSideSplitOptions = ToneAudioNodeOptions;
 
@@ -17,7 +20,6 @@ export type MidSideSplitOptions = ToneAudioNodeOptions;
  * @category Component
  */
 export class MidSideSplit extends ToneAudioNode<MidSideSplitOptions> {
-	
 	readonly name: string = "MidSideSplit";
 
 	readonly input: Split;
@@ -37,7 +39,7 @@ export class MidSideSplit extends ToneAudioNode<MidSideSplitOptions> {
 	private _midAdd: Add;
 
 	/**
-	 * Subtract left and right channels. 
+	 * Subtract left and right channels.
 	 */
 	private _sideSubtract: Subtract;
 
@@ -50,14 +52,14 @@ export class MidSideSplit extends ToneAudioNode<MidSideSplitOptions> {
 	 * The "side" output. `(Left-Right)/sqrt(2)`
 	 */
 	readonly side: ToneAudioNode;
-	
+
 	constructor(options?: Partial<MidSideSplitOptions>);
 	constructor() {
 		super(optionsFromArguments(MidSideSplit.getDefaults(), arguments));
 
 		this._split = this.input = new Split({
 			channels: 2,
-			context: this.context
+			context: this.context,
 		});
 		this._midAdd = new Add({ context: this.context });
 		this.mid = new Multiply({

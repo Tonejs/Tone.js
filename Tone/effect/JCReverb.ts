@@ -1,10 +1,10 @@
-import { NormalRange } from "../core/type/Units";
-import { StereoEffect, StereoEffectOptions } from "./StereoEffect";
-import { optionsFromArguments } from "../core/util/Defaults";
-import { Scale } from "../signal/Scale";
-import { Signal } from "../signal/Signal";
-import { FeedbackCombFilter } from "../component/filter/FeedbackCombFilter";
-import { readOnly } from "../core/util/Interface";
+import { NormalRange } from "../core/type/Units.js";
+import { StereoEffect, StereoEffectOptions } from "./StereoEffect.js";
+import { optionsFromArguments } from "../core/util/Defaults.js";
+import { Scale } from "../signal/Scale.js";
+import { Signal } from "../signal/Signal.js";
+import { FeedbackCombFilter } from "../component/filter/FeedbackCombFilter.js";
+import { readOnly } from "../core/util/Interface.js";
 
 export interface JCReverbOptions extends StereoEffectOptions {
 	roomSize: NormalRange;
@@ -13,7 +13,12 @@ export interface JCReverbOptions extends StereoEffectOptions {
 /**
  * an array of the comb filter delay time values
  */
-const combFilterDelayTimes = [1687 / 25000, 1601 / 25000, 2053 / 25000, 2251 / 25000];
+const combFilterDelayTimes = [
+	1687 / 25000,
+	1601 / 25000,
+	2053 / 25000,
+	2251 / 25000,
+];
 
 /**
  * the resonances of each of the comb filters
@@ -36,17 +41,16 @@ const allpassFilterFreqs = [347, 113, 37];
  * // connecting the synth to reverb through delay
  * const synth = new Tone.DuoSynth().chain(delay, reverb);
  * synth.triggerAttackRelease("A4", "8n");
- * 
+ *
  * @category Effect
  */
 export class JCReverb extends StereoEffect<JCReverbOptions> {
-
 	readonly name: string = "JCReverb";
 
 	/**
-	 * Room size control values. 
+	 * Room size control values.
 	 */
-	readonly roomSize: Signal<"normalRange">
+	readonly roomSize: Signal<"normalRange">;
 
 	/**
 	 * Scale the room size
@@ -69,9 +73,16 @@ export class JCReverb extends StereoEffect<JCReverbOptions> {
 	constructor(roomSize?: NormalRange);
 	constructor(options?: Partial<JCReverbOptions>);
 	constructor() {
-
-		super(optionsFromArguments(JCReverb.getDefaults(), arguments, ["roomSize"]));
-		const options = optionsFromArguments(JCReverb.getDefaults(), arguments, ["roomSize"]);
+		super(
+			optionsFromArguments(JCReverb.getDefaults(), arguments, [
+				"roomSize",
+			])
+		);
+		const options = optionsFromArguments(
+			JCReverb.getDefaults(),
+			arguments,
+			["roomSize"]
+		);
 
 		this.roomSize = new Signal({
 			context: this.context,
@@ -85,7 +96,7 @@ export class JCReverb extends StereoEffect<JCReverbOptions> {
 		});
 
 		// make the allpass filters
-		this._allpassFilters = allpassFilterFreqs.map(freq => {
+		this._allpassFilters = allpassFilterFreqs.map((freq) => {
 			const allpass = this.context.createBiquadFilter();
 			allpass.type = "allpass";
 			allpass.frequency.value = freq;
@@ -93,20 +104,22 @@ export class JCReverb extends StereoEffect<JCReverbOptions> {
 		});
 
 		// and the comb filters
-		this._feedbackCombFilters = combFilterDelayTimes.map((delayTime, index) => {
-			const fbcf = new FeedbackCombFilter({
-				context: this.context,
-				delayTime,
-			});
-			this._scaleRoomSize.connect(fbcf.resonance);
-			fbcf.resonance.value = combFilterResonances[index];
-			if (index < combFilterDelayTimes.length / 2) {
-				this.connectEffectLeft(...this._allpassFilters, fbcf);
-			} else {
-				this.connectEffectRight(...this._allpassFilters, fbcf);
+		this._feedbackCombFilters = combFilterDelayTimes.map(
+			(delayTime, index) => {
+				const fbcf = new FeedbackCombFilter({
+					context: this.context,
+					delayTime,
+				});
+				this._scaleRoomSize.connect(fbcf.resonance);
+				fbcf.resonance.value = combFilterResonances[index];
+				if (index < combFilterDelayTimes.length / 2) {
+					this.connectEffectLeft(...this._allpassFilters, fbcf);
+				} else {
+					this.connectEffectRight(...this._allpassFilters, fbcf);
+				}
+				return fbcf;
 			}
-			return fbcf;
-		});
+		);
 
 		// chain the allpass filters together
 		this.roomSize.connect(this._scaleRoomSize);
@@ -121,8 +134,8 @@ export class JCReverb extends StereoEffect<JCReverbOptions> {
 
 	dispose(): this {
 		super.dispose();
-		this._allpassFilters.forEach(apf => apf.disconnect());
-		this._feedbackCombFilters.forEach(fbcf => fbcf.dispose());
+		this._allpassFilters.forEach((apf) => apf.disconnect());
+		this._feedbackCombFilters.forEach((fbcf) => fbcf.dispose());
 		this.roomSize.dispose();
 		this._scaleRoomSize.dispose();
 		return this;

@@ -1,10 +1,13 @@
-import { ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
-import { Decibels, Time } from "../../core/type/Units";
-import { GreaterThan } from "../../signal/GreaterThan";
-import { Gain } from "../../core/context/Gain";
-import { Follower } from "../analysis/Follower";
-import { optionsFromArguments } from "../../core/util/Defaults";
-import { dbToGain, gainToDb } from "../../core/type/Conversions";
+import {
+	ToneAudioNode,
+	ToneAudioNodeOptions,
+} from "../../core/context/ToneAudioNode.js";
+import { Decibels, Time } from "../../core/type/Units.js";
+import { GreaterThan } from "../../signal/GreaterThan.js";
+import { Gain } from "../../core/context/Gain.js";
+import { Follower } from "../analysis/Follower.js";
+import { optionsFromArguments } from "../../core/util/Defaults.js";
+import { dbToGain, gainToDb } from "../../core/type/Conversions.js";
 
 export interface GateOptions extends ToneAudioNodeOptions {
 	threshold: Decibels;
@@ -24,7 +27,6 @@ export interface GateOptions extends ToneAudioNodeOptions {
  * @category Component
  */
 export class Gate extends ToneAudioNode<GateOptions> {
-
 	readonly name: string = "Gate";
 
 	readonly input: ToneAudioNode;
@@ -52,8 +54,18 @@ export class Gate extends ToneAudioNode<GateOptions> {
 	constructor(threshold?: Decibels, smoothing?: Time);
 	constructor(options?: Partial<GateOptions>);
 	constructor() {
-		super(Object.assign(optionsFromArguments(Gate.getDefaults(), arguments, ["threshold", "smoothing"])));
-		const options = optionsFromArguments(Gate.getDefaults(), arguments, ["threshold", "smoothing"]);
+		super(
+			Object.assign(
+				optionsFromArguments(Gate.getDefaults(), arguments, [
+					"threshold",
+					"smoothing",
+				])
+			)
+		);
+		const options = optionsFromArguments(Gate.getDefaults(), arguments, [
+			"threshold",
+			"smoothing",
+		]);
 
 		this._follower = new Follower({
 			context: this.context,
@@ -75,7 +87,7 @@ export class Gate extends ToneAudioNode<GateOptions> {
 	static getDefaults(): GateOptions {
 		return Object.assign(ToneAudioNode.getDefaults(), {
 			smoothing: 0.1,
-			threshold: -40
+			threshold: -40,
 		});
 	}
 
@@ -90,7 +102,7 @@ export class Gate extends ToneAudioNode<GateOptions> {
 	}
 
 	/**
-	 * The attack/decay speed of the gate. 
+	 * The attack/decay speed of the gate.
 	 * @see {@link Follower.smoothing}
 	 */
 	get smoothing(): Time {

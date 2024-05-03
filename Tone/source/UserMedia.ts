@@ -1,18 +1,23 @@
-import { connect, OutputNode, ToneAudioNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
-import { Decibels } from "../core/type/Units";
-import { Volume } from "../component/channel/Volume";
-import { optionsFromArguments } from "../core/util/Defaults";
-import { assert } from "../core/util/Debug";
-import { Param } from "../core/context/Param";
-import { readOnly } from "../core/util/Interface";
-import { isDefined, isNumber } from "../core/util/TypeCheck";
+import {
+	connect,
+	OutputNode,
+	ToneAudioNode,
+	ToneAudioNodeOptions,
+} from "../core/context/ToneAudioNode.js";
+import { Decibels } from "../core/type/Units.js";
+import { Volume } from "../component/channel/Volume.js";
+import { optionsFromArguments } from "../core/util/Defaults.js";
+import { assert } from "../core/util/Debug.js";
+import { Param } from "../core/context/Param.js";
+import { readOnly } from "../core/util/Interface.js";
+import { isDefined, isNumber } from "../core/util/TypeCheck.js";
 
 export interface UserMediaOptions extends ToneAudioNodeOptions {
 	volume: Decibels;
 	mute: boolean;
 }
 /**
- * UserMedia uses MediaDevices.getUserMedia to open up and external microphone or audio input. 
+ * UserMedia uses MediaDevices.getUserMedia to open up and external microphone or audio input.
  * Check [MediaDevices API Support](https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia)
  * to see which browsers are supported. Access to an external input
  * is limited to secure (HTTPS) connections.
@@ -32,7 +37,6 @@ export interface UserMediaOptions extends ToneAudioNodeOptions {
  */
 
 export class UserMedia extends ToneAudioNode<UserMediaOptions> {
-
 	readonly name: string = "UserMedia";
 
 	readonly input: undefined;
@@ -69,9 +73,14 @@ export class UserMedia extends ToneAudioNode<UserMediaOptions> {
 	constructor(volume?: Decibels);
 	constructor(options?: Partial<UserMediaOptions>);
 	constructor() {
-
-		super(optionsFromArguments(UserMedia.getDefaults(), arguments, ["volume"]));
-		const options = optionsFromArguments(UserMedia.getDefaults(), arguments, ["volume"]);
+		super(
+			optionsFromArguments(UserMedia.getDefaults(), arguments, ["volume"])
+		);
+		const options = optionsFromArguments(
+			UserMedia.getDefaults(),
+			arguments,
+			["volume"]
+		);
 
 		this._volume = this.output = new Volume({
 			context: this.context,
@@ -85,7 +94,7 @@ export class UserMedia extends ToneAudioNode<UserMediaOptions> {
 	static getDefaults(): UserMediaOptions {
 		return Object.assign(ToneAudioNode.getDefaults(), {
 			mute: false,
-			volume: 0
+			volume: 0,
 		});
 	}
 
@@ -108,7 +117,9 @@ export class UserMedia extends ToneAudioNode<UserMediaOptions> {
 			this._device = devices[labelOrId];
 		} else {
 			this._device = devices.find((device) => {
-				return device.label === labelOrId || device.deviceId === labelOrId;
+				return (
+					device.label === labelOrId || device.deviceId === labelOrId
+				);
 			});
 			// didn't find a matching device
 			if (!this._device && devices.length > 0) {
@@ -123,7 +134,7 @@ export class UserMedia extends ToneAudioNode<UserMediaOptions> {
 				sampleRate: this.context.sampleRate,
 				noiseSuppression: false,
 				mozNoiseSuppression: false,
-			}
+			},
 		};
 		if (this._device) {
 			// @ts-ignore
@@ -134,7 +145,8 @@ export class UserMedia extends ToneAudioNode<UserMediaOptions> {
 		if (!this._stream) {
 			this._stream = stream;
 			// Wrap a MediaStreamSourceNode around the live input stream.
-			const mediaStreamNode = this.context.createMediaStreamSource(stream);
+			const mediaStreamNode =
+				this.context.createMediaStreamSource(stream);
 			// Connect the MediaStreamSourceNode to a gate gain node
 			connect(mediaStreamNode, this.output);
 			this._mediaStream = mediaStreamNode;
@@ -170,7 +182,7 @@ export class UserMedia extends ToneAudioNode<UserMediaOptions> {
 	 */
 	static async enumerateDevices(): Promise<MediaDeviceInfo[]> {
 		const allDevices = await navigator.mediaDevices.enumerateDevices();
-		return allDevices.filter(device => {
+		return allDevices.filter((device) => {
 			return device.kind === "audioinput";
 		});
 	}
@@ -254,7 +266,9 @@ export class UserMedia extends ToneAudioNode<UserMediaOptions> {
 	 * If getUserMedia is supported by the browser.
 	 */
 	static get supported(): boolean {
-		return isDefined(navigator.mediaDevices) &&
-			isDefined(navigator.mediaDevices.getUserMedia);
+		return (
+			isDefined(navigator.mediaDevices) &&
+			isDefined(navigator.mediaDevices.getUserMedia)
+		);
 	}
 }

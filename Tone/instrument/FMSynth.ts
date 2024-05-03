@@ -1,8 +1,8 @@
-import { Positive } from "../core/type/Units";
-import { optionsFromArguments } from "../core/util/Defaults";
-import { RecursivePartial } from "../core/util/Interface";
-import { Multiply } from "../signal/Multiply";
-import { ModulationSynth, ModulationSynthOptions } from "./ModulationSynth";
+import { Positive } from "../core/type/Units.js";
+import { optionsFromArguments } from "../core/util/Defaults.js";
+import { RecursivePartial } from "../core/util/Interface.js";
+import { Multiply } from "../signal/Multiply.js";
+import { ModulationSynth, ModulationSynthOptions } from "./ModulationSynth.js";
 
 export interface FMSynthOptions extends ModulationSynthOptions {
 	modulationIndex: Positive;
@@ -17,7 +17,7 @@ export interface FMSynthOptions extends ModulationSynthOptions {
  * @example
  * const fmSynth = new Tone.FMSynth().toDestination();
  * fmSynth.triggerAttackRelease("C5", "4n");
- * 
+ *
  * @category Instrument
  */
 

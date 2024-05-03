@@ -1,26 +1,28 @@
 import { expect } from "chai";
-import { BasicTests } from "test/helper/Basic";
-import { CompareToFile } from "test/helper/CompareToFile";
-import { InstrumentTest } from "test/helper/InstrumentTests";
-import { MonophonicTest } from "test/helper/MonophonicTests";
-import { MetalSynth } from "./MetalSynth";
+import { BasicTests } from "../../test/helper/Basic.js";
+import { CompareToFile } from "../../test/helper/CompareToFile.js";
+import { InstrumentTest } from "../../test/helper/InstrumentTests.js";
+import { MonophonicTest } from "../../test/helper/MonophonicTests.js";
+import { MetalSynth } from "./MetalSynth.js";
 
 describe("MetalSynth", () => {
-
 	BasicTests(MetalSynth);
 
 	InstrumentTest(MetalSynth, "C2");
 	MonophonicTest(MetalSynth, "C4");
 
 	it("matches a file", () => {
-		return CompareToFile(() => {
-			const synth = new MetalSynth().toDestination();
-			synth.triggerAttackRelease(200, 0.1, 0.05);
-		}, "metalSynth.wav", 2);
+		return CompareToFile(
+			() => {
+				const synth = new MetalSynth().toDestination();
+				synth.triggerAttackRelease(200, 0.1, 0.05);
+			},
+			"metalSynth.wav",
+			2
+		);
 	});
 
 	context("API", () => {
-
 		it("can be constructed with octave and harmonicity values", () => {
 			const cymbal = new MetalSynth({
 				harmonicity: 3.1,
@@ -61,6 +63,5 @@ describe("MetalSynth", () => {
 			expect(cymbal.resonance).to.be.closeTo(2222, 1);
 			cymbal.dispose();
 		});
-
 	});
 });

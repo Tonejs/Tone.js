@@ -1,8 +1,11 @@
-import { ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
-import { ToneAudioBuffer } from "../../core/context/ToneAudioBuffer";
-import { optionsFromArguments } from "../../core/util/Defaults";
-import { Gain } from "../../core/context/Gain";
-import { noOp } from "../../core/util/Interface";
+import {
+	ToneAudioNode,
+	ToneAudioNodeOptions,
+} from "../../core/context/ToneAudioNode.js";
+import { ToneAudioBuffer } from "../../core/context/ToneAudioBuffer.js";
+import { optionsFromArguments } from "../../core/util/Defaults.js";
+import { Gain } from "../../core/context/Gain.js";
+import { noOp } from "../../core/util/Interface.js";
 
 export interface ConvolverOptions extends ToneAudioNodeOptions {
 	onload: () => void;
@@ -22,7 +25,6 @@ export interface ConvolverOptions extends ToneAudioNodeOptions {
  * @category Component
  */
 export class Convolver extends ToneAudioNode<ConvolverOptions> {
-
 	readonly name: string = "Convolver";
 
 	/**
@@ -42,14 +44,25 @@ export class Convolver extends ToneAudioNode<ConvolverOptions> {
 	 * @param url The URL of the impulse response or the ToneAudioBuffer containing the impulse response.
 	 * @param onload The callback to invoke when the url is loaded.
 	 */
-	constructor(url?: string | AudioBuffer | ToneAudioBuffer, onload?: () => void);
+	constructor(
+		url?: string | AudioBuffer | ToneAudioBuffer,
+		onload?: () => void
+	);
 	constructor(options?: Partial<ConvolverOptions>);
 	constructor() {
+		super(
+			optionsFromArguments(Convolver.getDefaults(), arguments, [
+				"url",
+				"onload",
+			])
+		);
+		const options = optionsFromArguments(
+			Convolver.getDefaults(),
+			arguments,
+			["url", "onload"]
+		);
 
-		super(optionsFromArguments(Convolver.getDefaults(), arguments, ["url", "onload"]));
-		const options = optionsFromArguments(Convolver.getDefaults(), arguments, ["url", "onload"]);
-
-		this._buffer = new ToneAudioBuffer(options.url, buffer => {
+		this._buffer = new ToneAudioBuffer(options.url, (buffer) => {
 			this.buffer = buffer;
 			options.onload();
 		});

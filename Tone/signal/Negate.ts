@@ -1,6 +1,6 @@
-import { ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
-import { Multiply } from "./Multiply";
-import { SignalOperator } from "./SignalOperator";
+import { ToneAudioNodeOptions } from "../core/context/ToneAudioNode.js";
+import { Multiply } from "./Multiply.js";
+import { SignalOperator } from "./SignalOperator.js";
 
 /**
  * Negate the incoming signal. i.e. an input signal of 10 will output -10
@@ -12,7 +12,6 @@ import { SignalOperator } from "./SignalOperator";
  * @category Signal
  */
 export class Negate extends SignalOperator<ToneAudioNodeOptions> {
-
 	readonly name: string = "Negate";
 
 	/**

@@ -1,10 +1,10 @@
-import { FrequencyClass } from "../core/type/Frequency";
-import { Frequency, Positive, Time } from "../core/type/Units";
-import { deepMerge, optionsFromArguments } from "../core/util/Defaults";
-import { readOnly, RecursivePartial } from "../core/util/Interface";
-import { Monophonic } from "./Monophonic";
-import { Synth, SynthOptions } from "./Synth";
-import { range, timeRange } from "../core/util/Decorator";
+import { FrequencyClass } from "../core/type/Frequency.js";
+import { Frequency, Positive, Time } from "../core/type/Units.js";
+import { deepMerge, optionsFromArguments } from "../core/util/Defaults.js";
+import { readOnly, RecursivePartial } from "../core/util/Interface.js";
+import { Monophonic } from "./Monophonic.js";
+import { Synth, SynthOptions } from "./Synth.js";
+import { range, timeRange } from "../core/util/Decorator.js";
 
 export interface MembraneSynthOptions extends SynthOptions {
 	pitchDecay: Time;
@@ -25,7 +25,6 @@ export interface MembraneSynthOptions extends SynthOptions {
  * @category Instrument
  */
 export class MembraneSynth extends Synth<MembraneSynthOptions> {
-
 	readonly name: string = "MembraneSynth";
 
 	/**
@@ -52,11 +51,13 @@ export class MembraneSynth extends Synth<MembraneSynthOptions> {
 	/**
 	 * @param options the options available for the synth see defaults
 	 */
-	constructor(options?: RecursivePartial<MembraneSynthOptions>)
+	constructor(options?: RecursivePartial<MembraneSynthOptions>);
 	constructor() {
-
 		super(optionsFromArguments(MembraneSynth.getDefaults(), arguments));
-		const options = optionsFromArguments(MembraneSynth.getDefaults(), arguments);
+		const options = optionsFromArguments(
+			MembraneSynth.getDefaults(),
+			arguments
+		);
 
 		this.pitchDecay = options.pitchDecay;
 		this.octaves = options.octaves;
@@ -82,10 +83,15 @@ export class MembraneSynth extends Synth<MembraneSynthOptions> {
 
 	setNote(note: Frequency | FrequencyClass, time?: Time): this {
 		const seconds = this.toSeconds(time);
-		const hertz = this.toFrequency(note instanceof FrequencyClass ? note.toFrequency() : note);
+		const hertz = this.toFrequency(
+			note instanceof FrequencyClass ? note.toFrequency() : note
+		);
 		const maxNote = hertz * this.octaves;
 		this.oscillator.frequency.setValueAtTime(maxNote, seconds);
-		this.oscillator.frequency.exponentialRampToValueAtTime(hertz, seconds + this.toSeconds(this.pitchDecay));
+		this.oscillator.frequency.exponentialRampToValueAtTime(
+			hertz,
+			seconds + this.toSeconds(this.pitchDecay)
+		);
 		return this;
 	}
 

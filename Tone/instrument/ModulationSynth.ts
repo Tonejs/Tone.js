@@ -1,17 +1,20 @@
-import { Signal } from "../signal/Signal";
-import { Multiply } from "../signal/Multiply";
-import { Gain } from "../core/context/Gain";
-import { NormalRange, Positive, Seconds, Time } from "../core/type/Units";
-import { Envelope, EnvelopeOptions } from "../component/envelope/Envelope";
-import { ToneAudioNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
-import { Monophonic } from "./Monophonic";
-import { OmniOscillator } from "../source/oscillator/OmniOscillator";
-import { OmniOscillatorSynthOptions } from "../source/oscillator/OscillatorInterface";
-import { Source } from "../source/Source";
-import { Synth, SynthOptions } from "./Synth";
-import { AmplitudeEnvelope } from "../component/envelope/AmplitudeEnvelope";
-import { readOnly, RecursivePartial } from "../core/util/Interface";
-import { omitFromObject, optionsFromArguments } from "../core/util/Defaults";
+import { Signal } from "../signal/Signal.js";
+import { Multiply } from "../signal/Multiply.js";
+import { Gain } from "../core/context/Gain.js";
+import { NormalRange, Positive, Seconds, Time } from "../core/type/Units.js";
+import { Envelope, EnvelopeOptions } from "../component/envelope/Envelope.js";
+import {
+	ToneAudioNode,
+	ToneAudioNodeOptions,
+} from "../core/context/ToneAudioNode.js";
+import { Monophonic } from "./Monophonic.js";
+import { OmniOscillator } from "../source/oscillator/OmniOscillator.js";
+import { OmniOscillatorSynthOptions } from "../source/oscillator/OscillatorInterface.js";
+import { Source } from "../source/Source.js";
+import { Synth, SynthOptions } from "./Synth.js";
+import { AmplitudeEnvelope } from "../component/envelope/AmplitudeEnvelope.js";
+import { readOnly, RecursivePartial } from "../core/util/Interface.js";
+import { omitFromObject, optionsFromArguments } from "../core/util/Defaults.js";
 
 export interface ModulationSynthOptions extends SynthOptions {
 	harmonicity: Positive;
@@ -21,8 +24,9 @@ export interface ModulationSynthOptions extends SynthOptions {
 /**
  * Base class for both AM and FM synths
  */
-export abstract class ModulationSynth<Options extends ModulationSynthOptions> extends Monophonic<Options> {
-
+export abstract class ModulationSynth<
+	Options extends ModulationSynthOptions,
+> extends Monophonic<Options> {
 	readonly name: string = "ModulationSynth";
 
 	/**
@@ -85,7 +89,10 @@ export abstract class ModulationSynth<Options extends ModulationSynthOptions> ex
 	constructor(options?: RecursivePartial<ModulationSynthOptions>);
 	constructor() {
 		super(optionsFromArguments(ModulationSynth.getDefaults(), arguments));
-		const options = optionsFromArguments(ModulationSynth.getDefaults(), arguments);
+		const options = optionsFromArguments(
+			ModulationSynth.getDefaults(),
+			arguments
+		);
 
 		this._carrier = new Synth({
 			context: this.context,
@@ -113,7 +120,7 @@ export abstract class ModulationSynth<Options extends ModulationSynthOptions> ex
 		this.detune = new Signal({
 			context: this.context,
 			value: options.detune,
-			units: "cents"
+			units: "cents",
 		});
 		this.harmonicity = new Multiply({
 			context: this.context,
@@ -125,7 +132,15 @@ export abstract class ModulationSynth<Options extends ModulationSynthOptions> ex
 			gain: 0,
 		});
 
-		readOnly(this, ["frequency", "harmonicity", "oscillator", "envelope", "modulation", "modulationEnvelope", "detune"]);
+		readOnly(this, [
+			"frequency",
+			"harmonicity",
+			"oscillator",
+			"envelope",
+			"modulation",
+			"modulationEnvelope",
+			"detune",
+		]);
 	}
 
 	static getDefaults(): ModulationSynthOptions {
@@ -135,10 +150,10 @@ export abstract class ModulationSynth<Options extends ModulationSynthOptions> ex
 				omitFromObject(OmniOscillator.getDefaults(), [
 					...Object.keys(Source.getDefaults()),
 					"frequency",
-					"detune"
+					"detune",
 				]),
 				{
-					type: "sine"
+					type: "sine",
 				}
 			) as OmniOscillatorSynthOptions,
 			envelope: Object.assign(
@@ -150,17 +165,17 @@ export abstract class ModulationSynth<Options extends ModulationSynthOptions> ex
 					attack: 0.01,
 					decay: 0.01,
 					sustain: 1,
-					release: 0.5
+					release: 0.5,
 				}
 			),
 			modulation: Object.assign(
 				omitFromObject(OmniOscillator.getDefaults(), [
 					...Object.keys(Source.getDefaults()),
 					"frequency",
-					"detune"
+					"detune",
 				]),
 				{
-					type: "square"
+					type: "square",
 				}
 			) as OmniOscillatorSynthOptions,
 			modulationEnvelope: Object.assign(
@@ -172,9 +187,9 @@ export abstract class ModulationSynth<Options extends ModulationSynthOptions> ex
 					attack: 0.5,
 					decay: 0.0,
 					sustain: 1,
-					release: 0.5
+					release: 0.5,
 				}
-			)
+			),
 		});
 	}
 

@@ -3,28 +3,23 @@
 	"compilerOptions": {
 		"strictNullChecks": true,
 		"target": "ES6",
-		"module": "ES2015",
+		"module": "Node16",
 		"noImplicitAny": false,
 		"importHelpers": true,
 		"noUnusedLocals": false,
 		"removeComments": false,
 		"outDir": "./build/esm",
 		"sourceMap": true,
+		"esModuleInterop": true,
 		"skipLibCheck": true,
-		"moduleResolution": "node",
+		"moduleResolution": "Node16",
 		"strictPropertyInitialization": true,
 		"downlevelIteration": true,
 		"experimentalDecorators": true,
-		"lib": [
-			"es6",
-			"dom",
-			"es2015"
-		],
-		"baseUrl": "./"
+		"lib": ["es6", "dom", "es2015"],
+		"baseUrl": "./",
+		"rootDir": "./"
 	},
-	"include": [
-		"Tone/**/*.ts",
-		"test/**/*.ts"
-	],
-	"exclude": ["node_modules"]
+	"include": ["Tone/**/*.ts", "test/**/*.ts"],
+	"exclude": ["node_modules", "test/integration/**"]
 }

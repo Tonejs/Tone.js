@@ -1,15 +1,21 @@
-import { AmplitudeEnvelope } from "../component/envelope/AmplitudeEnvelope";
-import { Envelope, EnvelopeOptions } from "../component/envelope/Envelope";
-import { ToneAudioNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
-import { NormalRange, Seconds, Time } from "../core/type/Units";
-import { omitFromObject, optionsFromArguments } from "../core/util/Defaults";
-import { readOnly } from "../core/util/Interface";
-import { RecursivePartial } from "../core/util/Interface";
-import { Signal } from "../signal/Signal";
-import { OmniOscillator } from "../source/oscillator/OmniOscillator";
-import { OmniOscillatorOptions, OmniOscillatorSynthOptions } from "../source/oscillator/OscillatorInterface";
-import { Source } from "../source/Source";
-import { Monophonic, MonophonicOptions } from "./Monophonic";
+import { AmplitudeEnvelope } from "../component/envelope/AmplitudeEnvelope.js";
+import { Envelope, EnvelopeOptions } from "../component/envelope/Envelope.js";
+import {
+	ToneAudioNode,
+	ToneAudioNodeOptions,
+} from "../core/context/ToneAudioNode.js";
+import { NormalRange, Seconds, Time } from "../core/type/Units.js";
+import { omitFromObject, optionsFromArguments } from "../core/util/Defaults.js";
+import { readOnly } from "../core/util/Interface.js";
+import { RecursivePartial } from "../core/util/Interface.js";
+import { Signal } from "../signal/Signal.js";
+import { OmniOscillator } from "../source/oscillator/OmniOscillator.js";
+import {
+	OmniOscillatorOptions,
+	OmniOscillatorSynthOptions,
+} from "../source/oscillator/OscillatorInterface.js";
+import { Source } from "../source/Source.js";
+import { Monophonic, MonophonicOptions } from "./Monophonic.js";
 
 export interface SynthOptions extends MonophonicOptions {
 	oscillator: OmniOscillatorSynthOptions;
@@ -28,8 +34,9 @@ export interface SynthOptions extends MonophonicOptions {
  * synth.triggerAttackRelease("C4", "8n");
  * @category Instrument
  */
-export class Synth<Options extends SynthOptions = SynthOptions> extends Monophonic<Options> {
-
+export class Synth<
+	Options extends SynthOptions = SynthOptions,
+> extends Monophonic<Options> {
 	readonly name: string = "Synth";
 
 	/**
@@ -60,18 +67,28 @@ export class Synth<Options extends SynthOptions = SynthOptions> extends Monophon
 		super(optionsFromArguments(Synth.getDefaults(), arguments));
 		const options = optionsFromArguments(Synth.getDefaults(), arguments);
 
-		this.oscillator = new OmniOscillator(Object.assign({
-			context: this.context,
-			detune: options.detune,
-			onstop: () => this.onsilence(this),
-		}, options.oscillator));
+		this.oscillator = new OmniOscillator(
+			Object.assign(
+				{
+					context: this.context,
+					detune: options.detune,
+					onstop: () => this.onsilence(this),
+				},
+				options.oscillator
+			)
+		);
 
 		this.frequency = this.oscillator.frequency;
 		this.detune = this.oscillator.detune;
 
-		this.envelope = new AmplitudeEnvelope(Object.assign({
-			context: this.context,
-		}, options.envelope));
+		this.envelope = new AmplitudeEnvelope(
+			Object.assign(
+				{
+					context: this.context,
+				},
+				options.envelope
+			)
+		);
 
 		// connect the oscillators to the output
 		this.oscillator.chain(this.envelope, this.output);
@@ -81,19 +98,26 @@ export class Synth<Options extends SynthOptions = SynthOptions> extends Monophon
 	static getDefaults(): SynthOptions {
 		return Object.assign(Monophonic.getDefaults(), {
 			envelope: Object.assign(
-				omitFromObject(Envelope.getDefaults(), Object.keys(ToneAudioNode.getDefaults())),
+				omitFromObject(
+					Envelope.getDefaults(),
+					Object.keys(ToneAudioNode.getDefaults())
+				),
 				{
 					attack: 0.005,
 					decay: 0.1,
 					release: 1,
 					sustain: 0.3,
-				},
+				}
 			),
 			oscillator: Object.assign(
-				omitFromObject(OmniOscillator.getDefaults(), [...Object.keys(Source.getDefaults()), "frequency", "detune"]),
+				omitFromObject(OmniOscillator.getDefaults(), [
+					...Object.keys(Source.getDefaults()),
+					"frequency",
+					"detune",
+				]),
 				{
 					type: "triangle",
-				},
+				}
 			) as OmniOscillatorOptions,
 		});
 	}

@@ -1,38 +1,52 @@
-import { Cents, Degrees, Frequency, Seconds, Time } from "../../core/type/Units";
-import { optionsFromArguments } from "../../core/util/Defaults";
-import { readOnly } from "../../core/util/Interface";
-import { isNumber, isString } from "../../core/util/TypeCheck";
-import { Signal } from "../../signal/Signal";
-import { Source } from "../Source";
-import { AMOscillator } from "./AMOscillator";
-import { FatOscillator } from "./FatOscillator";
-import { FMOscillator } from "./FMOscillator";
-import { Oscillator } from "./Oscillator";
+import {
+	Cents,
+	Degrees,
+	Frequency,
+	Seconds,
+	Time,
+} from "../../core/type/Units.js";
+import { optionsFromArguments } from "../../core/util/Defaults.js";
+import { readOnly } from "../../core/util/Interface.js";
+import { isNumber, isString } from "../../core/util/TypeCheck.js";
+import { Signal } from "../../signal/Signal.js";
+import { Source } from "../Source.js";
+import { AMOscillator } from "./AMOscillator.js";
+import { FatOscillator } from "./FatOscillator.js";
+import { FMOscillator } from "./FMOscillator.js";
+import { Oscillator } from "./Oscillator.js";
 import {
 	generateWaveform,
-	OmniOscillatorOptions, 
-	OmniOscillatorType, ToneOscillatorInterface, ToneOscillatorType
-} from "./OscillatorInterface";
-import { PulseOscillator } from "./PulseOscillator";
-import { PWMOscillator } from "./PWMOscillator";
+	OmniOscillatorOptions,
+	OmniOscillatorType,
+	ToneOscillatorInterface,
+	ToneOscillatorType,
+} from "./OscillatorInterface.js";
+import { PulseOscillator } from "./PulseOscillator.js";
+import { PWMOscillator } from "./PWMOscillator.js";
 
-export { OmniOscillatorOptions } from "./OscillatorInterface";
+export { OmniOscillatorOptions } from "./OscillatorInterface.js";
 
 /**
  * All of the oscillator types that OmniOscillator can take on
  */
-type AnyOscillator = Oscillator | PWMOscillator | PulseOscillator | FatOscillator | AMOscillator | FMOscillator;
+type AnyOscillator =
+	| Oscillator
+	| PWMOscillator
+	| PulseOscillator
+	| FatOscillator
+	| AMOscillator
+	| FMOscillator;
 
 /**
  * All of the Oscillator constructor types mapped to their name.
  */
 interface OmniOscillatorSource {
-	"fm": FMOscillator;
-	"am": AMOscillator;
-	"pwm": PWMOscillator;
-	"pulse": PulseOscillator;
-	"oscillator": Oscillator;
-	"fat": FatOscillator;
+	fm: FMOscillator;
+	am: AMOscillator;
+	pwm: PWMOscillator;
+	pulse: PulseOscillator;
+	oscillator: Oscillator;
+	fat: FatOscillator;
 }
 
 /**
@@ -41,16 +55,22 @@ interface OmniOscillatorSource {
 export type OmniOscSourceType = keyof OmniOscillatorSource;
 
 // Conditional Types
-type IsAmOrFmOscillator<Osc, Ret> = Osc extends AMOscillator ? Ret : Osc extends FMOscillator ? Ret : undefined;
+type IsAmOrFmOscillator<Osc, Ret> = Osc extends AMOscillator
+	? Ret
+	: Osc extends FMOscillator
+		? Ret
+		: undefined;
 type IsFatOscillator<Osc, Ret> = Osc extends FatOscillator ? Ret : undefined;
 type IsPWMOscillator<Osc, Ret> = Osc extends PWMOscillator ? Ret : undefined;
-type IsPulseOscillator<Osc, Ret> = Osc extends PulseOscillator ? Ret : undefined;
+type IsPulseOscillator<Osc, Ret> = Osc extends PulseOscillator
+	? Ret
+	: undefined;
 type IsFMOscillator<Osc, Ret> = Osc extends FMOscillator ? Ret : undefined;
 
 type AnyOscillatorConstructor = new (...args: any[]) => AnyOscillator;
 
 const OmniOscillatorSourceMap: {
-	[key in OmniOscSourceType]: AnyOscillatorConstructor
+	[key in OmniOscSourceType]: AnyOscillatorConstructor;
 } = {
 	am: AMOscillator,
 	fat: FatOscillator,
@@ -61,7 +81,7 @@ const OmniOscillatorSourceMap: {
 };
 
 /**
- * OmniOscillator aggregates all of the oscillator types into one. 
+ * OmniOscillator aggregates all of the oscillator types into one.
  * @example
  * return Tone.Offline(() => {
  * 	const omniOsc = new Tone.OmniOscillator("C#4", "pwm").toDestination().start();
@@ -70,8 +90,8 @@ const OmniOscillatorSourceMap: {
  */
 export class OmniOscillator<OscType extends AnyOscillator>
 	extends Source<OmniOscillatorOptions>
-	implements Omit<ToneOscillatorInterface, "type"> {
-
+	implements Omit<ToneOscillatorInterface, "type">
+{
 	readonly name: string = "OmniOscillator";
 
 	readonly frequency: Signal<"frequency">;
@@ -94,9 +114,17 @@ export class OmniOscillator<OscType extends AnyOscillator>
 	constructor(frequency?: Frequency, type?: OmniOscillatorType);
 	constructor(options?: Partial<OmniOscillatorOptions>);
 	constructor() {
-
-		super(optionsFromArguments(OmniOscillator.getDefaults(), arguments, ["frequency", "type"]));
-		const options = optionsFromArguments(OmniOscillator.getDefaults(), arguments, ["frequency", "type"]);
+		super(
+			optionsFromArguments(OmniOscillator.getDefaults(), arguments, [
+				"frequency",
+				"type",
+			])
+		);
+		const options = optionsFromArguments(
+			OmniOscillator.getDefaults(),
+			arguments,
+			["frequency", "type"]
+		);
 
 		this.frequency = new Signal({
 			context: this.context,
@@ -121,7 +149,7 @@ export class OmniOscillator<OscType extends AnyOscillator>
 			AMOscillator.getDefaults(),
 			FatOscillator.getDefaults(),
 			PulseOscillator.getDefaults(),
-			PWMOscillator.getDefaults(),
+			PWMOscillator.getDefaults()
 		);
 	}
 
@@ -149,7 +177,7 @@ export class OmniOscillator<OscType extends AnyOscillator>
 	 * prefix the basic types with "fm", "am", or "fat" to use the FMOscillator, AMOscillator or FatOscillator
 	 * types. The oscillator could also be set to "pwm" or "pulse". All of the parameters of the
 	 * oscillator's class are accessible when the oscillator is set to that type, but throws an error
-	 * when it's not. 
+	 * when it's not.
 	 * @example
 	 * const omniOsc = new Tone.OmniOscillator().toDestination().start();
 	 * omniOsc.type = "pwm";
@@ -159,10 +187,10 @@ export class OmniOscillator<OscType extends AnyOscillator>
 	 */
 	get type(): OmniOscillatorType {
 		let prefix = "";
-		if (["am", "fm", "fat"].some(p => this._sourceType === p)) {
+		if (["am", "fm", "fat"].some((p) => this._sourceType === p)) {
 			prefix = this._sourceType;
 		}
-		return prefix + this._oscillator.type as OmniOscillatorType;
+		return (prefix + this._oscillator.type) as OmniOscillatorType;
 	}
 	set type(type) {
 		if (type.substr(0, 2) === "fm") {
@@ -185,7 +213,7 @@ export class OmniOscillator<OscType extends AnyOscillator>
 		} else {
 			this._createNewOscillator("oscillator");
 			this._oscillator = this._oscillator as Oscillator;
-			this._oscillator.type = (type as ToneOscillatorType);
+			this._oscillator.type = type as ToneOscillatorType;
 		}
 	}
 
@@ -198,7 +226,10 @@ export class OmniOscillator<OscType extends AnyOscillator>
 		return this._oscillator.partials;
 	}
 	set partials(partials) {
-		if (!this._getOscType(this._oscillator, "pulse") && !this._getOscType(this._oscillator, "pwm")) {
+		if (
+			!this._getOscType(this._oscillator, "pulse") &&
+			!this._getOscType(this._oscillator, "pwm")
+		) {
 			this._oscillator.partials = partials;
 		}
 	}
@@ -207,7 +238,10 @@ export class OmniOscillator<OscType extends AnyOscillator>
 		return this._oscillator.partialCount;
 	}
 	set partialCount(partialCount) {
-		if (!this._getOscType(this._oscillator, "pulse") && !this._getOscType(this._oscillator, "pwm")) {
+		if (
+			!this._getOscType(this._oscillator, "pulse") &&
+			!this._getOscType(this._oscillator, "pwm")
+		) {
 			this._oscillator.partialCount = partialCount;
 		}
 	}
@@ -269,17 +303,20 @@ export class OmniOscillator<OscType extends AnyOscillator>
 	set sourceType(sType) {
 		// the basetype defaults to sine
 		let baseType = "sine";
-		if (this._oscillator.type !== "pwm" && this._oscillator.type !== "pulse") {
+		if (
+			this._oscillator.type !== "pwm" &&
+			this._oscillator.type !== "pulse"
+		) {
 			baseType = this._oscillator.type;
 		}
 
 		// set the type
 		if (sType === "fm") {
-			this.type = "fm" + baseType as OmniOscillatorType;
+			this.type = ("fm" + baseType) as OmniOscillatorType;
 		} else if (sType === "am") {
-			this.type = "am" + baseType as OmniOscillatorType;
+			this.type = ("am" + baseType) as OmniOscillatorType;
 		} else if (sType === "fat") {
-			this.type = "fat" + baseType as OmniOscillatorType;
+			this.type = ("fat" + baseType) as OmniOscillatorType;
 		} else if (sType === "oscillator") {
 			this.type = baseType as OmniOscillatorType;
 		} else if (sType === "pulse") {
@@ -291,13 +328,13 @@ export class OmniOscillator<OscType extends AnyOscillator>
 
 	private _getOscType<SourceType extends OmniOscSourceType>(
 		osc: AnyOscillator,
-		sourceType: SourceType,
+		sourceType: SourceType
 	): osc is OmniOscillatorSource[SourceType] {
 		return osc instanceof OmniOscillatorSourceMap[sourceType];
 	}
 
 	/**
-	 * The base type of the oscillator. 
+	 * The base type of the oscillator.
 	 * @see {@link Oscillator.baseType}
 	 * @example
 	 * const omniOsc = new Tone.OmniOscillator(440, "fmsquare4");
@@ -307,9 +344,12 @@ export class OmniOscillator<OscType extends AnyOscillator>
 		return this._oscillator.baseType;
 	}
 	set baseType(baseType) {
-		if (!this._getOscType(this._oscillator, "pulse") &&
+		if (
+			!this._getOscType(this._oscillator, "pulse") &&
 			!this._getOscType(this._oscillator, "pwm") &&
-			baseType !== "pulse" && baseType !== "pwm") {
+			baseType !== "pulse" &&
+			baseType !== "pwm"
+		) {
 			this._oscillator.baseType = baseType;
 		}
 	}
@@ -320,9 +360,15 @@ export class OmniOscillator<OscType extends AnyOscillator>
 	 */
 	get width(): IsPulseOscillator<OscType, Signal<"audioRange">> {
 		if (this._getOscType(this._oscillator, "pulse")) {
-			return this._oscillator.width as IsPulseOscillator<OscType, Signal<"audioRange">>;
+			return this._oscillator.width as IsPulseOscillator<
+				OscType,
+				Signal<"audioRange">
+			>;
 		} else {
-			return undefined as IsPulseOscillator<OscType, Signal<"audioRange">>;
+			return undefined as IsPulseOscillator<
+				OscType,
+				Signal<"audioRange">
+			>;
 		}
 	}
 
@@ -361,18 +407,28 @@ export class OmniOscillator<OscType extends AnyOscillator>
 	}
 
 	/**
-	 * The type of the modulator oscillator. Only if the oscillator is set to "am" or "fm" types. 
+	 * The type of the modulator oscillator. Only if the oscillator is set to "am" or "fm" types.
 	 * @see {@link AMOscillator} or {@link FMOscillator}
 	 */
 	get modulationType(): IsAmOrFmOscillator<OscType, ToneOscillatorType> {
-		if (this._getOscType(this._oscillator, "fm") || this._getOscType(this._oscillator, "am")) {
-			return this._oscillator.modulationType as IsAmOrFmOscillator<OscType, ToneOscillatorType>;
+		if (
+			this._getOscType(this._oscillator, "fm") ||
+			this._getOscType(this._oscillator, "am")
+		) {
+			return this._oscillator.modulationType as IsAmOrFmOscillator<
+				OscType,
+				ToneOscillatorType
+			>;
 		} else {
 			return undefined as IsAmOrFmOscillator<OscType, ToneOscillatorType>;
 		}
 	}
 	set modulationType(mType) {
-		if ((this._getOscType(this._oscillator, "fm") || this._getOscType(this._oscillator, "am")) && isString(mType)) {
+		if (
+			(this._getOscType(this._oscillator, "fm") ||
+				this._getOscType(this._oscillator, "am")) &&
+			isString(mType)
+		) {
 			this._oscillator.modulationType = mType;
 		}
 	}
@@ -383,7 +439,10 @@ export class OmniOscillator<OscType extends AnyOscillator>
 	 */
 	get modulationIndex(): IsFMOscillator<OscType, Signal<"positive">> {
 		if (this._getOscType(this._oscillator, "fm")) {
-			return this._oscillator.modulationIndex as IsFMOscillator<OscType, Signal<"positive">>;
+			return this._oscillator.modulationIndex as IsFMOscillator<
+				OscType,
+				Signal<"positive">
+			>;
 		} else {
 			return undefined as IsFMOscillator<OscType, Signal<"positive">>;
 		}
@@ -394,8 +453,14 @@ export class OmniOscillator<OscType extends AnyOscillator>
 	 * @see {@link AMOscillator} or {@link FMOscillator}
 	 */
 	get harmonicity(): IsAmOrFmOscillator<OscType, Signal<"positive">> {
-		if (this._getOscType(this._oscillator, "fm") || this._getOscType(this._oscillator, "am")) {
-			return this._oscillator.harmonicity as IsAmOrFmOscillator<OscType, Signal<"positive">>;
+		if (
+			this._getOscType(this._oscillator, "fm") ||
+			this._getOscType(this._oscillator, "am")
+		) {
+			return this._oscillator.harmonicity as IsAmOrFmOscillator<
+				OscType,
+				Signal<"positive">
+			>;
 		} else {
 			return undefined as IsAmOrFmOscillator<OscType, Signal<"positive">>;
 		}
@@ -409,7 +474,10 @@ export class OmniOscillator<OscType extends AnyOscillator>
 	 */
 	get modulationFrequency(): IsPWMOscillator<OscType, Signal<"frequency">> {
 		if (this._getOscType(this._oscillator, "pwm")) {
-			return this._oscillator.modulationFrequency as IsPWMOscillator<OscType, Signal<"frequency">>;
+			return this._oscillator.modulationFrequency as IsPWMOscillator<
+				OscType,
+				Signal<"frequency">
+			>;
 		} else {
 			return undefined as IsPWMOscillator<OscType, Signal<"frequency">>;
 		}

@@ -1,9 +1,12 @@
-import { StereoXFeedbackEffect, StereoXFeedbackEffectOptions } from "./StereoXFeedbackEffect";
-import { NormalRange, Seconds, Time } from "../core/type/Units";
-import { optionsFromArguments } from "../core/util/Defaults";
-import { Delay } from "../core/context/Delay";
-import { Signal } from "../signal/Signal";
-import { readOnly } from "../core/util/Interface";
+import {
+	StereoXFeedbackEffect,
+	StereoXFeedbackEffectOptions,
+} from "./StereoXFeedbackEffect.js";
+import { NormalRange, Seconds, Time } from "../core/type/Units.js";
+import { optionsFromArguments } from "../core/util/Defaults.js";
+import { Delay } from "../core/context/Delay.js";
+import { Signal } from "../signal/Signal.js";
+import { readOnly } from "../core/util/Interface.js";
 
 export interface PingPongDelayOptions extends StereoXFeedbackEffectOptions {
 	delayTime: Time;
@@ -25,7 +28,6 @@ export interface PingPongDelayOptions extends StereoXFeedbackEffectOptions {
  * @category Effect
  */
 export class PingPongDelay extends StereoXFeedbackEffect<PingPongDelayOptions> {
-
 	readonly name: string = "PingPongDelay";
 
 	/**
@@ -55,9 +57,17 @@ export class PingPongDelay extends StereoXFeedbackEffect<PingPongDelayOptions> {
 	constructor(delayTime?: Time, feedback?: NormalRange);
 	constructor(options?: Partial<PingPongDelayOptions>);
 	constructor() {
-
-		super(optionsFromArguments(PingPongDelay.getDefaults(), arguments, ["delayTime", "feedback"]));
-		const options = optionsFromArguments(PingPongDelay.getDefaults(), arguments, ["delayTime", "feedback"]);
+		super(
+			optionsFromArguments(PingPongDelay.getDefaults(), arguments, [
+				"delayTime",
+				"feedback",
+			])
+		);
+		const options = optionsFromArguments(
+			PingPongDelay.getDefaults(),
+			arguments,
+			["delayTime", "feedback"]
+		);
 
 		this._leftDelay = new Delay({
 			context: this.context,
@@ -65,11 +75,11 @@ export class PingPongDelay extends StereoXFeedbackEffect<PingPongDelayOptions> {
 		});
 		this._rightDelay = new Delay({
 			context: this.context,
-			maxDelay: options.maxDelay
+			maxDelay: options.maxDelay,
 		});
 		this._rightPreDelay = new Delay({
 			context: this.context,
-			maxDelay: options.maxDelay
+			maxDelay: options.maxDelay,
 		});
 		this.delayTime = new Signal({
 			context: this.context,
@@ -80,7 +90,11 @@ export class PingPongDelay extends StereoXFeedbackEffect<PingPongDelayOptions> {
 		// connect it up
 		this.connectEffectLeft(this._leftDelay);
 		this.connectEffectRight(this._rightPreDelay, this._rightDelay);
-		this.delayTime.fan(this._leftDelay.delayTime, this._rightDelay.delayTime, this._rightPreDelay.delayTime);
+		this.delayTime.fan(
+			this._leftDelay.delayTime,
+			this._rightDelay.delayTime,
+			this._rightPreDelay.delayTime
+		);
 		// rearranged the feedback to be after the rightPreDelay
 		this._feedbackL.disconnect();
 		this._feedbackL.connect(this._rightDelay);
@@ -90,7 +104,7 @@ export class PingPongDelay extends StereoXFeedbackEffect<PingPongDelayOptions> {
 	static getDefaults(): PingPongDelayOptions {
 		return Object.assign(StereoXFeedbackEffect.getDefaults(), {
 			delayTime: 0.25,
-			maxDelay: 1
+			maxDelay: 1,
 		});
 	}
 

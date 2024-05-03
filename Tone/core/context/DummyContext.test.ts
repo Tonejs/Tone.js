@@ -1,4 +1,4 @@
-import { DummyContext } from "./DummyContext";
+import { DummyContext } from "./DummyContext.js";
 
 describe("DummyContext", () => {
 	it("has all the methods and members", () => {
@@ -44,4 +44,3 @@ describe("DummyContext", () => {
 		context.immediate();
 	});
 });
-

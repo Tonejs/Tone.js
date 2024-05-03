@@ -1,10 +1,9 @@
 import { expect } from "chai";
-import { Offline } from "test/helper/Offline";
-import { TransportClass } from "./Transport";
-import { TransportEvent } from "./TransportEvent";
+import { Offline } from "../../../test/helper/Offline.js";
+import { TransportClass } from "./Transport.js";
+import { TransportEvent } from "./TransportEvent.js";
 
 describe("TransportEvent", () => {
-
 	it("can be created and disposed", () => {
 		return Offline((context) => {
 			const transport = new TransportClass({ context });

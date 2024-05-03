@@ -1,11 +1,15 @@
-import { InputNode, ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
-import { Compressor, CompressorOptions } from "./Compressor";
-import { optionsFromArguments } from "../../core/util/Defaults";
-import { readOnly, RecursivePartial } from "../../core/util/Interface";
-import { Frequency } from "../../core/type/Units";
-import { MultibandSplit } from "../channel/MultibandSplit";
-import { Signal } from "../../signal/Signal";
-import { Gain } from "../../core/context/Gain";
+import {
+	InputNode,
+	ToneAudioNode,
+	ToneAudioNodeOptions,
+} from "../../core/context/ToneAudioNode.js";
+import { Compressor, CompressorOptions } from "./Compressor.js";
+import { optionsFromArguments } from "../../core/util/Defaults.js";
+import { readOnly, RecursivePartial } from "../../core/util/Interface.js";
+import { Frequency } from "../../core/type/Units.js";
+import { MultibandSplit } from "../channel/MultibandSplit.js";
+import { Signal } from "../../signal/Signal.js";
+import { Gain } from "../../core/context/Gain.js";
 
 export interface MultibandCompressorOptions extends ToneAudioNodeOptions {
 	mid: Omit<CompressorOptions, keyof ToneAudioNodeOptions>;
@@ -16,7 +20,7 @@ export interface MultibandCompressorOptions extends ToneAudioNodeOptions {
 }
 
 /**
- * A compressor with separate controls over low/mid/high dynamics. 
+ * A compressor with separate controls over low/mid/high dynamics.
  * @see {@link Compressor} and {@link MultibandSplit}
  *
  * @example
@@ -30,7 +34,6 @@ export interface MultibandCompressorOptions extends ToneAudioNodeOptions {
  * @category Component
  */
 export class MultibandCompressor extends ToneAudioNode<MultibandCompressorOptions> {
-
 	readonly name: string = "MultibandCompressor";
 
 	readonly input: InputNode;
@@ -68,20 +71,36 @@ export class MultibandCompressor extends ToneAudioNode<MultibandCompressorOption
 
 	constructor(options?: RecursivePartial<MultibandCompressorOptions>);
 	constructor() {
-		super(Object.assign(optionsFromArguments(MultibandCompressor.getDefaults(), arguments)));
-		const options = optionsFromArguments(MultibandCompressor.getDefaults(), arguments);
+		super(
+			Object.assign(
+				optionsFromArguments(
+					MultibandCompressor.getDefaults(),
+					arguments
+				)
+			)
+		);
+		const options = optionsFromArguments(
+			MultibandCompressor.getDefaults(),
+			arguments
+		);
 
 		this._splitter = this.input = new MultibandSplit({
 			context: this.context,
 			lowFrequency: options.lowFrequency,
-			highFrequency: options.highFrequency
+			highFrequency: options.highFrequency,
 		});
 		this.lowFrequency = this._splitter.lowFrequency;
 		this.highFrequency = this._splitter.highFrequency;
 		this.output = new Gain({ context: this.context });
-		this.low = new Compressor(Object.assign(options.low, { context: this.context }));
-		this.mid = new Compressor(Object.assign(options.mid, { context: this.context }));
-		this.high = new Compressor(Object.assign(options.high, { context: this.context }));
+		this.low = new Compressor(
+			Object.assign(options.low, { context: this.context })
+		);
+		this.mid = new Compressor(
+			Object.assign(options.mid, { context: this.context })
+		);
+		this.high = new Compressor(
+			Object.assign(options.high, { context: this.context })
+		);
 
 		// connect the compressor
 		this._splitter.low.chain(this.low, this.output);
@@ -100,21 +119,21 @@ export class MultibandCompressor extends ToneAudioNode<MultibandCompressorOption
 				threshold: -30,
 				release: 0.25,
 				attack: 0.03,
-				knee: 10
+				knee: 10,
 			},
 			mid: {
 				ratio: 3,
 				threshold: -24,
 				release: 0.03,
 				attack: 0.02,
-				knee: 16
+				knee: 16,
 			},
 			high: {
 				ratio: 3,
 				threshold: -24,
 				release: 0.03,
 				attack: 0.02,
-				knee: 16
+				knee: 16,
 			},
 		});
 	}

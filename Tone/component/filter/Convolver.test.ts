@@ -1,27 +1,20 @@
 import { expect } from "chai";
-import { BasicTests } from "test/helper/Basic";
-import { ToneAudioBuffer } from "Tone/core/context/ToneAudioBuffer";
-import { Convolver } from "./Convolver";
-
-// @ts-ignore
-if (window.__karma__) {
-	ToneAudioBuffer.baseUrl = "/base/test/";
-}
+import { BasicTests } from "../../../test/helper/Basic.js";
+import { ToneAudioBuffer } from "../../core/context/ToneAudioBuffer.js";
+import { Convolver } from "./Convolver.js";
 
 describe("Convolver", () => {
-
 	BasicTests(Convolver);
 
 	const ir = new ToneAudioBuffer();
 
-	const testFile = "./audio/sineStereo.wav";
+	const testFile = "./test/audio/sineStereo.wav";
 
 	before(() => {
 		return ir.load(testFile);
 	});
 
 	context("API", () => {
-
 		it("can pass in options in the constructor", () => {
 			const convolver = new Convolver({
 				normalize: false,
@@ -71,7 +64,9 @@ describe("Convolver", () => {
 
 		it("can be constructed with a buffer", () => {
 			const convolver = new Convolver(ir);
-			expect((convolver.buffer as ToneAudioBuffer).get()).to.equal(ir.get());
+			expect((convolver.buffer as ToneAudioBuffer).get()).to.equal(
+				ir.get()
+			);
 			convolver.dispose();
 		});
 

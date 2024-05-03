@@ -1,8 +1,8 @@
-import { createOfflineAudioContext } from "../context/AudioContext";
-import { Context } from "../context/Context";
-import { Seconds } from "../type/Units";
-import { isOfflineAudioContext } from "../util/AdvancedTypeCheck";
-import { ToneAudioBuffer } from "./ToneAudioBuffer";
+import { createOfflineAudioContext } from "../context/AudioContext.js";
+import { Context } from "../context/Context.js";
+import { Seconds } from "../type/Units.js";
+import { isOfflineAudioContext } from "../util/AdvancedTypeCheck.js";
+import { ToneAudioBuffer } from "./ToneAudioBuffer.js";
 
 /**
  * Wrapper around the OfflineAudioContext
@@ -16,7 +16,6 @@ import { ToneAudioBuffer } from "./ToneAudioBuffer";
  * });
  */
 export class OfflineContext extends Context {
-
 	readonly name: string = "OfflineContext";
 
 	/**
@@ -41,25 +40,27 @@ export class OfflineContext extends Context {
 	 * @param  duration  The duration to render in seconds
 	 * @param sampleRate the sample rate to render at
 	 */
-	constructor(
-		channels: number,
-		duration: Seconds, 
-		sampleRate: number,
-	);
+	constructor(channels: number, duration: Seconds, sampleRate: number);
 	constructor(context: OfflineAudioContext);
 	constructor() {
-
 		super({
 			clockSource: "offline",
-			context: isOfflineAudioContext(arguments[0]) ?
-				arguments[0] : createOfflineAudioContext(arguments[0], arguments[1] * arguments[2], arguments[2]),
+			context: isOfflineAudioContext(arguments[0])
+				? arguments[0]
+				: createOfflineAudioContext(
+						arguments[0],
+						arguments[1] * arguments[2],
+						arguments[2]
+					),
 			lookAhead: 0,
-			updateInterval: isOfflineAudioContext(arguments[0]) ?
-				128 / arguments[0].sampleRate : 128 / arguments[2],
+			updateInterval: isOfflineAudioContext(arguments[0])
+				? 128 / arguments[0].sampleRate
+				: 128 / arguments[2],
 		});
 
-		this._duration = isOfflineAudioContext(arguments[0]) ?
-			arguments[0].length / arguments[0].sampleRate : arguments[1];
+		this._duration = isOfflineAudioContext(arguments[0])
+			? arguments[0].length / arguments[0].sampleRate
+			: arguments[1];
 	}
 
 	/**
@@ -82,7 +83,6 @@ export class OfflineContext extends Context {
 	private async _renderClock(asynchronous: boolean): Promise<void> {
 		let index = 0;
 		while (this._duration - this._currentTime >= 0) {
-
 			// invoke all the callbacks on that time
 			this.emit("tick");
 
@@ -93,7 +93,7 @@ export class OfflineContext extends Context {
 			index++;
 			const yieldEvery = Math.floor(this.sampleRate / 128);
 			if (asynchronous && index % yieldEvery === 0) {
-				await new Promise(done => setTimeout(done, 1));
+				await new Promise((done) => setTimeout(done, 1));
 			}
 		}
 	}

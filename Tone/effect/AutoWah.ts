@@ -1,13 +1,20 @@
-import { Effect, EffectOptions } from "./Effect";
-import { Filter } from "../component/filter/Filter";
-import { Follower } from "../component/analysis/Follower";
-import { Decibels, Frequency, GainFactor, Hertz, Positive, Time } from "../core/type/Units";
-import { optionsFromArguments } from "../core/util/Defaults";
-import { Gain } from "../core/context/Gain";
-import { dbToGain, gainToDb } from "../core/type/Conversions";
-import { ScaleExp } from "../signal/ScaleExp";
-import { Signal } from "../signal/Signal";
-import { readOnly } from "../core/util/Interface";
+import { Effect, EffectOptions } from "./Effect.js";
+import { Filter } from "../component/filter/Filter.js";
+import { Follower } from "../component/analysis/Follower.js";
+import {
+	Decibels,
+	Frequency,
+	GainFactor,
+	Hertz,
+	Positive,
+	Time,
+} from "../core/type/Units.js";
+import { optionsFromArguments } from "../core/util/Defaults.js";
+import { Gain } from "../core/context/Gain.js";
+import { dbToGain, gainToDb } from "../core/type/Conversions.js";
+import { ScaleExp } from "../signal/ScaleExp.js";
+import { Signal } from "../signal/Signal.js";
+import { readOnly } from "../core/util/Interface.js";
 
 export interface AutoWahOptions extends EffectOptions {
 	baseFrequency: Frequency;
@@ -19,10 +26,10 @@ export interface AutoWahOptions extends EffectOptions {
 }
 
 /**
- * AutoWah connects a {@link Follower} to a {@link Filter}. 
- * The frequency of the filter, follows the input amplitude curve. 
+ * AutoWah connects a {@link Follower} to a {@link Filter}.
+ * The frequency of the filter, follows the input amplitude curve.
  * Inspiration from [Tuna.js](https://github.com/Dinahmoe/tuna).
- * 
+ *
  * @example
  * const autoWah = new Tone.AutoWah(50, 6, -30).toDestination();
  * // initialize the synth and connect to autowah
@@ -34,7 +41,6 @@ export interface AutoWahOptions extends EffectOptions {
  * @category Effect
  */
 export class AutoWah extends Effect<AutoWahOptions> {
-
 	readonly name: string = "AutoWah";
 
 	/**
@@ -85,15 +91,28 @@ export class AutoWah extends Effect<AutoWahOptions> {
 
 	/**
 	 * @param baseFrequency The frequency the filter is set to at the low point of the wah
-	 * @param octaves The number of octaves above the baseFrequency the filter will sweep to when fully open. 
+	 * @param octaves The number of octaves above the baseFrequency the filter will sweep to when fully open.
 	 * @param sensitivity The decibel threshold sensitivity for the incoming signal. Normal range of -40 to 0.
 	 */
-	constructor(baseFrequency?: Frequency, octaves?: Positive, sensitivity?: Decibels);
+	constructor(
+		baseFrequency?: Frequency,
+		octaves?: Positive,
+		sensitivity?: Decibels
+	);
 	constructor(options?: Partial<AutoWahOptions>);
 	constructor() {
-
-		super(optionsFromArguments(AutoWah.getDefaults(), arguments, ["baseFrequency", "octaves", "sensitivity"]));
-		const options = optionsFromArguments(AutoWah.getDefaults(), arguments, ["baseFrequency", "octaves", "sensitivity"]);
+		super(
+			optionsFromArguments(AutoWah.getDefaults(), arguments, [
+				"baseFrequency",
+				"octaves",
+				"sensitivity",
+			])
+		);
+		const options = optionsFromArguments(AutoWah.getDefaults(), arguments, [
+			"baseFrequency",
+			"octaves",
+			"sensitivity",
+		]);
 
 		this._follower = new Follower({
 			context: this.context,
@@ -116,14 +135,18 @@ export class AutoWah extends Effect<AutoWahOptions> {
 		});
 		this._peaking = new Filter({
 			context: this.context,
-			type: "peaking"
+			type: "peaking",
 		});
 		this._peaking.gain.value = options.gain;
 		this.gain = this._peaking.gain;
 		this.Q = this._bandpass.Q;
 
 		// the control signal path
-		this.effectSend.chain(this._inputBoost, this._follower, this._sweepRange);
+		this.effectSend.chain(
+			this._inputBoost,
+			this._follower,
+			this._sweepRange
+		);
 		this._sweepRange.connect(this._bandpass.frequency);
 		this._sweepRange.connect(this._peaking.frequency);
 		// the filtered path
@@ -193,7 +216,10 @@ export class AutoWah extends Effect<AutoWahOptions> {
 	 */
 	private _setSweepRange() {
 		this._sweepRange.min = this._baseFrequency;
-		this._sweepRange.max = Math.min(this._baseFrequency * Math.pow(2, this._octaves), this.context.sampleRate / 2);
+		this._sweepRange.max = Math.min(
+			this._baseFrequency * Math.pow(2, this._octaves),
+			this.context.sampleRate / 2
+		);
 	}
 
 	dispose(): this {

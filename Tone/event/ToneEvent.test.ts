@@ -1,16 +1,14 @@
 import { expect } from "chai";
-import { BasicTests } from "test/helper/Basic";
-import { Offline, whenBetween } from "test/helper/Offline";
-import { Time } from "Tone/core/type/Time";
-import { noOp } from "Tone/core/util/Interface";
-import { ToneEvent } from "./ToneEvent";
+import { BasicTests } from "../../test/helper/Basic.js";
+import { Offline, whenBetween } from "../../test/helper/Offline.js";
+import { Time } from "../core/type/Time.js";
+import { noOp } from "../core/util/Interface.js";
+import { ToneEvent } from "./ToneEvent.js";
 
 describe("ToneEvent", () => {
-
 	BasicTests(ToneEvent);
 
 	context("Constructor", () => {
-
 		it("takes a callback and a value", () => {
 			return Offline(() => {
 				const callback = noOp;
@@ -51,7 +49,6 @@ describe("ToneEvent", () => {
 	});
 
 	context("Get/Set", () => {
-
 		it("can set values with object", () => {
 			return Offline(() => {
 				const callback = noOp;
@@ -85,7 +82,6 @@ describe("ToneEvent", () => {
 	});
 
 	context("ToneEvent callback", () => {
-
 		it("does not invoke get invoked until started", () => {
 			return Offline(({ transport }) => {
 				const event = new ToneEvent(() => {
@@ -152,7 +148,6 @@ describe("ToneEvent", () => {
 		});
 
 		it("can trigger with some probability", () => {
-
 			return Offline(({ transport }) => {
 				const note = new ToneEvent(() => {
 					throw new Error("shouldn't call this callback");
@@ -165,7 +160,6 @@ describe("ToneEvent", () => {
 	});
 
 	context("Scheduling", () => {
-
 		it("can be started and stopped multiple times", () => {
 			return Offline(({ transport }) => {
 				const note = new ToneEvent().start(0).stop(0.2).start(0.4);
@@ -185,7 +179,6 @@ describe("ToneEvent", () => {
 		});
 
 		it("restarts when transport is restarted", () => {
-
 			return Offline(({ transport }) => {
 				const note = new ToneEvent().start(0).stop(0.4);
 				transport.start(0).stop(0.5).start(0.55);
@@ -231,11 +224,9 @@ describe("ToneEvent", () => {
 				};
 			}, 0.5);
 		});
-
 	});
 
 	context("Looping", () => {
-
 		it("can be set to loop", () => {
 			let callCount = 0;
 			return Offline(({ transport }) => {
@@ -250,7 +241,6 @@ describe("ToneEvent", () => {
 			}, 0.8).then(() => {
 				expect(callCount).to.equal(4);
 			});
-
 		});
 
 		it("can be set to loop at a specific interval", () => {
@@ -355,17 +345,27 @@ describe("ToneEvent", () => {
 
 		it("can be started and stopped multiple times", () => {
 			return Offline(({ transport }) => {
-				const eventTimes = [0.3, 0.39, 0.9, 0.99, 1.3, 1.39, 1.48, 1.57, 1.66, 1.75, 1.84];
+				const eventTimes = [
+					0.3, 0.39, 0.9, 0.99, 1.3, 1.39, 1.48, 1.57, 1.66, 1.75,
+					1.84,
+				];
 				let eventTimeIndex = 0;
 				new ToneEvent({
 					loop: true,
 					loopEnd: 0.09,
 					callback(time): void {
 						expect(eventTimes.length).to.be.gt(eventTimeIndex);
-						expect(eventTimes[eventTimeIndex]).to.be.closeTo(time, 0.05);
+						expect(eventTimes[eventTimeIndex]).to.be.closeTo(
+							time,
+							0.05
+						);
 						eventTimeIndex++;
 					},
-				}).start(0.1).stop(0.2).start(0.5).stop(1.1);
+				})
+					.start(0.1)
+					.stop(0.2)
+					.start(0.5)
+					.stop(1.1);
 				transport.start(0.2).stop(0.5).start(0.8);
 			}, 2);
 		});
@@ -423,7 +423,6 @@ describe("ToneEvent", () => {
 	});
 
 	context("playbackRate and humanize", () => {
-
 		it("can adjust the playbackRate", () => {
 			return Offline(({ transport }) => {
 				let lastCall;
@@ -460,7 +459,6 @@ describe("ToneEvent", () => {
 				}).start(0);
 				transport.start();
 			}, 1.2);
-
 		});
 
 		it("can humanize the callback by some amount", () => {
@@ -480,6 +478,5 @@ describe("ToneEvent", () => {
 				transport.start();
 			}, 0.6);
 		});
-
 	});
 });

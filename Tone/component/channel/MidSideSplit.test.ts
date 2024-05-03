@@ -1,18 +1,16 @@
-import { MidSideSplit } from "./MidSideSplit";
-import { MidSideMerge } from "./MidSideMerge";
-import { BasicTests } from "test/helper/Basic";
-import { Signal } from "Tone/signal/Signal";
-import { Offline } from "test/helper/Offline";
-import { Merge } from "./Merge";
-import { connectFrom, connectTo } from "test/helper/Connect";
+import { MidSideSplit } from "./MidSideSplit.js";
+import { MidSideMerge } from "./MidSideMerge.js";
+import { BasicTests } from "../../../test/helper/Basic.js";
+import { Signal } from "../../signal/Signal.js";
+import { Offline } from "../../../test/helper/Offline.js";
+import { Merge } from "./Merge.js";
+import { connectFrom, connectTo } from "../../../test/helper/Connect.js";
 import { expect } from "chai";
 
 describe("MidSideSplit", () => {
-
 	BasicTests(MidSideSplit);
 
 	context("Splitting", () => {
-
 		it("handles inputs and outputs", () => {
 			const split = new MidSideSplit();
 			connectFrom().connect(split);
@@ -61,19 +59,26 @@ describe("MidSideSplit", () => {
 		});
 
 		it("can decompose and reconstruct a signal", () => {
-			return Offline(() => {
-				const midSideMerge = new MidSideMerge().toDestination();
-				const split = new MidSideSplit();
-				split.mid.connect(midSideMerge.mid);
-				split.side.connect(midSideMerge.side);
-				const merge = new Merge().connect(split);
-				new Signal(0.2).connect(merge, 0, 0);
-				new Signal(0.4).connect(merge, 0, 1);
-			}, 0.1, 2).then((buffer) => {
-				buffer.toArray()[0].forEach(l => expect(l).to.be.closeTo(0.2, 0.01));
-				buffer.toArray()[1].forEach(r => expect(r).to.be.closeTo(0.4, 0.01));
+			return Offline(
+				() => {
+					const midSideMerge = new MidSideMerge().toDestination();
+					const split = new MidSideSplit();
+					split.mid.connect(midSideMerge.mid);
+					split.side.connect(midSideMerge.side);
+					const merge = new Merge().connect(split);
+					new Signal(0.2).connect(merge, 0, 0);
+					new Signal(0.4).connect(merge, 0, 1);
+				},
+				0.1,
+				2
+			).then((buffer) => {
+				buffer
+					.toArray()[0]
+					.forEach((l) => expect(l).to.be.closeTo(0.2, 0.01));
+				buffer
+					.toArray()[1]
+					.forEach((r) => expect(r).to.be.closeTo(0.4, 0.01));
 			});
 		});
 	});
 });
-

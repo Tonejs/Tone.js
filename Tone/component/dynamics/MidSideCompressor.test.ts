@@ -1,14 +1,12 @@
-import { MidSideCompressor } from "./MidSideCompressor";
-import { BasicTests } from "test/helper/Basic";
-import { PassAudio } from "test/helper/PassAudio";
+import { MidSideCompressor } from "./MidSideCompressor.js";
+import { BasicTests } from "../../../test/helper/Basic.js";
+import { PassAudio } from "../../../test/helper/PassAudio.js";
 import { expect } from "chai";
 
 describe("MidSideCompressor", () => {
-
 	BasicTests(MidSideCompressor);
 
 	context("Compression", () => {
-
 		it("passes the incoming signal through", () => {
 			return PassAudio((input) => {
 				const comp = new MidSideCompressor().toDestination();
@@ -26,8 +24,8 @@ describe("MidSideCompressor", () => {
 				side: {
 					release: 0.5,
 					attack: 0.03,
-					knee: 20
-				}
+					knee: 20,
+				},
 			};
 			comp.set(values);
 			expect(comp.get()).to.have.keys(["mid", "side"]);
@@ -45,8 +43,8 @@ describe("MidSideCompressor", () => {
 				side: {
 					release: 0.5,
 					attack: 0.03,
-					knee: 20
-				}
+					knee: 20,
+				},
 			});
 			expect(comp.mid.ratio.value).be.closeTo(16, 0.01);
 			expect(comp.mid.threshold.value).be.closeTo(-30, 0.01);
@@ -56,4 +54,3 @@ describe("MidSideCompressor", () => {
 		});
 	});
 });
-

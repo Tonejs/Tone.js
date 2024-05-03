@@ -1,10 +1,14 @@
-import { Gain } from "../../core/context/Gain";
-import { connect, ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
-import { NormalRange } from "../../core/type/Units";
-import { optionsFromArguments } from "../../core/util/Defaults";
-import { readOnly } from "../../core/util/Interface";
-import { GainToAudio } from "../../signal/GainToAudio";
-import { Signal } from "../../signal/Signal";
+import { Gain } from "../../core/context/Gain.js";
+import {
+	connect,
+	ToneAudioNode,
+	ToneAudioNodeOptions,
+} from "../../core/context/ToneAudioNode.js";
+import { NormalRange } from "../../core/type/Units.js";
+import { optionsFromArguments } from "../../core/util/Defaults.js";
+import { readOnly } from "../../core/util/Interface.js";
+import { GainToAudio } from "../../signal/GainToAudio.js";
+import { Signal } from "../../signal/Signal.js";
 
 interface CrossFadeOptions extends ToneAudioNodeOptions {
 	fade: NormalRange;
@@ -37,7 +41,6 @@ interface CrossFadeOptions extends ToneAudioNodeOptions {
  * @category Component
  */
 export class CrossFade extends ToneAudioNode<CrossFadeOptions> {
-
 	readonly name: string = "CrossFade";
 
 	/**
@@ -97,8 +100,18 @@ export class CrossFade extends ToneAudioNode<CrossFadeOptions> {
 	constructor(fade?: NormalRange);
 	constructor(options?: Partial<CrossFadeOptions>);
 	constructor() {
-		super(Object.assign(optionsFromArguments(CrossFade.getDefaults(), arguments, ["fade"])));
-		const options = optionsFromArguments(CrossFade.getDefaults(), arguments, ["fade"]);
+		super(
+			Object.assign(
+				optionsFromArguments(CrossFade.getDefaults(), arguments, [
+					"fade",
+				])
+			)
+		);
+		const options = optionsFromArguments(
+			CrossFade.getDefaults(),
+			arguments,
+			["fade"]
+		);
 
 		this.fade = new Signal({
 			context: this.context,

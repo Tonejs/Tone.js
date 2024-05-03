@@ -1,9 +1,12 @@
-import { ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
-import { Gain } from "../../core/context/Gain";
-import { assert } from "../../core/util/Debug";
-import { theWindow } from "../../core/context/AudioContext";
-import { optionsFromArguments } from "../../core/util/Defaults";
-import { PlaybackState } from "../../core/util/StateTimeline";
+import {
+	ToneAudioNode,
+	ToneAudioNodeOptions,
+} from "../../core/context/ToneAudioNode.js";
+import { Gain } from "../../core/context/Gain.js";
+import { assert } from "../../core/util/Debug.js";
+import { theWindow } from "../../core/context/AudioContext.js";
+import { optionsFromArguments } from "../../core/util/Defaults.js";
+import { PlaybackState } from "../../core/util/StateTimeline.js";
 
 export interface RecorderOptions extends ToneAudioNodeOptions {
 	mimeType?: string;
@@ -12,8 +15,8 @@ export interface RecorderOptions extends ToneAudioNodeOptions {
 /**
  * A wrapper around the MediaRecorder API. Unlike the rest of Tone.js, this module does not offer
  * any sample-accurate scheduling because it is not a feature of the MediaRecorder API.
- * This is only natively supported in Chrome and Firefox. 
- * For a cross-browser shim, install (audio-recorder-polyfill)[https://www.npmjs.com/package/audio-recorder-polyfill]. 
+ * This is only natively supported in Chrome and Firefox.
+ * For a cross-browser shim, install (audio-recorder-polyfill)[https://www.npmjs.com/package/audio-recorder-polyfill].
  * @example
  * const recorder = new Tone.Recorder();
  * const synth = new Tone.Synth().connect(recorder);
@@ -37,7 +40,6 @@ export interface RecorderOptions extends ToneAudioNodeOptions {
  * @category Component
  */
 export class Recorder extends ToneAudioNode<RecorderOptions> {
-
 	readonly name = "Recorder";
 
 	/**
@@ -46,7 +48,7 @@ export class Recorder extends ToneAudioNode<RecorderOptions> {
 	private _recorder: MediaRecorder;
 
 	/**
-	 * MediaRecorder requires 
+	 * MediaRecorder requires
 	 */
 	private _stream: MediaStreamAudioDestinationNode;
 
@@ -55,12 +57,11 @@ export class Recorder extends ToneAudioNode<RecorderOptions> {
 
 	constructor(options?: Partial<RecorderOptions>);
 	constructor() {
-
 		super(optionsFromArguments(Recorder.getDefaults(), arguments));
 		const options = optionsFromArguments(Recorder.getDefaults(), arguments);
 
 		this.input = new Gain({
-			context: this.context
+			context: this.context,
 		});
 
 		assert(Recorder.supported, "Media Recorder API is not available");
@@ -68,7 +69,7 @@ export class Recorder extends ToneAudioNode<RecorderOptions> {
 		this._stream = this.context.createMediaStreamDestination();
 		this.input.connect(this._stream);
 		this._recorder = new MediaRecorder(this._stream.stream, {
-			mimeType: options.mimeType
+			mimeType: options.mimeType,
 		});
 	}
 
@@ -77,15 +78,15 @@ export class Recorder extends ToneAudioNode<RecorderOptions> {
 	}
 
 	/**
-	 * The mime type is the format that the audio is encoded in. For Chrome 
-	 * that is typically webm encoded as "vorbis". 
+	 * The mime type is the format that the audio is encoded in. For Chrome
+	 * that is typically webm encoded as "vorbis".
 	 */
 	get mimeType(): string {
 		return this._recorder.mimeType;
 	}
 
 	/**
-	 * Test if your platform supports the Media Recorder API. If it's not available, 
+	 * Test if your platform supports the Media Recorder API. If it's not available,
 	 * try installing this (polyfill)[https://www.npmjs.com/package/audio-recorder-polyfill].
 	 */
 	static get supported(): boolean {
@@ -111,7 +112,7 @@ export class Recorder extends ToneAudioNode<RecorderOptions> {
 	 */
 	async start() {
 		assert(this.state !== "started", "Recorder is already started");
-		const startPromise = new Promise<void>(done => {
+		const startPromise = new Promise<void>((done) => {
 			const handleStart = () => {
 				this._recorder.removeEventListener("start", handleStart, false);
 
@@ -131,9 +132,13 @@ export class Recorder extends ToneAudioNode<RecorderOptions> {
 	 */
 	async stop(): Promise<Blob> {
 		assert(this.state !== "stopped", "Recorder is not started");
-		const dataPromise: Promise<Blob> = new Promise(done => {
+		const dataPromise: Promise<Blob> = new Promise((done) => {
 			const handleData = (e: BlobEvent) => {
-				this._recorder.removeEventListener("dataavailable", handleData, false);
+				this._recorder.removeEventListener(
+					"dataavailable",
+					handleData,
+					false
+				);
 
 				done(e.data);
 			};

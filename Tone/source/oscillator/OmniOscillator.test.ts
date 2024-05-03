@@ -1,31 +1,33 @@
 import { expect } from "chai";
-import { BasicTests } from "test/helper/Basic";
-import { CompareToFile } from "test/helper/CompareToFile";
-import { OscillatorTests } from "test/helper/OscillatorTests";
-import { OutputAudio } from "test/helper/OutputAudio";
-import { SourceTests } from "test/helper/SourceTests";
-import { FMOscillator } from "./FMOscillator";
-import { OmniOscillator } from "./OmniOscillator";
-import { OmniOscillatorType } from "./OscillatorInterface";
-import { PulseOscillator } from "./PulseOscillator";
-import { PWMOscillator } from "./PWMOscillator";
+import { BasicTests } from "../../../test/helper/Basic.js";
+import { CompareToFile } from "../../../test/helper/CompareToFile.js";
+import { OscillatorTests } from "../../../test/helper/OscillatorTests.js";
+import { OutputAudio } from "../../../test/helper/OutputAudio.js";
+import { SourceTests } from "../../../test/helper/SourceTests.js";
+import { FMOscillator } from "./FMOscillator.js";
+import { OmniOscillator } from "./OmniOscillator.js";
+import { OmniOscillatorType } from "./OscillatorInterface.js";
+import { PulseOscillator } from "./PulseOscillator.js";
+import { PWMOscillator } from "./PWMOscillator.js";
 
 describe("OmniOscillator", () => {
-
 	// run the common tests
 	BasicTests(OmniOscillator);
 	SourceTests(OmniOscillator);
 	OscillatorTests(OmniOscillator);
 
 	it("matches a file", () => {
-		return CompareToFile(() => {
-			const osc = new OmniOscillator(220, "fmsquare").toDestination();
-			osc.start(0.1).stop(0.2);
-		}, "omniOscillator.wav", 1.6);
+		return CompareToFile(
+			() => {
+				const osc = new OmniOscillator(220, "fmsquare").toDestination();
+				osc.start(0.1).stop(0.2);
+			},
+			"omniOscillator.wav",
+			1.6
+		);
 	});
 
 	context("Sound", () => {
-
 		it("makes a sound", () => {
 			return OutputAudio(() => {
 				const osc = new OmniOscillator();
@@ -90,11 +92,9 @@ describe("OmniOscillator", () => {
 				osc.type = "fmsine";
 			});
 		});
-
 	});
 
 	context("Type", () => {
-
 		it("can get and set the type", () => {
 			const osc = new OmniOscillator({
 				type: "sawtooth",
@@ -105,8 +105,16 @@ describe("OmniOscillator", () => {
 
 		it("handles various types", () => {
 			const osc = new OmniOscillator();
-			const types: OmniOscillatorType[] = ["triangle3", "sine", "pulse", "pwm", "amsine4", "fatsquare2", "fmsawtooth"];
-			types.forEach(type => {
+			const types: OmniOscillatorType[] = [
+				"triangle3",
+				"sine",
+				"pulse",
+				"pwm",
+				"amsine4",
+				"fatsquare2",
+				"fmsawtooth",
+			];
+			types.forEach((type) => {
 				osc.type = type;
 				expect(osc.type).to.equal(type);
 			});

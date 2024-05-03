@@ -1,7 +1,6 @@
-import { Seconds, Ticks } from "../type/Units";
-import { noOp } from "../util/Interface";
-
-type Transport = import("../clock/Transport").TransportClass;
+import { Seconds, Ticks } from "../type/Units.js";
+import { noOp } from "../util/Interface.js";
+import type { TransportClass as Transport } from "./Transport.js";
 
 export interface TransportEventOptions {
 	callback: (time: number) => void;
@@ -15,7 +14,6 @@ export interface TransportEventOptions {
  * handled from within Tone.Transport.
  */
 export class TransportEvent {
-
 	/**
 	 * Reference to the Transport that created it
 	 */
@@ -43,7 +41,7 @@ export class TransportEvent {
 
 	/**
 	 * The remaining value between the passed in time, and Math.floor(time).
-	 * This value is later added back when scheduling to get sub-tick precision. 
+	 * This value is later added back when scheduling to get sub-tick precision.
 	 */
 	protected _remainderTime = 0;
 
@@ -51,8 +49,10 @@ export class TransportEvent {
 	 * @param transport The transport object which the event belongs to
 	 */
 	constructor(transport: Transport, opts: Partial<TransportEventOptions>) {
-
-		const options: TransportEventOptions = Object.assign(TransportEvent.getDefaults(), opts);
+		const options: TransportEventOptions = Object.assign(
+			TransportEvent.getDefaults(),
+			opts
+		);
 
 		this.transport = transport;
 		this.callback = options.callback;

@@ -1,25 +1,27 @@
-import { PingPongDelay } from "./PingPongDelay";
-import { BasicTests } from "test/helper/Basic";
-import { EffectTests } from "test/helper/EffectTests";
+import { PingPongDelay } from "./PingPongDelay.js";
+import { BasicTests } from "../../test/helper/Basic.js";
+import { EffectTests } from "../../test/helper/EffectTests.js";
 import { expect } from "chai";
-import { CompareToFile } from "test/helper/CompareToFile";
-import { Oscillator } from "Tone/source/oscillator/Oscillator";
+import { CompareToFile } from "../../test/helper/CompareToFile.js";
+import { Oscillator } from "../source/oscillator/Oscillator.js";
 
 describe("PingPongDelay", () => {
-
 	BasicTests(PingPongDelay);
 	EffectTests(PingPongDelay, 0.01);
 
 	it("matches a file", () => {
-		return CompareToFile(() => {
-			const delay = new PingPongDelay(0.2, 0.8).toDestination();
-			const pulse = new Oscillator().connect(delay);
-			pulse.start(0).stop(0.1);
-		}, "pingPongDelay.wav", 0.2);
+		return CompareToFile(
+			() => {
+				const delay = new PingPongDelay(0.2, 0.8).toDestination();
+				const pulse = new Oscillator().connect(delay);
+				pulse.start(0).stop(0.1);
+			},
+			"pingPongDelay.wav",
+			0.2
+		);
 	});
 
 	context("API", () => {
-
 		it("can pass in options in the constructor", () => {
 			const pingPong = new PingPongDelay({
 				delayTime: 0.2,
@@ -38,4 +40,3 @@ describe("PingPongDelay", () => {
 		});
 	});
 });
-

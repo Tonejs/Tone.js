@@ -1,16 +1,29 @@
-import { Gain } from "../../core/context/Gain";
-import { Param } from "../../core/context/Param";
-import { InputNode, OutputNode, ToneAudioNode } from "../../core/context/ToneAudioNode";
-import { Degrees, Frequency, NormalRange, Time, UnitName } from "../../core/type/Units";
-import { optionsFromArguments } from "../../core/util/Defaults";
-import { readOnly } from "../../core/util/Interface";
-import { BasicPlaybackState } from "../../core/util/StateTimeline";
-import { AudioToGain } from "../../signal/AudioToGain";
-import { Scale } from "../../signal/Scale";
-import { connectSignal, Signal } from "../../signal/Signal";
-import { Zero } from "../../signal/Zero";
-import { Oscillator, ToneOscillatorType } from "./Oscillator";
-import { ToneOscillatorConstructorOptions, ToneOscillatorOptions } from "./OscillatorInterface";
+import { Gain } from "../../core/context/Gain.js";
+import { Param } from "../../core/context/Param.js";
+import {
+	InputNode,
+	OutputNode,
+	ToneAudioNode,
+} from "../../core/context/ToneAudioNode.js";
+import {
+	Degrees,
+	Frequency,
+	NormalRange,
+	Time,
+	UnitName,
+} from "../../core/type/Units.js";
+import { optionsFromArguments } from "../../core/util/Defaults.js";
+import { readOnly } from "../../core/util/Interface.js";
+import { BasicPlaybackState } from "../../core/util/StateTimeline.js";
+import { AudioToGain } from "../../signal/AudioToGain.js";
+import { Scale } from "../../signal/Scale.js";
+import { connectSignal, Signal } from "../../signal/Signal.js";
+import { Zero } from "../../signal/Zero.js";
+import { Oscillator, ToneOscillatorType } from "./Oscillator.js";
+import {
+	ToneOscillatorConstructorOptions,
+	ToneOscillatorOptions,
+} from "./OscillatorInterface.js";
 
 export type LFOOptions = {
 	min: number;
@@ -31,7 +44,6 @@ export type LFOOptions = {
  * @category Source
  */
 export class LFO extends ToneAudioNode<LFOOptions> {
-
 	readonly name: string = "LFO";
 
 	/**
@@ -112,11 +124,22 @@ export class LFO extends ToneAudioNode<LFOOptions> {
 	constructor(frequency?: Frequency, min?: number, max?: number);
 	constructor(options?: Partial<LFOOptions>);
 	constructor() {
+		super(
+			optionsFromArguments(LFO.getDefaults(), arguments, [
+				"frequency",
+				"min",
+				"max",
+			])
+		);
+		const options = optionsFromArguments(LFO.getDefaults(), arguments, [
+			"frequency",
+			"min",
+			"max",
+		]);
 
-		super(optionsFromArguments(LFO.getDefaults(), arguments, ["frequency", "min", "max"]));
-		const options = optionsFromArguments(LFO.getDefaults(), arguments, ["frequency", "min", "max"]);
-
-		this._oscillator = new Oscillator(options as ToneOscillatorConstructorOptions);
+		this._oscillator = new Oscillator(
+			options as ToneOscillatorConstructorOptions
+		);
 
 		this.frequency = this._oscillator.frequency;
 
@@ -250,7 +273,7 @@ export class LFO extends ToneAudioNode<LFOOptions> {
 	}
 
 	/**
-	 * The oscillator's partials array. 
+	 * The oscillator's partials array.
 	 * @see {@link Oscillator.partials}
 	 */
 	get partials(): number[] {

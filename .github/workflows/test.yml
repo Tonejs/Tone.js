@@ -26,12 +26,10 @@ jobs:
       - name: Setup Nodejs
         uses: actions/setup-node@v4
         with:
-          node-version: 18.12.0
+          node-version: 18.18.0
           cache: 'npm'
       - name: Install dependencies
         run: npm install
-      - name: Build
-        run: npm run build
       - name: All tests
         run: npm run test
       - name: Upload coverage
@@ -52,7 +50,7 @@ jobs:
       - name: Setup Nodejs
         uses: actions/setup-node@v4
         with:
-          node-version: 18.12.0
+          node-version: 18.18.0
           cache: 'npm'
       - name: Install dependencies
         run: npm install
@@ -72,7 +70,7 @@ jobs:
       - name: Setup Nodejs
         uses: actions/setup-node@v4
         with:
-          node-version: 18.12.0
+          node-version: 18.18.0
           cache: 'npm'
       - name: Install dependencies
         run: npm install
@@ -92,7 +90,7 @@ jobs:
       - name: Setup Nodejs
         uses: actions/setup-node@v4
         with:
-          node-version: 18.12.0
+          node-version: 18.18.0
           cache: 'npm'
       - name: Install dependencies
         run: npm install
@@ -110,7 +108,7 @@ jobs:
       - name: Setup Nodejs
         uses: actions/setup-node@v4
         with:
-          node-version: 18.12.0
+          node-version: 18.18.0
           cache: 'npm'
       - name: Install dependencies
         run: npm install
@@ -118,10 +116,30 @@ jobs:
         run: npm run build
       - name: Test
         run: npm run test:readme
+  test-integrations:
+    name: Test integrations
+    permissions:
+      contents: read
+      id-token: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v4
+      - name: Setup Nodejs
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18.18.0
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm install
+      - name: Build
+        run: npm run build
+      - name: Test
+        run: npm run test:integrations
   publish:
     runs-on: ubuntu-latest
     # make sure all the tests pass first
-    needs: [run-tests, test-code-examples, test-html-examples, test-lint, test-readme]
+    needs: [run-tests, test-code-examples, test-html-examples, test-lint, test-readme, test-integrations]
     # not on PRs
     if: github.event_name != 'pull_request'
     env:
@@ -132,7 +150,7 @@ jobs:
       # Setup .npmrc file to publish to npm
       - uses: actions/setup-node@v4
         with:
-          node-version: 18.12.0
+          node-version: 18.18.0
           registry-url: 'https://registry.npmjs.org'
       - name: Install dependencies
         run: npm install

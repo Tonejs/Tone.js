@@ -1,9 +1,9 @@
-import { ToneAudioBuffer } from "../core/context/ToneAudioBuffer";
-import { Positive, Time } from "../core/type/Units";
-import { optionsFromArguments } from "../core/util/Defaults";
-import { assert } from "../core/util/Debug";
-import { Source, SourceOptions } from "../source/Source";
-import { ToneBufferSource } from "./buffer/ToneBufferSource";
+import { ToneAudioBuffer } from "../core/context/ToneAudioBuffer.js";
+import { Positive, Time } from "../core/type/Units.js";
+import { optionsFromArguments } from "../core/util/Defaults.js";
+import { assert } from "../core/util/Debug.js";
+import { Source, SourceOptions } from "../source/Source.js";
+import { ToneBufferSource } from "./buffer/ToneBufferSource.js";
 
 export type NoiseType = "white" | "brown" | "pink";
 
@@ -35,7 +35,6 @@ export interface NoiseOptions extends SourceOptions {
  * @category Source
  */
 export class Noise extends Source<NoiseOptions> {
-
 	readonly name: string = "Noise";
 
 	/**
@@ -71,7 +70,9 @@ export class Noise extends Source<NoiseOptions> {
 	constructor(options?: Partial<NoiseOptions>);
 	constructor() {
 		super(optionsFromArguments(Noise.getDefaults(), arguments, ["type"]));
-		const options = optionsFromArguments(Noise.getDefaults(), arguments, ["type"]);
+		const options = optionsFromArguments(Noise.getDefaults(), arguments, [
+			"type",
+		]);
 
 		this._playbackRate = options.playbackRate;
 		this.type = options.type;
@@ -138,7 +139,10 @@ export class Noise extends Source<NoiseOptions> {
 			onended: () => this.onstop(this),
 			playbackRate: this._playbackRate,
 		}).connect(this.output);
-		this._source.start(this.toSeconds(time), Math.random() * (buffer.duration - 0.001));
+		this._source.start(
+			this.toSeconds(time),
+			Math.random() * (buffer.duration - 0.001)
+		);
 	}
 
 	/**
@@ -234,7 +238,7 @@ const _noiseBuffers = {
 				let lastOut = 0.0;
 				for (let i = 0; i < BUFFER_LENGTH; i++) {
 					const white = Math.random() * 2 - 1;
-					channel[i] = (lastOut + (0.02 * white)) / 1.02;
+					channel[i] = (lastOut + 0.02 * white) / 1.02;
 					lastOut = channel[i];
 					channel[i] *= 3.5; // (roughly) compensate for gain
 				}
@@ -256,11 +260,12 @@ const _noiseBuffers = {
 					const white = Math.random() * 2 - 1;
 					b0 = 0.99886 * b0 + white * 0.0555179;
 					b1 = 0.99332 * b1 + white * 0.0750759;
-					b2 = 0.96900 * b2 + white * 0.1538520;
-					b3 = 0.86650 * b3 + white * 0.3104856;
-					b4 = 0.55000 * b4 + white * 0.5329522;
-					b5 = -0.7616 * b5 - white * 0.0168980;
-					channel[i] = b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362;
+					b2 = 0.969 * b2 + white * 0.153852;
+					b3 = 0.8665 * b3 + white * 0.3104856;
+					b4 = 0.55 * b4 + white * 0.5329522;
+					b5 = -0.7616 * b5 - white * 0.016898;
+					channel[i] =
+						b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362;
 					channel[i] *= 0.11; // (roughly) compensate for gain
 					b6 = white * 0.115926;
 				}

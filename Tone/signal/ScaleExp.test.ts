@@ -1,15 +1,13 @@
-import { ConstantOutput } from "test/helper/ConstantOutput";
-import { ScaleExp } from "./ScaleExp";
-import { BasicTests } from "test/helper/Basic";
-import { Signal } from "Tone/signal/Signal";
+import { ConstantOutput } from "../../test/helper/ConstantOutput.js";
+import { ScaleExp } from "./ScaleExp.js";
+import { BasicTests } from "../../test/helper/Basic.js";
+import { Signal } from "./Signal.js";
 import { expect } from "chai";
 
 describe("ScaleExp", () => {
-
 	BasicTests(ScaleExp);
 
 	context("Scaling", () => {
-
 		it("can set the min and max values", () => {
 			const scale = new ScaleExp(-20, 10, 2);
 			scale.min = -0.01;
@@ -33,7 +31,7 @@ describe("ScaleExp", () => {
 				const scale = new ScaleExp(0, 1, 3);
 				signal.connect(scale);
 				scale.toDestination();
-			}, 0.125); 
+			}, 0.125);
 		});
 
 		it("scale a signal between 1 and 3 exponentially", () => {
@@ -42,8 +40,7 @@ describe("ScaleExp", () => {
 				const scale = new ScaleExp(1, 3, 2);
 				signal.connect(scale);
 				scale.toDestination();
-			}, 1.5); 
+			}, 1.5);
 		});
 	});
 });
-

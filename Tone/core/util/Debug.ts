@@ -1,4 +1,6 @@
-import { isUndef } from "./TypeCheck";
+import { isUndef } from "./TypeCheck.js";
+import type { BaseContext } from "../context/BaseContext.js";
+import type { Time } from "../type/Units.js";
 
 /**
  * Assert that the statement is true, otherwise invoke the error.
@@ -25,13 +27,11 @@ export function assertRange(value: number, gte: number, lte = Infinity): void {
 /**
  * Warn if the context is not running.
  */
-export function assertContextRunning(
-	context: import("../context/BaseContext").BaseContext
-): void {
+export function assertContextRunning(context: BaseContext): void {
 	// add a warning if the context is not started
 	if (!context.isOffline && context.state !== "running") {
 		warn(
-			"The AudioContext is \"suspended\". Invoke Tone.start() from a user action to start the audio."
+			'The AudioContext is "suspended". Invoke Tone.start() from a user action to start the audio.'
 		);
 	}
 }
@@ -52,12 +52,16 @@ export function enterScheduledCallback(insideCallback: boolean): void {
 /**
  * Make sure that a time was passed into
  */
-export function assertUsedScheduleTime(
-	time?: import("../type/Units").Time
-): void {
-	if (isUndef(time) && isInsideScheduledCallback && !printedScheduledWarning) {
+export function assertUsedScheduleTime(time?: Time): void {
+	if (
+		isUndef(time) &&
+		isInsideScheduledCallback &&
+		!printedScheduledWarning
+	) {
 		printedScheduledWarning = true;
-		warn("Events scheduled inside of scheduled callbacks should use the passed in scheduling time. See https://github.com/Tonejs/Tone.js/wiki/Accurate-Timing");
+		warn(
+			"Events scheduled inside of scheduled callbacks should use the passed in scheduling time. See https://github.com/Tonejs/Tone.js/wiki/Accurate-Timing"
+		);
 	}
 }
 

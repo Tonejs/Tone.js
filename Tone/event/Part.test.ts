@@ -1,18 +1,16 @@
 import { expect } from "chai";
-import { BasicTests } from "test/helper/Basic";
-import { atTime, Offline } from "test/helper/Offline";
-import { Time } from "Tone/core/type/Time";
-import { noOp } from "Tone/core/util/Interface";
-import { Part } from "./Part";
-import { Sequence } from "./Sequence";
-import { ToneEvent } from "./ToneEvent";
+import { BasicTests } from "../../test/helper/Basic.js";
+import { atTime, Offline } from "../../test/helper/Offline.js";
+import { Time } from "../core/type/Time.js";
+import { noOp } from "../core/util/Interface.js";
+import { Part } from "./Part.js";
+import { Sequence } from "./Sequence.js";
+import { ToneEvent } from "./ToneEvent.js";
 
 describe("Part", () => {
-
 	BasicTests(Part);
 
 	context("Constructor", () => {
-
 		it("takes a callback and an array of values", () => {
 			return Offline(() => {
 				const callback = noOp;
@@ -54,7 +52,6 @@ describe("Part", () => {
 	});
 
 	context("Adding / Removing / Getting Events", () => {
-
 		it("can take events in the constructor as an array of times", () => {
 			return Offline(() => {
 				const part = new Part(noOp, ["0", "8n", "4n"]);
@@ -65,7 +62,11 @@ describe("Part", () => {
 
 		it("can take events in the constructor as an array of times and values", () => {
 			return Offline(() => {
-				const part = new Part(noOp, [["0", "C4"], ["8n", "D3"], ["4n", "E4"]]);
+				const part = new Part(noOp, [
+					["0", "C4"],
+					["8n", "D3"],
+					["4n", "E4"],
+				]);
 				expect(part.length).to.equal(3);
 				part.dispose();
 			});
@@ -73,7 +74,11 @@ describe("Part", () => {
 
 		it("can retrieve an event using 'at'", () => {
 			return Offline(() => {
-				const part = new Part(noOp, [["0", 0], ["8n", "C2"], ["4n", 2]]);
+				const part = new Part(noOp, [
+					["0", 0],
+					["8n", "C2"],
+					["4n", 2],
+				]);
 				expect(part.length).to.equal(3);
 				expect(part.at(0)).to.be.instanceof(ToneEvent);
 				expect((part.at(0) as ToneEvent).value).to.equal(0);
@@ -99,14 +104,16 @@ describe("Part", () => {
 
 		it("can take events in the constructor as an array of objects", () => {
 			return Offline(() => {
-				const part = new Part(noOp, [{
-					note: "C3",
-					time: 0.3,
-				},
-				{
-					note: "D3",
-					time: 1,
-				}]);
+				const part = new Part(noOp, [
+					{
+						note: "C3",
+						time: 0.3,
+					},
+					{
+						note: "D3",
+						time: 1,
+					},
+				]);
 				expect(part.length).to.equal(2);
 				expect((part.at(0.3) as ToneEvent).value).to.be.an("object");
 				expect((part.at(0.3) as ToneEvent).value.note).to.equal("C3");
@@ -117,16 +124,23 @@ describe("Part", () => {
 		it("can cancel event changes", () => {
 			let count = 0;
 			return Offline(({ transport }) => {
-				const part = new Part((time) => {
-					count++;
-				}, [{
-					note: "C3",
-					time: 0,
-				},
-				{
-					note: "D3",
-					time: 0.2,
-				}]).start(0).stop(0.1);
+				const part = new Part(
+					(time) => {
+						count++;
+					},
+					[
+						{
+							note: "C3",
+							time: 0,
+						},
+						{
+							note: "D3",
+							time: 0.2,
+						},
+					]
+				)
+					.start(0)
+					.stop(0.1);
 				part.cancel(0.1);
 				transport.start(0);
 			}, 0.3).then(() => {
@@ -156,8 +170,12 @@ describe("Part", () => {
 				});
 				expect(part.length).to.equal(1);
 				expect((part.at(0.5) as ToneEvent).value).to.be.an("object");
-				expect((part.at(0.5) as ToneEvent).value.duration).to.deep.equal("8n");
-				expect((part.at(0.5) as ToneEvent).value.note).to.deep.equal("D4");
+				expect(
+					(part.at(0.5) as ToneEvent).value.duration
+				).to.deep.equal("8n");
+				expect((part.at(0.5) as ToneEvent).value.note).to.deep.equal(
+					"D4"
+				);
 				part.dispose();
 			});
 		});
@@ -193,7 +211,10 @@ describe("Part", () => {
 		it("can remove an event by time", () => {
 			return Offline(() => {
 				const part = new Part({
-					events: [[0.2, "C3"], [0.2, "C4"]],
+					events: [
+						[0.2, "C3"],
+						[0.2, "C4"],
+					],
 				});
 				expect(part.length).to.equal(2);
 				part.remove(0.2);
@@ -223,7 +244,10 @@ describe("Part", () => {
 		it("added events have the same settings as the parent", () => {
 			return Offline(() => {
 				const part = new Part({
-					events: [[0.2, "C3"], [0.3, "C4"]],
+					events: [
+						[0.2, "C3"],
+						[0.3, "C4"],
+					],
 					loopEnd: "1m",
 					loopStart: "4n",
 					probability: 0.2,
@@ -265,11 +289,9 @@ describe("Part", () => {
 				part.dispose();
 			});
 		});
-
 	});
 
 	context("Part callback", () => {
-
 		it("does not invoke get invoked until started", () => {
 			return Offline(({ transport }) => {
 				const part = new Part(() => {
@@ -295,11 +317,14 @@ describe("Part", () => {
 			let invoked = false;
 			return Offline(({ transport }) => {
 				const startTime = 0.1;
-				const part = new Part((time) => {
-					expect(time).to.be.a("number");
-					expect(time - startTime).to.be.closeTo(0.5, 0.01);
-					invoked = true;
-				}, [0.3]);
+				const part = new Part(
+					(time) => {
+						expect(time).to.be.a("number");
+						expect(time - startTime).to.be.closeTo(0.5, 0.01);
+						invoked = true;
+					},
+					[0.3]
+				);
 				part.start(0.2);
 				transport.start(startTime);
 			}, 0.62).then(() => {
@@ -310,12 +335,15 @@ describe("Part", () => {
 		it("passes in the value to the callback", () => {
 			let invoked = false;
 			return Offline(({ transport }) => {
-				const part = new Part((time, thing) => {
-					expect(time).to.be.a("number");
-					expect(thing).to.equal("thing");
-					part.dispose();
-					invoked = true;
-				}, [[0, "thing"]]).start();
+				const part = new Part(
+					(time, thing) => {
+						expect(time).to.be.a("number");
+						expect(thing).to.equal("thing");
+						part.dispose();
+						invoked = true;
+					},
+					[[0, "thing"]]
+				).start();
 				transport.start();
 			}, 0.6).then(() => {
 				expect(invoked).to.be.true;
@@ -360,10 +388,17 @@ describe("Part", () => {
 			let count = 0;
 			return Offline(({ transport }) => {
 				const now = transport.now() + 0.1;
-				new Part((time, value) => {
-					count++;
-					expect(time - now).to.be.closeTo(value, 0.01);
-				}, [[0, 0], [0.1, 0.1], [0.2, 0.2]]).start();
+				new Part(
+					(time, value) => {
+						count++;
+						expect(time - now).to.be.closeTo(value, 0.01);
+					},
+					[
+						[0, 0],
+						[0.1, 0.1],
+						[0.2, 0.2],
+					]
+				).start();
 				transport.start(now);
 			}, 0.4).then(() => {
 				expect(count).to.equal(3);
@@ -397,7 +432,10 @@ describe("Part", () => {
 			return Offline(({ transport }) => {
 				const startTime = 0.1;
 				const subPart = new Part({
-					events: [[0, 1], [0.3, 2]],
+					events: [
+						[0, 1],
+						[0.3, 2],
+					],
 				});
 				const part = new Part((time, value) => {
 					invokations++;
@@ -409,7 +447,10 @@ describe("Part", () => {
 						expect(time - startTime).to.be.closeTo(0.5, 0.01);
 						part.dispose();
 					}
-				}).add(0.2, subPart).add(0, 0).start(0);
+				})
+					.add(0.2, subPart)
+					.add(0, 0)
+					.start(0);
 				transport.start(startTime);
 			}, 0.7).then(() => {
 				expect(invokations).to.equal(3);
@@ -420,26 +461,33 @@ describe("Part", () => {
 			let invoked = false;
 			return Offline(({ transport }) => {
 				const startTime = 0.1;
-				const part = new Part((time, number) => {
-					expect(time - startTime).to.be.closeTo(0.1, 0.01);
-					expect(number).to.equal(1);
-					invoked = true;
-				}, [[0, 0], [1, 1]]).start(0, 0.9);
+				const part = new Part(
+					(time, number) => {
+						expect(time - startTime).to.be.closeTo(0.1, 0.01);
+						expect(number).to.equal(1);
+						invoked = true;
+					},
+					[
+						[0, 0],
+						[1, 1],
+					]
+				).start(0, 0.9);
 				transport.start(startTime);
 			}, 0.3).then(() => {
 				expect(invoked).to.be.true;
 			});
 		});
-
 	});
 
 	context("Looping", () => {
-
 		it("can be set using a boolean as an argument when created", () => {
 			let callCount = 0;
 			return Offline(({ transport }) => {
 				new Part({
-					events: [[0, 1], [0.1, 2]],
+					events: [
+						[0, 1],
+						[0.1, 2],
+					],
 					loop: true,
 					loopEnd: 0.2,
 					callback(): void {
@@ -456,7 +504,10 @@ describe("Part", () => {
 			let callCount = 0;
 			return Offline(({ transport }) => {
 				const part = new Part({
-					events: [[0, 1], [0.1, 2]],
+					events: [
+						[0, 1],
+						[0.1, 2],
+					],
 					loop: true,
 					loopEnd: 0.2,
 					callback(): void {
@@ -474,7 +525,10 @@ describe("Part", () => {
 			let callCount = 0;
 			return Offline(({ transport }) => {
 				const part = new Part({
-					events: [[0, 1], [0.1, 2]],
+					events: [
+						[0, 1],
+						[0.1, 2],
+					],
 					loop: false,
 					loopEnd: 0.2,
 					callback(): void {
@@ -515,7 +569,10 @@ describe("Part", () => {
 			return Offline(({ transport }) => {
 				let switched = false;
 				const part = new Part({
-					events: [[0, 0], [0.25, 1]],
+					events: [
+						[0, 0],
+						[0.25, 1],
+					],
 					loop: true,
 					loopEnd: 0.5,
 					callback(time, value): void {
@@ -539,7 +596,10 @@ describe("Part", () => {
 			return Offline(({ transport }) => {
 				let switched = false;
 				const part = new Part({
-					events: [[0, 0], [0.25, 1]],
+					events: [
+						[0, 0],
+						[0.25, 1],
+					],
 					loop: true,
 					loopEnd: 0.5,
 					callback(time, value): void {
@@ -649,7 +709,12 @@ describe("Part", () => {
 			let invoked = false;
 			return Offline(({ transport }) => {
 				new Part({
-					events: [[0, 0], ["8n", 1], ["8n + 16n", 2], ["4n", 3]],
+					events: [
+						[0, 0],
+						["8n", 1],
+						["8n + 16n", 2],
+						["4n", 3],
+					],
 					loop: true,
 					loopEnd: "4n",
 					loopStart: "8n",
@@ -668,19 +733,37 @@ describe("Part", () => {
 		it("can be started and stopped multiple times", () => {
 			let eventTimeIndex = 0;
 			return Offline(({ transport }) => {
-				const eventTimes = [[0.5, 0], [0.6, 1], [1.1, 0], [1.2, 1], [1.3, 2], [1.4, 0], [1.5, 1], [1.6, 2]];
+				const eventTimes = [
+					[0.5, 0],
+					[0.6, 1],
+					[1.1, 0],
+					[1.2, 1],
+					[1.3, 2],
+					[1.4, 0],
+					[1.5, 1],
+					[1.6, 2],
+				];
 				new Part({
-					events: [[0, 0], [0.1, 1], [0.2, 2]],
+					events: [
+						[0, 0],
+						[0.1, 1],
+						[0.2, 2],
+					],
 					loop: true,
 					loopEnd: 0.3,
 					loopStart: 0,
 					callback(time, value): void {
 						expect(eventTimes.length).to.be.gt(eventTimeIndex);
-						expect(eventTimes[eventTimeIndex][0]).to.be.closeTo(time, 0.05);
+						expect(eventTimes[eventTimeIndex][0]).to.be.closeTo(
+							time,
+							0.05
+						);
 						expect(eventTimes[eventTimeIndex][1]).to.equal(value);
 						eventTimeIndex++;
 					},
-				}).start(0.3).stop(0.81);
+				})
+					.start(0.3)
+					.stop(0.81);
 				transport.start(0.2).stop(0.61).start(0.8);
 			}, 2).then(() => {
 				expect(eventTimeIndex).to.equal(8);
@@ -690,19 +773,37 @@ describe("Part", () => {
 		it("can adjust the loopEnd times", () => {
 			let eventTimeIndex = 0;
 			return Offline(({ transport }) => {
-				const eventTimes = [[0.5, 0], [0.6, 1], [1.1, 0], [1.2, 1], [1.3, 2], [1.4, 0], [1.5, 1], [1.6, 2]];
+				const eventTimes = [
+					[0.5, 0],
+					[0.6, 1],
+					[1.1, 0],
+					[1.2, 1],
+					[1.3, 2],
+					[1.4, 0],
+					[1.5, 1],
+					[1.6, 2],
+				];
 				const part = new Part({
-					events: [[0, 0], [0.1, 1], [0.2, 2]],
+					events: [
+						[0, 0],
+						[0.1, 1],
+						[0.2, 2],
+					],
 					loop: true,
 					loopEnd: 0.2,
 					loopStart: 0,
 					callback(time, value): void {
 						expect(eventTimes.length).to.be.gt(eventTimeIndex);
-						expect(eventTimes[eventTimeIndex][0]).to.be.closeTo(time, 0.05);
+						expect(eventTimes[eventTimeIndex][0]).to.be.closeTo(
+							time,
+							0.05
+						);
 						expect(eventTimes[eventTimeIndex][1]).to.equal(value);
 						eventTimeIndex++;
 					},
-				}).start(0.3).stop(0.81);
+				})
+					.start(0.3)
+					.stop(0.81);
 				part.loopEnd = 0.4;
 				part.loopEnd = 0.3;
 				transport.start(0.2).stop(0.61).start(0.8);
@@ -736,15 +837,21 @@ describe("Part", () => {
 			let iteration = 0;
 			return Offline(({ transport }) => {
 				const now = transport.now();
-				const part = new Part((time, number) => {
-					if (iteration === 0) {
-						expect(number).to.equal(1);
-						expect(time - now).to.be.closeTo(0.2, 0.05);
-					} else if (iteration === 1) {
-						expect(number).to.equal(0);
-					}
-					iteration++;
-				}, [[0, 0], [0.25, 1]]);
+				const part = new Part(
+					(time, number) => {
+						if (iteration === 0) {
+							expect(number).to.equal(1);
+							expect(time - now).to.be.closeTo(0.2, 0.05);
+						} else if (iteration === 1) {
+							expect(number).to.equal(0);
+						}
+						iteration++;
+					},
+					[
+						[0, 0],
+						[0.25, 1],
+					]
+				);
 				part.loop = true;
 				part.loopEnd = 0.5;
 				part.start(0, 1.05);
@@ -757,20 +864,27 @@ describe("Part", () => {
 		it("can start a loop with an offset before loop start", () => {
 			let iteration = 0;
 			return Offline(({ transport }) => {
-				const part = new Part((time, number) => {
-					if (iteration === 0) {
-						expect(number).to.equal(0);
-					} else if (iteration === 1) {
-						expect(number).to.equal(1);
-					} else if (iteration === 2) {
-						expect(number).to.equal(2);
-					} else if (iteration === 3) {
-						expect(number).to.equal(1);
-					} else if (iteration === 4) {
-						expect(number).to.equal(2);
-					}
-					iteration++;
-				}, [[0, 0], [0.25, 1], [0.30, 2]]);
+				const part = new Part(
+					(time, number) => {
+						if (iteration === 0) {
+							expect(number).to.equal(0);
+						} else if (iteration === 1) {
+							expect(number).to.equal(1);
+						} else if (iteration === 2) {
+							expect(number).to.equal(2);
+						} else if (iteration === 3) {
+							expect(number).to.equal(1);
+						} else if (iteration === 4) {
+							expect(number).to.equal(2);
+						}
+						iteration++;
+					},
+					[
+						[0, 0],
+						[0.25, 1],
+						[0.3, 2],
+					]
+				);
 				part.loop = true;
 				part.loopStart = 0.25;
 				part.loopEnd = 0.5;
@@ -780,11 +894,9 @@ describe("Part", () => {
 				expect(iteration).to.equal(5);
 			});
 		});
-
 	});
 
 	context("playbackRate", () => {
-
 		it("can adjust the playbackRate", () => {
 			let invoked = false;
 			return Offline(({ transport }) => {
@@ -835,7 +947,6 @@ describe("Part", () => {
 	});
 
 	context("scheduling", () => {
-
 		it("throws an error if events are scheduling in the wrong order", () => {
 			const part = new Part();
 			part.start(1);

@@ -1,13 +1,17 @@
-import { connect } from "../../core/context/ToneAudioNode";
-import { Param } from "../../core/context/Param";
-import { ToneAudioBuffer } from "../../core/context/ToneAudioBuffer";
-import { GainFactor, Positive, Seconds, Time } from "../../core/type/Units";
-import { defaultArg, optionsFromArguments } from "../../core/util/Defaults";
-import { noOp } from "../../core/util/Interface";
-import { isDefined } from "../../core/util/TypeCheck";
-import { assert } from "../../core/util/Debug";
-import { OneShotSource, OneShotSourceCurve, OneShotSourceOptions } from "../OneShotSource";
-import { EQ, GTE, LT } from "../../core/util/Math";
+import { connect } from "../../core/context/ToneAudioNode.js";
+import { Param } from "../../core/context/Param.js";
+import { ToneAudioBuffer } from "../../core/context/ToneAudioBuffer.js";
+import { GainFactor, Positive, Seconds, Time } from "../../core/type/Units.js";
+import { defaultArg, optionsFromArguments } from "../../core/util/Defaults.js";
+import { noOp } from "../../core/util/Interface.js";
+import { isDefined } from "../../core/util/TypeCheck.js";
+import { assert } from "../../core/util/Debug.js";
+import {
+	OneShotSource,
+	OneShotSourceCurve,
+	OneShotSourceOptions,
+} from "../OneShotSource.js";
+import { EQ, GTE, LT } from "../../core/util/Math.js";
 
 export type ToneBufferSourceCurve = OneShotSourceCurve;
 
@@ -29,7 +33,6 @@ export interface ToneBufferSourceOptions extends OneShotSourceOptions {
  * @category Source
  */
 export class ToneBufferSource extends OneShotSource<ToneBufferSourceOptions> {
-
 	readonly name: string = "ToneBufferSource";
 
 	/**
@@ -58,12 +61,23 @@ export class ToneBufferSource extends OneShotSource<ToneBufferSourceOptions> {
 	 * @param url The buffer to play or url to load
 	 * @param onload The callback to invoke when the buffer is done playing.
 	 */
-	constructor(url?: ToneAudioBuffer | AudioBuffer | string, onload?: () => void);
+	constructor(
+		url?: ToneAudioBuffer | AudioBuffer | string,
+		onload?: () => void
+	);
 	constructor(options?: Partial<ToneBufferSourceOptions>);
 	constructor() {
-
-		super(optionsFromArguments(ToneBufferSource.getDefaults(), arguments, ["url", "onload"]));
-		const options = optionsFromArguments(ToneBufferSource.getDefaults(), arguments, ["url", "onload"]);
+		super(
+			optionsFromArguments(ToneBufferSource.getDefaults(), arguments, [
+				"url",
+				"onload",
+			])
+		);
+		const options = optionsFromArguments(
+			ToneBufferSource.getDefaults(),
+			arguments,
+			["url", "onload"]
+		);
 
 		connect(this._source, this._gainNode);
 		this._source.onended = () => this._stopSource();
@@ -82,7 +96,11 @@ export class ToneBufferSource extends OneShotSource<ToneBufferSourceOptions> {
 		this.loop = options.loop;
 		this.loopStart = options.loopStart;
 		this.loopEnd = options.loopEnd;
-		this._buffer = new ToneAudioBuffer(options.url, options.onload, options.onerror);
+		this._buffer = new ToneAudioBuffer(
+			options.url,
+			options.onload,
+			options.onerror
+		);
 
 		this._internalChannels.push(this._source);
 	}
@@ -136,7 +154,12 @@ export class ToneBufferSource extends OneShotSource<ToneBufferSourceOptions> {
 	 * @param  duration How long the sample should play. If no duration is given, it will default to the full length of the sample (minus any offset)
 	 * @param  gain  The gain to play the buffer back at.
 	 */
-	start(time?: Time, offset?: Time, duration?: Time, gain: GainFactor = 1): this {
+	start(
+		time?: Time,
+		offset?: Time,
+		duration?: Time,
+		gain: GainFactor = 1
+	): this {
 		assert(this.buffer.loaded, "buffer is either not set or not loaded");
 		const computedTime = this.toSeconds(time);
 
@@ -156,22 +179,25 @@ export class ToneBufferSource extends OneShotSource<ToneBufferSourceOptions> {
 		// start the buffer source
 		if (this.loop) {
 			// modify the offset if it's greater than the loop time
-			const loopEnd = this.toSeconds(this.loopEnd) || this.buffer.duration;
+			const loopEnd =
+				this.toSeconds(this.loopEnd) || this.buffer.duration;
 			const loopStart = this.toSeconds(this.loopStart);
 			const loopDuration = loopEnd - loopStart;
 			// move the offset back
 			if (GTE(computedOffset, loopEnd)) {
-				computedOffset = ((computedOffset - loopStart) % loopDuration) + loopStart;
+				computedOffset =
+					((computedOffset - loopStart) % loopDuration) + loopStart;
 			}
 			// when the offset is very close to the duration, set it to 0
 			if (EQ(computedOffset, this.buffer.duration)) {
 				computedOffset = 0;
 			}
 		}
-		
+
 		// this.buffer.loaded would have return false if the AudioBuffer was undefined
 		this._source.buffer = this.buffer.get() as AudioBuffer;
-		this._source.loopEnd = this.toSeconds(this.loopEnd) || this.buffer.duration;
+		this._source.loopEnd =
+			this.toSeconds(this.loopEnd) || this.buffer.duration;
 		if (LT(computedOffset, this.buffer.duration)) {
 			this._sourceStarted = true;
 			this._source.start(computedTime, computedOffset);

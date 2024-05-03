@@ -1,4 +1,4 @@
-import { addToWorklet } from "./WorkletGlobalScope";
+import { addToWorklet } from "./WorkletGlobalScope.js";
 
 const toneAudioWorkletProcessor = /* javascript */ `
 	/**

@@ -1,18 +1,21 @@
-import { Frequency, Positive } from "../core/type/Units";
-import { Filter, FilterOptions } from "../component/filter/Filter";
-import { SourceOptions } from "../source/Source";
-import { optionsFromArguments } from "../core/util/Defaults";
-import { LFOEffect, LFOEffectOptions } from "./LFOEffect";
+import { Frequency, Positive } from "../core/type/Units.js";
+import { Filter, FilterOptions } from "../component/filter/Filter.js";
+import { SourceOptions } from "../source/Source.js";
+import { optionsFromArguments } from "../core/util/Defaults.js";
+import { LFOEffect, LFOEffectOptions } from "./LFOEffect.js";
 
 export interface AutoFilterOptions extends LFOEffectOptions {
 	baseFrequency: Frequency;
 	octaves: Positive;
-	filter: Omit<FilterOptions, keyof SourceOptions | "frequency" | "detune" | "gain">;
+	filter: Omit<
+		FilterOptions,
+		keyof SourceOptions | "frequency" | "detune" | "gain"
+	>;
 }
 
 /**
  * AutoFilter is a Tone.Filter with a Tone.LFO connected to the filter cutoff frequency.
- * Setting the LFO rate and depth allows for control over the filter modulation rate 
+ * Setting the LFO rate and depth allows for control over the filter modulation rate
  * and depth.
  *
  * @example
@@ -23,7 +26,6 @@ export interface AutoFilterOptions extends LFOEffectOptions {
  * @category Effect
  */
 export class AutoFilter extends LFOEffect<AutoFilterOptions> {
-
 	readonly name: string = "AutoFilter";
 
 	/**
@@ -41,16 +43,31 @@ export class AutoFilter extends LFOEffect<AutoFilterOptions> {
 	 * @param baseFrequency The lower value of the LFOs oscillation
 	 * @param octaves The number of octaves above the baseFrequency
 	 */
-	constructor(frequency?: Frequency, baseFrequency?: Frequency, octaves?: Positive);
+	constructor(
+		frequency?: Frequency,
+		baseFrequency?: Frequency,
+		octaves?: Positive
+	);
 	constructor(options?: Partial<AutoFilterOptions>);
 	constructor() {
+		super(
+			optionsFromArguments(AutoFilter.getDefaults(), arguments, [
+				"frequency",
+				"baseFrequency",
+				"octaves",
+			])
+		);
+		const options = optionsFromArguments(
+			AutoFilter.getDefaults(),
+			arguments,
+			["frequency", "baseFrequency", "octaves"]
+		);
 
-		super(optionsFromArguments(AutoFilter.getDefaults(), arguments, ["frequency", "baseFrequency", "octaves"]));
-		const options = optionsFromArguments(AutoFilter.getDefaults(), arguments, ["frequency", "baseFrequency", "octaves"]);
-
-		this.filter = new Filter(Object.assign(options.filter, {
-			context: this.context,
-		}));
+		this.filter = new Filter(
+			Object.assign(options.filter, {
+				context: this.context,
+			})
+		);
 
 		// connections
 		this.connectEffect(this.filter);
@@ -67,7 +84,7 @@ export class AutoFilter extends LFOEffect<AutoFilterOptions> {
 				type: "lowpass" as const,
 				rolloff: -12 as -12,
 				Q: 1,
-			}
+			},
 		});
 	}
 
@@ -84,7 +101,7 @@ export class AutoFilter extends LFOEffect<AutoFilterOptions> {
 	}
 
 	/**
-	 * The maximum value of the filter's cutoff frequency. 
+	 * The maximum value of the filter's cutoff frequency.
 	 */
 	get octaves(): Positive {
 		return this._octaves;

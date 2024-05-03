@@ -1,10 +1,14 @@
-import { connect } from "../core/context/ToneAudioNode";
-import { Param } from "../core/context/Param";
-import { Seconds, Time, UnitMap, UnitName } from "../core/type/Units";
-import { optionsFromArguments } from "../core/util/Defaults";
-import { OneShotSource, OneShotSourceOptions } from "../source/OneShotSource";
+import { connect } from "../core/context/ToneAudioNode.js";
+import { Param } from "../core/context/Param.js";
+import { Seconds, Time, UnitMap, UnitName } from "../core/type/Units.js";
+import { optionsFromArguments } from "../core/util/Defaults.js";
+import {
+	OneShotSource,
+	OneShotSourceOptions,
+} from "../source/OneShotSource.js";
 
-export interface ToneConstantSourceOptions<TypeName extends UnitName> extends OneShotSourceOptions {
+export interface ToneConstantSourceOptions<TypeName extends UnitName>
+	extends OneShotSourceOptions {
 	convert: boolean;
 	offset: UnitMap[TypeName];
 	units: TypeName;
@@ -17,8 +21,9 @@ export interface ToneConstantSourceOptions<TypeName extends UnitName> extends On
  * Adds the ability to reschedule the stop method.
  * @category Signal
  */
-export class ToneConstantSource<TypeName extends UnitName = "number"> extends OneShotSource<ToneConstantSourceOptions<TypeName>> {
-
+export class ToneConstantSource<
+	TypeName extends UnitName = "number",
+> extends OneShotSource<ToneConstantSourceOptions<TypeName>> {
 	readonly name: string = "ToneConstantSource";
 
 	/**
@@ -37,9 +42,16 @@ export class ToneConstantSource<TypeName extends UnitName = "number"> extends On
 	constructor(offset: UnitMap[TypeName]);
 	constructor(options?: Partial<ToneConstantSourceOptions<TypeName>>);
 	constructor() {
-
-		super(optionsFromArguments(ToneConstantSource.getDefaults(), arguments, ["offset"]));
-		const options = optionsFromArguments(ToneConstantSource.getDefaults(), arguments, ["offset"]);
+		super(
+			optionsFromArguments(ToneConstantSource.getDefaults(), arguments, [
+				"offset",
+			])
+		);
+		const options = optionsFromArguments(
+			ToneConstantSource.getDefaults(),
+			arguments,
+			["offset"]
+		);
 
 		connect(this._source, this._gainNode);
 

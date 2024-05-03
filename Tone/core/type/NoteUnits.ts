@@ -2,7 +2,23 @@
 
 type Letter = "C" | "D" | "E" | "F" | "G" | "A" | "B";
 type Accidental = "bb" | "b" | "" | "#" | "x";
-type Octave = -4 | -3 | -2 | -1 | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11;
+type Octave =
+	| -4
+	| -3
+	| -2
+	| -1
+	| 0
+	| 1
+	| 2
+	| 3
+	| 4
+	| 5
+	| 6
+	| 7
+	| 8
+	| 9
+	| 10
+	| 11;
 
 /**
  * A note in Scientific pitch notation.
@@ -12,8 +28,10 @@ type Octave = -4 | -3 | -2 | -1 | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 1
  */
 export type Note = `${Letter}${Accidental}${Octave}`;
 
-type IntegerRange<N extends number, A extends any[] = []> =
-    A["length"] extends N ? A[number] : IntegerRange<N, [...A, A["length"]]>;
+type IntegerRange<
+	N extends number,
+	A extends any[] = [],
+> = A["length"] extends N ? A[number] : IntegerRange<N, [...A, A["length"]]>;
 
 /**
  * A number representing a midi note. Integers between 0-127

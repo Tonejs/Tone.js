@@ -1,7 +1,11 @@
-import { Gain } from "../core/context/Gain";
-import { connect, disconnect, ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
-import { optionsFromArguments } from "../core/util/Defaults";
-import { SignalOperator } from "./SignalOperator";
+import { Gain } from "../core/context/Gain.js";
+import {
+	connect,
+	disconnect,
+	ToneAudioNodeOptions,
+} from "../core/context/ToneAudioNode.js";
+import { optionsFromArguments } from "../core/util/Defaults.js";
+import { SignalOperator } from "./SignalOperator.js";
 
 /**
  * Tone.Zero outputs 0's at audio-rate. The reason this has to be
@@ -10,7 +14,6 @@ import { SignalOperator } from "./SignalOperator";
  * @category Signal
  */
 export class Zero extends SignalOperator<ToneAudioNodeOptions> {
-
 	readonly name: string = "Zero";
 
 	/**
@@ -30,7 +33,9 @@ export class Zero extends SignalOperator<ToneAudioNodeOptions> {
 
 	constructor(options?: Partial<ToneAudioNodeOptions>);
 	constructor() {
-		super(Object.assign(optionsFromArguments(Zero.getDefaults(), arguments)));
+		super(
+			Object.assign(optionsFromArguments(Zero.getDefaults(), arguments))
+		);
 		connect(this.context.getConstant(0), this._gain);
 	}
 

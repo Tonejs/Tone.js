@@ -1,15 +1,18 @@
-import { Volume } from "../../component/channel/Volume";
-import { Param } from "../../core/context/Param";
-import { ToneAudioBuffer } from "../../core/context/ToneAudioBuffer";
-import { ToneAudioBuffers, ToneAudioBuffersUrlMap } from "../../core/context/ToneAudioBuffers";
-import { OutputNode, ToneAudioNode } from "../../core/context/ToneAudioNode";
-import { Decibels, Time } from "../../core/type/Units";
-import { optionsFromArguments } from "../../core/util/Defaults";
-import { assert } from "../../core/util/Debug";
-import { noOp, readOnly } from "../../core/util/Interface";
-import { BasicPlaybackState } from "../../core/util/StateTimeline";
-import { Source, SourceOptions } from "../Source";
-import { Player } from "./Player";
+import { Volume } from "../../component/channel/Volume.js";
+import { Param } from "../../core/context/Param.js";
+import { ToneAudioBuffer } from "../../core/context/ToneAudioBuffer.js";
+import {
+	ToneAudioBuffers,
+	ToneAudioBuffersUrlMap,
+} from "../../core/context/ToneAudioBuffers.js";
+import { OutputNode, ToneAudioNode } from "../../core/context/ToneAudioNode.js";
+import { Decibels, Time } from "../../core/type/Units.js";
+import { optionsFromArguments } from "../../core/util/Defaults.js";
+import { assert } from "../../core/util/Debug.js";
+import { noOp, readOnly } from "../../core/util/Interface.js";
+import { BasicPlaybackState } from "../../core/util/StateTimeline.js";
+import { Source, SourceOptions } from "../Source.js";
+import { Player } from "./Player.js";
 
 export interface PlayersOptions extends SourceOptions {
 	urls: ToneAudioBuffersUrlMap;
@@ -27,7 +30,6 @@ export interface PlayersOptions extends SourceOptions {
  * @category Source
  */
 export class Players extends ToneAudioNode<PlayersOptions> {
-
 	readonly name: string = "Players";
 
 	/**
@@ -79,11 +81,26 @@ export class Players extends ToneAudioNode<PlayersOptions> {
 	 * @param urls An object mapping a name to a url.
 	 * @param options The remaining options associated with the players
 	 */
-	constructor(urls?: ToneAudioBuffersUrlMap, options?: Partial<Omit<PlayersOptions, "urls">>);
+	constructor(
+		urls?: ToneAudioBuffersUrlMap,
+		options?: Partial<Omit<PlayersOptions, "urls">>
+	);
 	constructor(options?: Partial<PlayersOptions>);
 	constructor() {
-		super(optionsFromArguments(Players.getDefaults(), arguments, ["urls", "onload"], "urls"));
-		const options = optionsFromArguments(Players.getDefaults(), arguments, ["urls", "onload"], "urls");
+		super(
+			optionsFromArguments(
+				Players.getDefaults(),
+				arguments,
+				["urls", "onload"],
+				"urls"
+			)
+		);
+		const options = optionsFromArguments(
+			Players.getDefaults(),
+			arguments,
+			["urls", "onload"],
+			"urls"
+		);
 
 		/**
 		 * The output volume node
@@ -96,10 +113,10 @@ export class Players extends ToneAudioNode<PlayersOptions> {
 		this.volume = this._volume.volume;
 		readOnly(this, "volume");
 		this._buffers = new ToneAudioBuffers({
-			urls: options.urls, 
-			onload: options.onload, 
+			urls: options.urls,
+			onload: options.onload,
 			baseUrl: options.baseUrl,
-			onerror: options.onerror
+			onerror: options.onerror,
 		});
 		// mute initially
 		this.mute = options.mute;
@@ -138,7 +155,7 @@ export class Players extends ToneAudioNode<PlayersOptions> {
 	}
 	set fadeIn(fadeIn) {
 		this._fadeIn = fadeIn;
-		this._players.forEach(player => {
+		this._players.forEach((player) => {
 			player.fadeIn = fadeIn;
 		});
 	}
@@ -151,7 +168,7 @@ export class Players extends ToneAudioNode<PlayersOptions> {
 	}
 	set fadeOut(fadeOut) {
 		this._fadeOut = fadeOut;
-		this._players.forEach(player => {
+		this._players.forEach((player) => {
 			player.fadeOut = fadeOut;
 		});
 	}
@@ -160,7 +177,9 @@ export class Players extends ToneAudioNode<PlayersOptions> {
 	 * The state of the players object. Returns "started" if any of the players are playing.
 	 */
 	get state(): BasicPlaybackState {
-		const playing = Array.from(this._players).some(([_, player]) => player.state === "started");
+		const playing = Array.from(this._players).some(
+			([_, player]) => player.state === "started"
+		);
 		return playing ? "started" : "stopped";
 	}
 
@@ -177,7 +196,10 @@ export class Players extends ToneAudioNode<PlayersOptions> {
 	 * @param  name  The players name as defined in the constructor object or `add` method.
 	 */
 	player(name: string): Player {
-		assert(this.has(name), `No Player with the name ${name} exists on this object`);
+		assert(
+			this.has(name),
+			`No Player with the name ${name} exists on this object`
+		);
 		if (!this._players.has(name)) {
 			const player = new Player({
 				context: this.context,
@@ -209,8 +231,15 @@ export class Players extends ToneAudioNode<PlayersOptions> {
 	 * 	players.player("gong").start();
 	 * });
 	 */
-	add(name: string, url: string | ToneAudioBuffer | AudioBuffer, callback?: () => void): this {
-		assert(!this._buffers.has(name), "A buffer with that name already exists on this object");
+	add(
+		name: string,
+		url: string | ToneAudioBuffer | AudioBuffer,
+		callback?: () => void
+	): this {
+		assert(
+			!this._buffers.has(name),
+			"A buffer with that name already exists on this object"
+		);
 		this._buffers.add(name, url, callback);
 		return this;
 	}
@@ -220,7 +249,7 @@ export class Players extends ToneAudioNode<PlayersOptions> {
 	 * @param time The time to stop all of the players.
 	 */
 	stopAll(time?: Time): this {
-		this._players.forEach(player => player.stop(time));
+		this._players.forEach((player) => player.stop(time));
 		return this;
 	}
 
@@ -228,7 +257,7 @@ export class Players extends ToneAudioNode<PlayersOptions> {
 		super.dispose();
 		this._volume.dispose();
 		this.volume.dispose();
-		this._players.forEach(player => player.dispose());
+		this._players.forEach((player) => player.dispose());
 		this._buffers.dispose();
 		return this;
 	}

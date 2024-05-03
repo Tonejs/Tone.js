@@ -1,9 +1,9 @@
-import { Delay } from "../core/context/Delay";
-import { Param } from "../core/context/Param";
-import { NormalRange, Time } from "../core/type/Units";
-import { optionsFromArguments } from "../core/util/Defaults";
-import { readOnly } from "../core/util/Interface";
-import { FeedbackEffect, FeedbackEffectOptions } from "./FeedbackEffect";
+import { Delay } from "../core/context/Delay.js";
+import { Param } from "../core/context/Param.js";
+import { NormalRange, Time } from "../core/type/Units.js";
+import { optionsFromArguments } from "../core/util/Defaults.js";
+import { readOnly } from "../core/util/Interface.js";
+import { FeedbackEffect, FeedbackEffectOptions } from "./FeedbackEffect.js";
 
 interface FeedbackDelayOptions extends FeedbackEffectOptions {
 	delayTime: Time;
@@ -25,7 +25,6 @@ interface FeedbackDelayOptions extends FeedbackEffectOptions {
  * @category Effect
  */
 export class FeedbackDelay extends FeedbackEffect<FeedbackDelayOptions> {
-
 	readonly name: string = "FeedbackDelay";
 
 	/**
@@ -41,9 +40,17 @@ export class FeedbackDelay extends FeedbackEffect<FeedbackDelayOptions> {
 	constructor(delayTime?: Time, feedback?: NormalRange);
 	constructor(options?: Partial<FeedbackDelayOptions>);
 	constructor() {
-
-		super(optionsFromArguments(FeedbackDelay.getDefaults(), arguments, ["delayTime", "feedback"]));
-		const options = optionsFromArguments(FeedbackDelay.getDefaults(), arguments, ["delayTime", "feedback"]);
+		super(
+			optionsFromArguments(FeedbackDelay.getDefaults(), arguments, [
+				"delayTime",
+				"feedback",
+			])
+		);
+		const options = optionsFromArguments(
+			FeedbackDelay.getDefaults(),
+			arguments,
+			["delayTime", "feedback"]
+		);
 
 		this._delayNode = new Delay({
 			context: this.context,

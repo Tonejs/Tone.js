@@ -4,11 +4,11 @@ import {
 	Degrees,
 	Frequency,
 	Positive,
-} from "../../core/type/Units";
-import { Omit } from "../../core/util/Interface";
-import { Signal } from "../../signal/Signal";
-import { SourceOptions } from "../Source";
-import { OfflineContext } from "../../core/context/OfflineContext";
+} from "../../core/type/Units.js";
+import { Omit } from "../../core/util/Interface.js";
+import { Signal } from "../../signal/Signal.js";
+import { SourceOptions } from "../Source.js";
+import { OfflineContext } from "../../core/context/OfflineContext.js";
 
 /**
  * The common interface of all Oscillators
@@ -489,7 +489,10 @@ export type OmniOscillatorOptions =
 	| OmniAMPartialsOscillatorOptions
 	| ToneOscillatorConstructorOptions;
 
-type OmitSourceOptions<T extends BaseOscillatorOptions> = Omit<T, "frequency" | "detune" | "context">;
+type OmitSourceOptions<T extends BaseOscillatorOptions> = Omit<
+	T,
+	"frequency" | "detune" | "context"
+>;
 
 /**
  * The settable options for the omni oscillator inside of the source which excludes certain attributes that are defined by the parent class

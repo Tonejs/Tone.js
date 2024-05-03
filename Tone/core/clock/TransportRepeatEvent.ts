@@ -1,10 +1,9 @@
-import { BaseContext } from "../context/BaseContext";
-import { TicksClass } from "../type/Ticks";
-import { Seconds, Ticks, Time } from "../type/Units";
-import { TransportEvent, TransportEventOptions } from "./TransportEvent";
-import { GT, LT } from "../util/Math";
-
-type Transport = import("../clock/Transport").TransportClass;
+import { BaseContext } from "../context/BaseContext.js";
+import { TicksClass } from "../type/Ticks.js";
+import { Seconds, Ticks, Time } from "../type/Units.js";
+import { TransportEvent, TransportEventOptions } from "./TransportEvent.js";
+import { GT, LT } from "../util/Math.js";
+import type { TransportClass as Transport } from "./Transport.js";
 
 interface TransportRepeatEventOptions extends TransportEventOptions {
 	interval: Ticks;
@@ -16,7 +15,6 @@ interface TransportRepeatEventOptions extends TransportEventOptions {
  * to schedule repeat events. This class should not be instantiated directly.
  */
 export class TransportRepeatEvent extends TransportEvent {
-
 	/**
 	 * When the event should stop repeating
 	 */
@@ -55,8 +53,10 @@ export class TransportRepeatEvent extends TransportEvent {
 	/**
 	 * @param transport The transport object which the event belongs to
 	 */
-	constructor(transport: Transport, opts: Partial<TransportRepeatEventOptions>) {
-
+	constructor(
+		transport: Transport,
+		opts: Partial<TransportRepeatEventOptions>
+	) {
 		super(transport, opts);
 
 		const options = Object.assign(TransportRepeatEvent.getDefaults(), opts);
@@ -96,8 +96,10 @@ export class TransportRepeatEvent extends TransportEvent {
 	 */
 	private _createEvent(): number {
 		if (LT(this._nextTick, this.floatTime + this.duration)) {
-			return this.transport.scheduleOnce(this.invoke.bind(this),
-				new TicksClass(this.context, this._nextTick).toSeconds());
+			return this.transport.scheduleOnce(
+				this.invoke.bind(this),
+				new TicksClass(this.context, this._nextTick).toSeconds()
+			);
 		}
 		return -1;
 	}
@@ -109,11 +111,15 @@ export class TransportRepeatEvent extends TransportEvent {
 		// schedule the next event
 		// const ticks = this.transport.getTicksAtTime(time);
 		// if the next tick is within the bounds set by "duration"
-		if (LT(this._nextTick + this._interval, this.floatTime + this.duration)) {
+		if (
+			LT(this._nextTick + this._interval, this.floatTime + this.duration)
+		) {
 			this._nextTick += this._interval;
 			this._currentId = this._nextId;
-			this._nextId = this.transport.scheduleOnce(this.invoke.bind(this),
-				new TicksClass(this.context, this._nextTick).toSeconds());
+			this._nextId = this.transport.scheduleOnce(
+				this.invoke.bind(this),
+				new TicksClass(this.context, this._nextTick).toSeconds()
+			);
 		}
 	}
 
@@ -128,7 +134,10 @@ export class TransportRepeatEvent extends TransportEvent {
 		const ticks = this.transport.getTicksAtTime(time);
 		if (GT(ticks, this.time)) {
 			// the event is not being scheduled from the beginning and should be offset
-			this._nextTick = this.floatTime + Math.ceil((ticks - this.floatTime) / this._interval) * this._interval;
+			this._nextTick =
+				this.floatTime +
+				Math.ceil((ticks - this.floatTime) / this._interval) *
+					this._interval;
 		}
 		this._currentId = this._createEvent();
 		this._nextTick += this._interval;

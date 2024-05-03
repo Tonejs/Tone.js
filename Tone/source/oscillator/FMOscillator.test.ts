@@ -1,27 +1,29 @@
 import { expect } from "chai";
-import { BasicTests } from "test/helper/Basic";
-import { CompareToFile } from "test/helper/CompareToFile";
-import { connectFrom } from "test/helper/Connect";
-import { OscillatorTests } from "test/helper/OscillatorTests";
-import { SourceTests } from "test/helper/SourceTests";
-import { FMOscillator } from "./FMOscillator";
+import { BasicTests } from "../../../test/helper/Basic.js";
+import { CompareToFile } from "../../../test/helper/CompareToFile.js";
+import { connectFrom } from "../../../test/helper/Connect.js";
+import { OscillatorTests } from "../../../test/helper/OscillatorTests.js";
+import { SourceTests } from "../../../test/helper/SourceTests.js";
+import { FMOscillator } from "./FMOscillator.js";
 
 describe("FMOscillator", () => {
-
 	// run the common tests
 	BasicTests(FMOscillator);
 	SourceTests(FMOscillator);
 	OscillatorTests(FMOscillator);
 
 	it("matches a file", () => {
-		return CompareToFile(() => {
-			const osc = new FMOscillator().toDestination();
-			osc.start(0);
-		}, "fmOscillator.wav", 0.01);
+		return CompareToFile(
+			() => {
+				const osc = new FMOscillator().toDestination();
+				osc.start(0);
+			},
+			"fmOscillator.wav",
+			0.01
+		);
 	});
 
 	context("Frequency Modulation", () => {
-
 		it("can pass in parameters in the constructor", () => {
 			const fmOsc = new FMOscillator({
 				harmonicity: 3,

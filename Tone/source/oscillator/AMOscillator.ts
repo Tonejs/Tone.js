@@ -1,20 +1,22 @@
-import { Gain } from "../../core/context/Gain";
-import { Degrees, Frequency, Seconds } from "../../core/type/Units";
-import { optionsFromArguments } from "../../core/util/Defaults";
-import { readOnly } from "../../core/util/Interface";
-import { AudioToGain } from "../../signal/AudioToGain";
-import { Multiply } from "../../signal/Multiply";
-import { Signal } from "../../signal/Signal";
-import { Source } from "../Source";
-import { Oscillator } from "./Oscillator";
+import { Gain } from "../../core/context/Gain.js";
+import { Degrees, Frequency, Seconds } from "../../core/type/Units.js";
+import { optionsFromArguments } from "../../core/util/Defaults.js";
+import { readOnly } from "../../core/util/Interface.js";
+import { AudioToGain } from "../../signal/AudioToGain.js";
+import { Multiply } from "../../signal/Multiply.js";
+import { Signal } from "../../signal/Signal.js";
+import { Source } from "../Source.js";
+import { Oscillator } from "./Oscillator.js";
 import {
-	AMConstructorOptions, AMOscillatorOptions,
-	generateWaveform, NonCustomOscillatorType,
+	AMConstructorOptions,
+	AMOscillatorOptions,
+	generateWaveform,
+	NonCustomOscillatorType,
 	ToneOscillatorInterface,
-	ToneOscillatorType
-} from "./OscillatorInterface";
+	ToneOscillatorType,
+} from "./OscillatorInterface.js";
 
-export { AMOscillatorOptions } from "./OscillatorInterface";
+export { AMOscillatorOptions } from "./OscillatorInterface.js";
 
 /**
  * An amplitude modulated oscillator node. It is implemented with
@@ -35,8 +37,10 @@ export { AMOscillatorOptions } from "./OscillatorInterface";
  * }, 0.2, 1);
  * @category Source
  */
-export class AMOscillator extends Source<AMOscillatorOptions> implements ToneOscillatorInterface {
-
+export class AMOscillator
+	extends Source<AMOscillatorOptions>
+	implements ToneOscillatorInterface
+{
 	readonly name: string = "AMOscillator";
 
 	/**
@@ -86,12 +90,25 @@ export class AMOscillator extends Source<AMOscillatorOptions> implements ToneOsc
 	 * @param type The type of the carrier oscillator.
 	 * @param modulationType The type of the modulator oscillator.
 	 */
-	constructor(frequency?: Frequency, type?: ToneOscillatorType, modulationType?: ToneOscillatorType);
+	constructor(
+		frequency?: Frequency,
+		type?: ToneOscillatorType,
+		modulationType?: ToneOscillatorType
+	);
 	constructor(options?: Partial<AMConstructorOptions>);
 	constructor() {
-
-		super(optionsFromArguments(AMOscillator.getDefaults(), arguments, ["frequency", "type", "modulationType"]));
-		const options = optionsFromArguments(AMOscillator.getDefaults(), arguments, ["frequency", "type", "modulationType"]);
+		super(
+			optionsFromArguments(AMOscillator.getDefaults(), arguments, [
+				"frequency",
+				"type",
+				"modulationType",
+			])
+		);
+		const options = optionsFromArguments(
+			AMOscillator.getDefaults(),
+			arguments,
+			["frequency", "type", "modulationType"]
+		);
 
 		this._carrier = new Oscillator({
 			context: this.context,
@@ -101,8 +118,8 @@ export class AMOscillator extends Source<AMOscillatorOptions> implements ToneOsc
 			phase: options.phase,
 			type: options.type,
 		} as OscillatorOptions);
-		this.frequency = this._carrier.frequency,
-		this.detune = this._carrier.detune;
+		(this.frequency = this._carrier.frequency),
+			(this.detune = this._carrier.detune);
 
 		this._modulator = new Oscillator({
 			context: this.context,

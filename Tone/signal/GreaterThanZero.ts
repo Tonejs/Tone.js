@@ -1,10 +1,10 @@
-import { SignalOperator, SignalOperatorOptions } from "./SignalOperator";
-import { Multiply } from "./Multiply";
-import { ToneAudioNode } from "../core/context/ToneAudioNode";
-import { WaveShaper } from "./WaveShaper";
-import { optionsFromArguments } from "../core/util/Defaults";
+import { SignalOperator, SignalOperatorOptions } from "./SignalOperator.js";
+import { Multiply } from "./Multiply.js";
+import { ToneAudioNode } from "../core/context/ToneAudioNode.js";
+import { WaveShaper } from "./WaveShaper.js";
+import { optionsFromArguments } from "../core/util/Defaults.js";
 
-export type GreaterThanZeroOptions = SignalOperatorOptions
+export type GreaterThanZeroOptions = SignalOperatorOptions;
 
 /**
  * GreaterThanZero outputs 1 when the input is strictly greater than zero
@@ -17,7 +17,6 @@ export type GreaterThanZeroOptions = SignalOperatorOptions
  * @category Signal
  */
 export class GreaterThanZero extends SignalOperator<GreaterThanZeroOptions> {
-
 	readonly name: string = "GreaterThanZero";
 
 	/**
@@ -36,7 +35,11 @@ export class GreaterThanZero extends SignalOperator<GreaterThanZeroOptions> {
 
 	constructor(options?: Partial<GreaterThanZeroOptions>);
 	constructor() {
-		super(Object.assign(optionsFromArguments(GreaterThanZero.getDefaults(), arguments)));
+		super(
+			Object.assign(
+				optionsFromArguments(GreaterThanZero.getDefaults(), arguments)
+			)
+		);
 
 		this._thresh = this.output = new WaveShaper({
 			context: this.context,
@@ -51,7 +54,7 @@ export class GreaterThanZero extends SignalOperator<GreaterThanZeroOptions> {
 		});
 		this._scale = this.input = new Multiply({
 			context: this.context,
-			value: 10000
+			value: 10000,
 		});
 
 		// connections
