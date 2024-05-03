@@ -1,7 +1,7 @@
 import { expect } from "chai";
-import { BasicTests } from "../../../test/helper/Basic";
-import { Noise } from "../../source/Noise";
-import { Analyser } from "./Analyser";
+import { BasicTests } from "../../../test/helper/Basic.js";
+import { Noise } from "../../source/Noise.js";
+import { Analyser } from "./Analyser.js";
 
 describe("Analyser", () => {
 

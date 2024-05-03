@@ -1,12 +1,12 @@
-import { Gain } from "../core/context/Gain";
+import { Gain } from "../core/context/Gain.js";
 import {
 	ToneAudioNode,
 	ToneAudioNodeOptions,
-} from "../core/context/ToneAudioNode";
-import { GainFactor, Seconds, Time } from "../core/type/Units";
-import { noOp } from "../core/util/Interface";
-import { assert } from "../core/util/Debug";
-import { BasicPlaybackState } from "../core/util/StateTimeline";
+} from "../core/context/ToneAudioNode.js";
+import { GainFactor, Seconds, Time } from "../core/type/Units.js";
+import { noOp } from "../core/util/Interface.js";
+import { assert } from "../core/util/Debug.js";
+import { BasicPlaybackState } from "../core/util/StateTimeline.js";
 
 export type OneShotSourceCurve = "linear" | "exponential";
 

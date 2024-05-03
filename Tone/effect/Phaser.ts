@@ -1,9 +1,9 @@
-import { StereoEffect, StereoEffectOptions } from "./StereoEffect";
-import { Frequency, Hertz, Positive } from "../core/type/Units";
-import { optionsFromArguments } from "../core/util/Defaults";
-import { LFO } from "../source/oscillator/LFO";
-import { Signal } from "../signal/Signal";
-import { readOnly } from "../core/util/Interface";
+import { StereoEffect, StereoEffectOptions } from "./StereoEffect.js";
+import { Frequency, Hertz, Positive } from "../core/type/Units.js";
+import { optionsFromArguments } from "../core/util/Defaults.js";
+import { LFO } from "../source/oscillator/LFO.js";
+import { Signal } from "../signal/Signal.js";
+import { readOnly } from "../core/util/Interface.js";
 
 export interface PhaserOptions extends StereoEffectOptions {
 	frequency: Frequency;

@@ -1,8 +1,8 @@
-import { createOfflineAudioContext } from "../context/AudioContext";
-import { Context } from "../context/Context";
-import { Seconds } from "../type/Units";
-import { isOfflineAudioContext } from "../util/AdvancedTypeCheck";
-import { ToneAudioBuffer } from "./ToneAudioBuffer";
+import { createOfflineAudioContext } from "../context/AudioContext.js";
+import { Context } from "../context/Context.js";
+import { Seconds } from "../type/Units.js";
+import { isOfflineAudioContext } from "../util/AdvancedTypeCheck.js";
+import { ToneAudioBuffer } from "./ToneAudioBuffer.js";
 
 /**
  * Wrapper around the OfflineAudioContext

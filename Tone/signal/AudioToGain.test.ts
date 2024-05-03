@@ -1,12 +1,12 @@
 import { expect } from "chai";
-import { BasicTests } from "../../test/helper/Basic";
-import { connectFrom, connectTo } from "../../test/helper/Connect";
-import { ConstantOutput } from "../../test/helper/ConstantOutput";
-import { Offline } from "../../test/helper/Offline";
-import { Oscillator } from "../source/oscillator/Oscillator";
-import { AudioToGain } from "./AudioToGain";
-import { Signal } from "./Signal";
-import { Zero } from "./Zero";
+import { BasicTests } from "../../test/helper/Basic.js";
+import { connectFrom, connectTo } from "../../test/helper/Connect.js";
+import { ConstantOutput } from "../../test/helper/ConstantOutput.js";
+import { Offline } from "../../test/helper/Offline.js";
+import { Oscillator } from "../source/oscillator/Oscillator.js";
+import { AudioToGain } from "./AudioToGain.js";
+import { Signal } from "./Signal.js";
+import { Zero } from "./Zero.js";
 
 describe("AudioToGain", () => {
 

@@ -1,11 +1,11 @@
-import { MidSideEffect, MidSideEffectOptions } from "../effect/MidSideEffect";
-import { Signal } from "../signal/Signal";
-import { Multiply } from "../signal/Multiply";
-import { Subtract } from "../signal/Subtract";
-import { NormalRange } from "../core/type/Units";
-import { optionsFromArguments } from "../core/util/Defaults";
-import { readOnly } from "../core/util/Interface";
-import { connect } from "../core/context/ToneAudioNode";
+import { MidSideEffect, MidSideEffectOptions } from "../effect/MidSideEffect.js";
+import { Signal } from "../signal/Signal.js";
+import { Multiply } from "../signal/Multiply.js";
+import { Subtract } from "../signal/Subtract.js";
+import { NormalRange } from "../core/type/Units.js";
+import { optionsFromArguments } from "../core/util/Defaults.js";
+import { readOnly } from "../core/util/Interface.js";
+import { connect } from "../core/context/ToneAudioNode.js";
 
 export interface StereoWidenerOptions extends MidSideEffectOptions {
 	width: NormalRange;

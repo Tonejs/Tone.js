@@ -1,8 +1,8 @@
 import { expect } from "chai";
-import { BasicTests } from "../../../test/helper/Basic";
-import { connectFrom } from "../../../test/helper/Connect";
-import { PassAudio } from "../../../test/helper/PassAudio";
-import { EQ3 } from "./EQ3";
+import { BasicTests } from "../../../test/helper/Basic.js";
+import { connectFrom } from "../../../test/helper/Connect.js";
+import { PassAudio } from "../../../test/helper/PassAudio.js";
+import { EQ3 } from "./EQ3.js";
 
 describe("EQ3", () => {
 

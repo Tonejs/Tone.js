@@ -1,11 +1,11 @@
-import { AbstractParam } from "../core/context/AbstractParam";
-import { Param } from "../core/context/Param";
-import { InputNode, OutputNode, ToneAudioNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
-import { connect } from "../core/context/ToneAudioNode";
-import { Time, UnitMap, UnitName } from "../core/type/Units";
-import { isAudioParam } from "../core/util/AdvancedTypeCheck";
-import { optionsFromArguments } from "../core/util/Defaults";
-import { ToneConstantSource } from "./ToneConstantSource";
+import { AbstractParam } from "../core/context/AbstractParam.js";
+import { Param } from "../core/context/Param.js";
+import { InputNode, OutputNode, ToneAudioNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode.js";
+import { connect } from "../core/context/ToneAudioNode.js";
+import { Time, UnitMap, UnitName } from "../core/type/Units.js";
+import { isAudioParam } from "../core/util/AdvancedTypeCheck.js";
+import { optionsFromArguments } from "../core/util/Defaults.js";
+import { ToneConstantSource } from "./ToneConstantSource.js";
 
 export interface SignalOptions<TypeName extends UnitName> extends ToneAudioNodeOptions {
 	value: UnitMap[TypeName];

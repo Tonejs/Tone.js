@@ -1,6 +1,6 @@
-import { optionsFromArguments } from "../core/util/Defaults";
-import { WaveShaper } from "../signal/WaveShaper";
-import { Effect, EffectOptions } from "./Effect";
+import { optionsFromArguments } from "../core/util/Defaults.js";
+import { WaveShaper } from "../signal/WaveShaper.js";
+import { Effect, EffectOptions } from "./Effect.js";
 
 export interface DistortionOptions extends EffectOptions {
 	distortion: number;

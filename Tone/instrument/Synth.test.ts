@@ -1,11 +1,11 @@
 import { expect } from "chai";
-import { BasicTests } from "../../test/helper/Basic";
-import { CompareToFile } from "../../test/helper/CompareToFile";
-import { InstrumentTest } from "../../test/helper/InstrumentTests";
-import { MonophonicTest } from "../../test/helper/MonophonicTests";
-import { Offline } from "../../test/helper/Offline";
-import { Frequency } from "../core/type/Frequency";
-import { Synth } from "./Synth";
+import { BasicTests } from "../../test/helper/Basic.js";
+import { CompareToFile } from "../../test/helper/CompareToFile.js";
+import { InstrumentTest } from "../../test/helper/InstrumentTests.js";
+import { MonophonicTest } from "../../test/helper/MonophonicTests.js";
+import { Offline } from "../../test/helper/Offline.js";
+import { Frequency } from "../core/type/Frequency.js";
+import { Synth } from "./Synth.js";
 
 describe("Synth", () => {
 

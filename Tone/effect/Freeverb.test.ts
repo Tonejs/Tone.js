@@ -1,8 +1,8 @@
-import { Freeverb } from "./Freeverb";
-import { BasicTests } from "../../test/helper/Basic";
-import { EffectTests } from "../../test/helper/EffectTests";
-import { CompareToFile } from "../../test/helper/CompareToFile";
-import { Oscillator } from "../source/oscillator/Oscillator";
+import { Freeverb } from "./Freeverb.js";
+import { BasicTests } from "../../test/helper/Basic.js";
+import { EffectTests } from "../../test/helper/EffectTests.js";
+import { CompareToFile } from "../../test/helper/CompareToFile.js";
+import { Oscillator } from "../source/oscillator/Oscillator.js";
 import { expect } from "chai";
 
 describe("Freeverb", () => {

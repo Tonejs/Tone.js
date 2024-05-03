@@ -3,8 +3,8 @@ import {
 	AudioWorkletNode as stdAudioWorkletNode,
 	OfflineAudioContext as stdOfflineAudioContext
 } from "standardized-audio-context";
-import { assert } from "../util/Debug";
-import { isDefined } from "../util/TypeCheck";
+import { assert } from "../util/Debug.js";
+import { isDefined } from "../util/TypeCheck.js";
 
 /**
  * Create a new AudioContext

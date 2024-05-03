@@ -1,9 +1,9 @@
-import { TestAudioBuffer } from "../../../test/helper/compare/TestAudioBuffer";
+import { TestAudioBuffer } from "../../../test/helper/compare/TestAudioBuffer.js";
 import { expect } from "chai";
-import { ToneOscillatorNode } from "../../source/oscillator/ToneOscillatorNode";
-import { noOp } from "../util/Interface";
-import { Offline } from "./Offline";
-import { ToneAudioBuffer } from "./ToneAudioBuffer";
+import { ToneOscillatorNode } from "../../source/oscillator/ToneOscillatorNode.js";
+import { noOp } from "../util/Interface.js";
+import { Offline } from "./Offline.js";
+import { ToneAudioBuffer } from "./ToneAudioBuffer.js";
 
 describe("Offline", () => {
 

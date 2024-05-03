@@ -1,11 +1,11 @@
 import { expect } from "chai";
-import { BasicTests } from "../../test/helper/Basic";
-import { connectFrom, connectTo } from "../../test/helper/Connect";
+import { BasicTests } from "../../test/helper/Basic.js";
+import { connectFrom, connectTo } from "../../test/helper/Connect.js";
 // import Test from "../../test/helper/Test";
-import { ConstantOutput } from "../../test/helper/ConstantOutput";
-import { Multiply } from "./Multiply";
+import { ConstantOutput } from "../../test/helper/ConstantOutput.js";
+import { Multiply } from "./Multiply.js";
 // import Multiply from "Multiply";
-import { Signal } from "./Signal";
+import { Signal } from "./Signal.js";
 // import Oscillator from "../source/Oscillator";
 
 describe("Multiply", () => {

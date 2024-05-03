@@ -1,11 +1,11 @@
-import { connect, OutputNode, ToneAudioNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
-import { Decibels } from "../core/type/Units";
-import { Volume } from "../component/channel/Volume";
-import { optionsFromArguments } from "../core/util/Defaults";
-import { assert } from "../core/util/Debug";
-import { Param } from "../core/context/Param";
-import { readOnly } from "../core/util/Interface";
-import { isDefined, isNumber } from "../core/util/TypeCheck";
+import { connect, OutputNode, ToneAudioNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode.js";
+import { Decibels } from "../core/type/Units.js";
+import { Volume } from "../component/channel/Volume.js";
+import { optionsFromArguments } from "../core/util/Defaults.js";
+import { assert } from "../core/util/Debug.js";
+import { Param } from "../core/context/Param.js";
+import { readOnly } from "../core/util/Interface.js";
+import { isDefined, isNumber } from "../core/util/TypeCheck.js";
 
 export interface UserMediaOptions extends ToneAudioNodeOptions {
 	volume: Decibels;

@@ -1,9 +1,9 @@
-import { ToneAudioBuffer } from "../core/context/ToneAudioBuffer";
-import { Positive, Time } from "../core/type/Units";
-import { optionsFromArguments } from "../core/util/Defaults";
-import { assert } from "../core/util/Debug";
-import { Source, SourceOptions } from "../source/Source";
-import { ToneBufferSource } from "./buffer/ToneBufferSource";
+import { ToneAudioBuffer } from "../core/context/ToneAudioBuffer.js";
+import { Positive, Time } from "../core/type/Units.js";
+import { optionsFromArguments } from "../core/util/Defaults.js";
+import { assert } from "../core/util/Debug.js";
+import { Source, SourceOptions } from "../source/Source.js";
+import { ToneBufferSource } from "./buffer/ToneBufferSource.js";
 
 export type NoiseType = "white" | "brown" | "pink";
 

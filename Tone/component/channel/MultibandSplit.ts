@@ -1,10 +1,10 @@
-import { Gain } from "../../core/context/Gain";
-import { ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
-import { Frequency, Positive } from "../../core/type/Units";
-import { optionsFromArguments } from "../../core/util/Defaults";
-import { readOnly, writable } from "../../core/util/Interface";
-import { Signal } from "../../signal/Signal";
-import { Filter } from "../filter/Filter";
+import { Gain } from "../../core/context/Gain.js";
+import { ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode.js";
+import { Frequency, Positive } from "../../core/type/Units.js";
+import { optionsFromArguments } from "../../core/util/Defaults.js";
+import { readOnly, writable } from "../../core/util/Interface.js";
+import { Signal } from "../../signal/Signal.js";
+import { Filter } from "../filter/Filter.js";
 
 interface MultibandSplitOptions extends ToneAudioNodeOptions {
 	Q: Positive;

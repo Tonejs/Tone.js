@@ -1,7 +1,7 @@
 import { expect } from "chai";
-import { BasicTests } from "../../../test/helper/Basic";
-import { PassAudio } from "../../../test/helper/PassAudio";
-import { Compressor } from "./Compressor";
+import { BasicTests } from "../../../test/helper/Basic.js";
+import { PassAudio } from "../../../test/helper/PassAudio.js";
+import { Compressor } from "./Compressor.js";
 
 describe("Compressor", () => {
 

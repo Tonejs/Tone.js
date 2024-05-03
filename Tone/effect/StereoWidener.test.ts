@@ -1,10 +1,10 @@
-import { StereoWidener } from "./StereoWidener";
-import { BasicTests } from "../../test/helper/Basic";
-import { EffectTests } from "../../test/helper/EffectTests";
+import { StereoWidener } from "./StereoWidener.js";
+import { BasicTests } from "../../test/helper/Basic.js";
+import { EffectTests } from "../../test/helper/EffectTests.js";
 import { expect } from "chai";
-import { CompareToFile } from "../../test/helper/CompareToFile";
-import { ToneAudioBuffer } from "../core/context/ToneAudioBuffer";
-import { Player } from "../source/buffer/Player";
+import { CompareToFile } from "../../test/helper/CompareToFile.js";
+import { ToneAudioBuffer } from "../core/context/ToneAudioBuffer.js";
+import { Player } from "../source/buffer/Player.js";
 
 describe("StereoWidener", () => {
 

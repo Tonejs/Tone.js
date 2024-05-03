@@ -1,14 +1,14 @@
 import { expect } from "chai";
-import { BasicTests, warns } from "../../test/helper/Basic";
-import { CompareToFile } from "../../test/helper/CompareToFile";
-import { atTime, Offline } from "../../test/helper/Offline";
-import { OutputAudio } from "../../test/helper/OutputAudio";
-import { PolySynth } from "./PolySynth";
-import { Synth } from "./Synth";
-import { FMSynth } from "./FMSynth";
-import { PluckSynth } from "./PluckSynth";
-import { MetalSynth } from "./MetalSynth";
-import { MembraneSynth } from "./MembraneSynth";
+import { BasicTests, warns } from "../../test/helper/Basic.js";
+import { CompareToFile } from "../../test/helper/CompareToFile.js";
+import { atTime, Offline } from "../../test/helper/Offline.js";
+import { OutputAudio } from "../../test/helper/OutputAudio.js";
+import { PolySynth } from "./PolySynth.js";
+import { Synth } from "./Synth.js";
+import { FMSynth } from "./FMSynth.js";
+import { PluckSynth } from "./PluckSynth.js";
+import { MetalSynth } from "./MetalSynth.js";
+import { MembraneSynth } from "./MembraneSynth.js";
 
 describe("PolySynth", () => {
 

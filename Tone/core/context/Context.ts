@@ -1,17 +1,17 @@
-import { Ticker, TickerClockSource } from "../clock/Ticker";
-import { Seconds } from "../type/Units";
-import { isAudioContext } from "../util/AdvancedTypeCheck";
-import { optionsFromArguments } from "../util/Defaults";
-import { Timeline } from "../util/Timeline";
-import { isDefined } from "../util/TypeCheck";
+import { Ticker, TickerClockSource } from "../clock/Ticker.js";
+import { Seconds } from "../type/Units.js";
+import { isAudioContext } from "../util/AdvancedTypeCheck.js";
+import { optionsFromArguments } from "../util/Defaults.js";
+import { Timeline } from "../util/Timeline.js";
+import { isDefined } from "../util/TypeCheck.js";
 import {
 	AnyAudioContext,
 	createAudioContext,
 	createAudioWorkletNode,
-} from "./AudioContext";
-import { closeContext, initializeContext } from "./ContextInitialization";
-import { BaseContext, ContextLatencyHint } from "./BaseContext";
-import { assert } from "../util/Debug";
+} from "./AudioContext.js";
+import { closeContext, initializeContext } from "./ContextInitialization.js";
+import { BaseContext, ContextLatencyHint } from "./BaseContext.js";
+import { assert } from "../util/Debug.js";
 
 type Transport = import("../clock/Transport").TransportClass;
 type Destination = import("./Destination").DestinationClass;

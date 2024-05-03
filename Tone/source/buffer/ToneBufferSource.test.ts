@@ -1,11 +1,11 @@
 import { expect } from "chai";
-import { BasicTests } from "../../../test/helper/Basic";
-import { CompareToFile } from "../../../test/helper/CompareToFile";
-import { Offline } from "../../../test/helper/Offline";
-import { OFFLINE_BUFFERSOURCE_ONENDED, ONLINE_TESTING } from "../../../test/helper/Supports";
-import { ToneAudioBuffer } from "../../core/context/ToneAudioBuffer";
-import { getContext } from "../../core/Global";
-import { ToneBufferSource } from "./ToneBufferSource";
+import { BasicTests } from "../../../test/helper/Basic.js";
+import { CompareToFile } from "../../../test/helper/CompareToFile.js";
+import { Offline } from "../../../test/helper/Offline.js";
+import { OFFLINE_BUFFERSOURCE_ONENDED, ONLINE_TESTING } from "../../../test/helper/Supports.js";
+import { ToneAudioBuffer } from "../../core/context/ToneAudioBuffer.js";
+import { getContext } from "../../core/Global.js";
+import { ToneBufferSource } from "./ToneBufferSource.js";
 
 const sampleRate = getContext().sampleRate;
 

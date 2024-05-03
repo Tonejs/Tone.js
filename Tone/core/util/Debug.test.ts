@@ -1,9 +1,9 @@
 import { expect } from "chai";
-import { ToneOscillatorNode } from "../../source/oscillator/ToneOscillatorNode";
-import { assertRange, setLogger } from "./Debug";
-import { theWindow } from "../context/AudioContext";
-import { Oscillator } from "../../source";
-import { Context } from "../context/Context";
+import { ToneOscillatorNode } from "../../source/oscillator/ToneOscillatorNode.js";
+import { assertRange, setLogger } from "./Debug.js";
+import { theWindow } from "../context/AudioContext.js";
+import { Oscillator } from "../../source/index.js";
+import { Context } from "../context/Context.js";
 
 describe("Debug", () => {
 

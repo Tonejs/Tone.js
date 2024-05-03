@@ -1,4 +1,4 @@
-import { Decibels, GainFactor, Hertz, Interval, MidiNote, NormalRange } from "./Units";
+import { Decibels, GainFactor, Hertz, Interval, MidiNote, NormalRange } from "./Units.js";
 
 /**
  * Equal power gain scale. Good for cross-fading.

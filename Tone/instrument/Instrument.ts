@@ -1,9 +1,9 @@
-import { Volume } from "../component/channel/Volume";
-import { Param } from "../core/context/Param";
-import { OutputNode, ToneAudioNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
-import { Decibels, Frequency, NormalRange, Time } from "../core/type/Units";
-import { optionsFromArguments } from "../core/util/Defaults";
-import { readOnly } from "../core/util/Interface";
+import { Volume } from "../component/channel/Volume.js";
+import { Param } from "../core/context/Param.js";
+import { OutputNode, ToneAudioNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode.js";
+import { Decibels, Frequency, NormalRange, Time } from "../core/type/Units.js";
+import { optionsFromArguments } from "../core/util/Defaults.js";
+import { readOnly } from "../core/util/Interface.js";
 
 export interface InstrumentOptions extends ToneAudioNodeOptions {
 	volume: Decibels;

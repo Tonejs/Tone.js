@@ -1,7 +1,7 @@
-import { Gain } from "../../core/context/Gain";
-import { NormalRange, Time } from "../../core/type/Units";
-import { optionsFromArguments } from "../../core/util/Defaults";
-import { Envelope, EnvelopeOptions } from "./Envelope";
+import { Gain } from "../../core/context/Gain.js";
+import { NormalRange, Time } from "../../core/type/Units.js";
+import { optionsFromArguments } from "../../core/util/Defaults.js";
+import { Envelope, EnvelopeOptions } from "./Envelope.js";
 
 /**
  * AmplitudeEnvelope is a Tone.Envelope connected to a gain node.

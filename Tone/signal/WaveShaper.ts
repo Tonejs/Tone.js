@@ -1,9 +1,9 @@
-import { ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
-import { optionsFromArguments } from "../core/util/Defaults";
-import { isArray, isFunction } from "../core/util/TypeCheck";
-import { assert } from "../core/util/Debug";
-import { Signal } from "./Signal";
-import { SignalOperator } from "./SignalOperator";
+import { ToneAudioNodeOptions } from "../core/context/ToneAudioNode.js";
+import { optionsFromArguments } from "../core/util/Defaults.js";
+import { isArray, isFunction } from "../core/util/TypeCheck.js";
+import { assert } from "../core/util/Debug.js";
+import { Signal } from "./Signal.js";
+import { SignalOperator } from "./SignalOperator.js";
 
 export type WaveShaperMappingFn = (value: number, index?: number) => number;
 

@@ -1,11 +1,11 @@
-import { AutoFilter } from "./AutoFilter";
-import { BasicTests } from "../../test/helper/Basic";
-import { EffectTests } from "../../test/helper/EffectTests";
+import { AutoFilter } from "./AutoFilter.js";
+import { BasicTests } from "../../test/helper/Basic.js";
+import { EffectTests } from "../../test/helper/EffectTests.js";
 import { Note } from "tonal";
-import { Offline } from "../../test/helper/Offline";
+import { Offline } from "../../test/helper/Offline.js";
 import { expect } from "chai";
-import { CompareToFile } from "../../test/helper/CompareToFile";
-import { Noise } from "../source";
+import { CompareToFile } from "../../test/helper/CompareToFile.js";
+import { Noise } from "../source/index.js";
 
 describe("AutoFilter", () => {
 	BasicTests(AutoFilter);

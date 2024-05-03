@@ -1,4 +1,4 @@
-import { isUndef } from "./TypeCheck";
+import { isUndef } from "./TypeCheck.js";
 
 /**
  * Assert that the statement is true, otherwise invoke the error.

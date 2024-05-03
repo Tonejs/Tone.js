@@ -1,14 +1,14 @@
 import { expect } from "chai";
-import { BasicTests } from "../../../test/helper/Basic";
-import { CompareToFile } from "../../../test/helper/CompareToFile";
-import { OscillatorTests } from "../../../test/helper/OscillatorTests";
-import { OutputAudio } from "../../../test/helper/OutputAudio";
-import { SourceTests } from "../../../test/helper/SourceTests";
-import { FMOscillator } from "./FMOscillator";
-import { OmniOscillator } from "./OmniOscillator";
-import { OmniOscillatorType } from "./OscillatorInterface";
-import { PulseOscillator } from "./PulseOscillator";
-import { PWMOscillator } from "./PWMOscillator";
+import { BasicTests } from "../../../test/helper/Basic.js";
+import { CompareToFile } from "../../../test/helper/CompareToFile.js";
+import { OscillatorTests } from "../../../test/helper/OscillatorTests.js";
+import { OutputAudio } from "../../../test/helper/OutputAudio.js";
+import { SourceTests } from "../../../test/helper/SourceTests.js";
+import { FMOscillator } from "./FMOscillator.js";
+import { OmniOscillator } from "./OmniOscillator.js";
+import { OmniOscillatorType } from "./OscillatorInterface.js";
+import { PulseOscillator } from "./PulseOscillator.js";
+import { PWMOscillator } from "./PWMOscillator.js";
 
 describe("OmniOscillator", () => {
 

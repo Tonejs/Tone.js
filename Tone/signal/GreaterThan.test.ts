@@ -1,7 +1,7 @@
-import { ConstantOutput } from "../../test/helper/ConstantOutput";
-import { BasicTests } from "../../test/helper/Basic";
-import { GreaterThan } from "./GreaterThan";
-import { Signal } from "./Signal";
+import { ConstantOutput } from "../../test/helper/ConstantOutput.js";
+import { BasicTests } from "../../test/helper/Basic.js";
+import { GreaterThan } from "./GreaterThan.js";
+import { Signal } from "./Signal.js";
 
 describe("GreaterThan", () => {
 

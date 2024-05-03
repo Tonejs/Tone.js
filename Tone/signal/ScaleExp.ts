@@ -1,7 +1,7 @@
-import { Scale, ScaleOptions } from "./Scale";
-import { Positive } from "../core/type/Units";
-import { optionsFromArguments } from "../core/util/Defaults";
-import { Pow } from "./Pow";
+import { Scale, ScaleOptions } from "./Scale.js";
+import { Positive } from "../core/type/Units.js";
+import { optionsFromArguments } from "../core/util/Defaults.js";
+import { Pow } from "./Pow.js";
 
 export interface ScaleExpOptions extends ScaleOptions {
 	exponent: Positive;

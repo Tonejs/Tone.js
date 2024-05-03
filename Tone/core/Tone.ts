@@ -4,9 +4,9 @@
  * @license http://opensource.org/licenses/MIT MIT License
  * @copyright 2014-2019 Yotam Mann
  */
-import { version } from "../version";
-import { theWindow } from "./context/AudioContext";
-import { log } from "./util/Debug";
+import { version } from "../version.js";
+import { theWindow } from "./context/AudioContext.js";
+import { log } from "./util/Debug.js";
 
 //-------------------------------------
 // 	TONE

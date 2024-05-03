@@ -1,16 +1,16 @@
-import { Cents, Degrees, Frequency, Seconds, Time } from "../../core/type/Units";
-import { optionsFromArguments } from "../../core/util/Defaults";
-import { noOp, readOnly } from "../../core/util/Interface";
-import { Signal } from "../../signal/Signal";
-import { Source } from "../Source";
-import { Oscillator } from "./Oscillator";
+import { Cents, Degrees, Frequency, Seconds, Time } from "../../core/type/Units.js";
+import { optionsFromArguments } from "../../core/util/Defaults.js";
+import { noOp, readOnly } from "../../core/util/Interface.js";
+import { Signal } from "../../signal/Signal.js";
+import { Source } from "../Source.js";
+import { Oscillator } from "./Oscillator.js";
 import {
 	FatConstructorOptions, FatOscillatorOptions,
 	generateWaveform, NonCustomOscillatorType, ToneOscillatorInterface, ToneOscillatorType
-} from "./OscillatorInterface";
-import { assertRange } from "../../core/util/Debug";
+} from "./OscillatorInterface.js";
+import { assertRange } from "../../core/util/Debug.js";
 
-export { FatOscillatorOptions } from "./OscillatorInterface";
+export { FatOscillatorOptions } from "./OscillatorInterface.js";
 
 /**
  * FatOscillator is an array of oscillators with detune spread between the oscillators

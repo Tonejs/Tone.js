@@ -1,7 +1,7 @@
-import { getContext } from "../Global";
-import { Seconds, Ticks } from "../type/Units";
-import { TimeClass } from "./Time";
-import { TimeBaseUnit, TimeValue } from "./TimeBase";
+import { getContext } from "../Global.js";
+import { Seconds, Ticks } from "../type/Units.js";
+import { TimeClass } from "./Time.js";
+import { TimeBaseUnit, TimeValue } from "./TimeBase.js";
 
 /**
  * TransportTime is a time along the Transport's

@@ -1,10 +1,10 @@
-import { Phaser } from "./Phaser";
-import { BasicTests } from "../../test/helper/Basic";
-import { EffectTests } from "../../test/helper/EffectTests";
+import { Phaser } from "./Phaser.js";
+import { BasicTests } from "../../test/helper/Basic.js";
+import { EffectTests } from "../../test/helper/EffectTests.js";
 import { expect } from "chai";
-import { CompareToFile } from "../../test/helper/CompareToFile";
-import { ToneAudioBuffer } from "../core";
-import { Player } from "../source/buffer/Player";
+import { CompareToFile } from "../../test/helper/CompareToFile.js";
+import { ToneAudioBuffer } from "../core/index.js";
+import { Player } from "../source/buffer/Player.js";
 
 describe("Phaser", () => {
 

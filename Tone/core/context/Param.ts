@@ -1,13 +1,13 @@
-import { AbstractParam } from "../context/AbstractParam";
-import { dbToGain, gainToDb } from "../type/Conversions";
-import { Decibels, Frequency, Positive, Time, UnitMap, UnitName } from "../type/Units";
-import { isAudioParam } from "../util/AdvancedTypeCheck";
-import { optionsFromArguments } from "../util/Defaults";
-import { Timeline } from "../util/Timeline";
-import { isDefined } from "../util/TypeCheck";
-import { ToneWithContext, ToneWithContextOptions } from "./ToneWithContext";
-import { EQ } from "../util/Math";
-import { assert, assertRange } from "../util/Debug";
+import { AbstractParam } from "../context/AbstractParam.js";
+import { dbToGain, gainToDb } from "../type/Conversions.js";
+import { Decibels, Frequency, Positive, Time, UnitMap, UnitName } from "../type/Units.js";
+import { isAudioParam } from "../util/AdvancedTypeCheck.js";
+import { optionsFromArguments } from "../util/Defaults.js";
+import { Timeline } from "../util/Timeline.js";
+import { isDefined } from "../util/TypeCheck.js";
+import { ToneWithContext, ToneWithContextOptions } from "./ToneWithContext.js";
+import { EQ } from "../util/Math.js";
+import { assert, assertRange } from "../util/Debug.js";
 
 export interface ParamOptions<TypeName extends UnitName> extends ToneWithContextOptions {
 	units: TypeName;

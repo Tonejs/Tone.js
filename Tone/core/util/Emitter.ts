@@ -1,5 +1,5 @@
-import { Tone } from "../Tone";
-import { isUndef } from "./TypeCheck";
+import { Tone } from "../Tone.js";
+import { isUndef } from "./TypeCheck.js";
 
 export interface EmitterEventObject {
 	[event: string]: Array<(...args: any[]) => void>;

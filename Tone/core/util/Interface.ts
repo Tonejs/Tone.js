@@ -1,4 +1,4 @@
-import { isArray } from "./TypeCheck";
+import { isArray } from "./TypeCheck.js";
 
 // return an interface which excludes certain keys
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;

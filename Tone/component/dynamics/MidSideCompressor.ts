@@ -1,9 +1,9 @@
-import { InputNode, OutputNode, ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
-import { Compressor, CompressorOptions } from "./Compressor";
-import { optionsFromArguments } from "../../core/util/Defaults";
-import { MidSideSplit } from "../channel/MidSideSplit";
-import { MidSideMerge } from "../channel/MidSideMerge";
-import { readOnly, RecursivePartial } from "../../core/util/Interface";
+import { InputNode, OutputNode, ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode.js";
+import { Compressor, CompressorOptions } from "./Compressor.js";
+import { optionsFromArguments } from "../../core/util/Defaults.js";
+import { MidSideSplit } from "../channel/MidSideSplit.js";
+import { MidSideMerge } from "../channel/MidSideMerge.js";
+import { readOnly, RecursivePartial } from "../../core/util/Interface.js";
 
 export interface MidSideCompressorOptions extends ToneAudioNodeOptions {
 	mid: Omit<CompressorOptions, keyof ToneAudioNodeOptions>;

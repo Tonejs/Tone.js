@@ -1,8 +1,8 @@
-import { connect } from "../core/context/ToneAudioNode";
-import { Param } from "../core/context/Param";
-import { Seconds, Time, UnitMap, UnitName } from "../core/type/Units";
-import { optionsFromArguments } from "../core/util/Defaults";
-import { OneShotSource, OneShotSourceOptions } from "../source/OneShotSource";
+import { connect } from "../core/context/ToneAudioNode.js";
+import { Param } from "../core/context/Param.js";
+import { Seconds, Time, UnitMap, UnitName } from "../core/type/Units.js";
+import { optionsFromArguments } from "../core/util/Defaults.js";
+import { OneShotSource, OneShotSourceOptions } from "../source/OneShotSource.js";
 
 export interface ToneConstantSourceOptions<TypeName extends UnitName> extends OneShotSourceOptions {
 	convert: boolean;

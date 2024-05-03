@@ -1,13 +1,13 @@
-import { Compare, Plot } from "../../../test/helper/compare/index";
+import { Compare, Plot } from "../../../test/helper/compare/index.js";
 import { expect } from "chai";
-import { BasicTests, testAudioContext } from "../../../test/helper/Basic";
-import { atTime, Offline } from "../../../test/helper/Offline";
-import { SCHEDULE_RAMP_AFTER_SET_TARGET } from "../../../test/helper/Supports";
-import { BPM, Decibels, Frequency, Positive, Seconds, Time, Unit, UnitName } from "../type/Units";
-import { Signal } from "../../signal/Signal";
-import { getContext } from "../Global";
-import { Param } from "./Param";
-import { connect } from "./ToneAudioNode";
+import { BasicTests, testAudioContext } from "../../../test/helper/Basic.js";
+import { atTime, Offline } from "../../../test/helper/Offline.js";
+import { SCHEDULE_RAMP_AFTER_SET_TARGET } from "../../../test/helper/Supports.js";
+import { BPM, Decibels, Frequency, Positive, Seconds, Time, Unit, UnitName } from "../type/Units.js";
+import { Signal } from "../../signal/Signal.js";
+import { getContext } from "../Global.js";
+import { Param } from "./Param.js";
+import { connect } from "./ToneAudioNode.js";
 
 const audioContext = getContext();
 

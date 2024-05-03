@@ -1,9 +1,9 @@
 import { expect } from "chai";
-import { BasicTests, warns } from "../../../test/helper/Basic";
-import { PassAudio } from "../../../test/helper/PassAudio";
-import { ONLINE_TESTING } from "../../../test/helper/Supports";
-import { Signal } from "../../signal/Signal";
-import { DCMeter } from "./DCMeter";
+import { BasicTests, warns } from "../../../test/helper/Basic.js";
+import { PassAudio } from "../../../test/helper/PassAudio.js";
+import { ONLINE_TESTING } from "../../../test/helper/Supports.js";
+import { Signal } from "../../signal/Signal.js";
+import { DCMeter } from "./DCMeter.js";
 
 describe("DCMeter", () => {
 

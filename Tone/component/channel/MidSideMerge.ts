@@ -1,10 +1,10 @@
-import { ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
-import { Merge } from "./Merge";
-import { Add } from "../../signal/Add";
-import { Multiply } from "../../signal/Multiply";
-import { Subtract } from "../../signal/Subtract";
-import { Gain } from "../../core/context/Gain";
-import { optionsFromArguments } from "../../core/util/Defaults";
+import { ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode.js";
+import { Merge } from "./Merge.js";
+import { Add } from "../../signal/Add.js";
+import { Multiply } from "../../signal/Multiply.js";
+import { Subtract } from "../../signal/Subtract.js";
+import { Gain } from "../../core/context/Gain.js";
+import { optionsFromArguments } from "../../core/util/Defaults.js";
 
 export type MidSideMergeOptions = ToneAudioNodeOptions;
 

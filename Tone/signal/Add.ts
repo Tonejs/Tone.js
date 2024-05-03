@@ -1,8 +1,8 @@
-import { connectSeries } from "../core/context/ToneAudioNode";
-import { Gain } from "../core/context/Gain";
-import { Param } from "../core/context/Param";
-import { optionsFromArguments } from "../core/util/Defaults";
-import { Signal, SignalOptions } from "./Signal";
+import { connectSeries } from "../core/context/ToneAudioNode.js";
+import { Gain } from "../core/context/Gain.js";
+import { Param } from "../core/context/Param.js";
+import { optionsFromArguments } from "../core/util/Defaults.js";
+import { Signal, SignalOptions } from "./Signal.js";
 
 /**
  * Add a signal and a number or two signals. When no value is

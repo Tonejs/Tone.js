@@ -1,7 +1,7 @@
-import { Gain } from "../core/context/Gain";
-import { connect, disconnect, ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
-import { optionsFromArguments } from "../core/util/Defaults";
-import { SignalOperator } from "./SignalOperator";
+import { Gain } from "../core/context/Gain.js";
+import { connect, disconnect, ToneAudioNodeOptions } from "../core/context/ToneAudioNode.js";
+import { optionsFromArguments } from "../core/util/Defaults.js";
+import { SignalOperator } from "./SignalOperator.js";
 
 /**
  * Tone.Zero outputs 0's at audio-rate. The reason this has to be

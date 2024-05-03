@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { dbToGain, equalPowerScale, gainToDb, intervalToFrequencyRatio } from "./Conversions";
+import { dbToGain, equalPowerScale, gainToDb, intervalToFrequencyRatio } from "./Conversions.js";
 
 describe("Conversions", () => {
 

@@ -1,9 +1,9 @@
-import { BasicTests } from "../../test/helper/Basic";
-import { MonoSynth } from "./MonoSynth";
-import { InstrumentTest } from "../../test/helper/InstrumentTests";
-import { CompareToFile } from "../../test/helper/CompareToFile";
+import { BasicTests } from "../../test/helper/Basic.js";
+import { MonoSynth } from "./MonoSynth.js";
+import { InstrumentTest } from "../../test/helper/InstrumentTests.js";
+import { CompareToFile } from "../../test/helper/CompareToFile.js";
 import { expect } from "chai";
-import { Offline } from "../../test/helper/Offline";
+import { Offline } from "../../test/helper/Offline.js";
 
 describe("MonoSynth", () => {
 

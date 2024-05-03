@@ -1,12 +1,12 @@
-import { Gain } from "../../core/context/Gain";
-import { connectSeries, ToneAudioNode } from "../../core/context/ToneAudioNode";
-import { Frequency } from "../../core/type/Units";
-import { optionsFromArguments } from "../../core/util/Defaults";
-import { readOnly, writable } from "../../core/util/Interface";
-import { isNumber } from "../../core/util/TypeCheck";
-import { Signal } from "../../signal/Signal";
-import { assert } from "../../core/util/Debug";
-import { BiquadFilter, BiquadFilterOptions } from "./BiquadFilter";
+import { Gain } from "../../core/context/Gain.js";
+import { connectSeries, ToneAudioNode } from "../../core/context/ToneAudioNode.js";
+import { Frequency } from "../../core/type/Units.js";
+import { optionsFromArguments } from "../../core/util/Defaults.js";
+import { readOnly, writable } from "../../core/util/Interface.js";
+import { isNumber } from "../../core/util/TypeCheck.js";
+import { Signal } from "../../signal/Signal.js";
+import { assert } from "../../core/util/Debug.js";
+import { BiquadFilter, BiquadFilterOptions } from "./BiquadFilter.js";
 
 export type FilterRollOff = -12 | -24 | -48 | -96;
 

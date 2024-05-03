@@ -1,6 +1,6 @@
 import { expect } from "chai";
-import { ToneAudioBuffer } from "./ToneAudioBuffer";
-import { ToneAudioBuffers } from "./ToneAudioBuffers";
+import { ToneAudioBuffer } from "./ToneAudioBuffer.js";
+import { ToneAudioBuffers } from "./ToneAudioBuffers.js";
 
 const testFile = "./test/audio/sine.wav";
 const testFile2 = "./test/audio/hh.wav";

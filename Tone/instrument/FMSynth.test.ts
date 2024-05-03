@@ -1,9 +1,9 @@
 import { expect } from "chai";
-import { FMSynth } from "./FMSynth";
-import { BasicTests } from "../../test/helper/Basic";
-import { InstrumentTest } from "../../test/helper/InstrumentTests";
-import { CompareToFile } from "../../test/helper/CompareToFile";
-import { Offline } from "../../test/helper/Offline";
+import { FMSynth } from "./FMSynth.js";
+import { BasicTests } from "../../test/helper/Basic.js";
+import { InstrumentTest } from "../../test/helper/InstrumentTests.js";
+import { CompareToFile } from "../../test/helper/CompareToFile.js";
+import { Offline } from "../../test/helper/Offline.js";
 
 describe("FMSynth", () => {
 

@@ -1,8 +1,8 @@
-import { getContext } from "../Global";
-import { ftom, mtof } from "./Conversions";
-import { FrequencyClass, FrequencyUnit } from "./Frequency";
-import { TimeValue } from "./TimeBase";
-import { Hertz, Interval, MidiNote, Seconds, Ticks } from "./Units";
+import { getContext } from "../Global.js";
+import { ftom, mtof } from "./Conversions.js";
+import { FrequencyClass, FrequencyUnit } from "./Frequency.js";
+import { TimeValue } from "./TimeBase.js";
+import { Hertz, Interval, MidiNote, Seconds, Ticks } from "./Units.js";
 
 /**
  * Midi is a primitive type for encoding Time values.

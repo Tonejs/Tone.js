@@ -1,15 +1,15 @@
-import { getContext } from "../Global";
-import { Tone } from "../Tone";
-import { FrequencyClass } from "../type/Frequency";
-import { TimeClass } from "../type/Time";
-import { TransportTimeClass } from "../type/TransportTime";
-import { Frequency, Hertz, Seconds, Ticks, Time } from "../type/Units";
-import { assertUsedScheduleTime } from "../util/Debug";
+import { getContext } from "../Global.js";
+import { Tone } from "../Tone.js";
+import { FrequencyClass } from "../type/Frequency.js";
+import { TimeClass } from "../type/Time.js";
+import { TransportTimeClass } from "../type/TransportTime.js";
+import { Frequency, Hertz, Seconds, Ticks, Time } from "../type/Units.js";
+import { assertUsedScheduleTime } from "../util/Debug.js";
 import {
 	getDefaultsFromInstance,
 	optionsFromArguments,
-} from "../util/Defaults";
-import { RecursivePartial } from "../util/Interface";
+} from "../util/Defaults.js";
+import { RecursivePartial } from "../util/Interface.js";
 import {
 	isArray,
 	isBoolean,
@@ -17,8 +17,8 @@ import {
 	isNumber,
 	isString,
 	isUndef,
-} from "../util/TypeCheck";
-import { BaseContext } from "./BaseContext";
+} from "../util/TypeCheck.js";
+import { BaseContext } from "./BaseContext.js";
 import type { TransportClass } from "../clock/Transport";
 
 /**

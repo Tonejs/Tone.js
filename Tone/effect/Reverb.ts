@@ -1,12 +1,12 @@
-import { Merge } from "../component/channel/Merge";
-import { Gain } from "../core/context/Gain";
-import { Seconds, Time } from "../core/type/Units";
-import { optionsFromArguments } from "../core/util/Defaults";
-import { Noise } from "../source/Noise";
-import { Effect, EffectOptions } from "./Effect";
-import { OfflineContext } from "../core/context/OfflineContext";
-import { noOp } from "../core/util/Interface";
-import { assertRange } from "../core/util/Debug";
+import { Merge } from "../component/channel/Merge.js";
+import { Gain } from "../core/context/Gain.js";
+import { Seconds, Time } from "../core/type/Units.js";
+import { optionsFromArguments } from "../core/util/Defaults.js";
+import { Noise } from "../source/Noise.js";
+import { Effect, EffectOptions } from "./Effect.js";
+import { OfflineContext } from "../core/context/OfflineContext.js";
+import { noOp } from "../core/util/Interface.js";
+import { assertRange } from "../core/util/Debug.js";
 
 interface ReverbOptions extends EffectOptions {
 	decay: Seconds;

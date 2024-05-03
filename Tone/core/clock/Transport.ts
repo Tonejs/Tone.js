@@ -1,20 +1,20 @@
-import { TimeClass } from "../../core/type/Time";
-import { PlaybackState } from "../../core/util/StateTimeline";
-import { TimelineValue } from "../../core/util/TimelineValue";
-import { ToneAudioNode } from "../../core/context/ToneAudioNode";
-import { Pow } from "../../signal/Pow";
-import { Signal } from "../../signal/Signal";
+import { TimeClass } from "../../core/type/Time.js";
+import { PlaybackState } from "../../core/util/StateTimeline.js";
+import { TimelineValue } from "../../core/util/TimelineValue.js";
+import { ToneAudioNode } from "../../core/context/ToneAudioNode.js";
+import { Pow } from "../../signal/Pow.js";
+import { Signal } from "../../signal/Signal.js";
 import {
 	onContextClose,
 	onContextInit,
-} from "../context/ContextInitialization";
-import { Gain } from "../context/Gain";
+} from "../context/ContextInitialization.js";
+import { Gain } from "../context/Gain.js";
 import {
 	ToneWithContext,
 	ToneWithContextOptions,
-} from "../context/ToneWithContext";
-import { TicksClass } from "../type/Ticks";
-import { TransportTimeClass } from "../type/TransportTime";
+} from "../context/ToneWithContext.js";
+import { TicksClass } from "../type/Ticks.js";
+import { TransportTimeClass } from "../type/TransportTime.js";
 import {
 	BarsBeatsSixteenths,
 	BPM,
@@ -25,18 +25,18 @@ import {
 	Time,
 	TimeSignature,
 	TransportTime,
-} from "../type/Units";
-import { enterScheduledCallback } from "../util/Debug";
-import { optionsFromArguments } from "../util/Defaults";
-import { Emitter } from "../util/Emitter";
-import { readOnly, writable } from "../util/Interface";
-import { IntervalTimeline } from "../util/IntervalTimeline";
-import { Timeline } from "../util/Timeline";
-import { isArray, isDefined } from "../util/TypeCheck";
-import { Clock } from "./Clock";
-import { TickParam } from "./TickParam";
-import { TransportEvent } from "./TransportEvent";
-import { TransportRepeatEvent } from "./TransportRepeatEvent";
+} from "../type/Units.js";
+import { enterScheduledCallback } from "../util/Debug.js";
+import { optionsFromArguments } from "../util/Defaults.js";
+import { Emitter } from "../util/Emitter.js";
+import { readOnly, writable } from "../util/Interface.js";
+import { IntervalTimeline } from "../util/IntervalTimeline.js";
+import { Timeline } from "../util/Timeline.js";
+import { isArray, isDefined } from "../util/TypeCheck.js";
+import { Clock } from "./Clock.js";
+import { TickParam } from "./TickParam.js";
+import { TransportEvent } from "./TransportEvent.js";
+import { TransportRepeatEvent } from "./TransportRepeatEvent.js";
 
 interface TransportOptions extends ToneWithContextOptions {
 	bpm: BPM;

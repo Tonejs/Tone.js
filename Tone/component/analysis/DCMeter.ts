@@ -1,5 +1,5 @@
-import { optionsFromArguments } from "../../core/util/Defaults";
-import { MeterBase, MeterBaseOptions } from "./MeterBase";
+import { optionsFromArguments } from "../../core/util/Defaults.js";
+import { MeterBase, MeterBaseOptions } from "./MeterBase.js";
 
 export type DCMeterOptions = MeterBaseOptions;
 

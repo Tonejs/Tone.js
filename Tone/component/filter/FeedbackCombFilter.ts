@@ -1,11 +1,11 @@
-import { Gain } from "../../core/context/Gain";
-import { Param } from "../../core/context/Param";
-import { connectSeries, ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
-import { NormalRange, Time } from "../../core/type/Units";
-import { optionsFromArguments } from "../../core/util/Defaults";
-import { readOnly, RecursivePartial } from "../../core/util/Interface";
-import { ToneAudioWorklet } from "../../core/worklet/ToneAudioWorklet";
-import { workletName } from "./FeedbackCombFilter.worklet";
+import { Gain } from "../../core/context/Gain.js";
+import { Param } from "../../core/context/Param.js";
+import { connectSeries, ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode.js";
+import { NormalRange, Time } from "../../core/type/Units.js";
+import { optionsFromArguments } from "../../core/util/Defaults.js";
+import { readOnly, RecursivePartial } from "../../core/util/Interface.js";
+import { ToneAudioWorklet } from "../../core/worklet/ToneAudioWorklet.js";
+import { workletName } from "./FeedbackCombFilter.worklet.js";
 
 export interface FeedbackCombFilterOptions extends ToneAudioNodeOptions {
 	delayTime: Time;

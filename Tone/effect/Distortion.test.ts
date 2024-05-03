@@ -1,9 +1,9 @@
 import { expect } from "chai";
-import { BasicTests } from "../../test/helper/Basic";
-import { CompareToFile } from "../../test/helper/CompareToFile";
-import { EffectTests } from "../../test/helper/EffectTests";
-import { Oscillator } from "../source/oscillator/Oscillator";
-import { Distortion } from "./Distortion";
+import { BasicTests } from "../../test/helper/Basic.js";
+import { CompareToFile } from "../../test/helper/CompareToFile.js";
+import { EffectTests } from "../../test/helper/EffectTests.js";
+import { Oscillator } from "../source/oscillator/Oscillator.js";
+import { Distortion } from "./Distortion.js";
 
 describe("Distortion", () => {
 

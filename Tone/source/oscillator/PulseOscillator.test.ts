@@ -1,10 +1,10 @@
 import { expect } from "chai";
-import { BasicTests } from "../../../test/helper/Basic";
-import { CompareToFile } from "../../../test/helper/CompareToFile";
-import { Offline } from "../../../test/helper/Offline";
-import { OscillatorTests } from "../../../test/helper/OscillatorTests";
-import { SourceTests } from "../../../test/helper/SourceTests";
-import { PulseOscillator } from "./PulseOscillator";
+import { BasicTests } from "../../../test/helper/Basic.js";
+import { CompareToFile } from "../../../test/helper/CompareToFile.js";
+import { Offline } from "../../../test/helper/Offline.js";
+import { OscillatorTests } from "../../../test/helper/OscillatorTests.js";
+import { SourceTests } from "../../../test/helper/SourceTests.js";
+import { PulseOscillator } from "./PulseOscillator.js";
 
 describe("PulseOscillator", () => {
 

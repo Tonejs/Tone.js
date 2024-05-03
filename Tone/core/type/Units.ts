@@ -1,6 +1,6 @@
-export * from "./NoteUnits";
+export * from "./NoteUnits.js";
 
-import { Note } from "./NoteUnits";
+import { Note } from "./NoteUnits.js";
 
 /**
  * A number representing a time in seconds

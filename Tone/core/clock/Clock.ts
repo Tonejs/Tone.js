@@ -1,12 +1,12 @@
-import { ToneWithContext, ToneWithContextOptions } from "../context/ToneWithContext";
-import { Frequency, Hertz, Seconds, Ticks, Time } from "../type/Units";
-import { optionsFromArguments } from "../util/Defaults";
-import { Emitter } from "../util/Emitter";
-import { noOp, readOnly } from "../util/Interface";
-import { PlaybackState, StateTimeline } from "../util/StateTimeline";
-import { TickSignal } from "./TickSignal";
-import { TickSource } from "./TickSource";
-import { assertContextRunning } from "../util/Debug";
+import { ToneWithContext, ToneWithContextOptions } from "../context/ToneWithContext.js";
+import { Frequency, Hertz, Seconds, Ticks, Time } from "../type/Units.js";
+import { optionsFromArguments } from "../util/Defaults.js";
+import { Emitter } from "../util/Emitter.js";
+import { noOp, readOnly } from "../util/Interface.js";
+import { PlaybackState, StateTimeline } from "../util/StateTimeline.js";
+import { TickSignal } from "./TickSignal.js";
+import { TickSource } from "./TickSource.js";
+import { assertContextRunning } from "../util/Debug.js";
 
 type ClockCallback = (time: Seconds, ticks?: Ticks) => void;
 

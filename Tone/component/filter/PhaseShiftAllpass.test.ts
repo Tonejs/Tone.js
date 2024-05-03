@@ -1,10 +1,10 @@
-import { BasicTests } from "../../../test/helper/Basic";
-import { CompareToFile } from "../../../test/helper/CompareToFile";
-import { connectTo } from "../../../test/helper/Connect";
-import { PassAudio } from "../../../test/helper/PassAudio";
-import { connect } from "../../core/context/ToneAudioNode";
-import { Subtract } from "../../signal/Subtract";
-import { PhaseShiftAllpass } from "./PhaseShiftAllpass";
+import { BasicTests } from "../../../test/helper/Basic.js";
+import { CompareToFile } from "../../../test/helper/CompareToFile.js";
+import { connectTo } from "../../../test/helper/Connect.js";
+import { PassAudio } from "../../../test/helper/PassAudio.js";
+import { connect } from "../../core/context/ToneAudioNode.js";
+import { Subtract } from "../../signal/Subtract.js";
+import { PhaseShiftAllpass } from "./PhaseShiftAllpass.js";
 
 describe("PhaseShiftAllpass", () => {
 

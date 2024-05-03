@@ -1,10 +1,10 @@
-import { Frequency, NormalRange, Time } from "../core/type/Units";
-import { LowpassCombFilter } from "../component/filter/LowpassCombFilter";
-import { deepMerge } from "../core/util/Defaults";
-import { optionsFromArguments } from "../core/util/Defaults";
-import { RecursivePartial } from "../core/util/Interface";
-import { Noise } from "../source/Noise";
-import { Instrument, InstrumentOptions } from "./Instrument";
+import { Frequency, NormalRange, Time } from "../core/type/Units.js";
+import { LowpassCombFilter } from "../component/filter/LowpassCombFilter.js";
+import { deepMerge } from "../core/util/Defaults.js";
+import { optionsFromArguments } from "../core/util/Defaults.js";
+import { RecursivePartial } from "../core/util/Interface.js";
+import { Noise } from "../source/Noise.js";
+import { Instrument, InstrumentOptions } from "./Instrument.js";
 
 export interface PluckSynthOptions extends InstrumentOptions {
 	attackNoise: number;

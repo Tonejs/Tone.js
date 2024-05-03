@@ -1,9 +1,9 @@
-import { BasicTests } from "../../../test/helper/Basic";
-import { GrainPlayer } from "./GrainPlayer";
-import { Offline, whenBetween } from "../../../test/helper/Offline";
-import { SourceTests } from "../../../test/helper/SourceTests";
-import { ToneAudioBuffer } from "../../core/context/ToneAudioBuffer";
-import { CompareToFile } from "../../../test/helper/CompareToFile";
+import { BasicTests } from "../../../test/helper/Basic.js";
+import { GrainPlayer } from "./GrainPlayer.js";
+import { Offline, whenBetween } from "../../../test/helper/Offline.js";
+import { SourceTests } from "../../../test/helper/SourceTests.js";
+import { ToneAudioBuffer } from "../../core/context/ToneAudioBuffer.js";
+import { CompareToFile } from "../../../test/helper/CompareToFile.js";
 import { expect } from "chai";
 
 describe("GrainPlayer", () => {

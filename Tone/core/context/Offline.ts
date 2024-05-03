@@ -1,9 +1,9 @@
-import { getContext, setContext } from "../Global";
-import { Seconds } from "../type/Units";
-import { OfflineContext } from "./OfflineContext";
-import { ToneAudioBuffer } from "./ToneAudioBuffer";
-import "./Destination";
-import "./Listener";
+import { getContext, setContext } from "../Global.js";
+import { Seconds } from "../type/Units.js";
+import { OfflineContext } from "./OfflineContext.js";
+import { ToneAudioBuffer } from "./ToneAudioBuffer.js";
+import "./Destination.js";
+import "./Listener.js";
 
 /**
  * Generate a buffer by rendering all of the Tone.js code within the callback using the OfflineAudioContext.

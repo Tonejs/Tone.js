@@ -1,10 +1,10 @@
 /* eslint-disable key-spacing */
-import { getContext } from "../Global";
-import { intervalToFrequencyRatio, mtof } from "./Conversions";
-import { ftom, getA4, setA4 } from "./Conversions";
-import { TimeClass } from "./Time";
-import { TimeBaseUnit, TimeExpression, TimeValue } from "./TimeBase";
-import { Frequency, Hertz, Interval, MidiNote, Note, Seconds, Ticks } from "./Units";
+import { getContext } from "../Global.js";
+import { intervalToFrequencyRatio, mtof } from "./Conversions.js";
+import { ftom, getA4, setA4 } from "./Conversions.js";
+import { TimeClass } from "./Time.js";
+import { TimeBaseUnit, TimeExpression, TimeValue } from "./TimeBase.js";
+import { Frequency, Hertz, Interval, MidiNote, Note, Seconds, Ticks } from "./Units.js";
 
 export type FrequencyUnit = TimeBaseUnit | "midi";
 

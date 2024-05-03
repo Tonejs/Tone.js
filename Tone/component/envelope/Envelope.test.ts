@@ -1,8 +1,8 @@
 import { expect } from "chai";
-import { BasicTests } from "../../../test/helper/Basic";
-import { connectTo } from "../../../test/helper/Connect";
-import { Offline } from "../../../test/helper/Offline";
-import { Envelope, EnvelopeCurve } from "./Envelope";
+import { BasicTests } from "../../../test/helper/Basic.js";
+import { connectTo } from "../../../test/helper/Connect.js";
+import { Offline } from "../../../test/helper/Offline.js";
+import { Envelope, EnvelopeCurve } from "./Envelope.js";
 
 describe("Envelope", () => {
 

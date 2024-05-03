@@ -1,14 +1,14 @@
 import { expect } from "chai";
-import { atTime, Offline, whenBetween } from "../../../test/helper/Offline";
-import { Time } from "../type/Time";
-import { noOp } from "../util/Interface";
-import { Signal } from "../../signal/Signal";
-import { TransportTime } from "../type/TransportTime";
-import { TransportClass } from "./Transport";
+import { atTime, Offline, whenBetween } from "../../../test/helper/Offline.js";
+import { Time } from "../type/Time.js";
+import { noOp } from "../util/Interface.js";
+import { Signal } from "../../signal/Signal.js";
+import { TransportTime } from "../type/TransportTime.js";
+import { TransportClass } from "./Transport.js";
 // importing for side affects
-import "../context/Destination";
-import { warns } from "../../../test/helper/Basic";
-import { Synth } from "../../instrument/Synth";
+import "../context/Destination.js";
+import { warns } from "../../../test/helper/Basic.js";
+import { Synth } from "../../instrument/Synth.js";
 
 describe("Transport", () => {
 

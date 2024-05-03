@@ -1,8 +1,8 @@
-import { Param } from "../../core/context/Param";
-import { ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
-import { AudioRange } from "../../core/type/Units";
-import { optionsFromArguments } from "../../core/util/Defaults";
-import { readOnly } from "../../core/util/Interface";
+import { Param } from "../../core/context/Param.js";
+import { ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode.js";
+import { AudioRange } from "../../core/type/Units.js";
+import { optionsFromArguments } from "../../core/util/Defaults.js";
+import { readOnly } from "../../core/util/Interface.js";
 
 interface TonePannerOptions extends ToneAudioNodeOptions {
 	pan: AudioRange;

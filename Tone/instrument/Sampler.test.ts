@@ -1,10 +1,10 @@
 import { expect } from "chai";
-import { BasicTests } from "../../test/helper/Basic";
-import { CompareToFile } from "../../test/helper/CompareToFile";
-import { InstrumentTest } from "../../test/helper/InstrumentTests";
-import { atTime, Offline } from "../../test/helper/Offline";
-import { ToneAudioBuffer } from "../core/context/ToneAudioBuffer";
-import { Sampler } from "./Sampler";
+import { BasicTests } from "../../test/helper/Basic.js";
+import { CompareToFile } from "../../test/helper/CompareToFile.js";
+import { InstrumentTest } from "../../test/helper/InstrumentTests.js";
+import { atTime, Offline } from "../../test/helper/Offline.js";
+import { ToneAudioBuffer } from "../core/context/ToneAudioBuffer.js";
+import { Sampler } from "./Sampler.js";
 
 describe("Sampler", () => {
 

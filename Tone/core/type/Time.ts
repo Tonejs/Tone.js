@@ -1,7 +1,7 @@
-import { getContext } from "../Global";
-import { ftom } from "./Conversions";
-import { TimeBaseClass, TimeBaseUnit, TimeExpression, TimeValue } from "./TimeBase";
-import { BarsBeatsSixteenths, MidiNote, Seconds, Subdivision, Ticks, Time } from "./Units";
+import { getContext } from "../Global.js";
+import { ftom } from "./Conversions.js";
+import { TimeBaseClass, TimeBaseUnit, TimeExpression, TimeValue } from "./TimeBase.js";
+import { BarsBeatsSixteenths, MidiNote, Seconds, Subdivision, Ticks, Time } from "./Units.js";
 
 /**
  * TimeClass is a primitive type for encoding and decoding Time values.

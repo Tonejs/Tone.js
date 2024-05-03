@@ -1,14 +1,14 @@
-import { Degrees, Frequency, Seconds, Time } from "../../core/type/Units";
-import { optionsFromArguments } from "../../core/util/Defaults";
-import { readOnly } from "../../core/util/Interface";
-import { Multiply } from "../../signal/Multiply";
-import { Signal } from "../../signal/Signal";
-import { Source } from "../Source";
-import { Oscillator } from "./Oscillator";
-import { generateWaveform, PWMOscillatorOptions, ToneOscillatorInterface } from "./OscillatorInterface";
-import { PulseOscillator } from "./PulseOscillator";
+import { Degrees, Frequency, Seconds, Time } from "../../core/type/Units.js";
+import { optionsFromArguments } from "../../core/util/Defaults.js";
+import { readOnly } from "../../core/util/Interface.js";
+import { Multiply } from "../../signal/Multiply.js";
+import { Signal } from "../../signal/Signal.js";
+import { Source } from "../Source.js";
+import { Oscillator } from "./Oscillator.js";
+import { generateWaveform, PWMOscillatorOptions, ToneOscillatorInterface } from "./OscillatorInterface.js";
+import { PulseOscillator } from "./PulseOscillator.js";
 
-export { PWMOscillatorOptions } from "./OscillatorInterface";
+export { PWMOscillatorOptions } from "./OscillatorInterface.js";
 
 /**
  * PWMOscillator modulates the width of a Tone.PulseOscillator

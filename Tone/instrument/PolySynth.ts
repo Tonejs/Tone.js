@@ -1,17 +1,17 @@
-import { MidiClass } from "../core/type/Midi";
-import { Frequency, MidiNote, NormalRange, Seconds, Time } from "../core/type/Units";
-import { deepMerge, omitFromObject, optionsFromArguments } from "../core/util/Defaults";
-import { RecursivePartial } from "../core/util/Interface";
-import { isArray, isNumber } from "../core/util/TypeCheck";
-import { Instrument, InstrumentOptions } from "./Instrument";
-import { MembraneSynth, MembraneSynthOptions } from "./MembraneSynth";
-import { FMSynth, FMSynthOptions } from "./FMSynth";
-import { AMSynth, AMSynthOptions } from "./AMSynth";
-import { MonoSynth, MonoSynthOptions } from "./MonoSynth";
-import { MetalSynth, MetalSynthOptions } from "./MetalSynth";
-import { Monophonic } from "./Monophonic";
-import { Synth, SynthOptions } from "./Synth";
-import { assert, warn } from "../core/util/Debug";
+import { MidiClass } from "../core/type/Midi.js";
+import { Frequency, MidiNote, NormalRange, Seconds, Time } from "../core/type/Units.js";
+import { deepMerge, omitFromObject, optionsFromArguments } from "../core/util/Defaults.js";
+import { RecursivePartial } from "../core/util/Interface.js";
+import { isArray, isNumber } from "../core/util/TypeCheck.js";
+import { Instrument, InstrumentOptions } from "./Instrument.js";
+import { MembraneSynth, MembraneSynthOptions } from "./MembraneSynth.js";
+import { FMSynth, FMSynthOptions } from "./FMSynth.js";
+import { AMSynth, AMSynthOptions } from "./AMSynth.js";
+import { MonoSynth, MonoSynthOptions } from "./MonoSynth.js";
+import { MetalSynth, MetalSynthOptions } from "./MetalSynth.js";
+import { Monophonic } from "./Monophonic.js";
+import { Synth, SynthOptions } from "./Synth.js";
+import { assert, warn } from "../core/util/Debug.js";
 
 type VoiceConstructor<V> = {
 	getDefaults: () => VoiceOptions<V>;

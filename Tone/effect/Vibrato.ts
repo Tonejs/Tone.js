@@ -1,12 +1,12 @@
-import { Effect, EffectOptions } from "./Effect";
-import { ToneOscillatorType } from "../source/oscillator/OscillatorInterface";
-import { Frequency, NormalRange, Seconds } from "../core/type/Units";
-import { optionsFromArguments } from "../core/util/Defaults";
-import { LFO } from "../source/oscillator/LFO";
-import { Delay } from "../core/context/Delay";
-import { Signal } from "../signal/Signal";
-import { Param } from "../core/context/Param";
-import { readOnly } from "../core/util/Interface";
+import { Effect, EffectOptions } from "./Effect.js";
+import { ToneOscillatorType } from "../source/oscillator/OscillatorInterface.js";
+import { Frequency, NormalRange, Seconds } from "../core/type/Units.js";
+import { optionsFromArguments } from "../core/util/Defaults.js";
+import { LFO } from "../source/oscillator/LFO.js";
+import { Delay } from "../core/context/Delay.js";
+import { Signal } from "../signal/Signal.js";
+import { Param } from "../core/context/Param.js";
+import { readOnly } from "../core/util/Interface.js";
 
 export interface VibratoOptions extends EffectOptions {
 	maxDelay: Seconds;

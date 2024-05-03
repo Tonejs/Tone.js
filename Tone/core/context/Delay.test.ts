@@ -1,9 +1,9 @@
 import { expect } from "chai";
-import { BasicTests } from "../../../test/helper/Basic";
-import { connectFrom, connectTo } from "../../../test/helper/Connect";
-import { PassAudio } from "../../../test/helper/PassAudio";
-import { connect } from "../context/ToneAudioNode";
-import { Delay } from "./Delay";
+import { BasicTests } from "../../../test/helper/Basic.js";
+import { connectFrom, connectTo } from "../../../test/helper/Connect.js";
+import { PassAudio } from "../../../test/helper/PassAudio.js";
+import { connect } from "../context/ToneAudioNode.js";
+import { Delay } from "./Delay.js";
 
 describe("Delay", () => {
 

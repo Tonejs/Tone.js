@@ -1,9 +1,9 @@
-import { StereoEffect, StereoEffectOptions } from "./StereoEffect";
-import { Frequency, NormalRange } from "../core/type/Units";
-import { optionsFromArguments } from "../core/util/Defaults";
-import { readOnly } from "../core/util/Interface";
-import { Signal } from "../signal/Signal";
-import { LowpassCombFilter } from "../component/filter/LowpassCombFilter";
+import { StereoEffect, StereoEffectOptions } from "./StereoEffect.js";
+import { Frequency, NormalRange } from "../core/type/Units.js";
+import { optionsFromArguments } from "../core/util/Defaults.js";
+import { readOnly } from "../core/util/Interface.js";
+import { Signal } from "../signal/Signal.js";
+import { LowpassCombFilter } from "../component/filter/LowpassCombFilter.js";
 
 export interface FreeverbOptions extends StereoEffectOptions {
 	dampening: Frequency;

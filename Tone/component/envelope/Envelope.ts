@@ -1,12 +1,12 @@
-import { InputNode, OutputNode } from "../../core/context/ToneAudioNode";
-import { ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
-import { NormalRange, Time } from "../../core/type/Units";
-import { optionsFromArguments } from "../../core/util/Defaults";
-import { isArray, isObject, isString } from "../../core/util/TypeCheck";
-import { connectSignal, Signal } from "../../signal/Signal";
-import { OfflineContext } from "../../core/context/OfflineContext";
-import { assert } from "../../core/util/Debug";
-import { range, timeRange } from "../../core/util/Decorator";
+import { InputNode, OutputNode } from "../../core/context/ToneAudioNode.js";
+import { ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode.js";
+import { NormalRange, Time } from "../../core/type/Units.js";
+import { optionsFromArguments } from "../../core/util/Defaults.js";
+import { isArray, isObject, isString } from "../../core/util/TypeCheck.js";
+import { connectSignal, Signal } from "../../signal/Signal.js";
+import { OfflineContext } from "../../core/context/OfflineContext.js";
+import { assert } from "../../core/util/Debug.js";
+import { range, timeRange } from "../../core/util/Decorator.js";
 
 type BasicEnvelopeCurve = "linear" | "exponential";
 type InternalEnvelopeCurve = BasicEnvelopeCurve | number[];

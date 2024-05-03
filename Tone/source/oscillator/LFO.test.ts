@@ -1,9 +1,9 @@
 import { expect } from "chai";
-import { BasicTests } from "../../../test/helper/Basic";
-import { Offline } from "../../../test/helper/Offline";
-import { OutputAudio } from "../../../test/helper/OutputAudio";
-import { Signal } from "../../signal/Signal";
-import { LFO, LFOOptions } from "./LFO";
+import { BasicTests } from "../../../test/helper/Basic.js";
+import { Offline } from "../../../test/helper/Offline.js";
+import { OutputAudio } from "../../../test/helper/OutputAudio.js";
+import { Signal } from "../../signal/Signal.js";
+import { LFO, LFOOptions } from "./LFO.js";
 
 describe("LFO", () => {
 

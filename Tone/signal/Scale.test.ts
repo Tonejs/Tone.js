@@ -1,9 +1,9 @@
 import { expect } from "chai";
-import { BasicTests } from "../../test/helper/Basic";
-import { connectFrom, connectTo } from "../../test/helper/Connect";
-import { ConstantOutput } from "../../test/helper/ConstantOutput";
-import { Scale } from "./Scale";
-import { Signal } from "./Signal";
+import { BasicTests } from "../../test/helper/Basic.js";
+import { connectFrom, connectTo } from "../../test/helper/Connect.js";
+import { ConstantOutput } from "../../test/helper/ConstantOutput.js";
+import { Scale } from "./Scale.js";
+import { Signal } from "./Signal.js";
 
 describe("Scale", () => {
 

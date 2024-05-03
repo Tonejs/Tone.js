@@ -1,6 +1,6 @@
-import { StereoFeedbackEffect, StereoFeedbackEffectOptions } from "./StereoFeedbackEffect";
-import { NormalRange } from "../core/type/Units";
-import { readOnly } from "../core/util/Interface";
+import { StereoFeedbackEffect, StereoFeedbackEffectOptions } from "./StereoFeedbackEffect.js";
+import { NormalRange } from "../core/type/Units.js";
+import { readOnly } from "../core/util/Interface.js";
 
 export interface StereoXFeedbackEffectOptions extends StereoFeedbackEffectOptions {
 	feedback: NormalRange;

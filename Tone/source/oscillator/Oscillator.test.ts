@@ -1,12 +1,12 @@
 import { expect } from "chai";
-import { BasicTests } from "../../../test/helper/Basic";
-import { CompareToFile } from "../../../test/helper/CompareToFile";
-import { Offline } from "../../../test/helper/Offline";
-import { OscillatorTests } from "../../../test/helper/OscillatorTests";
-import { OutputAudio } from "../../../test/helper/OutputAudio";
-import { SourceTests } from "../../../test/helper/SourceTests";
-import { Oscillator } from "./Oscillator";
-import { ToneOscillatorType } from "./OscillatorInterface";
+import { BasicTests } from "../../../test/helper/Basic.js";
+import { CompareToFile } from "../../../test/helper/CompareToFile.js";
+import { Offline } from "../../../test/helper/Offline.js";
+import { OscillatorTests } from "../../../test/helper/OscillatorTests.js";
+import { OutputAudio } from "../../../test/helper/OutputAudio.js";
+import { SourceTests } from "../../../test/helper/SourceTests.js";
+import { Oscillator } from "./Oscillator.js";
+import { ToneOscillatorType } from "./OscillatorInterface.js";
 
 describe("Oscillator", () => {
 

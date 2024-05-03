@@ -1,10 +1,10 @@
 import { expect } from "chai";
-import { warns } from "../../../test/helper/Basic";
-import { Offline } from "../../../test/helper/Offline";
-import { PassAudio } from "../../../test/helper/PassAudio";
-import { Oscillator } from "../../source/oscillator/Oscillator";
-import { getContext } from "../Global";
-import { DestinationClass } from "./Destination";
+import { warns } from "../../../test/helper/Basic.js";
+import { Offline } from "../../../test/helper/Offline.js";
+import { PassAudio } from "../../../test/helper/PassAudio.js";
+import { Oscillator } from "../../source/oscillator/Oscillator.js";
+import { getContext } from "../Global.js";
+import { DestinationClass } from "./Destination.js";
 
 describe("Destination", () => {
 

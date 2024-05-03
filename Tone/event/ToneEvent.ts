@@ -1,12 +1,12 @@
-import "../core/clock/Transport";
-import { ToneWithContext, ToneWithContextOptions } from "../core/context/ToneWithContext";
-import { TicksClass } from "../core/type/Ticks";
-import { TransportTimeClass } from "../core/type/TransportTime";
-import { NormalRange, Positive, Seconds, Ticks, Time, TransportTime } from "../core/type/Units";
-import { defaultArg, optionsFromArguments } from "../core/util/Defaults";
-import { noOp } from "../core/util/Interface";
-import { BasicPlaybackState, StateTimeline } from "../core/util/StateTimeline";
-import { isBoolean, isNumber } from "../core/util/TypeCheck";
+import "../core/clock/Transport.js";
+import { ToneWithContext, ToneWithContextOptions } from "../core/context/ToneWithContext.js";
+import { TicksClass } from "../core/type/Ticks.js";
+import { TransportTimeClass } from "../core/type/TransportTime.js";
+import { NormalRange, Positive, Seconds, Ticks, Time, TransportTime } from "../core/type/Units.js";
+import { defaultArg, optionsFromArguments } from "../core/util/Defaults.js";
+import { noOp } from "../core/util/Interface.js";
+import { BasicPlaybackState, StateTimeline } from "../core/util/StateTimeline.js";
+import { isBoolean, isNumber } from "../core/util/TypeCheck.js";
 
 export type ToneEventCallback<T> = (time: Seconds, value: T) => void;
 

@@ -1,6 +1,6 @@
-import { MultibandCompressor } from "./MultibandCompressor";
-import { BasicTests } from "../../../test/helper/Basic";
-import { PassAudio } from "../../../test/helper/PassAudio";
+import { MultibandCompressor } from "./MultibandCompressor.js";
+import { BasicTests } from "../../../test/helper/Basic.js";
+import { PassAudio } from "../../../test/helper/PassAudio.js";
 import { expect } from "chai";
 
 describe("MultibandCompressor", () => {

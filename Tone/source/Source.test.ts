@@ -1,10 +1,10 @@
 import { expect } from "chai";
-import { atTime, Offline } from "../../test/helper/Offline";
-import { ONLINE_TESTING } from "../../test/helper/Supports";
-import { ToneAudioBuffer } from "../core/context/ToneAudioBuffer";
-import { getContext } from "../core/Global";
-import { Player } from "./buffer/Player";
-import { Oscillator } from "./oscillator/Oscillator";
+import { atTime, Offline } from "../../test/helper/Offline.js";
+import { ONLINE_TESTING } from "../../test/helper/Supports.js";
+import { ToneAudioBuffer } from "../core/context/ToneAudioBuffer.js";
+import { getContext } from "../core/Global.js";
+import { Player } from "./buffer/Player.js";
+import { Oscillator } from "./oscillator/Oscillator.js";
 
 describe("Source", () => {
 

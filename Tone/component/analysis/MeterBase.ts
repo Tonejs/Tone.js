@@ -1,6 +1,6 @@
-import { InputNode, OutputNode, ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
-import { optionsFromArguments } from "../../core/util/Defaults";
-import { Analyser } from "./Analyser";
+import { InputNode, OutputNode, ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode.js";
+import { optionsFromArguments } from "../../core/util/Defaults.js";
+import { Analyser } from "./Analyser.js";
 
 export type MeterBaseOptions = ToneAudioNodeOptions;
 

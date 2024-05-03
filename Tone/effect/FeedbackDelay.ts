@@ -1,9 +1,9 @@
-import { Delay } from "../core/context/Delay";
-import { Param } from "../core/context/Param";
-import { NormalRange, Time } from "../core/type/Units";
-import { optionsFromArguments } from "../core/util/Defaults";
-import { readOnly } from "../core/util/Interface";
-import { FeedbackEffect, FeedbackEffectOptions } from "./FeedbackEffect";
+import { Delay } from "../core/context/Delay.js";
+import { Param } from "../core/context/Param.js";
+import { NormalRange, Time } from "../core/type/Units.js";
+import { optionsFromArguments } from "../core/util/Defaults.js";
+import { readOnly } from "../core/util/Interface.js";
+import { FeedbackEffect, FeedbackEffectOptions } from "./FeedbackEffect.js";
 
 interface FeedbackDelayOptions extends FeedbackEffectOptions {
 	delayTime: Time;

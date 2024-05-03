@@ -1,7 +1,7 @@
 import { expect } from "chai";
-import { Offline } from "../../../test/helper/Offline";
-import { getContext } from "../Global";
-import { ListenerClass } from "./Listener";
+import { Offline } from "../../../test/helper/Offline.js";
+import { getContext } from "../Global.js";
+import { ListenerClass } from "./Listener.js";
 
 describe("Listener", () => {
 

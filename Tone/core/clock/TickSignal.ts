@@ -1,8 +1,8 @@
-import { Signal, SignalOptions } from "../../signal/Signal";
-import { InputNode } from "../context/ToneAudioNode";
-import { Seconds, Ticks, Time, UnitMap, UnitName } from "../type/Units";
-import { optionsFromArguments } from "../util/Defaults";
-import { TickParam } from "./TickParam";
+import { Signal, SignalOptions } from "../../signal/Signal.js";
+import { InputNode } from "../context/ToneAudioNode.js";
+import { Seconds, Ticks, Time, UnitMap, UnitName } from "../type/Units.js";
+import { optionsFromArguments } from "../util/Defaults.js";
+import { TickParam } from "./TickParam.js";
 
 interface TickSignalOptions<TypeName extends UnitName> extends SignalOptions<TypeName> {
 	value: UnitMap[TypeName];

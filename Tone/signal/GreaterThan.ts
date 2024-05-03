@@ -1,10 +1,10 @@
-import { ToneAudioNode } from "../core/context/ToneAudioNode";
-import { optionsFromArguments } from "../core/util/Defaults";
-import { Subtract } from "./Subtract";
-import { Signal, SignalOptions } from "./Signal";
-import { GreaterThanZero } from "./GreaterThanZero";
-import { readOnly } from "../core/util/Interface";
-import { Param } from "../core/context/Param";
+import { ToneAudioNode } from "../core/context/ToneAudioNode.js";
+import { optionsFromArguments } from "../core/util/Defaults.js";
+import { Subtract } from "./Subtract.js";
+import { Signal, SignalOptions } from "./Signal.js";
+import { GreaterThanZero } from "./GreaterThanZero.js";
+import { readOnly } from "../core/util/Interface.js";
+import { Param } from "../core/context/Param.js";
 
 export type GreaterThanOptions = SignalOptions<"number">;
 

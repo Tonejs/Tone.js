@@ -1,9 +1,9 @@
 import { expect } from "chai";
-import { BasicTests } from "../../test/helper/Basic";
-import { ConstantOutput } from "../../test/helper/ConstantOutput";
-import { Offline } from "../../test/helper/Offline";
-import { Signal } from "./Signal";
-import { WaveShaper } from "./WaveShaper";
+import { BasicTests } from "../../test/helper/Basic.js";
+import { ConstantOutput } from "../../test/helper/ConstantOutput.js";
+import { Offline } from "../../test/helper/Offline.js";
+import { Signal } from "./Signal.js";
+import { WaveShaper } from "./WaveShaper.js";
 
 describe("WaveShaper", () => {
 

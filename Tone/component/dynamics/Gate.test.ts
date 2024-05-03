@@ -1,9 +1,9 @@
-import { Gate } from "./Gate";
-import { BasicTests } from "../../../test/helper/Basic";
-import { Offline } from "../../../test/helper/Offline";
-import { Signal } from "../../signal/Signal";
-import { Oscillator } from "../../source/oscillator/Oscillator";
-import { CompareToFile } from "../../../test/helper/CompareToFile";
+import { Gate } from "./Gate.js";
+import { BasicTests } from "../../../test/helper/Basic.js";
+import { Offline } from "../../../test/helper/Offline.js";
+import { Signal } from "../../signal/Signal.js";
+import { Oscillator } from "../../source/oscillator/Oscillator.js";
+import { CompareToFile } from "../../../test/helper/CompareToFile.js";
 import { expect } from "chai";
 
 describe("Gate", () => {

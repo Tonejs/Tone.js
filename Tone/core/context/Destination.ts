@@ -1,10 +1,10 @@
-import { Volume } from "../../component/channel/Volume";
-import { Decibels } from "../type/Units";
-import { optionsFromArguments } from "../util/Defaults";
-import { onContextClose, onContextInit } from "./ContextInitialization";
-import { Gain } from "./Gain";
-import { Param } from "./Param";
-import { connectSeries, ToneAudioNode, ToneAudioNodeOptions } from "./ToneAudioNode";
+import { Volume } from "../../component/channel/Volume.js";
+import { Decibels } from "../type/Units.js";
+import { optionsFromArguments } from "../util/Defaults.js";
+import { onContextClose, onContextInit } from "./ContextInitialization.js";
+import { Gain } from "./Gain.js";
+import { Param } from "./Param.js";
+import { connectSeries, ToneAudioNode, ToneAudioNodeOptions } from "./ToneAudioNode.js";
 
 interface DestinationOptions extends ToneAudioNodeOptions {
 	volume: Decibels;

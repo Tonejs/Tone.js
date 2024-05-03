@@ -1,8 +1,8 @@
 import { expect } from "chai";
-import { BasicTests } from "../../../test/helper/Basic";
-import { ONLINE_TESTING } from "../../../test/helper/Supports";
-import { Noise } from "../../source/Noise";
-import { Waveform } from "./Waveform";
+import { BasicTests } from "../../../test/helper/Basic.js";
+import { ONLINE_TESTING } from "../../../test/helper/Supports.js";
+import { Noise } from "../../source/Noise.js";
+import { Waveform } from "./Waveform.js";
 
 describe("Waveform", () => {
 

@@ -1,9 +1,9 @@
-import { CrossFade } from "../component/channel/CrossFade";
-import { Gain } from "../core/context/Gain";
-import { ToneAudioNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
-import { NormalRange } from "../core/type/Units";
-import { readOnly } from "../core/util/Interface";
-import { Signal } from "../signal/Signal";
+import { CrossFade } from "../component/channel/CrossFade.js";
+import { Gain } from "../core/context/Gain.js";
+import { ToneAudioNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode.js";
+import { NormalRange } from "../core/type/Units.js";
+import { readOnly } from "../core/util/Interface.js";
+import { Signal } from "../signal/Signal.js";
 
 export interface EffectOptions extends ToneAudioNodeOptions {
 	wet: NormalRange;

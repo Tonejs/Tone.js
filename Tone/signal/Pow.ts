@@ -1,7 +1,7 @@
-import { WaveShaper, WaveShaperMappingFn } from "./WaveShaper";
-import { optionsFromArguments } from "../core/util/Defaults";
-import { SignalOperator } from "./SignalOperator";
-import { ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
+import { WaveShaper, WaveShaperMappingFn } from "./WaveShaper.js";
+import { optionsFromArguments } from "../core/util/Defaults.js";
+import { SignalOperator } from "./SignalOperator.js";
+import { ToneAudioNodeOptions } from "../core/context/ToneAudioNode.js";
 
 export interface PowOptions extends ToneAudioNodeOptions {
 	value: number;

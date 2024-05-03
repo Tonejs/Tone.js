@@ -1,9 +1,9 @@
 import { expect } from "chai";
-import { BasicTests } from "../../test/helper/Basic";
-import { CompareToFile } from "../../test/helper/CompareToFile";
-import { InstrumentTest } from "../../test/helper/InstrumentTests";
-import { MonophonicTest } from "../../test/helper/MonophonicTests";
-import { MetalSynth } from "./MetalSynth";
+import { BasicTests } from "../../test/helper/Basic.js";
+import { CompareToFile } from "../../test/helper/CompareToFile.js";
+import { InstrumentTest } from "../../test/helper/InstrumentTests.js";
+import { MonophonicTest } from "../../test/helper/MonophonicTests.js";
+import { MetalSynth } from "./MetalSynth.js";
 
 describe("MetalSynth", () => {
 

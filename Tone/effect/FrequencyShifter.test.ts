@@ -1,10 +1,10 @@
 import { expect } from "chai";
-import { BasicTests } from "../../test/helper/Basic";
-import { CompareToFile } from "../../test/helper/CompareToFile";
-import { EffectTests } from "../../test/helper/EffectTests";
-import { Offline } from "../../test/helper/Offline";
-import { Oscillator } from "../source/oscillator/Oscillator";
-import { FrequencyShifter } from "./FrequencyShifter";
+import { BasicTests } from "../../test/helper/Basic.js";
+import { CompareToFile } from "../../test/helper/CompareToFile.js";
+import { EffectTests } from "../../test/helper/EffectTests.js";
+import { Offline } from "../../test/helper/Offline.js";
+import { Oscillator } from "../source/oscillator/Oscillator.js";
+import { FrequencyShifter } from "./FrequencyShifter.js";
 
 describe("FrequencyShifter", () => {
 

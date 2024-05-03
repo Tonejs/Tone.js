@@ -1,9 +1,9 @@
 import { expect } from "chai";
-import { BasicTests } from "../../../test/helper/Basic";
-import { atTime, Offline, whenBetween } from "../../../test/helper/Offline";
-import { ONLINE_TESTING } from "../../../test/helper/Supports";
-import { noOp } from "../util/Interface";
-import { Clock } from "./Clock";
+import { BasicTests } from "../../../test/helper/Basic.js";
+import { atTime, Offline, whenBetween } from "../../../test/helper/Offline.js";
+import { ONLINE_TESTING } from "../../../test/helper/Supports.js";
+import { noOp } from "../util/Interface.js";
+import { Clock } from "./Clock.js";
 
 describe("Clock", () => {
 

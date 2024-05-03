@@ -1,8 +1,8 @@
-import { BaseContext } from "../context/BaseContext";
-import { TicksClass } from "../type/Ticks";
-import { Seconds, Ticks, Time } from "../type/Units";
-import { TransportEvent, TransportEventOptions } from "./TransportEvent";
-import { GT, LT } from "../util/Math";
+import { BaseContext } from "../context/BaseContext.js";
+import { TicksClass } from "../type/Ticks.js";
+import { Seconds, Ticks, Time } from "../type/Units.js";
+import { TransportEvent, TransportEventOptions } from "./TransportEvent.js";
+import { GT, LT } from "../util/Math.js";
 
 type Transport = import("../clock/Transport").TransportClass;
 

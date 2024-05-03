@@ -1,9 +1,9 @@
-import { Gain } from "../../core/context/Gain";
-import { Param } from "../../core/context/Param";
-import { ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
-import { Decibels } from "../../core/type/Units";
-import { optionsFromArguments } from "../../core/util/Defaults";
-import { readOnly } from "../../core/util/Interface";
+import { Gain } from "../../core/context/Gain.js";
+import { Param } from "../../core/context/Param.js";
+import { ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode.js";
+import { Decibels } from "../../core/type/Units.js";
+import { optionsFromArguments } from "../../core/util/Defaults.js";
+import { readOnly } from "../../core/util/Interface.js";
 
 interface VolumeOptions extends ToneAudioNodeOptions {
 	volume: Decibels;

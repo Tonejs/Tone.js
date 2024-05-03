@@ -1,6 +1,6 @@
-import { Timeline, TimelineEvent } from "./Timeline";
-import { Tone } from "../Tone";
-import { Seconds } from "../type/Units";
+import { Timeline, TimelineEvent } from "./Timeline.js";
+import { Tone } from "../Tone.js";
+import { Seconds } from "../type/Units.js";
 
 interface TimelineValueEvent<T> extends TimelineEvent {
 	value: T;

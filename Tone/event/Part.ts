@@ -1,10 +1,10 @@
-import { TicksClass } from "../core/type/Ticks";
-import { TransportTimeClass } from "../core/type/TransportTime";
-import { NormalRange, Positive, Seconds, Ticks, Time, TransportTime } from "../core/type/Units";
-import { defaultArg, optionsFromArguments } from "../core/util/Defaults";
-import { StateTimeline } from "../core/util/StateTimeline";
-import { isArray, isDefined, isObject, isUndef } from "../core/util/TypeCheck";
-import { ToneEvent, ToneEventCallback, ToneEventOptions } from "./ToneEvent";
+import { TicksClass } from "../core/type/Ticks.js";
+import { TransportTimeClass } from "../core/type/TransportTime.js";
+import { NormalRange, Positive, Seconds, Ticks, Time, TransportTime } from "../core/type/Units.js";
+import { defaultArg, optionsFromArguments } from "../core/util/Defaults.js";
+import { StateTimeline } from "../core/util/StateTimeline.js";
+import { isArray, isDefined, isObject, isUndef } from "../core/util/TypeCheck.js";
+import { ToneEvent, ToneEventCallback, ToneEventOptions } from "./ToneEvent.js";
 
 type CallbackType<T> =
 	T extends {

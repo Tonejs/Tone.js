@@ -1,8 +1,8 @@
-import { isAudioNode, isAudioParam } from "../util/AdvancedTypeCheck";
-import { isDefined } from "../util/TypeCheck";
-import { Param } from "./Param";
-import { ToneWithContext, ToneWithContextOptions } from "./ToneWithContext";
-import { assert, warn } from "../util/Debug";
+import { isAudioNode, isAudioParam } from "../util/AdvancedTypeCheck.js";
+import { isDefined } from "../util/TypeCheck.js";
+import { Param } from "./Param.js";
+import { ToneWithContext, ToneWithContextOptions } from "./ToneWithContext.js";
+import { assert, warn } from "../util/Debug.js";
 
 export type InputNode = ToneAudioNode | AudioNode | Param<any> | AudioParam;
 export type OutputNode = ToneAudioNode | AudioNode;

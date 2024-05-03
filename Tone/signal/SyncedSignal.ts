@@ -1,9 +1,9 @@
-import { Signal, SignalOptions } from "./Signal";
-import { NormalRange, Seconds, Time, TransportTime, UnitMap, UnitName } from "../core/type/Units";
-import { optionsFromArguments } from "../core/util/Defaults";
-import { TransportTimeClass } from "../core/type/TransportTime";
-import { ToneConstantSource } from "./ToneConstantSource";
-import { OutputNode } from "../core/context/ToneAudioNode";
+import { Signal, SignalOptions } from "./Signal.js";
+import { NormalRange, Seconds, Time, TransportTime, UnitMap, UnitName } from "../core/type/Units.js";
+import { optionsFromArguments } from "../core/util/Defaults.js";
+import { TransportTimeClass } from "../core/type/TransportTime.js";
+import { ToneConstantSource } from "./ToneConstantSource.js";
+import { OutputNode } from "../core/context/ToneAudioNode.js";
 import type { TransportClass } from "../core/clock/Transport";
 
 /**

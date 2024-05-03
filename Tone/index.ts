@@ -1,12 +1,12 @@
-export { getContext, setContext } from "./core/Global";
-import { Context } from "./core/context/Context";
-export * from "./classes";
-export * from "./version";
-import { getContext } from "./core/Global";
-import { ToneAudioBuffer } from "./core/context/ToneAudioBuffer";
-export { start } from "./core/Global";
-import { Seconds } from "./core/type/Units";
-export { supported } from "./core/context/AudioContext";
+export { getContext, setContext } from "./core/Global.js";
+import { Context } from "./core/context/Context.js";
+export * from "./classes.js";
+export * from "./version.js";
+import { getContext } from "./core/Global.js";
+import { ToneAudioBuffer } from "./core/context/ToneAudioBuffer.js";
+export { start } from "./core/Global.js";
+import { Seconds } from "./core/type/Units.js";
+export { supported } from "./core/context/AudioContext.js";
 import type { TransportClass } from "./core/clock/Transport";
 import type { DestinationClass } from "./core/context/Destination";
 import type { DrawClass } from "./core/util/Draw";
@@ -119,8 +119,8 @@ export function loaded() {
 }
 
 // this fills in name changes from 13.x to 14.x
-import { ToneAudioBuffers } from "./core/context/ToneAudioBuffers";
-import { ToneBufferSource } from "./source/buffer/ToneBufferSource";
+import { ToneAudioBuffers } from "./core/context/ToneAudioBuffers.js";
+import { ToneBufferSource } from "./source/buffer/ToneBufferSource.js";
 /** @deprecated Use {@link ToneAudioBuffer} */
 export const Buffer: typeof ToneAudioBuffer = ToneAudioBuffer;
 /** @deprecated Use {@link ToneAudioBuffers} */

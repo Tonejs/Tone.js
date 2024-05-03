@@ -1,15 +1,15 @@
-import { ToneAudioBuffer } from "../core/context/ToneAudioBuffer";
-import { ToneAudioBuffers } from "../core/context/ToneAudioBuffers";
-import { ftomf, intervalToFrequencyRatio } from "../core/type/Conversions";
-import { FrequencyClass } from "../core/type/Frequency";
-import { Frequency, Interval, MidiNote, NormalRange, Note, Time } from "../core/type/Units";
-import { optionsFromArguments } from "../core/util/Defaults";
-import { noOp } from "../core/util/Interface";
-import { isArray, isNote, isNumber } from "../core/util/TypeCheck";
-import { Instrument, InstrumentOptions } from "../instrument/Instrument";
-import { ToneBufferSource, ToneBufferSourceCurve } from "../source/buffer/ToneBufferSource";
-import { timeRange } from "../core/util/Decorator";
-import { assert } from "../core/util/Debug";
+import { ToneAudioBuffer } from "../core/context/ToneAudioBuffer.js";
+import { ToneAudioBuffers } from "../core/context/ToneAudioBuffers.js";
+import { ftomf, intervalToFrequencyRatio } from "../core/type/Conversions.js";
+import { FrequencyClass } from "../core/type/Frequency.js";
+import { Frequency, Interval, MidiNote, NormalRange, Note, Time } from "../core/type/Units.js";
+import { optionsFromArguments } from "../core/util/Defaults.js";
+import { noOp } from "../core/util/Interface.js";
+import { isArray, isNote, isNumber } from "../core/util/TypeCheck.js";
+import { Instrument, InstrumentOptions } from "../instrument/Instrument.js";
+import { ToneBufferSource, ToneBufferSourceCurve } from "../source/buffer/ToneBufferSource.js";
+import { timeRange } from "../core/util/Decorator.js";
+import { assert } from "../core/util/Debug.js";
 
 interface SamplesMap {
 	[note: string]: ToneAudioBuffer | AudioBuffer | string;

@@ -1,16 +1,16 @@
-import * as Classes from "./classes";
-import { TransportClass } from "./core/clock/Transport";
-import { Context } from "./core/context/Context";
-import { ListenerClass } from "./core/context/Listener";
-import { DestinationClass } from "./core/context/Destination";
-import { FrequencyClass } from "./core/type/Frequency";
-import { MidiClass } from "./core/type/Midi";
-import { TicksClass } from "./core/type/Ticks";
-import { TimeClass } from "./core/type/Time";
-import { TransportTimeClass } from "./core/type/TransportTime";
-import { isDefined, isFunction } from "./core/util/TypeCheck";
-import { omitFromObject } from "./core/util/Defaults";
-import { DrawClass } from "./core/util/Draw";
+import * as Classes from "./classes.js";
+import { TransportClass } from "./core/clock/Transport.js";
+import { Context } from "./core/context/Context.js";
+import { ListenerClass } from "./core/context/Listener.js";
+import { DestinationClass } from "./core/context/Destination.js";
+import { FrequencyClass } from "./core/type/Frequency.js";
+import { MidiClass } from "./core/type/Midi.js";
+import { TicksClass } from "./core/type/Ticks.js";
+import { TimeClass } from "./core/type/Time.js";
+import { TransportTimeClass } from "./core/type/TransportTime.js";
+import { isDefined, isFunction } from "./core/util/TypeCheck.js";
+import { omitFromObject } from "./core/util/Defaults.js";
+import { DrawClass } from "./core/util/Draw.js";
 
 type ClassesWithoutSingletons = Omit<typeof Classes, "Transport" | "Destination" | "Draw">;
 

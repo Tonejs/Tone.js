@@ -1,8 +1,8 @@
-import { InputNode, OutputNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
-import { optionsFromArguments } from "../core/util/Defaults";
-import { Add } from "./Add";
-import { Multiply } from "./Multiply";
-import { SignalOperator } from "./SignalOperator";
+import { InputNode, OutputNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode.js";
+import { optionsFromArguments } from "../core/util/Defaults.js";
+import { Add } from "./Add.js";
+import { Multiply } from "./Multiply.js";
+import { SignalOperator } from "./SignalOperator.js";
 
 export interface ScaleOptions extends ToneAudioNodeOptions {
 	min: number;

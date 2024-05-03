@@ -1,22 +1,22 @@
-import { Cents, Degrees, Frequency, Seconds, Time } from "../../core/type/Units";
-import { optionsFromArguments } from "../../core/util/Defaults";
-import { readOnly } from "../../core/util/Interface";
-import { isNumber, isString } from "../../core/util/TypeCheck";
-import { Signal } from "../../signal/Signal";
-import { Source } from "../Source";
-import { AMOscillator } from "./AMOscillator";
-import { FatOscillator } from "./FatOscillator";
-import { FMOscillator } from "./FMOscillator";
-import { Oscillator } from "./Oscillator";
+import { Cents, Degrees, Frequency, Seconds, Time } from "../../core/type/Units.js";
+import { optionsFromArguments } from "../../core/util/Defaults.js";
+import { readOnly } from "../../core/util/Interface.js";
+import { isNumber, isString } from "../../core/util/TypeCheck.js";
+import { Signal } from "../../signal/Signal.js";
+import { Source } from "../Source.js";
+import { AMOscillator } from "./AMOscillator.js";
+import { FatOscillator } from "./FatOscillator.js";
+import { FMOscillator } from "./FMOscillator.js";
+import { Oscillator } from "./Oscillator.js";
 import {
 	generateWaveform,
 	OmniOscillatorOptions, 
 	OmniOscillatorType, ToneOscillatorInterface, ToneOscillatorType
-} from "./OscillatorInterface";
-import { PulseOscillator } from "./PulseOscillator";
-import { PWMOscillator } from "./PWMOscillator";
+} from "./OscillatorInterface.js";
+import { PulseOscillator } from "./PulseOscillator.js";
+import { PWMOscillator } from "./PWMOscillator.js";
 
-export { OmniOscillatorOptions } from "./OscillatorInterface";
+export { OmniOscillatorOptions } from "./OscillatorInterface.js";
 
 /**
  * All of the oscillator types that OmniOscillator can take on

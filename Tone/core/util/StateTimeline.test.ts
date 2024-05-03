@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { StateTimeline } from "./StateTimeline";
+import { StateTimeline } from "./StateTimeline.js";
 
 describe("StateTimeline", () => {
 

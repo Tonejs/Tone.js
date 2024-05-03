@@ -1,13 +1,13 @@
-import { Interval, Seconds, Time } from "../core/type/Units";
-import { FeedbackEffect, FeedbackEffectOptions } from "./FeedbackEffect";
-import { optionsFromArguments } from "../core/util/Defaults";
-import { LFO } from "../source/oscillator/LFO";
-import { Delay } from "../core/context/Delay";
-import { CrossFade } from "../component/channel/CrossFade";
-import { Signal } from "../signal/Signal";
-import { readOnly } from "../core/util/Interface";
-import { Param } from "../core/context/Param";
-import { intervalToFrequencyRatio } from "../core/type/Conversions";
+import { Interval, Seconds, Time } from "../core/type/Units.js";
+import { FeedbackEffect, FeedbackEffectOptions } from "./FeedbackEffect.js";
+import { optionsFromArguments } from "../core/util/Defaults.js";
+import { LFO } from "../source/oscillator/LFO.js";
+import { Delay } from "../core/context/Delay.js";
+import { CrossFade } from "../component/channel/CrossFade.js";
+import { Signal } from "../signal/Signal.js";
+import { readOnly } from "../core/util/Interface.js";
+import { Param } from "../core/context/Param.js";
+import { intervalToFrequencyRatio } from "../core/type/Conversions.js";
 
 export interface PitchShiftOptions extends FeedbackEffectOptions {
 	pitch: Interval;

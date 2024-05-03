@@ -1,6 +1,6 @@
 import { expect } from "chai";
-import { OfflineContext } from "./core/context/OfflineContext";
-import { fromContext } from "./fromContext";
+import { OfflineContext } from "./core/context/OfflineContext.js";
+import { fromContext } from "./fromContext.js";
 
 describe("fromContext", () => {
 

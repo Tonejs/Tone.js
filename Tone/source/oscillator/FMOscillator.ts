@@ -1,17 +1,17 @@
-import { Gain } from "../../core/context/Gain";
-import { Degrees, Frequency, Seconds, Time } from "../../core/type/Units";
-import { optionsFromArguments } from "../../core/util/Defaults";
-import { readOnly } from "../../core/util/Interface";
-import { Multiply } from "../../signal/Multiply";
-import { Signal } from "../../signal/Signal";
-import { Source } from "../Source";
-import { Oscillator } from "./Oscillator";
+import { Gain } from "../../core/context/Gain.js";
+import { Degrees, Frequency, Seconds, Time } from "../../core/type/Units.js";
+import { optionsFromArguments } from "../../core/util/Defaults.js";
+import { readOnly } from "../../core/util/Interface.js";
+import { Multiply } from "../../signal/Multiply.js";
+import { Signal } from "../../signal/Signal.js";
+import { Source } from "../Source.js";
+import { Oscillator } from "./Oscillator.js";
 import {
 	FMConstructorOptions, FMOscillatorOptions,
 	generateWaveform, NonCustomOscillatorType, ToneOscillatorInterface, ToneOscillatorType
-} from "./OscillatorInterface";
+} from "./OscillatorInterface.js";
 
-export { FMOscillatorOptions } from "./OscillatorInterface";
+export { FMOscillatorOptions } from "./OscillatorInterface.js";
 /**
  * FMOscillator implements a frequency modulation synthesis
  * ```

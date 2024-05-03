@@ -1,10 +1,10 @@
-import { FrequencyClass } from "../core/type/Frequency";
-import { Cents, Frequency, NormalRange, Seconds, Time } from "../core/type/Units";
-import { optionsFromArguments } from "../core/util/Defaults";
-import { noOp } from "../core/util/Interface";
-import { Instrument, InstrumentOptions } from "../instrument/Instrument";
-import { Signal } from "../signal/Signal";
-import { timeRange } from "../core/util/Decorator";
+import { FrequencyClass } from "../core/type/Frequency.js";
+import { Cents, Frequency, NormalRange, Seconds, Time } from "../core/type/Units.js";
+import { optionsFromArguments } from "../core/util/Defaults.js";
+import { noOp } from "../core/util/Interface.js";
+import { Instrument, InstrumentOptions } from "../instrument/Instrument.js";
+import { Signal } from "../signal/Signal.js";
+import { timeRange } from "../core/util/Decorator.js";
 
 type onSilenceCallback = (instrument: Monophonic<any>) => void;
 

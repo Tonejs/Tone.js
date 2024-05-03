@@ -1,12 +1,12 @@
-import { ToneAudioBuffer } from "../../core/context/ToneAudioBuffer";
-import { Positive, Seconds, Time } from "../../core/type/Units";
-import { defaultArg, optionsFromArguments } from "../../core/util/Defaults";
-import { noOp } from "../../core/util/Interface";
-import { isUndef } from "../../core/util/TypeCheck";
-import { Source, SourceOptions } from "../Source";
-import { ToneBufferSource } from "./ToneBufferSource";
-import { assertRange } from "../../core/util/Debug";
-import { timeRange } from "../../core/util/Decorator";
+import { ToneAudioBuffer } from "../../core/context/ToneAudioBuffer.js";
+import { Positive, Seconds, Time } from "../../core/type/Units.js";
+import { defaultArg, optionsFromArguments } from "../../core/util/Defaults.js";
+import { noOp } from "../../core/util/Interface.js";
+import { isUndef } from "../../core/util/TypeCheck.js";
+import { Source, SourceOptions } from "../Source.js";
+import { ToneBufferSource } from "./ToneBufferSource.js";
+import { assertRange } from "../../core/util/Debug.js";
+import { timeRange } from "../../core/util/Decorator.js";
 
 export interface PlayerOptions extends SourceOptions {
 	onload: () => void;
@@ -73,13 +73,13 @@ export class Player extends Source<PlayerOptions> {
 	 * The fadeIn time of the amplitude envelope.
 	 */
 	@timeRange(0)
-	fadeIn: Time;
+		fadeIn: Time;
 
 	/**
 	 * The fadeOut time of the amplitude envelope.
 	 */
 	@timeRange(0)
-	fadeOut: Time;
+		fadeOut: Time;
 
 	/**
 	 * @param url Either the AudioBuffer or the url from which to load the AudioBuffer

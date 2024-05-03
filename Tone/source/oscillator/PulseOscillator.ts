@@ -1,14 +1,14 @@
-import { Gain } from "../../core/context/Gain";
-import { AudioRange, Degrees, Frequency, Seconds, Time } from "../../core/type/Units";
-import { optionsFromArguments } from "../../core/util/Defaults";
-import { readOnly } from "../../core/util/Interface";
-import { Signal } from "../../signal/Signal";
-import { WaveShaper } from "../../signal/WaveShaper";
-import { Source } from "../Source";
-import { Oscillator } from "./Oscillator";
-import { generateWaveform, PulseOscillatorOptions, ToneOscillatorInterface } from "./OscillatorInterface";
+import { Gain } from "../../core/context/Gain.js";
+import { AudioRange, Degrees, Frequency, Seconds, Time } from "../../core/type/Units.js";
+import { optionsFromArguments } from "../../core/util/Defaults.js";
+import { readOnly } from "../../core/util/Interface.js";
+import { Signal } from "../../signal/Signal.js";
+import { WaveShaper } from "../../signal/WaveShaper.js";
+import { Source } from "../Source.js";
+import { Oscillator } from "./Oscillator.js";
+import { generateWaveform, PulseOscillatorOptions, ToneOscillatorInterface } from "./OscillatorInterface.js";
 
-export { PulseOscillatorOptions } from "./OscillatorInterface";
+export { PulseOscillatorOptions } from "./OscillatorInterface.js";
 
 /**
  * PulseOscillator is an oscillator with control over pulse width,

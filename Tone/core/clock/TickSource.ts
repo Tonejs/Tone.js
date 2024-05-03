@@ -1,12 +1,12 @@
-import { ToneWithContext, ToneWithContextOptions } from "../context/ToneWithContext";
-import { Seconds, Ticks, Time } from "../type/Units";
-import { optionsFromArguments } from "../util/Defaults";
-import { readOnly } from "../util/Interface";
-import { PlaybackState, StateTimeline, StateTimelineEvent } from "../util/StateTimeline";
-import { Timeline, TimelineEvent } from "../util/Timeline";
-import { isDefined } from "../util/TypeCheck";
-import { TickSignal } from "./TickSignal";
-import { EQ } from "../util/Math";
+import { ToneWithContext, ToneWithContextOptions } from "../context/ToneWithContext.js";
+import { Seconds, Ticks, Time } from "../type/Units.js";
+import { optionsFromArguments } from "../util/Defaults.js";
+import { readOnly } from "../util/Interface.js";
+import { PlaybackState, StateTimeline, StateTimelineEvent } from "../util/StateTimeline.js";
+import { Timeline, TimelineEvent } from "../util/Timeline.js";
+import { isDefined } from "../util/TypeCheck.js";
+import { TickSignal } from "./TickSignal.js";
+import { EQ } from "../util/Math.js";
 
 interface TickSourceOptions extends ToneWithContextOptions {
 	frequency: number;

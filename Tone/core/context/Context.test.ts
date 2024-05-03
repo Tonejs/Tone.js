@@ -1,15 +1,15 @@
 import { expect } from "chai";
-import { ConstantOutput } from "../../../test/helper/ConstantOutput";
-import { Offline } from "../../../test/helper/Offline";
-import { ONLINE_TESTING } from "../../../test/helper/Supports";
-import { TransportClass } from "../clock/Transport";
-import { getContext } from "../Global";
-import { createAudioContext } from "./AudioContext";
-import { Context } from "./Context";
-import { DestinationClass } from "./Destination";
-import { ListenerClass } from "./Listener";
-import { DrawClass } from "../util/Draw";
-import { connect } from "./ToneAudioNode";
+import { ConstantOutput } from "../../../test/helper/ConstantOutput.js";
+import { Offline } from "../../../test/helper/Offline.js";
+import { ONLINE_TESTING } from "../../../test/helper/Supports.js";
+import { TransportClass } from "../clock/Transport.js";
+import { getContext } from "../Global.js";
+import { createAudioContext } from "./AudioContext.js";
+import { Context } from "./Context.js";
+import { DestinationClass } from "./Destination.js";
+import { ListenerClass } from "./Listener.js";
+import { DrawClass } from "../util/Draw.js";
+import { connect } from "./ToneAudioNode.js";
 
 describe("Context", () => {
 	it("creates and disposes the classes attached to the context", async () => {

@@ -1,9 +1,9 @@
 import { expect } from "chai";
-import { BasicTests } from "../../../test/helper/Basic";
-import { connectTo } from "../../../test/helper/Connect";
-import { ConstantOutput } from "../../../test/helper/ConstantOutput";
-import { StereoSignal } from "../../../test/helper/StereoSignal";
-import { Split } from "./Split";
+import { BasicTests } from "../../../test/helper/Basic.js";
+import { connectTo } from "../../../test/helper/Connect.js";
+import { ConstantOutput } from "../../../test/helper/ConstantOutput.js";
+import { StereoSignal } from "../../../test/helper/StereoSignal.js";
+import { Split } from "./Split.js";
 
 describe("Split", () => {
 

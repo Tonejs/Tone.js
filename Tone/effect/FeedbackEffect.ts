@@ -1,8 +1,8 @@
-import { Gain } from "../core/context/Gain";
-import { Param } from "../core/context/Param";
-import { NormalRange } from "../core/type/Units";
-import { readOnly } from "../core/util/Interface";
-import { Effect, EffectOptions } from "./Effect";
+import { Gain } from "../core/context/Gain.js";
+import { Param } from "../core/context/Param.js";
+import { NormalRange } from "../core/type/Units.js";
+import { readOnly } from "../core/util/Interface.js";
+import { Effect, EffectOptions } from "./Effect.js";
 
 export interface FeedbackEffectOptions extends EffectOptions {
 	/**

@@ -1,6 +1,6 @@
-import { ToneAudioNode, ToneAudioNodeOptions } from "../context/ToneAudioNode";
-import { noOp } from "../util/Interface";
-import { getWorkletGlobalScope } from "./WorkletGlobalScope";
+import { ToneAudioNode, ToneAudioNodeOptions } from "../context/ToneAudioNode.js";
+import { noOp } from "../util/Interface.js";
+import { getWorkletGlobalScope } from "./WorkletGlobalScope.js";
 
 export type ToneAudioWorkletOptions = ToneAudioNodeOptions;
 

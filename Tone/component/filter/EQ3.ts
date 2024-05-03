@@ -1,11 +1,11 @@
-import { Gain } from "../../core/context/Gain";
-import { Param } from "../../core/context/Param";
-import { ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
-import { Decibels, Frequency } from "../../core/type/Units";
-import { optionsFromArguments } from "../../core/util/Defaults";
-import { readOnly, writable } from "../../core/util/Interface";
-import { Signal } from "../../signal/Signal";
-import { MultibandSplit } from "../channel/MultibandSplit";
+import { Gain } from "../../core/context/Gain.js";
+import { Param } from "../../core/context/Param.js";
+import { ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode.js";
+import { Decibels, Frequency } from "../../core/type/Units.js";
+import { optionsFromArguments } from "../../core/util/Defaults.js";
+import { readOnly, writable } from "../../core/util/Interface.js";
+import { Signal } from "../../signal/Signal.js";
+import { MultibandSplit } from "../channel/MultibandSplit.js";
 
 interface EQ3Options extends ToneAudioNodeOptions {
 	low: Decibels;

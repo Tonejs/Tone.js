@@ -1,10 +1,10 @@
 import { expect } from "chai";
-import { BasicTests } from "../../../test/helper/Basic";
-import { connectFrom, connectTo } from "../../../test/helper/Connect";
-import { Offline } from "../../../test/helper/Offline";
-import { PassAudio } from "../../../test/helper/PassAudio";
-import { Signal } from "../../signal/Signal";
-import { Volume } from "./Volume";
+import { BasicTests } from "../../../test/helper/Basic.js";
+import { connectFrom, connectTo } from "../../../test/helper/Connect.js";
+import { Offline } from "../../../test/helper/Offline.js";
+import { PassAudio } from "../../../test/helper/PassAudio.js";
+import { Signal } from "../../signal/Signal.js";
+import { Volume } from "./Volume.js";
 
 describe("Volume", () => {
 

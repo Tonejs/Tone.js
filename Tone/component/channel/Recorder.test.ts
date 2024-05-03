@@ -1,9 +1,9 @@
 import { expect } from "chai";
-import { connectFrom } from "../../../test/helper/Connect";
-import { Recorder } from "./Recorder";
-import { Context } from "../../core/context/Context";
-import { ToneWithContext } from "../../core/context/ToneWithContext";
-import { Synth } from "../../instrument/Synth";
+import { connectFrom } from "../../../test/helper/Connect.js";
+import { Recorder } from "./Recorder.js";
+import { Context } from "../../core/context/Context.js";
+import { ToneWithContext } from "../../core/context/ToneWithContext.js";
+import { Synth } from "../../instrument/Synth.js";
 
 describe("Recorder", () => {
 

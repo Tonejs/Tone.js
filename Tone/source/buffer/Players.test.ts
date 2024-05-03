@@ -1,11 +1,11 @@
 import { expect } from "chai";
-import { BasicTests } from "../../../test/helper/Basic";
-import { Offline } from "../../../test/helper/Offline";
-import { OutputAudio } from "../../../test/helper/OutputAudio";
-import { ToneAudioBuffer } from "../../core/context/ToneAudioBuffer";
-import { getContext } from "../../core/Global";
-import { Player } from "./Player";
-import { Players } from "./Players";
+import { BasicTests } from "../../../test/helper/Basic.js";
+import { Offline } from "../../../test/helper/Offline.js";
+import { OutputAudio } from "../../../test/helper/OutputAudio.js";
+import { ToneAudioBuffer } from "../../core/context/ToneAudioBuffer.js";
+import { getContext } from "../../core/Global.js";
+import { Player } from "./Player.js";
+import { Players } from "./Players.js";
 
 describe("Players", () => {
 

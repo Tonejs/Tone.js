@@ -1,7 +1,7 @@
-import { BaseContext } from "../../core/context/BaseContext";
-import { Gain } from "../../core/context/Gain";
-import { ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
-import { optionsFromArguments } from "../../core/util/Defaults";
+import { BaseContext } from "../../core/context/BaseContext.js";
+import { Gain } from "../../core/context/Gain.js";
+import { ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode.js";
+import { optionsFromArguments } from "../../core/util/Defaults.js";
 
 export interface SoloOptions extends ToneAudioNodeOptions {
 	solo: boolean;

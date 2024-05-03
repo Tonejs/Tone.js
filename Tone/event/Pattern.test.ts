@@ -1,7 +1,7 @@
-import { BasicTests } from "../../test/helper/Basic";
-import { Pattern } from "./Pattern";
-import { Offline } from "../../test/helper/Offline";
-import { Time } from "../core/type/Time";
+import { BasicTests } from "../../test/helper/Basic.js";
+import { Pattern } from "./Pattern.js";
+import { Offline } from "../../test/helper/Offline.js";
+import { Time } from "../core/type/Time.js";
 import { expect } from "chai";
 
 describe("Pattern", () => {

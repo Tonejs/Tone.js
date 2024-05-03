@@ -1,7 +1,7 @@
-import { BaseContext } from "../context/BaseContext";
-import { Tone } from "../Tone";
-import { isDefined, isObject, isString, isUndef } from "../util/TypeCheck";
-import { BPM, Hertz, MidiNote, Milliseconds, Samples, Seconds, Ticks, Time } from "./Units";
+import { BaseContext } from "../context/BaseContext.js";
+import { Tone } from "../Tone.js";
+import { isDefined, isObject, isString, isUndef } from "../util/TypeCheck.js";
+import { BPM, Hertz, MidiNote, Milliseconds, Samples, Seconds, Ticks, Time } from "./Units.js";
 
 export type TimeValue = Time | TimeBaseClass<any, any>;
 

@@ -1,8 +1,8 @@
-import { Channel } from "./Channel";
-import { BasicTests } from "../../../test/helper/Basic";
-import { PassAudio } from "../../../test/helper/PassAudio";
-import { Signal } from "../../signal/Signal";
-import { Offline } from "../../../test/helper/Offline";
+import { Channel } from "./Channel.js";
+import { BasicTests } from "../../../test/helper/Basic.js";
+import { PassAudio } from "../../../test/helper/PassAudio.js";
+import { Signal } from "../../signal/Signal.js";
+import { Offline } from "../../../test/helper/Offline.js";
 import { expect } from "chai";
 
 describe("Channel", () => {

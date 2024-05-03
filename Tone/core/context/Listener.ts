@@ -1,6 +1,6 @@
-import { ToneAudioNode, ToneAudioNodeOptions } from "./ToneAudioNode";
-import { Param } from "./Param";
-import { onContextClose, onContextInit } from "./ContextInitialization";
+import { ToneAudioNode, ToneAudioNodeOptions } from "./ToneAudioNode.js";
+import { Param } from "./Param.js";
+import { onContextClose, onContextInit } from "./ContextInitialization.js";
 
 export interface ListenerOptions extends ToneAudioNodeOptions{
 	positionX: number;

@@ -1,6 +1,6 @@
 import { expect } from "chai";
-import { ONLINE_TESTING } from "../../../test/helper/Supports";
-import { DrawClass } from "./Draw";
+import { ONLINE_TESTING } from "../../../test/helper/Supports.js";
+import { DrawClass } from "./Draw.js";
 
 describe("Draw", () => {
 

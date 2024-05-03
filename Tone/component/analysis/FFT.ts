@@ -1,9 +1,9 @@
-import { ToneAudioNode } from "../../core/context/ToneAudioNode";
-import { dbToGain } from "../../core/type/Conversions";
-import { Hertz, NormalRange, PowerOfTwo } from "../../core/type/Units";
-import { optionsFromArguments } from "../../core/util/Defaults";
-import { MeterBase, MeterBaseOptions } from "./MeterBase";
-import { assert } from "../../core/util/Debug";
+import { ToneAudioNode } from "../../core/context/ToneAudioNode.js";
+import { dbToGain } from "../../core/type/Conversions.js";
+import { Hertz, NormalRange, PowerOfTwo } from "../../core/type/Units.js";
+import { optionsFromArguments } from "../../core/util/Defaults.js";
+import { MeterBase, MeterBaseOptions } from "./MeterBase.js";
+import { assert } from "../../core/util/Debug.js";
 
 export interface FFTOptions extends MeterBaseOptions {
 	size: PowerOfTwo;

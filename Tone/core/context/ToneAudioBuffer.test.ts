@@ -1,6 +1,6 @@
 import { expect } from "chai";
-import { getContext } from "../Global";
-import { ToneAudioBuffer } from "./ToneAudioBuffer";
+import { getContext } from "../Global.js";
+import { ToneAudioBuffer } from "./ToneAudioBuffer.js";
 
 const testFile = "./test/audio/sine.wav";
 

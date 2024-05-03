@@ -1,10 +1,10 @@
-import { MidSideSplit } from "./MidSideSplit";
-import { MidSideMerge } from "./MidSideMerge";
-import { BasicTests } from "../../../test/helper/Basic";
-import { Signal } from "../../signal/Signal";
-import { Offline } from "../../../test/helper/Offline";
-import { Merge } from "./Merge";
-import { connectFrom, connectTo } from "../../../test/helper/Connect";
+import { MidSideSplit } from "./MidSideSplit.js";
+import { MidSideMerge } from "./MidSideMerge.js";
+import { BasicTests } from "../../../test/helper/Basic.js";
+import { Signal } from "../../signal/Signal.js";
+import { Offline } from "../../../test/helper/Offline.js";
+import { Merge } from "./Merge.js";
+import { connectFrom, connectTo } from "../../../test/helper/Connect.js";
 import { expect } from "chai";
 
 describe("MidSideSplit", () => {

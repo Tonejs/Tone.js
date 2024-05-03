@@ -1,11 +1,11 @@
 import { expect } from "chai";
-import { BasicTests } from "../../../test/helper/Basic";
-import { atTime, Offline } from "../../../test/helper/Offline";
-import { getContext } from "../Global";
-import { Frequency } from "./Frequency";
-import { Ticks } from "./Ticks";
-import { Time } from "./Time";
-import { TransportTime, TransportTimeClass } from "./TransportTime";
+import { BasicTests } from "../../../test/helper/Basic.js";
+import { atTime, Offline } from "../../../test/helper/Offline.js";
+import { getContext } from "../Global.js";
+import { Frequency } from "./Frequency.js";
+import { Ticks } from "./Ticks.js";
+import { Time } from "./Time.js";
+import { TransportTime, TransportTimeClass } from "./TransportTime.js";
 
 describe("TransportTimeClass", () => {
 

@@ -1,9 +1,9 @@
-import { Tone } from "../Tone";
-import { optionsFromArguments } from "../util/Defaults";
-import { noOp } from "../util/Interface";
-import { isString } from "../util/TypeCheck";
-import { ToneAudioBuffer } from "./ToneAudioBuffer";
-import { assert } from "../util/Debug";
+import { Tone } from "../Tone.js";
+import { optionsFromArguments } from "../util/Defaults.js";
+import { noOp } from "../util/Interface.js";
+import { isString } from "../util/TypeCheck.js";
+import { ToneAudioBuffer } from "./ToneAudioBuffer.js";
+import { assert } from "../util/Debug.js";
 
 export interface ToneAudioBuffersUrlMap {
 	[name: string]: string | AudioBuffer | ToneAudioBuffer;

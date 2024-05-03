@@ -1,12 +1,12 @@
 import { expect } from "chai";
-import { BasicTests } from "../../../test/helper/Basic";
-import { CompareToFile } from "../../../test/helper/CompareToFile";
-import { connectFrom, connectTo } from "../../../test/helper/Connect";
-import { Offline } from "../../../test/helper/Offline";
-import { Signal } from "../../signal/Signal";
-import { Oscillator } from "../../source/oscillator/Oscillator";
-import { AmplitudeEnvelope } from "./AmplitudeEnvelope";
-import { Envelope } from "./Envelope";
+import { BasicTests } from "../../../test/helper/Basic.js";
+import { CompareToFile } from "../../../test/helper/CompareToFile.js";
+import { connectFrom, connectTo } from "../../../test/helper/Connect.js";
+import { Offline } from "../../../test/helper/Offline.js";
+import { Signal } from "../../signal/Signal.js";
+import { Oscillator } from "../../source/oscillator/Oscillator.js";
+import { AmplitudeEnvelope } from "./AmplitudeEnvelope.js";
+import { Envelope } from "./Envelope.js";
 
 describe("AmplitudeEnvelope", () => {
 

@@ -1,4 +1,4 @@
-import { Time, UnitMap, UnitName } from "../type/Units";
+import { Time, UnitMap, UnitName } from "../type/Units.js";
 
 /**
  * Abstract base class for {@link Param} and {@link Signal}

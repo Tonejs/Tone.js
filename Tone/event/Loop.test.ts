@@ -1,9 +1,9 @@
-import { BasicTests } from "../../test/helper/Basic";
-import { Loop } from "./Loop";
-import { Offline, whenBetween } from "../../test/helper/Offline";
+import { BasicTests } from "../../test/helper/Basic.js";
+import { Loop } from "./Loop.js";
+import { Offline, whenBetween } from "../../test/helper/Offline.js";
 import { expect } from "chai";
-import { noOp } from "../core/util/Interface";
-import { Time } from "../core/type/Time";
+import { noOp } from "../core/util/Interface.js";
+import { Time } from "../core/type/Time.js";
 
 describe("Loop", () => {
 

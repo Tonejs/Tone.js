@@ -1,13 +1,13 @@
-import { connect } from "../../core/context/ToneAudioNode";
-import { Param } from "../../core/context/Param";
-import { ToneAudioBuffer } from "../../core/context/ToneAudioBuffer";
-import { GainFactor, Positive, Seconds, Time } from "../../core/type/Units";
-import { defaultArg, optionsFromArguments } from "../../core/util/Defaults";
-import { noOp } from "../../core/util/Interface";
-import { isDefined } from "../../core/util/TypeCheck";
-import { assert } from "../../core/util/Debug";
-import { OneShotSource, OneShotSourceCurve, OneShotSourceOptions } from "../OneShotSource";
-import { EQ, GTE, LT } from "../../core/util/Math";
+import { connect } from "../../core/context/ToneAudioNode.js";
+import { Param } from "../../core/context/Param.js";
+import { ToneAudioBuffer } from "../../core/context/ToneAudioBuffer.js";
+import { GainFactor, Positive, Seconds, Time } from "../../core/type/Units.js";
+import { defaultArg, optionsFromArguments } from "../../core/util/Defaults.js";
+import { noOp } from "../../core/util/Interface.js";
+import { isDefined } from "../../core/util/TypeCheck.js";
+import { assert } from "../../core/util/Debug.js";
+import { OneShotSource, OneShotSourceCurve, OneShotSourceOptions } from "../OneShotSource.js";
+import { EQ, GTE, LT } from "../../core/util/Math.js";
 
 export type ToneBufferSourceCurve = OneShotSourceCurve;
 

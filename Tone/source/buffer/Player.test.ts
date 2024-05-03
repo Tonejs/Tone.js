@@ -1,11 +1,11 @@
 import { expect } from "chai";
-import { BasicTests } from "../../../test/helper/Basic";
-import { CompareToFile } from "../../../test/helper/CompareToFile";
-import { atTime, Offline, whenBetween } from "../../../test/helper/Offline";
-import { SourceTests } from "../../../test/helper/SourceTests";
-import { ToneAudioBuffer } from "../../core/context/ToneAudioBuffer";
-import { getContext } from "../../core/Global";
-import { Player } from "./Player";
+import { BasicTests } from "../../../test/helper/Basic.js";
+import { CompareToFile } from "../../../test/helper/CompareToFile.js";
+import { atTime, Offline, whenBetween } from "../../../test/helper/Offline.js";
+import { SourceTests } from "../../../test/helper/SourceTests.js";
+import { ToneAudioBuffer } from "../../core/context/ToneAudioBuffer.js";
+import { getContext } from "../../core/Global.js";
+import { Player } from "./Player.js";
 
 describe("Player", () => {
 	const buffer = new ToneAudioBuffer();

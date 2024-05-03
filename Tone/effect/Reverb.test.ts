@@ -1,8 +1,8 @@
 import { expect } from "chai";
-import { BasicTests } from "../../test/helper/Basic";
-import { Offline } from "../../test/helper/Offline";
-import { Oscillator } from "../source/oscillator/Oscillator";
-import { Reverb } from "./Reverb";
+import { BasicTests } from "../../test/helper/Basic.js";
+import { Offline } from "../../test/helper/Offline.js";
+import { Oscillator } from "../source/oscillator/Oscillator.js";
+import { Reverb } from "./Reverb.js";
 
 describe("Reverb", () => {
 

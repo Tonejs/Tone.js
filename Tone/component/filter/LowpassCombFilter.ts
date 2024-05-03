@@ -1,10 +1,10 @@
-import { Param } from "../../core/context/Param";
-import { InputNode, OutputNode, ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
-import { Frequency, NormalRange, Time } from "../../core/type/Units";
-import { optionsFromArguments } from "../../core/util/Defaults";
-import { RecursivePartial } from "../../core/util/Interface";
-import { FeedbackCombFilter } from "./FeedbackCombFilter";
-import { OnePoleFilter } from "./OnePoleFilter";
+import { Param } from "../../core/context/Param.js";
+import { InputNode, OutputNode, ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode.js";
+import { Frequency, NormalRange, Time } from "../../core/type/Units.js";
+import { optionsFromArguments } from "../../core/util/Defaults.js";
+import { RecursivePartial } from "../../core/util/Interface.js";
+import { FeedbackCombFilter } from "./FeedbackCombFilter.js";
+import { OnePoleFilter } from "./OnePoleFilter.js";
 
 interface LowpassCombFilterOptions extends ToneAudioNodeOptions {
 	delayTime: Time;

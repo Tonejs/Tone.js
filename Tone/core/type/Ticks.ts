@@ -1,7 +1,7 @@
-import { getContext } from "../Global";
-import { TimeBaseUnit, TimeValue } from "./TimeBase";
-import { TransportTimeClass } from "./TransportTime";
-import { Seconds, Ticks } from "./Units";
+import { getContext } from "../Global.js";
+import { TimeBaseUnit, TimeValue } from "./TimeBase.js";
+import { TransportTimeClass } from "./TransportTime.js";
+import { Seconds, Ticks } from "./Units.js";
 
 /**
  * Ticks is a primitive type for encoding Time values.

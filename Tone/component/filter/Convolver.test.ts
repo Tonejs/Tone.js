@@ -1,7 +1,7 @@
 import { expect } from "chai";
-import { BasicTests } from "../../../test/helper/Basic";
-import { ToneAudioBuffer } from "../../core/context/ToneAudioBuffer";
-import { Convolver } from "./Convolver";
+import { BasicTests } from "../../../test/helper/Basic.js";
+import { ToneAudioBuffer } from "../../core/context/ToneAudioBuffer.js";
+import { Convolver } from "./Convolver.js";
 
 describe("Convolver", () => {
 

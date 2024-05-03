@@ -1,8 +1,8 @@
-import { AutomationEvent, Param, ParamOptions } from "../context/Param";
-import { Seconds, Ticks, Time, UnitMap, UnitName } from "../type/Units";
-import { optionsFromArguments } from "../util/Defaults";
-import { Timeline } from "../util/Timeline";
-import { isUndef } from "../util/TypeCheck";
+import { AutomationEvent, Param, ParamOptions } from "../context/Param.js";
+import { Seconds, Ticks, Time, UnitMap, UnitName } from "../type/Units.js";
+import { optionsFromArguments } from "../util/Defaults.js";
+import { Timeline } from "../util/Timeline.js";
+import { isUndef } from "../util/TypeCheck.js";
 
 type TickAutomationEvent = AutomationEvent & {
 	ticks: number;

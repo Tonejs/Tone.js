@@ -1,9 +1,9 @@
-import * as Tone from "./index";
+import * as Tone from "./index.js";
 import { expect } from "chai";
-import { DestinationClass } from "./core/context/Destination";
-import { Context } from "./core/context/Context";
-import { TransportClass } from "./core/clock/Transport";
-import { DrawClass } from "./core/util/Draw";
+import { DestinationClass } from "./core/context/Destination.js";
+import { Context } from "./core/context/Context.js";
+import { TransportClass } from "./core/clock/Transport.js";
+import { DrawClass } from "./core/util/Draw.js";
 
 describe("Tone", () => {
 	

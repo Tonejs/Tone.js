@@ -1,11 +1,11 @@
 import { expect } from "chai";
-import { BasicTests } from "../../test/helper/Basic";
-import { atTime, Offline } from "../../test/helper/Offline";
-import { Time } from "../core/type/Time";
-import { noOp } from "../core/util/Interface";
-import { Part } from "./Part";
-import { Sequence } from "./Sequence";
-import { ToneEvent } from "./ToneEvent";
+import { BasicTests } from "../../test/helper/Basic.js";
+import { atTime, Offline } from "../../test/helper/Offline.js";
+import { Time } from "../core/type/Time.js";
+import { noOp } from "../core/util/Interface.js";
+import { Part } from "./Part.js";
+import { Sequence } from "./Sequence.js";
+import { ToneEvent } from "./ToneEvent.js";
 
 describe("Part", () => {
 

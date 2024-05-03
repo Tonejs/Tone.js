@@ -1,9 +1,9 @@
-import { PitchShift } from "./PitchShift";
-import { BasicTests } from "../../test/helper/Basic";
-import { EffectTests } from "../../test/helper/EffectTests";
+import { PitchShift } from "./PitchShift.js";
+import { BasicTests } from "../../test/helper/Basic.js";
+import { EffectTests } from "../../test/helper/EffectTests.js";
 import { expect } from "chai";
-import { Oscillator } from "../source/oscillator/Oscillator";
-import { CompareToFile } from "../../test/helper/CompareToFile";
+import { Oscillator } from "../source/oscillator/Oscillator.js";
+import { CompareToFile } from "../../test/helper/CompareToFile.js";
 
 describe("PitchShift", () => {
 

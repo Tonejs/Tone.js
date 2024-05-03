@@ -1,8 +1,8 @@
-import { FrequencyEnvelope } from "./FrequencyEnvelope";
-import { BasicTests } from "../../../test/helper/Basic";
-import { Offline } from "../../../test/helper/Offline";
-import { connectFrom, connectTo } from "../../../test/helper/Connect";
-import { Envelope } from "./Envelope";
+import { FrequencyEnvelope } from "./FrequencyEnvelope.js";
+import { BasicTests } from "../../../test/helper/Basic.js";
+import { Offline } from "../../../test/helper/Offline.js";
+import { connectFrom, connectTo } from "../../../test/helper/Connect.js";
+import { Envelope } from "./Envelope.js";
 import { expect } from "chai";
 
 describe("FrequencyEnvelope", () => {

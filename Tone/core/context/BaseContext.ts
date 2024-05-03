@@ -1,6 +1,6 @@
-import { Seconds } from "../type/Units";
-import { Emitter } from "../util/Emitter";
-import { AnyAudioContext } from "./AudioContext";
+import { Seconds } from "../type/Units.js";
+import { Emitter } from "../util/Emitter.js";
+import { AnyAudioContext } from "./AudioContext.js";
 
 type Draw = import("../util/Draw").DrawClass;
 type Destination = import("./Destination").DestinationClass;

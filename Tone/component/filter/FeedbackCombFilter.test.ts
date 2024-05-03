@@ -1,10 +1,10 @@
 import { expect } from "chai";
-import { FeedbackCombFilter } from "./FeedbackCombFilter";
-import { BitCrusher } from "../../effect/BitCrusher";
-import { BasicTests } from "../../../test/helper/Basic";
-import { PassAudio } from "../../../test/helper/PassAudio";
-import { Offline } from "../../../test/helper/Offline";
-import { Signal } from "../../signal";
+import { FeedbackCombFilter } from "./FeedbackCombFilter.js";
+import { BitCrusher } from "../../effect/BitCrusher.js";
+import { BasicTests } from "../../../test/helper/Basic.js";
+import { PassAudio } from "../../../test/helper/PassAudio.js";
+import { Offline } from "../../../test/helper/Offline.js";
+import { Signal } from "../../signal/index.js";
 
 describe("FeedbackCombFilter", () => {
 

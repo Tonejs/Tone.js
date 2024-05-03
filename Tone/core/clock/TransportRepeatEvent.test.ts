@@ -1,7 +1,7 @@
 import { expect } from "chai";
-import { Offline } from "../../../test/helper/Offline";
-import { TransportClass } from "./Transport";
-import { TransportRepeatEvent } from "./TransportRepeatEvent";
+import { Offline } from "../../../test/helper/Offline.js";
+import { TransportClass } from "./Transport.js";
+import { TransportRepeatEvent } from "./TransportRepeatEvent.js";
 
 describe("TransportRepeatEvent", () => {
 

@@ -1,9 +1,9 @@
-import { InputNode, OutputNode, ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
-import { Decibels } from "../../core/type/Units";
-import { optionsFromArguments } from "../../core/util/Defaults";
-import { Compressor } from "./Compressor";
-import { Param } from "../../core/context/Param";
-import { readOnly } from "../../core/util/Interface";
+import { InputNode, OutputNode, ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode.js";
+import { Decibels } from "../../core/type/Units.js";
+import { optionsFromArguments } from "../../core/util/Defaults.js";
+import { Compressor } from "./Compressor.js";
+import { Param } from "../../core/context/Param.js";
+import { readOnly } from "../../core/util/Interface.js";
 
 export interface LimiterOptions extends ToneAudioNodeOptions {
 	threshold: Decibels;

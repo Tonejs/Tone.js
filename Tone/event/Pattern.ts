@@ -1,9 +1,9 @@
-import { Loop, LoopOptions } from "./Loop";
-import { PatternGenerator, PatternName } from "./PatternGenerator";
-import { ToneEventCallback } from "./ToneEvent";
-import { optionsFromArguments } from "../core/util/Defaults";
-import { Seconds } from "../core/type/Units";
-import { noOp } from "../core/util/Interface";
+import { Loop, LoopOptions } from "./Loop.js";
+import { PatternGenerator, PatternName } from "./PatternGenerator.js";
+import { ToneEventCallback } from "./ToneEvent.js";
+import { optionsFromArguments } from "../core/util/Defaults.js";
+import { Seconds } from "../core/type/Units.js";
+import { noOp } from "../core/util/Interface.js";
 
 export interface PatternOptions<ValueType> extends LoopOptions {
 	pattern: PatternName;

@@ -1,5 +1,5 @@
-import { isAudioBuffer, isAudioNode, isAudioParam } from "./AdvancedTypeCheck";
-import { isDefined, isObject, isUndef } from "./TypeCheck";
+import { isAudioBuffer, isAudioNode, isAudioParam } from "./AdvancedTypeCheck.js";
+import { isDefined, isObject, isUndef } from "./TypeCheck.js";
 
 type BaseToneOptions = import("../Tone").BaseToneOptions;
 

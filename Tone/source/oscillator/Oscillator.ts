@@ -1,17 +1,17 @@
-import { AudioRange, Degrees, Frequency, Radians, Time } from "../../core/type/Units";
-import { deepEquals, optionsFromArguments } from "../../core/util/Defaults";
-import { readOnly } from "../../core/util/Interface";
-import { isDefined } from "../../core/util/TypeCheck";
-import { Signal } from "../../signal/Signal";
-import { Source } from "../Source";
+import { AudioRange, Degrees, Frequency, Radians, Time } from "../../core/type/Units.js";
+import { deepEquals, optionsFromArguments } from "../../core/util/Defaults.js";
+import { readOnly } from "../../core/util/Interface.js";
+import { isDefined } from "../../core/util/TypeCheck.js";
+import { Signal } from "../../signal/Signal.js";
+import { Source } from "../Source.js";
 import {
 	generateWaveform, ToneOscillatorConstructorOptions, ToneOscillatorInterface,
 	ToneOscillatorOptions, ToneOscillatorType
-} from "./OscillatorInterface";
-import { ToneOscillatorNode } from "./ToneOscillatorNode";
-import { assertRange } from "../../core/util/Debug";
-import { clamp } from "../../core/util/Math";
-export { ToneOscillatorOptions, ToneOscillatorType } from "./OscillatorInterface";
+} from "./OscillatorInterface.js";
+import { ToneOscillatorNode } from "./ToneOscillatorNode.js";
+import { assertRange } from "../../core/util/Debug.js";
+import { clamp } from "../../core/util/Math.js";
+export { ToneOscillatorOptions, ToneOscillatorType } from "./OscillatorInterface.js";
 /**
  * Oscillator supports a number of features including
  * phase rotation, multiple oscillator types (see Oscillator.type),

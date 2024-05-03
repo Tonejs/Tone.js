@@ -1,6 +1,6 @@
-import { PowerOfTwo } from "../../core/type/Units";
-import { optionsFromArguments } from "../../core/util/Defaults";
-import { MeterBase, MeterBaseOptions } from "./MeterBase";
+import { PowerOfTwo } from "../../core/type/Units.js";
+import { optionsFromArguments } from "../../core/util/Defaults.js";
+import { MeterBase, MeterBaseOptions } from "./MeterBase.js";
 
 export interface WaveformOptions extends MeterBaseOptions {
 	/**

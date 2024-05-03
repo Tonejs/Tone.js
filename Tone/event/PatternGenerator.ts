@@ -1,5 +1,5 @@
-import { assert } from "../core/util/Debug";
-import { clamp } from "../core/util/Math";
+import { assert } from "../core/util/Debug.js";
+import { clamp } from "../core/util/Math.js";
 
 /**
  * The name of the patterns

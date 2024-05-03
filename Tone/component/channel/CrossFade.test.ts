@@ -1,8 +1,8 @@
-import { BasicTests } from "../../../test/helper/Basic";
-import { connectFrom, connectTo } from "../../../test/helper/Connect";
-import { ConstantOutput } from "../../../test/helper/ConstantOutput";
-import { Signal } from "../../signal/Signal";
-import { CrossFade } from "./CrossFade";
+import { BasicTests } from "../../../test/helper/Basic.js";
+import { connectFrom, connectTo } from "../../../test/helper/Connect.js";
+import { ConstantOutput } from "../../../test/helper/ConstantOutput.js";
+import { Signal } from "../../signal/Signal.js";
+import { CrossFade } from "./CrossFade.js";
 
 describe("CrossFade", () => {
 

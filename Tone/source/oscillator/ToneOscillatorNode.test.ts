@@ -1,10 +1,10 @@
 import { expect } from "chai";
-import { BasicTests } from "../../../test/helper/Basic";
-import { CompareToFile } from "../../../test/helper/CompareToFile";
-import { Offline, whenBetween } from "../../../test/helper/Offline";
-import { ONLINE_TESTING } from "../../../test/helper/Supports";
-import { Frequency } from "../../core/type/Frequency";
-import { ToneOscillatorNode } from "./ToneOscillatorNode";
+import { BasicTests } from "../../../test/helper/Basic.js";
+import { CompareToFile } from "../../../test/helper/CompareToFile.js";
+import { Offline, whenBetween } from "../../../test/helper/Offline.js";
+import { ONLINE_TESTING } from "../../../test/helper/Supports.js";
+import { Frequency } from "../../core/type/Frequency.js";
+import { ToneOscillatorNode } from "./ToneOscillatorNode.js";
 
 describe("ToneOscillatorNode", () => {
 

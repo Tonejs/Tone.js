@@ -1,16 +1,16 @@
-import { AmplitudeEnvelope } from "../component/envelope/AmplitudeEnvelope";
-import { Envelope, EnvelopeOptions } from "../component/envelope/Envelope";
-import { Filter, FilterOptions } from "../component/filter/Filter";
-import { omitFromObject, optionsFromArguments } from "../core/util/Defaults";
-import { readOnly, RecursivePartial } from "../core/util/Interface";
-import { Monophonic, MonophonicOptions } from "../instrument/Monophonic";
-import { OmniOscillator } from "../source/oscillator/OmniOscillator";
-import { Source } from "../source/Source";
-import { FrequencyEnvelope, FrequencyEnvelopeOptions } from "../component/envelope/FrequencyEnvelope";
-import { NormalRange, Seconds, Time } from "../core/type/Units";
-import { Signal } from "../signal/Signal";
-import { ToneAudioNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
-import { OmniOscillatorSynthOptions } from "../source/oscillator/OscillatorInterface";
+import { AmplitudeEnvelope } from "../component/envelope/AmplitudeEnvelope.js";
+import { Envelope, EnvelopeOptions } from "../component/envelope/Envelope.js";
+import { Filter, FilterOptions } from "../component/filter/Filter.js";
+import { omitFromObject, optionsFromArguments } from "../core/util/Defaults.js";
+import { readOnly, RecursivePartial } from "../core/util/Interface.js";
+import { Monophonic, MonophonicOptions } from "../instrument/Monophonic.js";
+import { OmniOscillator } from "../source/oscillator/OmniOscillator.js";
+import { Source } from "../source/Source.js";
+import { FrequencyEnvelope, FrequencyEnvelopeOptions } from "../component/envelope/FrequencyEnvelope.js";
+import { NormalRange, Seconds, Time } from "../core/type/Units.js";
+import { Signal } from "../signal/Signal.js";
+import { ToneAudioNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode.js";
+import { OmniOscillatorSynthOptions } from "../source/oscillator/OscillatorInterface.js";
 
 export interface MonoSynthOptions extends MonophonicOptions {
 	oscillator: OmniOscillatorSynthOptions;

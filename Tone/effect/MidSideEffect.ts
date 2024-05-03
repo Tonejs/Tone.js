@@ -1,7 +1,7 @@
-import { Effect, EffectOptions } from "./Effect";
-import { MidSideSplit } from "../component/channel/MidSideSplit";
-import { MidSideMerge } from "../component/channel/MidSideMerge";
-import { OutputNode, ToneAudioNode } from "../core/context/ToneAudioNode";
+import { Effect, EffectOptions } from "./Effect.js";
+import { MidSideSplit } from "../component/channel/MidSideSplit.js";
+import { MidSideMerge } from "../component/channel/MidSideMerge.js";
+import { OutputNode, ToneAudioNode } from "../core/context/ToneAudioNode.js";
 
 export type MidSideEffectOptions = EffectOptions;
 
