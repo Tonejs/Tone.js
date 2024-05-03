@@ -6,21 +6,23 @@ import { MonophonicTest } from "../../test/helper/MonophonicTests.js";
 import { MetalSynth } from "./MetalSynth.js";
 
 describe("MetalSynth", () => {
-
 	BasicTests(MetalSynth);
 
 	InstrumentTest(MetalSynth, "C2");
 	MonophonicTest(MetalSynth, "C4");
 
 	it("matches a file", () => {
-		return CompareToFile(() => {
-			const synth = new MetalSynth().toDestination();
-			synth.triggerAttackRelease(200, 0.1, 0.05);
-		}, "metalSynth.wav", 2);
+		return CompareToFile(
+			() => {
+				const synth = new MetalSynth().toDestination();
+				synth.triggerAttackRelease(200, 0.1, 0.05);
+			},
+			"metalSynth.wav",
+			2
+		);
 	});
 
 	context("API", () => {
-
 		it("can be constructed with octave and harmonicity values", () => {
 			const cymbal = new MetalSynth({
 				harmonicity: 3.1,
@@ -61,6 +63,5 @@ describe("MetalSynth", () => {
 			expect(cymbal.resonance).to.be.closeTo(2222, 1);
 			cymbal.dispose();
 		});
-
 	});
 });

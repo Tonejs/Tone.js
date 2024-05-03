@@ -45,7 +45,7 @@ export interface SourceOptions extends ToneAudioNodeOptions {
  * ```
  */
 export abstract class Source<
-	Options extends SourceOptions
+	Options extends SourceOptions,
 > extends ToneAudioNode<Options> {
 	/**
 	 * The output volume node
@@ -362,7 +362,7 @@ export abstract class Source<
 	}
 
 	/**
-	 * Unsync the source to the Transport. 
+	 * Unsync the source to the Transport.
 	 * @see {@link sync}
 	 */
 	unsync(): this {

@@ -6,11 +6,9 @@ import { Scale } from "./Scale.js";
 import { Signal } from "./Signal.js";
 
 describe("Scale", () => {
-
 	BasicTests(Scale);
 
 	context("Scaling", () => {
-
 		it("handles input and output connections", () => {
 			const scale = new Scale({ min: 0, max: 100 });
 			connectFrom().connect(scale);

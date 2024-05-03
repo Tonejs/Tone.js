@@ -6,19 +6,21 @@ import { expect } from "chai";
 import { Offline } from "../../test/helper/Offline.js";
 
 describe("MonoSynth", () => {
-
 	BasicTests(MonoSynth);
 	InstrumentTest(MonoSynth, "C4");
 
 	it("matches a file", () => {
-		return CompareToFile(() => {
-			const synth = new MonoSynth().toDestination();
-			synth.triggerAttackRelease("C4", 0.1, 0.05);
-		}, "monoSynth.wav", 0.01);
+		return CompareToFile(
+			() => {
+				const synth = new MonoSynth().toDestination();
+				synth.triggerAttackRelease("C4", 0.1, 0.05);
+			},
+			"monoSynth.wav",
+			0.01
+		);
 	});
 
 	context("API", () => {
-
 		it("can get and set oscillator attributes", () => {
 			const monoSynth = new MonoSynth();
 			monoSynth.oscillator.type = "triangle";
@@ -50,8 +52,8 @@ describe("MonoSynth", () => {
 		it("can be constructed with an options object", () => {
 			const monoSynth = new MonoSynth({
 				envelope: {
-					sustain: 0.3
-				}
+					sustain: 0.3,
+				},
 			});
 			expect(monoSynth.envelope.sustain).to.equal(0.3);
 			monoSynth.dispose();
@@ -61,8 +63,8 @@ describe("MonoSynth", () => {
 			const monoSynth = new MonoSynth();
 			monoSynth.set({
 				envelope: {
-					decay: 0.24
-				}
+					decay: 0.24,
+				},
 			});
 			expect(monoSynth.get().envelope.decay).to.equal(0.24);
 			monoSynth.dispose();
@@ -75,14 +77,12 @@ describe("MonoSynth", () => {
 						attack: 0.1,
 						decay: 0.1,
 						sustain: 0,
-					}
+					},
 				}).toDestination();
 				synth.triggerAttack("C4", 0);
 			}, 0.5).then((buffer) => {
 				expect(buffer.getTimeOfLastSound()).to.be.closeTo(0.2, 0.01);
 			});
 		});
-
 	});
 });
-

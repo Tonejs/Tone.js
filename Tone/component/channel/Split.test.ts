@@ -6,11 +6,9 @@ import { StereoSignal } from "../../../test/helper/StereoSignal.js";
 import { Split } from "./Split.js";
 
 describe("Split", () => {
-
 	BasicTests(Split);
 
 	context("Splitting", () => {
-
 		it("defaults to two channels", () => {
 			const split = new Split();
 			expect(split.numberOfOutputs).to.equal(2);

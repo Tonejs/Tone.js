@@ -116,10 +116,10 @@ export class TestAudioBuffer {
 				this._rms?.push(channelRMS);
 				for (let i = 0; i < channel.length; i++) {
 					const sqrSum = channel
-							.slice(i, i + blockSize)
-							.reduce((total, value) => {
-								return total + value * value;
-							}, 0);
+						.slice(i, i + blockSize)
+						.reduce((total, value) => {
+							return total + value * value;
+						}, 0);
 					channelRMS[i] = Math.sqrt(sqrSum / blockSize);
 				}
 			});

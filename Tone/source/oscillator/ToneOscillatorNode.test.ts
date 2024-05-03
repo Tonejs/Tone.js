@@ -7,7 +7,6 @@ import { Frequency } from "../../core/type/Frequency.js";
 import { ToneOscillatorNode } from "./ToneOscillatorNode.js";
 
 describe("ToneOscillatorNode", () => {
-
 	BasicTests(ToneOscillatorNode);
 
 	it("matches a file", () => {
@@ -18,12 +17,14 @@ describe("ToneOscillatorNode", () => {
 	});
 
 	context("Constructor", () => {
-
 		it("can be constructed with a frequency and type", () => {
 			const osc0 = new ToneOscillatorNode(330, "square");
 			expect(osc0.frequency.value).to.equal(330);
 			osc0.dispose();
-			const osc1 = new ToneOscillatorNode(Frequency(550).valueOf(), "sawtooth");
+			const osc1 = new ToneOscillatorNode(
+				Frequency(550).valueOf(),
+				"sawtooth"
+			);
 			expect(osc1.frequency.value).to.equal(550);
 			osc1.dispose();
 			const osc2 = new ToneOscillatorNode("A3", "triangle");
@@ -50,11 +51,9 @@ describe("ToneOscillatorNode", () => {
 			expect(osc.type).to.equal("square");
 			osc.dispose();
 		});
-
 	});
 
 	context("Type", () => {
-
 		it("can get and set the type", () => {
 			const osc = new ToneOscillatorNode();
 			osc.type = "triangle";
@@ -64,18 +63,18 @@ describe("ToneOscillatorNode", () => {
 
 		it("can set a periodic wave", () => {
 			const osc = new ToneOscillatorNode();
-			const periodicWave = osc.context.createPeriodicWave(Float32Array.from([1, 0]), Float32Array.from([1, 0]));
+			const periodicWave = osc.context.createPeriodicWave(
+				Float32Array.from([1, 0]),
+				Float32Array.from([1, 0])
+			);
 			osc.setPeriodicWave(periodicWave);
 			expect(osc.type).to.equal("custom");
 			osc.dispose();
 		});
-
 	});
 
 	context("onended", () => {
-
 		if (ONLINE_TESTING) {
-
 			it("invokes the onended callback in the online context", (done) => {
 				const osc = new ToneOscillatorNode();
 				osc.start();
@@ -140,7 +139,6 @@ describe("ToneOscillatorNode", () => {
 	});
 
 	context("Scheduling", () => {
-
 		it("throw an error if start is called multiple time", () => {
 			const osc = new ToneOscillatorNode();
 			osc.start();
@@ -154,7 +152,7 @@ describe("ToneOscillatorNode", () => {
 			return Offline(() => {
 				const osc = new ToneOscillatorNode().toDestination();
 				osc.start(0).stop(0.1);
-			}, 0.4).then(buffer => {
+			}, 0.4).then((buffer) => {
 				expect(buffer.getRmsAtTime(0)).to.be.above(0);
 				expect(buffer.getRmsAtTime(0.09)).to.be.above(0);
 				expect(buffer.getRmsAtTime(0.1)).to.equal(0);
@@ -174,7 +172,6 @@ describe("ToneOscillatorNode", () => {
 		});
 
 		if (ONLINE_TESTING) {
-
 			it("clamps start time to the currentTime", () => {
 				const osc = new ToneOscillatorNode();
 				osc.start(0);
@@ -193,7 +190,9 @@ describe("ToneOscillatorNode", () => {
 				setTimeout(() => {
 					currentTime = osc.now();
 					osc.stop(0);
-					expect(osc.getStateAtTime(currentTime + 0.01)).to.equal("stopped");
+					expect(osc.getStateAtTime(currentTime + 0.01)).to.equal(
+						"stopped"
+					);
 					osc.dispose();
 					done();
 				}, 100);
@@ -202,9 +201,7 @@ describe("ToneOscillatorNode", () => {
 	});
 
 	context("State", () => {
-
 		it("reports the right state", () => {
-
 			return Offline(() => {
 				const osc = new ToneOscillatorNode();
 				osc.start(0);
@@ -221,7 +218,6 @@ describe("ToneOscillatorNode", () => {
 		});
 
 		it("can call stop multiple times, takes the last value", () => {
-
 			return Offline(() => {
 				const osc = new ToneOscillatorNode();
 				osc.start(0);

@@ -1,6 +1,15 @@
 import { ToneEvent } from "./ToneEvent.js";
-import { NormalRange, Positive, Seconds, Time, TransportTime } from "../core/type/Units.js";
-import { ToneWithContext, ToneWithContextOptions } from "../core/context/ToneWithContext.js";
+import {
+	NormalRange,
+	Positive,
+	Seconds,
+	Time,
+	TransportTime,
+} from "../core/type/Units.js";
+import {
+	ToneWithContext,
+	ToneWithContextOptions,
+} from "../core/context/ToneWithContext.js";
 import { optionsFromArguments } from "../core/util/Defaults.js";
 import { noOp } from "../core/util/Interface.js";
 import { BasicPlaybackState } from "../core/util/StateTimeline.js";
@@ -16,20 +25,21 @@ export interface LoopOptions extends ToneWithContextOptions {
 }
 
 /**
- * Loop creates a looped callback at the 
- * specified interval. The callback can be 
+ * Loop creates a looped callback at the
+ * specified interval. The callback can be
  * started, stopped and scheduled along
- * the Transport's timeline. 
+ * the Transport's timeline.
  * @example
  * const loop = new Tone.Loop((time) => {
- * 	// triggered every eighth note. 
+ * 	// triggered every eighth note.
  * 	console.log(time);
  * }, "8n").start(0);
  * Tone.Transport.start();
  * @category Event
  */
-export class Loop<Options extends LoopOptions = LoopOptions> extends ToneWithContext<Options> {
-
+export class Loop<
+	Options extends LoopOptions = LoopOptions,
+> extends ToneWithContext<Options> {
 	readonly name: string = "Loop";
 
 	/**
@@ -44,13 +54,21 @@ export class Loop<Options extends LoopOptions = LoopOptions> extends ToneWithCon
 
 	/**
 	 * @param callback The callback to invoke at the time.
-	 * @param interval The time between successive callback calls. 
+	 * @param interval The time between successive callback calls.
 	 */
 	constructor(callback?: (time: Seconds) => void, interval?: Time);
 	constructor(options?: Partial<LoopOptions>);
 	constructor() {
-		super(optionsFromArguments(Loop.getDefaults(), arguments, ["callback", "interval"]));
-		const options = optionsFromArguments(Loop.getDefaults(), arguments, ["callback", "interval"]);
+		super(
+			optionsFromArguments(Loop.getDefaults(), arguments, [
+				"callback",
+				"interval",
+			])
+		);
+		const options = optionsFromArguments(Loop.getDefaults(), arguments, [
+			"callback",
+			"interval",
+		]);
 
 		this._event = new ToneEvent({
 			context: this.context,
@@ -75,7 +93,7 @@ export class Loop<Options extends LoopOptions = LoopOptions> extends ToneWithCon
 			iterations: Infinity,
 			probability: 1,
 			mute: false,
-			humanize: false
+			humanize: false,
 		});
 	}
 
@@ -122,14 +140,14 @@ export class Loop<Options extends LoopOptions = LoopOptions> extends ToneWithCon
 	}
 
 	/**
-	 * The progress of the loop as a value between 0-1. 0, when the loop is stopped or done iterating. 
+	 * The progress of the loop as a value between 0-1. 0, when the loop is stopped or done iterating.
 	 */
 	get progress(): NormalRange {
 		return this._event.progress;
 	}
 
 	/**
-	 * The time between successive callbacks. 
+	 * The time between successive callbacks.
 	 * @example
 	 * const loop = new Tone.Loop();
 	 * loop.interval = "8n"; // loop every 8n
@@ -142,8 +160,8 @@ export class Loop<Options extends LoopOptions = LoopOptions> extends ToneWithCon
 	}
 
 	/**
-	 * The playback rate of the loop. The normal playback rate is 1 (no change). 
-	 * A `playbackRate` of 2 would be twice as fast. 
+	 * The playback rate of the loop. The normal playback rate is 1 (no change).
+	 * A `playbackRate` of 2 would be twice as fast.
 	 */
 	get playbackRate(): Positive {
 		return this._event.playbackRate;
@@ -153,7 +171,7 @@ export class Loop<Options extends LoopOptions = LoopOptions> extends ToneWithCon
 	}
 
 	/**
-	 * Random variation +/-0.01s to the scheduled time. 
+	 * Random variation +/-0.01s to the scheduled time.
 	 * Or give it a time value which it will randomize by.
 	 */
 	get humanize(): boolean | Time {

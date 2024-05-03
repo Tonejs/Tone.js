@@ -2,8 +2,10 @@ import { OfflineRender } from "./OfflineRender.js";
 import { analyze } from "./Spectrum.js";
 import { TestAudioBuffer } from "./TestAudioBuffer.js";
 
-export function compareSpectra(bufferA: TestAudioBuffer, bufferB: TestAudioBuffer): number {
-
+export function compareSpectra(
+	bufferA: TestAudioBuffer,
+	bufferB: TestAudioBuffer
+): number {
 	if (bufferA.length !== bufferB.length) {
 		throw new Error("buffers must be the same length to compare");
 	}
@@ -21,7 +23,10 @@ export function compareSpectra(bufferA: TestAudioBuffer, bufferB: TestAudioBuffe
 	return Math.sqrt(diff / analysisA.length);
 }
 
-export function compareSignals(bufferA: TestAudioBuffer, bufferB: TestAudioBuffer): number {
+export function compareSignals(
+	bufferA: TestAudioBuffer,
+	bufferB: TestAudioBuffer
+): number {
 	const arrayA = bufferA.toArray();
 	const arrayB = bufferB.toArray();
 	const diffs = arrayA.map((channelA, channelNum) => {
@@ -53,19 +58,37 @@ async function getBuffersToCompare(
 	forceRender = false
 ): Promise<BufferResponseType> {
 	if (forceRender) {
-		const buffer = await OfflineRender(callback, duration, channels, sampleRate);
+		const buffer = await OfflineRender(
+			callback,
+			duration,
+			channels,
+			sampleRate
+		);
 		buffer.downloadWav(filename);
 		return Promise.resolve();
 	} else {
-		const bufferB = await fetch(filename).then(response => response.arrayBuffer()).then(buffer => {
-			const context = new OfflineAudioContext(channels, 1, sampleRate);
-			return context.decodeAudioData(buffer);
-		}).then(audioBuffer => new TestAudioBuffer(audioBuffer));
-		const bufferA = await OfflineRender(callback, bufferB.duration, bufferB.numberOfChannels, bufferB.sampleRate);
+		const bufferB = await fetch(filename)
+			.then((response) => response.arrayBuffer())
+			.then((buffer) => {
+				const context = new OfflineAudioContext(
+					channels,
+					1,
+					sampleRate
+				);
+				return context.decodeAudioData(buffer);
+			})
+			.then((audioBuffer) => new TestAudioBuffer(audioBuffer));
+		const bufferA = await OfflineRender(
+			callback,
+			bufferB.duration,
+			bufferB.numberOfChannels,
+			bufferB.sampleRate
+		);
 
 		// const [bufferA, bufferB] = await Promise.all([bufferAPromise, bufferBPromise]);
 		return {
-			bufferA, bufferB,
+			bufferA,
+			bufferB,
 		};
 	}
 }
@@ -77,14 +100,23 @@ export async function toFile(
 	forceRender = false,
 	duration = 0.1,
 	channels = 1,
-	sampleRate = 11025,
+	sampleRate = 11025
 ) {
-	const response = await getBuffersToCompare(callback, filename, duration, channels, sampleRate, forceRender);
+	const response = await getBuffersToCompare(
+		callback,
+		filename,
+		duration,
+		channels,
+		sampleRate,
+		forceRender
+	);
 	if (response) {
 		const { bufferA, bufferB } = response;
 		const error = compareSpectra(bufferA, bufferB);
 		if (error > threshold) {
-			throw new Error(`Error ${error} greater than threshold ${threshold}`);
+			throw new Error(
+				`Error ${error} greater than threshold ${threshold}`
+			);
 		}
 	}
 }
@@ -96,9 +128,16 @@ export async function toFileSignal(
 	forceRender = false,
 	duration = 0.1,
 	channels = 1,
-	sampleRate = 11025,
+	sampleRate = 11025
 ) {
-	const response = await getBuffersToCompare(callback, filename, duration, channels, sampleRate, forceRender);
+	const response = await getBuffersToCompare(
+		callback,
+		filename,
+		duration,
+		channels,
+		sampleRate,
+		forceRender
+	);
 	if (response) {
 		const { bufferA, bufferB } = response;
 		if (compareSignals(bufferA, bufferB) > threshold) {

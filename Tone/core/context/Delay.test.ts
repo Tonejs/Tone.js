@@ -6,7 +6,6 @@ import { connect } from "../context/ToneAudioNode.js";
 import { Delay } from "./Delay.js";
 
 describe("Delay", () => {
-
 	BasicTests(Delay);
 
 	it("can be created and disposed", () => {
@@ -40,7 +39,7 @@ describe("Delay", () => {
 
 	it("clamps the delayTime range between 0 and maxDelay", () => {
 		const delay = new Delay({
-			maxDelay: 1
+			maxDelay: 1,
 		});
 		expect(() => {
 			delay.delayTime.value = 2;
@@ -97,7 +96,7 @@ describe("Delay", () => {
 	});
 
 	it("passes audio through", () => {
-		return PassAudio(input => {
+		return PassAudio((input) => {
 			const delay = new Delay().toDestination();
 			connect(input, delay);
 		});

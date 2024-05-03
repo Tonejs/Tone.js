@@ -27,7 +27,6 @@ interface WaveShaperOptions extends ToneAudioNodeOptions {
  * @category Signal
  */
 export class WaveShaper extends SignalOperator<WaveShaperOptions> {
-
 	readonly name: string = "WaveShaper";
 
 	/**
@@ -60,10 +59,24 @@ export class WaveShaper extends SignalOperator<WaveShaperOptions> {
 	constructor(mapping?: WaveShaperMapping, length?: number);
 	constructor(options?: Partial<WaveShaperOptions>);
 	constructor() {
-		super(Object.assign(optionsFromArguments(WaveShaper.getDefaults(), arguments, ["mapping", "length"])));
-		const options = optionsFromArguments(WaveShaper.getDefaults(), arguments, ["mapping", "length"]);
+		super(
+			Object.assign(
+				optionsFromArguments(WaveShaper.getDefaults(), arguments, [
+					"mapping",
+					"length",
+				])
+			)
+		);
+		const options = optionsFromArguments(
+			WaveShaper.getDefaults(),
+			arguments,
+			["mapping", "length"]
+		);
 
-		if (isArray(options.mapping) || options.mapping instanceof Float32Array) {
+		if (
+			isArray(options.mapping) ||
+			options.mapping instanceof Float32Array
+		) {
 			this.curve = Float32Array.from(options.mapping);
 		} else if (isFunction(options.mapping)) {
 			this.setMap(options.mapping, options.length);
@@ -120,8 +133,13 @@ export class WaveShaper extends SignalOperator<WaveShaperOptions> {
 	}
 
 	set oversample(oversampling: OverSampleType) {
-		const isOverSampleType = ["none", "2x", "4x"].some(str => str.includes(oversampling));
-		assert(isOverSampleType, "oversampling must be either 'none', '2x', or '4x'");
+		const isOverSampleType = ["none", "2x", "4x"].some((str) =>
+			str.includes(oversampling)
+		);
+		assert(
+			isOverSampleType,
+			"oversampling must be either 'none', '2x', or '4x'"
+		);
 		this._shaper.oversample = oversampling;
 	}
 

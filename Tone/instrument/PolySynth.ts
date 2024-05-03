@@ -1,6 +1,16 @@
 import { MidiClass } from "../core/type/Midi.js";
-import { Frequency, MidiNote, NormalRange, Seconds, Time } from "../core/type/Units.js";
-import { deepMerge, omitFromObject, optionsFromArguments } from "../core/util/Defaults.js";
+import {
+	Frequency,
+	MidiNote,
+	NormalRange,
+	Seconds,
+	Time,
+} from "../core/type/Units.js";
+import {
+	deepMerge,
+	omitFromObject,
+	optionsFromArguments,
+} from "../core/util/Defaults.js";
 import { RecursivePartial } from "../core/util/Interface.js";
 import { isArray, isNumber } from "../core/util/TypeCheck.js";
 import { Instrument, InstrumentOptions } from "./Instrument.js";
@@ -19,20 +29,28 @@ type VoiceConstructor<V> = {
 
 type OmitMonophonicOptions<T> = Omit<T, "context" | "onsilence">;
 
-type VoiceOptions<T> =
-	T extends MembraneSynth ? MembraneSynthOptions :
-		T extends MetalSynth ? MetalSynthOptions :
-			T extends FMSynth ? FMSynthOptions :
-				T extends MonoSynth ? MonoSynthOptions :
-					T extends AMSynth ? AMSynthOptions :
-						T extends Synth ? SynthOptions :
-							T extends Monophonic<infer U> ? U :
-								never;
+type VoiceOptions<T> = T extends MembraneSynth
+	? MembraneSynthOptions
+	: T extends MetalSynth
+		? MetalSynthOptions
+		: T extends FMSynth
+			? FMSynthOptions
+			: T extends MonoSynth
+				? MonoSynthOptions
+				: T extends AMSynth
+					? AMSynthOptions
+					: T extends Synth
+						? SynthOptions
+						: T extends Monophonic<infer U>
+							? U
+							: never;
 
 /**
  * The settable synth options. excludes monophonic options.
  */
-type PartialVoiceOptions<T> = RecursivePartial<OmitMonophonicOptions<VoiceOptions<T>>>;
+type PartialVoiceOptions<T> = RecursivePartial<
+	OmitMonophonicOptions<VoiceOptions<T>>
+>;
 
 export interface PolySynthOptions<Voice> extends InstrumentOptions {
 	maxPolyphony: number;
@@ -55,8 +73,9 @@ export interface PolySynthOptions<Voice> extends InstrumentOptions {
  * synth.triggerAttackRelease(["C4", "E4", "A4"], 1);
  * @category Instrument
  */
-export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument<VoiceOptions<Voice>> {
-
+export class PolySynth<
+	Voice extends Monophonic<any> = Synth,
+> extends Instrument<VoiceOptions<Voice>> {
 	readonly name: string = "PolySynth";
 
 	/**
@@ -67,7 +86,11 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 	/**
 	 * The currently active voices
 	 */
-	private _activeVoices: Array<{ midi: MidiNote; voice: Voice; released: boolean }> = [];
+	private _activeVoices: Array<{
+		midi: MidiNote;
+		voice: Voice;
+		released: boolean;
+	}> = [];
 
 	/**
 	 * All of the allocated voices for this synth.
@@ -110,19 +133,33 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 	 */
 	constructor(
 		voice?: VoiceConstructor<Voice>,
-		options?: PartialVoiceOptions<Voice>,
+		options?: PartialVoiceOptions<Voice>
 	);
 	constructor(options?: Partial<PolySynthOptions<Voice>>);
 	constructor() {
-
-		super(optionsFromArguments(PolySynth.getDefaults(), arguments, ["voice", "options"]));
-		const options = optionsFromArguments(PolySynth.getDefaults(), arguments, ["voice", "options"]);
+		super(
+			optionsFromArguments(PolySynth.getDefaults(), arguments, [
+				"voice",
+				"options",
+			])
+		);
+		const options = optionsFromArguments(
+			PolySynth.getDefaults(),
+			arguments,
+			["voice", "options"]
+		);
 
 		// check against the old API (pre 14.3.0)
-		assert(!isNumber(options.voice), "DEPRECATED: The polyphony count is no longer the first argument.");
+		assert(
+			!isNumber(options.voice),
+			"DEPRECATED: The polyphony count is no longer the first argument."
+		);
 
 		const defaults = options.voice.getDefaults();
-		this.options = Object.assign(defaults, options.options) as VoiceOptions<Voice>;
+		this.options = Object.assign(
+			defaults,
+			options.options
+		) as VoiceOptions<Voice>;
 		this.voice = options.voice as unknown as VoiceConstructor<Voice>;
 		this.maxPolyphony = options.maxPolyphony;
 
@@ -132,7 +169,10 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 		const index = this._voices.indexOf(this._dummyVoice);
 		this._voices.splice(index, 1);
 		// kick off the GC interval
-		this._gcTimeout = this.context.setInterval(this._collectGarbage.bind(this), 1);
+		this._gcTimeout = this.context.setInterval(
+			this._collectGarbage.bind(this),
+			1
+		);
 	}
 
 	static getDefaults(): PolySynthOptions<Synth> {
@@ -157,7 +197,9 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 	private _makeVoiceAvailable(voice: Voice): void {
 		this._availableVoices.push(voice);
 		// remove the midi note from 'active voices'
-		const activeVoiceIndex = this._activeVoices.findIndex((e) => e.voice === voice);
+		const activeVoiceIndex = this._activeVoices.findIndex(
+			(e) => e.voice === voice
+		);
 		this._activeVoices.splice(activeVoiceIndex, 1);
 	}
 
@@ -172,11 +214,16 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 			return this._availableVoices.shift();
 		} else if (this._voices.length < this.maxPolyphony) {
 			// otherwise if there is still more maxPolyphony, make a new voice
-			const voice = new this.voice(Object.assign(this.options, {
-				context: this.context,
-				onsilence: this._makeVoiceAvailable.bind(this),
-			}));
-			assert(voice instanceof Monophonic, "Voice must extend Monophonic class");
+			const voice = new this.voice(
+				Object.assign(this.options, {
+					context: this.context,
+					onsilence: this._makeVoiceAvailable.bind(this),
+				})
+			);
+			assert(
+				voice instanceof Monophonic,
+				"Voice must extend Monophonic class"
+			);
 			voice.connect(this.output);
 			this._voices.push(voice);
 			return voice;
@@ -189,8 +236,14 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 	 * Occasionally check if there are any allocated voices which can be cleaned up.
 	 */
 	private _collectGarbage(): void {
-		this._averageActiveVoices = Math.max(this._averageActiveVoices * 0.95, this.activeVoices);
-		if (this._availableVoices.length && this._voices.length > Math.ceil(this._averageActiveVoices + 1)) {
+		this._averageActiveVoices = Math.max(
+			this._averageActiveVoices * 0.95,
+			this.activeVoices
+		);
+		if (
+			this._availableVoices.length &&
+			this._voices.length > Math.ceil(this._averageActiveVoices + 1)
+		) {
 			// take off an available note
 			const firstAvail = this._availableVoices.shift() as Voice;
 			const index = this._voices.indexOf(firstAvail);
@@ -204,14 +257,20 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 	/**
 	 * Internal method which triggers the attack
 	 */
-	private _triggerAttack(notes: Frequency[], time: Seconds, velocity?: NormalRange): void {
-		notes.forEach(note => {
+	private _triggerAttack(
+		notes: Frequency[],
+		time: Seconds,
+		velocity?: NormalRange
+	): void {
+		notes.forEach((note) => {
 			const midiNote = new MidiClass(this.context, note).toMidi();
 			const voice = this._getNextAvailableVoice();
 			if (voice) {
 				voice.triggerAttack(note, time, velocity);
 				this._activeVoices.push({
-					midi: midiNote, voice, released: false,
+					midi: midiNote,
+					voice,
+					released: false,
 				});
 				this.log("triggerAttack", note, time);
 			}
@@ -222,9 +281,11 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 	 * Internal method which triggers the release
 	 */
 	private _triggerRelease(notes: Frequency[], time: Seconds): void {
-		notes.forEach(note => {
+		notes.forEach((note) => {
 			const midiNote = new MidiClass(this.context, note).toMidi();
-			const event = this._activeVoices.find(({ midi, released }) => midi === midiNote && !released);
+			const event = this._activeVoices.find(
+				({ midi, released }) => midi === midiNote && !released
+			);
 			if (event) {
 				// trigger release on that note
 				event.voice.triggerRelease(time);
@@ -239,7 +300,12 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 	 * Schedule the attack/release events. If the time is in the future, then it should set a timeout
 	 * to wait for just-in-time scheduling
 	 */
-	private _scheduleEvent(type: "attack" | "release", notes: Frequency[], time: Seconds, velocity?: NormalRange): void {
+	private _scheduleEvent(
+		type: "attack" | "release",
+		notes: Frequency[],
+		time: Seconds,
+		velocity?: NormalRange
+	): void {
 		assert(!this.disposed, "Synth was already disposed");
 		// if the notes are greater than this amount of time in the future, they should be scheduled with setTimeout
 		if (time <= this.now()) {
@@ -269,8 +335,11 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 	 * // trigger a chord immediately with a velocity of 0.2
 	 * synth.triggerAttack(["Ab3", "C4", "F5"], Tone.now(), 0.2);
 	 */
-	triggerAttack(notes: Frequency | Frequency[], time?: Time, velocity?: NormalRange): this {
-
+	triggerAttack(
+		notes: Frequency | Frequency[],
+		time?: Time,
+		velocity?: NormalRange
+	): this {
 		if (!Array.isArray(notes)) {
 			notes = [notes];
 		}
@@ -315,17 +384,23 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 		notes: Frequency | Frequency[],
 		duration: Time | Time[],
 		time?: Time,
-		velocity?: NormalRange,
+		velocity?: NormalRange
 	): this {
 		const computedTime = this.toSeconds(time);
 		this.triggerAttack(notes, computedTime, velocity);
 		if (isArray(duration)) {
-			assert(isArray(notes), "If the duration is an array, the notes must also be an array");
+			assert(
+				isArray(notes),
+				"If the duration is an array, the notes must also be an array"
+			);
 			notes = notes as Frequency[];
 			for (let i = 0; i < notes.length; i++) {
 				const d = duration[Math.min(i, duration.length - 1)];
 				const durationSeconds = this.toSeconds(d);
-				assert(durationSeconds > 0, "The duration must be greater than 0");
+				assert(
+					durationSeconds > 0,
+					"The duration must be greater than 0"
+				);
 				this.triggerRelease(notes[i], computedTime + durationSeconds);
 			}
 		} else {
@@ -350,9 +425,9 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 	}
 
 	/**
-	 * The release which is scheduled to the timeline. 
+	 * The release which is scheduled to the timeline.
 	 */
-	 protected _syncedRelease = (time: number) => this.releaseAll(time);
+	protected _syncedRelease = (time: number) => this.releaseAll(time);
 
 	/**
 	 * Set a member/attribute of the voices
@@ -368,10 +443,13 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 	 */
 	set(options: RecursivePartial<VoiceOptions<Voice>>): this {
 		// remove options which are controlled by the PolySynth
-		const sanitizedOptions = omitFromObject(options, ["onsilence", "context"]);
+		const sanitizedOptions = omitFromObject(options, [
+			"onsilence",
+			"context",
+		]);
 		// store all of the options
 		this.options = deepMerge(this.options, sanitizedOptions);
-		this._voices.forEach(voice => voice.set(sanitizedOptions));
+		this._voices.forEach((voice) => voice.set(sanitizedOptions));
 		this._dummyVoice.set(sanitizedOptions);
 		return this;
 	}
@@ -391,11 +469,11 @@ export class PolySynth<Voice extends Monophonic<any> = Synth> extends Instrument
 		});
 		return this;
 	}
-	
+
 	dispose(): this {
 		super.dispose();
 		this._dummyVoice.dispose();
-		this._voices.forEach(v => v.dispose());
+		this._voices.forEach((v) => v.dispose());
 		this._activeVoices = [];
 		this._availableVoices = [];
 		this.context.clearInterval(this._gcTimeout);

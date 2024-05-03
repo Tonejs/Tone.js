@@ -20,15 +20,16 @@ export type ExcludedFromBaseAudioContext =
 
 // the subset of the BaseAudioContext which Tone.Context implements.
 export type BaseAudioContextSubset = Omit<
-BaseAudioContext,
-ExcludedFromBaseAudioContext
+	BaseAudioContext,
+	ExcludedFromBaseAudioContext
 >;
 
 export type ContextLatencyHint = AudioContextLatencyCategory;
 
 export abstract class BaseContext
 	extends Emitter<"statechange" | "tick">
-	implements BaseAudioContextSubset {
+	implements BaseAudioContextSubset
+{
 	//---------------------------
 	// BASE AUDIO CONTEXT METHODS
 	//---------------------------
@@ -104,9 +105,7 @@ export abstract class BaseContext
 
 	abstract get rawContext(): AnyAudioContext;
 
-	abstract addAudioWorkletModule(
-		_url: string
-	): Promise<void>;
+	abstract addAudioWorkletModule(_url: string): Promise<void>;
 
 	abstract lookAhead: number;
 

@@ -6,7 +6,6 @@ import { Signal } from "../../signal/Signal.js";
 import { LFO, LFOOptions } from "./LFO.js";
 
 describe("LFO", () => {
-
 	BasicTests(LFO);
 
 	context("API", () => {
@@ -20,7 +19,6 @@ describe("LFO", () => {
 	});
 
 	context("Low Oscillations", () => {
-
 		it("can be started and stopped", () => {
 			const lfo = new LFO();
 			lfo.start();
@@ -224,7 +222,7 @@ describe("LFO", () => {
 		it("can pass in partials to the constructor", () => {
 			const lfo = new LFO({
 				type: "custom",
-				partials: [0, 2, 3]
+				partials: [0, 2, 3],
 			});
 			expect(lfo.partials).to.deep.equal([0, 2, 3]);
 			lfo.partials = [1, 2, 3];

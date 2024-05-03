@@ -9,7 +9,9 @@ import assert from "assert";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const rootDir = resolve(__dirname, "../../../");
-const pkg = JSON.parse((await readFile(resolve(rootDir, "package.json"))).toString());
+const pkg = JSON.parse(
+	(await readFile(resolve(rootDir, "package.json"))).toString()
+);
 
 const browser = await puppeteer.launch();
 const page = await browser.newPage();

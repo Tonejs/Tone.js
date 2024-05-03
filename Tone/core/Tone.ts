@@ -13,16 +13,15 @@ import { log } from "./util/Debug.js";
 //-------------------------------------
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface BaseToneOptions { }
+export interface BaseToneOptions {}
 
 /**
  * Tone is the base class of all other classes.
- * 
+ *
  * @category Core
  * @constructor
  */
 export abstract class Tone {
-
 	/**
 	 * The version number semver
 	 */
@@ -64,7 +63,10 @@ export abstract class Tone {
 	protected log(...args: any[]): void {
 		// if the object is either set to debug = true
 		// or if there is a string on the Tone.global.with the class name
-		if (this.debug || (theWindow && this.toString() === theWindow.TONE_DEBUG_CLASS)) {
+		if (
+			this.debug ||
+			(theWindow && this.toString() === theWindow.TONE_DEBUG_CLASS)
+		) {
 			log(this, ...args);
 		}
 	}

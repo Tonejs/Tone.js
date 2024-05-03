@@ -6,20 +6,22 @@ import { SourceTests } from "../../test/helper/SourceTests.js";
 import { Noise } from "./Noise.js";
 
 describe("Noise", () => {
-
 	// run the common tests
 	BasicTests(Noise);
 	SourceTests(Noise);
 
 	it("matches a file", () => {
-		return CompareToFile(() => {
-			const noise = new Noise().toDestination();
-			noise.start(0.1).stop(0.2);
-		}, "noise.wav", 9);
+		return CompareToFile(
+			() => {
+				const noise = new Noise().toDestination();
+				noise.start(0.1).stop(0.2);
+			},
+			"noise.wav",
+			9
+		);
 	});
 
 	context("Get/Set", () => {
-
 		it("can be constructed with an options object", () => {
 			const noise = new Noise({
 				type: "brown",
@@ -44,7 +46,6 @@ describe("Noise", () => {
 				expect(noise.playbackRate).to.equal(3);
 			});
 		});
-
 	});
 
 	context("Fades", () => {
@@ -64,11 +65,10 @@ describe("Noise", () => {
 	});
 
 	context("Type", () => {
-
 		it("can be set to 3 noise types", () => {
 			const noise = new Noise();
 			const types = ["white", "brown", "pink"];
-			types.forEach(type => {
+			types.forEach((type) => {
 				// @ts-ignore
 				noise.type = type;
 				expect(noise.type).to.equal(type);

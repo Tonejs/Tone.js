@@ -8,11 +8,9 @@ import { Time, TimeClass } from "./Time.js";
 import { TransportTime } from "./TransportTime.js";
 
 describe("TimeClass", () => {
-
 	BasicTests(TimeClass);
 
 	context("Constructor", () => {
-
 		it("can be used as a function or instantiated", () => {
 			const t0 = Time();
 			expect(t0).to.be.instanceOf(TimeClass);
@@ -77,7 +75,10 @@ describe("TimeClass", () => {
 		it("evalutes objects", () => {
 			return Offline(() => {
 				expect(Time({ "4n": 3 }).valueOf()).to.equal(1.5);
-				expect(Time({ "8t": 2, "1m": 3 }).valueOf()).to.be.closeTo(6.33, 0.01);
+				expect(Time({ "8t": 2, "1m": 3 }).valueOf()).to.be.closeTo(
+					6.33,
+					0.01
+				);
 				expect(Time({ "2n": 1, "8n": 1.5 }).valueOf()).to.equal(1.375);
 				expect(Time({ "2n": 1, "8n": -1 }).valueOf()).to.equal(0.75);
 			});
@@ -85,7 +86,6 @@ describe("TimeClass", () => {
 	});
 
 	context("Quantizes values", () => {
-
 		it("returns the time quantized to the a subdivision", () => {
 			expect(Time(1.1).quantize(0.5).valueOf()).to.be.closeTo(1, 0.01);
 			expect(Time(2.3).quantize(0.5).valueOf()).to.be.closeTo(2.5, 0.01);
@@ -103,16 +103,21 @@ describe("TimeClass", () => {
 				const transport = context.transport;
 				transport.start(0.1);
 				return atTime(0.69, () => {
-					expect(new TimeClass(context, "@1m").valueOf()).to.be.closeTo(2.1, 0.01);
-					expect(new TimeClass(context, "@4n").valueOf()).to.be.closeTo(1.1, 0.01);
-					expect(new TimeClass(context, "@8n").valueOf()).to.be.closeTo(0.85, 0.01);
+					expect(
+						new TimeClass(context, "@1m").valueOf()
+					).to.be.closeTo(2.1, 0.01);
+					expect(
+						new TimeClass(context, "@4n").valueOf()
+					).to.be.closeTo(1.1, 0.01);
+					expect(
+						new TimeClass(context, "@8n").valueOf()
+					).to.be.closeTo(0.85, 0.01);
 				});
 			}, 0.7);
 		});
 	});
 
 	context("Operators", () => {
-
 		it("can add the current time", () => {
 			const now = getContext().now();
 			expect(Time("+4").valueOf()).to.be.closeTo(4 + now, 0.02);
@@ -123,18 +128,20 @@ describe("TimeClass", () => {
 			expect(Time(4).quantize(3)).to.equal(3);
 			expect(Time(5).quantize(3)).to.equal(6);
 		});
-
 	});
 
 	context("Conversions", () => {
-
 		it("converts time into notation", () => {
 			return Offline(() => {
 				expect(Time("4n").toNotation()).to.equal("4n");
 				expect(Time(1.5).toNotation()).to.equal("2n.");
 				expect(Time(0).toNotation()).to.equal("0");
 				expect(Time("1:2:3").toNotation()).to.equal("1m");
-				expect(Time(Time("2n").valueOf() + Time("4n").valueOf()).toNotation()).to.equal("2n.");
+				expect(
+					Time(
+						Time("2n").valueOf() + Time("4n").valueOf()
+					).toNotation()
+				).to.equal("2n.");
 			});
 		});
 
@@ -169,13 +176,17 @@ describe("TimeClass", () => {
 				// trailing zero removal test
 				transport.bpm.value = 100;
 				expect(Time("0:1:3").toBarsBeatsSixteenths()).to.equal("0:1:3");
-				expect(Time("14:0:0").toBarsBeatsSixteenths()).to.equal("14:0:0");
-				expect(Time("15:0:0").toBarsBeatsSixteenths()).to.equal("15:0:0");
+				expect(Time("14:0:0").toBarsBeatsSixteenths()).to.equal(
+					"14:0:0"
+				);
+				expect(Time("15:0:0").toBarsBeatsSixteenths()).to.equal(
+					"15:0:0"
+				);
 				transport.bpm.value = 90;
-				expect(Time("100:0:0").toBarsBeatsSixteenths()).to.equal("100:0:0");
+				expect(Time("100:0:0").toBarsBeatsSixteenths()).to.equal(
+					"100:0:0"
+				);
 			});
 		});
-
 	});
-
 });

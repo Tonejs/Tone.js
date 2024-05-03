@@ -7,11 +7,9 @@ import { Offline } from "../../../test/helper/Offline.js";
 import { Signal } from "../../signal/index.js";
 
 describe("FeedbackCombFilter", () => {
-
 	BasicTests(FeedbackCombFilter);
 
 	context("Comb Filtering", () => {
-
 		it("can be constructed with an object", () => {
 			const fbcf = new FeedbackCombFilter({
 				delayTime: 0.2,
@@ -35,7 +33,7 @@ describe("FeedbackCombFilter", () => {
 		});
 
 		it("passes the incoming signal through", () => {
-			return PassAudio(input => {
+			return PassAudio((input) => {
 				const fbcf = new FeedbackCombFilter({
 					delayTime: 0.0,
 					resonance: 0,
@@ -52,7 +50,7 @@ describe("FeedbackCombFilter", () => {
 				}).toDestination();
 				const sig = new Signal(0).connect(fbcf);
 				sig.setValueAtTime(1, 0);
-			}, 0.2).then(buffer => {
+			}, 0.2).then((buffer) => {
 				expect(buffer.getValueAtTime(0)).to.equal(0);
 				expect(buffer.getValueAtTime(0.999)).to.equal(0);
 				expect(buffer.getValueAtTime(0.101)).to.equal(1);
@@ -69,7 +67,7 @@ describe("FeedbackCombFilter", () => {
 				const sig = new Signal(0).connect(fbcf);
 				sig.setValueAtTime(1, 0);
 				sig.setValueAtTime(0, 0.1);
-			}, 0.4).then(buffer => {
+			}, 0.4).then((buffer) => {
 				expect(buffer.getValueAtTime(0)).to.equal(0);
 				expect(buffer.getValueAtTime(0.101)).to.equal(1);
 				expect(buffer.getValueAtTime(0.201)).to.equal(0.5);
@@ -93,4 +91,3 @@ describe("FeedbackCombFilter", () => {
 		};
 	});
 });
-

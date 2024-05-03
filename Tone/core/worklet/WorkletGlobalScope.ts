@@ -14,7 +14,7 @@ export function addToWorklet(classOrFunction: string) {
  * Register a processor in the AudioWorkletGlobalScope with the given name
  */
 export function registerProcessor(name: string, classDesc: string) {
-	const processor = /* javascript */`registerProcessor("${name}", ${classDesc})`;
+	const processor = /* javascript */ `registerProcessor("${name}", ${classDesc})`;
 	workletContext.add(processor);
 }
 

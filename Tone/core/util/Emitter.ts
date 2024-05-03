@@ -13,7 +13,6 @@ export interface EmitterEventObject {
  * @category Core
  */
 export class Emitter<EventType extends string = string> extends Tone {
-
 	readonly name: string = "Emitter";
 
 	/**
@@ -29,7 +28,7 @@ export class Emitter<EventType extends string = string> extends Tone {
 	on(event: EventType, callback: (...args: any[]) => void): this {
 		// split the event
 		const events = event.split(/\W+/);
-		events.forEach(eventName => {
+		events.forEach((eventName) => {
 			if (isUndef(this._events)) {
 				this._events = {};
 			}
@@ -65,7 +64,7 @@ export class Emitter<EventType extends string = string> extends Tone {
 	 */
 	off(event: EventType, callback?: (...args: any[]) => void): this {
 		const events = event.split(/\W+/);
-		events.forEach(eventName => {
+		events.forEach((eventName) => {
 			if (isUndef(this._events)) {
 				this._events = {};
 			}
@@ -108,8 +107,11 @@ export class Emitter<EventType extends string = string> extends Tone {
 	 */
 	static mixin(constr: any): void {
 		// instance._events = {};
-		["on", "once", "off", "emit"].forEach(name => {
-			const property = Object.getOwnPropertyDescriptor(Emitter.prototype, name) as PropertyDescriptor;
+		["on", "once", "off", "emit"].forEach((name) => {
+			const property = Object.getOwnPropertyDescriptor(
+				Emitter.prototype,
+				name
+			) as PropertyDescriptor;
 			Object.defineProperty(constr.prototype, name, property);
 		});
 	}

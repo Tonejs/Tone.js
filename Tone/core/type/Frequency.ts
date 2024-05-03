@@ -4,7 +4,15 @@ import { intervalToFrequencyRatio, mtof } from "./Conversions.js";
 import { ftom, getA4, setA4 } from "./Conversions.js";
 import { TimeClass } from "./Time.js";
 import { TimeBaseUnit, TimeExpression, TimeValue } from "./TimeBase.js";
-import { Frequency, Hertz, Interval, MidiNote, Note, Seconds, Ticks } from "./Units.js";
+import {
+	Frequency,
+	Hertz,
+	Interval,
+	MidiNote,
+	Note,
+	Seconds,
+	Ticks,
+} from "./Units.js";
 
 export type FrequencyUnit = TimeBaseUnit | "midi";
 
@@ -17,8 +25,10 @@ export type FrequencyUnit = TimeBaseUnit | "midi";
  * Tone.Frequency("C3").transpose(4);
  * @category Unit
  */
-export class FrequencyClass<Type extends number = Hertz> extends TimeClass<Type, FrequencyUnit> {
-
+export class FrequencyClass<Type extends number = Hertz> extends TimeClass<
+	Type,
+	FrequencyUnit
+> {
 	readonly name: string = "Frequency";
 
 	readonly defaultUnits: FrequencyUnit = "hz";
@@ -67,7 +77,9 @@ export class FrequencyClass<Type extends number = Hertz> extends TimeClass<Type,
 				method(m, q, s): number {
 					let total = 1;
 					if (m && m !== "0") {
-						total *= this._beatsToUnits(this._getTimeSignature() * parseFloat(m));
+						total *= this._beatsToUnits(
+							this._getTimeSignature() * parseFloat(m)
+						);
 					}
 					if (q && q !== "0") {
 						total *= this._beatsToUnits(parseFloat(q));
@@ -92,7 +104,10 @@ export class FrequencyClass<Type extends number = Hertz> extends TimeClass<Type,
 	 * Tone.Frequency("A4").transpose(3); // "C5"
 	 */
 	transpose(interval: Interval): FrequencyClass {
-		return new FrequencyClass(this.context, this.valueOf() * intervalToFrequencyRatio(interval));
+		return new FrequencyClass(
+			this.context,
+			this.valueOf() * intervalToFrequencyRatio(interval)
+		);
 	}
 
 	/**
@@ -103,7 +118,7 @@ export class FrequencyClass<Type extends number = Hertz> extends TimeClass<Type,
 	 * Tone.Frequency("A4").harmonize([0, 3, 7]); // ["A4", "C5", "E5"]
 	 */
 	harmonize(intervals: Interval[]): FrequencyClass[] {
-		return intervals.map(interval => {
+		return intervals.map((interval) => {
 			return this.transpose(interval);
 		});
 	}
@@ -135,7 +150,7 @@ export class FrequencyClass<Type extends number = Hertz> extends TimeClass<Type,
 			noteNumber += -12 * octave;
 		}
 		const noteName = scaleIndexToNote[noteNumber % 12];
-		return noteName + octave.toString() as Note;
+		return (noteName + octave.toString()) as Note;
 	}
 
 	/**
@@ -176,21 +191,21 @@ export class FrequencyClass<Type extends number = Hertz> extends TimeClass<Type,
 	 * Returns the value of a tick in the current time units
 	 */
 	protected _ticksToUnits(ticks: Ticks): Type {
-		return 1 / ((ticks * 60) / (this._getBpm() * this._getPPQ())) as Type;
+		return (1 / ((ticks * 60) / (this._getBpm() * this._getPPQ()))) as Type;
 	}
 
 	/**
 	 * Return the value of the beats in the current units
 	 */
 	protected _beatsToUnits(beats: number): Type {
-		return 1 / super._beatsToUnits(beats) as Type;
+		return (1 / super._beatsToUnits(beats)) as Type;
 	}
 
 	/**
 	 * Returns the value of a second in the current units
 	 */
 	protected _secondsToUnits(seconds: Seconds): Type {
-		return 1 / seconds as Type;
+		return (1 / seconds) as Type;
 	}
 
 	/**
@@ -220,20 +235,96 @@ export class FrequencyClass<Type extends number = Hertz> extends TimeClass<Type,
  * @hidden
  */
 const noteToScaleIndex = {
-	cbbb: -3, cbb: -2, cb: -1, c:  0, "c#":  1, cx:  2, "c##":  2, "c###":  3, "cx#":  3, "c#x":  3,
-	dbbb: -1, dbb:  0, db:  1, d:  2, "d#":  3, dx:  4, "d##":  4, "d###":  5, "dx#":  5, "d#x":  5,
-	ebbb:  1, ebb:  2, eb:  3, e:  4, "e#":  5, ex:  6, "e##":  6, "e###":  7, "ex#":  7, "e#x":  7,
-	fbbb:  2, fbb:  3, fb:  4, f:  5, "f#":  6, fx:  7, "f##":  7, "f###":  8, "fx#":  8, "f#x":  8,
-	gbbb:  4, gbb:  5, gb:  6, g:  7, "g#":  8, gx:  9, "g##":  9, "g###": 10, "gx#": 10, "g#x": 10,
-	abbb:  6, abb:  7, ab:  8, a:  9, "a#": 10, ax: 11, "a##": 11, "a###": 12, "ax#": 12, "a#x": 12,
-	bbbb:  8, bbb:  9, bb: 10, b: 11, "b#": 12, bx: 13, "b##": 13, "b###": 14, "bx#": 14, "b#x": 14,
+	cbbb: -3,
+	cbb: -2,
+	cb: -1,
+	c: 0,
+	"c#": 1,
+	cx: 2,
+	"c##": 2,
+	"c###": 3,
+	"cx#": 3,
+	"c#x": 3,
+	dbbb: -1,
+	dbb: 0,
+	db: 1,
+	d: 2,
+	"d#": 3,
+	dx: 4,
+	"d##": 4,
+	"d###": 5,
+	"dx#": 5,
+	"d#x": 5,
+	ebbb: 1,
+	ebb: 2,
+	eb: 3,
+	e: 4,
+	"e#": 5,
+	ex: 6,
+	"e##": 6,
+	"e###": 7,
+	"ex#": 7,
+	"e#x": 7,
+	fbbb: 2,
+	fbb: 3,
+	fb: 4,
+	f: 5,
+	"f#": 6,
+	fx: 7,
+	"f##": 7,
+	"f###": 8,
+	"fx#": 8,
+	"f#x": 8,
+	gbbb: 4,
+	gbb: 5,
+	gb: 6,
+	g: 7,
+	"g#": 8,
+	gx: 9,
+	"g##": 9,
+	"g###": 10,
+	"gx#": 10,
+	"g#x": 10,
+	abbb: 6,
+	abb: 7,
+	ab: 8,
+	a: 9,
+	"a#": 10,
+	ax: 11,
+	"a##": 11,
+	"a###": 12,
+	"ax#": 12,
+	"a#x": 12,
+	bbbb: 8,
+	bbb: 9,
+	bb: 10,
+	b: 11,
+	"b#": 12,
+	bx: 13,
+	"b##": 13,
+	"b###": 14,
+	"bx#": 14,
+	"b#x": 14,
 };
 
 /**
  * scale index to note (sharps)
  * @hidden
  */
-const scaleIndexToNote = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+const scaleIndexToNote = [
+	"C",
+	"C#",
+	"D",
+	"D#",
+	"E",
+	"F",
+	"F#",
+	"G",
+	"G#",
+	"A",
+	"A#",
+	"B",
+];
 
 /**
  * Convert a value into a FrequencyClass object.
@@ -245,6 +336,9 @@ const scaleIndexToNote = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", 
  * const hertz = Tone.Frequency(38, "midi").toFrequency();
  * console.log(hertz);
  */
-export function Frequency(value?: TimeValue | Frequency, units?: FrequencyUnit): FrequencyClass {
+export function Frequency(
+	value?: TimeValue | Frequency,
+	units?: FrequencyUnit
+): FrequencyClass {
 	return new FrequencyClass(getContext(), value, units);
 }

@@ -7,32 +7,44 @@ import { CompareToFile } from "../../../test/helper/CompareToFile.js";
 import { atTime, Offline } from "../../../test/helper/Offline.js";
 
 describe("OnePoleFilter", () => {
-
 	BasicTests(OnePoleFilter);
 
 	it("matches a file when set to lowpass", () => {
-		return CompareToFile(() => {
-			const filter = new OnePoleFilter(300, "lowpass").toDestination();
-			const osc = new Oscillator().connect(filter);
-			osc.type = "square";
-			osc.start(0).stop(0.1);
-		}, "onePoleLowpass.wav", 0.05);
+		return CompareToFile(
+			() => {
+				const filter = new OnePoleFilter(
+					300,
+					"lowpass"
+				).toDestination();
+				const osc = new Oscillator().connect(filter);
+				osc.type = "square";
+				osc.start(0).stop(0.1);
+			},
+			"onePoleLowpass.wav",
+			0.05
+		);
 	});
 
 	it("matches a file when set to highpass", () => {
-		return CompareToFile(() => {
-			const filter = new OnePoleFilter(700, "highpass").toDestination();
-			const osc = new Oscillator().connect(filter);
-			osc.type = "square";
-			osc.start(0).stop(0.1);
-		}, "onePoleHighpass.wav", 0.05);
+		return CompareToFile(
+			() => {
+				const filter = new OnePoleFilter(
+					700,
+					"highpass"
+				).toDestination();
+				const osc = new Oscillator().connect(filter);
+				osc.type = "square";
+				osc.start(0).stop(0.1);
+			},
+			"onePoleHighpass.wav",
+			0.05
+		);
 	});
 
 	context("Filtering", () => {
-
 		it("can set the frequency more than once", () => {
 			return Offline(() => {
-				const filter = new OnePoleFilter(200);	
+				const filter = new OnePoleFilter(200);
 				filter.frequency = 300;
 				return atTime(0.1, () => {
 					filter.frequency = 400;
@@ -43,7 +55,7 @@ describe("OnePoleFilter", () => {
 		it("can be constructed with an object", () => {
 			const filter = new OnePoleFilter({
 				frequency: 400,
-				type: "lowpass"
+				type: "lowpass",
 			});
 			expect(filter.frequency).to.be.closeTo(400, 0.1);
 			expect(filter.type).to.equal("lowpass");
@@ -61,7 +73,7 @@ describe("OnePoleFilter", () => {
 			const filter = new OnePoleFilter();
 			filter.set({
 				frequency: 200,
-				type: "highpass"
+				type: "highpass",
 			});
 			expect(filter.get().type).to.equal("highpass");
 			expect(filter.get().frequency).to.be.closeTo(200, 0.1);
@@ -77,14 +89,12 @@ describe("OnePoleFilter", () => {
 	});
 
 	context("Response Curve", () => {
-
 		it("can get the response curve", () => {
 			const filter = new OnePoleFilter();
 			const response = filter.getFrequencyResponse(128);
 			expect(response.length).to.equal(128);
-			response.forEach(v => expect(v).to.be.within(0, 1));
+			response.forEach((v) => expect(v).to.be.within(0, 1));
 			filter.dispose();
 		});
-
 	});
 });

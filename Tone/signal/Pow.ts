@@ -13,11 +13,10 @@ export interface PowOptions extends ToneAudioNodeOptions {
  * @example
  * const pow = new Tone.Pow(2);
  * const sig = new Tone.Signal(0.5).connect(pow);
- * // output of pow is 0.25. 
+ * // output of pow is 0.25.
  * @category Signal
  */
 export class Pow extends SignalOperator<PowOptions> {
-
 	readonly name: string = "Pow";
 
 	private _exponent: number;
@@ -34,14 +33,23 @@ export class Pow extends SignalOperator<PowOptions> {
 	constructor(value?: number);
 	constructor(options?: Partial<PowOptions>);
 	constructor() {
-		super(Object.assign(optionsFromArguments(Pow.getDefaults(), arguments, ["value"])));
-		const options = optionsFromArguments(Pow.getDefaults(), arguments, ["value"]);
+		super(
+			Object.assign(
+				optionsFromArguments(Pow.getDefaults(), arguments, ["value"])
+			)
+		);
+		const options = optionsFromArguments(Pow.getDefaults(), arguments, [
+			"value",
+		]);
 
-		this._exponentScaler = this.input = this.output = new WaveShaper({
-			context: this.context,
-			mapping: this._expFunc(options.value),
-			length: 8192,
-		});
+		this._exponentScaler =
+			this.input =
+			this.output =
+				new WaveShaper({
+					context: this.context,
+					mapping: this._expFunc(options.value),
+					length: 8192,
+				});
 
 		this._exponent = options.value;
 	}

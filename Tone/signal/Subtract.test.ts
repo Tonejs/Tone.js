@@ -5,11 +5,9 @@ import { Signal } from "./Signal.js";
 import { Subtract } from "./Subtract.js";
 
 describe("Subtract", () => {
-
 	BasicTests(Subtract);
 
 	context("Subtraction", () => {
-
 		it("handles input and output connections", () => {
 			const subtract = new Subtract();
 			connectFrom().connect(subtract);

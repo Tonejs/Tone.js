@@ -4,7 +4,6 @@ import { getContext } from "../Global.js";
 import { ListenerClass } from "./Listener.js";
 
 describe("Listener", () => {
-
 	it("creates itself on the context", () => {
 		expect(getContext().listener).instanceOf(ListenerClass);
 	});

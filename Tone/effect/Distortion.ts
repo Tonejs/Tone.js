@@ -18,7 +18,6 @@ export interface DistortionOptions extends EffectOptions {
  * @category Effect
  */
 export class Distortion extends Effect<DistortionOptions> {
-
 	readonly name: string = "Distortion";
 
 	/**
@@ -37,9 +36,16 @@ export class Distortion extends Effect<DistortionOptions> {
 	constructor(distortion?: number);
 	constructor(options?: Partial<DistortionOptions>);
 	constructor() {
-
-		super(optionsFromArguments(Distortion.getDefaults(), arguments, ["distortion"]));
-		const options = optionsFromArguments(Distortion.getDefaults(), arguments, ["distortion"]);
+		super(
+			optionsFromArguments(Distortion.getDefaults(), arguments, [
+				"distortion",
+			])
+		);
+		const options = optionsFromArguments(
+			Distortion.getDefaults(),
+			arguments,
+			["distortion"]
+		);
 
 		this._shaper = new WaveShaper({
 			context: this.context,
@@ -75,7 +81,7 @@ export class Distortion extends Effect<DistortionOptions> {
 				// should output 0 when input is 0
 				return 0;
 			} else {
-				return (3 + k) * x * 20 * deg / (Math.PI + k * Math.abs(x));
+				return ((3 + k) * x * 20 * deg) / (Math.PI + k * Math.abs(x));
 			}
 		});
 	}

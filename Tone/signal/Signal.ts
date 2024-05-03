@@ -1,13 +1,19 @@
 import { AbstractParam } from "../core/context/AbstractParam.js";
 import { Param } from "../core/context/Param.js";
-import { InputNode, OutputNode, ToneAudioNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode.js";
+import {
+	InputNode,
+	OutputNode,
+	ToneAudioNode,
+	ToneAudioNodeOptions,
+} from "../core/context/ToneAudioNode.js";
 import { connect } from "../core/context/ToneAudioNode.js";
 import { Time, UnitMap, UnitName } from "../core/type/Units.js";
 import { isAudioParam } from "../core/util/AdvancedTypeCheck.js";
 import { optionsFromArguments } from "../core/util/Defaults.js";
 import { ToneConstantSource } from "./ToneConstantSource.js";
 
-export interface SignalOptions<TypeName extends UnitName> extends ToneAudioNodeOptions {
+export interface SignalOptions<TypeName extends UnitName>
+	extends ToneAudioNodeOptions {
 	value: UnitMap[TypeName];
 	units: TypeName;
 	convert: boolean;
@@ -34,9 +40,10 @@ export interface SignalOptions<TypeName extends UnitName> extends ToneAudioNodeO
  * signal.rampTo("C2", 4, "+0.5");
  * @category Signal
  */
-export class Signal<TypeName extends UnitName = "number"> extends ToneAudioNode<SignalOptions<any>>
-	implements AbstractParam<TypeName> {
-
+export class Signal<TypeName extends UnitName = "number">
+	extends ToneAudioNode<SignalOptions<any>>
+	implements AbstractParam<TypeName>
+{
 	readonly name: string = "Signal";
 
 	/**
@@ -59,10 +66,17 @@ export class Signal<TypeName extends UnitName = "number"> extends ToneAudioNode<
 	constructor(value?: UnitMap[TypeName], units?: TypeName);
 	constructor(options?: Partial<SignalOptions<TypeName>>);
 	constructor() {
+		super(
+			optionsFromArguments(Signal.getDefaults(), arguments, [
+				"value",
+				"units",
+			])
+		);
 
-		super(optionsFromArguments(Signal.getDefaults(), arguments, ["value", "units"]));
-
-		const options = optionsFromArguments(Signal.getDefaults(), arguments, ["value", "units"]) as SignalOptions<TypeName>;
+		const options = optionsFromArguments(Signal.getDefaults(), arguments, [
+			"value",
+			"units",
+		]) as SignalOptions<TypeName>;
 
 		this.output = this._constantSource = new ToneConstantSource({
 			context: this.context,
@@ -122,27 +136,52 @@ export class Signal<TypeName extends UnitName = "number"> extends ToneAudioNode<
 		this._param.exponentialRampToValueAtTime(value, time);
 		return this;
 	}
-	exponentialRampTo(value: UnitMap[TypeName], rampTime: Time, startTime?: Time): this {
+	exponentialRampTo(
+		value: UnitMap[TypeName],
+		rampTime: Time,
+		startTime?: Time
+	): this {
 		this._param.exponentialRampTo(value, rampTime, startTime);
 		return this;
 	}
-	linearRampTo(value: UnitMap[TypeName], rampTime: Time, startTime?: Time): this {
+	linearRampTo(
+		value: UnitMap[TypeName],
+		rampTime: Time,
+		startTime?: Time
+	): this {
 		this._param.linearRampTo(value, rampTime, startTime);
 		return this;
 	}
-	targetRampTo(value: UnitMap[TypeName], rampTime: Time, startTime?: Time): this {
+	targetRampTo(
+		value: UnitMap[TypeName],
+		rampTime: Time,
+		startTime?: Time
+	): this {
 		this._param.targetRampTo(value, rampTime, startTime);
 		return this;
 	}
-	exponentialApproachValueAtTime(value: UnitMap[TypeName], time: Time, rampTime: Time): this {
+	exponentialApproachValueAtTime(
+		value: UnitMap[TypeName],
+		time: Time,
+		rampTime: Time
+	): this {
 		this._param.exponentialApproachValueAtTime(value, time, rampTime);
 		return this;
 	}
-	setTargetAtTime(value: UnitMap[TypeName], startTime: Time, timeConstant: number): this {
+	setTargetAtTime(
+		value: UnitMap[TypeName],
+		startTime: Time,
+		timeConstant: number
+	): this {
 		this._param.setTargetAtTime(value, startTime, timeConstant);
 		return this;
 	}
-	setValueCurveAtTime(values: UnitMap[TypeName][], startTime: Time, duration: Time, scaling?: number): this {
+	setValueCurveAtTime(
+		values: UnitMap[TypeName][],
+		startTime: Time,
+		duration: Time,
+		scaling?: number
+	): this {
 		this._param.setValueCurveAtTime(values, startTime, duration, scaling);
 		return this;
 	}
@@ -210,9 +249,17 @@ export class Signal<TypeName extends UnitName = "number"> extends ToneAudioNode<
  * @param outputNum the optional output number
  * @param inputNum the input number
  */
-export function connectSignal(signal: OutputNode, destination: InputNode, outputNum?: number, inputNum?: number): void {
-	if (destination instanceof Param || isAudioParam(destination) ||
-		(destination instanceof Signal && destination.override)) {
+export function connectSignal(
+	signal: OutputNode,
+	destination: InputNode,
+	outputNum?: number,
+	inputNum?: number
+): void {
+	if (
+		destination instanceof Param ||
+		isAudioParam(destination) ||
+		(destination instanceof Signal && destination.override)
+	) {
 		// cancel changes
 		destination.cancelScheduledValues(0);
 		// reset the value

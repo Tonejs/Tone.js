@@ -13,7 +13,7 @@ export interface PatternOptions<ValueType> extends LoopOptions {
 
 /**
  * Pattern arpeggiates between the given notes
- * in a number of patterns. 
+ * in a number of patterns.
  * @example
  * const pattern = new Tone.Pattern((time, note) => {
  * 	// the order of the notes passed in depends on the pattern
@@ -21,7 +21,6 @@ export interface PatternOptions<ValueType> extends LoopOptions {
  * @category Event
  */
 export class Pattern<ValueType> extends Loop<PatternOptions<ValueType>> {
-
 	readonly name: string = "Pattern";
 
 	/**
@@ -32,12 +31,12 @@ export class Pattern<ValueType> extends Loop<PatternOptions<ValueType>> {
 	/**
 	 * The current index
 	 */
-	 private _index?: number;
+	private _index?: number;
 
 	/**
 	 * The current value
 	 */
-	 private _value?: ValueType;
+	private _value?: ValueType;
 
 	/**
 	 * Hold the pattern type
@@ -62,17 +61,29 @@ export class Pattern<ValueType> extends Loop<PatternOptions<ValueType>> {
 	constructor(
 		callback?: ToneEventCallback<ValueType>,
 		values?: ValueType[],
-		pattern?: PatternName,
+		pattern?: PatternName
 	);
 	constructor(options?: Partial<PatternOptions<ValueType>>);
 	constructor() {
-
-		super(optionsFromArguments(Pattern.getDefaults(), arguments, ["callback", "values", "pattern"]));
-		const options = optionsFromArguments(Pattern.getDefaults(), arguments, ["callback", "values", "pattern"]);
+		super(
+			optionsFromArguments(Pattern.getDefaults(), arguments, [
+				"callback",
+				"values",
+				"pattern",
+			])
+		);
+		const options = optionsFromArguments(Pattern.getDefaults(), arguments, [
+			"callback",
+			"values",
+			"pattern",
+		]);
 
 		this.callback = options.callback;
 		this._values = options.values;
-		this._pattern = PatternGenerator(options.values.length, options.pattern);
+		this._pattern = PatternGenerator(
+			options.values.length,
+			options.pattern
+		);
 		this._type = options.pattern;
 	}
 
@@ -116,12 +127,12 @@ export class Pattern<ValueType> extends Loop<PatternOptions<ValueType>> {
 	/**
 	 * The current index of the pattern.
 	 */
-	 get index(): number | undefined {
+	get index(): number | undefined {
 		return this._index;
 	}
 
 	/**
-	 * The pattern type. 
+	 * The pattern type.
 	 */
 	get pattern(): PatternName {
 		return this._type;
@@ -131,4 +142,3 @@ export class Pattern<ValueType> extends Loop<PatternOptions<ValueType>> {
 		this._pattern = PatternGenerator(this._values.length, this._type);
 	}
 }
-

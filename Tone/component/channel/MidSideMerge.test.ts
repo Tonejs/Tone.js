@@ -4,11 +4,9 @@ import { PassAudio } from "../../../test/helper/PassAudio.js";
 import { connectFrom, connectTo } from "../../../test/helper/Connect.js";
 
 describe("MidSideMerge", () => {
-
 	BasicTests(MidSideMerge);
 
 	context("Merging", () => {
-
 		it("handles inputs and outputs", () => {
 			const merge = new MidSideMerge();
 			merge.connect(connectTo());
@@ -25,4 +23,3 @@ describe("MidSideMerge", () => {
 		});
 	});
 });
-

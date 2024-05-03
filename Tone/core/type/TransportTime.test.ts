@@ -8,11 +8,9 @@ import { Time } from "./Time.js";
 import { TransportTime, TransportTimeClass } from "./TransportTime.js";
 
 describe("TransportTimeClass", () => {
-
 	BasicTests(TransportTime);
 
 	context("Constructor", () => {
-
 		it("can be made with or without 'new'", () => {
 			const t0 = TransportTime();
 			expect(t0).to.be.instanceOf(TransportTimeClass);
@@ -57,7 +55,9 @@ describe("TransportTimeClass", () => {
 				const transport = context.transport;
 				transport.start();
 				return atTime(0.29, () => {
-					expect(new TransportTimeClass(context).valueOf()).to.equal(transport.seconds);
+					expect(new TransportTimeClass(context).valueOf()).to.equal(
+						transport.seconds
+					);
 					transport.stop();
 				});
 			}, 0.3);
@@ -90,7 +90,9 @@ describe("TransportTimeClass", () => {
 		it("can convert from Ticks", () => {
 			return Offline((context) => {
 				const transport = context.transport;
-				expect(TransportTime(Ticks(transport.PPQ)).valueOf()).to.equal(0.5);
+				expect(TransportTime(Ticks(transport.PPQ)).valueOf()).to.equal(
+					0.5
+				);
 				expect(TransportTime(Ticks("4n")).valueOf()).to.equal(0.5);
 			});
 		});
@@ -98,16 +100,19 @@ describe("TransportTimeClass", () => {
 		it("can convert from an Object", () => {
 			return Offline(() => {
 				expect(TransportTime({ "4n": 2 }).valueOf()).to.equal(1);
-				expect(TransportTime({ "1n": 1, "8t": 2 }).valueOf()).to.be.closeTo(2.333, 0.01);
+				expect(
+					TransportTime({ "1n": 1, "8t": 2 }).valueOf()
+				).to.be.closeTo(2.333, 0.01);
 			});
 		});
 	});
 
 	context("Quantizes values", () => {
-
 		it("can quantize values", () => {
 			return Offline((context) => {
-				expect(TransportTime("4t").quantize("4n").valueOf()).to.be.closeTo(0.5, 0.01);
+				expect(
+					TransportTime("4t").quantize("4n").valueOf()
+				).to.be.closeTo(0.5, 0.01);
 			});
 		});
 
@@ -116,15 +121,18 @@ describe("TransportTimeClass", () => {
 				const transport = context.transport;
 				transport.start();
 				return atTime(0.59, () => {
-					expect(new TransportTimeClass(context, "@1m").valueOf()).to.be.closeTo(2, 0.01);
-					expect(new TransportTimeClass(context, "@4n").valueOf()).to.be.closeTo(1, 0.01);
+					expect(
+						new TransportTimeClass(context, "@1m").valueOf()
+					).to.be.closeTo(2, 0.01);
+					expect(
+						new TransportTimeClass(context, "@4n").valueOf()
+					).to.be.closeTo(1, 0.01);
 				});
 			}, 0.6);
 		});
 	});
 
 	context("Operators", () => {
-
 		it("can add the current time", () => {
 			return Offline((context) => {
 				const transport = context.transport;
@@ -132,17 +140,19 @@ describe("TransportTimeClass", () => {
 				return atTime(0.59, () => {
 					const now = transport.seconds;
 					const quarterNote = 60 / transport.bpm.value;
-					expect(new TransportTimeClass(context, "+4i").valueOf()).to.be.closeTo(4 / transport.PPQ + now, 0.1);
-					expect(new TransportTimeClass(context, "+2n").valueOf()).to.be.closeTo(quarterNote * 2 + now, 0.1);
+					expect(
+						new TransportTimeClass(context, "+4i").valueOf()
+					).to.be.closeTo(4 / transport.PPQ + now, 0.1);
+					expect(
+						new TransportTimeClass(context, "+2n").valueOf()
+					).to.be.closeTo(quarterNote * 2 + now, 0.1);
 					transport.stop();
 				});
 			}, 0.6);
 		});
-
 	});
 
 	context("Conversions", () => {
-
 		it("converts time into notation", () => {
 			return Offline((context) => {
 				const transport = context.transport;
@@ -157,7 +167,9 @@ describe("TransportTimeClass", () => {
 
 		it("converts time into samples", () => {
 			return Offline((context) => {
-				expect(TransportTime(2).toSamples()).to.equal(2 * context.sampleRate);
+				expect(TransportTime(2).toSamples()).to.equal(
+					2 * context.sampleRate
+				);
 			});
 		});
 
@@ -175,10 +187,13 @@ describe("TransportTimeClass", () => {
 
 		it("converts time into BarsBeatsSixteenths", () => {
 			return Offline(() => {
-				expect(TransportTime("3:1:3").toBarsBeatsSixteenths()).to.equal("3:1:3");
-				expect(TransportTime(2).toBarsBeatsSixteenths()).to.equal("1:0:0");
+				expect(TransportTime("3:1:3").toBarsBeatsSixteenths()).to.equal(
+					"3:1:3"
+				);
+				expect(TransportTime(2).toBarsBeatsSixteenths()).to.equal(
+					"1:0:0"
+				);
 			});
 		});
-
 	});
 });

@@ -23,8 +23,9 @@ import { InputNode, OutputNode } from "../core/context/ToneAudioNode.js";
  * // the output of mult is 20.
  * @category Signal
  */
-export class Multiply<TypeName extends "number" | "positive" = "number"> extends Signal<TypeName> {
-
+export class Multiply<
+	TypeName extends "number" | "positive" = "number",
+> extends Signal<TypeName> {
 	readonly name: string = "Multiply";
 
 	/**
@@ -58,16 +59,30 @@ export class Multiply<TypeName extends "number" | "positive" = "number"> extends
 	constructor(value?: number);
 	constructor(options?: Partial<SignalOptions<TypeName>>);
 	constructor() {
-		super(Object.assign(optionsFromArguments(Multiply.getDefaults(), arguments, ["value"])));
-		const options = optionsFromArguments(Multiply.getDefaults(), arguments, ["value"]);
+		super(
+			Object.assign(
+				optionsFromArguments(Multiply.getDefaults(), arguments, [
+					"value",
+				])
+			)
+		);
+		const options = optionsFromArguments(
+			Multiply.getDefaults(),
+			arguments,
+			["value"]
+		);
 
-		this._mult = this.input = this.output = new Gain({
-			context: this.context,
-			minValue: options.minValue,
-			maxValue: options.maxValue,
-		});
+		this._mult =
+			this.input =
+			this.output =
+				new Gain({
+					context: this.context,
+					minValue: options.minValue,
+					maxValue: options.maxValue,
+				});
 
-		this.factor = this._param = this._mult.gain as unknown as Param<TypeName>;
+		this.factor = this._param = this._mult
+			.gain as unknown as Param<TypeName>;
 		this.factor.setValueAtTime(options.value, 0);
 	}
 

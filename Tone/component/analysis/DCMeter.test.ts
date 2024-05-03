@@ -6,11 +6,9 @@ import { Signal } from "../../signal/Signal.js";
 import { DCMeter } from "./DCMeter.js";
 
 describe("DCMeter", () => {
-
 	BasicTests(DCMeter);
 
 	context("DCMetering", () => {
-
 		it("passes the audio through", () => {
 			return PassAudio((input) => {
 				const meter = new DCMeter().toDestination();

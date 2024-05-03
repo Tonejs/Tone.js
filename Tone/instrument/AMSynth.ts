@@ -15,11 +15,10 @@ export type AMSynthOptions = ModulationSynthOptions;
  * @example
  * const synth = new Tone.AMSynth().toDestination();
  * synth.triggerAttackRelease("C4", "4n");
- * 
+ *
  * @category Instrument
  */
 export class AMSynth extends ModulationSynth<AMSynthOptions> {
-
 	readonly name: string = "AMSynth";
 
 	/**

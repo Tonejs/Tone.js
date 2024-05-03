@@ -6,11 +6,9 @@ import { Offline } from "../../../test/helper/Offline.js";
 import { expect } from "chai";
 
 describe("Channel", () => {
-
 	BasicTests(Channel);
 
 	context("Channel", () => {
-
 		it("can pass volume and panning into the constructor", () => {
 			const channel = new Channel(-10, -1);
 			expect(channel.pan.value).to.be.closeTo(-1, 0.01);
@@ -23,7 +21,7 @@ describe("Channel", () => {
 				pan: 1,
 				volume: 6,
 				mute: false,
-				solo: true
+				solo: true,
 			});
 			expect(channel.pan.value).to.be.closeTo(1, 0.01);
 			expect(channel.volume.value).to.be.closeTo(6, 0.01);
@@ -31,7 +29,7 @@ describe("Channel", () => {
 			expect(channel.solo).to.be.true;
 			channel.dispose();
 		});
-			
+
 		it("passes the incoming signal through", () => {
 			return PassAudio((input) => {
 				const channel = new Channel().toDestination();
@@ -64,7 +62,7 @@ describe("Channel", () => {
 
 		describe("bus", () => {
 			it("can connect two channels together by name", () => {
-				return PassAudio(input => {
+				return PassAudio((input) => {
 					const sendChannel = new Channel();
 					input.connect(sendChannel);
 					sendChannel.send("test");

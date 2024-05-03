@@ -44,4 +44,3 @@ describe("DummyContext", () => {
 		context.immediate();
 	});
 });
-

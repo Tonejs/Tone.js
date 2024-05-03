@@ -6,7 +6,6 @@ import { Offline } from "./Offline.js";
 import { ToneAudioBuffer } from "./ToneAudioBuffer.js";
 
 describe("Offline", () => {
-
 	it("accepts a callback and a duration", () => {
 		return Offline(noOp, 0.01);
 	});
@@ -25,7 +24,7 @@ describe("Offline", () => {
 
 	it("silent by default", () => {
 		return Offline(noOp, 0.01, 1).then((buffer) => {
-			const isSilent = buffer.toArray().every(sample => sample === 0);
+			const isSilent = buffer.toArray().every((sample) => sample === 0);
 			expect(isSilent).to.equal(true);
 		});
 	});

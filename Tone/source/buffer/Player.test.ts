@@ -502,9 +502,9 @@ describe("Player", () => {
 				const player = new Player(buffer);
 				player.toDestination();
 				player
-						.start(0, 0, 0.05)
-						.start(0.1, 0, 0.05)
-						.start(0.2, 0, 0.05);
+					.start(0, 0, 0.05)
+					.start(0.1, 0, 0.05)
+					.start(0.2, 0, 0.05);
 				player.stop(0.1);
 			}, 0.3).then((buff) => {
 				expect(buff.getTimeOfLastSound()).to.be.closeTo(0.1, 0.02);
@@ -559,9 +559,9 @@ describe("Player", () => {
 		it("plays synced to the Transport", () => {
 			return Offline(({ transport }) => {
 				const player = new Player(buffer)
-						.sync()
-						.start(0)
-						.toDestination();
+					.sync()
+					.start(0)
+					.toDestination();
 				transport.start(0);
 			}, 0.05).then((buff) => {
 				expect(buff.isSilent()).to.be.false;
@@ -587,13 +587,13 @@ describe("Player", () => {
 		it("offsets correctly when started by the Transport", () => {
 			const testSample =
 				buffer.toArray(0)[
-						Math.floor(0.13125 * getContext().sampleRate)
+					Math.floor(0.13125 * getContext().sampleRate)
 				];
 			return Offline(({ transport }) => {
 				const player = new Player(buffer)
-						.sync()
-						.start(0, 0.1)
-						.toDestination();
+					.sync()
+					.start(0, 0.1)
+					.toDestination();
 				transport.start(0, 0.03125);
 			}, 0.05).then((buff) => {
 				expect(buff.toArray()[0][0]).to.equal(testSample);
@@ -699,25 +699,36 @@ describe("Player", () => {
 
 		it("stops only last activeSource when restarting at intervals < latencyHint", (done) => {
 			const originalLookAhead = getContext().lookAhead;
-			getContext().lookAhead = .3;
+			getContext().lookAhead = 0.3;
 			const player = new Player({
 				onload(): void {
 					player.start(undefined, undefined, 1);
-					setTimeout(() => player.restart(undefined, undefined, 1), 50);
-					setTimeout(() => player.restart(undefined, undefined, 1), 100);
-					setTimeout(() => player.restart(undefined, undefined, 1), 150);
+					setTimeout(
+						() => player.restart(undefined, undefined, 1),
+						50
+					);
+					setTimeout(
+						() => player.restart(undefined, undefined, 1),
+						100
+					);
+					setTimeout(
+						() => player.restart(undefined, undefined, 1),
+						150
+					);
 					setTimeout(() => {
 						player.restart(undefined, undefined, 1);
 						const checkStopTimes = new Set();
 						// @ts-ignore
-						player._activeSources.forEach(source => {
+						player._activeSources.forEach((source) => {
 							// @ts-ignore
 							checkStopTimes.add(source._stopTime);
 						});
 						getContext().lookAhead = originalLookAhead;
 						// ensure each source has a different stopTime
 						// @ts-ignore
-						expect(checkStopTimes.size).to.equal(player._activeSources.size);
+						expect(checkStopTimes.size).to.equal(
+							player._activeSources.size
+						);
 						done();
 					}, 250);
 				},

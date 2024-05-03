@@ -25,8 +25,9 @@ interface GainOptions<TypeName extends UnitName> extends ToneAudioNodeOptions {
  * 	gainNode.gain.rampTo(0, 0.4, 0.2);
  * }, 0.7, 1);
  */
-export class Gain<TypeName extends "gain" | "decibels" | "normalRange" = "gain"> extends ToneAudioNode<GainOptions<TypeName>> {
-
+export class Gain<
+	TypeName extends "gain" | "decibels" | "normalRange" = "gain",
+> extends ToneAudioNode<GainOptions<TypeName>> {
 	readonly name: string = "Gain";
 
 	/**
@@ -55,8 +56,16 @@ export class Gain<TypeName extends "gain" | "decibels" | "normalRange" = "gain">
 	constructor(gain?: UnitMap[TypeName], units?: TypeName);
 	constructor(options?: Partial<GainOptions<TypeName>>);
 	constructor() {
-		super(optionsFromArguments(Gain.getDefaults(), arguments, ["gain", "units"]));
-		const options = optionsFromArguments(Gain.getDefaults(), arguments, ["gain", "units"]);
+		super(
+			optionsFromArguments(Gain.getDefaults(), arguments, [
+				"gain",
+				"units",
+			])
+		);
+		const options = optionsFromArguments(Gain.getDefaults(), arguments, [
+			"gain",
+			"units",
+		]);
 
 		this.gain = new Param({
 			context: this.context,

@@ -4,11 +4,9 @@ import { GreaterThanZero } from "./GreaterThanZero.js";
 import { Signal } from "./Signal.js";
 
 describe("GreaterThanZero", () => {
-
 	BasicTests(GreaterThanZero);
 
 	describe("Comparison", () => {
-
 		it("Outputs 0 when the value is less than 0", () => {
 			return ConstantOutput(() => {
 				const signal = new Signal(-1);
@@ -46,4 +44,3 @@ describe("GreaterThanZero", () => {
 		});
 	});
 });
-

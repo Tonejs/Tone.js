@@ -11,21 +11,23 @@ import { PulseOscillator } from "./PulseOscillator.js";
 import { PWMOscillator } from "./PWMOscillator.js";
 
 describe("OmniOscillator", () => {
-
 	// run the common tests
 	BasicTests(OmniOscillator);
 	SourceTests(OmniOscillator);
 	OscillatorTests(OmniOscillator);
 
 	it("matches a file", () => {
-		return CompareToFile(() => {
-			const osc = new OmniOscillator(220, "fmsquare").toDestination();
-			osc.start(0.1).stop(0.2);
-		}, "omniOscillator.wav", 1.6);
+		return CompareToFile(
+			() => {
+				const osc = new OmniOscillator(220, "fmsquare").toDestination();
+				osc.start(0.1).stop(0.2);
+			},
+			"omniOscillator.wav",
+			1.6
+		);
 	});
 
 	context("Sound", () => {
-
 		it("makes a sound", () => {
 			return OutputAudio(() => {
 				const osc = new OmniOscillator();
@@ -90,11 +92,9 @@ describe("OmniOscillator", () => {
 				osc.type = "fmsine";
 			});
 		});
-
 	});
 
 	context("Type", () => {
-
 		it("can get and set the type", () => {
 			const osc = new OmniOscillator({
 				type: "sawtooth",
@@ -105,8 +105,16 @@ describe("OmniOscillator", () => {
 
 		it("handles various types", () => {
 			const osc = new OmniOscillator();
-			const types: OmniOscillatorType[] = ["triangle3", "sine", "pulse", "pwm", "amsine4", "fatsquare2", "fmsawtooth"];
-			types.forEach(type => {
+			const types: OmniOscillatorType[] = [
+				"triangle3",
+				"sine",
+				"pulse",
+				"pwm",
+				"amsine4",
+				"fatsquare2",
+				"fmsawtooth",
+			];
+			types.forEach((type) => {
 				osc.type = type;
 				expect(osc.type).to.equal(type);
 			});

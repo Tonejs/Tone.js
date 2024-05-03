@@ -3,7 +3,6 @@ import { OfflineContext } from "./core/context/OfflineContext.js";
 import { fromContext } from "./fromContext.js";
 
 describe("fromContext", () => {
-
 	let context: OfflineContext;
 
 	before(() => {
@@ -25,5 +24,4 @@ describe("fromContext", () => {
 		const tone = fromContext(context);
 		expect(tone.Time("+0.5").valueOf()).to.equal(0.5);
 	});
-
 });

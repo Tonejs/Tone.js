@@ -25,7 +25,6 @@ export interface MembraneSynthOptions extends SynthOptions {
  * @category Instrument
  */
 export class MembraneSynth extends Synth<MembraneSynthOptions> {
-
 	readonly name: string = "MembraneSynth";
 
 	/**
@@ -34,7 +33,7 @@ export class MembraneSynth extends Synth<MembraneSynthOptions> {
 	 * @max 8
 	 */
 	@range(0)
-		octaves: Positive;
+	octaves: Positive;
 
 	/**
 	 * The amount of time the frequency envelope takes.
@@ -42,7 +41,7 @@ export class MembraneSynth extends Synth<MembraneSynthOptions> {
 	 * @max 0.5
 	 */
 	@timeRange(0)
-		pitchDecay: Time;
+	pitchDecay: Time;
 
 	/**
 	 * Portamento is ignored in this synth. use pitch decay instead.
@@ -52,11 +51,13 @@ export class MembraneSynth extends Synth<MembraneSynthOptions> {
 	/**
 	 * @param options the options available for the synth see defaults
 	 */
-	constructor(options?: RecursivePartial<MembraneSynthOptions>)
+	constructor(options?: RecursivePartial<MembraneSynthOptions>);
 	constructor() {
-
 		super(optionsFromArguments(MembraneSynth.getDefaults(), arguments));
-		const options = optionsFromArguments(MembraneSynth.getDefaults(), arguments);
+		const options = optionsFromArguments(
+			MembraneSynth.getDefaults(),
+			arguments
+		);
 
 		this.pitchDecay = options.pitchDecay;
 		this.octaves = options.octaves;
@@ -82,10 +83,15 @@ export class MembraneSynth extends Synth<MembraneSynthOptions> {
 
 	setNote(note: Frequency | FrequencyClass, time?: Time): this {
 		const seconds = this.toSeconds(time);
-		const hertz = this.toFrequency(note instanceof FrequencyClass ? note.toFrequency() : note);
+		const hertz = this.toFrequency(
+			note instanceof FrequencyClass ? note.toFrequency() : note
+		);
 		const maxNote = hertz * this.octaves;
 		this.oscillator.frequency.setValueAtTime(maxNote, seconds);
-		this.oscillator.frequency.exponentialRampToValueAtTime(hertz, seconds + this.toSeconds(this.pitchDecay));
+		this.oscillator.frequency.exponentialRampToValueAtTime(
+			hertz,
+			seconds + this.toSeconds(this.pitchDecay)
+		);
 		return this;
 	}
 

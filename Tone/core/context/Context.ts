@@ -135,9 +135,13 @@ export class Context extends BaseContext {
 		this._context.onstatechange = () => {
 			this.emit("statechange", this.state);
 		};
-		
+
 		// if no custom updateInterval provided, updateInterval will be derived by lookAhead setter
-		this[arguments[0]?.hasOwnProperty("updateInterval") ? "_lookAhead" : "lookAhead"] = options.lookAhead;
+		this[
+			arguments[0]?.hasOwnProperty("updateInterval")
+				? "_lookAhead"
+				: "lookAhead"
+		] = options.lookAhead;
 	}
 
 	static getDefaults(): ContextOptions {
@@ -377,7 +381,7 @@ export class Context extends BaseContext {
 	 * Returns a promise which resolves when all of the worklets have been loaded on this context
 	 */
 	protected async workletsAreReady(): Promise<void> {
-		await this._workletPromise ? this._workletPromise : Promise.resolve();
+		(await this._workletPromise) ? this._workletPromise : Promise.resolve();
 	}
 
 	//---------------------------
@@ -421,8 +425,8 @@ export class Context extends BaseContext {
 	set lookAhead(time: Seconds) {
 		this._lookAhead = time;
 		// if lookAhead is 0, default to .01 updateInterval
-		this.updateInterval = time ? (time / 2) : .01;
-	}	
+		this.updateInterval = time ? time / 2 : 0.01;
+	}
 	private _lookAhead!: Seconds;
 
 	/**
@@ -475,7 +479,7 @@ export class Context extends BaseContext {
 
 	/**
 	 * Starts the audio context from a suspended state. This is required
-	 * to initially start the AudioContext. 
+	 * to initially start the AudioContext.
 	 * @see {@link start}
 	 */
 	resume(): Promise<void> {
@@ -491,7 +495,11 @@ export class Context extends BaseContext {
 	 * any AudioNodes created from the context will be silent.
 	 */
 	async close(): Promise<void> {
-		if (isAudioContext(this._context) && (this.state !== "closed") && !this._closeStarted) {
+		if (
+			isAudioContext(this._context) &&
+			this.state !== "closed" &&
+			!this._closeStarted
+		) {
 			this._closeStarted = true;
 			await this._context.close();
 		}

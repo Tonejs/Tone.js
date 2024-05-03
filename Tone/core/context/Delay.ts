@@ -22,7 +22,6 @@ export interface DelayOptions extends ToneAudioNodeOptions {
  * }, 0.5, 1);
  */
 export class Delay extends ToneAudioNode<DelayOptions> {
-
 	readonly name: string = "Delay";
 
 	/**
@@ -55,14 +54,28 @@ export class Delay extends ToneAudioNode<DelayOptions> {
 	constructor(delayTime?: Time, maxDelay?: Time);
 	constructor(options?: Partial<DelayOptions>);
 	constructor() {
-		super(optionsFromArguments(Delay.getDefaults(), arguments, ["delayTime", "maxDelay"]));
+		super(
+			optionsFromArguments(Delay.getDefaults(), arguments, [
+				"delayTime",
+				"maxDelay",
+			])
+		);
 
-		const options = optionsFromArguments(Delay.getDefaults(), arguments, ["delayTime", "maxDelay"]);
+		const options = optionsFromArguments(Delay.getDefaults(), arguments, [
+			"delayTime",
+			"maxDelay",
+		]);
 
 		const maxDelayInSeconds = this.toSeconds(options.maxDelay);
-		this._maxDelay = Math.max(maxDelayInSeconds, this.toSeconds(options.delayTime));
+		this._maxDelay = Math.max(
+			maxDelayInSeconds,
+			this.toSeconds(options.delayTime)
+		);
 
-		this._delayNode = this.input = this.output = this.context.createDelay(maxDelayInSeconds);
+		this._delayNode =
+			this.input =
+			this.output =
+				this.context.createDelay(maxDelayInSeconds);
 
 		this.delayTime = new Param({
 			context: this.context,

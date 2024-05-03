@@ -1,6 +1,13 @@
 import { AbstractParam } from "../context/AbstractParam.js";
 import { dbToGain, gainToDb } from "../type/Conversions.js";
-import { Decibels, Frequency, Positive, Time, UnitMap, UnitName } from "../type/Units.js";
+import {
+	Decibels,
+	Frequency,
+	Positive,
+	Time,
+	UnitMap,
+	UnitName,
+} from "../type/Units.js";
 import { isAudioParam } from "../util/AdvancedTypeCheck.js";
 import { optionsFromArguments } from "../util/Defaults.js";
 import { Timeline } from "../util/Timeline.js";
@@ -9,7 +16,8 @@ import { ToneWithContext, ToneWithContextOptions } from "./ToneWithContext.js";
 import { EQ } from "../util/Math.js";
 import { assert, assertRange } from "../util/Debug.js";
 
-export interface ParamOptions<TypeName extends UnitName> extends ToneWithContextOptions {
+export interface ParamOptions<TypeName extends UnitName>
+	extends ToneWithContextOptions {
 	units: TypeName;
 	value?: UnitMap[TypeName];
 	param: AudioParam | Param<TypeName>;
@@ -22,7 +30,12 @@ export interface ParamOptions<TypeName extends UnitName> extends ToneWithContext
 /**
  * the possible automation types
  */
-type AutomationType = "linearRampToValueAtTime" | "exponentialRampToValueAtTime" | "setValueAtTime" | "setTargetAtTime" | "cancelScheduledValues";
+type AutomationType =
+	| "linearRampToValueAtTime"
+	| "exponentialRampToValueAtTime"
+	| "setValueAtTime"
+	| "setTargetAtTime"
+	| "cancelScheduledValues";
 
 interface TargetAutomationEvent {
 	type: "setTargetAtTime";
@@ -50,8 +63,8 @@ export type AutomationEvent = NormalAutomationEvent | TargetAutomationEvent;
  */
 export class Param<TypeName extends UnitName = "number">
 	extends ToneWithContext<ParamOptions<TypeName>>
-	implements AbstractParam<TypeName> {
-
+	implements AbstractParam<TypeName>
+{
 	readonly name: string = "Param";
 
 	readonly input: GainNode | AudioParam;
@@ -88,7 +101,7 @@ export class Param<TypeName extends UnitName = "number">
 
 	/**
 	 * If the underlying AudioParam can be swapped out
-	 * using the setParam method. 
+	 * using the setParam method.
 	 */
 	protected readonly _swappable: boolean;
 
@@ -100,18 +113,33 @@ export class Param<TypeName extends UnitName = "number">
 	constructor(param: AudioParam, units?: TypeName, convert?: boolean);
 	constructor(options: Partial<ParamOptions<TypeName>>);
 	constructor() {
-		super(optionsFromArguments(Param.getDefaults(), arguments, ["param", "units", "convert"]));
+		super(
+			optionsFromArguments(Param.getDefaults(), arguments, [
+				"param",
+				"units",
+				"convert",
+			])
+		);
 
-		const options = optionsFromArguments(Param.getDefaults(), arguments, ["param", "units", "convert"]);
+		const options = optionsFromArguments(Param.getDefaults(), arguments, [
+			"param",
+			"units",
+			"convert",
+		]);
 
-		assert(isDefined(options.param) &&
-			(isAudioParam(options.param) || options.param instanceof Param), "param must be an AudioParam");
+		assert(
+			isDefined(options.param) &&
+				(isAudioParam(options.param) || options.param instanceof Param),
+			"param must be an AudioParam"
+		);
 
 		while (!isAudioParam(options.param)) {
 			options.param = options.param._param;
 		}
 
-		this._swappable = isDefined(options.swappable) ? options.swappable : false;
+		this._swappable = isDefined(options.swappable)
+			? options.swappable
+			: false;
 		if (this._swappable) {
 			this.input = this.context.createGain();
 			// initialize
@@ -128,7 +156,10 @@ export class Param<TypeName extends UnitName = "number">
 		this._maxValue = options.maxValue;
 
 		// if the value is defined, set it immediately
-		if (isDefined(options.value) && options.value !== this._toType(this._initialValue)) {
+		if (
+			isDefined(options.value) &&
+			options.value !== this._toType(this._initialValue)
+		) {
 			this.setValueAtTime(options.value, 0);
 		}
 	}
@@ -153,10 +184,17 @@ export class Param<TypeName extends UnitName = "number">
 		// if it's not the default minValue, return it
 		if (isDefined(this._minValue)) {
 			return this._minValue;
-		} else if (this.units === "time" || this.units === "frequency" ||
-			this.units === "normalRange" || this.units === "positive" ||
-			this.units === "transportTime" || this.units === "ticks" ||
-			this.units === "bpm" || this.units === "hertz" || this.units === "samples") {
+		} else if (
+			this.units === "time" ||
+			this.units === "frequency" ||
+			this.units === "normalRange" ||
+			this.units === "positive" ||
+			this.units === "transportTime" ||
+			this.units === "ticks" ||
+			this.units === "bpm" ||
+			this.units === "hertz" ||
+			this.units === "samples"
+		) {
 			return 0;
 		} else if (this.units === "audioRange") {
 			return -1;
@@ -170,8 +208,10 @@ export class Param<TypeName extends UnitName = "number">
 	get maxValue(): number {
 		if (isDefined(this._maxValue)) {
 			return this._maxValue;
-		} else if (this.units === "normalRange" ||
-			this.units === "audioRange") {
+		} else if (
+			this.units === "normalRange" ||
+			this.units === "audioRange"
+		) {
 			return 1;
 		} else {
 			return this._param.maxValue;
@@ -190,7 +230,11 @@ export class Param<TypeName extends UnitName = "number">
 	 */
 	private _assertRange(value: number): number {
 		if (isDefined(this.maxValue) && isDefined(this.minValue)) {
-			assertRange(value, this._fromType(this.minValue), this._fromType(this.maxValue));
+			assertRange(
+				value,
+				this._fromType(this.minValue),
+				this._fromType(this.maxValue)
+			);
 		}
 		return value;
 	}
@@ -237,8 +281,10 @@ export class Param<TypeName extends UnitName = "number">
 	setValueAtTime(value: UnitMap[TypeName], time: Time): this {
 		const computedTime = this.toSeconds(time);
 		const numericValue = this._fromType(value);
-		assert(isFinite(numericValue) && isFinite(computedTime),
-			`Invalid argument(s) to setValueAtTime: ${JSON.stringify(value)}, ${JSON.stringify(time)}`);
+		assert(
+			isFinite(numericValue) && isFinite(computedTime),
+			`Invalid argument(s) to setValueAtTime: ${JSON.stringify(value)}, ${JSON.stringify(time)}`
+		);
 		this._assertRange(numericValue);
 		this.log(this.units, "setValueAtTime", value, computedTime);
 		this._events.add({
@@ -258,7 +304,10 @@ export class Param<TypeName extends UnitName = "number">
 		// if it was set by
 		if (before === null) {
 			value = this._initialValue;
-		} else if (before.type === "setTargetAtTime" && (after === null || after.type === "setValueAtTime")) {
+		} else if (
+			before.type === "setTargetAtTime" &&
+			(after === null || after.type === "setValueAtTime")
+		) {
 			const previous = this._events.getBefore(before.time);
 			let previousVal;
 			if (previous === null) {
@@ -267,11 +316,20 @@ export class Param<TypeName extends UnitName = "number">
 				previousVal = previous.value;
 			}
 			if (before.type === "setTargetAtTime") {
-				value = this._exponentialApproach(before.time, previousVal, before.value, before.constant, computedTime);
+				value = this._exponentialApproach(
+					before.time,
+					previousVal,
+					before.value,
+					before.constant,
+					computedTime
+				);
 			}
 		} else if (after === null) {
 			value = before.value;
-		} else if (after.type === "linearRampToValueAtTime" || after.type === "exponentialRampToValueAtTime") {
+		} else if (
+			after.type === "linearRampToValueAtTime" ||
+			after.type === "exponentialRampToValueAtTime"
+		) {
 			let beforeValue = before.value;
 			if (before.type === "setTargetAtTime") {
 				const previous = this._events.getBefore(before.time);
@@ -282,9 +340,21 @@ export class Param<TypeName extends UnitName = "number">
 				}
 			}
 			if (after.type === "linearRampToValueAtTime") {
-				value = this._linearInterpolate(before.time, beforeValue, after.time, after.value, computedTime);
+				value = this._linearInterpolate(
+					before.time,
+					beforeValue,
+					after.time,
+					after.value,
+					computedTime
+				);
 			} else {
-				value = this._exponentialInterpolate(before.time, beforeValue, after.time, after.value, computedTime);
+				value = this._exponentialInterpolate(
+					before.time,
+					beforeValue,
+					after.time,
+					after.value,
+					computedTime
+				);
 			}
 		} else {
 			value = before.value;
@@ -306,8 +376,10 @@ export class Param<TypeName extends UnitName = "number">
 	linearRampToValueAtTime(value: UnitMap[TypeName], endTime: Time): this {
 		const numericValue = this._fromType(value);
 		const computedTime = this.toSeconds(endTime);
-		assert(isFinite(numericValue) && isFinite(computedTime),
-			`Invalid argument(s) to linearRampToValueAtTime: ${JSON.stringify(value)}, ${JSON.stringify(endTime)}`);
+		assert(
+			isFinite(numericValue) && isFinite(computedTime),
+			`Invalid argument(s) to linearRampToValueAtTime: ${JSON.stringify(value)}, ${JSON.stringify(endTime)}`
+		);
 		this._assertRange(numericValue);
 		this._events.add({
 			time: computedTime,
@@ -319,47 +391,79 @@ export class Param<TypeName extends UnitName = "number">
 		return this;
 	}
 
-	exponentialRampToValueAtTime(value: UnitMap[TypeName], endTime: Time): this {
+	exponentialRampToValueAtTime(
+		value: UnitMap[TypeName],
+		endTime: Time
+	): this {
 		let numericValue = this._fromType(value);
 		// the value can't be 0
 		numericValue = EQ(numericValue, 0) ? this._minOutput : numericValue;
 		this._assertRange(numericValue);
 		const computedTime = this.toSeconds(endTime);
-		assert(isFinite(numericValue) && isFinite(computedTime),
-			`Invalid argument(s) to exponentialRampToValueAtTime: ${JSON.stringify(value)}, ${JSON.stringify(endTime)}`);
+		assert(
+			isFinite(numericValue) && isFinite(computedTime),
+			`Invalid argument(s) to exponentialRampToValueAtTime: ${JSON.stringify(value)}, ${JSON.stringify(endTime)}`
+		);
 		// store the event
 		this._events.add({
 			time: computedTime,
 			type: "exponentialRampToValueAtTime",
 			value: numericValue,
 		});
-		this.log(this.units, "exponentialRampToValueAtTime", value, computedTime);
+		this.log(
+			this.units,
+			"exponentialRampToValueAtTime",
+			value,
+			computedTime
+		);
 		this._param.exponentialRampToValueAtTime(numericValue, computedTime);
 		return this;
 	}
 
-	exponentialRampTo(value: UnitMap[TypeName], rampTime: Time, startTime?: Time): this {
+	exponentialRampTo(
+		value: UnitMap[TypeName],
+		rampTime: Time,
+		startTime?: Time
+	): this {
 		startTime = this.toSeconds(startTime);
 		this.setRampPoint(startTime);
-		this.exponentialRampToValueAtTime(value, startTime + this.toSeconds(rampTime));
+		this.exponentialRampToValueAtTime(
+			value,
+			startTime + this.toSeconds(rampTime)
+		);
 		return this;
 	}
 
-	linearRampTo(value: UnitMap[TypeName], rampTime: Time, startTime?: Time): this {
+	linearRampTo(
+		value: UnitMap[TypeName],
+		rampTime: Time,
+		startTime?: Time
+	): this {
 		startTime = this.toSeconds(startTime);
 		this.setRampPoint(startTime);
-		this.linearRampToValueAtTime(value, startTime + this.toSeconds(rampTime));
+		this.linearRampToValueAtTime(
+			value,
+			startTime + this.toSeconds(rampTime)
+		);
 		return this;
 	}
 
-	targetRampTo(value: UnitMap[TypeName], rampTime: Time, startTime?: Time): this {
+	targetRampTo(
+		value: UnitMap[TypeName],
+		rampTime: Time,
+		startTime?: Time
+	): this {
 		startTime = this.toSeconds(startTime);
 		this.setRampPoint(startTime);
 		this.exponentialApproachValueAtTime(value, startTime, rampTime);
 		return this;
 	}
 
-	exponentialApproachValueAtTime(value: UnitMap[TypeName], time: Time, rampTime: Time): this {
+	exponentialApproachValueAtTime(
+		value: UnitMap[TypeName],
+		time: Time,
+		rampTime: Time
+	): this {
 		time = this.toSeconds(time);
 		rampTime = this.toSeconds(rampTime);
 		const timeConstant = Math.log(rampTime + 1) / Math.log(200);
@@ -370,26 +474,46 @@ export class Param<TypeName extends UnitName = "number">
 		return this;
 	}
 
-	setTargetAtTime(value: UnitMap[TypeName], startTime: Time, timeConstant: Positive): this {
+	setTargetAtTime(
+		value: UnitMap[TypeName],
+		startTime: Time,
+		timeConstant: Positive
+	): this {
 		const numericValue = this._fromType(value);
 		// The value will never be able to approach without timeConstant > 0.
-		assert(isFinite(timeConstant) && timeConstant > 0, "timeConstant must be a number greater than 0");
+		assert(
+			isFinite(timeConstant) && timeConstant > 0,
+			"timeConstant must be a number greater than 0"
+		);
 		const computedTime = this.toSeconds(startTime);
 		this._assertRange(numericValue);
-		assert(isFinite(numericValue) && isFinite(computedTime),
-			`Invalid argument(s) to setTargetAtTime: ${JSON.stringify(value)}, ${JSON.stringify(startTime)}`);
+		assert(
+			isFinite(numericValue) && isFinite(computedTime),
+			`Invalid argument(s) to setTargetAtTime: ${JSON.stringify(value)}, ${JSON.stringify(startTime)}`
+		);
 		this._events.add({
 			constant: timeConstant,
 			time: computedTime,
 			type: "setTargetAtTime",
 			value: numericValue,
 		});
-		this.log(this.units, "setTargetAtTime", value, computedTime, timeConstant);
+		this.log(
+			this.units,
+			"setTargetAtTime",
+			value,
+			computedTime,
+			timeConstant
+		);
 		this._param.setTargetAtTime(numericValue, computedTime, timeConstant);
 		return this;
 	}
 
-	setValueCurveAtTime(values: UnitMap[TypeName][], startTime: Time, duration: Time, scaling = 1): this {
+	setValueCurveAtTime(
+		values: UnitMap[TypeName][],
+		startTime: Time,
+		duration: Time,
+		scaling = 1
+	): this {
 		duration = this.toSeconds(duration);
 		startTime = this.toSeconds(startTime);
 		const startingValue = this._fromType(values[0]) * scaling;
@@ -397,14 +521,20 @@ export class Param<TypeName extends UnitName = "number">
 		const segTime = duration / (values.length - 1);
 		for (let i = 1; i < values.length; i++) {
 			const numericValue = this._fromType(values[i]) * scaling;
-			this.linearRampToValueAtTime(this._toType(numericValue), startTime + i * segTime);
+			this.linearRampToValueAtTime(
+				this._toType(numericValue),
+				startTime + i * segTime
+			);
 		}
 		return this;
 	}
 
 	cancelScheduledValues(time: Time): this {
 		const computedTime = this.toSeconds(time);
-		assert(isFinite(computedTime), `Invalid argument to cancelScheduledValues: ${JSON.stringify(time)}`);
+		assert(
+			isFinite(computedTime),
+			`Invalid argument to cancelScheduledValues: ${JSON.stringify(time)}`
+		);
 		this._events.cancel(computedTime);
 		this._param.cancelScheduledValues(computedTime);
 		this.log(this.units, "cancelScheduledValues", computedTime);
@@ -415,10 +545,18 @@ export class Param<TypeName extends UnitName = "number">
 		const computedTime = this.toSeconds(time);
 		const valueAtTime = this._fromType(this.getValueAtTime(computedTime));
 		// remove the schedule events
-		assert(isFinite(computedTime), `Invalid argument to cancelAndHoldAtTime: ${JSON.stringify(time)}`);
+		assert(
+			isFinite(computedTime),
+			`Invalid argument to cancelAndHoldAtTime: ${JSON.stringify(time)}`
+		);
 
-		this.log(this.units, "cancelAndHoldAtTime", computedTime, "value=" + valueAtTime);
-		
+		this.log(
+			this.units,
+			"cancelAndHoldAtTime",
+			computedTime,
+			"value=" + valueAtTime
+		);
+
 		// if there is an event at the given computedTime
 		// and that even is not a "set"
 		const before = this._events.get(computedTime);
@@ -437,9 +575,15 @@ export class Param<TypeName extends UnitName = "number">
 			// cancel the next event(s)
 			this._events.cancel(after.time);
 			if (after.type === "linearRampToValueAtTime") {
-				this.linearRampToValueAtTime(this._toType(valueAtTime), computedTime);
+				this.linearRampToValueAtTime(
+					this._toType(valueAtTime),
+					computedTime
+				);
 			} else if (after.type === "exponentialRampToValueAtTime") {
-				this.exponentialRampToValueAtTime(this._toType(valueAtTime), computedTime);
+				this.exponentialRampToValueAtTime(
+					this._toType(valueAtTime),
+					computedTime
+				);
 			}
 		}
 
@@ -453,8 +597,16 @@ export class Param<TypeName extends UnitName = "number">
 		return this;
 	}
 
-	rampTo(value: UnitMap[TypeName], rampTime: Time = 0.1, startTime?: Time): this {
-		if (this.units === "frequency" || this.units === "bpm" || this.units === "decibels") {
+	rampTo(
+		value: UnitMap[TypeName],
+		rampTime: Time = 0.1,
+		startTime?: Time
+	): this {
+		if (
+			this.units === "frequency" ||
+			this.units === "bpm" ||
+			this.units === "decibels"
+		) {
 			this.exponentialRampTo(value, rampTime, startTime);
 		} else {
 			this.linearRampTo(value, rampTime, startTime);
@@ -480,10 +632,13 @@ export class Param<TypeName extends UnitName = "number">
 			const endTime = nextEvent ? nextEvent.time : now + 2;
 			const subdivisions = (endTime - now) / 10;
 			for (let i = now; i < endTime; i += subdivisions) {
-				param.linearRampToValueAtTime(this.getValueAtTime(i) as number, i);
+				param.linearRampToValueAtTime(
+					this.getValueAtTime(i) as number,
+					i
+				);
 			}
 		}
-		this._events.forEachAfter(this.context.currentTime, event => {
+		this._events.forEachAfter(this.context.currentTime, (event) => {
 			if (event.type === "cancelScheduledValues") {
 				param.cancelScheduledValues(event.time);
 			} else if (event.type === "setTargetAtTime") {
@@ -496,11 +651,14 @@ export class Param<TypeName extends UnitName = "number">
 	}
 
 	/**
-	 * Replace the Param's internal AudioParam. Will apply scheduled curves 
+	 * Replace the Param's internal AudioParam. Will apply scheduled curves
 	 * onto the parameter and replace the connections.
 	 */
 	setParam(param: AudioParam): this {
-		assert(this._swappable, "The Param must be assigned as 'swappable' in the constructor");
+		assert(
+			this._swappable,
+			"The Param must be assigned as 'swappable' in the constructor"
+		);
 		const input = this.input as GainNode;
 		input.disconnect(this._param);
 		this.apply(param);
@@ -525,17 +683,35 @@ export class Param<TypeName extends UnitName = "number">
 	//-------------------------------------
 
 	// Calculates the the value along the curve produced by setTargetAtTime
-	protected _exponentialApproach(t0: number, v0: number, v1: number, timeConstant: number, t: number): number {
+	protected _exponentialApproach(
+		t0: number,
+		v0: number,
+		v1: number,
+		timeConstant: number,
+		t: number
+	): number {
 		return v1 + (v0 - v1) * Math.exp(-(t - t0) / timeConstant);
 	}
 
 	// Calculates the the value along the curve produced by linearRampToValueAtTime
-	protected _linearInterpolate(t0: number, v0: number, t1: number, v1: number, t: number): number {
+	protected _linearInterpolate(
+		t0: number,
+		v0: number,
+		t1: number,
+		v1: number,
+		t: number
+	): number {
 		return v0 + (v1 - v0) * ((t - t0) / (t1 - t0));
 	}
 
 	// Calculates the the value along the curve produced by exponentialRampToValueAtTime
-	protected _exponentialInterpolate(t0: number, v0: number, t1: number, v1: number, t: number): number {
+	protected _exponentialInterpolate(
+		t0: number,
+		v0: number,
+		t1: number,
+		v1: number,
+		t: number
+	): number {
 		return v0 * Math.pow(v1 / v0, (t - t0) / (t1 - t0));
 	}
 }

@@ -23,7 +23,7 @@ export interface OneShotSourceOptions extends ToneAudioNodeOptions {
  * Base class for fire-and-forget nodes
  */
 export abstract class OneShotSource<
-	Options extends ToneAudioNodeOptions
+	Options extends ToneAudioNodeOptions,
 > extends ToneAudioNode<Options> {
 	/**
 	 * The callback to invoke after the
@@ -217,7 +217,7 @@ export abstract class OneShotSource<
 	/**
 	 * Get the playback state at the given time
 	 */
-	getStateAtTime = function(time: Time): BasicPlaybackState {
+	getStateAtTime = function (time: Time): BasicPlaybackState {
 		const computedTime = this.toSeconds(time);
 		if (
 			this._startTime !== -1 &&

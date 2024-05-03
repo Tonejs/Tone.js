@@ -4,7 +4,7 @@ import { MeterBase, MeterBaseOptions } from "./MeterBase.js";
 export type DCMeterOptions = MeterBaseOptions;
 
 /**
- * DCMeter gets the raw value of the input signal at the current time. 
+ * DCMeter gets the raw value of the input signal at the current time.
  * @see {@link Meter}.
  *
  * @example
@@ -18,7 +18,6 @@ export type DCMeterOptions = MeterBaseOptions;
  * @category Component
  */
 export class DCMeter extends MeterBase<DCMeterOptions> {
-
 	readonly name: string = "DCMeter";
 
 	constructor(options?: Partial<DCMeterOptions>);

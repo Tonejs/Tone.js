@@ -10,7 +10,6 @@ export function connectTo(): Gain {
 }
 
 export function ConnectTest(constr, ...args: any[]): void {
-
 	it("handles input and output connections", () => {
 		const instance = new constr(...args);
 		// test each of the input and outputs and connect

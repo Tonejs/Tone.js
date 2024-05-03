@@ -1,6 +1,9 @@
 import { CrossFade } from "../component/channel/CrossFade.js";
 import { Gain } from "../core/context/Gain.js";
-import { ToneAudioNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode.js";
+import {
+	ToneAudioNode,
+	ToneAudioNodeOptions,
+} from "../core/context/ToneAudioNode.js";
 import { NormalRange } from "../core/type/Units.js";
 import { readOnly } from "../core/util/Interface.js";
 import { Signal } from "../signal/Signal.js";
@@ -13,9 +16,9 @@ export interface EffectOptions extends ToneAudioNodeOptions {
  * the effectSend and effectReturn GainNodes, then control the amount of
  * effect which goes to the output using the wet control.
  */
-export abstract class Effect<Options extends EffectOptions>
-	extends ToneAudioNode<Options> {
-
+export abstract class Effect<
+	Options extends EffectOptions,
+> extends ToneAudioNode<Options> {
 	readonly name: string = "Effect";
 
 	/**

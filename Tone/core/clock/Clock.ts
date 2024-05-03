@@ -1,4 +1,7 @@
-import { ToneWithContext, ToneWithContextOptions } from "../context/ToneWithContext.js";
+import {
+	ToneWithContext,
+	ToneWithContextOptions,
+} from "../context/ToneWithContext.js";
 import { Frequency, Hertz, Seconds, Ticks, Time } from "../type/Units.js";
 import { optionsFromArguments } from "../util/Defaults.js";
 import { Emitter } from "../util/Emitter.js";
@@ -34,8 +37,9 @@ type ClockEvent = "start" | "stop" | "pause";
  * @category Core
  */
 export class Clock<TypeName extends "bpm" | "hertz" = "hertz">
-	extends ToneWithContext<ClockOptions> implements Emitter<ClockEvent> {
-
+	extends ToneWithContext<ClockOptions>
+	implements Emitter<ClockEvent>
+{
 	readonly name: string = "Clock";
 
 	/**
@@ -76,9 +80,16 @@ export class Clock<TypeName extends "bpm" | "hertz" = "hertz">
 	constructor(callback?: ClockCallback, frequency?: Frequency);
 	constructor(options: Partial<ClockOptions>);
 	constructor() {
-
-		super(optionsFromArguments(Clock.getDefaults(), arguments, ["callback", "frequency"]));
-		const options = optionsFromArguments(Clock.getDefaults(), arguments, ["callback", "frequency"]);
+		super(
+			optionsFromArguments(Clock.getDefaults(), arguments, [
+				"callback",
+				"frequency",
+			])
+		);
+		const options = optionsFromArguments(Clock.getDefaults(), arguments, [
+			"callback",
+			"frequency",
+		]);
 
 		this.callback = options.callback;
 		this._tickSource = new TickSource({
@@ -241,14 +252,16 @@ export class Clock<TypeName extends "bpm" | "hertz" = "hertz">
 	nextTickTime(offset: Ticks, when: Time): Seconds {
 		const computedTime = this.toSeconds(when);
 		const currentTick = this.getTicksAtTime(computedTime);
-		return this._tickSource.getTimeOfTick(currentTick + offset, computedTime);
+		return this._tickSource.getTimeOfTick(
+			currentTick + offset,
+			computedTime
+		);
 	}
 
 	/**
 	 * The scheduling loop.
 	 */
 	private _loop(): void {
-
 		const startTime = this._lastUpdate;
 		const endTime = this.now();
 		this._lastUpdate = endTime;
@@ -256,7 +269,7 @@ export class Clock<TypeName extends "bpm" | "hertz" = "hertz">
 
 		if (startTime !== endTime) {
 			// the state change events
-			this._state.forEachBetween(startTime, endTime, e => {
+			this._state.forEachBetween(startTime, endTime, (e) => {
 				switch (e.state) {
 					case "started":
 						const offset = this._tickSource.getTicksAtTime(e.time);
@@ -273,9 +286,13 @@ export class Clock<TypeName extends "bpm" | "hertz" = "hertz">
 				}
 			});
 			// the tick callbacks
-			this._tickSource.forEachTickBetween(startTime, endTime, (time, ticks) => {
-				this.callback(time, ticks);
-			});
+			this._tickSource.forEachTickBetween(
+				startTime,
+				endTime,
+				(time, ticks) => {
+					this.callback(time, ticks);
+				}
+			);
 		}
 	}
 
@@ -310,7 +327,10 @@ export class Clock<TypeName extends "bpm" | "hertz" = "hertz">
 
 	on!: (event: ClockEvent, callback: (...args: any[]) => void) => this;
 	once!: (event: ClockEvent, callback: (...args: any[]) => void) => this;
-	off!: (event: ClockEvent, callback?: ((...args: any[]) => void) | undefined) => this;
+	off!: (
+		event: ClockEvent,
+		callback?: ((...args: any[]) => void) | undefined
+	) => this;
 	emit!: (event: any, ...args: any[]) => this;
 }
 

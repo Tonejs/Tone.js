@@ -1,5 +1,9 @@
 import { Gain } from "../core/context/Gain.js";
-import { connect, disconnect, ToneAudioNodeOptions } from "../core/context/ToneAudioNode.js";
+import {
+	connect,
+	disconnect,
+	ToneAudioNodeOptions,
+} from "../core/context/ToneAudioNode.js";
 import { optionsFromArguments } from "../core/util/Defaults.js";
 import { SignalOperator } from "./SignalOperator.js";
 
@@ -10,7 +14,6 @@ import { SignalOperator } from "./SignalOperator.js";
  * @category Signal
  */
 export class Zero extends SignalOperator<ToneAudioNodeOptions> {
-
 	readonly name: string = "Zero";
 
 	/**
@@ -30,7 +33,9 @@ export class Zero extends SignalOperator<ToneAudioNodeOptions> {
 
 	constructor(options?: Partial<ToneAudioNodeOptions>);
 	constructor() {
-		super(Object.assign(optionsFromArguments(Zero.getDefaults(), arguments)));
+		super(
+			Object.assign(optionsFromArguments(Zero.getDefaults(), arguments))
+		);
 		connect(this.context.getConstant(0), this._gain);
 	}
 

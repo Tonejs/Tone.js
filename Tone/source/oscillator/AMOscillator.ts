@@ -8,10 +8,12 @@ import { Signal } from "../../signal/Signal.js";
 import { Source } from "../Source.js";
 import { Oscillator } from "./Oscillator.js";
 import {
-	AMConstructorOptions, AMOscillatorOptions,
-	generateWaveform, NonCustomOscillatorType,
+	AMConstructorOptions,
+	AMOscillatorOptions,
+	generateWaveform,
+	NonCustomOscillatorType,
 	ToneOscillatorInterface,
-	ToneOscillatorType
+	ToneOscillatorType,
 } from "./OscillatorInterface.js";
 
 export { AMOscillatorOptions } from "./OscillatorInterface.js";
@@ -35,8 +37,10 @@ export { AMOscillatorOptions } from "./OscillatorInterface.js";
  * }, 0.2, 1);
  * @category Source
  */
-export class AMOscillator extends Source<AMOscillatorOptions> implements ToneOscillatorInterface {
-
+export class AMOscillator
+	extends Source<AMOscillatorOptions>
+	implements ToneOscillatorInterface
+{
 	readonly name: string = "AMOscillator";
 
 	/**
@@ -86,12 +90,25 @@ export class AMOscillator extends Source<AMOscillatorOptions> implements ToneOsc
 	 * @param type The type of the carrier oscillator.
 	 * @param modulationType The type of the modulator oscillator.
 	 */
-	constructor(frequency?: Frequency, type?: ToneOscillatorType, modulationType?: ToneOscillatorType);
+	constructor(
+		frequency?: Frequency,
+		type?: ToneOscillatorType,
+		modulationType?: ToneOscillatorType
+	);
 	constructor(options?: Partial<AMConstructorOptions>);
 	constructor() {
-
-		super(optionsFromArguments(AMOscillator.getDefaults(), arguments, ["frequency", "type", "modulationType"]));
-		const options = optionsFromArguments(AMOscillator.getDefaults(), arguments, ["frequency", "type", "modulationType"]);
+		super(
+			optionsFromArguments(AMOscillator.getDefaults(), arguments, [
+				"frequency",
+				"type",
+				"modulationType",
+			])
+		);
+		const options = optionsFromArguments(
+			AMOscillator.getDefaults(),
+			arguments,
+			["frequency", "type", "modulationType"]
+		);
 
 		this._carrier = new Oscillator({
 			context: this.context,
@@ -101,8 +118,8 @@ export class AMOscillator extends Source<AMOscillatorOptions> implements ToneOsc
 			phase: options.phase,
 			type: options.type,
 		} as OscillatorOptions);
-		this.frequency = this._carrier.frequency,
-		this.detune = this._carrier.detune;
+		(this.frequency = this._carrier.frequency),
+			(this.detune = this._carrier.detune);
 
 		this._modulator = new Oscillator({
 			context: this.context,

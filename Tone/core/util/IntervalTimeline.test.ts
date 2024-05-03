@@ -3,11 +3,9 @@ import { BasicTests } from "../../../test/helper/Basic.js";
 import { IntervalTimeline, IntervalTimelineEvent } from "./IntervalTimeline.js";
 
 describe("IntervalTimeline", () => {
-
 	BasicTests(IntervalTimeline);
 
 	context("inserting/deleting events", () => {
-
 		it("accepts events into the timeline", () => {
 			const sched = new IntervalTimeline();
 			sched.add({
@@ -129,11 +127,9 @@ describe("IntervalTimeline", () => {
 			}).to.throw(Error);
 			sched.dispose();
 		});
-
 	});
 
 	context("getting events", () => {
-
 		it("returns null when no events are in the timeline", () => {
 			const sched = new IntervalTimeline();
 			expect(sched.get(3)).to.equal(null);
@@ -269,11 +265,9 @@ describe("IntervalTimeline", () => {
 			}
 			sched.dispose();
 		});
-
 	});
 
 	context("cancelling", () => {
-
 		it("can cancel items after the given time", () => {
 			const sched = new IntervalTimeline();
 			for (let i = 5; i < 100; i++) {
@@ -304,7 +298,6 @@ describe("IntervalTimeline", () => {
 	});
 
 	context("Iterators", () => {
-
 		it("iterates over all items and returns and item", () => {
 			const sched = new IntervalTimeline();
 			sched.add({ time: 0, duration: 5 });

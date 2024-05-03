@@ -9,7 +9,6 @@ import { Signal } from "./Signal.js";
 import { Zero } from "./Zero.js";
 
 describe("AudioToGain", () => {
-
 	BasicTests(AudioToGain);
 
 	it("normalizes an oscillator to 0,1", () => {
@@ -18,7 +17,7 @@ describe("AudioToGain", () => {
 			const a2g = new AudioToGain();
 			osc.connect(a2g);
 			a2g.toDestination();
-		}).then(buffer => {
+		}).then((buffer) => {
 			expect(buffer.min()).to.be.closeTo(0, 0.01);
 			expect(buffer.max()).to.be.closeTo(1, 0.01);
 		});

@@ -73,13 +73,13 @@ export class Player extends Source<PlayerOptions> {
 	 * The fadeIn time of the amplitude envelope.
 	 */
 	@timeRange(0)
-		fadeIn: Time;
+	fadeIn: Time;
 
 	/**
 	 * The fadeOut time of the amplitude envelope.
 	 */
 	@timeRange(0)
-		fadeOut: Time;
+	fadeOut: Time;
 
 	/**
 	 * @param url Either the AudioBuffer or the url from which to load the AudioBuffer

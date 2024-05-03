@@ -1,4 +1,11 @@
-import { Decibels, GainFactor, Hertz, Interval, MidiNote, NormalRange } from "./Units.js";
+import {
+	Decibels,
+	GainFactor,
+	Hertz,
+	Interval,
+	MidiNote,
+	NormalRange,
+} from "./Units.js";
 
 /**
  * Equal power gain scale. Good for cross-fading.
@@ -32,7 +39,7 @@ export function gainToDb(gain: GainFactor): Decibels {
  * Tone.intervalToFrequencyRatio(-12); // 0.5
  */
 export function intervalToFrequencyRatio(interval: Interval): number {
-	return Math.pow(2, (interval / 12));
+	return Math.pow(2, interval / 12);
 }
 
 /**

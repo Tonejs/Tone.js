@@ -4,7 +4,7 @@ import { registerProcessor } from "../../core/worklet/WorkletGlobalScope.js";
 
 export const workletName = "feedback-comb-filter";
 
-const feedbackCombFilter = /* javascript */`
+const feedbackCombFilter = /* javascript */ `
 	class FeedbackCombFilterWorklet extends SingleIOProcessor {
 
 		constructor(options) {

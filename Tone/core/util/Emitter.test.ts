@@ -2,13 +2,12 @@ import { expect } from "chai";
 import { Emitter } from "./Emitter.js";
 
 describe("Emitter", () => {
-
 	it("can be created and disposed", () => {
 		const emitter = new Emitter();
 		emitter.dispose();
 	});
 
-	it("can bind events", done => {
+	it("can bind events", (done) => {
 		const emitter = new Emitter();
 		emitter.on("something", () => {
 			done();
@@ -66,7 +65,7 @@ describe("Emitter", () => {
 		emitter.dispose();
 	});
 
-	it("can remove an event while emitting", done => {
+	it("can remove an event while emitting", (done) => {
 		const emitter = new Emitter();
 		emitter.on("something", () => {
 			emitter.off("something");
@@ -81,7 +80,7 @@ describe("Emitter", () => {
 
 	it("can invoke an event once", () => {
 		const emitter = new Emitter();
-		emitter.once("something", val => {
+		emitter.once("something", (val) => {
 			expect(val).to.equal(1);
 		});
 		emitter.emit("something", 1);
@@ -89,7 +88,7 @@ describe("Emitter", () => {
 		emitter.dispose();
 	});
 
-	it("can pass arguments to the callback", done => {
+	it("can pass arguments to the callback", (done) => {
 		const emitter = new Emitter();
 		emitter.on("something", (arg0, arg1) => {
 			expect(arg0).to.equal("A");

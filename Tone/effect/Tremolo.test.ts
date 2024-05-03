@@ -11,14 +11,17 @@ describe("Tremolo", () => {
 	EffectTests(Tremolo);
 
 	it("matches a file", () => {
-		return CompareToFile(() => {
-			const tremolo = new Tremolo().toDestination().start(0.2);
-			const osc = new Oscillator().connect(tremolo).start();
-		}, "tremolo.wav", 0.05);
+		return CompareToFile(
+			() => {
+				const tremolo = new Tremolo().toDestination().start(0.2);
+				const osc = new Oscillator().connect(tremolo).start();
+			},
+			"tremolo.wav",
+			0.05
+		);
 	});
 
 	context("API", () => {
-
 		it("can pass in options in the constructor", () => {
 			const tremolo = new Tremolo({
 				depth: 0.2,
@@ -41,7 +44,7 @@ describe("Tremolo", () => {
 			const tremolo = new Tremolo();
 			tremolo.set({
 				frequency: 2.4,
-				type: "triangle"
+				type: "triangle",
 			});
 			expect(tremolo.get().frequency).to.be.closeTo(2.4, 0.01);
 			expect(tremolo.get().type).to.equal("triangle");
@@ -58,7 +61,6 @@ describe("Tremolo", () => {
 		});
 
 		it("can sync the frequency to the transport", () => {
-
 			return Offline(({ transport }) => {
 				const tremolo = new Tremolo(2);
 				tremolo.sync();
@@ -71,7 +73,6 @@ describe("Tremolo", () => {
 		});
 
 		it("can unsync the frequency to the transport", () => {
-
 			return Offline(({ transport }) => {
 				const tremolo = new Tremolo(2);
 				tremolo.sync();
@@ -85,4 +86,3 @@ describe("Tremolo", () => {
 		});
 	});
 });
-

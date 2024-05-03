@@ -5,9 +5,7 @@ import { OutputAudio } from "./OutputAudio.js";
 import { connectFrom, connectTo } from "./Connect.js";
 
 export function SourceTests(Constr, args?): void {
-
 	context("Source Tests", () => {
-
 		it("can connect the output", () => {
 			const instance = new Constr(args);
 			instance.connect(connectTo());
@@ -49,7 +47,7 @@ export function SourceTests(Constr, args?): void {
 			return Offline(() => {
 				const instance = new Constr(args);
 				instance.toDestination();
-				instance.onstop = () => wasInvoked = true;
+				instance.onstop = () => (wasInvoked = true);
 				instance.start(0).stop(0.1);
 			}, 0.2).then(() => {
 				expect(wasInvoked).to.equal(true);
@@ -115,7 +113,7 @@ export function SourceTests(Constr, args?): void {
 				expect(buffer.getRmsAtTime(0.3)).to.equal(0);
 			});
 		});
-		
+
 		it("calling restart before calling start has no effect", () => {
 			return Offline(() => {
 				const instance = new Constr(args).toDestination();
@@ -124,6 +122,5 @@ export function SourceTests(Constr, args?): void {
 				expect(buffer.isSilent()).to.be.true;
 			});
 		});
-
 	});
 }

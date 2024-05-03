@@ -5,11 +5,9 @@ import { Signal } from "../../signal/Signal.js";
 import { Solo } from "./Solo.js";
 
 describe("Solo", () => {
-
 	BasicTests(Solo);
 
 	context("Soloing", () => {
-
 		it("can be soloed an unsoloed", () => {
 			const sol = new Solo();
 			sol.solo = true;
@@ -81,58 +79,78 @@ describe("Solo", () => {
 		});
 
 		it("passes both signals when nothing is soloed", () => {
-			return ConstantOutput(() => {
-				const soloA = new Solo().toDestination();
-				const soloB = new Solo().toDestination();
-				new Signal(10).connect(soloA);
-				new Signal(20).connect(soloB);
-			}, 30, 0.01);
+			return ConstantOutput(
+				() => {
+					const soloA = new Solo().toDestination();
+					const soloB = new Solo().toDestination();
+					new Signal(10).connect(soloA);
+					new Signal(20).connect(soloB);
+				},
+				30,
+				0.01
+			);
 		});
 
 		it("passes one signal when it is soloed", () => {
-			return ConstantOutput(() => {
-				const soloA = new Solo().toDestination();
-				const soloB = new Solo().toDestination();
-				new Signal(10).connect(soloA);
-				new Signal(20).connect(soloB);
-				soloA.solo = true;
-			}, 10, 0.01);
+			return ConstantOutput(
+				() => {
+					const soloA = new Solo().toDestination();
+					const soloB = new Solo().toDestination();
+					new Signal(10).connect(soloA);
+					new Signal(20).connect(soloB);
+					soloA.solo = true;
+				},
+				10,
+				0.01
+			);
 		});
 
 		it("can solo multiple at once", () => {
-			return ConstantOutput(() => {
-				const soloA = new Solo().toDestination();
-				const soloB = new Solo().toDestination();
-				new Signal(10).connect(soloA);
-				new Signal(20).connect(soloB);
-				soloA.solo = true;
-				soloB.solo = true;
-			}, 30, 0.01);
+			return ConstantOutput(
+				() => {
+					const soloA = new Solo().toDestination();
+					const soloB = new Solo().toDestination();
+					new Signal(10).connect(soloA);
+					new Signal(20).connect(soloB);
+					soloA.solo = true;
+					soloB.solo = true;
+				},
+				30,
+				0.01
+			);
 		});
 
 		it("can unsolo all", () => {
-			return ConstantOutput(() => {
-				const soloA = new Solo().toDestination();
-				const soloB = new Solo().toDestination();
-				new Signal(10).connect(soloA);
-				new Signal(20).connect(soloB);
-				soloA.solo = true;
-				soloB.solo = true;
-				soloA.solo = false;
-				soloB.solo = false;
-			}, 30, 0.01);
+			return ConstantOutput(
+				() => {
+					const soloA = new Solo().toDestination();
+					const soloB = new Solo().toDestination();
+					new Signal(10).connect(soloA);
+					new Signal(20).connect(soloB);
+					soloA.solo = true;
+					soloB.solo = true;
+					soloA.solo = false;
+					soloB.solo = false;
+				},
+				30,
+				0.01
+			);
 		});
 
 		it("can solo and unsolo while keeping previous soloed", () => {
-			return ConstantOutput(() => {
-				const soloA = new Solo().toDestination();
-				const soloB = new Solo().toDestination();
-				new Signal(10).connect(soloA);
-				new Signal(20).connect(soloB);
-				soloA.solo = true;
-				soloB.solo = true;
-				soloB.solo = false;
-			}, 10, 0.01);
+			return ConstantOutput(
+				() => {
+					const soloA = new Solo().toDestination();
+					const soloB = new Solo().toDestination();
+					new Signal(10).connect(soloA);
+					new Signal(20).connect(soloB);
+					soloA.solo = true;
+					soloB.solo = true;
+					soloB.solo = false;
+				},
+				10,
+				0.01
+			);
 		});
 	});
 });

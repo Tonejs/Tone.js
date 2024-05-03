@@ -1,5 +1,8 @@
 import { Gain } from "../../core/context/Gain.js";
-import { ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode.js";
+import {
+	ToneAudioNode,
+	ToneAudioNodeOptions,
+} from "../../core/context/ToneAudioNode.js";
 import { Frequency, Positive } from "../../core/type/Units.js";
 import { optionsFromArguments } from "../../core/util/Defaults.js";
 import { readOnly, writable } from "../../core/util/Interface.js";
@@ -31,7 +34,6 @@ interface MultibandSplitOptions extends ToneAudioNodeOptions {
  * @category Component
  */
 export class MultibandSplit extends ToneAudioNode<MultibandSplitOptions> {
-
 	readonly name: string = "MultibandSplit";
 
 	/**
@@ -104,8 +106,17 @@ export class MultibandSplit extends ToneAudioNode<MultibandSplitOptions> {
 	constructor(lowFrequency?: Frequency, highFrequency?: Frequency);
 	constructor(options?: Partial<MultibandSplitOptions>);
 	constructor() {
-		super(optionsFromArguments(MultibandSplit.getDefaults(), arguments, ["lowFrequency", "highFrequency"]));
-		const options = optionsFromArguments(MultibandSplit.getDefaults(), arguments, ["lowFrequency", "highFrequency"]);
+		super(
+			optionsFromArguments(MultibandSplit.getDefaults(), arguments, [
+				"lowFrequency",
+				"highFrequency",
+			])
+		);
+		const options = optionsFromArguments(
+			MultibandSplit.getDefaults(),
+			arguments,
+			["lowFrequency", "highFrequency"]
+		);
 
 		this.lowFrequency = new Signal({
 			context: this.context,
@@ -162,5 +173,4 @@ export class MultibandSplit extends ToneAudioNode<MultibandSplitOptions> {
 		this.Q.dispose();
 		return this;
 	}
-
 }

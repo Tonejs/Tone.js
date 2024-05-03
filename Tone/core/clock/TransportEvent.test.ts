@@ -4,7 +4,6 @@ import { TransportClass } from "./Transport.js";
 import { TransportEvent } from "./TransportEvent.js";
 
 describe("TransportEvent", () => {
-
 	it("can be created and disposed", () => {
 		return Offline((context) => {
 			const transport = new TransportClass({ context });

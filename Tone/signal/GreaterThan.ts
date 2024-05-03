@@ -11,7 +11,7 @@ export type GreaterThanOptions = SignalOptions<"number">;
 /**
  * Output 1 if the signal is greater than the value, otherwise outputs 0.
  * can compare two signals or a signal and a number.
- * 
+ *
  * @example
  * return Tone.Offline(() => {
  * 	const gt = new Tone.GreaterThan(2).toDestination();
@@ -20,7 +20,6 @@ export type GreaterThanOptions = SignalOptions<"number">;
  * @category Signal
  */
 export class GreaterThan extends Signal<"number"> {
-
 	readonly name: string = "GreaterThan";
 
 	readonly override: boolean = false;
@@ -56,14 +55,26 @@ export class GreaterThan extends Signal<"number"> {
 	constructor(value?: number);
 	constructor(options?: Partial<GreaterThanOptions>);
 	constructor() {
-		super(Object.assign(optionsFromArguments(GreaterThan.getDefaults(), arguments, ["value"])));
-		const options = optionsFromArguments(GreaterThan.getDefaults(), arguments, ["value"]);
+		super(
+			Object.assign(
+				optionsFromArguments(GreaterThan.getDefaults(), arguments, [
+					"value",
+				])
+			)
+		);
+		const options = optionsFromArguments(
+			GreaterThan.getDefaults(),
+			arguments,
+			["value"]
+		);
 
 		this._subtract = this.input = new Subtract({
 			context: this.context,
-			value: options.value
+			value: options.value,
 		});
-		this._gtz = this.output = new GreaterThanZero({ context: this.context });
+		this._gtz = this.output = new GreaterThanZero({
+			context: this.context,
+		});
 
 		this.comparator = this._param = this._subtract.subtrahend;
 		readOnly(this, "comparator");

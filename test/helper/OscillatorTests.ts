@@ -3,9 +3,7 @@ import { connectFrom } from "./Connect.js";
 import { Offline } from "./Offline.js";
 
 export function OscillatorTests(Constr, args?): void {
-
 	context("Oscillator Tests", () => {
-
 		it("can be created with an options object", () => {
 			const instance = new Constr({
 				detune: -20,

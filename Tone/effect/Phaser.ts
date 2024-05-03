@@ -29,7 +29,6 @@ export interface PhaserOptions extends StereoEffectOptions {
  * @category Effect
  */
 export class Phaser extends StereoEffect<PhaserOptions> {
-
 	readonly name: string = "Phaser";
 
 	/**
@@ -77,18 +76,31 @@ export class Phaser extends StereoEffect<PhaserOptions> {
 	 * @param octaves The octaves of the effect.
 	 * @param baseFrequency The base frequency of the filters.
 	 */
-	constructor(frequency?: Frequency, octaves?: Positive, baseFrequency?: Frequency);
+	constructor(
+		frequency?: Frequency,
+		octaves?: Positive,
+		baseFrequency?: Frequency
+	);
 	constructor(options?: Partial<PhaserOptions>);
 	constructor() {
-
-		super(optionsFromArguments(Phaser.getDefaults(), arguments, ["frequency", "octaves", "baseFrequency"]));
-		const options = optionsFromArguments(Phaser.getDefaults(), arguments, ["frequency", "octaves", "baseFrequency"]);
+		super(
+			optionsFromArguments(Phaser.getDefaults(), arguments, [
+				"frequency",
+				"octaves",
+				"baseFrequency",
+			])
+		);
+		const options = optionsFromArguments(Phaser.getDefaults(), arguments, [
+			"frequency",
+			"octaves",
+			"baseFrequency",
+		]);
 
 		this._lfoL = new LFO({
 			context: this.context,
 			frequency: options.frequency,
 			min: 0,
-			max: 1
+			max: 1,
 		});
 		this._lfoR = new LFO({
 			context: this.context,
@@ -134,7 +146,10 @@ export class Phaser extends StereoEffect<PhaserOptions> {
 		});
 	}
 
-	private _makeFilters(stages: number, connectToFreq: LFO): BiquadFilterNode[] {
+	private _makeFilters(
+		stages: number,
+		connectToFreq: LFO
+	): BiquadFilterNode[] {
 		const filters: BiquadFilterNode[] = [];
 		// make all the filters
 		for (let i = 0; i < stages; i++) {
@@ -178,10 +193,9 @@ export class Phaser extends StereoEffect<PhaserOptions> {
 		this.Q.dispose();
 		this._lfoL.dispose();
 		this._lfoR.dispose();
-		this._filtersL.forEach(f => f.disconnect());
-		this._filtersR.forEach(f => f.disconnect());
+		this._filtersL.forEach((f) => f.disconnect());
+		this._filtersR.forEach((f) => f.disconnect());
 		this.frequency.dispose();
 		return this;
 	}
 }
-

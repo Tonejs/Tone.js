@@ -8,7 +8,8 @@ type TickAutomationEvent = AutomationEvent & {
 	ticks: number;
 };
 
-interface TickParamOptions<TypeName extends UnitName> extends ParamOptions<TypeName> {
+interface TickParamOptions<TypeName extends UnitName>
+	extends ParamOptions<TypeName> {
 	multiplier: number;
 }
 
@@ -17,8 +18,9 @@ interface TickParamOptions<TypeName extends UnitName> extends ParamOptions<TypeN
  * but offers conversion to BPM values as well as ability to compute tick
  * duration and elapsed ticks
  */
-export class TickParam<TypeName extends "hertz" | "bpm"> extends Param<TypeName> {
-
+export class TickParam<
+	TypeName extends "hertz" | "bpm",
+> extends Param<TypeName> {
 	readonly name: string = "TickParam";
 
 	/**
@@ -42,9 +44,14 @@ export class TickParam<TypeName extends "hertz" | "bpm"> extends Param<TypeName>
 	constructor(value?: number);
 	constructor(options: Partial<TickParamOptions<TypeName>>);
 	constructor() {
-
-		super(optionsFromArguments(TickParam.getDefaults(), arguments, ["value"]));
-		const options = optionsFromArguments(TickParam.getDefaults(), arguments, ["value"]);
+		super(
+			optionsFromArguments(TickParam.getDefaults(), arguments, ["value"])
+		);
+		const options = optionsFromArguments(
+			TickParam.getDefaults(),
+			arguments,
+			["value"]
+		);
 
 		// set the multiplier
 		this._multiplier = options.multiplier;
@@ -69,7 +76,11 @@ export class TickParam<TypeName extends "hertz" | "bpm"> extends Param<TypeName>
 		});
 	}
 
-	setTargetAtTime(value: UnitMap[TypeName], time: Time, constant: number): this {
+	setTargetAtTime(
+		value: UnitMap[TypeName],
+		time: Time,
+		constant: number
+	): this {
 		// approximate it with multiple linear ramps
 		time = this.toSeconds(time);
 		this.setRampPoint(time);
@@ -80,7 +91,13 @@ export class TickParam<TypeName extends "hertz" | "bpm"> extends Param<TypeName>
 		const segments = Math.round(Math.max(1 / constant, 1));
 		for (let i = 0; i <= segments; i++) {
 			const segTime = constant * i + time;
-			const rampVal = this._exponentialApproach(prevEvent.time, prevEvent.value, computedValue, constant, segTime);
+			const rampVal = this._exponentialApproach(
+				prevEvent.time,
+				prevEvent.value,
+				computedValue,
+				constant,
+				segTime
+			);
 			this.linearRampToValueAtTime(this._toType(rampVal), segTime);
 		}
 		return this;
@@ -91,7 +108,10 @@ export class TickParam<TypeName extends "hertz" | "bpm"> extends Param<TypeName>
 		super.setValueAtTime(value, time);
 		const event = this._events.get(computedTime) as TickAutomationEvent;
 		const previousEvent = this._events.previousEvent(event);
-		const ticksUntilTime = this._getTicksUntilEvent(previousEvent, computedTime);
+		const ticksUntilTime = this._getTicksUntilEvent(
+			previousEvent,
+			computedTime
+		);
 		event.ticks = Math.max(ticksUntilTime, 0);
 		return this;
 	}
@@ -101,7 +121,10 @@ export class TickParam<TypeName extends "hertz" | "bpm"> extends Param<TypeName>
 		super.linearRampToValueAtTime(value, time);
 		const event = this._events.get(computedTime) as TickAutomationEvent;
 		const previousEvent = this._events.previousEvent(event);
-		const ticksUntilTime = this._getTicksUntilEvent(previousEvent, computedTime);
+		const ticksUntilTime = this._getTicksUntilEvent(
+			previousEvent,
+			computedTime
+		);
 		event.ticks = Math.max(ticksUntilTime, 0);
 		return this;
 	}
@@ -115,10 +138,16 @@ export class TickParam<TypeName extends "hertz" | "bpm"> extends Param<TypeName>
 		const prevEvent = this._events.get(time) as TickAutomationEvent;
 		// approx 10 segments per second
 		const segments = Math.round(Math.max((time - prevEvent.time) * 10, 1));
-		const segmentDur = ((time - prevEvent.time) / segments);
+		const segmentDur = (time - prevEvent.time) / segments;
 		for (let i = 0; i <= segments; i++) {
 			const segTime = segmentDur * i + prevEvent.time;
-			const rampVal = this._exponentialInterpolate(prevEvent.time, prevEvent.value, time, computedVal, segTime);
+			const rampVal = this._exponentialInterpolate(
+				prevEvent.time,
+				prevEvent.value,
+				time,
+				computedVal,
+				segTime
+			);
 			this.linearRampToValueAtTime(this._toType(rampVal), segTime);
 		}
 		return this;
@@ -130,7 +159,10 @@ export class TickParam<TypeName extends "hertz" | "bpm"> extends Param<TypeName>
 	 * @param  event The time to get the tick count at
 	 * @return The number of ticks which have elapsed at the time given any automations.
 	 */
-	private _getTicksUntilEvent(event: TickAutomationEvent | null, time: number): Ticks {
+	private _getTicksUntilEvent(
+		event: TickAutomationEvent | null,
+		time: number
+	): Ticks {
 		if (event === null) {
 			event = {
 				ticks: 0,
@@ -146,7 +178,11 @@ export class TickParam<TypeName extends "hertz" | "bpm"> extends Param<TypeName>
 		let val1 = this._fromType(this.getValueAtTime(time));
 		// if it's right on the line, take the previous value
 		const onTheLineEvent = this._events.get(time);
-		if (onTheLineEvent && onTheLineEvent.time === time && onTheLineEvent.type === "setValueAtTime") {
+		if (
+			onTheLineEvent &&
+			onTheLineEvent.time === time &&
+			onTheLineEvent.type === "setValueAtTime"
+		) {
 			val1 = this._fromType(this.getValueAtTime(time - this.sampleTime));
 		}
 		return 0.5 * (time - event.time) * (val0 + val1) + event.ticks;
@@ -185,13 +221,18 @@ export class TickParam<TypeName extends "hertz" | "bpm"> extends Param<TypeName>
 		const after = this._events.getAfter(tick, "ticks");
 		if (before && before.ticks === tick) {
 			return before.time;
-		} else if (before && after &&
+		} else if (
+			before &&
+			after &&
 			after.type === "linearRampToValueAtTime" &&
-			before.value !== after.value) {
+			before.value !== after.value
+		) {
 			const val0 = this._fromType(this.getValueAtTime(before.time));
 			const val1 = this._fromType(this.getValueAtTime(after.time));
 			const delta = (val1 - val0) / (after.time - before.time);
-			const k = Math.sqrt(Math.pow(val0, 2) - 2 * delta * (before.ticks - tick));
+			const k = Math.sqrt(
+				Math.pow(val0, 2) - 2 * delta * (before.ticks - tick)
+			);
 			const sol1 = (-val0 + k) / delta;
 			const sol2 = (-val0 - k) / delta;
 			return (sol1 > 0 ? sol1 : sol2) + before.time;
@@ -249,7 +290,7 @@ export class TickParam<TypeName extends "hertz" | "bpm"> extends Param<TypeName>
 	 */
 	protected _toType(val: number): UnitMap[TypeName] {
 		if (this.units === "bpm" && this.multiplier) {
-			return (val / this.multiplier) * 60 as UnitMap[TypeName];
+			return ((val / this.multiplier) * 60) as UnitMap[TypeName];
 		} else {
 			return super._toType(val);
 		}

@@ -1,4 +1,7 @@
-import { ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode.js";
+import {
+	ToneAudioNode,
+	ToneAudioNodeOptions,
+} from "../../core/context/ToneAudioNode.js";
 import { Merge } from "./Merge.js";
 import { Add } from "../../signal/Add.js";
 import { Multiply } from "../../signal/Multiply.js";
@@ -17,7 +20,6 @@ export type MidSideMergeOptions = ToneAudioNodeOptions;
  * @category Component
  */
 export class MidSideMerge extends ToneAudioNode<MidSideMergeOptions> {
-	
 	readonly name: string = "MidSideMerge";
 
 	/**
@@ -64,7 +66,7 @@ export class MidSideMerge extends ToneAudioNode<MidSideMergeOptions> {
 	 * Multiply the left by sqrt(1/2)
 	 */
 	private _rightMult: Multiply;
-	
+
 	constructor(options?: Partial<MidSideMergeOptions>);
 	constructor() {
 		super(optionsFromArguments(MidSideMerge.getDefaults(), arguments));
@@ -72,13 +74,13 @@ export class MidSideMerge extends ToneAudioNode<MidSideMergeOptions> {
 		this.side = new Gain({ context: this.context });
 		this._left = new Add({ context: this.context });
 		this._leftMult = new Multiply({
-			context: this.context, 
-			value: Math.SQRT1_2
+			context: this.context,
+			value: Math.SQRT1_2,
 		});
 		this._right = new Subtract({ context: this.context });
 		this._rightMult = new Multiply({
-			context: this.context, 
-			value: Math.SQRT1_2
+			context: this.context,
+			value: Math.SQRT1_2,
 		});
 		this._merge = this.output = new Merge({ context: this.context });
 
@@ -91,7 +93,7 @@ export class MidSideMerge extends ToneAudioNode<MidSideMergeOptions> {
 		this._leftMult.connect(this._merge, 0, 0);
 		this._rightMult.connect(this._merge, 0, 1);
 	}
-	
+
 	dispose(): this {
 		super.dispose();
 		this.mid.dispose();

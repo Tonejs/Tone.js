@@ -12,7 +12,10 @@ import { isDefined, isFunction } from "./core/util/TypeCheck.js";
 import { omitFromObject } from "./core/util/Defaults.js";
 import { DrawClass } from "./core/util/Draw.js";
 
-type ClassesWithoutSingletons = Omit<typeof Classes, "Transport" | "Destination" | "Draw">;
+type ClassesWithoutSingletons = Omit<
+	typeof Classes,
+	"Transport" | "Destination" | "Draw"
+>;
 
 /**
  * The exported Tone object. Contains all of the classes that default
@@ -40,9 +43,10 @@ function bindTypeClass(context: Context, type) {
  * @param context The context to bind all of the nodes to
  */
 export function fromContext(context: Context): ToneObject {
-
 	const classesWithContext: Partial<ClassesWithoutSingletons> = {};
-	Object.keys(omitFromObject(Classes, ["Transport", "Destination", "Draw"])).map(key => {
+	Object.keys(
+		omitFromObject(Classes, ["Transport", "Destination", "Draw"])
+	).map((key) => {
 		const cls = Classes[key];
 		if (isDefined(cls) && isFunction(cls.getDefaults)) {
 			classesWithContext[key] = class ToneFromContextNode extends cls {

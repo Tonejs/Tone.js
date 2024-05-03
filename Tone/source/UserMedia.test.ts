@@ -5,12 +5,10 @@ import { expect } from "chai";
 import { OfflineContext } from "../core/index.js";
 
 describe("UserMedia", () => {
-
 	// run the common tests
 	BasicTests(UserMedia);
 
 	context("Source Tests", () => {
-
 		it("can be constructed with the input number", () => {
 			const extIn = new UserMedia();
 			extIn.dispose();
@@ -19,7 +17,7 @@ describe("UserMedia", () => {
 		it("can be constructed with an options object", () => {
 			const extIn = new UserMedia({
 				volume: -10,
-				mute: false
+				mute: false,
 			});
 			expect(extIn.volume.value).to.be.closeTo(-10, 0.1);
 			expect(extIn.mute).to.be.false;
@@ -37,14 +35,11 @@ describe("UserMedia", () => {
 		it("indicates if the browser has UserMedia support", () => {
 			expect(UserMedia.supported).to.be.a("boolean");
 		});
-
 	});
 
 	// if it is a manual test (i.e. there is a person to 'allow' the microphone)
 	if (GET_USER_MEDIA && UserMedia.supported) {
-
-		context("Opening and closing", function() {
-
+		context("Opening and closing", function () {
 			// long timeout to give testers time to allow the microphone
 			this.timeout(100000);
 
@@ -80,13 +75,15 @@ describe("UserMedia", () => {
 				if (HAS_USER_MEDIA_INPUTS) {
 					const extIn = new UserMedia();
 					let name: string;
-					return UserMedia.enumerateDevices().then((devices) => {
-						name = devices[0].deviceId;
-						return extIn.open(name);
-					}).then(() => {
-						expect(extIn.deviceId).to.equal(name);
-						extIn.dispose();
-					});
+					return UserMedia.enumerateDevices()
+						.then((devices) => {
+							name = devices[0].deviceId;
+							return extIn.open(name);
+						})
+						.then(() => {
+							expect(extIn.deviceId).to.equal(name);
+							extIn.dispose();
+						});
 				}
 			});
 
@@ -102,12 +99,15 @@ describe("UserMedia", () => {
 			it("throws an error if it cant find the device name", () => {
 				if (HAS_USER_MEDIA_INPUTS) {
 					const extIn = new UserMedia();
-					return extIn.open("doesn't exist").then(() => {
-						// shouldn't call 'then'
-						throw new Error("shouldnt call 'then'");
-					}).catch(() => {
-						extIn.dispose();
-					});
+					return extIn
+						.open("doesn't exist")
+						.then(() => {
+							// shouldn't call 'then'
+							throw new Error("shouldnt call 'then'");
+						})
+						.catch(() => {
+							extIn.dispose();
+						});
 				}
 			});
 
@@ -137,11 +137,14 @@ describe("UserMedia", () => {
 			it("can reopen an input", () => {
 				if (HAS_USER_MEDIA_INPUTS) {
 					const extIn = new UserMedia();
-					return extIn.open().then(() => {
-						return extIn.open();
-					}).then(() => {
-						extIn.dispose();
-					});
+					return extIn
+						.open()
+						.then(() => {
+							return extIn.open();
+						})
+						.then(() => {
+							extIn.dispose();
+						});
 				}
 			});
 
@@ -161,7 +164,7 @@ describe("UserMedia", () => {
 				});
 			});
 
-			it("doesn't work in OfflineContext", done => {
+			it("doesn't work in OfflineContext", (done) => {
 				if (HAS_USER_MEDIA_INPUTS) {
 					const context = new OfflineContext(2, 2, 44100);
 					const extIn = new UserMedia({ context });

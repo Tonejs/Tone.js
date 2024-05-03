@@ -16,29 +16,28 @@ export interface VibratoOptions extends EffectOptions {
 }
 /**
  * A Vibrato effect composed of a Tone.Delay and a Tone.LFO. The LFO
- * modulates the delayTime of the delay, causing the pitch to rise and fall. 
+ * modulates the delayTime of the delay, causing the pitch to rise and fall.
  * @category Effect
  */
 export class Vibrato extends Effect<VibratoOptions> {
-
 	readonly name: string = "Vibrato";
 	/**
 	 * The delay node used for the vibrato effect
 	 */
 	private _delayNode: Delay;
-	
+
 	/**
 	 * The LFO used to control the vibrato
 	 */
 	private _lfo: LFO;
-	
+
 	/**
 	 * The frequency of the vibrato
 	 */
 	readonly frequency: Signal<"frequency">;
-	
+
 	/**
-	 * The depth of the vibrato. 
+	 * The depth of the vibrato.
 	 */
 	readonly depth: Param<"normalRange">;
 
@@ -49,9 +48,16 @@ export class Vibrato extends Effect<VibratoOptions> {
 	constructor(frequency?: Frequency, depth?: NormalRange);
 	constructor(options?: Partial<VibratoOptions>);
 	constructor() {
-
-		super(optionsFromArguments(Vibrato.getDefaults(), arguments, ["frequency", "depth"]));
-		const options = optionsFromArguments(Vibrato.getDefaults(), arguments, ["frequency", "depth"]);
+		super(
+			optionsFromArguments(Vibrato.getDefaults(), arguments, [
+				"frequency",
+				"depth",
+			])
+		);
+		const options = optionsFromArguments(Vibrato.getDefaults(), arguments, [
+			"frequency",
+			"depth",
+		]);
 
 		this._delayNode = new Delay({
 			context: this.context,
@@ -62,10 +68,12 @@ export class Vibrato extends Effect<VibratoOptions> {
 			context: this.context,
 			type: options.type,
 			min: 0,
-			max: options.maxDelay, 
+			max: options.maxDelay,
 			frequency: options.frequency,
-			phase: -90 // offse the phase so the resting position is in the center
-		}).start().connect(this._delayNode.delayTime);
+			phase: -90, // offse the phase so the resting position is in the center
+		})
+			.start()
+			.connect(this._delayNode.delayTime);
 		this.frequency = this._lfo.frequency;
 		this.depth = this._lfo.amplitude;
 
@@ -79,7 +87,7 @@ export class Vibrato extends Effect<VibratoOptions> {
 			maxDelay: 0.005,
 			frequency: 5,
 			depth: 0.1,
-			type: "sine" as const
+			type: "sine" as const,
 		});
 	}
 
@@ -92,7 +100,7 @@ export class Vibrato extends Effect<VibratoOptions> {
 	set type(type) {
 		this._lfo.type = type;
 	}
-	
+
 	dispose(): this {
 		super.dispose();
 		this._delayNode.dispose();

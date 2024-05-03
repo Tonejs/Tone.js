@@ -7,11 +7,9 @@ import { Signal } from "../../signal/Signal.js";
 import { Volume } from "./Volume.js";
 
 describe("Volume", () => {
-
 	BasicTests(Volume);
 
 	context("Volume", () => {
-
 		it("handles input and output connections", () => {
 			const vol = new Volume();
 			vol.connect(connectTo());
@@ -63,7 +61,7 @@ describe("Volume", () => {
 		});
 
 		it("passes the incoming signal through", () => {
-			return PassAudio(input => {
+			return PassAudio((input) => {
 				const vol = new Volume().toDestination();
 				input.connect(vol);
 			});
@@ -100,7 +98,7 @@ describe("Volume", () => {
 				const vol = new Volume(-Infinity).toDestination();
 				new Signal(1).connect(vol);
 				expect(vol.mute).to.equal(true);
-			}).then(buffer => {
+			}).then((buffer) => {
 				expect(buffer.isSilent()).to.equal(true);
 			});
 		});

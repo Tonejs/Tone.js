@@ -3,9 +3,7 @@ import { ONLINE_TESTING } from "../../../test/helper/Supports.js";
 import { DrawClass } from "./Draw.js";
 
 describe("Draw", () => {
-
 	if (ONLINE_TESTING) {
-
 		const draw = new DrawClass();
 
 		after(() => {
@@ -15,7 +13,10 @@ describe("Draw", () => {
 		it("can schedule a callback at a AudioContext time", (done) => {
 			const scheduledTime = draw.now() + 0.2;
 			draw.schedule(() => {
-				expect(draw.context.currentTime).to.be.closeTo(scheduledTime, 0.05);
+				expect(draw.context.currentTime).to.be.closeTo(
+					scheduledTime,
+					0.05
+				);
 				done();
 			}, scheduledTime);
 		});
@@ -25,13 +26,19 @@ describe("Draw", () => {
 			const firstEvent = draw.now() + 0.1;
 			draw.schedule(() => {
 				callbackCount++;
-				expect(draw.context.currentTime).to.be.closeTo(firstEvent, 0.05);
+				expect(draw.context.currentTime).to.be.closeTo(
+					firstEvent,
+					0.05
+				);
 			}, firstEvent);
 
 			const thirdEvent = draw.now() + 0.3;
 			draw.schedule(() => {
 				callbackCount++;
-				expect(draw.context.currentTime).to.be.closeTo(thirdEvent, 0.05);
+				expect(draw.context.currentTime).to.be.closeTo(
+					thirdEvent,
+					0.05
+				);
 				expect(callbackCount).to.equal(3);
 				done();
 			}, thirdEvent);
@@ -39,7 +46,10 @@ describe("Draw", () => {
 			const secondEvent = draw.now() + 0.2;
 			draw.schedule(() => {
 				callbackCount++;
-				expect(draw.context.currentTime).to.be.closeTo(secondEvent, 0.05);
+				expect(draw.context.currentTime).to.be.closeTo(
+					secondEvent,
+					0.05
+				);
 			}, secondEvent);
 		});
 
@@ -66,7 +76,6 @@ describe("Draw", () => {
 				expect(callbackCount).to.equal(2);
 				done();
 			}, draw.now() + 0.3);
-
 		});
 	}
 });

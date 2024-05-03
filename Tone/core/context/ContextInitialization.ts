@@ -21,7 +21,7 @@ export function onContextInit(cb: (ctx: Context) => void): void {
  */
 export function initializeContext(ctx: Context): void {
 	// add any additional modules
-	notifyNewContext.forEach(cb => cb(ctx));
+	notifyNewContext.forEach((cb) => cb(ctx));
 }
 
 /**
@@ -38,5 +38,5 @@ export function onContextClose(cb: (ctx: Context) => void): void {
 
 export function closeContext(ctx: Context): void {
 	// remove any additional modules
-	notifyCloseContext.forEach(cb => cb(ctx));
+	notifyCloseContext.forEach((cb) => cb(ctx));
 }

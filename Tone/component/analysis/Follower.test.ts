@@ -6,11 +6,9 @@ import { PassAudio } from "../../../test/helper/PassAudio.js";
 import { expect } from "chai";
 
 describe("Follower", () => {
-
 	BasicTests(Follower);
 
 	context("Envelope Following", () => {
-
 		it("handles getter/setter as Object", () => {
 			const foll = new Follower();
 			const values = {
@@ -108,4 +106,3 @@ describe("Follower", () => {
 		});
 	});
 });
-

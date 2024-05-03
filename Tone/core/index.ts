@@ -26,7 +26,13 @@ export * from "./util/StateTimeline.js";
 export * from "./util/Timeline.js";
 export * from "./util/TypeCheck.js";
 
-export { dbToGain, gainToDb, intervalToFrequencyRatio, ftom, mtof } from "./type/Conversions.js";
+export {
+	dbToGain,
+	gainToDb,
+	intervalToFrequencyRatio,
+	ftom,
+	mtof,
+} from "./type/Conversions.js";
 export { optionsFromArguments, defaultArg } from "./util/Defaults.js";
 
 // get the units and export them under the "Unit" namespace

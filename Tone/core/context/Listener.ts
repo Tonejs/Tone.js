@@ -2,7 +2,7 @@ import { ToneAudioNode, ToneAudioNodeOptions } from "./ToneAudioNode.js";
 import { Param } from "./Param.js";
 import { onContextClose, onContextInit } from "./ContextInitialization.js";
 
-export interface ListenerOptions extends ToneAudioNodeOptions{
+export interface ListenerOptions extends ToneAudioNodeOptions {
 	positionX: number;
 	positionY: number;
 	positionZ: number;
@@ -16,19 +16,18 @@ export interface ListenerOptions extends ToneAudioNodeOptions{
 
 /**
  * Tone.Listener is a thin wrapper around the AudioListener. Listener combined
- * with {@link Panner3D} makes up the Web Audio API's 3D panning system. Panner3D allows you 
+ * with {@link Panner3D} makes up the Web Audio API's 3D panning system. Panner3D allows you
  * to place sounds in 3D and Listener allows you to navigate the 3D sound environment from
- * a first-person perspective. There is only one listener per audio context. 
+ * a first-person perspective. There is only one listener per audio context.
  */
 export class ListenerClass extends ToneAudioNode<ListenerOptions> {
-
 	readonly name: string = "Listener";
 
 	/**
-	 * The listener has no inputs or outputs. 
+	 * The listener has no inputs or outputs.
 	 */
-	output: undefined; 
-	input: undefined; 
+	output: undefined;
+	input: undefined;
 
 	readonly positionX: Param = new Param({
 		context: this.context,
@@ -108,10 +107,10 @@ export class ListenerClass extends ToneAudioNode<ListenerOptions> {
 // 	INITIALIZATION
 //-------------------------------------
 
-onContextInit(context => {
+onContextInit((context) => {
 	context.listener = new ListenerClass({ context });
 });
 
-onContextClose(context => {
+onContextClose((context) => {
 	context.listener.dispose();
 });

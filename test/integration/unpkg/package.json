@@ -1,10 +1,10 @@
 {
-    "name": "tone-unpkg-test",
-    "dependencies": {
-        "puppeteer": "^22.7.1",
-        "tone": "file:../../.."
-    },
-    "scripts": {
-        "test": "node test.mjs"
-    }
+	"name": "tone-unpkg-test",
+	"dependencies": {
+		"puppeteer": "^22.7.1",
+		"tone": "file:../../.."
+	},
+	"scripts": {
+		"test": "node test.mjs"
+	}
 }

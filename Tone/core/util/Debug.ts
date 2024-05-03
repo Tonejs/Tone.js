@@ -31,7 +31,7 @@ export function assertContextRunning(
 	// add a warning if the context is not started
 	if (!context.isOffline && context.state !== "running") {
 		warn(
-			"The AudioContext is \"suspended\". Invoke Tone.start() from a user action to start the audio."
+			'The AudioContext is "suspended". Invoke Tone.start() from a user action to start the audio.'
 		);
 	}
 }
@@ -55,9 +55,15 @@ export function enterScheduledCallback(insideCallback: boolean): void {
 export function assertUsedScheduleTime(
 	time?: import("../type/Units").Time
 ): void {
-	if (isUndef(time) && isInsideScheduledCallback && !printedScheduledWarning) {
+	if (
+		isUndef(time) &&
+		isInsideScheduledCallback &&
+		!printedScheduledWarning
+	) {
 		printedScheduledWarning = true;
-		warn("Events scheduled inside of scheduled callbacks should use the passed in scheduling time. See https://github.com/Tonejs/Tone.js/wiki/Accurate-Timing");
+		warn(
+			"Events scheduled inside of scheduled callbacks should use the passed in scheduling time. See https://github.com/Tonejs/Tone.js/wiki/Accurate-Timing"
+		);
 	}
 }
 

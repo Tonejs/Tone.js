@@ -1,11 +1,15 @@
-import { ToneAudioNode, ToneAudioNodeOptions } from "../context/ToneAudioNode.js";
+import {
+	ToneAudioNode,
+	ToneAudioNodeOptions,
+} from "../context/ToneAudioNode.js";
 import { noOp } from "../util/Interface.js";
 import { getWorkletGlobalScope } from "./WorkletGlobalScope.js";
 
 export type ToneAudioWorkletOptions = ToneAudioNodeOptions;
 
-export abstract class ToneAudioWorklet<Options extends ToneAudioWorkletOptions> extends ToneAudioNode<Options> {
-
+export abstract class ToneAudioWorklet<
+	Options extends ToneAudioWorkletOptions,
+> extends ToneAudioNode<Options> {
 	readonly name: string = "ToneAudioWorklet";
 
 	/**
@@ -46,7 +50,9 @@ export abstract class ToneAudioWorklet<Options extends ToneAudioWorkletOptions> 
 	constructor(options: Options) {
 		super(options);
 
-		const blobUrl = URL.createObjectURL(new Blob([getWorkletGlobalScope()], { type: "text/javascript" }));
+		const blobUrl = URL.createObjectURL(
+			new Blob([getWorkletGlobalScope()], { type: "text/javascript" })
+		);
 		const name = this._audioWorkletName();
 
 		this._dummyGain = this.context.createGain();
@@ -56,8 +62,12 @@ export abstract class ToneAudioWorklet<Options extends ToneAudioWorkletOptions> 
 		this.context.addAudioWorkletModule(blobUrl).then(() => {
 			// create the worklet when it's read
 			if (!this.disposed) {
-				this._worklet = this.context.createAudioWorkletNode(name, this.workletOptions);
-				this._worklet.onprocessorerror = this.onprocessorerror.bind(this);
+				this._worklet = this.context.createAudioWorkletNode(
+					name,
+					this.workletOptions
+				);
+				this._worklet.onprocessorerror =
+					this.onprocessorerror.bind(this);
 				this.onReady(this._worklet);
 			}
 		});
@@ -72,5 +82,4 @@ export abstract class ToneAudioWorklet<Options extends ToneAudioWorkletOptions> 
 		}
 		return this;
 	}
-
 }

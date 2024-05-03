@@ -4,11 +4,9 @@ import { PassAudio } from "../../../test/helper/PassAudio.js";
 import { Compressor } from "./Compressor.js";
 
 describe("Compressor", () => {
-
 	BasicTests(Compressor);
 
 	context("Compression", () => {
-
 		it("passes the incoming signal through", () => {
 			return PassAudio((input) => {
 				const comp = new Compressor().toDestination();
@@ -26,7 +24,13 @@ describe("Compressor", () => {
 				threshold: -30,
 			};
 			comp.set(values);
-			expect(comp.get()).to.have.keys(["ratio", "threshold", "release", "attack", "ratio"]);
+			expect(comp.get()).to.have.keys([
+				"ratio",
+				"threshold",
+				"release",
+				"attack",
+				"ratio",
+			]);
 			comp.dispose();
 		});
 

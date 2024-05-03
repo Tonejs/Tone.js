@@ -8,11 +8,9 @@ import { Time } from "./Time.js";
 import { TransportTime } from "./TransportTime.js";
 
 describe("TicksClass", () => {
-
 	BasicTests(Ticks);
 
 	context("Constructor", () => {
-
 		it("can be made with or without 'new'", () => {
 			const t0 = Ticks();
 			expect(t0).to.be.instanceOf(TicksClass);
@@ -56,7 +54,9 @@ describe("TicksClass", () => {
 			return Offline((context) => {
 				context.transport.start();
 				return atTime(0.29, () => {
-					expect(new TicksClass(context).valueOf()).to.equal(context.transport.ticks);
+					expect(new TicksClass(context).valueOf()).to.equal(
+						context.transport.ticks
+					);
 					context.transport.stop();
 				});
 			}, 0.3);
@@ -82,38 +82,54 @@ describe("TicksClass", () => {
 		it("can convert from Frequency", () => {
 			return Offline(({ transport }) => {
 				expect(Ticks(Frequency(2)).valueOf()).to.equal(transport.PPQ);
-				expect(Ticks(Frequency("4n")).valueOf()).to.equal(transport.PPQ);
-				expect(Ticks(Frequency(4, "n")).valueOf()).to.equal(transport.PPQ);
+				expect(Ticks(Frequency("4n")).valueOf()).to.equal(
+					transport.PPQ
+				);
+				expect(Ticks(Frequency(4, "n")).valueOf()).to.equal(
+					transport.PPQ
+				);
 			});
 		});
 
 		it("can convert from TransportTime", () => {
 			return Offline(({ transport }) => {
-				expect(Ticks(TransportTime(2)).valueOf()).to.equal(transport.PPQ * 4);
-				expect(Ticks(TransportTime("4n")).valueOf()).to.equal(transport.PPQ);
+				expect(Ticks(TransportTime(2)).valueOf()).to.equal(
+					transport.PPQ * 4
+				);
+				expect(Ticks(TransportTime("4n")).valueOf()).to.equal(
+					transport.PPQ
+				);
 			});
 		});
 
 		it("can convert from Ticks", () => {
 			return Offline(({ transport }) => {
-				expect(Ticks(Ticks(transport.PPQ)).valueOf()).to.equal(transport.PPQ);
+				expect(Ticks(Ticks(transport.PPQ)).valueOf()).to.equal(
+					transport.PPQ
+				);
 				expect(Ticks(Ticks("4n")).valueOf()).to.equal(transport.PPQ);
 			});
 		});
 
 		it("can convert from an Object", () => {
 			return Offline(({ transport }) => {
-				expect(Ticks({ "4n": 2 }).valueOf()).to.equal(transport.PPQ * 2);
-				expect(Ticks({ "1n": 1, "8t": 2 }).valueOf()).to.equal(transport.PPQ * 4 + transport.PPQ * (2 / 3));
+				expect(Ticks({ "4n": 2 }).valueOf()).to.equal(
+					transport.PPQ * 2
+				);
+				expect(Ticks({ "1n": 1, "8t": 2 }).valueOf()).to.equal(
+					transport.PPQ * 4 + transport.PPQ * (2 / 3)
+				);
 			});
 		});
 	});
 
 	context("Quantizes values", () => {
-
 		it("can quantize values", () => {
 			return Offline(({ transport }) => {
-				expect(Ticks("4t").quantize("4n").valueOf()).to.be.closeTo(transport.PPQ, 0.01);
+				expect(Ticks("4t").quantize("4n").valueOf()).to.be.closeTo(
+					transport.PPQ,
+					0.01
+				);
 			});
 		});
 
@@ -122,32 +138,39 @@ describe("TicksClass", () => {
 				const transport = context.transport;
 				transport.start();
 				return atTime(0.59, () => {
-					expect(new TicksClass(context, "@1m").valueOf()).to.be.closeTo(4 * transport.PPQ, 1);
-					expect(new TicksClass(context, "@4n").valueOf()).to.be.closeTo(transport.PPQ * 2, 1);
+					expect(
+						new TicksClass(context, "@1m").valueOf()
+					).to.be.closeTo(4 * transport.PPQ, 1);
+					expect(
+						new TicksClass(context, "@4n").valueOf()
+					).to.be.closeTo(transport.PPQ * 2, 1);
 				});
 			}, 0.6);
 		});
 	});
 
 	context("Operators", () => {
-
 		it("can add the current time", () => {
 			return Offline((context) => {
 				context.transport.start();
 				return atTime(0.59, () => {
 					const now = context.transport.ticks;
-					expect(new TicksClass(context, "+4i").valueOf()).to.be.closeTo(4 + now, 0.01);
-					expect(new TicksClass(context, "+2n").valueOf()).to.be.closeTo(context.transport.PPQ * 2 + now, 0.01);
-					expect(new TicksClass(context, "+2n").valueOf()).to.be.closeTo(context.transport.PPQ * 2 + now, 0.01);
+					expect(
+						new TicksClass(context, "+4i").valueOf()
+					).to.be.closeTo(4 + now, 0.01);
+					expect(
+						new TicksClass(context, "+2n").valueOf()
+					).to.be.closeTo(context.transport.PPQ * 2 + now, 0.01);
+					expect(
+						new TicksClass(context, "+2n").valueOf()
+					).to.be.closeTo(context.transport.PPQ * 2 + now, 0.01);
 					context.transport.stop();
 				});
 			}, 0.6);
 		});
-
 	});
 
 	context("Conversions", () => {
-
 		it("converts time into notation", () => {
 			return Offline(({ transport }) => {
 				transport.bpm.value = 120;
@@ -161,7 +184,9 @@ describe("TicksClass", () => {
 
 		it("converts time into samples", () => {
 			return Offline(({ transport }) => {
-				expect(Ticks(transport.PPQ).toSamples()).to.equal(0.5 * getContext().sampleRate);
+				expect(Ticks(transport.PPQ).toSamples()).to.equal(
+					0.5 * getContext().sampleRate
+				);
 			});
 		});
 
@@ -180,11 +205,13 @@ describe("TicksClass", () => {
 
 		it("converts time into BarsBeatsSixteenths", () => {
 			return Offline(({ transport }) => {
-				expect(Ticks("3:1:3").toBarsBeatsSixteenths()).to.equal("3:1:3");
-				expect(Ticks(4 * transport.PPQ).toBarsBeatsSixteenths()).to.equal("1:0:0");
+				expect(Ticks("3:1:3").toBarsBeatsSixteenths()).to.equal(
+					"3:1:3"
+				);
+				expect(
+					Ticks(4 * transport.PPQ).toBarsBeatsSixteenths()
+				).to.equal("1:0:0");
 			});
 		});
-
 	});
-
 });

@@ -15,7 +15,6 @@ import { WaveShaper } from "./WaveShaper.js";
  * @category Signal
  */
 export class Abs extends SignalOperator<ToneAudioNodeOptions> {
-
 	readonly name: string = "Abs";
 
 	/**
@@ -23,7 +22,7 @@ export class Abs extends SignalOperator<ToneAudioNodeOptions> {
 	 */
 	private _abs = new WaveShaper({
 		context: this.context,
-		mapping: val => {
+		mapping: (val) => {
 			if (Math.abs(val) < 0.001) {
 				return 0;
 			} else {

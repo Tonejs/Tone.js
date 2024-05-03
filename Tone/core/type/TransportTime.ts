@@ -10,8 +10,9 @@ import { TimeBaseUnit, TimeValue } from "./TimeBase.js";
  * the Transport's position. See [TransportTime wiki](https://github.com/Tonejs/Tone.js/wiki/TransportTime).
  * @category Unit
  */
-export class TransportTimeClass<Type extends Seconds | Ticks = Seconds> extends TimeClass<Type> {
-
+export class TransportTimeClass<
+	Type extends Seconds | Ticks = Seconds,
+> extends TimeClass<Type> {
 	readonly name: string = "TransportTime";
 
 	/**
@@ -29,6 +30,9 @@ export class TransportTimeClass<Type extends Seconds | Ticks = Seconds> extends 
  * the Transport's position. See [TransportTime wiki](https://github.com/Tonejs/Tone.js/wiki/TransportTime).
  * @category Unit
  */
-export function TransportTime(value?: TimeValue, units?: TimeBaseUnit): TransportTimeClass {
+export function TransportTime(
+	value?: TimeValue,
+	units?: TimeBaseUnit
+): TransportTimeClass {
 	return new TransportTimeClass(getContext(), value, units);
 }

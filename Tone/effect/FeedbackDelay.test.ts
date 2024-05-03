@@ -7,21 +7,23 @@ import { FeedbackDelay } from "./FeedbackDelay.js";
 import { FeedbackEffect } from "./FeedbackEffect.js";
 
 describe("FeedbackDelay", () => {
-
 	BasicTests(FeedbackDelay);
 	EffectTests(FeedbackDelay, 0.01);
 
 	it("matches a file", () => {
-		return CompareToFile(() => {
-			const delay = new FeedbackDelay(0.1, 0.6).toDestination();
-			const osc = new Oscillator().connect(delay);
-			osc.type = "square";
-			osc.start(0).stop(0.01);
-		}, "feedbackDelay.wav", 0.05);
+		return CompareToFile(
+			() => {
+				const delay = new FeedbackDelay(0.1, 0.6).toDestination();
+				const osc = new Oscillator().connect(delay);
+				osc.type = "square";
+				osc.start(0).stop(0.01);
+			},
+			"feedbackDelay.wav",
+			0.05
+		);
 	});
 
 	context("API", () => {
-
 		it("extends FeedbackEffect", () => {
 			const feedbackDelay = new FeedbackDelay(0.2, 0.3);
 			expect(feedbackDelay).to.be.instanceOf(FeedbackEffect);

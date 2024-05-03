@@ -11,22 +11,25 @@ describe("AutoPanner", () => {
 	EffectTests(AutoPanner);
 
 	it("matches a file", () => {
-		return CompareToFile(() => {
-			const autoFilter = new AutoPanner({
-				type: "sine",
-				frequency: 3,
-			}).toDestination();
-			new Oscillator().connect(autoFilter).start();
-			autoFilter.start(0.2);
-		}, "autoPanner.wav", 0.01);
+		return CompareToFile(
+			() => {
+				const autoFilter = new AutoPanner({
+					type: "sine",
+					frequency: 3,
+				}).toDestination();
+				new Oscillator().connect(autoFilter).start();
+				autoFilter.start(0.2);
+			},
+			"autoPanner.wav",
+			0.01
+		);
 	});
 
 	context("API", () => {
-
 		it("can pass in options in the constructor", () => {
 			const autoPanner = new AutoPanner({
 				type: "sawtooth",
-				depth: 0.2
+				depth: 0.2,
 			});
 			expect(autoPanner.depth.value).to.be.closeTo(0.2, 0.01);
 			expect(autoPanner.type).to.equal("sawtooth");
@@ -43,7 +46,7 @@ describe("AutoPanner", () => {
 			const autoPanner = new AutoPanner();
 			autoPanner.set({
 				frequency: 2.4,
-				type: "triangle"
+				type: "triangle",
 			});
 			expect(autoPanner.get().frequency).to.be.closeTo(2.4, 0.01);
 			expect(autoPanner.get().type).to.equal("triangle");
@@ -87,4 +90,3 @@ describe("AutoPanner", () => {
 		});
 	});
 });
-

@@ -5,29 +5,35 @@ import { InstrumentTest } from "../../test/helper/InstrumentTests.js";
 import { PluckSynth } from "./PluckSynth.js";
 
 describe("PluckSynth", () => {
-
 	BasicTests(PluckSynth);
 	InstrumentTest(PluckSynth, "C3");
 
 	it("matches a file", () => {
-		return CompareToFile(() => {
-			const synth = new PluckSynth().toDestination();
-			synth.triggerAttack("C4");
-		}, "pluckSynth.wav", 0.02);
+		return CompareToFile(
+			() => {
+				const synth = new PluckSynth().toDestination();
+				synth.triggerAttack("C4");
+			},
+			"pluckSynth.wav",
+			0.02
+		);
 	});
 
 	it("matches a file with release", () => {
-		return CompareToFile(() => {
-			const synth = new PluckSynth({
-				resonance: 0.97,
-				release: 0.2
-			}).toDestination();
-			synth.triggerAttackRelease("C4", 0.6);
-		}, "pluckSynth2.wav", 0.06);
+		return CompareToFile(
+			() => {
+				const synth = new PluckSynth({
+					resonance: 0.97,
+					release: 0.2,
+				}).toDestination();
+				synth.triggerAttackRelease("C4", 0.6);
+			},
+			"pluckSynth2.wav",
+			0.06
+		);
 	});
-	
-	context("API", () => {
 
+	context("API", () => {
 		it("can get and set resonance", () => {
 			const pluck = new PluckSynth();
 			pluck.resonance = 0.4;

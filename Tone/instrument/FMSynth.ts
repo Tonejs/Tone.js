@@ -17,7 +17,7 @@ export interface FMSynthOptions extends ModulationSynthOptions {
  * @example
  * const fmSynth = new Tone.FMSynth().toDestination();
  * fmSynth.triggerAttackRelease("C5", "4n");
- * 
+ *
  * @category Instrument
  */
 

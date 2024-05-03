@@ -32,7 +32,6 @@ interface FrequencyShifterOptions extends EffectOptions {
  * @category Effect
  */
 export class FrequencyShifter extends Effect<FrequencyShifterOptions> {
-
 	readonly name: string = "FrequencyShifter";
 
 	/**
@@ -82,9 +81,16 @@ export class FrequencyShifter extends Effect<FrequencyShifterOptions> {
 	constructor(frequency?: Frequency);
 	constructor(options?: Partial<FrequencyShifterOptions>);
 	constructor() {
-
-		super(optionsFromArguments(FrequencyShifter.getDefaults(), arguments, ["frequency"]));
-		const options = optionsFromArguments(FrequencyShifter.getDefaults(), arguments, ["frequency"]);
+		super(
+			optionsFromArguments(FrequencyShifter.getDefaults(), arguments, [
+				"frequency",
+			])
+		);
+		const options = optionsFromArguments(
+			FrequencyShifter.getDefaults(),
+			arguments,
+			["frequency"]
+		);
 
 		this.frequency = new Signal({
 			context: this.context,

@@ -12,7 +12,6 @@ import { SignalOperator } from "./SignalOperator.js";
  * @category Signal
  */
 export class Negate extends SignalOperator<ToneAudioNodeOptions> {
-
 	readonly name: string = "Negate";
 
 	/**

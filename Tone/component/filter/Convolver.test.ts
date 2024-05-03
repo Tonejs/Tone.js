@@ -4,7 +4,6 @@ import { ToneAudioBuffer } from "../../core/context/ToneAudioBuffer.js";
 import { Convolver } from "./Convolver.js";
 
 describe("Convolver", () => {
-
 	BasicTests(Convolver);
 
 	const ir = new ToneAudioBuffer();
@@ -16,7 +15,6 @@ describe("Convolver", () => {
 	});
 
 	context("API", () => {
-
 		it("can pass in options in the constructor", () => {
 			const convolver = new Convolver({
 				normalize: false,
@@ -66,7 +64,9 @@ describe("Convolver", () => {
 
 		it("can be constructed with a buffer", () => {
 			const convolver = new Convolver(ir);
-			expect((convolver.buffer as ToneAudioBuffer).get()).to.equal(ir.get());
+			expect((convolver.buffer as ToneAudioBuffer).get()).to.equal(
+				ir.get()
+			);
 			convolver.dispose();
 		});
 

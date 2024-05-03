@@ -15,9 +15,7 @@ import { noOp } from "../../Tone/core/util/Interface.js";
 export const testAudioContext = new OfflineContext(1, 1, 11025);
 
 export function BasicTests(Constr, ...args: any[]): void {
-
 	context("Basic", () => {
-
 		before(() => {
 			return getContext().resume();
 		});
@@ -30,7 +28,10 @@ export function BasicTests(Constr, ...args: any[]): void {
 			// also check all of it's attributes to see if they also have the right context
 			for (const member in instance) {
 				if (instance[member] instanceof Tone && member !== "context") {
-					expect(instance[member].disposed, `member ${member}`).to.equal(true);
+					expect(
+						instance[member].disposed,
+						`member ${member}`
+					).to.equal(true);
 				}
 			}
 			// check that all callback functions are assigned to noOp
@@ -39,7 +40,6 @@ export function BasicTests(Constr, ...args: any[]): void {
 					expect(instance[member]).to.equal(noOp);
 				}
 			}
-
 		});
 
 		it("extends Tone", () => {
@@ -49,15 +49,23 @@ export function BasicTests(Constr, ...args: any[]): void {
 		});
 
 		it("can specify the AudioContext", () => {
-			const instance = new Constr(Object.assign({
-				context: testAudioContext,
-			}, ...args));
+			const instance = new Constr(
+				Object.assign(
+					{
+						context: testAudioContext,
+					},
+					...args
+				)
+			);
 			if (instance instanceof ToneWithContext) {
 				expect(instance.context).to.equal(testAudioContext);
 				// also check all of it's attributes to see if they also have the right context
 				for (const member in instance) {
 					if (instance[member] instanceof ToneWithContext) {
-						expect(instance[member].context, `member: ${member}`).to.equal(testAudioContext);
+						expect(
+							instance[member].context,
+							`member: ${member}`
+						).to.equal(testAudioContext);
 					}
 				}
 			}
@@ -95,7 +103,7 @@ export async function warns(fn: (...args: any[]) => any): Promise<void> {
 	let wasInvoked = false;
 	setLogger({
 		log: () => {},
-		warn: () => wasInvoked = true,
+		warn: () => (wasInvoked = true),
 	});
 	const ret = fn();
 	if (ret instanceof Promise) {

@@ -1,10 +1,7 @@
 /* eslint-disable no-console, @typescript-eslint/no-var-requires */
 // Karma configuration
 const path = require("path");
-const argv = require("yargs")
-		.alias("i", "file")
-		.alias("d", "dir")
-		.argv;
+const argv = require("yargs").alias("i", "file").alias("d", "dir").argv;
 
 let BROWSERS = ["HeadlessChrome", "HeadlessFirefox", "Safari"];
 
@@ -28,9 +25,8 @@ if (process.env.BROWSER === "chrome") {
 	BROWSERS = ["HeadlessChrome", "HeadlessFirefox"];
 }
 
-module.exports = function(config) {
+module.exports = function (config) {
 	const configuration = {
-
 		// base path that will be used to resolve all patterns (eg. files, exclude)
 		basePath: "../",
 
@@ -56,7 +52,7 @@ module.exports = function(config) {
 				resolve: {
 					directories: ["Tone", "node_modules", "test"],
 				},
-				entrypoints: entryPoints
+				entrypoints: entryPoints,
 			},
 			coverageOptions: {
 				exclude: /(.*\.test\.ts|test\/.*\.ts)$/i,
@@ -72,9 +68,7 @@ module.exports = function(config) {
 		},
 
 		// list of files to exclude
-		exclude: [
-			"node_modules/*",
-		],
+		exclude: ["node_modules/*"],
 
 		// preprocess matching files before serving them to the browser
 		// available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
@@ -148,8 +142,12 @@ module.exports = function(config) {
 		customLaunchers: {
 			HeadlessChrome: {
 				base: "ChromeHeadless",
-				flags: ["--no-sandbox", "--use-fake-ui-for-media-stream", "--use-fake-device-for-media-stream",
-					"--autoplay-policy=no-user-gesture-required"],
+				flags: [
+					"--no-sandbox",
+					"--use-fake-ui-for-media-stream",
+					"--use-fake-device-for-media-stream",
+					"--autoplay-policy=no-user-gesture-required",
+				],
 			},
 			HeadlessFirefox: {
 				base: "Firefox",
@@ -161,8 +159,12 @@ module.exports = function(config) {
 			},
 			OnlineChrome: {
 				base: "Chrome",
-				flags: ["--no-sandbox", "--use-fake-ui-for-media-stream", "--use-fake-device-for-media-stream",
-					"--autoplay-policy=no-user-gesture-required"],
+				flags: [
+					"--no-sandbox",
+					"--use-fake-ui-for-media-stream",
+					"--use-fake-device-for-media-stream",
+					"--autoplay-policy=no-user-gesture-required",
+				],
 			},
 		},
 	};

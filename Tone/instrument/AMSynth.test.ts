@@ -6,23 +6,25 @@ import { expect } from "chai";
 import { Offline } from "../../test/helper/Offline.js";
 
 describe("AMSynth", () => {
-
 	BasicTests(AMSynth);
 	InstrumentTest(AMSynth, "C4");
 
 	it("matches a file", () => {
-		return CompareToFile(() => {
-			const synth = new AMSynth().toDestination();
-			synth.triggerAttackRelease("C5", 0.1, 0.1);
-		}, "amSynth.wav", 0.15);
+		return CompareToFile(
+			() => {
+				const synth = new AMSynth().toDestination();
+				synth.triggerAttackRelease("C5", 0.1, 0.1);
+			},
+			"amSynth.wav",
+			0.15
+		);
 	});
 
 	context("API", () => {
-
 		it("invokes the onsilence callback", (done) => {
 			Offline(() => {
 				const amSynth = new AMSynth({
-					onsilence: () => done()
+					onsilence: () => done(),
 				});
 				amSynth.triggerAttackRelease("C3", 0.2, 0);
 			}, 2);
@@ -52,11 +54,11 @@ describe("AMSynth", () => {
 		it("can be constructed with an options object", () => {
 			const amSynth = new AMSynth({
 				oscillator: {
-					type: "square"
+					type: "square",
 				},
 				modulationEnvelope: {
-					attack: 0.3
-				}
+					attack: 0.3,
+				},
 			});
 			expect(amSynth.modulationEnvelope.attack).to.equal(0.3);
 			expect(amSynth.oscillator.type).to.equal("square");
@@ -67,13 +69,11 @@ describe("AMSynth", () => {
 			const amSynth = new AMSynth();
 			amSynth.set({
 				harmonicity: 1.5,
-				detune: 1200
+				detune: 1200,
 			});
 			expect(amSynth.get().harmonicity).to.equal(1.5);
 			expect(amSynth.get().detune).to.be.closeTo(1200, 1);
 			amSynth.dispose();
 		});
-
 	});
 });
-

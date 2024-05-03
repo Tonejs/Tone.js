@@ -6,15 +6,14 @@ import { Oscillator } from "../../source/index.js";
 import { Context } from "../context/Context.js";
 
 describe("Debug", () => {
-
 	it("can log a class when that class is set to 'debug'", () => {
 		const osc = new ToneOscillatorNode();
 		osc.debug = true;
 		let loggerInvoked = false;
 		let warnInvoked = false;
 		setLogger({
-			log: () => loggerInvoked = true,
-			warn: () => warnInvoked = true
+			log: () => (loggerInvoked = true),
+			warn: () => (warnInvoked = true),
 		});
 		osc.start();
 		expect(loggerInvoked).to.be.true;
@@ -30,8 +29,8 @@ describe("Debug", () => {
 		let loggerInvoked = false;
 		let warnInvoked = false;
 		setLogger({
-			log: () => loggerInvoked = true,
-			warn: () => warnInvoked = true
+			log: () => (loggerInvoked = true),
+			warn: () => (warnInvoked = true),
 		});
 		osc.start();
 		expect(loggerInvoked).to.be.true;
@@ -50,7 +49,7 @@ describe("Debug", () => {
 		expect(() => {
 			assertRange(2, 0, 1);
 		}).to.throw(RangeError);
-		
+
 		expect(() => {
 			assertRange(0, 0);
 		}).to.not.throw(RangeError);
@@ -63,7 +62,7 @@ describe("Debug", () => {
 		let warnInvoked = false;
 		setLogger({
 			log: () => {},
-			warn: () => warnInvoked = true
+			warn: () => (warnInvoked = true),
 		});
 		osc.start();
 		expect(warnInvoked).to.be.true;

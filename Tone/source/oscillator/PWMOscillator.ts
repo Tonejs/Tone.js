@@ -5,7 +5,11 @@ import { Multiply } from "../../signal/Multiply.js";
 import { Signal } from "../../signal/Signal.js";
 import { Source } from "../Source.js";
 import { Oscillator } from "./Oscillator.js";
-import { generateWaveform, PWMOscillatorOptions, ToneOscillatorInterface } from "./OscillatorInterface.js";
+import {
+	generateWaveform,
+	PWMOscillatorOptions,
+	ToneOscillatorInterface,
+} from "./OscillatorInterface.js";
 import { PulseOscillator } from "./PulseOscillator.js";
 
 export { PWMOscillatorOptions } from "./OscillatorInterface.js";
@@ -21,8 +25,10 @@ export { PWMOscillatorOptions } from "./OscillatorInterface.js";
  * }, 0.1, 1);
  * @category Source
  */
-export class PWMOscillator extends Source<PWMOscillatorOptions> implements ToneOscillatorInterface {
-
+export class PWMOscillator
+	extends Source<PWMOscillatorOptions>
+	implements ToneOscillatorInterface
+{
 	readonly name: string = "PWMOscillator";
 
 	readonly sourceType = "pwm";
@@ -71,8 +77,17 @@ export class PWMOscillator extends Source<PWMOscillatorOptions> implements ToneO
 	constructor(frequency?: Frequency, modulationFrequency?: Frequency);
 	constructor(options?: Partial<PWMOscillatorOptions>);
 	constructor() {
-		super(optionsFromArguments(PWMOscillator.getDefaults(), arguments, ["frequency", "modulationFrequency"]));
-		const options = optionsFromArguments(PWMOscillator.getDefaults(), arguments, ["frequency", "modulationFrequency"]);
+		super(
+			optionsFromArguments(PWMOscillator.getDefaults(), arguments, [
+				"frequency",
+				"modulationFrequency",
+			])
+		);
+		const options = optionsFromArguments(
+			PWMOscillator.getDefaults(),
+			arguments,
+			["frequency", "modulationFrequency"]
+		);
 
 		this._pulse = new PulseOscillator({
 			context: this.context,

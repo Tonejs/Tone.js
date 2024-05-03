@@ -7,21 +7,23 @@ import { SourceTests } from "../../../test/helper/SourceTests.js";
 import { FMOscillator } from "./FMOscillator.js";
 
 describe("FMOscillator", () => {
-
 	// run the common tests
 	BasicTests(FMOscillator);
 	SourceTests(FMOscillator);
 	OscillatorTests(FMOscillator);
 
 	it("matches a file", () => {
-		return CompareToFile(() => {
-			const osc = new FMOscillator().toDestination();
-			osc.start(0);
-		}, "fmOscillator.wav", 0.01);
+		return CompareToFile(
+			() => {
+				const osc = new FMOscillator().toDestination();
+				osc.start(0);
+			},
+			"fmOscillator.wav",
+			0.01
+		);
 	});
 
 	context("Frequency Modulation", () => {
-
 		it("can pass in parameters in the constructor", () => {
 			const fmOsc = new FMOscillator({
 				harmonicity: 3,

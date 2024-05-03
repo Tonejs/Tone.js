@@ -26,7 +26,6 @@ import { Envelope, EnvelopeOptions } from "./Envelope.js";
  * @category Component
  */
 export class AmplitudeEnvelope extends Envelope {
-
 	readonly name: string = "AmplitudeEnvelope";
 
 	private _gainNode: Gain = new Gain({
@@ -45,10 +44,22 @@ export class AmplitudeEnvelope extends Envelope {
 	 * @param release	The amount of time after the release is triggered it takes to reach 0.
 	 *                        	Value must be greater than 0.
 	 */
-	constructor(attack?: Time, decay?: Time, sustain?: NormalRange, release?: Time);
-	constructor(options?: Partial<EnvelopeOptions>)
+	constructor(
+		attack?: Time,
+		decay?: Time,
+		sustain?: NormalRange,
+		release?: Time
+	);
+	constructor(options?: Partial<EnvelopeOptions>);
 	constructor() {
-		super(optionsFromArguments(AmplitudeEnvelope.getDefaults(), arguments, ["attack", "decay", "sustain", "release"]));
+		super(
+			optionsFromArguments(AmplitudeEnvelope.getDefaults(), arguments, [
+				"attack",
+				"decay",
+				"sustain",
+				"release",
+			])
+		);
 		this._sig.connect(this._gainNode.gain);
 		this.output = this._gainNode;
 		this.input = this._gainNode;

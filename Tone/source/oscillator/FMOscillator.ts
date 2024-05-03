@@ -7,8 +7,12 @@ import { Signal } from "../../signal/Signal.js";
 import { Source } from "../Source.js";
 import { Oscillator } from "./Oscillator.js";
 import {
-	FMConstructorOptions, FMOscillatorOptions,
-	generateWaveform, NonCustomOscillatorType, ToneOscillatorInterface, ToneOscillatorType
+	FMConstructorOptions,
+	FMOscillatorOptions,
+	generateWaveform,
+	NonCustomOscillatorType,
+	ToneOscillatorInterface,
+	ToneOscillatorType,
 } from "./OscillatorInterface.js";
 
 export { FMOscillatorOptions } from "./OscillatorInterface.js";
@@ -38,8 +42,10 @@ export { FMOscillatorOptions } from "./OscillatorInterface.js";
  * }, 0.1, 1);
  * @category Source
  */
-export class FMOscillator extends Source<FMOscillatorOptions> implements ToneOscillatorInterface {
-
+export class FMOscillator
+	extends Source<FMOscillatorOptions>
+	implements ToneOscillatorInterface
+{
 	readonly name: string = "FMOscillator";
 
 	/**
@@ -86,12 +92,25 @@ export class FMOscillator extends Source<FMOscillatorOptions> implements ToneOsc
 	 * @param type The type of the carrier oscillator.
 	 * @param modulationType The type of the modulator oscillator.
 	 */
-	constructor(frequency?: Frequency, type?: ToneOscillatorType, modulationType?: ToneOscillatorType);
+	constructor(
+		frequency?: Frequency,
+		type?: ToneOscillatorType,
+		modulationType?: ToneOscillatorType
+	);
 	constructor(options?: Partial<FMConstructorOptions>);
 	constructor() {
-
-		super(optionsFromArguments(FMOscillator.getDefaults(), arguments, ["frequency", "type", "modulationType"]));
-		const options = optionsFromArguments(FMOscillator.getDefaults(), arguments, ["frequency", "type", "modulationType"]);
+		super(
+			optionsFromArguments(FMOscillator.getDefaults(), arguments, [
+				"frequency",
+				"type",
+				"modulationType",
+			])
+		);
+		const options = optionsFromArguments(
+			FMOscillator.getDefaults(),
+			arguments,
+			["frequency", "type", "modulationType"]
+		);
 
 		this._carrier = new Oscillator({
 			context: this.context,
@@ -137,7 +156,12 @@ export class FMOscillator extends Source<FMOscillatorOptions> implements ToneOsc
 		this._carrier.connect(this.output);
 		this.detune.connect(this._modulator.detune);
 
-		readOnly(this, ["modulationIndex", "frequency", "detune", "harmonicity"]);
+		readOnly(this, [
+			"modulationIndex",
+			"frequency",
+			"detune",
+			"harmonicity",
+		]);
 	}
 
 	static getDefaults(): FMOscillatorOptions {

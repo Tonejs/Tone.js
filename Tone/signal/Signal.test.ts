@@ -8,11 +8,9 @@ import { Gain } from "../core/context/Gain.js";
 import { Signal } from "./Signal.js";
 
 describe("Signal", () => {
-
 	BasicTests(Signal);
 
 	context("Signal Rate Value", () => {
-
 		it("has 1 input and 1 output", () => {
 			const signal = new Signal();
 			expect(signal.numberOfInputs).to.equal(1);
@@ -77,8 +75,7 @@ describe("Signal", () => {
 	});
 
 	context("Scheduling", () => {
-
-		afterEach(done => {
+		afterEach((done) => {
 			setTimeout(() => done(), 100);
 		});
 
@@ -94,7 +91,7 @@ describe("Signal", () => {
 		});
 
 		it("can linear ramp from the current value to another value in the future", async () => {
-			const buffer = await Offline(context => {
+			const buffer = await Offline((context) => {
 				const sig = new Signal(0).toDestination();
 				sig.setValueAtTime(0, 0);
 				sig.linearRampToValueAtTime(1, 0.1);
@@ -105,7 +102,7 @@ describe("Signal", () => {
 		});
 
 		it("can set a ramp point and then ramp from there", async () => {
-			const buffer = await Offline(context => {
+			const buffer = await Offline((context) => {
 				const sig = new Signal(0).toDestination();
 				sig.setRampPoint(0);
 				sig.linearRampToValueAtTime(1, 1);
@@ -118,7 +115,7 @@ describe("Signal", () => {
 		});
 
 		it("can schedule multiple automations", async () => {
-			const buffer = await Offline(context => {
+			const buffer = await Offline((context) => {
 				const sig = new Signal(0).toDestination();
 				sig.setValueAtTime(0, 0);
 				sig.linearRampToValueAtTime(0.5, 0.5);
@@ -212,7 +209,7 @@ describe("Signal", () => {
 				const sig = new Signal(1).toDestination();
 				sig.exponentialRampTo(2, 1);
 				sig.cancelAndHoldAtTime(0.5);
-			}, 1).then(buffer => {
+			}, 1).then((buffer) => {
 				expect(buffer.getValueAtTime(0)).to.be.closeTo(1, 0.1);
 				expect(buffer.getValueAtTime(0.25)).to.be.closeTo(1.2, 0.1);
 				expect(buffer.getValueAtTime(0.5)).to.be.closeTo(1.4, 0.1);
@@ -334,7 +331,10 @@ describe("Signal", () => {
 				sig.setValueCurveAtTime([0, 1, 0.5, 0.2], 0, 1);
 			}, 1).then((buffer) => {
 				expect(buffer.getValueAtTime(0)).to.be.closeTo(0, 0.01);
-				expect(buffer.getValueAtTime(0.33 / 2)).to.be.closeTo(0.5, 0.01);
+				expect(buffer.getValueAtTime(0.33 / 2)).to.be.closeTo(
+					0.5,
+					0.01
+				);
 				expect(buffer.getValueAtTime(0.33)).to.be.closeTo(1, 0.02);
 				expect(buffer.getValueAtTime(0.66)).to.be.closeTo(0.5, 0.02);
 				expect(buffer.getValueAtTime(0.99)).to.be.closeTo(0.2, 0.02);
@@ -347,10 +347,22 @@ describe("Signal", () => {
 				sig.setValueCurveAtTime([0, 1, 0.5, 0.2], 0.5, 1);
 			}, 1.5).then((buffer) => {
 				expect(buffer.getValueAtTime(0 + 0.5)).to.be.closeTo(0, 0.01);
-				expect(buffer.getValueAtTime(0.33 / 2 + 0.5)).to.be.closeTo(0.5, 0.01);
-				expect(buffer.getValueAtTime(0.33 + 0.5)).to.be.closeTo(1, 0.02);
-				expect(buffer.getValueAtTime(0.66 + 0.5)).to.be.closeTo(0.5, 0.02);
-				expect(buffer.getValueAtTime(0.99 + 0.5)).to.be.closeTo(0.2, 0.02);
+				expect(buffer.getValueAtTime(0.33 / 2 + 0.5)).to.be.closeTo(
+					0.5,
+					0.01
+				);
+				expect(buffer.getValueAtTime(0.33 + 0.5)).to.be.closeTo(
+					1,
+					0.02
+				);
+				expect(buffer.getValueAtTime(0.66 + 0.5)).to.be.closeTo(
+					0.5,
+					0.02
+				);
+				expect(buffer.getValueAtTime(0.99 + 0.5)).to.be.closeTo(
+					0.2,
+					0.02
+				);
 			});
 		});
 
@@ -378,7 +390,6 @@ describe("Signal", () => {
 	});
 
 	context("Units", () => {
-
 		it("can be created with specific units", () => {
 			const signal = new Signal(0, "bpm");
 			expect(signal.units).to.equal("bpm");
@@ -441,7 +452,7 @@ describe("Signal", () => {
 			expect(signal.value).to.be.closeTo(1, 0.01);
 			signal.dispose();
 		});
-		
+
 		it("converts AudioRange units", () => {
 			expect(() => {
 				new Signal(-2, "audioRange");
@@ -450,7 +461,7 @@ describe("Signal", () => {
 			expect(signal.value).to.be.closeTo(-1, 0.01);
 			signal.dispose();
 		});
-		
+
 		it("converts Positive units", () => {
 			expect(() => {
 				new Signal(-2, "positive");
@@ -459,11 +470,9 @@ describe("Signal", () => {
 			expect(signal.value).to.be.closeTo(100, 0.01);
 			signal.dispose();
 		});
-
 	});
 
 	context("Transport Syncing", () => {
-
 		it("maintains its original value after being synced to the transport", () => {
 			return ConstantOutput(({ transport }) => {
 				const sig = new Signal(3).toDestination();

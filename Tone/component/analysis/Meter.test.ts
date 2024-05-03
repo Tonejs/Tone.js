@@ -9,11 +9,9 @@ import { Panner } from "../channel/Panner.js";
 import { Merge } from "../channel/Merge.js";
 
 describe("Meter", () => {
-
 	BasicTests(Meter);
 
 	context("Metering", () => {
-
 		it("handles getter/setter as Object", () => {
 			const meter = new Meter();
 			const values = {
@@ -60,9 +58,8 @@ describe("Meter", () => {
 				meter.dispose();
 			});
 		});
-		
+
 		if (ONLINE_TESTING) {
-			
 			it("can get the rms level of the incoming signal", (done) => {
 				const meter = new Meter();
 				const osc = new Oscillator().connect(meter).start();

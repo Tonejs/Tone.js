@@ -6,11 +6,9 @@ import { Oscillator } from "../../source/oscillator/Oscillator.js";
 import { Filter, FilterRollOff } from "./Filter.js";
 
 describe("Filter", () => {
-
 	BasicTests(Filter);
 
 	context("Filtering", () => {
-
 		it("can be constructed with a arguments", () => {
 			const filter = new Filter(200, "highpass");
 			expect(filter.frequency.value).to.be.closeTo(200, 0.001);
@@ -38,7 +36,13 @@ describe("Filter", () => {
 				type: "highpass" as BiquadFilterType,
 			};
 			filter.set(values);
-			expect(filter.get()).to.include.keys(["type", "frequency", "rolloff", "Q", "gain"]);
+			expect(filter.get()).to.include.keys([
+				"type",
+				"frequency",
+				"rolloff",
+				"Q",
+				"gain",
+			]);
 			expect(filter.type).to.equal(values.type);
 			expect(filter.frequency.value).to.equal(values.frequency);
 			expect(filter.rolloff).to.equal(values.rolloff);
@@ -59,7 +63,7 @@ describe("Filter", () => {
 		});
 
 		it("passes the incoming signal through", () => {
-			return PassAudio(input => {
+			return PassAudio((input) => {
 				const filter = new Filter().toDestination();
 				input.connect(filter);
 			});
@@ -85,8 +89,16 @@ describe("Filter", () => {
 
 		it("can set the basic filter types", () => {
 			const filter = new Filter();
-			const types: BiquadFilterType[] = ["lowpass", "highpass",
-				"bandpass", "lowshelf", "highshelf", "notch", "allpass", "peaking"];
+			const types: BiquadFilterType[] = [
+				"lowpass",
+				"highpass",
+				"bandpass",
+				"lowshelf",
+				"highshelf",
+				"notch",
+				"allpass",
+				"peaking",
+			];
 			for (const type of types) {
 				filter.type = type;
 				expect(filter.type).to.equal(type);
@@ -109,6 +121,5 @@ describe("Filter", () => {
 				expect(buffer.getRmsAtTime(0.1)).to.be.within(0.37, 0.53);
 			});
 		});
-
 	});
 });

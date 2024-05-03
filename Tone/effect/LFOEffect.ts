@@ -15,8 +15,9 @@ export interface LFOEffectOptions extends EffectOptions {
 /**
  * Base class for LFO-based effects.
  */
-export abstract class LFOEffect<Options extends LFOEffectOptions> extends Effect<Options> {
-
+export abstract class LFOEffect<
+	Options extends LFOEffectOptions,
+> extends Effect<Options> {
 	readonly name: string = "LFOEffect";
 
 	/**
@@ -25,18 +26,17 @@ export abstract class LFOEffect<Options extends LFOEffectOptions> extends Effect
 	protected _lfo: LFO;
 
 	/**
-	 * The range of the filter modulating between the min and max frequency. 
+	 * The range of the filter modulating between the min and max frequency.
 	 * 0 = no modulation. 1 = full modulation.
 	 */
 	readonly depth: Param<"normalRange">;
 
 	/**
-	 * How fast the filter modulates between min and max. 
+	 * How fast the filter modulates between min and max.
 	 */
 	readonly frequency: Signal<"frequency">;
 
 	constructor(options: LFOEffectOptions) {
-
 		super(options);
 
 		this._lfo = new LFO({
@@ -76,7 +76,7 @@ export abstract class LFOEffect<Options extends LFOEffectOptions> extends Effect
 	}
 
 	/**
-	 * Sync the filter to the transport. 
+	 * Sync the filter to the transport.
 	 * @see {@link LFO.sync}
 	 */
 	sync(): this {
@@ -93,7 +93,7 @@ export abstract class LFOEffect<Options extends LFOEffectOptions> extends Effect
 	}
 
 	/**
-	 * The type of the LFO's oscillator. 
+	 * The type of the LFO's oscillator.
 	 * @see {@link Oscillator.type}
 	 * @example
 	 * const autoFilter = new Tone.AutoFilter().start().toDestination();

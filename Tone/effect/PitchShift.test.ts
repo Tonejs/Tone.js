@@ -6,24 +6,28 @@ import { Oscillator } from "../source/oscillator/Oscillator.js";
 import { CompareToFile } from "../../test/helper/CompareToFile.js";
 
 describe("PitchShift", () => {
-
 	BasicTests(PitchShift);
 	EffectTests(PitchShift);
 
 	it("matches a file", () => {
-		return CompareToFile(() => {
-			const pitchShift = new PitchShift(4).toDestination();
-			const osc = new Oscillator().toDestination().connect(pitchShift);
-			osc.start(0);
-		}, "pitchShift.wav", 0.3);
+		return CompareToFile(
+			() => {
+				const pitchShift = new PitchShift(4).toDestination();
+				const osc = new Oscillator()
+					.toDestination()
+					.connect(pitchShift);
+				osc.start(0);
+			},
+			"pitchShift.wav",
+			0.3
+		);
 	});
 
 	context("API", () => {
-
 		it("can pass in options in the constructor", () => {
 			const pitchShift = new PitchShift({
 				windowSize: 0.2,
-				pitch: 2
+				pitch: 2,
 			});
 			expect(pitchShift.windowSize).to.be.closeTo(0.2, 0.01);
 			expect(pitchShift.pitch).to.be.closeTo(2, 0.01);
@@ -53,9 +57,12 @@ describe("PitchShift", () => {
 		it("can set set the feedback and delay times", () => {
 			const pitchShift = new PitchShift({
 				delayTime: "4n",
-				feedback: 0.3
+				feedback: 0.3,
 			});
-			expect(pitchShift.delayTime.value).to.be.closeTo(pitchShift.toSeconds("4n"), 0.01);
+			expect(pitchShift.delayTime.value).to.be.closeTo(
+				pitchShift.toSeconds("4n"),
+				0.01
+			);
 			expect(pitchShift.feedback.value).to.be.closeTo(0.3, 0.01);
 			pitchShift.delayTime.value = 0.2;
 			expect(pitchShift.delayTime.value).to.be.closeTo(0.2, 0.01);
@@ -63,4 +70,3 @@ describe("PitchShift", () => {
 		});
 	});
 });
-

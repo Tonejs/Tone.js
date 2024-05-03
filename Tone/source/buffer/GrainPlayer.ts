@@ -30,7 +30,6 @@ interface GrainPlayerOptions extends SourceOptions {
  * @category Source
  */
 export class GrainPlayer extends Source<GrainPlayerOptions> {
-
 	readonly name: string = "GrainPlayer";
 
 	/**
@@ -87,12 +86,23 @@ export class GrainPlayer extends Source<GrainPlayerOptions> {
 	 * @param url Either the AudioBuffer or the url from which to load the AudioBuffer
 	 * @param onload The function to invoke when the buffer is loaded.
 	 */
-	constructor(url?: string | AudioBuffer | ToneAudioBuffer, onload?: () => void);
+	constructor(
+		url?: string | AudioBuffer | ToneAudioBuffer,
+		onload?: () => void
+	);
 	constructor(options?: Partial<GrainPlayerOptions>);
 	constructor() {
-
-		super(optionsFromArguments(GrainPlayer.getDefaults(), arguments, ["url", "onload"]));
-		const options = optionsFromArguments(GrainPlayer.getDefaults(), arguments, ["url", "onload"]);
+		super(
+			optionsFromArguments(GrainPlayer.getDefaults(), arguments, [
+				"url",
+				"onload",
+			])
+		);
+		const options = optionsFromArguments(
+			GrainPlayer.getDefaults(),
+			arguments,
+			["url", "onload"]
+		);
 
 		this.buffer = new ToneAudioBuffer({
 			onload: options.onload,
@@ -103,7 +113,7 @@ export class GrainPlayer extends Source<GrainPlayerOptions> {
 		this._clock = new Clock({
 			context: this.context,
 			callback: this._tick.bind(this),
-			frequency: 1 / options.grainSize
+			frequency: 1 / options.grainSize,
 		});
 		this._playbackRate = options.playbackRate;
 		this._grainSize = options.grainSize;
@@ -132,7 +142,7 @@ export class GrainPlayer extends Source<GrainPlayerOptions> {
 			loop: false,
 			loopStart: 0,
 			loopEnd: 0,
-			reverse: false
+			reverse: false,
 		});
 	}
 
@@ -156,7 +166,7 @@ export class GrainPlayer extends Source<GrainPlayerOptions> {
 	 * Stop and then restart the player from the beginning (or offset)
 	 * @param  time When the player should start.
 	 * @param  offset The offset from the beginning of the sample to start at.
-	 * @param  duration How long the sample should play. If no duration is given, 
+	 * @param  duration How long the sample should play. If no duration is given,
 	 * 					it will default to the full length of the sample (minus any offset)
 	 */
 	restart(time?: Seconds, offset?: Time, duration?: Time): this {
@@ -215,7 +225,7 @@ export class GrainPlayer extends Source<GrainPlayerOptions> {
 			loopStart: this._loopStart,
 			loopEnd: this._loopEnd,
 			// compute the playbackRate based on the detune
-			playbackRate: intervalToFrequencyRatio(this.detune / 100)
+			playbackRate: intervalToFrequencyRatio(this.detune / 100),
 		}).connect(this.output);
 
 		source.start(time, this._grainSize * ticks);
@@ -290,7 +300,10 @@ export class GrainPlayer extends Source<GrainPlayerOptions> {
 	}
 	set grainSize(size) {
 		this._grainSize = this.toSeconds(size);
-		this._clock.frequency.setValueAtTime(this._playbackRate / this._grainSize, this.now());
+		this._clock.frequency.setValueAtTime(
+			this._playbackRate / this._grainSize,
+			this.now()
+		);
 	}
 
 	/**

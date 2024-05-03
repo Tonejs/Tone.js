@@ -89,7 +89,8 @@ type TransportCallback = (time: Seconds) => void;
  */
 export class TransportClass
 	extends ToneWithContext<TransportOptions>
-	implements Emitter<TransportEventNames> {
+	implements Emitter<TransportEventNames>
+{
 	readonly name: string = "Transport";
 
 	//-------------------------------------
@@ -366,7 +367,10 @@ export class TransportClass
 	 * timeline it was added to.
 	 * @returns the event id which was just added
 	 */
-	private _addEvent(event: TransportEvent, timeline: Timeline<TransportEvent>): number {
+	private _addEvent(
+		event: TransportEvent,
+		timeline: Timeline<TransportEvent>
+	): number {
 		this._scheduledEvents[event.id.toString()] = {
 			event,
 			timeline,
@@ -625,7 +629,10 @@ export class TransportClass
 			if (this.state === "started") {
 				const ticks = this._clock.getTicksAtTime(now);
 				// schedule to start on the next tick, #573
-				const remainingTick = this._clock.frequency.getDurationOfTicks(Math.ceil(ticks) - ticks, now);
+				const remainingTick = this._clock.frequency.getDurationOfTicks(
+					Math.ceil(ticks) - ticks,
+					now
+				);
 				const time = now + remainingTick;
 				this.emit("stop", time);
 				this._clock.setTicksAtTime(t, time);
@@ -710,9 +717,9 @@ export class TransportClass
 	 */
 	syncSignal(signal: Signal<any>, ratio?: number): this {
 		const now = this.now();
-		let source : TickParam<"bpm"> | ToneAudioNode<any> = this.bpm;
+		let source: TickParam<"bpm"> | ToneAudioNode<any> = this.bpm;
 		let sourceValue = 1 / (60 / source.getValueAtTime(now) / this.PPQ);
-		let nodes : ToneAudioNode<any>[] = [];
+		let nodes: ToneAudioNode<any>[] = [];
 		// If the signal is in the time domain, sync it to the reciprocal of
 		// the tempo instead of the tempo.
 		if (signal.units === "time") {

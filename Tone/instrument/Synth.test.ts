@@ -8,30 +8,36 @@ import { Frequency } from "../core/type/Frequency.js";
 import { Synth } from "./Synth.js";
 
 describe("Synth", () => {
-
 	BasicTests(Synth);
 	InstrumentTest(Synth, "C4");
 	MonophonicTest(Synth, "C4");
 
 	it("matches a file basic", () => {
-		return CompareToFile(() => {
-			const synth = new Synth().toDestination();
-			synth.triggerAttackRelease("C4", 0.1, 0.05);
-		}, "synth_basic.wav", 0.3);
+		return CompareToFile(
+			() => {
+				const synth = new Synth().toDestination();
+				synth.triggerAttackRelease("C4", 0.1, 0.05);
+			},
+			"synth_basic.wav",
+			0.3
+		);
 	});
 
 	it("matches a file melody", () => {
-		return CompareToFile(() => {
-			const synth = new Synth().toDestination();
-			synth.triggerAttack("C4", 0);
-			synth.triggerAttack("E4", 0.1, 0.5);
-			synth.triggerAttackRelease("G4", 0.5, 0.3);
-			synth.triggerAttackRelease("B4", 0.5, 0.5, 0.2);
-		}, "synth_melody.wav", 0.3);
+		return CompareToFile(
+			() => {
+				const synth = new Synth().toDestination();
+				synth.triggerAttack("C4", 0);
+				synth.triggerAttack("E4", 0.1, 0.5);
+				synth.triggerAttackRelease("G4", 0.5, 0.3);
+				synth.triggerAttackRelease("B4", 0.5, 0.5, 0.2);
+			},
+			"synth_melody.wav",
+			0.3
+		);
 	});
 
 	context("API", () => {
-
 		it("can get and set oscillator attributes", () => {
 			const simple = new Synth();
 			simple.oscillator.type = "triangle";
@@ -121,9 +127,11 @@ describe("Synth", () => {
 			return Offline(({ transport }) => {
 				const synth = new Synth({
 					envelope: {
-						release: 0
-					}
-				}).sync().toDestination();
+						release: 0,
+					},
+				})
+					.sync()
+					.toDestination();
 				synth.triggerAttackRelease("C4", 0.5);
 				transport.start(0.5).stop(1);
 			}, 1.5).then((buffer) => {
@@ -135,9 +143,11 @@ describe("Synth", () => {
 			return Offline(({ transport }) => {
 				const synth = new Synth({
 					envelope: {
-						release: 0
-					}
-				}).sync().toDestination();
+						release: 0,
+					},
+				})
+					.sync()
+					.toDestination();
 				synth.triggerAttackRelease("C4", 0.8, 0.5);
 				transport.loopEnd = 1;
 				transport.loop = true;
@@ -155,9 +165,12 @@ describe("Synth", () => {
 				const synth = new Synth({
 					envelope: {
 						sustain: 1,
-						release: 0
-					}
-				}).sync().toDestination().unsync();
+						release: 0,
+					},
+				})
+					.sync()
+					.toDestination()
+					.unsync();
 				synth.triggerAttackRelease("C4", 1, 0.5);
 				transport.start().stop(1);
 			}, 2).then((buffer) => {

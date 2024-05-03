@@ -9,11 +9,9 @@ import { Signal } from "./Signal.js";
 // import Oscillator from "../source/Oscillator";
 
 describe("Multiply", () => {
-
 	BasicTests(Multiply);
 
 	describe("Multiplication", () => {
-
 		it("handles input and output connections", () => {
 			const mult = new Multiply();
 			connectFrom().connect(mult, 0);

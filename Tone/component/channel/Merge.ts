@@ -1,4 +1,7 @@
-import { ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode.js";
+import {
+	ToneAudioNode,
+	ToneAudioNodeOptions,
+} from "../../core/context/ToneAudioNode.js";
 import { Positive } from "../../core/type/Units.js";
 import { optionsFromArguments } from "../../core/util/Defaults.js";
 
@@ -18,7 +21,6 @@ interface MergeOptions extends ToneAudioNodeOptions {
  * @category Component
  */
 export class Merge extends ToneAudioNode<MergeOptions> {
-
 	readonly name: string = "Merge";
 
 	/**
@@ -42,10 +44,17 @@ export class Merge extends ToneAudioNode<MergeOptions> {
 	constructor(channels?: Positive);
 	constructor(options?: Partial<MergeOptions>);
 	constructor() {
-		super(optionsFromArguments(Merge.getDefaults(), arguments, ["channels"]));
-		const options = optionsFromArguments(Merge.getDefaults(), arguments, ["channels"]);
+		super(
+			optionsFromArguments(Merge.getDefaults(), arguments, ["channels"])
+		);
+		const options = optionsFromArguments(Merge.getDefaults(), arguments, [
+			"channels",
+		]);
 
-		this._merger = this.output = this.input = this.context.createChannelMerger(options.channels);
+		this._merger =
+			this.output =
+			this.input =
+				this.context.createChannelMerger(options.channels);
 	}
 
 	static getDefaults(): MergeOptions {

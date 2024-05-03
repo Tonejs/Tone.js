@@ -4,7 +4,6 @@ import { TransportClass } from "./Transport.js";
 import { TransportRepeatEvent } from "./TransportRepeatEvent.js";
 
 describe("TransportRepeatEvent", () => {
-
 	it("can be created and disposed", () => {
 		return Offline((context) => {
 			const transport = new TransportClass({ context });
@@ -39,5 +38,4 @@ describe("TransportRepeatEvent", () => {
 			expect(transport._timeline.length).to.equal(0);
 		});
 	});
-
 });

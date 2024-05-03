@@ -2,7 +2,6 @@ import { expect } from "chai";
 import { StateTimeline } from "./StateTimeline.js";
 
 describe("StateTimeline", () => {
-
 	it("can be created and disposed", () => {
 		const sched = new StateTimeline();
 		sched.dispose();

@@ -397,9 +397,9 @@ export class ToneAudioBuffer extends Tone {
 		const location = document.createElement("a");
 		location.href = baseUrl + url;
 		location.pathname = (location.pathname + location.hash)
-				.split("/")
-				.map(encodeURIComponent)
-				.join("/");
+			.split("/")
+			.map(encodeURIComponent)
+			.join("/");
 
 		const response = await fetch(location.href);
 		if (!response.ok) {
@@ -425,8 +425,8 @@ export class ToneAudioBuffer extends Tone {
 		const extensions = url.split(".");
 		const extension = extensions[extensions.length - 1];
 		const response = document
-				.createElement("audio")
-				.canPlayType("audio/" + extension);
+			.createElement("audio")
+			.canPlayType("audio/" + extension);
 		return response !== "";
 	}
 

@@ -21,7 +21,6 @@ import { Signal, SignalOptions } from "./Signal.js";
  * @category Signal
  */
 export class Add extends Signal {
-
 	override = false;
 
 	readonly name: string = "Add";
@@ -44,7 +43,11 @@ export class Add extends Signal {
 	constructor(value?: number);
 	constructor(options?: Partial<SignalOptions<"number">>);
 	constructor() {
-		super(Object.assign(optionsFromArguments(Add.getDefaults(), arguments, ["value"])));
+		super(
+			Object.assign(
+				optionsFromArguments(Add.getDefaults(), arguments, ["value"])
+			)
+		);
 
 		connectSeries(this._constantSource, this._sum);
 	}

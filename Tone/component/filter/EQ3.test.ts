@@ -5,11 +5,9 @@ import { PassAudio } from "../../../test/helper/PassAudio.js";
 import { EQ3 } from "./EQ3.js";
 
 describe("EQ3", () => {
-
 	BasicTests(EQ3);
 
 	context("EQing", () => {
-
 		it("can be constructed with an object", () => {
 			const eq3 = new EQ3({
 				high: -10,
@@ -38,7 +36,7 @@ describe("EQ3", () => {
 		});
 
 		it("passes the incoming signal through", () => {
-			return PassAudio(input => {
+			return PassAudio((input) => {
 				const eq3 = new EQ3({
 					high: 12,
 					low: -20,

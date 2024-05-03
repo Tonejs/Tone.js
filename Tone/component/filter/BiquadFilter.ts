@@ -1,4 +1,7 @@
-import { ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode.js";
+import {
+	ToneAudioNode,
+	ToneAudioNodeOptions,
+} from "../../core/context/ToneAudioNode.js";
 import { Cents, Frequency, GainFactor } from "../../core/type/Units.js";
 import { optionsFromArguments } from "../../core/util/Defaults.js";
 import { Param } from "../../core/context/Param.js";
@@ -13,8 +16,8 @@ export interface BiquadFilterOptions extends ToneAudioNodeOptions {
 }
 
 /**
- * Thin wrapper around the native Web Audio [BiquadFilterNode](https://webaudio.github.io/web-audio-api/#biquadfilternode). 
- * BiquadFilter is similar to {@link Filter} but doesn't have the option to set the "rolloff" value. 
+ * Thin wrapper around the native Web Audio [BiquadFilterNode](https://webaudio.github.io/web-audio-api/#biquadfilternode).
+ * BiquadFilter is similar to {@link Filter} but doesn't have the option to set the "rolloff" value.
  * @category Component
  */
 export class BiquadFilter extends ToneAudioNode<BiquadFilterOptions> {
@@ -32,13 +35,13 @@ export class BiquadFilter extends ToneAudioNode<BiquadFilterOptions> {
 	 * A detune value, in cents, for the frequency.
 	 */
 	readonly detune: Param<"cents">;
-	
+
 	/**
 	 * The Q factor of the filter.
-	 * For lowpass and highpass filters the Q value is interpreted to be in dB. 
+	 * For lowpass and highpass filters the Q value is interpreted to be in dB.
 	 * For these filters the nominal range is [−𝑄𝑙𝑖𝑚,𝑄𝑙𝑖𝑚] where 𝑄𝑙𝑖𝑚 is the largest value for which 10𝑄/20 does not overflow. This is approximately 770.63678.
-	 * For the bandpass, notch, allpass, and peaking filters, this value is a linear value. 
-	 * The value is related to the bandwidth of the filter and hence should be a positive value. The nominal range is 
+	 * For the bandpass, notch, allpass, and peaking filters, this value is a linear value.
+	 * The value is related to the bandwidth of the filter and hence should be a positive value. The nominal range is
 	 * [0,3.4028235𝑒38], the upper limit being the most-positive-single-float.
 	 * This is not used for the lowshelf and highshelf filters.
 	 */
@@ -58,8 +61,17 @@ export class BiquadFilter extends ToneAudioNode<BiquadFilterOptions> {
 	constructor(frequency?: Frequency, type?: BiquadFilterType);
 	constructor(options?: Partial<BiquadFilterOptions>);
 	constructor() {
-		super(optionsFromArguments(BiquadFilter.getDefaults(), arguments, ["frequency", "type"]));
-		const options = optionsFromArguments(BiquadFilter.getDefaults(), arguments, ["frequency", "type"]);
+		super(
+			optionsFromArguments(BiquadFilter.getDefaults(), arguments, [
+				"frequency",
+				"type",
+			])
+		);
+		const options = optionsFromArguments(
+			BiquadFilter.getDefaults(),
+			arguments,
+			["frequency", "type"]
+		);
 
 		this._filter = this.context.createBiquadFilter();
 		this.input = this.output = this._filter;
@@ -70,21 +82,21 @@ export class BiquadFilter extends ToneAudioNode<BiquadFilterOptions> {
 			value: options.Q,
 			param: this._filter.Q,
 		});
-		
+
 		this.frequency = new Param({
 			context: this.context,
 			units: "frequency",
 			value: options.frequency,
 			param: this._filter.frequency,
 		});
-		
+
 		this.detune = new Param({
 			context: this.context,
 			units: "cents",
 			value: options.detune,
 			param: this._filter.detune,
 		});
-		
+
 		this.gain = new Param({
 			context: this.context,
 			units: "decibels",
@@ -114,8 +126,16 @@ export class BiquadFilter extends ToneAudioNode<BiquadFilterOptions> {
 		return this._filter.type;
 	}
 	set type(type) {
-		const types: BiquadFilterType[] = ["lowpass", "highpass", "bandpass",
-			"lowshelf", "highshelf", "notch", "allpass", "peaking"];
+		const types: BiquadFilterType[] = [
+			"lowpass",
+			"highpass",
+			"bandpass",
+			"lowshelf",
+			"highshelf",
+			"notch",
+			"allpass",
+			"peaking",
+		];
 		assert(types.indexOf(type) !== -1, `Invalid filter type: ${type}`);
 		this._filter.type = type;
 	}

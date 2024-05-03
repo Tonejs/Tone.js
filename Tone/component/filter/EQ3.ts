@@ -1,6 +1,9 @@
 import { Gain } from "../../core/context/Gain.js";
 import { Param } from "../../core/context/Param.js";
-import { ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode.js";
+import {
+	ToneAudioNode,
+	ToneAudioNodeOptions,
+} from "../../core/context/ToneAudioNode.js";
 import { Decibels, Frequency } from "../../core/type/Units.js";
 import { optionsFromArguments } from "../../core/util/Defaults.js";
 import { readOnly, writable } from "../../core/util/Interface.js";
@@ -16,11 +19,10 @@ interface EQ3Options extends ToneAudioNodeOptions {
 }
 
 /**
- * EQ3 provides 3 equalizer bins: Low/Mid/High. 
+ * EQ3 provides 3 equalizer bins: Low/Mid/High.
  * @category Component
  */
 export class EQ3 extends ToneAudioNode<EQ3Options> {
-
 	readonly name: string = "EQ3";
 
 	/**
@@ -88,8 +90,18 @@ export class EQ3 extends ToneAudioNode<EQ3Options> {
 	constructor(lowLevel?: Decibels, midLevel?: Decibels, highLevel?: Decibels);
 	constructor(options: Partial<EQ3Options>);
 	constructor() {
-		super(optionsFromArguments(EQ3.getDefaults(), arguments, ["low", "mid", "high"]));
-		const options = optionsFromArguments(EQ3.getDefaults(), arguments, ["low", "mid", "high"]);
+		super(
+			optionsFromArguments(EQ3.getDefaults(), arguments, [
+				"low",
+				"mid",
+				"high",
+			])
+		);
+		const options = optionsFromArguments(EQ3.getDefaults(), arguments, [
+			"low",
+			"mid",
+			"high",
+		]);
 
 		this.input = this._multibandSplit = new MultibandSplit({
 			context: this.context,
@@ -120,7 +132,7 @@ export class EQ3 extends ToneAudioNode<EQ3Options> {
 		this.high = this._highGain.gain;
 		this.Q = this._multibandSplit.Q;
 		this.lowFrequency = this._multibandSplit.lowFrequency;
-		this.highFrequency	= this._multibandSplit.highFrequency;
+		this.highFrequency = this._multibandSplit.highFrequency;
 
 		// the frequency bands
 		this._multibandSplit.low.chain(this._lowGain, this.output);
@@ -159,5 +171,4 @@ export class EQ3 extends ToneAudioNode<EQ3Options> {
 		this.Q.dispose();
 		return this;
 	}
-
 }

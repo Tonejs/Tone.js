@@ -18,7 +18,6 @@ export interface ToneOscillatorNodeOptions extends OneShotSourceOptions {
  * @category Source
  */
 export class ToneOscillatorNode extends OneShotSource<ToneOscillatorNodeOptions> {
-
 	readonly name: string = "ToneOscillatorNode";
 
 	/**
@@ -41,15 +40,20 @@ export class ToneOscillatorNode extends OneShotSource<ToneOscillatorNodeOptions>
 	 * @param  frequency   The frequency value
 	 * @param  type  The basic oscillator type
 	 */
-	constructor(
-		frequency: Frequency,
-		type: OscillatorType,
-	);
+	constructor(frequency: Frequency, type: OscillatorType);
 	constructor(options?: Partial<ToneOscillatorNodeOptions>);
 	constructor() {
-
-		super(optionsFromArguments(ToneOscillatorNode.getDefaults(), arguments, ["frequency", "type"]));
-		const options = optionsFromArguments(ToneOscillatorNode.getDefaults(), arguments, ["frequency", "type"]);
+		super(
+			optionsFromArguments(ToneOscillatorNode.getDefaults(), arguments, [
+				"frequency",
+				"type",
+			])
+		);
+		const options = optionsFromArguments(
+			ToneOscillatorNode.getDefaults(),
+			arguments,
+			["frequency", "type"]
+		);
 
 		connect(this._oscillator, this._gainNode);
 

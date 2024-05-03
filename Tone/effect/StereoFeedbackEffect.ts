@@ -13,8 +13,9 @@ export interface StereoFeedbackEffectOptions extends StereoEffectOptions {
 /**
  * Base class for stereo feedback effects where the effectReturn is fed back into the same channel.
  */
-export class StereoFeedbackEffect<Options extends StereoFeedbackEffectOptions> extends StereoEffect<Options> {
-	
+export class StereoFeedbackEffect<
+	Options extends StereoFeedbackEffectOptions,
+> extends StereoEffect<Options> {
 	/**
 	 * The amount of feedback from the output
 	 * back into the input of the effect (routed
@@ -43,13 +44,12 @@ export class StereoFeedbackEffect<Options extends StereoFeedbackEffectOptions> e
 	protected _feedbackMerge: Merge;
 
 	constructor(options: StereoFeedbackEffectOptions) {
-
 		super(options);
 
 		this.feedback = new Signal({
 			context: this.context,
-			value: options.feedback, 
-			units: "normalRange"
+			value: options.feedback,
+			units: "normalRange",
 		});
 		this._feedbackL = new Gain({ context: this.context });
 		this._feedbackR = new Gain({ context: this.context });
@@ -59,7 +59,7 @@ export class StereoFeedbackEffect<Options extends StereoFeedbackEffectOptions> e
 
 		this._merge.connect(this._feedbackSplit);
 		this._feedbackMerge.connect(this._split);
-		
+
 		// the left output connected to the left input
 		this._feedbackSplit.connect(this._feedbackL, 0, 0);
 		this._feedbackL.connect(this._feedbackMerge, 0, 0);
@@ -67,7 +67,7 @@ export class StereoFeedbackEffect<Options extends StereoFeedbackEffectOptions> e
 		// the right output connected to the right input
 		this._feedbackSplit.connect(this._feedbackR, 1, 0);
 		this._feedbackR.connect(this._feedbackMerge, 0, 1);
-		
+
 		// the feedback control
 		this.feedback.fan(this._feedbackL.gain, this._feedbackR.gain);
 		readOnly(this, ["feedback"]);

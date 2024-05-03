@@ -1,5 +1,9 @@
 import { Gain } from "../../core/context/Gain.js";
-import { OutputNode, ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode.js";
+import {
+	OutputNode,
+	ToneAudioNode,
+	ToneAudioNodeOptions,
+} from "../../core/context/ToneAudioNode.js";
 import { optionsFromArguments } from "../../core/util/Defaults.js";
 import { Merge } from "./Merge.js";
 
@@ -12,7 +16,6 @@ export type MonoOptions = ToneAudioNodeOptions;
  * @category Component
  */
 export class Mono extends ToneAudioNode<MonoOptions> {
-
 	readonly name: string = "Mono";
 
 	/**
@@ -32,7 +35,6 @@ export class Mono extends ToneAudioNode<MonoOptions> {
 
 	constructor(options?: Partial<MonoOptions>);
 	constructor() {
-
 		super(optionsFromArguments(Mono.getDefaults(), arguments));
 
 		this.input = new Gain({ context: this.context });

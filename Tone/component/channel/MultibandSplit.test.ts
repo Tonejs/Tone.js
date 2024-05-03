@@ -5,7 +5,6 @@ import { PassAudio } from "../../../test/helper/PassAudio.js";
 import { MultibandSplit } from "./MultibandSplit.js";
 
 describe("MultibandSplit", () => {
-
 	BasicTests(MultibandSplit);
 
 	it("handles input and output connections", () => {
@@ -41,21 +40,21 @@ describe("MultibandSplit", () => {
 	});
 
 	it("passes the incoming signal through low", () => {
-		return PassAudio(input => {
+		return PassAudio((input) => {
 			const split = new MultibandSplit().low.toDestination();
 			input.connect(split);
 		});
 	});
 
 	it("passes the incoming signal through mid", () => {
-		return PassAudio(input => {
+		return PassAudio((input) => {
 			const split = new MultibandSplit().mid.toDestination();
 			input.connect(split);
 		});
 	});
 
 	it("passes the incoming signal through high", () => {
-		return PassAudio(input => {
+		return PassAudio((input) => {
 			const split = new MultibandSplit({
 				highFrequency: 10,
 				lowFrequency: 5,

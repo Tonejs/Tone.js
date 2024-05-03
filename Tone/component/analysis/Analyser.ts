@@ -1,4 +1,9 @@
-import { InputNode, OutputNode, ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode.js";
+import {
+	InputNode,
+	OutputNode,
+	ToneAudioNode,
+	ToneAudioNodeOptions,
+} from "../../core/context/ToneAudioNode.js";
 import { NormalRange, PowerOfTwo } from "../../core/type/Units.js";
 import { optionsFromArguments } from "../../core/util/Defaults.js";
 import { Split } from "../channel/Split.js";
@@ -20,7 +25,6 @@ export interface AnalyserOptions extends ToneAudioNodeOptions {
  * @category Component
  */
 export class Analyser extends ToneAudioNode<AnalyserOptions> {
-
 	readonly name: string = "Analyser";
 
 	readonly input: InputNode;
@@ -58,18 +62,30 @@ export class Analyser extends ToneAudioNode<AnalyserOptions> {
 	constructor(type?: AnalyserType, size?: number);
 	constructor(options?: Partial<AnalyserOptions>);
 	constructor() {
-		super(optionsFromArguments(Analyser.getDefaults(), arguments, ["type", "size"]));
-		const options = optionsFromArguments(Analyser.getDefaults(), arguments, ["type", "size"]);
+		super(
+			optionsFromArguments(Analyser.getDefaults(), arguments, [
+				"type",
+				"size",
+			])
+		);
+		const options = optionsFromArguments(
+			Analyser.getDefaults(),
+			arguments,
+			["type", "size"]
+		);
 
-		this.input = this.output = this._gain = new Gain({ context: this.context });
+		this.input =
+			this.output =
+			this._gain =
+				new Gain({ context: this.context });
 		this._split = new Split({
 			context: this.context,
 			channels: options.channels,
 		});
 		this.input.connect(this._split);
-		
+
 		assertRange(options.channels, 1);
-		
+
 		// create the analysers
 		for (let channel = 0; channel < options.channels; channel++) {
 			this._analysers[channel] = this.context.createAnalyser();
@@ -141,7 +157,10 @@ export class Analyser extends ToneAudioNode<AnalyserOptions> {
 		return this._type;
 	}
 	set type(type: AnalyserType) {
-		assert(type === "waveform" || type === "fft", `Analyser: invalid type: ${type}`);
+		assert(
+			type === "waveform" || type === "fft",
+			`Analyser: invalid type: ${type}`
+		);
 		this._type = type;
 	}
 
@@ -152,7 +171,7 @@ export class Analyser extends ToneAudioNode<AnalyserOptions> {
 		return this._analysers[0].smoothingTimeConstant;
 	}
 	set smoothing(val: NormalRange) {
-		this._analysers.forEach(a => a.smoothingTimeConstant = val);
+		this._analysers.forEach((a) => (a.smoothingTimeConstant = val));
 	}
 
 	/**
@@ -160,7 +179,7 @@ export class Analyser extends ToneAudioNode<AnalyserOptions> {
 	 */
 	dispose(): this {
 		super.dispose();
-		this._analysers.forEach(a => a.disconnect());
+		this._analysers.forEach((a) => a.disconnect());
 		this._split.dispose();
 		this._gain.dispose();
 		return this;

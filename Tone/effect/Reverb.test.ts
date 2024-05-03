@@ -5,11 +5,9 @@ import { Oscillator } from "../source/oscillator/Oscillator.js";
 import { Reverb } from "./Reverb.js";
 
 describe("Reverb", () => {
-
 	BasicTests(Reverb);
 
 	context("API", () => {
-
 		it("can pass in options in the constructor", () => {
 			const reverb = new Reverb({
 				decay: 2,

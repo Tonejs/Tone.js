@@ -36,7 +36,8 @@ export const SCHEDULE_RAMP_AFTER_SET_TARGET = is("Chrome");
 // if the tests run in focus
 export const ONLINE_TESTING = isntVersion("Chrome", 71);
 // the close method resolves a promise
-export const AUDIO_CONTEXT_CLOSE_RESOLVES = isnt("Firefox") && isnt("Safari", 10);
+export const AUDIO_CONTEXT_CLOSE_RESOLVES =
+	isnt("Firefox") && isnt("Safari", 10);
 // if it supports gUM testing
 export const GET_USER_MEDIA = isnt("Safari");
 // firefox does not invoke AudioBufferSourceNode.onended in the offline context

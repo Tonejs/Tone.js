@@ -24,7 +24,6 @@ export interface PluckSynthOptions extends InstrumentOptions {
  * @category Instrument
  */
 export class PluckSynth extends Instrument<PluckSynthOptions> {
-
 	readonly name = "PluckSynth";
 
 	/**
@@ -51,15 +50,17 @@ export class PluckSynth extends Instrument<PluckSynthOptions> {
 	 */
 	release: Time;
 
-	constructor(options?: RecursivePartial<PluckSynthOptions>)
+	constructor(options?: RecursivePartial<PluckSynthOptions>);
 	constructor() {
-
 		super(optionsFromArguments(PluckSynth.getDefaults(), arguments));
-		const options = optionsFromArguments(PluckSynth.getDefaults(), arguments);
+		const options = optionsFromArguments(
+			PluckSynth.getDefaults(),
+			arguments
+		);
 
 		this._noise = new Noise({
 			context: this.context,
-			type: "pink"
+			type: "pink",
 		});
 
 		this.attackNoise = options.attackNoise;

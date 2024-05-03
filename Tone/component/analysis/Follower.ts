@@ -1,5 +1,10 @@
 import { Time } from "../../core/type/Units.js";
-import { InputNode, OutputNode, ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode.js";
+import {
+	InputNode,
+	OutputNode,
+	ToneAudioNode,
+	ToneAudioNodeOptions,
+} from "../../core/context/ToneAudioNode.js";
 import { optionsFromArguments } from "../../core/util/Defaults.js";
 import { OnePoleFilter } from "../filter/OnePoleFilter.js";
 import { Abs } from "../../signal/Abs.js";
@@ -9,8 +14,8 @@ export interface FollowerOptions extends ToneAudioNodeOptions {
 }
 
 /**
- * Follower is a simple envelope follower. 
- * It's implemented by applying a lowpass filter to the absolute value of the incoming signal. 
+ * Follower is a simple envelope follower.
+ * It's implemented by applying a lowpass filter to the absolute value of the incoming signal.
  * ```
  *          +-----+    +---------------+
  * Input +--> Abs +----> OnePoleFilter +--> Output
@@ -19,7 +24,6 @@ export interface FollowerOptions extends ToneAudioNodeOptions {
  * @category Component
  */
 export class Follower extends ToneAudioNode<FollowerOptions> {
-
 	readonly name: string = "Follower";
 
 	readonly input: InputNode;
@@ -46,14 +50,22 @@ export class Follower extends ToneAudioNode<FollowerOptions> {
 	constructor(smoothing?: Time);
 	constructor(options?: Partial<FollowerOptions>);
 	constructor() {
-		super(optionsFromArguments(Follower.getDefaults(), arguments, ["smoothing"]));
-		const options = optionsFromArguments(Follower.getDefaults(), arguments, ["smoothing"]);
+		super(
+			optionsFromArguments(Follower.getDefaults(), arguments, [
+				"smoothing",
+			])
+		);
+		const options = optionsFromArguments(
+			Follower.getDefaults(),
+			arguments,
+			["smoothing"]
+		);
 
 		this._abs = this.input = new Abs({ context: this.context });
 		this._lowpass = this.output = new OnePoleFilter({
 			context: this.context,
 			frequency: 1 / this.toSeconds(options.smoothing),
-			type: "lowpass"
+			type: "lowpass",
 		});
 		this._abs.connect(this._lowpass);
 		this._smoothing = options.smoothing;
@@ -61,12 +73,12 @@ export class Follower extends ToneAudioNode<FollowerOptions> {
 
 	static getDefaults(): FollowerOptions {
 		return Object.assign(ToneAudioNode.getDefaults(), {
-			smoothing: 0.05
+			smoothing: 0.05,
 		});
 	}
 
 	/**
-	 * The amount of time it takes a value change to arrive at the updated value. 
+	 * The amount of time it takes a value change to arrive at the updated value.
 	 */
 	get smoothing(): Time {
 		return this._smoothing;

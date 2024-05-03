@@ -75,7 +75,7 @@ describe("Context", () => {
 				clockSource: "timeout",
 				latencyHint: "playback",
 				lookAhead: 0.2,
-				updateInterval: 0.1
+				updateInterval: 0.1,
 			});
 			expect(ctx.lookAhead).to.equal(0.2);
 			expect(ctx.updateInterval).to.equal(0.1);

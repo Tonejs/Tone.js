@@ -2,7 +2,10 @@ import { expect } from "chai";
 import { BasicTests } from "../../../test/helper/Basic.js";
 import { CompareToFile } from "../../../test/helper/CompareToFile.js";
 import { Offline } from "../../../test/helper/Offline.js";
-import { OFFLINE_BUFFERSOURCE_ONENDED, ONLINE_TESTING } from "../../../test/helper/Supports.js";
+import {
+	OFFLINE_BUFFERSOURCE_ONENDED,
+	ONLINE_TESTING,
+} from "../../../test/helper/Supports.js";
 import { ToneAudioBuffer } from "../../core/context/ToneAudioBuffer.js";
 import { getContext } from "../../core/Global.js";
 import { ToneBufferSource } from "./ToneBufferSource.js";
@@ -10,11 +13,10 @@ import { ToneBufferSource } from "./ToneBufferSource.js";
 const sampleRate = getContext().sampleRate;
 
 describe("ToneBufferSource", () => {
-
 	const buffer = new ToneAudioBuffer();
 
 	const ones = new Float32Array(sampleRate * 0.5);
-	ones.forEach((sample, index) => ones[index] = 1);
+	ones.forEach((sample, index) => (ones[index] = 1));
 	const onesBuffer = ToneAudioBuffer.fromArray(ones);
 
 	beforeEach(() => {
@@ -32,7 +34,6 @@ describe("ToneBufferSource", () => {
 	});
 
 	context("Constructor", () => {
-
 		it("can be constructed with a Tone.Buffer", () => {
 			const source = new ToneBufferSource(buffer);
 			expect(source.buffer.get()).to.equal(buffer.get());
@@ -74,11 +75,14 @@ describe("ToneBufferSource", () => {
 		});
 
 		it("can be constructed with a url and onload", (done) => {
-			const source = new ToneBufferSource("./test/audio/short_sine.wav", () => {
-				expect(source.buffer.loaded).is.equal(true);
-				source.dispose();
-				done();
-			});
+			const source = new ToneBufferSource(
+				"./test/audio/short_sine.wav",
+				() => {
+					expect(source.buffer.loaded).is.equal(true);
+					source.dispose();
+					done();
+				}
+			);
 		});
 
 		it("invokes onerror if no url", (done) => {
@@ -87,7 +91,7 @@ describe("ToneBufferSource", () => {
 				onerror() {
 					source.dispose();
 					done();
-				}
+				},
 			});
 		});
 
@@ -104,7 +108,6 @@ describe("ToneBufferSource", () => {
 	});
 
 	context("Looping", () => {
-
 		beforeEach(() => {
 			return buffer.load("./test/audio/short_sine.wav");
 		});
@@ -154,8 +157,14 @@ describe("ToneBufferSource", () => {
 			}, buffer.duration * 2).then((buff) => {
 				expect(buff.getRmsAtTime(0)).to.be.above(0);
 				expect(buff.getRmsAtTime(buffer.duration * 0.5)).to.be.above(0);
-				expect(buff.getRmsAtTime(buffer.duration)).to.be.closeTo(0, 0.001);
-				expect(buff.getRmsAtTime(buffer.duration * 1.5)).to.be.closeTo(0, 0.001);
+				expect(buff.getRmsAtTime(buffer.duration)).to.be.closeTo(
+					0,
+					0.001
+				);
+				expect(buff.getRmsAtTime(buffer.duration * 1.5)).to.be.closeTo(
+					0,
+					0.001
+				);
 			});
 		});
 
@@ -176,34 +185,35 @@ describe("ToneBufferSource", () => {
 
 		it("starts at the loop start offset if looping", () => {
 			const offsetTime = 0.05;
-			const offsetSample = buffer.toArray()[Math.floor(offsetTime * sampleRate)];
+			const offsetSample =
+				buffer.toArray()[Math.floor(offsetTime * sampleRate)];
 			return Offline(() => {
 				const player = new ToneBufferSource(buffer).toDestination();
 				player.loop = true;
 				player.loopStart = offsetTime;
 				player.start(0);
-			}, 0.1).then(buff => {
+			}, 0.1).then((buff) => {
 				expect(buff.getValueAtTime(0)).to.equal(offsetSample);
 			});
 		});
 
 		it("the offset is modulo the loopDuration", () => {
-			const testSample = buffer.toArray()[Math.floor(0.051 * sampleRate)] as number;
+			const testSample = buffer.toArray()[
+				Math.floor(0.051 * sampleRate)
+			] as number;
 			return Offline(() => {
 				const player = new ToneBufferSource(buffer).toDestination();
 				player.loop = true;
 				player.loopStart = 0;
 				player.loopEnd = 0.1;
 				player.start(0, 0.351);
-			}, 0.1).then(buff => {
+			}, 0.1).then((buff) => {
 				expect(buff.getValueAtTime(0)).to.be.closeTo(testSample, 1e-4);
 			});
 		});
-
 	});
 
 	context("Get/Set", () => {
-
 		it("can be set with an options object", () => {
 			const player = new ToneBufferSource();
 			expect(player.loop).is.equal(false);
@@ -224,11 +234,9 @@ describe("ToneBufferSource", () => {
 			expect(player.playbackRate.value).to.equal(0.5);
 			player.dispose();
 		});
-
 	});
 
 	context("onended", () => {
-
 		beforeEach(() => {
 			return buffer.load("./test/audio/sine.wav");
 		});
@@ -250,7 +258,7 @@ describe("ToneBufferSource", () => {
 			return Offline(() => {
 				const player = new ToneBufferSource(buffer).toDestination();
 				player.start(0.2).stop(0.4);
-				player.onended = () => wasInvoked = true;
+				player.onended = () => (wasInvoked = true);
 			}, 0.5).then(() => {
 				expect(wasInvoked).to.equal(true);
 			});
@@ -272,7 +280,6 @@ describe("ToneBufferSource", () => {
 
 		if (OFFLINE_BUFFERSOURCE_ONENDED) {
 			it("schedules the onended callback when the buffer is done without scheduling stop", () => {
-
 				let wasInvoked = false;
 				return Offline(() => {
 					const player = new ToneBufferSource(buffer).toDestination();
@@ -285,11 +292,9 @@ describe("ToneBufferSource", () => {
 				});
 			});
 		}
-
 	});
 
 	context("state", () => {
-
 		beforeEach(() => {
 			return buffer.load("./test/audio/sine.wav");
 		});
@@ -326,7 +331,6 @@ describe("ToneBufferSource", () => {
 	});
 
 	context("Start/Stop Scheduling", () => {
-
 		beforeEach(() => {
 			return buffer.load("./test/audio/sine.wav");
 		});
@@ -336,7 +340,7 @@ describe("ToneBufferSource", () => {
 				const player = new ToneBufferSource(buffer).toDestination();
 				player.start(0).stop(0.1);
 
-				return time => {
+				return (time) => {
 					if (time > 0.1) {
 						expect(player.state).to.equal("stopped");
 					}
@@ -382,8 +386,14 @@ describe("ToneBufferSource", () => {
 			}, buffer.duration).then((rms) => {
 				expect(rms.getRmsAtTime(0.03)).to.be.gt(0);
 				expect(rms.getRmsAtTime(buffer.duration * 0.45)).to.be.gt(0);
-				expect(rms.getRmsAtTime(buffer.duration * 0.5)).to.closeTo(0, 0.01);
-				expect(rms.getRmsAtTime(buffer.duration * 0.7)).to.closeTo(0, 0.01);
+				expect(rms.getRmsAtTime(buffer.duration * 0.5)).to.closeTo(
+					0,
+					0.01
+				);
+				expect(rms.getRmsAtTime(buffer.duration * 0.7)).to.closeTo(
+					0,
+					0.01
+				);
 			});
 		});
 
@@ -408,7 +418,8 @@ describe("ToneBufferSource", () => {
 
 		it("can start at an offset", () => {
 			const offsetTime = 0.1;
-			const offsetSample = buffer.toArray()[Math.floor(offsetTime * sampleRate)];
+			const offsetSample =
+				buffer.toArray()[Math.floor(offsetTime * sampleRate)];
 			return Offline(() => {
 				const player = new ToneBufferSource(buffer).toDestination();
 				player.start(0, offsetTime);
@@ -477,7 +488,7 @@ describe("ToneBufferSource", () => {
 				const player = new ToneBufferSource(onesBuffer).toDestination();
 				player.fadeOut = 0.1;
 				player.start(0).stop(0.2);
-			}, 0.32).then(buff => {
+			}, 0.32).then((buff) => {
 				expect(buff.getValueAtTime(0)).to.equal(1);
 				expect(buff.getValueAtTime(0.1)).to.equal(1);
 				expect(buff.getValueAtTime(0.2)).to.equal(1);
@@ -502,7 +513,7 @@ describe("ToneBufferSource", () => {
 				player.fadeIn = 0.1;
 				player.fadeOut = 0.1;
 				player.start(0).stop(0.4);
-			}, 0.51).then(buff => {
+			}, 0.51).then((buff) => {
 				expect(buff.getValueAtTime(0)).to.equal(0);
 				expect(buff.getValueAtTime(0.05)).to.be.closeTo(0.93, 0.01);
 				expect(buff.getValueAtTime(0.1)).to.be.closeTo(1, 0.01);
@@ -573,6 +584,5 @@ describe("ToneBufferSource", () => {
 				expect(buff.getTimeOfLastSound()).to.be.closeTo(0.2, 0.02);
 			});
 		});
-
 	});
 });

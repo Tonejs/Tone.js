@@ -4,11 +4,9 @@ import { GreaterThan } from "./GreaterThan.js";
 import { Signal } from "./Signal.js";
 
 describe("GreaterThan", () => {
-
 	BasicTests(GreaterThan);
 
 	context("Comparison", () => {
-
 		it("outputs 0 when signal is less than value", () => {
 			return ConstantOutput(() => {
 				const signal = new Signal(1);
@@ -78,4 +76,3 @@ describe("GreaterThan", () => {
 		});
 	});
 });
-

@@ -8,7 +8,6 @@ import { WaveShaper } from "./WaveShaper.js";
  * @category Signal
  */
 export class AudioToGain extends SignalOperator<ToneAudioNodeOptions> {
-
 	readonly name: string = "AudioToGain";
 
 	/**
@@ -16,7 +15,7 @@ export class AudioToGain extends SignalOperator<ToneAudioNodeOptions> {
 	 */
 	private _norm = new WaveShaper({
 		context: this.context,
-		mapping: x => (x + 1) / 2,
+		mapping: (x) => (x + 1) / 2,
 	});
 
 	/**

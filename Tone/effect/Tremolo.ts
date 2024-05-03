@@ -23,11 +23,10 @@ export interface TremoloOptions extends StereoEffectOptions {
  * const tremolo = new Tone.Tremolo(9, 0.75).toDestination().start();
  * // route an oscillator through the tremolo and start it
  * const oscillator = new Tone.Oscillator().connect(tremolo).start();
- * 
+ *
  * @category Effect
  */
 export class Tremolo extends StereoEffect<TremoloOptions> {
-
 	readonly name: string = "Tremolo";
 
 	/**
@@ -69,9 +68,16 @@ export class Tremolo extends StereoEffect<TremoloOptions> {
 	constructor(frequency?: Frequency, depth?: NormalRange);
 	constructor(options?: Partial<TremoloOptions>);
 	constructor() {
-
-		super(optionsFromArguments(Tremolo.getDefaults(), arguments, ["frequency", "depth"]));
-		const options = optionsFromArguments(Tremolo.getDefaults(), arguments, ["frequency", "depth"]);
+		super(
+			optionsFromArguments(Tremolo.getDefaults(), arguments, [
+				"frequency",
+				"depth",
+			])
+		);
+		const options = optionsFromArguments(Tremolo.getDefaults(), arguments, [
+			"frequency",
+			"depth",
+		]);
 
 		this._lfoL = new LFO({
 			context: this.context,
@@ -174,8 +180,8 @@ export class Tremolo extends StereoEffect<TremoloOptions> {
 		return this._lfoR.phase - this._lfoL.phase; // 180
 	}
 	set spread(spread) {
-		this._lfoL.phase = 90 - (spread / 2);
-		this._lfoR.phase = (spread / 2) + 90;
+		this._lfoL.phase = 90 - spread / 2;
+		this._lfoR.phase = spread / 2 + 90;
 	}
 
 	dispose(): this {

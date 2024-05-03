@@ -6,9 +6,7 @@ import { ToneWithContext } from "../../core/context/ToneWithContext.js";
 import { Synth } from "../../instrument/Synth.js";
 
 describe("Recorder", () => {
-
 	context("basic", () => {
-
 		it("can be created and disposed", () => {
 			const rec = new Recorder();
 			rec.dispose();
@@ -33,11 +31,13 @@ describe("Recorder", () => {
 		it("can set a different context", () => {
 			const testContext = new Context();
 			const rec = new Recorder({
-				context: testContext
+				context: testContext,
 			});
 			for (const member in rec) {
 				if (rec[member] instanceof ToneWithContext) {
-					expect(rec[member].context, `member: ${member}`).to.equal(testContext);
+					expect(rec[member].context, `member: ${member}`).to.equal(
+						testContext
+					);
 				}
 			}
 			testContext.dispose();
@@ -47,11 +47,10 @@ describe("Recorder", () => {
 	});
 
 	function wait(time) {
-		return new Promise(done => setTimeout(done, time));
+		return new Promise((done) => setTimeout(done, time));
 	}
 
 	context("start/stop/pause", () => {
-
 		it("can be started", () => {
 			const rec = new Recorder();
 			rec.start();
@@ -114,6 +113,5 @@ describe("Recorder", () => {
 			rec.dispose();
 			synth.dispose();
 		});
-
 	});
 });

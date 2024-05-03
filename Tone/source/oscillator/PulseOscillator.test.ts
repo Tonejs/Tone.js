@@ -7,19 +7,22 @@ import { SourceTests } from "../../../test/helper/SourceTests.js";
 import { PulseOscillator } from "./PulseOscillator.js";
 
 describe("PulseOscillator", () => {
-
 	// run the common tests
 	BasicTests(PulseOscillator);
 	SourceTests(PulseOscillator);
 	OscillatorTests(PulseOscillator);
 
 	it("matches a file", () => {
-		return CompareToFile(() => {
-			const osc = new PulseOscillator({
-				width: 0.2,
-			}).toDestination();
-			osc.start(0);
-		}, "pulseOscillator.wav", 0.03);
+		return CompareToFile(
+			() => {
+				const osc = new PulseOscillator({
+					width: 0.2,
+				}).toDestination();
+				osc.start(0);
+			},
+			"pulseOscillator.wav",
+			0.03
+		);
 	});
 
 	context("Phase Rotation", () => {
@@ -62,11 +65,9 @@ describe("PulseOscillator", () => {
 				});
 			});
 		});
-
 	});
 
 	context("Width", () => {
-
 		it("can set the width", () => {
 			const osc = new PulseOscillator({
 				width: 0.2,

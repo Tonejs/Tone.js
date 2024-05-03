@@ -4,11 +4,9 @@ import { Negate } from "./Negate.js";
 import { Signal } from "./Signal.js";
 
 describe("Negate", () => {
-
 	BasicTests(Negate);
 
 	context("Negating", () => {
-
 		it("negateates a positive value", () => {
 			return ConstantOutput(() => {
 				const signal = new Signal(1);

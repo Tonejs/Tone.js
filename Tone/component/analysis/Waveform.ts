@@ -14,7 +14,6 @@ export interface WaveformOptions extends MeterBaseOptions {
  * @category Component
  */
 export class Waveform extends MeterBase<WaveformOptions> {
-
 	readonly name: string = "Waveform";
 
 	/**
@@ -23,8 +22,14 @@ export class Waveform extends MeterBase<WaveformOptions> {
 	constructor(size?: PowerOfTwo);
 	constructor(options?: Partial<WaveformOptions>);
 	constructor() {
-		super(optionsFromArguments(Waveform.getDefaults(), arguments, ["size"]));
-		const options = optionsFromArguments(Waveform.getDefaults(), arguments, ["size"]);
+		super(
+			optionsFromArguments(Waveform.getDefaults(), arguments, ["size"])
+		);
+		const options = optionsFromArguments(
+			Waveform.getDefaults(),
+			arguments,
+			["size"]
+		);
 
 		this._analyser.type = "waveform";
 		this.size = options.size;

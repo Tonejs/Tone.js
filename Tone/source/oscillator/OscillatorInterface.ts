@@ -489,7 +489,10 @@ export type OmniOscillatorOptions =
 	| OmniAMPartialsOscillatorOptions
 	| ToneOscillatorConstructorOptions;
 
-type OmitSourceOptions<T extends BaseOscillatorOptions> = Omit<T, "frequency" | "detune" | "context">;
+type OmitSourceOptions<T extends BaseOscillatorOptions> = Omit<
+	T,
+	"frequency" | "detune" | "context"
+>;
 
 /**
  * The settable options for the omni oscillator inside of the source which excludes certain attributes that are defined by the parent class

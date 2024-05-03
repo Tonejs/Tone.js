@@ -7,38 +7,44 @@ import "../core/context/Destination.js";
 import { BasicTests } from "../../test/helper/Basic.js";
 
 describe("SyncedSignal", () => {
-
 	BasicTests(SyncedSignal);
 
 	context("Scheduling Events", () => {
-
 		it("can schedule a change in the future", () => {
 			const sched = new SyncedSignal(1);
 			sched.setValueAtTime(2, 0.2);
 			sched.dispose();
 		});
-	
+
 		it("can schedule setValueAtTime relative to the Transport", () => {
-			return Offline(({ transport }) => {
-				const sched = new SyncedSignal(1).toDestination();
-				sched.setValueAtTime(2, 0.1);
-				sched.setValueAtTime(3, 0.2);
-				transport.start(0.1);
-			}, 0.4, 1).then((buffer) => {
+			return Offline(
+				({ transport }) => {
+					const sched = new SyncedSignal(1).toDestination();
+					sched.setValueAtTime(2, 0.1);
+					sched.setValueAtTime(3, 0.2);
+					transport.start(0.1);
+				},
+				0.4,
+				1
+			).then((buffer) => {
 				expect(buffer.getValueAtTime(0)).to.be.closeTo(1, 0.07);
 				expect(buffer.getValueAtTime(0.1)).to.be.closeTo(1, 0.07);
 				expect(buffer.getValueAtTime(0.201)).to.be.closeTo(2, 0.07);
 				expect(buffer.getValueAtTime(0.301)).to.be.closeTo(3, 0.07);
 			});
 		});
-	
+
 		it("can schedule linearRampToValueAtTime relative to the Transport", () => {
-			return Offline(({ transport }) => {
-				const sched = new SyncedSignal(1).toDestination();
-				sched.setValueAtTime(1, 0.1);
-				sched.linearRampToValueAtTime(2, 0.2);
-				transport.start(0.1);
-			}, 0.4, 1).then((buffer) => {
+			return Offline(
+				({ transport }) => {
+					const sched = new SyncedSignal(1).toDestination();
+					sched.setValueAtTime(1, 0.1);
+					sched.linearRampToValueAtTime(2, 0.2);
+					transport.start(0.1);
+				},
+				0.4,
+				1
+			).then((buffer) => {
 				expect(buffer.getValueAtTime(0)).to.be.closeTo(1, 0.07);
 				expect(buffer.getValueAtTime(0.1)).to.be.closeTo(1, 0.07);
 				expect(buffer.getValueAtTime(0.2)).to.be.closeTo(1, 0.07);
@@ -46,14 +52,18 @@ describe("SyncedSignal", () => {
 				expect(buffer.getValueAtTime(0.301)).to.be.closeTo(2, 0.07);
 			});
 		});
-	
+
 		it("can schedule exponentialRampToValueAtTime relative to the Transport", () => {
-			return Offline(({ transport }) => {
-				const sched = new SyncedSignal(1).toDestination();
-				sched.setValueAtTime(1, 0.1);
-				sched.exponentialRampToValueAtTime(2, 0.2);
-				transport.start(0.1);
-			}, 0.4, 1).then((buffer) => {
+			return Offline(
+				({ transport }) => {
+					const sched = new SyncedSignal(1).toDestination();
+					sched.setValueAtTime(1, 0.1);
+					sched.exponentialRampToValueAtTime(2, 0.2);
+					transport.start(0.1);
+				},
+				0.4,
+				1
+			).then((buffer) => {
 				expect(buffer.getValueAtTime(0)).to.be.closeTo(1, 0.07);
 				expect(buffer.getValueAtTime(0.1)).to.be.closeTo(1, 0.07);
 				expect(buffer.getValueAtTime(0.2)).to.be.closeTo(1, 0.07);
@@ -61,7 +71,7 @@ describe("SyncedSignal", () => {
 				expect(buffer.getValueAtTime(0.301)).to.be.closeTo(2, 0.07);
 			});
 		});
-	
+
 		it("can get exponential ramp value in the future", () => {
 			let sched;
 			return Offline(({ transport }) => {
@@ -72,11 +82,14 @@ describe("SyncedSignal", () => {
 				transport.start(0.1);
 			}, 0.6).then((buffer) => {
 				buffer.forEach((sample, time) => {
-					expect(sample).to.be.closeTo(sched.getValueAtTime(time - 0.1), 0.07);
+					expect(sample).to.be.closeTo(
+						sched.getValueAtTime(time - 0.1),
+						0.07
+					);
 				});
 			});
 		});
-	
+
 		it("can get exponential approach in the future", () => {
 			let sched;
 			return Offline(({ transport }) => {
@@ -86,11 +99,14 @@ describe("SyncedSignal", () => {
 				transport.start(0.1);
 			}, 0.6).then((buffer) => {
 				buffer.forEach((sample, time) => {
-					expect(sample).to.be.closeTo(sched.getValueAtTime(time - 0.1), 0.07);
+					expect(sample).to.be.closeTo(
+						sched.getValueAtTime(time - 0.1),
+						0.07
+					);
 				});
 			});
 		});
-	
+
 		it("can loop the signal when the Transport loops", () => {
 			let sched;
 			return Offline(({ transport }) => {
@@ -107,7 +123,7 @@ describe("SyncedSignal", () => {
 				expect(buffer.getValueAtTime(1.5)).to.be.closeTo(2, 0.01);
 			});
 		});
-	
+
 		it("can get set a curve in the future", () => {
 			let sched;
 			return Offline(({ transport }) => {
@@ -116,11 +132,14 @@ describe("SyncedSignal", () => {
 				transport.start(0.2);
 			}, 1).then((buffer) => {
 				buffer.forEach((sample, time) => {
-					expect(sample).to.be.closeTo(sched.getValueAtTime(time - 0.2), 0.07);
+					expect(sample).to.be.closeTo(
+						sched.getValueAtTime(time - 0.2),
+						0.07
+					);
 				});
 			});
 		});
-	
+
 		it("can scale a curve value", () => {
 			let sched;
 			return Offline(({ transport }) => {
@@ -133,7 +152,7 @@ describe("SyncedSignal", () => {
 				});
 			});
 		});
-	
+
 		it("can schedule a linear ramp between two times", () => {
 			let sched;
 			return Offline(({ transport }) => {
@@ -148,7 +167,7 @@ describe("SyncedSignal", () => {
 				expect(buffer.getValueAtTime(2)).to.closeTo(1, 0.1);
 			});
 		});
-	
+
 		it("can get exponential ramp value between two times", () => {
 			let sched;
 			return Offline(({ transport }) => {
@@ -163,7 +182,7 @@ describe("SyncedSignal", () => {
 				expect(buffer.getValueAtTime(2)).to.closeTo(3, 0.1);
 			});
 		});
-	
+
 		it("can cancel and hold a scheduled value", () => {
 			let sched;
 			return Offline(({ transport }) => {
@@ -179,7 +198,7 @@ describe("SyncedSignal", () => {
 				expect(buffer.getValueAtTime(0.75)).to.be.closeTo(0.5, 0.1);
 			});
 		});
-	
+
 		it("can cancel a scheduled value", () => {
 			let sched;
 			return Offline(({ transport }) => {
@@ -196,7 +215,7 @@ describe("SyncedSignal", () => {
 				expect(buffer.getValueAtTime(0.75)).to.be.closeTo(1, 0.1);
 			});
 		});
-	
+
 		it("can automate values with different units", () => {
 			let sched;
 			return Offline(({ transport }) => {
@@ -208,7 +227,10 @@ describe("SyncedSignal", () => {
 			}, 1.2).then((buffer) => {
 				buffer.forEach((sample, time) => {
 					if (time < 0.5) {
-						expect(sample).to.be.within(dbToGain(-12.01), dbToGain(-4.99));
+						expect(sample).to.be.within(
+							dbToGain(-12.01),
+							dbToGain(-4.99)
+						);
 					} else if (time < 1) {
 						expect(sample).to.be.closeTo(dbToGain(-12), 0.1);
 					} else if (time > 1.1) {
@@ -244,4 +266,3 @@ describe("SyncedSignal", () => {
 		});
 	});
 });
-

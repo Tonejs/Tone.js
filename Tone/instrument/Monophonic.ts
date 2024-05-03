@@ -1,5 +1,11 @@
 import { FrequencyClass } from "../core/type/Frequency.js";
-import { Cents, Frequency, NormalRange, Seconds, Time } from "../core/type/Units.js";
+import {
+	Cents,
+	Frequency,
+	NormalRange,
+	Seconds,
+	Time,
+} from "../core/type/Units.js";
 import { optionsFromArguments } from "../core/util/Defaults.js";
 import { noOp } from "../core/util/Interface.js";
 import { Instrument, InstrumentOptions } from "../instrument/Instrument.js";
@@ -17,13 +23,14 @@ export interface MonophonicOptions extends InstrumentOptions {
 /**
  * Abstract base class for other monophonic instruments to extend.
  */
-export abstract class Monophonic<Options extends MonophonicOptions> extends Instrument<Options> {
-
+export abstract class Monophonic<
+	Options extends MonophonicOptions,
+> extends Instrument<Options> {
 	/**
 	 * The glide time between notes.
 	 */
 	@timeRange(0)
-		portamento: Seconds;
+	portamento: Seconds;
 
 	/**
 	 * Invoked when the release has finished and the output is silent.
@@ -42,9 +49,11 @@ export abstract class Monophonic<Options extends MonophonicOptions> extends Inst
 
 	constructor(options?: Partial<MonophonicOptions>);
 	constructor() {
-
 		super(optionsFromArguments(Monophonic.getDefaults(), arguments));
-		const options = optionsFromArguments(Monophonic.getDefaults(), arguments);
+		const options = optionsFromArguments(
+			Monophonic.getDefaults(),
+			arguments
+		);
 
 		this.portamento = options.portamento;
 		this.onsilence = options.onsilence;
@@ -68,7 +77,11 @@ export abstract class Monophonic<Options extends MonophonicOptions> extends Inst
 	 * // trigger the note a half second from now at half velocity
 	 * synth.triggerAttack("C4", "+0.5", 0.5);
 	 */
-	triggerAttack(note: Frequency | FrequencyClass, time?: Time, velocity: NormalRange = 1): this {
+	triggerAttack(
+		note: Frequency | FrequencyClass,
+		time?: Time,
+		velocity: NormalRange = 1
+	): this {
 		this.log("triggerAttack", note, time, velocity);
 		const seconds = this.toSeconds(time);
 		this._triggerEnvelopeAttack(seconds, velocity);
@@ -95,7 +108,10 @@ export abstract class Monophonic<Options extends MonophonicOptions> extends Inst
 	/**
 	 * Internal method which starts the envelope attack
 	 */
-	protected abstract _triggerEnvelopeAttack(time: Seconds, velocity: NormalRange): void;
+	protected abstract _triggerEnvelopeAttack(
+		time: Seconds,
+		velocity: NormalRange
+	): void;
 
 	/**
 	 * Internal method which starts the envelope release
@@ -123,10 +139,15 @@ export abstract class Monophonic<Options extends MonophonicOptions> extends Inst
 	 */
 	setNote(note: Frequency | FrequencyClass, time?: Time): this {
 		const computedTime = this.toSeconds(time);
-		const computedFrequency = note instanceof FrequencyClass ? note.toFrequency() : note;
+		const computedFrequency =
+			note instanceof FrequencyClass ? note.toFrequency() : note;
 		if (this.portamento > 0 && this.getLevelAtTime(computedTime) > 0.05) {
 			const portTime = this.toSeconds(this.portamento);
-			this.frequency.exponentialRampTo(computedFrequency, portTime, computedTime);
+			this.frequency.exponentialRampTo(
+				computedFrequency,
+				portTime,
+				computedTime
+			);
 		} else {
 			this.frequency.setValueAtTime(computedFrequency, computedTime);
 		}

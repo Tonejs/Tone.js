@@ -1,6 +1,11 @@
 import { readOnly } from "../../core/util/Interface.js";
 import { Param } from "../../core/context/Param.js";
-import { InputNode, OutputNode, ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode.js";
+import {
+	InputNode,
+	OutputNode,
+	ToneAudioNode,
+	ToneAudioNodeOptions,
+} from "../../core/context/ToneAudioNode.js";
 import { AudioRange, Decibels } from "../../core/type/Units.js";
 import { optionsFromArguments } from "../../core/util/Defaults.js";
 import { Panner } from "./Panner.js";
@@ -22,7 +27,6 @@ export interface PanVolOptions extends ToneAudioNodeOptions {
  * @category Component
  */
 export class PanVol extends ToneAudioNode<PanVolOptions> {
-
 	readonly name: string = "PanVol";
 
 	readonly input: InputNode;
@@ -57,9 +61,16 @@ export class PanVol extends ToneAudioNode<PanVolOptions> {
 	constructor(pan?: AudioRange, volume?: Decibels);
 	constructor(options?: Partial<PanVolOptions>);
 	constructor() {
-
-		super(optionsFromArguments(PanVol.getDefaults(), arguments, ["pan", "volume"]));
-		const options = optionsFromArguments(PanVol.getDefaults(), arguments, ["pan", "volume"]);
+		super(
+			optionsFromArguments(PanVol.getDefaults(), arguments, [
+				"pan",
+				"volume",
+			])
+		);
+		const options = optionsFromArguments(PanVol.getDefaults(), arguments, [
+			"pan",
+			"volume",
+		]);
 
 		this._panner = this.input = new Panner({
 			context: this.context,

@@ -1,6 +1,9 @@
 import { Gain } from "../../core/context/Gain.js";
 import { Param } from "../../core/context/Param.js";
-import { ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode.js";
+import {
+	ToneAudioNode,
+	ToneAudioNodeOptions,
+} from "../../core/context/ToneAudioNode.js";
 import { Decibels } from "../../core/type/Units.js";
 import { optionsFromArguments } from "../../core/util/Defaults.js";
 import { readOnly } from "../../core/util/Interface.js";
@@ -19,7 +22,6 @@ interface VolumeOptions extends ToneAudioNodeOptions {
  * @category Component
  */
 export class Volume extends ToneAudioNode<VolumeOptions> {
-
 	readonly name: string = "Volume";
 
 	/**
@@ -52,9 +54,12 @@ export class Volume extends ToneAudioNode<VolumeOptions> {
 	constructor(volume?: Decibels);
 	constructor(options?: Partial<VolumeOptions>);
 	constructor() {
-
-		super(optionsFromArguments(Volume.getDefaults(), arguments, ["volume"]));
-		const options = optionsFromArguments(Volume.getDefaults(), arguments, ["volume"]);
+		super(
+			optionsFromArguments(Volume.getDefaults(), arguments, ["volume"])
+		);
+		const options = optionsFromArguments(Volume.getDefaults(), arguments, [
+			"volume",
+		]);
 
 		this.input = this.output = new Gain({
 			context: this.context,

@@ -4,11 +4,9 @@ import { PassAudio } from "../../../test/helper/PassAudio.js";
 import { expect } from "chai";
 
 describe("Limiter", () => {
-
 	BasicTests(Limiter);
 
 	context("Limiting", () => {
-
 		it("passes the incoming signal through", () => {
 			return PassAudio((input) => {
 				const limiter = new Limiter().toDestination();
@@ -40,4 +38,3 @@ describe("Limiter", () => {
 		});
 	});
 });
-

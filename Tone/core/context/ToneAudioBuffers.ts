@@ -43,7 +43,6 @@ interface ToneAudioBuffersOptions {
  * @category Core
  */
 export class ToneAudioBuffers extends Tone {
-
 	readonly name: string = "ToneAudioBuffers";
 
 	/**
@@ -69,24 +68,30 @@ export class ToneAudioBuffers extends Tone {
 	constructor(
 		urls?: ToneAudioBuffersUrlMap,
 		onload?: () => void,
-		baseUrl?: string,
+		baseUrl?: string
 	);
 	constructor(options?: Partial<ToneAudioBuffersOptions>);
 	constructor() {
-
 		super();
 		const options = optionsFromArguments(
-			ToneAudioBuffers.getDefaults(), arguments, ["urls", "onload", "baseUrl"], "urls",
+			ToneAudioBuffers.getDefaults(),
+			arguments,
+			["urls", "onload", "baseUrl"],
+			"urls"
 		);
 
 		this.baseUrl = options.baseUrl;
 		// add each one
-		Object.keys(options.urls).forEach(name => {
+		Object.keys(options.urls).forEach((name) => {
 			this._loadingCount++;
 			const url = options.urls[name];
-			this.add(name, url, this._bufferLoaded.bind(this, options.onload), options.onerror);
+			this.add(
+				name,
+				url,
+				this._bufferLoaded.bind(this, options.onload),
+				options.onerror
+			);
 		});
-
 	}
 
 	static getDefaults(): ToneAudioBuffersOptions {
@@ -144,23 +149,32 @@ export class ToneAudioBuffers extends Tone {
 		name: string | number,
 		url: string | AudioBuffer | ToneAudioBuffer,
 		callback: () => void = noOp,
-		onerror: (e: Error) => void = noOp,
+		onerror: (e: Error) => void = noOp
 	): this {
 		if (isString(url)) {
 			// don't include the baseUrl if the url is a base64 encoded sound
-			if (this.baseUrl && url.trim().substring(0, 11).toLowerCase() === "data:audio/") {
+			if (
+				this.baseUrl &&
+				url.trim().substring(0, 11).toLowerCase() === "data:audio/"
+			) {
 				this.baseUrl = "";
 			}
-			this._buffers.set(name.toString(), new ToneAudioBuffer(this.baseUrl + url, callback, onerror));
+			this._buffers.set(
+				name.toString(),
+				new ToneAudioBuffer(this.baseUrl + url, callback, onerror)
+			);
 		} else {
-			this._buffers.set(name.toString(), new ToneAudioBuffer(url, callback, onerror));
+			this._buffers.set(
+				name.toString(),
+				new ToneAudioBuffer(url, callback, onerror)
+			);
 		}
 		return this;
 	}
 
 	dispose(): this {
 		super.dispose();
-		this._buffers.forEach(buffer => buffer.dispose());
+		this._buffers.forEach((buffer) => buffer.dispose());
 		this._buffers.clear();
 		return this;
 	}

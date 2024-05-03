@@ -1,4 +1,7 @@
-import { ToneAudioWorklet, ToneAudioWorkletOptions } from "../core/worklet/ToneAudioWorklet.js";
+import {
+	ToneAudioWorklet,
+	ToneAudioWorkletOptions,
+} from "../core/worklet/ToneAudioWorklet.js";
 import { Effect, EffectOptions } from "./Effect.js";
 import { Positive } from "../core/type/Units.js";
 import { Gain } from "../core/context/Gain.js";
@@ -20,11 +23,10 @@ export interface BitCrusherOptions extends EffectOptions {
  * const crusher = new Tone.BitCrusher(4).toDestination();
  * const synth = new Tone.Synth().connect(crusher);
  * synth.triggerAttackRelease("C2", 2);
- * 
+ *
  * @category Effect
  */
 export class BitCrusher extends Effect<BitCrusherOptions> {
-
 	readonly name: string = "BitCrusher";
 
 	/**
@@ -42,8 +44,14 @@ export class BitCrusher extends Effect<BitCrusherOptions> {
 	constructor(bits?: Positive);
 	constructor(options?: Partial<BitCrusherWorkletOptions>);
 	constructor() {
-		super(optionsFromArguments(BitCrusher.getDefaults(), arguments, ["bits"]));
-		const options = optionsFromArguments(BitCrusher.getDefaults(), arguments, ["bits"]);
+		super(
+			optionsFromArguments(BitCrusher.getDefaults(), arguments, ["bits"])
+		);
+		const options = optionsFromArguments(
+			BitCrusher.getDefaults(),
+			arguments,
+			["bits"]
+		);
 
 		this._bitCrusherWorklet = new BitCrusherWorklet({
 			context: this.context,
@@ -76,7 +84,6 @@ interface BitCrusherWorkletOptions extends ToneAudioWorkletOptions {
  * Internal class which creates an AudioWorklet to do the bit crushing
  */
 class BitCrusherWorklet extends ToneAudioWorklet<BitCrusherWorkletOptions> {
-
 	readonly name: string = "BitCrusherWorklet";
 
 	readonly input: Gain;
@@ -87,7 +94,10 @@ class BitCrusherWorklet extends ToneAudioWorklet<BitCrusherWorkletOptions> {
 	constructor(options?: Partial<BitCrusherWorkletOptions>);
 	constructor() {
 		super(optionsFromArguments(BitCrusherWorklet.getDefaults(), arguments));
-		const options = optionsFromArguments(BitCrusherWorklet.getDefaults(), arguments);
+		const options = optionsFromArguments(
+			BitCrusherWorklet.getDefaults(),
+			arguments
+		);
 
 		this.input = new Gain({ context: this.context });
 		this.output = new Gain({ context: this.context });

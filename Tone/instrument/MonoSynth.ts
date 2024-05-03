@@ -6,10 +6,16 @@ import { readOnly, RecursivePartial } from "../core/util/Interface.js";
 import { Monophonic, MonophonicOptions } from "../instrument/Monophonic.js";
 import { OmniOscillator } from "../source/oscillator/OmniOscillator.js";
 import { Source } from "../source/Source.js";
-import { FrequencyEnvelope, FrequencyEnvelopeOptions } from "../component/envelope/FrequencyEnvelope.js";
+import {
+	FrequencyEnvelope,
+	FrequencyEnvelopeOptions,
+} from "../component/envelope/FrequencyEnvelope.js";
 import { NormalRange, Seconds, Time } from "../core/type/Units.js";
 import { Signal } from "../signal/Signal.js";
-import { ToneAudioNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode.js";
+import {
+	ToneAudioNode,
+	ToneAudioNodeOptions,
+} from "../core/context/ToneAudioNode.js";
 import { OmniOscillatorSynthOptions } from "../source/oscillator/OscillatorInterface.js";
 
 export interface MonoSynthOptions extends MonophonicOptions {
@@ -37,7 +43,6 @@ export interface MonoSynthOptions extends MonophonicOptions {
  * @category Instrument
  */
 export class MonoSynth extends Monophonic<MonoSynthOptions> {
-
 	readonly name = "MonoSynth";
 
 	/**
@@ -73,18 +78,29 @@ export class MonoSynth extends Monophonic<MonoSynthOptions> {
 	constructor(options?: RecursivePartial<MonoSynthOptions>);
 	constructor() {
 		super(optionsFromArguments(MonoSynth.getDefaults(), arguments));
-		const options = optionsFromArguments(MonoSynth.getDefaults(), arguments);
+		const options = optionsFromArguments(
+			MonoSynth.getDefaults(),
+			arguments
+		);
 
-		this.oscillator = new OmniOscillator(Object.assign(options.oscillator, {
-			context: this.context,
-			detune: options.detune,
-			onstop: () => this.onsilence(this),
-		}));
+		this.oscillator = new OmniOscillator(
+			Object.assign(options.oscillator, {
+				context: this.context,
+				detune: options.detune,
+				onstop: () => this.onsilence(this),
+			})
+		);
 		this.frequency = this.oscillator.frequency;
 		this.detune = this.oscillator.detune;
-		this.filter = new Filter(Object.assign(options.filter, { context: this.context }));
-		this.filterEnvelope = new FrequencyEnvelope(Object.assign(options.filterEnvelope, { context: this.context }));
-		this.envelope = new AmplitudeEnvelope(Object.assign(options.envelope, { context: this.context }));
+		this.filter = new Filter(
+			Object.assign(options.filter, { context: this.context })
+		);
+		this.filterEnvelope = new FrequencyEnvelope(
+			Object.assign(options.filterEnvelope, { context: this.context })
+		);
+		this.envelope = new AmplitudeEnvelope(
+			Object.assign(options.envelope, { context: this.context })
+		);
 
 		// connect the oscillators to the output
 		this.oscillator.chain(this.filter, this.envelope, this.output);
@@ -92,30 +108,46 @@ export class MonoSynth extends Monophonic<MonoSynthOptions> {
 		// connect the filter envelope
 		this.filterEnvelope.connect(this.filter.frequency);
 
-		readOnly(this, ["oscillator", "frequency", "detune", "filter", "filterEnvelope", "envelope"]);
+		readOnly(this, [
+			"oscillator",
+			"frequency",
+			"detune",
+			"filter",
+			"filterEnvelope",
+			"envelope",
+		]);
 	}
 
 	static getDefaults(): MonoSynthOptions {
 		return Object.assign(Monophonic.getDefaults(), {
 			envelope: Object.assign(
-				omitFromObject(Envelope.getDefaults(), Object.keys(ToneAudioNode.getDefaults())),
+				omitFromObject(
+					Envelope.getDefaults(),
+					Object.keys(ToneAudioNode.getDefaults())
+				),
 				{
 					attack: 0.005,
 					decay: 0.1,
 					release: 1,
 					sustain: 0.9,
-				},
+				}
 			),
 			filter: Object.assign(
-				omitFromObject(Filter.getDefaults(), Object.keys(ToneAudioNode.getDefaults())),
+				omitFromObject(
+					Filter.getDefaults(),
+					Object.keys(ToneAudioNode.getDefaults())
+				),
 				{
 					Q: 1,
 					rolloff: -12,
 					type: "lowpass",
-				},
+				}
 			),
 			filterEnvelope: Object.assign(
-				omitFromObject(FrequencyEnvelope.getDefaults(), Object.keys(ToneAudioNode.getDefaults())),
+				omitFromObject(
+					FrequencyEnvelope.getDefaults(),
+					Object.keys(ToneAudioNode.getDefaults())
+				),
 				{
 					attack: 0.6,
 					baseFrequency: 200,
@@ -127,10 +159,13 @@ export class MonoSynth extends Monophonic<MonoSynthOptions> {
 				}
 			),
 			oscillator: Object.assign(
-				omitFromObject(OmniOscillator.getDefaults(), Object.keys(Source.getDefaults())),
+				omitFromObject(
+					OmniOscillator.getDefaults(),
+					Object.keys(Source.getDefaults())
+				),
 				{
 					type: "sawtooth",
-				},
+				}
 			) as OmniOscillatorSynthOptions,
 		});
 	}

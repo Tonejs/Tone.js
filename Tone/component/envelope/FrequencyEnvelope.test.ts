@@ -6,11 +6,9 @@ import { Envelope } from "./Envelope.js";
 import { expect } from "chai";
 
 describe("FrequencyEnvelope", () => {
-
 	BasicTests(FrequencyEnvelope);
 
 	context("FrequencyEnvelope", () => {
-
 		it("has an output connections", () => {
 			const freqEnv = new FrequencyEnvelope();
 			freqEnv.connect(connectTo());
@@ -30,7 +28,7 @@ describe("FrequencyEnvelope", () => {
 				attack: 0,
 				release: "4n",
 				baseFrequency: 20,
-				octaves: 4
+				octaves: 4,
 			};
 			freqEnv.set(values);
 			expect(freqEnv.get()).to.contain.keys(Object.keys(values));
@@ -44,7 +42,7 @@ describe("FrequencyEnvelope", () => {
 				attack: 0,
 				decay: 0.5,
 				sustain: 1,
-				exponent: 3
+				exponent: 3,
 			});
 			expect(env0.attack).to.equal(0);
 			expect(env0.decay).to.equal(0.5);
@@ -70,10 +68,14 @@ describe("FrequencyEnvelope", () => {
 			const e = {
 				attack: 0.01,
 				decay: 0.4,
-				sustain: 1
+				sustain: 1,
 			};
 			const buffer = await Offline(() => {
-				const freqEnv = new FrequencyEnvelope(e.attack, e.decay, e.sustain);
+				const freqEnv = new FrequencyEnvelope(
+					e.attack,
+					e.decay,
+					e.sustain
+				);
 				freqEnv.baseFrequency = 200;
 				freqEnv.octaves = 3;
 				freqEnv.attackCurve = "exponential";

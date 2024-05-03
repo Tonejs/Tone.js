@@ -6,15 +6,18 @@ import { CompareToFile } from "../../test/helper/CompareToFile.js";
 import { Offline } from "../../test/helper/Offline.js";
 
 describe("FMSynth", () => {
-
 	BasicTests(FMSynth);
 	InstrumentTest(FMSynth, "C4");
 
 	it("matches a file", () => {
-		return CompareToFile(() => {
-			const synth = new FMSynth().toDestination();
-			synth.triggerAttackRelease("G4", 0.1, 0.05);
-		}, "fmSynth.wav", 0.08);
+		return CompareToFile(
+			() => {
+				const synth = new FMSynth().toDestination();
+				synth.triggerAttackRelease("G4", 0.1, 0.05);
+			},
+			"fmSynth.wav",
+			0.08
+		);
 	});
 
 	context("API", () => {
@@ -28,7 +31,7 @@ describe("FMSynth", () => {
 		it("invokes the onsilence callback", (done) => {
 			Offline(() => {
 				const synth = new FMSynth({
-					onsilence: () => done()
+					onsilence: () => done(),
 				});
 				synth.triggerAttackRelease("C3", 0.2, 0);
 			}, 2);
@@ -51,8 +54,8 @@ describe("FMSynth", () => {
 		it("can be constructed with an options object", () => {
 			const fmSynth = new FMSynth({
 				envelope: {
-					release: 0.3
-				}
+					release: 0.3,
+				},
 			});
 			expect(fmSynth.envelope.release).to.equal(0.3);
 			fmSynth.dispose();
@@ -62,7 +65,7 @@ describe("FMSynth", () => {
 			const fmSynth = new FMSynth();
 			fmSynth.set({
 				harmonicity: 1.5,
-				detune: 1200
+				detune: 1200,
 			});
 			expect(fmSynth.get().harmonicity).to.equal(1.5);
 			expect(fmSynth.get().detune).to.be.closeTo(1200, 1);

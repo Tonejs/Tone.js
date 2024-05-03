@@ -6,11 +6,9 @@ import { Signal } from "../../signal/Signal.js";
 import { PanVol } from "./PanVol.js";
 
 describe("PanVol", () => {
-
 	BasicTests(PanVol);
 
 	context("Pan and Volume", () => {
-
 		it("can be constructed with the panning and volume value", () => {
 			const panVol = new PanVol(0.3, -12);
 			expect(panVol.pan.value).to.be.closeTo(0.3, 0.001);
@@ -53,6 +51,5 @@ describe("PanVol", () => {
 				expect(buffer.isSilent()).to.be.true;
 			});
 		});
-
 	});
 });

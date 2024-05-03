@@ -5,7 +5,6 @@ import { Noise } from "../../source/Noise.js";
 import { Waveform } from "./Waveform.js";
 
 describe("Waveform", () => {
-
 	BasicTests(Waveform);
 
 	it("can get and set properties", () => {
@@ -27,7 +26,6 @@ describe("Waveform", () => {
 	});
 
 	if (ONLINE_TESTING) {
-
 		it("can run waveform analysis", (done) => {
 			const noise = new Noise();
 			const anl = new Waveform(256);
@@ -37,7 +35,7 @@ describe("Waveform", () => {
 			setTimeout(() => {
 				const analysis = anl.getValue();
 				expect(analysis.length).to.equal(256);
-				analysis.forEach(value => {
+				analysis.forEach((value) => {
 					expect(value).is.within(-1, 1);
 				});
 				anl.dispose();

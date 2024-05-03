@@ -1,8 +1,12 @@
 import { expect } from "chai";
-import { dbToGain, equalPowerScale, gainToDb, intervalToFrequencyRatio } from "./Conversions.js";
+import {
+	dbToGain,
+	equalPowerScale,
+	gainToDb,
+	intervalToFrequencyRatio,
+} from "./Conversions.js";
 
 describe("Conversions", () => {
-
 	it("can convert equalPowerScale", () => {
 		expect(equalPowerScale(0.5)).to.be.closeTo(0.707, 0.001);
 		expect(equalPowerScale(0.75)).to.be.closeTo(0.923, 0.001);

@@ -1,4 +1,8 @@
-import { isAudioBuffer, isAudioNode, isAudioParam } from "./AdvancedTypeCheck.js";
+import {
+	isAudioBuffer,
+	isAudioNode,
+	isAudioParam,
+} from "./AdvancedTypeCheck.js";
 import { isDefined, isObject, isUndef } from "./TypeCheck.js";
 
 type BaseToneOptions = import("../Tone").BaseToneOptions;
@@ -7,13 +11,27 @@ type BaseToneOptions = import("../Tone").BaseToneOptions;
  * Some objects should not be merged
  */
 function noCopy(key: string, arg: any): boolean {
-	return key === "value" || isAudioParam(arg) || isAudioNode(arg) || isAudioBuffer(arg);
+	return (
+		key === "value" ||
+		isAudioParam(arg) ||
+		isAudioNode(arg) ||
+		isAudioBuffer(arg)
+	);
 }
 
 export function deepMerge<T>(target: T): T;
 export function deepMerge<T, U>(target: T, source1: U): T & U;
-export function deepMerge<T, U, V>(target: T, source1: U, source2: V): T & U & V;
-export function deepMerge<T, U, V, W>(target: T, source1: U, source2: V, source3: W): T & U & V & W;
+export function deepMerge<T, U, V>(
+	target: T,
+	source1: U,
+	source2: V
+): T & U & V;
+export function deepMerge<T, U, V, W>(
+	target: T,
+	source1: U,
+	source2: V,
+	source3: W
+): T & U & V & W;
 /**
  * Recursively merge an object
  * @param target the object to merge into
@@ -21,7 +39,7 @@ export function deepMerge<T, U, V, W>(target: T, source1: U, source2: V, source3
  */
 export function deepMerge(target: any, ...sources: any[]): any {
 	if (!sources.length) {
-		return target; 
+		return target;
 	}
 	const source = sources.shift();
 
@@ -31,7 +49,7 @@ export function deepMerge(target: any, ...sources: any[]): any {
 				target[key] = source[key];
 			} else if (isObject(source[key])) {
 				if (!target[key]) {
-					Object.assign(target, { [key]: {} }); 
+					Object.assign(target, { [key]: {} });
 				}
 				deepMerge(target[key], source[key] as any);
 			} else {
@@ -47,7 +65,10 @@ export function deepMerge(target: any, ...sources: any[]): any {
  * Returns true if the two arrays have the same value for each of the elements
  */
 export function deepEquals<T>(arrayA: T[], arrayB: T[]): boolean {
-	return arrayA.length === arrayB.length && arrayA.every((element, index) => arrayB[index] === element);
+	return (
+		arrayA.length === arrayB.length &&
+		arrayA.every((element, index) => arrayB[index] === element)
+	);
 }
 
 /**
@@ -58,14 +79,16 @@ export function optionsFromArguments<T extends object>(
 	defaults: T,
 	argsArray: IArguments,
 	keys: Array<keyof T> = [],
-	objKey?: keyof T,
+	objKey?: keyof T
 ): T {
 	const opts: Partial<T> = {};
 	const args = Array.from(argsArray);
 	// if the first argument is an object and has an object key
 	if (isObject(args[0]) && objKey && !Reflect.has(args[0], objKey)) {
 		// if it's not part of the defaults
-		const partOfDefaults = Object.keys(args[0]).some(key => Reflect.has(defaults, key));
+		const partOfDefaults = Object.keys(args[0]).some((key) =>
+			Reflect.has(defaults, key)
+		);
 		if (!partOfDefaults) {
 			// merge that key
 			deepMerge(opts, { [objKey]: args[0] });
@@ -115,8 +138,11 @@ export function defaultArg<T>(given: T, fallback: T): T {
 /**
  * Remove all of the properties belonging to omit from obj.
  */
-export function omitFromObject<T extends object, O extends string[]>(obj: T, omit: O): Omit<T, keyof O> {
-	omit.forEach(prop => {
+export function omitFromObject<T extends object, O extends string[]>(
+	obj: T,
+	omit: O
+): Omit<T, keyof O> {
+	omit.forEach((prop) => {
 		if (Reflect.has(obj, prop)) {
 			delete obj[prop];
 		}

@@ -6,11 +6,9 @@ import { noOp } from "../util/Interface.js";
 import { Clock } from "./Clock.js";
 
 describe("Clock", () => {
-
 	BasicTests(Clock);
 
 	context("Get/Set values", () => {
-
 		it("can get and set the frequency", () => {
 			const clock = new Clock(noOp, 2);
 			expect(clock.frequency.value).to.equal(2);
@@ -20,7 +18,6 @@ describe("Clock", () => {
 		});
 
 		if (ONLINE_TESTING) {
-
 			it("invokes the callback when started", (done) => {
 				const clock = new Clock((time) => {
 					clock.dispose();
@@ -38,7 +35,6 @@ describe("Clock", () => {
 				}).start();
 				expect(clock.frequency.value).to.equal(8);
 			});
-
 		}
 
 		it("can get and set it's values with the set/get", () => {
@@ -53,7 +49,6 @@ describe("Clock", () => {
 	});
 
 	context("State", () => {
-
 		it("correctly returns the scheduled play state", () => {
 			return Offline(() => {
 				const clock = new Clock();
@@ -93,7 +88,6 @@ describe("Clock", () => {
 						expect(clock.state).to.equal("stopped");
 					});
 				};
-
 			}, 0.5);
 		});
 
@@ -137,15 +131,12 @@ describe("Clock", () => {
 						expect(clock.state).to.equal("started");
 					});
 				};
-
 			}, 0.5);
 		});
 	});
 
 	context("Scheduling", () => {
-
 		if (ONLINE_TESTING) {
-
 			it("passes a time to the callback", (done) => {
 				const clock = new Clock((time) => {
 					expect(time).to.be.a("number");
@@ -192,7 +183,9 @@ describe("Clock", () => {
 			return Offline(() => {
 				new Clock((time) => {
 					invokations++;
-				}, 10).start(0).stop(0.45);
+				}, 10)
+					.start(0)
+					.stop(0.45);
 			}, 0.6).then(() => {
 				expect(invokations).to.equal(5);
 			});
@@ -210,11 +203,9 @@ describe("Clock", () => {
 				expect(invokations).to.equal(4);
 			});
 		});
-
 	});
 
 	context("Seconds", () => {
-
 		it("can set the current seconds", () => {
 			return Offline(() => {
 				const clock = new Clock(noOp, 10);
@@ -274,7 +265,6 @@ describe("Clock", () => {
 	});
 
 	context("Ticks", () => {
-
 		it("has 0 ticks when first created", () => {
 			const clock = new Clock();
 			expect(clock.ticks).to.equal(0);
@@ -332,9 +322,11 @@ describe("Clock", () => {
 		});
 
 		it("starts incrementing where it left off after pause", () => {
-
 			return Offline(() => {
-				const clock = new Clock(noOp, 20).start(0).pause(0.1).start(0.2);
+				const clock = new Clock(noOp, 20)
+					.start(0)
+					.pause(0.1)
+					.start(0.2);
 
 				let pausedTicks = 0;
 				let tested = false;
@@ -369,11 +361,9 @@ describe("Clock", () => {
 				clock.start(0, 4);
 			});
 		});
-
 	});
 
 	context("Events", () => {
-
 		it("triggers the start event on start", (done) => {
 			Offline(() => {
 				const clock = new Clock(noOp, 20);
@@ -415,12 +405,14 @@ describe("Clock", () => {
 		it("triggers pause stop event", (done) => {
 			Offline(() => {
 				const clock = new Clock(noOp, 20);
-				clock.on("pause", (time) => {
-					expect(time).to.be.closeTo(0.1, 0.05);
-				}).on("stop", (time) => {
-					expect(time).to.be.closeTo(0.2, 0.05);
-					done();
-				});
+				clock
+					.on("pause", (time) => {
+						expect(time).to.be.closeTo(0.1, 0.05);
+					})
+					.on("stop", (time) => {
+						expect(time).to.be.closeTo(0.2, 0.05);
+						done();
+					});
 				clock.start().pause(0.1).stop(0.2);
 			}, 0.4);
 		});
@@ -481,7 +473,6 @@ describe("Clock", () => {
 	});
 
 	context("[get/set]Ticks", () => {
-
 		it("always reports 0 if not started", () => {
 			return Offline(() => {
 				const clock = new Clock(noOp, 20);
@@ -657,7 +648,5 @@ describe("Clock", () => {
 				clock.dispose();
 			});
 		});
-
 	});
-
 });

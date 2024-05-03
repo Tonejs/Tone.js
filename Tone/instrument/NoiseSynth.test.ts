@@ -5,7 +5,6 @@ import { InstrumentTest } from "../../test/helper/InstrumentTests.js";
 import { NoiseSynth } from "./NoiseSynth.js";
 
 describe("NoiseSynth", () => {
-
 	BasicTests(NoiseSynth);
 
 	InstrumentTest(NoiseSynth, undefined, {
@@ -17,32 +16,39 @@ describe("NoiseSynth", () => {
 	});
 
 	it("matches a file", () => {
-		return CompareToFile(() => {
-			const synth = new NoiseSynth({
-				envelope: {
-					attack: 0.01,
-					decay: 0.4,
-				},
-			}).toDestination();
-			synth.triggerAttack(0);
-			synth.triggerAttack(0.3);
-		}, "noiseSynth.wav", 4);
+		return CompareToFile(
+			() => {
+				const synth = new NoiseSynth({
+					envelope: {
+						attack: 0.01,
+						decay: 0.4,
+					},
+				}).toDestination();
+				synth.triggerAttack(0);
+				synth.triggerAttack(0.3);
+			},
+			"noiseSynth.wav",
+			4
+		);
 	});
 
 	it("matches another file", () => {
-		return CompareToFile(() => {
-			const synth = new NoiseSynth({
-				envelope: {
-					attack: 0.01,
-					decay: 0.4,
-				},
-			}).toDestination();
-			synth.triggerAttackRelease(0.1, 0);
-		}, "noiseSynthRelease.wav", 4);
+		return CompareToFile(
+			() => {
+				const synth = new NoiseSynth({
+					envelope: {
+						attack: 0.01,
+						decay: 0.4,
+					},
+				}).toDestination();
+				synth.triggerAttackRelease(0.1, 0);
+			},
+			"noiseSynthRelease.wav",
+			4
+		);
 	});
 
 	context("API", () => {
-
 		it("can get and set noise type", () => {
 			const noiseSynth = new NoiseSynth();
 			noiseSynth.noise.type = "pink";
@@ -77,6 +83,5 @@ describe("NoiseSynth", () => {
 			expect(noiseSynth.get().envelope.decay).to.equal(0.24);
 			noiseSynth.dispose();
 		});
-
 	});
 });

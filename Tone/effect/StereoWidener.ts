@@ -1,4 +1,7 @@
-import { MidSideEffect, MidSideEffectOptions } from "../effect/MidSideEffect.js";
+import {
+	MidSideEffect,
+	MidSideEffectOptions,
+} from "../effect/MidSideEffect.js";
 import { Signal } from "../signal/Signal.js";
 import { Multiply } from "../signal/Multiply.js";
 import { Subtract } from "../signal/Subtract.js";
@@ -22,34 +25,33 @@ export interface StereoWidenerOptions extends MidSideEffectOptions {
  * @category Effect
  */
 export class StereoWidener extends MidSideEffect<StereoWidenerOptions> {
-
 	readonly name: string = "StereoWidener";
 
 	/**
 	 * The width control. 0 = 100% mid. 1 = 100% side. 0.5 = no change.
 	 */
 	readonly width: Signal<"normalRange">;
-	
+
 	/**
 	 * Two times the (1-width) for the mid channel
 	 */
 	private _twoTimesWidthMid: Multiply;
-	
+
 	/**
 	 * Two times the width for the side channel
 	 */
 	private _twoTimesWidthSide: Multiply;
-	
+
 	/**
 	 * Mid multiplier
 	 */
 	private _midMult: Multiply;
-	
+
 	/**
 	 * 1 - width
 	 */
 	private _oneMinusWidth: Subtract;
-	
+
 	/**
 	 * Side multiplier
 	 */
@@ -61,9 +63,16 @@ export class StereoWidener extends MidSideEffect<StereoWidenerOptions> {
 	constructor(width?: NormalRange);
 	constructor(options?: Partial<StereoWidenerOptions>);
 	constructor() {
-
-		super(optionsFromArguments(StereoWidener.getDefaults(), arguments, ["width"]));
-		const options = optionsFromArguments(StereoWidener.getDefaults(), arguments, ["width"]);
+		super(
+			optionsFromArguments(StereoWidener.getDefaults(), arguments, [
+				"width",
+			])
+		);
+		const options = optionsFromArguments(
+			StereoWidener.getDefaults(),
+			arguments,
+			["width"]
+		);
 		this.width = new Signal({
 			context: this.context,
 			value: options.width,

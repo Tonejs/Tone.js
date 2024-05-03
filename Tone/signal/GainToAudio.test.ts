@@ -6,11 +6,9 @@ import { GainToAudio } from "./GainToAudio.js";
 import { Signal } from "./Signal.js";
 
 describe("GainToAudio", () => {
-
 	BasicTests(GainToAudio);
 
 	context("Gain To Audio", () => {
-
 		it("outputs 0 for an input value of 0.5", () => {
 			return ConstantOutput(() => {
 				const sig = new Signal(0.5);

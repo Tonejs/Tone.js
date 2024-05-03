@@ -5,7 +5,6 @@ import { PassAudio } from "../../../test/helper/PassAudio.js";
 import { Gain } from "./Gain.js";
 
 describe("Gain", () => {
-
 	BasicTests(Gain);
 
 	it("can be created and disposed", () => {

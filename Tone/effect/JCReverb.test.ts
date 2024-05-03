@@ -6,20 +6,22 @@ import { CompareToFile } from "../../test/helper/CompareToFile.js";
 import { Noise } from "../source/Noise.js";
 
 describe("JCReverb", () => {
-
 	BasicTests(JCReverb);
 	EffectTests(JCReverb);
 
 	it("matches a file", () => {
-		return CompareToFile(() => {
-			const reverb = new JCReverb().toDestination();
-			const noise = new Noise().connect(reverb);
-			noise.start(0).stop(0.1);
-		}, "jcReverb.wav", 0.2);
+		return CompareToFile(
+			() => {
+				const reverb = new JCReverb().toDestination();
+				const noise = new Noise().connect(reverb);
+				noise.start(0).stop(0.1);
+			},
+			"jcReverb.wav",
+			0.2
+		);
 	});
 
 	context("API", () => {
-
 		it("can pass in options in the constructor", () => {
 			const reverb = new JCReverb({
 				roomSize: 0.2,
@@ -38,4 +40,3 @@ describe("JCReverb", () => {
 		});
 	});
 });
-

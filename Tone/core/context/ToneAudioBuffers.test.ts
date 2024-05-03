@@ -11,53 +11,65 @@ describe("ToneAudioBuffers", () => {
 		buff.dispose();
 	});
 
-	it("loads a file from an object string", done => {
-		const buffer = new ToneAudioBuffers({
-			sine: testFile,
-		}, () => {
-			expect(buffer).to.be.instanceof(ToneAudioBuffers);
-			buffer.dispose();
-			done();
-		});
+	it("loads a file from an object string", (done) => {
+		const buffer = new ToneAudioBuffers(
+			{
+				sine: testFile,
+			},
+			() => {
+				expect(buffer).to.be.instanceof(ToneAudioBuffers);
+				buffer.dispose();
+				done();
+			}
+		);
 	});
 
-	it("can get a buffer loaded from an object", done => {
-		const buffer = new ToneAudioBuffers({
-			kick: testFile2,
-			sine: testFile,
-		}, () => {
-			expect(buffer.get("kick")).to.be.instanceof(ToneAudioBuffer);
-			buffer.dispose();
-			done();
-		});
+	it("can get a buffer loaded from an object", (done) => {
+		const buffer = new ToneAudioBuffers(
+			{
+				kick: testFile2,
+				sine: testFile,
+			},
+			() => {
+				expect(buffer.get("kick")).to.be.instanceof(ToneAudioBuffer);
+				buffer.dispose();
+				done();
+			}
+		);
 	});
 
-	it("throws an error when it tries to get an object that doesnt exist", done => {
-		const buffer = new ToneAudioBuffers({
-			sine: testFile,
-		}, () => {
-			expect(() => {
-				buffer.get("nope");
-			}).throws(Error);
-			buffer.dispose();
-			done();
-		});
+	it("throws an error when it tries to get an object that doesnt exist", (done) => {
+		const buffer = new ToneAudioBuffers(
+			{
+				sine: testFile,
+			},
+			() => {
+				expect(() => {
+					buffer.get("nope");
+				}).throws(Error);
+				buffer.dispose();
+				done();
+			}
+		);
 	});
 
-	it("tests if it has a buffer", done => {
-		const buffer = new ToneAudioBuffers({
-			kick: testFile2,
-			sine: testFile,
-		}, () => {
-			expect(buffer.has("kick")).to.be.true;
-			expect(buffer.has("sine")).to.be.true;
-			expect(buffer.has("nope")).to.be.false;
-			buffer.dispose();
-			done();
-		});
+	it("tests if it has a buffer", (done) => {
+		const buffer = new ToneAudioBuffers(
+			{
+				kick: testFile2,
+				sine: testFile,
+			},
+			() => {
+				expect(buffer.has("kick")).to.be.true;
+				expect(buffer.has("sine")).to.be.true;
+				expect(buffer.has("nope")).to.be.false;
+				buffer.dispose();
+				done();
+			}
+		);
 	});
 
-	it("can pass in buffers as object and options object in second arg", done => {
+	it("can pass in buffers as object and options object in second arg", (done) => {
 		const buffer = new ToneAudioBuffers({
 			baseUrl: "./test/audio/",
 			onload(): void {
@@ -71,7 +83,7 @@ describe("ToneAudioBuffers", () => {
 		});
 	});
 
-	it("invokes onerror if it cant load the url", done => {
+	it("invokes onerror if it cant load the url", (done) => {
 		const buffer = new ToneAudioBuffers({
 			onerror(): void {
 				buffer.dispose();
@@ -83,29 +95,36 @@ describe("ToneAudioBuffers", () => {
 		});
 	});
 
-	it("reports itself as loaded", done => {
-		const buffer = new ToneAudioBuffers({
-			kick: testFile2,
-			sine: testFile,
-		}, () => {
-			expect(buffer.loaded).to.be.true;
-			buffer.dispose();
-			done();
-		});
+	it("reports itself as loaded", (done) => {
+		const buffer = new ToneAudioBuffers(
+			{
+				kick: testFile2,
+				sine: testFile,
+			},
+			() => {
+				expect(buffer.loaded).to.be.true;
+				buffer.dispose();
+				done();
+			}
+		);
 		expect(buffer.loaded).to.be.false;
 	});
 
-	it("can load from a base url", done => {
-		const buffer = new ToneAudioBuffers({
-			hat: "hh.wav",
-		}, () => {
-			expect(buffer.get("hat")).to.be.instanceof(ToneAudioBuffer);
-			buffer.dispose();
-			done();
-		}, "./test/audio/");
+	it("can load from a base url", (done) => {
+		const buffer = new ToneAudioBuffers(
+			{
+				hat: "hh.wav",
+			},
+			() => {
+				expect(buffer.get("hat")).to.be.instanceof(ToneAudioBuffer);
+				buffer.dispose();
+				done();
+			},
+			"./test/audio/"
+		);
 	});
 
-	it("can add a buffer", done => {
+	it("can add a buffer", (done) => {
 		const buffer = new ToneAudioBuffers();
 		buffer.add("name", testFile, () => {
 			expect(buffer.get("name")).to.be.instanceof(ToneAudioBuffer);
@@ -114,7 +133,7 @@ describe("ToneAudioBuffers", () => {
 		});
 	});
 
-	it("can add a buffer url", done => {
+	it("can add a buffer url", (done) => {
 		const buffer = new ToneAudioBuffers();
 		buffer.add("name", testFile, () => {
 			expect(buffer.get("name")).to.be.instanceof(ToneAudioBuffer);
@@ -138,7 +157,7 @@ describe("ToneAudioBuffers", () => {
 		expect(buffer.get("name").get()).to.equal(buff.get());
 	});
 
-	it("can add an AudioBuffer", done => {
+	it("can add an AudioBuffer", (done) => {
 		ToneAudioBuffer.load(testFile).then((buff) => {
 			const buffer = new ToneAudioBuffers();
 			buffer.add("name", buff);
@@ -154,5 +173,4 @@ describe("ToneAudioBuffers", () => {
 		});
 		expect(buffer.get("buff").get()).to.equal(buff.get());
 	});
-
 });

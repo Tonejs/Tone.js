@@ -7,21 +7,23 @@ import { Oscillator } from "../source/oscillator/Oscillator.js";
 import { FrequencyShifter } from "./FrequencyShifter.js";
 
 describe("FrequencyShifter", () => {
-
 	BasicTests(FrequencyShifter);
 	EffectTests(FrequencyShifter);
 
 	it("matches a file", () => {
-		return CompareToFile(() => {
-			const shifter = new FrequencyShifter().toDestination();
-			shifter.frequency.value = -60;
-			const osc = new Oscillator().connect(shifter);
-			osc.start(0);
-		}, "frequencyShifter.wav", 0.1);
+		return CompareToFile(
+			() => {
+				const shifter = new FrequencyShifter().toDestination();
+				shifter.frequency.value = -60;
+				const osc = new Oscillator().connect(shifter);
+				osc.start(0);
+			},
+			"frequencyShifter.wav",
+			0.1
+		);
 	});
 
 	context("API", () => {
-
 		it("can pass in options in the constructor", () => {
 			const shifter = new FrequencyShifter({
 				frequency: -20,
