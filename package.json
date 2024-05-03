@@ -24,7 +24,6 @@
 		"pretty": "prettier ./Tone ./test -w",
 		"scratch": "webpack -w --env scratch=1 --mode=development",
 		"test": "tsc && web-test-runner --config=./test/web-test-runner.config.js",
-		"test:browser": "npm run karma:browser",
 		"test:examples": "node ./test/scripts/test_examples.cjs",
 		"test:html": "node ./test/scripts/test_html.cjs",
 		"test:integrations": "zx ./test/scripts/test_integrations.mjs",
