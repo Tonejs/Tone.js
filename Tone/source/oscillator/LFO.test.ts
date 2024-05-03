@@ -196,7 +196,7 @@ describe("LFO", () => {
 		});
 
 		it("can adjust the amplitude", () => {
-			return Offline(({ transport }) => {
+			return Offline(() => {
 				const lfo = new LFO(10, -10, 10);
 				lfo.amplitude.value = 0.5;
 				lfo.toDestination();
@@ -208,7 +208,7 @@ describe("LFO", () => {
 		});
 
 		it("can adjust the amplitude not centered at 0", () => {
-			return Offline(({ transport }) => {
+			return Offline(() => {
 				const lfo = new LFO(10, 400, 4000);
 				lfo.amplitude.value = 0.5;
 				lfo.toDestination();

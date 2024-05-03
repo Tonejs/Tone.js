@@ -6,7 +6,7 @@ import { Midi, MidiClass } from "./Midi.js";
 import { Ticks } from "./Ticks.js";
 import { Time } from "./Time.js";
 import { TransportTime } from "./TransportTime.js";
-import { Note, Midi as TonalMidi } from "tonal";
+import { Midi as TonalMidi } from "tonal";
 
 describe("MidiClass", () => {
 	BasicTests(MidiClass);
