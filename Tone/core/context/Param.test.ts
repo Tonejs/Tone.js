@@ -2,7 +2,6 @@ import { Compare, Plot } from "../../../test/helper/compare/index.js";
 import { expect } from "chai";
 import { BasicTests, testAudioContext } from "../../../test/helper/Basic.js";
 import { atTime, Offline } from "../../../test/helper/Offline.js";
-import { SCHEDULE_RAMP_AFTER_SET_TARGET } from "../../../test/helper/Supports.js";
 import {
 	BPM,
 	Decibels,
@@ -74,176 +73,162 @@ describe("Param", () => {
 			});
 		}
 
-		if (SCHEDULE_RAMP_AFTER_SET_TARGET) {
-			it("correctly handles setTargetAtTime followed by a ramp", async () => {
-				let param;
-				// this fails on FF
-				const testBuffer = await Offline(
-					(context) => {
-						const source = context.createConstantSource();
-						source.connect(context.rawContext.destination);
-						source.start(0);
-						param = new Param({
-							context,
-							param: source.offset,
-						});
-						param.setTargetAtTime(2, 0.5, 0.1);
-						expect(param.getValueAtTime(0.6)).to.be.closeTo(
-							1.6,
-							0.1
-						);
-						param.linearRampToValueAtTime(0.5, 0.7);
-						expect(param.getValueAtTime(0.6)).to.be.closeTo(
-							0.75,
-							0.1
-						);
-					},
-					1.5,
-					1,
-					sampleRate
-				);
-				document.body.appendChild(await Plot.signal(testBuffer));
-				matchesOutputCurve(param, testBuffer);
-			});
+		it("correctly handles setTargetAtTime followed by a ramp", async () => {
+			let param;
+			// this fails on FF
+			const testBuffer = await Offline(
+				(context) => {
+					const source = context.createConstantSource();
+					source.connect(context.rawContext.destination);
+					source.start(0);
+					param = new Param({
+						context,
+						param: source.offset,
+					});
+					param.setTargetAtTime(2, 0.5, 0.1);
+					expect(param.getValueAtTime(0.6)).to.be.closeTo(1.6, 0.1);
+					param.linearRampToValueAtTime(0.5, 0.7);
+					expect(param.getValueAtTime(0.6)).to.be.closeTo(0.75, 0.1);
+				},
+				1.5,
+				1,
+				sampleRate
+			);
+			document.body.appendChild(await Plot.signal(testBuffer));
+			matchesOutputCurve(param, testBuffer);
+		});
 
-			it("schedules a value curve", async () => {
-				let param;
-				const testBuffer = await Offline(
-					(context) => {
-						const source = context.createConstantSource();
-						source.connect(context.rawContext.destination);
-						source.start(0);
-						param = new Param({
-							context,
-							param: source.offset,
-							units: "number",
-							value: 0,
-						});
-						param.setValueCurveAtTime(
-							[0, 0.5, 0, 1, 1.5],
-							0.1,
-							0.8,
-							0.5
-						);
-						expect(param.getValueAtTime(0.91)).to.be.closeTo(
-							0.75,
-							0.01
-						);
-					},
-					1,
-					1,
-					sampleRate
-				);
-				// document.body.appendChild(await Plot.signal(testBuffer));
-				matchesOutputCurve(param, testBuffer);
-			});
+		it("schedules a value curve", async () => {
+			let param;
+			const testBuffer = await Offline(
+				(context) => {
+					const source = context.createConstantSource();
+					source.connect(context.rawContext.destination);
+					source.start(0);
+					param = new Param({
+						context,
+						param: source.offset,
+						units: "number",
+						value: 0,
+					});
+					param.setValueCurveAtTime(
+						[0, 0.5, 0, 1, 1.5],
+						0.1,
+						0.8,
+						0.5
+					);
+					expect(param.getValueAtTime(0.91)).to.be.closeTo(
+						0.75,
+						0.01
+					);
+				},
+				1,
+				1,
+				sampleRate
+			);
+			// document.body.appendChild(await Plot.signal(testBuffer));
+			matchesOutputCurve(param, testBuffer);
+		});
 
-			it("a mixture of scheduling curves", async () => {
-				let param;
-				const testBuffer = await Offline(
-					(context) => {
-						const source = context.createConstantSource();
-						source.connect(context.rawContext.destination);
-						source.start(0);
-						param = new Param({
-							context,
-							param: source.offset,
-							value: 0.1,
-						});
-						param.setValueAtTime(0, 0);
-						param.setValueAtTime(1, 0.1);
-						param.linearRampToValueAtTime(3, 0.2);
-						param.exponentialRampToValueAtTime(0.01, 0.3);
-						param.setTargetAtTime(-1, 0.35, 0.2);
-						param.cancelAndHoldAtTime(0.6);
-						param.rampTo(1.1, 0.2, 0.7);
-						param.exponentialRampTo(0, 0.1, 0.85);
-						param.setValueAtTime(0, 1);
-						param.linearRampTo(1, 0.2, 1);
-						param.targetRampTo(0, 0.1, 1.1);
-						param.setValueAtTime(4, 1.2);
-						param.cancelScheduledValues(1.2);
-						param.linearRampToValueAtTime(1, 1.3);
-					},
-					1.5,
-					1,
-					sampleRate
-				);
-				// document.body.appendChild(await Plot.signal(testBuffer));
-				matchesOutputCurve(param, testBuffer);
-			});
+		it("a mixture of scheduling curves", async () => {
+			let param;
+			const testBuffer = await Offline(
+				(context) => {
+					const source = context.createConstantSource();
+					source.connect(context.rawContext.destination);
+					source.start(0);
+					param = new Param({
+						context,
+						param: source.offset,
+						value: 0.1,
+					});
+					param.setValueAtTime(0, 0);
+					param.setValueAtTime(1, 0.1);
+					param.linearRampToValueAtTime(3, 0.2);
+					param.exponentialRampToValueAtTime(0.01, 0.3);
+					param.setTargetAtTime(-1, 0.35, 0.2);
+					param.cancelAndHoldAtTime(0.6);
+					param.rampTo(1.1, 0.2, 0.7);
+					param.exponentialRampTo(0, 0.1, 0.85);
+					param.setValueAtTime(0, 1);
+					param.linearRampTo(1, 0.2, 1);
+					param.targetRampTo(0, 0.1, 1.1);
+					param.setValueAtTime(4, 1.2);
+					param.cancelScheduledValues(1.2);
+					param.linearRampToValueAtTime(1, 1.3);
+				},
+				1.5,
+				1,
+				sampleRate
+			);
+			// document.body.appendChild(await Plot.signal(testBuffer));
+			matchesOutputCurve(param, testBuffer);
+		});
 
-			it.skip("can cancel and hold", async () => {
-				let param;
-				const testBuffer = await Offline(
-					(context) => {
-						const source = context.createConstantSource();
-						source.connect(context.rawContext.destination);
-						source.start(0);
-						param = new Param({
-							context,
-							param: source.offset,
-							value: 0.1,
-						});
-						param.setValueAtTime(0, 0);
-						param.setValueAtTime(1, 0.2);
-						param.cancelAndHoldAtTime(0.1);
-						param.linearRampToValueAtTime(1, 0.3);
-						param.cancelAndHoldAtTime(0.2);
-						expect(param.getValueAtTime(0.2)).to.be.closeTo(
-							0.5,
-							0.001
-						);
-						param.exponentialRampToValueAtTime(0, 0.4);
-						param.cancelAndHoldAtTime(0.25);
-						expect(param.getValueAtTime(0.25)).to.be.closeTo(
-							0.033,
-							0.001
-						);
-						param.setTargetAtTime(1, 0.3, 0.1);
-						param.cancelAndHoldAtTime(0.4);
-						expect(param.getValueAtTime(0.4)).to.be.closeTo(
-							0.644,
-							0.001
-						);
-						param.setValueAtTime(0, 0.45);
-						param.setValueAtTime(1, 0.48);
-						param.cancelAndHoldAtTime(0.45);
-						expect(param.getValueAtTime(0.45)).to.be.closeTo(
-							0,
-							0.001
-						);
-					},
-					0.5,
-					1,
-					sampleRate
-				);
-				matchesOutputCurve(param, testBuffer);
-				// document.body.appendChild(await Plot.signal(testBuffer));
-			});
+		it.skip("can cancel and hold", async () => {
+			let param;
+			const testBuffer = await Offline(
+				(context) => {
+					const source = context.createConstantSource();
+					source.connect(context.rawContext.destination);
+					source.start(0);
+					param = new Param({
+						context,
+						param: source.offset,
+						value: 0.1,
+					});
+					param.setValueAtTime(0, 0);
+					param.setValueAtTime(1, 0.2);
+					param.cancelAndHoldAtTime(0.1);
+					param.linearRampToValueAtTime(1, 0.3);
+					param.cancelAndHoldAtTime(0.2);
+					expect(param.getValueAtTime(0.2)).to.be.closeTo(0.5, 0.001);
+					param.exponentialRampToValueAtTime(0, 0.4);
+					param.cancelAndHoldAtTime(0.25);
+					expect(param.getValueAtTime(0.25)).to.be.closeTo(
+						0.033,
+						0.001
+					);
+					param.setTargetAtTime(1, 0.3, 0.1);
+					param.cancelAndHoldAtTime(0.4);
+					expect(param.getValueAtTime(0.4)).to.be.closeTo(
+						0.644,
+						0.001
+					);
+					param.setValueAtTime(0, 0.45);
+					param.setValueAtTime(1, 0.48);
+					param.cancelAndHoldAtTime(0.45);
+					expect(param.getValueAtTime(0.45)).to.be.closeTo(0, 0.001);
+				},
+				0.5,
+				1,
+				sampleRate
+			);
+			matchesOutputCurve(param, testBuffer);
+			// document.body.appendChild(await Plot.signal(testBuffer));
+		});
 
-			// 	it ("matches known values", async () => {
-			// 		await Compare.toFile(context => {
-			// 			const source = context.createConstantSource();
-			// 			source.connect(context.rawContext.destination);
-			// 			source.start(0);
-			// 			const param = new Param({
-			// 				context,
-			// 				param: source.offset,
-			// 				value: 0.1,
-			// 			});
-			// 			param.setValueAtTime(0, 0);
-			// 			param.setValueAtTime(1, 0.2);
-			// 			param.cancelAndHoldAtTime(0.1);
-			// 			param.linearRampToValueAtTime(1, 0.3);
-			// 			param.cancelAndHoldAtTime(0.2);
-			// 			param.exponentialRampToValueAtTime(0, 0.4);
-			// 			param.cancelAndHoldAtTime(0.25);
-			// 			param.setTargetAtTime(1, 0.3, 0.1);
-			// 			param.cancelAndHoldAtTime(0.4);
-			// 		}, "/base/test/audio/param/curve_0.wav", 0.01, 0.5, 1, 11025);
-			// 	});
-		}
+		// 	it ("matches known values", async () => {
+		// 		await Compare.toFile(context => {
+		// 			const source = context.createConstantSource();
+		// 			source.connect(context.rawContext.destination);
+		// 			source.start(0);
+		// 			const param = new Param({
+		// 				context,
+		// 				param: source.offset,
+		// 				value: 0.1,
+		// 			});
+		// 			param.setValueAtTime(0, 0);
+		// 			param.setValueAtTime(1, 0.2);
+		// 			param.cancelAndHoldAtTime(0.1);
+		// 			param.linearRampToValueAtTime(1, 0.3);
+		// 			param.cancelAndHoldAtTime(0.2);
+		// 			param.exponentialRampToValueAtTime(0, 0.4);
+		// 			param.cancelAndHoldAtTime(0.25);
+		// 			param.setTargetAtTime(1, 0.3, 0.1);
+		// 			param.cancelAndHoldAtTime(0.4);
+		// 		}, "/base/test/audio/param/curve_0.wav", 0.01, 0.5, 1, 11025);
+		// 	});
 	});
 
 	context("Units", () => {

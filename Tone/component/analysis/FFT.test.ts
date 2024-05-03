@@ -1,6 +1,5 @@
 import { expect } from "chai";
 import { BasicTests } from "../../../test/helper/Basic.js";
-import { ONLINE_TESTING } from "../../../test/helper/Supports.js";
 import { Noise } from "../../source/Noise.js";
 import { FFT } from "./FFT.js";
 
@@ -62,24 +61,22 @@ describe("FFT", () => {
 		}, 300);
 	});
 
-	if (ONLINE_TESTING) {
-		it("outputs a normal range", (done) => {
-			const noise = new Noise();
-			const fft = new FFT({
-				normalRange: true,
-			});
-			noise.connect(fft);
-			noise.start();
-
-			setTimeout(() => {
-				const analysis = fft.getValue();
-				analysis.forEach((value) => {
-					expect(value).is.within(0, 1);
-				});
-				fft.dispose();
-				noise.dispose();
-				done();
-			}, 300);
+	it("outputs a normal range", (done) => {
+		const noise = new Noise();
+		const fft = new FFT({
+			normalRange: true,
 		});
-	}
+		noise.connect(fft);
+		noise.start();
+
+		setTimeout(() => {
+			const analysis = fft.getValue();
+			analysis.forEach((value) => {
+				expect(value).is.within(0, 1);
+			});
+			fft.dispose();
+			noise.dispose();
+			done();
+		}, 300);
+	});
 });

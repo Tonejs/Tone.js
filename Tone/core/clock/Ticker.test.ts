@@ -1,5 +1,4 @@
 import { expect } from "chai";
-import { ONLINE_TESTING } from "../../../test/helper/Supports.js";
 import { Ticker } from "./Ticker.js";
 
 describe("Ticker", () => {
@@ -30,32 +29,30 @@ describe("Ticker", () => {
 		ticker.dispose();
 	});
 
-	if (ONLINE_TESTING) {
-		context("timeout", () => {
-			it("provides a callback when set to timeout", (done) => {
-				const ticker = new Ticker(
-					() => {
-						ticker.dispose();
-						done();
-					},
-					"timeout",
-					0.01
-				);
-			});
-
-			it("can adjust the interval when set to timeout", (done) => {
-				const ticker = new Ticker(
-					() => {
-						ticker.dispose();
-						done();
-					},
-					"timeout",
-					0.01
-				);
-				ticker.updateInterval = 0.1;
-			});
+	context("timeout", () => {
+		it("provides a callback when set to timeout", (done) => {
+			const ticker = new Ticker(
+				() => {
+					ticker.dispose();
+					done();
+				},
+				"timeout",
+				0.01
+			);
 		});
-	}
+
+		it("can adjust the interval when set to timeout", (done) => {
+			const ticker = new Ticker(
+				() => {
+					ticker.dispose();
+					done();
+				},
+				"timeout",
+				0.01
+			);
+			ticker.updateInterval = 0.1;
+		});
+	});
 
 	context("worker", () => {
 		it("provides a callback when set to worker", (done) => {

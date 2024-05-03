@@ -2,10 +2,6 @@ import { expect } from "chai";
 import { BasicTests } from "../../../test/helper/Basic.js";
 import { CompareToFile } from "../../../test/helper/CompareToFile.js";
 import { Offline } from "../../../test/helper/Offline.js";
-import {
-	OFFLINE_BUFFERSOURCE_ONENDED,
-	ONLINE_TESTING,
-} from "../../../test/helper/Supports.js";
 import { ToneAudioBuffer } from "../../core/context/ToneAudioBuffer.js";
 import { getContext } from "../../core/Global.js";
 import { ToneBufferSource } from "./ToneBufferSource.js";
@@ -241,17 +237,15 @@ describe("ToneBufferSource", () => {
 			return buffer.load("./test/audio/sine.wav");
 		});
 
-		if (ONLINE_TESTING) {
-			it.skip("schedules the onended callback in online context", (done) => {
-				const player = new ToneBufferSource(buffer);
-				player.start().stop("+0.1");
-				player.onended = () => {
-					expect(player.state).to.equal("stopped");
-					player.dispose();
-					done();
-				};
-			});
-		}
+		it.skip("schedules the onended callback in online context", (done) => {
+			const player = new ToneBufferSource(buffer);
+			player.start().stop("+0.1");
+			player.onended = () => {
+				expect(player.state).to.equal("stopped");
+				player.dispose();
+				done();
+			};
+		});
 
 		it("schedules the onended callback when offline", () => {
 			let wasInvoked = false;
@@ -278,20 +272,18 @@ describe("ToneBufferSource", () => {
 			});
 		});
 
-		if (OFFLINE_BUFFERSOURCE_ONENDED) {
-			it("schedules the onended callback when the buffer is done without scheduling stop", () => {
-				let wasInvoked = false;
-				return Offline(() => {
-					const player = new ToneBufferSource(buffer).toDestination();
-					player.start(0);
-					player.onended = () => {
-						wasInvoked = true;
-					};
-				}, buffer.duration * 1.1).then(() => {
-					expect(wasInvoked).to.equal(true);
-				});
+		it("schedules the onended callback when the buffer is done without scheduling stop", () => {
+			let wasInvoked = false;
+			return Offline(() => {
+				const player = new ToneBufferSource(buffer).toDestination();
+				player.start(0);
+				player.onended = () => {
+					wasInvoked = true;
+				};
+			}, buffer.duration * 1.1).then(() => {
+				expect(wasInvoked).to.equal(true);
 			});
-		}
+		});
 	});
 
 	context("state", () => {

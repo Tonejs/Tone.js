@@ -1,7 +1,6 @@
 import { expect } from "chai";
 import { BasicTests } from "../../../test/helper/Basic.js";
 import { atTime, Offline, whenBetween } from "../../../test/helper/Offline.js";
-import { ONLINE_TESTING } from "../../../test/helper/Supports.js";
 import { noOp } from "../util/Interface.js";
 import { Clock } from "./Clock.js";
 
@@ -17,25 +16,23 @@ describe("Clock", () => {
 			clock.dispose();
 		});
 
-		if (ONLINE_TESTING) {
-			it("invokes the callback when started", (done) => {
-				const clock = new Clock((time) => {
+		it("invokes the callback when started", (done) => {
+			const clock = new Clock((time) => {
+				clock.dispose();
+				done();
+			}, 10).start();
+		});
+
+		it("can be constructed with an options object", (done) => {
+			const clock = new Clock({
+				callback(): void {
 					clock.dispose();
 					done();
-				}, 10).start();
-			});
-
-			it("can be constructed with an options object", (done) => {
-				const clock = new Clock({
-					callback(): void {
-						clock.dispose();
-						done();
-					},
-					frequency: 8,
-				}).start();
-				expect(clock.frequency.value).to.equal(8);
-			});
-		}
+				},
+				frequency: 8,
+			}).start();
+			expect(clock.frequency.value).to.equal(8);
+		});
 
 		it("can get and set it's values with the set/get", () => {
 			const clock = new Clock();
@@ -136,36 +133,34 @@ describe("Clock", () => {
 	});
 
 	context("Scheduling", () => {
-		if (ONLINE_TESTING) {
-			it("passes a time to the callback", (done) => {
-				const clock = new Clock((time) => {
-					expect(time).to.be.a("number");
-					clock.dispose();
-					done();
-				}, 10).start();
-			});
+		it("passes a time to the callback", (done) => {
+			const clock = new Clock((time) => {
+				expect(time).to.be.a("number");
+				clock.dispose();
+				done();
+			}, 10).start();
+		});
 
-			it("invokes the callback with a time great than now", (done) => {
-				const clock = new Clock((time) => {
-					clock.dispose();
-					expect(time).to.be.greaterThan(now);
-					done();
-				}, 10);
-				const now = clock.now();
-				const startTime = now + 0.1;
-				clock.start(startTime);
-			});
+		it("invokes the callback with a time great than now", (done) => {
+			const clock = new Clock((time) => {
+				clock.dispose();
+				expect(time).to.be.greaterThan(now);
+				done();
+			}, 10);
+			const now = clock.now();
+			const startTime = now + 0.1;
+			clock.start(startTime);
+		});
 
-			it("invokes the first callback at the given start time", (done) => {
-				const clock = new Clock((time) => {
-					clock.dispose();
-					expect(time).to.be.closeTo(startTime, 0.01);
-					done();
-				}, 10);
-				const startTime = clock.now() + 0.1;
-				clock.start(startTime);
-			});
-		}
+		it("invokes the first callback at the given start time", (done) => {
+			const clock = new Clock((time) => {
+				clock.dispose();
+				expect(time).to.be.closeTo(startTime, 0.01);
+				done();
+			}, 10);
+			const startTime = clock.now() + 0.1;
+			clock.start(startTime);
+		});
 
 		it("can be scheduled to start in the future", () => {
 			let invokations = 0;

@@ -1,6 +1,5 @@
 import { expect } from "chai";
 import { atTime, Offline } from "../../test/helper/Offline.js";
-import { ONLINE_TESTING } from "../../test/helper/Supports.js";
 import { ToneAudioBuffer } from "../core/context/ToneAudioBuffer.js";
 import { getContext } from "../core/Global.js";
 import { Player } from "./buffer/Player.js";
@@ -98,33 +97,31 @@ describe("Source", () => {
 		}, 2);
 	});
 
-	if (ONLINE_TESTING) {
-		it("clamps start time to the currentTime", (done) => {
-			const source = new Oscillator();
-			expect(source.state).to.equal("stopped");
-			source.start(0);
+	it("clamps start time to the currentTime", (done) => {
+		const source = new Oscillator();
+		expect(source.state).to.equal("stopped");
+		source.start(0);
+		setTimeout(() => {
+			expect(source.state).to.equal("started");
+			source.dispose();
+			done();
+		}, 10);
+	});
+
+	it("clamps stop time to the currentTime", (done) => {
+		const source = new Oscillator();
+		expect(source.state).to.equal("stopped");
+		source.start(0);
+		setTimeout(() => {
+			expect(source.state).to.equal("started");
+			source.stop(0);
 			setTimeout(() => {
-				expect(source.state).to.equal("started");
+				expect(source.state).to.equal("stopped");
 				source.dispose();
 				done();
 			}, 10);
-		});
-
-		it("clamps stop time to the currentTime", (done) => {
-			const source = new Oscillator();
-			expect(source.state).to.equal("stopped");
-			source.start(0);
-			setTimeout(() => {
-				expect(source.state).to.equal("started");
-				source.stop(0);
-				setTimeout(() => {
-					expect(source.state).to.equal("stopped");
-					source.dispose();
-					done();
-				}, 10);
-			}, 10);
-		});
-	}
+		}, 10);
+	});
 
 	it("correctly returns the scheduled play state", () => {
 		return Offline(() => {

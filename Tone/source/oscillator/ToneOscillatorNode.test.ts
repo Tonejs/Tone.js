@@ -2,7 +2,6 @@ import { expect } from "chai";
 import { BasicTests } from "../../../test/helper/Basic.js";
 import { CompareToFile } from "../../../test/helper/CompareToFile.js";
 import { Offline, whenBetween } from "../../../test/helper/Offline.js";
-import { ONLINE_TESTING } from "../../../test/helper/Supports.js";
 import { Frequency } from "../../core/type/Frequency.js";
 import { ToneOscillatorNode } from "./ToneOscillatorNode.js";
 
@@ -74,33 +73,31 @@ describe("ToneOscillatorNode", () => {
 	});
 
 	context("onended", () => {
-		if (ONLINE_TESTING) {
-			it("invokes the onended callback in the online context", (done) => {
-				const osc = new ToneOscillatorNode();
-				osc.start();
-				osc.stop("+0.3");
-				const now = osc.now();
-				osc.onended = () => {
-					expect(osc.now() - now).to.be.within(0.25, 0.5);
-					osc.dispose();
-					done();
-				};
-			});
+		it("invokes the onended callback in the online context", (done) => {
+			const osc = new ToneOscillatorNode();
+			osc.start();
+			osc.stop("+0.3");
+			const now = osc.now();
+			osc.onended = () => {
+				expect(osc.now() - now).to.be.within(0.25, 0.5);
+				osc.dispose();
+				done();
+			};
+		});
 
-			it("invokes the onended callback only once in the online context", (done) => {
-				const osc = new ToneOscillatorNode();
-				osc.start();
-				osc.stop("+0.1");
-				osc.stop("+0.2");
-				osc.stop("+0.3");
-				const now = osc.now();
-				osc.onended = () => {
-					expect(osc.now() - now).to.be.within(0.25, 0.5);
-					osc.dispose();
-					done();
-				};
-			});
-		}
+		it("invokes the onended callback only once in the online context", (done) => {
+			const osc = new ToneOscillatorNode();
+			osc.start();
+			osc.stop("+0.1");
+			osc.stop("+0.2");
+			osc.stop("+0.3");
+			const now = osc.now();
+			osc.onended = () => {
+				expect(osc.now() - now).to.be.within(0.25, 0.5);
+				osc.dispose();
+				done();
+			};
+		});
 
 		it("invokes the onended callback in the offline context", () => {
 			let wasInvoked = false;
@@ -171,33 +168,31 @@ describe("ToneOscillatorNode", () => {
 			});
 		});
 
-		if (ONLINE_TESTING) {
-			it("clamps start time to the currentTime", () => {
-				const osc = new ToneOscillatorNode();
-				osc.start(0);
-				const currentTime = osc.context.currentTime;
-				expect(osc.getStateAtTime(0)).to.equal("stopped");
-				expect(osc.getStateAtTime(currentTime)).to.equal("started");
-				osc.dispose();
-			});
+		it("clamps start time to the currentTime", () => {
+			const osc = new ToneOscillatorNode();
+			osc.start(0);
+			const currentTime = osc.context.currentTime;
+			expect(osc.getStateAtTime(0)).to.equal("stopped");
+			expect(osc.getStateAtTime(currentTime)).to.equal("started");
+			osc.dispose();
+		});
 
-			it("clamps stop time to the currentTime", (done) => {
-				const osc = new ToneOscillatorNode();
-				osc.start(0);
-				let currentTime = osc.context.currentTime;
-				expect(osc.getStateAtTime(0)).to.equal("stopped");
-				expect(osc.getStateAtTime(currentTime)).to.equal("started");
-				setTimeout(() => {
-					currentTime = osc.now();
-					osc.stop(0);
-					expect(osc.getStateAtTime(currentTime + 0.01)).to.equal(
-						"stopped"
-					);
-					osc.dispose();
-					done();
-				}, 100);
-			});
-		}
+		it("clamps stop time to the currentTime", (done) => {
+			const osc = new ToneOscillatorNode();
+			osc.start(0);
+			let currentTime = osc.context.currentTime;
+			expect(osc.getStateAtTime(0)).to.equal("stopped");
+			expect(osc.getStateAtTime(currentTime)).to.equal("started");
+			setTimeout(() => {
+				currentTime = osc.now();
+				osc.stop(0);
+				expect(osc.getStateAtTime(currentTime + 0.01)).to.equal(
+					"stopped"
+				);
+				osc.dispose();
+				done();
+			}, 100);
+		});
 	});
 
 	context("State", () => {
