@@ -1,63 +1,81 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head>
-  <meta charset="utf-8">
-	<title>Noise</title>
+	<head>
+		<meta charset="utf-8" />
+		<title>Noise</title>
 
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-	<link rel="icon" type="image/png" sizes="174x174" href="./favicon.png">
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1, maximum-scale=1"
+		/>
+		<link
+			rel="icon"
+			type="image/png"
+			sizes="174x174"
+			href="./favicon.png"
+		/>
 
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/2.4.3/webcomponents-bundle.js"></script>
-	<link href="https://fonts.googleapis.com/css?family=Material+Icons&display=block" rel="stylesheet"/>
-	<script src="../build/Tone.js"></script>
-	<script src="./js/tone-ui.js"></script>
-	<script src="./js/components.js"></script>
-</head>
-<body>
-	<style>
-		tone-trigger, tone-oscilloscope {
-			margin-bottom: 10px;
-		}
-		tone-oscilloscope {
-			background-color: black;
-			height: 60px;
-			width: 100%;
-		}
-	</style>
-	<tone-example label="Noise">
-		<div slot="explanation">
-			<a href="https://tonejs.github.io/docs/Noise">Tone.Noise</a>
-			has 3 different types of noise. Careful, it's loud!
-		</div>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/2.4.3/webcomponents-bundle.js"></script>
+		<link
+			href="https://fonts.googleapis.com/css?family=Material+Icons&display=block"
+			rel="stylesheet"
+		/>
+		<script src="../build/Tone.js"></script>
+		<script src="./js/tone-ui.js"></script>
+		<script src="./js/components.js"></script>
+	</head>
+	<body>
+		<style>
+			tone-trigger,
+			tone-oscilloscope {
+				margin-bottom: 10px;
+			}
+			tone-oscilloscope {
+				background-color: black;
+				height: 60px;
+				width: 100%;
+			}
+		</style>
+		<tone-example label="Noise">
+			<div slot="explanation">
+				<a href="https://tonejs.github.io/docs/latest/classes/Noise"
+					>Tone.Noise</a
+				>
+				has 3 different types of noise. Careful, it's loud!
+			</div>
 
-		<div id="content">
-			<tone-momentary-button></tone-momentary-button>
-		</div>
-	</tone-example>
+			<div id="content">
+				<tone-momentary-button></tone-momentary-button>
+			</div>
+		</tone-example>
 
-	<script type="text/javascript">
-		// make the noise and connect it to the output
-		const noise = new Tone.Noise({
-			volume: -10,
-			type: "brown"
-		}).toDestination();
+		<script type="text/javascript">
+			// make the noise and connect it to the output
+			const noise = new Tone.Noise({
+				volume: -10,
+				type: "brown",
+			}).toDestination();
 
-		const toneWaveform = new Tone.Waveform();
-		noise.connect(toneWaveform);
+			const toneWaveform = new Tone.Waveform();
+			noise.connect(toneWaveform);
 
-		waveform({
-			parent: document.querySelector("#content"),
-			tone: toneWaveform,
-		});
-		
-		ui({
-			parent: document.querySelector("#content"),
-			tone: noise,
-		});
+			waveform({
+				parent: document.querySelector("#content"),
+				tone: toneWaveform,
+			});
 
-		// bind the inteface
-		document.querySelector("tone-momentary-button").addEventListener("down", () => noise.start());
-		document.querySelector("tone-momentary-button").addEventListener("up", () => noise.stop());
-	</script>
-</body>
+			ui({
+				parent: document.querySelector("#content"),
+				tone: noise,
+			});
+
+			// bind the inteface
+			document
+				.querySelector("tone-momentary-button")
+				.addEventListener("down", () => noise.start());
+			document
+				.querySelector("tone-momentary-button")
+				.addEventListener("up", () => noise.stop());
+		</script>
+	</body>
 </html>

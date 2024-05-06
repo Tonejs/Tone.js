@@ -1,71 +1,100 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head>
-  <meta charset="utf-8">
-	<title>Envelope</title>
+	<head>
+		<meta charset="utf-8" />
+		<title>Envelope</title>
 
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-	<link rel="icon" type="image/png" sizes="174x174" href="./favicon.png">
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1, maximum-scale=1"
+		/>
+		<link
+			rel="icon"
+			type="image/png"
+			sizes="174x174"
+			href="./favicon.png"
+		/>
 
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/2.4.3/webcomponents-bundle.js"></script>
-	<link href="https://fonts.googleapis.com/css?family=Material+Icons&display=block" rel="stylesheet"/>
-	<script src="../build/Tone.js"></script>
-	<script src="./js/tone-ui.js"></script>
-	<script src="./js/components.js"></script>
-</head>
-<body>	
-	<style type="text/css">
-		img {
-			display: block;
-			margin: 5px auto;
-			width: 300px!important;
-		}
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/2.4.3/webcomponents-bundle.js"></script>
+		<link
+			href="https://fonts.googleapis.com/css?family=Material+Icons&display=block"
+			rel="stylesheet"
+		/>
+		<script src="../build/Tone.js"></script>
+		<script src="./js/tone-ui.js"></script>
+		<script src="./js/components.js"></script>
+	</head>
+	<body>
+		<style type="text/css">
+			img {
+				display: block;
+				margin: 5px auto;
+				width: 300px !important;
+			}
 
-		tone-trigger {
-			margin-bottom: 10px;
-		}
-	</style>
-	<tone-example label="Envelope">
-		<div slot="explanation">
-			Envelopes ramp amplitude, frequency or any other parameter over time. 
-			<a href="https://tonejs.github.io/docs/Envelope">Tone.Envelope</a> and the classes that extend it
-			implement an <a href="https://en.wikipedia.org/wiki/Synthesizer#ADSR_envelope" target="_blank">ADSR</a> envelope type
-			which splits its ramp into four distinct phases: Attack, Decay, Sustain, Release.
-			<img src="https://upload.wikimedia.org/wikipedia/commons/e/ea/ADSR_parameter.svg">
-		</div>
+			tone-trigger {
+				margin-bottom: 10px;
+			}
+		</style>
+		<tone-example label="Envelope">
+			<div slot="explanation">
+				Envelopes ramp amplitude, frequency or any other parameter over
+				time.
+				<a href="https://tonejs.github.io/docs/latest/classes/Envelope"
+					>Tone.Envelope</a
+				>
+				and the classes that extend it implement an
+				<a
+					href="https://en.wikipedia.org/wiki/Synthesizer#ADSR_envelope"
+					target="_blank"
+					>ADSR</a
+				>
+				envelope type which splits its ramp into four distinct phases:
+				Attack, Decay, Sustain, Release.
+				<img
+					src="https://upload.wikimedia.org/wikipedia/commons/e/ea/ADSR_parameter.svg"
+				/>
+			</div>
 
-		<div id="content">
-			<tone-momentary-button></tone-momentary-button>
-		</div>
+			<div id="content">
+				<tone-momentary-button></tone-momentary-button>
+			</div>
+		</tone-example>
 
-	</tone-example>
+		<script type="text/javascript">
+			const env = new Tone.AmplitudeEnvelope({
+				attack: 0.11,
+				decay: 0.21,
+				sustain: 0.5,
+				release: 1.2,
+			}).toDestination();
 
-	<script type="text/javascript">
-		const env = new Tone.AmplitudeEnvelope({
-			attack: 0.11,
-			decay: 0.21,
-			sustain: 0.5,
-			release: 1.2
-		}).toDestination();
+			// create an oscillator and connect it to the envelope
+			const osc = new Tone.Oscillator({
+				partials: [3, 2, 1],
+				type: "custom",
+				frequency: "C#4",
+				volume: -8,
+			})
+				.connect(env)
+				.start();
 
-		// create an oscillator and connect it to the envelope
-		const osc = new Tone.Oscillator({
-			partials: [3, 2, 1],
-			type: "custom",
-			frequency: "C#4",
-			volume: -8,
-		}).connect(env).start();
+			// bind the interface
+			drawer()
+				.add({
+					tone: env,
+					name: "Envelope",
+				})
+				.add({
+					tone: osc,
+				});
 
-		// bind the interface
-		drawer().add({
-			tone: env,
-			name: "Envelope"
-		}).add({
-			tone: osc,
-		});
-
-		document.querySelector("tone-momentary-button").addEventListener("down", e => env.triggerAttack());
-		document.querySelector("tone-momentary-button").addEventListener("up", e => env.triggerRelease());
-	</script>
-</body>
+			document
+				.querySelector("tone-momentary-button")
+				.addEventListener("down", (e) => env.triggerAttack());
+			document
+				.querySelector("tone-momentary-button")
+				.addEventListener("up", (e) => env.triggerRelease());
+		</script>
+	</body>
 </html>
