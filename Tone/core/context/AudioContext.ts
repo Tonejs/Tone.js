@@ -41,6 +41,8 @@ export type AnyAudioContext = AudioContext | OfflineAudioContext;
 interface ToneWindow extends Window {
 	TONE_SILENCE_LOGGING?: boolean;
 	TONE_DEBUG_CLASS?: string;
+	BaseAudioContext: any;
+	AudioWorkletNode: any;
 }
 
 /**
@@ -66,10 +68,13 @@ export function createAudioWorkletNode(
 ): AudioWorkletNode {
 	assert(
 		isDefined(stdAudioWorkletNode),
-		"This node only works in a secure context (https or localhost)"
+		"AudioWorkletNode only works in a secure context (https or localhost)"
 	);
-	// @ts-ignore
-	return new stdAudioWorkletNode(context, name, options);
+	return new (
+		context instanceof theWindow?.BaseAudioContext
+			? theWindow?.AudioWorkletNode
+			: stdAudioWorkletNode
+	)(context, name, options);
 }
 
 /**
