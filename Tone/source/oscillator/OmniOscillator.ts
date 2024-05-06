@@ -114,17 +114,12 @@ export class OmniOscillator<OscType extends AnyOscillator>
 	constructor(frequency?: Frequency, type?: OmniOscillatorType);
 	constructor(options?: Partial<OmniOscillatorOptions>);
 	constructor() {
-		super(
-			optionsFromArguments(OmniOscillator.getDefaults(), arguments, [
-				"frequency",
-				"type",
-			])
-		);
 		const options = optionsFromArguments(
 			OmniOscillator.getDefaults(),
 			arguments,
 			["frequency", "type"]
 		);
+		super(options);
 
 		this.frequency = new Signal({
 			context: this.context,

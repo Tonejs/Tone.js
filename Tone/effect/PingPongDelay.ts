@@ -57,17 +57,12 @@ export class PingPongDelay extends StereoXFeedbackEffect<PingPongDelayOptions> {
 	constructor(delayTime?: Time, feedback?: NormalRange);
 	constructor(options?: Partial<PingPongDelayOptions>);
 	constructor() {
-		super(
-			optionsFromArguments(PingPongDelay.getDefaults(), arguments, [
-				"delayTime",
-				"feedback",
-			])
-		);
 		const options = optionsFromArguments(
 			PingPongDelay.getDefaults(),
 			arguments,
 			["delayTime", "feedback"]
 		);
+		super(options);
 
 		this._leftDelay = new Delay({
 			context: this.context,

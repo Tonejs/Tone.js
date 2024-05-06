@@ -60,18 +60,12 @@ export class LowpassCombFilter extends ToneAudioNode<LowpassCombFilterOptions> {
 	);
 	constructor(options?: RecursivePartial<LowpassCombFilterOptions>);
 	constructor() {
-		super(
-			optionsFromArguments(LowpassCombFilter.getDefaults(), arguments, [
-				"delayTime",
-				"resonance",
-				"dampening",
-			])
-		);
 		const options = optionsFromArguments(
 			LowpassCombFilter.getDefaults(),
 			arguments,
 			["delayTime", "resonance", "dampening"]
 		);
+		super(options);
 
 		this._combFilter = this.output = new FeedbackCombFilter({
 			context: this.context,

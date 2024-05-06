@@ -108,17 +108,12 @@ export class PulseOscillator
 	constructor(frequency?: Frequency, width?: AudioRange);
 	constructor(options?: Partial<PulseOscillatorOptions>);
 	constructor() {
-		super(
-			optionsFromArguments(PulseOscillator.getDefaults(), arguments, [
-				"frequency",
-				"width",
-			])
-		);
 		const options = optionsFromArguments(
 			PulseOscillator.getDefaults(),
 			arguments,
 			["frequency", "width"]
 		);
+		super(options);
 
 		this.width = new Signal({
 			context: this.context,

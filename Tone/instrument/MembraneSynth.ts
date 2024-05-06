@@ -53,11 +53,11 @@ export class MembraneSynth extends Synth<MembraneSynthOptions> {
 	 */
 	constructor(options?: RecursivePartial<MembraneSynthOptions>);
 	constructor() {
-		super(optionsFromArguments(MembraneSynth.getDefaults(), arguments));
 		const options = optionsFromArguments(
 			MembraneSynth.getDefaults(),
 			arguments
 		);
+		super(options);
 
 		this.pitchDecay = options.pitchDecay;
 		this.octaves = options.octaves;

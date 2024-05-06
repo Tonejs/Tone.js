@@ -43,17 +43,12 @@ export class ToneOscillatorNode extends OneShotSource<ToneOscillatorNodeOptions>
 	constructor(frequency: Frequency, type: OscillatorType);
 	constructor(options?: Partial<ToneOscillatorNodeOptions>);
 	constructor() {
-		super(
-			optionsFromArguments(ToneOscillatorNode.getDefaults(), arguments, [
-				"frequency",
-				"type",
-			])
-		);
 		const options = optionsFromArguments(
 			ToneOscillatorNode.getDefaults(),
 			arguments,
 			["frequency", "type"]
 		);
+		super(options);
 
 		connect(this._oscillator, this._gainNode);
 

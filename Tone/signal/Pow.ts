@@ -33,14 +33,10 @@ export class Pow extends SignalOperator<PowOptions> {
 	constructor(value?: number);
 	constructor(options?: Partial<PowOptions>);
 	constructor() {
-		super(
-			Object.assign(
-				optionsFromArguments(Pow.getDefaults(), arguments, ["value"])
-			)
-		);
 		const options = optionsFromArguments(Pow.getDefaults(), arguments, [
 			"value",
 		]);
+		super(options);
 
 		this._exponentScaler =
 			this.input =

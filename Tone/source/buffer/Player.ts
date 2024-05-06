@@ -91,16 +91,11 @@ export class Player extends Source<PlayerOptions> {
 	);
 	constructor(options?: Partial<PlayerOptions>);
 	constructor() {
-		super(
-			optionsFromArguments(Player.getDefaults(), arguments, [
-				"url",
-				"onload",
-			])
-		);
 		const options = optionsFromArguments(Player.getDefaults(), arguments, [
 			"url",
 			"onload",
 		]);
+		super(options);
 
 		this._buffer = new ToneAudioBuffer({
 			onload: this._onload.bind(this, options.onload),

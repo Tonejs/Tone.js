@@ -59,16 +59,11 @@ export class Loop<
 	constructor(callback?: (time: Seconds) => void, interval?: Time);
 	constructor(options?: Partial<LoopOptions>);
 	constructor() {
-		super(
-			optionsFromArguments(Loop.getDefaults(), arguments, [
-				"callback",
-				"interval",
-			])
-		);
 		const options = optionsFromArguments(Loop.getDefaults(), arguments, [
 			"callback",
 			"interval",
 		]);
+		super(options);
 
 		this._event = new ToneEvent({
 			context: this.context,

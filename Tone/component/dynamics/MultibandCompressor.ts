@@ -71,18 +71,11 @@ export class MultibandCompressor extends ToneAudioNode<MultibandCompressorOption
 
 	constructor(options?: RecursivePartial<MultibandCompressorOptions>);
 	constructor() {
-		super(
-			Object.assign(
-				optionsFromArguments(
-					MultibandCompressor.getDefaults(),
-					arguments
-				)
-			)
-		);
 		const options = optionsFromArguments(
 			MultibandCompressor.getDefaults(),
 			arguments
 		);
+		super(options);
 
 		this._splitter = this.input = new MultibandSplit({
 			context: this.context,

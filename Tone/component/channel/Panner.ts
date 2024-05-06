@@ -54,14 +54,10 @@ export class Panner extends ToneAudioNode<TonePannerOptions> {
 	 */
 	constructor(pan?: AudioRange);
 	constructor() {
-		super(
-			Object.assign(
-				optionsFromArguments(Panner.getDefaults(), arguments, ["pan"])
-			)
-		);
 		const options = optionsFromArguments(Panner.getDefaults(), arguments, [
 			"pan",
 		]);
+		super(options);
 
 		this.pan = new Param({
 			context: this.context,

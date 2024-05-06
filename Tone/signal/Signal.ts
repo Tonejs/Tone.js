@@ -66,17 +66,11 @@ export class Signal<TypeName extends UnitName = "number">
 	constructor(value?: UnitMap[TypeName], units?: TypeName);
 	constructor(options?: Partial<SignalOptions<TypeName>>);
 	constructor() {
-		super(
-			optionsFromArguments(Signal.getDefaults(), arguments, [
-				"value",
-				"units",
-			])
-		);
-
 		const options = optionsFromArguments(Signal.getDefaults(), arguments, [
 			"value",
 			"units",
 		]) as SignalOptions<TypeName>;
+		super(options);
 
 		this.output = this._constantSource = new ToneConstantSource({
 			context: this.context,

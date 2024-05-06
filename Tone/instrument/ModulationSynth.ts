@@ -88,11 +88,11 @@ export abstract class ModulationSynth<
 
 	constructor(options?: RecursivePartial<ModulationSynthOptions>);
 	constructor() {
-		super(optionsFromArguments(ModulationSynth.getDefaults(), arguments));
 		const options = optionsFromArguments(
 			ModulationSynth.getDefaults(),
 			arguments
 		);
+		super(options);
 
 		this._carrier = new Synth({
 			context: this.context,

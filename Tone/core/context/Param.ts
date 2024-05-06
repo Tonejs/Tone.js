@@ -113,19 +113,12 @@ export class Param<TypeName extends UnitName = "number">
 	constructor(param: AudioParam, units?: TypeName, convert?: boolean);
 	constructor(options: Partial<ParamOptions<TypeName>>);
 	constructor() {
-		super(
-			optionsFromArguments(Param.getDefaults(), arguments, [
-				"param",
-				"units",
-				"convert",
-			])
-		);
-
 		const options = optionsFromArguments(Param.getDefaults(), arguments, [
 			"param",
 			"units",
 			"convert",
 		]);
+		super(options);
 
 		assert(
 			isDefined(options.param) &&

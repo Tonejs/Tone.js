@@ -65,18 +65,12 @@ export class Pattern<ValueType> extends Loop<PatternOptions<ValueType>> {
 	);
 	constructor(options?: Partial<PatternOptions<ValueType>>);
 	constructor() {
-		super(
-			optionsFromArguments(Pattern.getDefaults(), arguments, [
-				"callback",
-				"values",
-				"pattern",
-			])
-		);
 		const options = optionsFromArguments(Pattern.getDefaults(), arguments, [
 			"callback",
 			"values",
 			"pattern",
 		]);
+		super(options);
 
 		this.callback = options.callback;
 		this._values = options.values;

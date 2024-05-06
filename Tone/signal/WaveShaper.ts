@@ -59,19 +59,12 @@ export class WaveShaper extends SignalOperator<WaveShaperOptions> {
 	constructor(mapping?: WaveShaperMapping, length?: number);
 	constructor(options?: Partial<WaveShaperOptions>);
 	constructor() {
-		super(
-			Object.assign(
-				optionsFromArguments(WaveShaper.getDefaults(), arguments, [
-					"mapping",
-					"length",
-				])
-			)
-		);
 		const options = optionsFromArguments(
 			WaveShaper.getDefaults(),
 			arguments,
 			["mapping", "length"]
 		);
+		super(options);
 
 		if (
 			isArray(options.mapping) ||

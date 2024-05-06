@@ -17,11 +17,9 @@ export abstract class SignalOperator<
 	constructor(options?: Partial<Options>);
 	constructor() {
 		super(
-			Object.assign(
-				optionsFromArguments(SignalOperator.getDefaults(), arguments, [
-					"context",
-				])
-			)
+			optionsFromArguments(SignalOperator.getDefaults(), arguments, [
+				"context",
+			])
 		);
 	}
 

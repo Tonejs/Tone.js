@@ -88,14 +88,12 @@ export class PitchShift extends FeedbackEffect<PitchShiftOptions> {
 	constructor(pitch?: Interval);
 	constructor(options?: Partial<PitchShiftOptions>);
 	constructor() {
-		super(
-			optionsFromArguments(PitchShift.getDefaults(), arguments, ["pitch"])
-		);
 		const options = optionsFromArguments(
 			PitchShift.getDefaults(),
 			arguments,
 			["pitch"]
 		);
+		super(options);
 
 		this._frequency = new Signal({ context: this.context });
 		this._delayA = new Delay({

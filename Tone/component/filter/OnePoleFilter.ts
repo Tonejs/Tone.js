@@ -51,17 +51,12 @@ export class OnePoleFilter extends ToneAudioNode<OnePoleFilterOptions> {
 	constructor(frequency?: Frequency, type?: OnePoleFilterType);
 	constructor(options?: Partial<OnePoleFilterOptions>);
 	constructor() {
-		super(
-			optionsFromArguments(OnePoleFilter.getDefaults(), arguments, [
-				"frequency",
-				"type",
-			])
-		);
 		const options = optionsFromArguments(
 			OnePoleFilter.getDefaults(),
 			arguments,
 			["frequency", "type"]
 		);
+		super(options);
 
 		this._frequency = options.frequency;
 		this._type = options.type;

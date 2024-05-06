@@ -67,17 +67,12 @@ export class ToneBufferSource extends OneShotSource<ToneBufferSourceOptions> {
 	);
 	constructor(options?: Partial<ToneBufferSourceOptions>);
 	constructor() {
-		super(
-			optionsFromArguments(ToneBufferSource.getDefaults(), arguments, [
-				"url",
-				"onload",
-			])
-		);
 		const options = optionsFromArguments(
 			ToneBufferSource.getDefaults(),
 			arguments,
 			["url", "onload"]
 		);
+		super(options);
 
 		connect(this._source, this._gainNode);
 		this._source.onended = () => this._stopSource();

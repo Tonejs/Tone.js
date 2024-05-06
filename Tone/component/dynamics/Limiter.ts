@@ -44,16 +44,10 @@ export class Limiter extends ToneAudioNode<LimiterOptions> {
 	constructor(threshold?: Decibels);
 	constructor(options?: Partial<LimiterOptions>);
 	constructor() {
-		super(
-			Object.assign(
-				optionsFromArguments(Limiter.getDefaults(), arguments, [
-					"threshold",
-				])
-			)
-		);
 		const options = optionsFromArguments(Limiter.getDefaults(), arguments, [
 			"threshold",
 		]);
+		super(options);
 
 		this._compressor =
 			this.input =

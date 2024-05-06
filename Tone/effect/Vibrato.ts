@@ -48,16 +48,11 @@ export class Vibrato extends Effect<VibratoOptions> {
 	constructor(frequency?: Frequency, depth?: NormalRange);
 	constructor(options?: Partial<VibratoOptions>);
 	constructor() {
-		super(
-			optionsFromArguments(Vibrato.getDefaults(), arguments, [
-				"frequency",
-				"depth",
-			])
-		);
 		const options = optionsFromArguments(Vibrato.getDefaults(), arguments, [
 			"frequency",
 			"depth",
 		]);
+		super(options);
 
 		this._delayNode = new Delay({
 			context: this.context,

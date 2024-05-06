@@ -54,11 +54,7 @@ export class Subtract extends Signal {
 	constructor(options?: Partial<SignalOptions<"number">>);
 	constructor() {
 		super(
-			Object.assign(
-				optionsFromArguments(Subtract.getDefaults(), arguments, [
-					"value",
-				])
-			)
+			optionsFromArguments(Subtract.getDefaults(), arguments, ["value"])
 		);
 
 		connectSeries(this._constantSource, this._neg, this._sum);

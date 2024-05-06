@@ -106,17 +106,12 @@ export class MultibandSplit extends ToneAudioNode<MultibandSplitOptions> {
 	constructor(lowFrequency?: Frequency, highFrequency?: Frequency);
 	constructor(options?: Partial<MultibandSplitOptions>);
 	constructor() {
-		super(
-			optionsFromArguments(MultibandSplit.getDefaults(), arguments, [
-				"lowFrequency",
-				"highFrequency",
-			])
-		);
 		const options = optionsFromArguments(
 			MultibandSplit.getDefaults(),
 			arguments,
 			["lowFrequency", "highFrequency"]
 		);
+		super(options);
 
 		this.lowFrequency = new Signal({
 			context: this.context,

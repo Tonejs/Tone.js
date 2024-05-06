@@ -73,14 +73,12 @@ export class UserMedia extends ToneAudioNode<UserMediaOptions> {
 	constructor(volume?: Decibels);
 	constructor(options?: Partial<UserMediaOptions>);
 	constructor() {
-		super(
-			optionsFromArguments(UserMedia.getDefaults(), arguments, ["volume"])
-		);
 		const options = optionsFromArguments(
 			UserMedia.getDefaults(),
 			arguments,
 			["volume"]
 		);
+		super(options);
 
 		this._volume = this.output = new Volume({
 			context: this.context,

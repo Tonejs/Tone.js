@@ -101,18 +101,12 @@ export class AutoWah extends Effect<AutoWahOptions> {
 	);
 	constructor(options?: Partial<AutoWahOptions>);
 	constructor() {
-		super(
-			optionsFromArguments(AutoWah.getDefaults(), arguments, [
-				"baseFrequency",
-				"octaves",
-				"sensitivity",
-			])
-		);
 		const options = optionsFromArguments(AutoWah.getDefaults(), arguments, [
 			"baseFrequency",
 			"octaves",
 			"sensitivity",
 		]);
+		super(options);
 
 		this._follower = new Follower({
 			context: this.context,

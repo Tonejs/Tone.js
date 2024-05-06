@@ -79,16 +79,12 @@ export class TickSource<
 	constructor(frequency?: number);
 	constructor(options?: Partial<TickSourceOptions>);
 	constructor() {
-		super(
-			optionsFromArguments(TickSource.getDefaults(), arguments, [
-				"frequency",
-			])
-		);
 		const options = optionsFromArguments(
 			TickSource.getDefaults(),
 			arguments,
 			["frequency"]
 		);
+		super(options);
 
 		this.frequency = new TickSignal({
 			context: this.context,

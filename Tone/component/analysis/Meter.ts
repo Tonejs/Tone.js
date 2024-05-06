@@ -55,12 +55,10 @@ export class Meter extends MeterBase<MeterOptions> {
 	constructor(smoothing?: NormalRange);
 	constructor(options?: Partial<MeterOptions>);
 	constructor() {
-		super(
-			optionsFromArguments(Meter.getDefaults(), arguments, ["smoothing"])
-		);
 		const options = optionsFromArguments(Meter.getDefaults(), arguments, [
 			"smoothing",
 		]);
+		super(options);
 
 		this.input =
 			this.output =

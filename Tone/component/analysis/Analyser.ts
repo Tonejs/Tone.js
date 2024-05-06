@@ -62,17 +62,12 @@ export class Analyser extends ToneAudioNode<AnalyserOptions> {
 	constructor(type?: AnalyserType, size?: number);
 	constructor(options?: Partial<AnalyserOptions>);
 	constructor() {
-		super(
-			optionsFromArguments(Analyser.getDefaults(), arguments, [
-				"type",
-				"size",
-			])
-		);
 		const options = optionsFromArguments(
 			Analyser.getDefaults(),
 			arguments,
 			["type", "size"]
 		);
+		super(options);
 
 		this.input =
 			this.output =

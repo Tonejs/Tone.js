@@ -137,17 +137,12 @@ export class PolySynth<
 	);
 	constructor(options?: Partial<PolySynthOptions<Voice>>);
 	constructor() {
-		super(
-			optionsFromArguments(PolySynth.getDefaults(), arguments, [
-				"voice",
-				"options",
-			])
-		);
 		const options = optionsFromArguments(
 			PolySynth.getDefaults(),
 			arguments,
 			["voice", "options"]
 		);
+		super(options);
 
 		// check against the old API (pre 14.3.0)
 		assert(

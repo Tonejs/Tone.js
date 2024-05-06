@@ -33,9 +33,7 @@ export class Zero extends SignalOperator<ToneAudioNodeOptions> {
 
 	constructor(options?: Partial<ToneAudioNodeOptions>);
 	constructor() {
-		super(
-			Object.assign(optionsFromArguments(Zero.getDefaults(), arguments))
-		);
+		super(optionsFromArguments(Zero.getDefaults(), arguments));
 		connect(this.context.getConstant(0), this._gain);
 	}
 

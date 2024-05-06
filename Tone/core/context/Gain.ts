@@ -56,16 +56,11 @@ export class Gain<
 	constructor(gain?: UnitMap[TypeName], units?: TypeName);
 	constructor(options?: Partial<GainOptions<TypeName>>);
 	constructor() {
-		super(
-			optionsFromArguments(Gain.getDefaults(), arguments, [
-				"gain",
-				"units",
-			])
-		);
 		const options = optionsFromArguments(Gain.getDefaults(), arguments, [
 			"gain",
 			"units",
 		]);
+		super(options);
 
 		this.gain = new Param({
 			context: this.context,

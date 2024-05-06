@@ -32,10 +32,10 @@ export class FFT extends MeterBase<FFTOptions> {
 	constructor(size?: PowerOfTwo);
 	constructor(options?: Partial<FFTOptions>);
 	constructor() {
-		super(optionsFromArguments(FFT.getDefaults(), arguments, ["size"]));
 		const options = optionsFromArguments(FFT.getDefaults(), arguments, [
 			"size",
 		]);
+		super(options);
 
 		this.normalRange = options.normalRange;
 		this._analyser.type = "fft";

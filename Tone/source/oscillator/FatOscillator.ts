@@ -79,18 +79,12 @@ export class FatOscillator
 	);
 	constructor(options?: Partial<FatConstructorOptions>);
 	constructor() {
-		super(
-			optionsFromArguments(FatOscillator.getDefaults(), arguments, [
-				"frequency",
-				"type",
-				"spread",
-			])
-		);
 		const options = optionsFromArguments(
 			FatOscillator.getDefaults(),
 			arguments,
 			["frequency", "type", "spread"]
 		);
+		super(options);
 
 		this.frequency = new Signal({
 			context: this.context,

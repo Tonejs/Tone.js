@@ -63,16 +63,11 @@ export class Channel extends ToneAudioNode<ChannelOptions> {
 	constructor(volume?: Decibels, pan?: AudioRange);
 	constructor(options?: Partial<ChannelOptions>);
 	constructor() {
-		super(
-			optionsFromArguments(Channel.getDefaults(), arguments, [
-				"volume",
-				"pan",
-			])
-		);
 		const options = optionsFromArguments(Channel.getDefaults(), arguments, [
 			"volume",
 			"pan",
 		]);
+		super(options);
 
 		this._solo = this.input = new Solo({
 			solo: options.solo,

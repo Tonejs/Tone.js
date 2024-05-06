@@ -42,14 +42,12 @@ export class Chebyshev extends Effect<ChebyshevOptions> {
 	constructor(order?: Positive);
 	constructor(options?: Partial<ChebyshevOptions>);
 	constructor() {
-		super(
-			optionsFromArguments(Chebyshev.getDefaults(), arguments, ["order"])
-		);
 		const options = optionsFromArguments(
 			Chebyshev.getDefaults(),
 			arguments,
 			["order"]
 		);
+		super(options);
 
 		this._shaper = new WaveShaper({
 			context: this.context,

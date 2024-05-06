@@ -22,14 +22,12 @@ export class Waveform extends MeterBase<WaveformOptions> {
 	constructor(size?: PowerOfTwo);
 	constructor(options?: Partial<WaveformOptions>);
 	constructor() {
-		super(
-			optionsFromArguments(Waveform.getDefaults(), arguments, ["size"])
-		);
 		const options = optionsFromArguments(
 			Waveform.getDefaults(),
 			arguments,
 			["size"]
 		);
+		super(options);
 
 		this._analyser.type = "waveform";
 		this.size = options.size;
