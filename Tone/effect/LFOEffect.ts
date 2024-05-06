@@ -1,10 +1,10 @@
-import { Effect, EffectOptions } from "../effect/Effect";
-import { Frequency, NormalRange, Time } from "../core/type/Units";
-import { LFO } from "../source/oscillator/LFO";
-import { ToneOscillatorType } from "../source/oscillator/OscillatorInterface";
-import { Signal } from "../signal/Signal";
-import { readOnly } from "../core/util/Interface";
-import { Param } from "../core/context/Param";
+import { Effect, EffectOptions } from "../effect/Effect.js";
+import { Frequency, NormalRange, Time } from "../core/type/Units.js";
+import { LFO } from "../source/oscillator/LFO.js";
+import { ToneOscillatorType } from "../source/oscillator/OscillatorInterface.js";
+import { Signal } from "../signal/Signal.js";
+import { readOnly } from "../core/util/Interface.js";
+import { Param } from "../core/context/Param.js";
 
 export interface LFOEffectOptions extends EffectOptions {
 	frequency: Frequency;
@@ -15,8 +15,9 @@ export interface LFOEffectOptions extends EffectOptions {
 /**
  * Base class for LFO-based effects.
  */
-export abstract class LFOEffect<Options extends LFOEffectOptions> extends Effect<Options> {
-
+export abstract class LFOEffect<
+	Options extends LFOEffectOptions,
+> extends Effect<Options> {
 	readonly name: string = "LFOEffect";
 
 	/**
@@ -25,18 +26,17 @@ export abstract class LFOEffect<Options extends LFOEffectOptions> extends Effect
 	protected _lfo: LFO;
 
 	/**
-	 * The range of the filter modulating between the min and max frequency. 
+	 * The range of the filter modulating between the min and max frequency.
 	 * 0 = no modulation. 1 = full modulation.
 	 */
 	readonly depth: Param<"normalRange">;
 
 	/**
-	 * How fast the filter modulates between min and max. 
+	 * How fast the filter modulates between min and max.
 	 */
 	readonly frequency: Signal<"frequency">;
 
 	constructor(options: LFOEffectOptions) {
-
 		super(options);
 
 		this._lfo = new LFO({
@@ -76,7 +76,8 @@ export abstract class LFOEffect<Options extends LFOEffectOptions> extends Effect
 	}
 
 	/**
-	 * Sync the filter to the transport. See [[LFO.sync]]
+	 * Sync the filter to the transport.
+	 * @see {@link LFO.sync}
 	 */
 	sync(): this {
 		this._lfo.sync();
@@ -92,7 +93,8 @@ export abstract class LFOEffect<Options extends LFOEffectOptions> extends Effect
 	}
 
 	/**
-	 * The type of the LFO's oscillator: See [[Oscillator.type]]
+	 * The type of the LFO's oscillator.
+	 * @see {@link Oscillator.type}
 	 * @example
 	 * const autoFilter = new Tone.AutoFilter().start().toDestination();
 	 * const noise = new Tone.Noise().start().connect(autoFilter);

@@ -1,8 +1,8 @@
-import { Tone } from "../Tone";
-import { Seconds } from "../type/Units";
-import { optionsFromArguments } from "./Defaults";
-import { assert } from "./Debug";
-import { EQ, GT, GTE, LT } from "./Math";
+import { Tone } from "../Tone.js";
+import { Seconds } from "../type/Units.js";
+import { optionsFromArguments } from "./Defaults.js";
+import { assert } from "./Debug.js";
+import { EQ, GT, GTE, LT } from "./Math.js";
 
 type TimelineSearchParam = "ticks" | "time";
 
@@ -26,9 +26,9 @@ export interface TimelineEvent {
  * along a timeline. All events must have a "time" property.
  * Internally, events are stored in time order for fast
  * retrieval.
+ * @internal
  */
 export class Timeline<GenericEvent extends TimelineEvent> extends Tone {
-
 	readonly name: string = "Timeline";
 
 	/**
@@ -43,8 +43,8 @@ export class Timeline<GenericEvent extends TimelineEvent> extends Tone {
 	protected _timeline: GenericEvent[] = [];
 
 	/**
-	 * If the time value must always be greater than or equal to the last 
-	 * element on the list. 
+	 * If the time value must always be greater than or equal to the last
+	 * element on the list.
 	 */
 	increasing: boolean;
 
@@ -55,7 +55,11 @@ export class Timeline<GenericEvent extends TimelineEvent> extends Tone {
 	constructor(options?: Partial<TimelineOptions>);
 	constructor() {
 		super();
-		const options = optionsFromArguments(Timeline.getDefaults(), arguments, ["memory"]);
+		const options = optionsFromArguments(
+			Timeline.getDefaults(),
+			arguments,
+			["memory"]
+		);
 
 		this.memory = options.memory;
 		this.increasing = options.increasing;
@@ -81,11 +85,17 @@ export class Timeline<GenericEvent extends TimelineEvent> extends Tone {
 	 */
 	add(event: GenericEvent): this {
 		// the event needs to have a time attribute
-		assert(Reflect.has(event, "time"), "Timeline: events must have a time attribute");
+		assert(
+			Reflect.has(event, "time"),
+			"Timeline: events must have a time attribute"
+		);
 		event.time = event.time.valueOf();
 		if (this.increasing && this.length) {
 			const lastValue = this._timeline[this.length - 1] as GenericEvent;
-			assert(GTE(event.time, lastValue.time), "The time must be greater than or equal to the last scheduled time");
+			assert(
+				GTE(event.time, lastValue.time),
+				"The time must be greater than or equal to the last scheduled time"
+			);
 			this._timeline.push(event);
 		} else {
 			const index = this._search(event.time);
@@ -116,7 +126,10 @@ export class Timeline<GenericEvent extends TimelineEvent> extends Tone {
 	 * Get the nearest event whose time is less than or equal to the given time.
 	 * @param  time  The time to query.
 	 */
-	get(time: number, param: TimelineSearchParam = "time"): GenericEvent | null {
+	get(
+		time: number,
+		param: TimelineSearchParam = "time"
+	): GenericEvent | null {
 		const index = this._search(time, param);
 		if (index !== -1) {
 			return this._timeline[index];
@@ -144,7 +157,10 @@ export class Timeline<GenericEvent extends TimelineEvent> extends Tone {
 	 * Get the event which is scheduled after the given time.
 	 * @param  time  The time to query.
 	 */
-	getAfter(time: number, param: TimelineSearchParam = "time"): GenericEvent | null {
+	getAfter(
+		time: number,
+		param: TimelineSearchParam = "time"
+	): GenericEvent | null {
 		const index = this._search(time, param);
 		if (index + 1 < this._timeline.length) {
 			return this._timeline[index + 1];
@@ -236,7 +252,10 @@ export class Timeline<GenericEvent extends TimelineEvent> extends Tone {
 	 * If a time is searched before the first index in the timeline, -1 is returned.
 	 * If the time is after the end, the index of the last item is returned.
 	 */
-	protected _search(time: number, param: TimelineSearchParam = "time"): number {
+	protected _search(
+		time: number,
+		param: TimelineSearchParam = "time"
+	): number {
 		if (this._timeline.length === 0) {
 			return -1;
 		}
@@ -281,7 +300,8 @@ export class Timeline<GenericEvent extends TimelineEvent> extends Tone {
 	 */
 	private _iterate(
 		callback: (event: GenericEvent) => void,
-		lowerBound = 0, upperBound = this._timeline.length - 1,
+		lowerBound = 0,
+		upperBound = this._timeline.length - 1
 	): void {
 		this._timeline.slice(lowerBound, upperBound + 1).forEach(callback);
 	}
@@ -300,7 +320,10 @@ export class Timeline<GenericEvent extends TimelineEvent> extends Tone {
 	 * @param  time The time to check if items are before
 	 * @param  callback The callback to invoke with every item
 	 */
-	forEachBefore(time: Seconds, callback: (event: GenericEvent) => void): this {
+	forEachBefore(
+		time: Seconds,
+		callback: (event: GenericEvent) => void
+	): this {
 		// iterate over the items in reverse so that removing an item doesn't break things
 		const upperBound = this._search(time);
 		if (upperBound !== -1) {
@@ -329,7 +352,11 @@ export class Timeline<GenericEvent extends TimelineEvent> extends Tone {
 	 * @param  endTime The end of the test interval.
 	 * @param  callback The callback to invoke with every item
 	 */
-	forEachBetween(startTime: number, endTime: number, callback: (event: GenericEvent) => void): this {
+	forEachBetween(
+		startTime: number,
+		endTime: number,
+		callback: (event: GenericEvent) => void
+	): this {
 		let lowerBound = this._search(startTime);
 		let upperBound = this._search(endTime);
 		if (lowerBound !== -1 && upperBound !== -1) {
@@ -381,9 +408,13 @@ export class Timeline<GenericEvent extends TimelineEvent> extends Tone {
 					break;
 				}
 			}
-			this._iterate(event => {
-				callback(event);
-			}, lowerBound, upperBound);
+			this._iterate(
+				(event) => {
+					callback(event);
+				},
+				lowerBound,
+				upperBound
+			);
 		}
 		return this;
 	}

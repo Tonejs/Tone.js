@@ -1,12 +1,11 @@
-import * as Tone from "./index";
+import * as Tone from "./index.js";
 import { expect } from "chai";
-import { Destination } from "./core/context/Destination";
-import { Context } from "./core/context/Context";
-import { Transport } from "./core/clock/Transport";
-import { Draw } from "./core/util/Draw";
+import { DestinationClass } from "./core/context/Destination.js";
+import { Context } from "./core/context/Context.js";
+import { TransportClass } from "./core/clock/Transport.js";
+import { DrawClass } from "./core/util/Draw.js";
 
 describe("Tone", () => {
-	
 	it("has 'now' and 'immediate' methods", () => {
 		expect(Tone.now).to.be.a("function");
 		expect(Tone.now()).to.be.a("number");
@@ -15,16 +14,16 @@ describe("Tone", () => {
 	});
 
 	it("exports the global singletons", () => {
-		expect(Tone.Destination).to.be.an.instanceOf(Destination);
-		expect(Tone.Draw).to.be.an.instanceOf(Draw);
-		expect(Tone.Transport).to.be.an.instanceOf(Transport);
+		expect(Tone.Destination).to.be.an.instanceOf(DestinationClass);
+		expect(Tone.Draw).to.be.an.instanceOf(DrawClass);
+		expect(Tone.Transport).to.be.an.instanceOf(TransportClass);
 		expect(Tone.context).to.be.an.instanceOf(Context);
 	});
 
 	it("exports the global singleton getters", () => {
-		expect(Tone.getDestination()).to.be.an.instanceOf(Destination);
-		expect(Tone.getDraw()).to.be.an.instanceOf(Draw);
-		expect(Tone.getTransport()).to.be.an.instanceOf(Transport);
+		expect(Tone.getDestination()).to.be.an.instanceOf(DestinationClass);
+		expect(Tone.getDraw()).to.be.an.instanceOf(DrawClass);
+		expect(Tone.getTransport()).to.be.an.instanceOf(TransportClass);
 	});
 
 	it("can start the global context", () => {
@@ -43,7 +42,7 @@ describe("Tone", () => {
 		await ctx.close();
 		Tone.setContext(origContext);
 	});
-	
+
 	it("can set the global context from a raw offline context", async () => {
 		const ctx = new OfflineAudioContext(2, 44100, 44100);
 		const origContext = Tone.getContext();

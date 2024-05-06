@@ -1,12 +1,11 @@
 import { expect } from "chai";
-import { BasicTests } from "test/helper/Basic";
-import { Offline } from "test/helper/Offline";
-import { OutputAudio } from "test/helper/OutputAudio";
-import { Signal } from "Tone/signal/Signal";
-import { LFO, LFOOptions } from "./LFO";
+import { BasicTests } from "../../../test/helper/Basic.js";
+import { Offline } from "../../../test/helper/Offline.js";
+import { OutputAudio } from "../../../test/helper/OutputAudio.js";
+import { Signal } from "../../signal/Signal.js";
+import { LFO, LFOOptions } from "./LFO.js";
 
 describe("LFO", () => {
-
 	BasicTests(LFO);
 
 	context("API", () => {
@@ -20,7 +19,6 @@ describe("LFO", () => {
 	});
 
 	context("Low Oscillations", () => {
-
 		it("can be started and stopped", () => {
 			const lfo = new LFO();
 			lfo.start();
@@ -198,7 +196,7 @@ describe("LFO", () => {
 		});
 
 		it("can adjust the amplitude", () => {
-			return Offline(({ transport }) => {
+			return Offline(() => {
 				const lfo = new LFO(10, -10, 10);
 				lfo.amplitude.value = 0.5;
 				lfo.toDestination();
@@ -210,7 +208,7 @@ describe("LFO", () => {
 		});
 
 		it("can adjust the amplitude not centered at 0", () => {
-			return Offline(({ transport }) => {
+			return Offline(() => {
 				const lfo = new LFO(10, 400, 4000);
 				lfo.amplitude.value = 0.5;
 				lfo.toDestination();
@@ -224,7 +222,7 @@ describe("LFO", () => {
 		it("can pass in partials to the constructor", () => {
 			const lfo = new LFO({
 				type: "custom",
-				partials: [0, 2, 3]
+				partials: [0, 2, 3],
 			});
 			expect(lfo.partials).to.deep.equal([0, 2, 3]);
 			lfo.partials = [1, 2, 3];

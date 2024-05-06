@@ -1,6 +1,6 @@
-import { Seconds } from "../type/Units";
-import { Timeline, TimelineEvent } from "./Timeline";
-import { assertRange } from "./Debug";
+import { Seconds } from "../type/Units.js";
+import { Timeline, TimelineEvent } from "./Timeline.js";
+import { assertRange } from "./Debug.js";
 
 export type BasicPlaybackState = "started" | "stopped";
 export type PlaybackState = BasicPlaybackState | "paused";
@@ -12,9 +12,11 @@ export interface StateTimelineEvent extends TimelineEvent {
 /**
  * A Timeline State. Provides the methods: `setStateAtTime("state", time)` and `getValueAtTime(time)`
  * @param initial The initial state of the StateTimeline.  Defaults to `undefined`
+ * @internal
  */
-export class StateTimeline<AdditionalOptions extends Record<string, any> = Record<string, any>> extends Timeline<StateTimelineEvent & AdditionalOptions> {
-
+export class StateTimeline<
+	AdditionalOptions extends Record<string, any> = Record<string, any>,
+> extends Timeline<StateTimelineEvent & AdditionalOptions> {
 	readonly name: string = "StateTimeline";
 
 	/**
@@ -49,12 +51,18 @@ export class StateTimeline<AdditionalOptions extends Record<string, any> = Recor
 	 * @param  time  The time to query.
 	 * @param options Any additional options that are needed in the timeline.
 	 */
-	setStateAtTime(state: PlaybackState, time: Seconds, options?: AdditionalOptions): this {
+	setStateAtTime(
+		state: PlaybackState,
+		time: Seconds,
+		options?: AdditionalOptions
+	): this {
 		assertRange(time, 0);
-		this.add(Object.assign({}, options, {
-			state,
-			time,
-		}));
+		this.add(
+			Object.assign({}, options, {
+				state,
+				time,
+			})
+		);
 		return this;
 	}
 
@@ -64,7 +72,10 @@ export class StateTimeline<AdditionalOptions extends Record<string, any> = Recor
 	 * @param  time  When to check before
 	 * @return  The event with the given state before the time
 	 */
-	getLastState(state: PlaybackState, time: number): StateTimelineEvent & AdditionalOptions | undefined {
+	getLastState(
+		state: PlaybackState,
+		time: number
+	): (StateTimelineEvent & AdditionalOptions) | undefined {
 		// time = this.toSeconds(time);
 		const index = this._search(time);
 		for (let i = index; i >= 0; i--) {
@@ -81,7 +92,10 @@ export class StateTimeline<AdditionalOptions extends Record<string, any> = Recor
 	 * @param  time  When to check from
 	 * @return  The event with the given state after the time
 	 */
-	getNextState(state: PlaybackState, time: number): StateTimelineEvent & AdditionalOptions | undefined {
+	getNextState(
+		state: PlaybackState,
+		time: number
+	): (StateTimelineEvent & AdditionalOptions) | undefined {
 		// time = this.toSeconds(time);
 		const index = this._search(time);
 		if (index !== -1) {

@@ -1,22 +1,21 @@
-import { Ticker, TickerClockSource } from "../clock/Ticker";
-import { Seconds } from "../type/Units";
-import { isAudioContext } from "../util/AdvancedTypeCheck";
-import { optionsFromArguments } from "../util/Defaults";
-import { Timeline } from "../util/Timeline";
-import { isDefined } from "../util/TypeCheck";
+import { Ticker, TickerClockSource } from "../clock/Ticker.js";
+import { Seconds } from "../type/Units.js";
+import { isAudioContext } from "../util/AdvancedTypeCheck.js";
+import { optionsFromArguments } from "../util/Defaults.js";
+import { Timeline } from "../util/Timeline.js";
+import { isDefined } from "../util/TypeCheck.js";
 import {
 	AnyAudioContext,
 	createAudioContext,
 	createAudioWorkletNode,
-} from "./AudioContext";
-import { closeContext, initializeContext } from "./ContextInitialization";
-import { BaseContext, ContextLatencyHint } from "./BaseContext";
-import { assert } from "../util/Debug";
-
-type Transport = import("../clock/Transport").Transport;
-type Destination = import("./Destination").Destination;
-type Listener = import("./Listener").Listener;
-type Draw = import("../util/Draw").Draw;
+} from "./AudioContext.js";
+import { closeContext, initializeContext } from "./ContextInitialization.js";
+import { BaseContext, ContextLatencyHint } from "./BaseContext.js";
+import { assert } from "../util/Debug.js";
+import type { DrawClass as Draw } from "../util/Draw.js";
+import type { DestinationClass as Destination } from "./Destination.js";
+import type { TransportClass as Transport } from "../clock/Transport.js";
+import type { ListenerClass as Listener } from "./Listener.js";
 
 export interface ContextOptions {
 	clockSource: TickerClockSource;
@@ -135,9 +134,13 @@ export class Context extends BaseContext {
 		this._context.onstatechange = () => {
 			this.emit("statechange", this.state);
 		};
-		
+
 		// if no custom updateInterval provided, updateInterval will be derived by lookAhead setter
-		this[arguments[0]?.hasOwnProperty("updateInterval") ? "_lookAhead" : "lookAhead"] = options.lookAhead;
+		this[
+			arguments[0]?.hasOwnProperty("updateInterval")
+				? "_lookAhead"
+				: "lookAhead"
+		] = options.lookAhead;
 	}
 
 	static getDefaults(): ContextOptions {
@@ -349,7 +352,7 @@ export class Context extends BaseContext {
 
 	/**
 	 * Create an audio worklet node from a name and options. The module
-	 * must first be loaded using [[addAudioWorkletModule]].
+	 * must first be loaded using {@link addAudioWorkletModule}.
 	 */
 	createAudioWorkletNode(
 		name: string,
@@ -377,7 +380,7 @@ export class Context extends BaseContext {
 	 * Returns a promise which resolves when all of the worklets have been loaded on this context
 	 */
 	protected async workletsAreReady(): Promise<void> {
-		await this._workletPromise ? this._workletPromise : Promise.resolve();
+		(await this._workletPromise) ? this._workletPromise : Promise.resolve();
 	}
 
 	//---------------------------
@@ -413,7 +416,7 @@ export class Context extends BaseContext {
 	 * The amount of time into the future events are scheduled. Giving Web Audio
 	 * a short amount of time into the future to schedule events can reduce clicks and
 	 * improve performance. This value can be set to 0 to get the lowest latency.
-	 * Adjusting this value also affects the [[updateInterval]].
+	 * Adjusting this value also affects the {@link updateInterval}.
 	 */
 	get lookAhead(): Seconds {
 		return this._lookAhead;
@@ -421,8 +424,8 @@ export class Context extends BaseContext {
 	set lookAhead(time: Seconds) {
 		this._lookAhead = time;
 		// if lookAhead is 0, default to .01 updateInterval
-		this.updateInterval = time ? (time / 2) : .01;
-	}	
+		this.updateInterval = time ? time / 2 : 0.01;
+	}
 	private _lookAhead!: Seconds;
 
 	/**
@@ -452,7 +455,7 @@ export class Context extends BaseContext {
 	}
 
 	/**
-	 * The current audio context time plus a short [[lookAhead]].
+	 * The current audio context time plus a short {@link lookAhead}.
 	 * @example
 	 * setInterval(() => {
 	 * 	console.log("now", Tone.now());
@@ -463,11 +466,11 @@ export class Context extends BaseContext {
 	}
 
 	/**
-	 * The current audio context time without the [[lookAhead]].
-	 * In most cases it is better to use [[now]] instead of [[immediate]] since
-	 * with [[now]] the [[lookAhead]] is applied equally to _all_ components including internal components,
-	 * to making sure that everything is scheduled in sync. Mixing [[now]] and [[immediate]]
-	 * can cause some timing issues. If no lookAhead is desired, you can set the [[lookAhead]] to `0`.
+	 * The current audio context time without the {@link lookAhead}.
+	 * In most cases it is better to use {@link now} instead of {@link immediate} since
+	 * with {@link now} the {@link lookAhead} is applied equally to _all_ components including internal components,
+	 * to making sure that everything is scheduled in sync. Mixing {@link now} and {@link immediate}
+	 * can cause some timing issues. If no lookAhead is desired, you can set the {@link lookAhead} to `0`.
 	 */
 	immediate(): Seconds {
 		return this._context.currentTime;
@@ -475,7 +478,8 @@ export class Context extends BaseContext {
 
 	/**
 	 * Starts the audio context from a suspended state. This is required
-	 * to initially start the AudioContext. See [[Tone.start]]
+	 * to initially start the AudioContext.
+	 * @see {@link start}
 	 */
 	resume(): Promise<void> {
 		if (isAudioContext(this._context)) {
@@ -490,7 +494,11 @@ export class Context extends BaseContext {
 	 * any AudioNodes created from the context will be silent.
 	 */
 	async close(): Promise<void> {
-		if (isAudioContext(this._context) && (this.state !== "closed") && !this._closeStarted) {
+		if (
+			isAudioContext(this._context) &&
+			this.state !== "closed" &&
+			!this._closeStarted
+		) {
 			this._closeStarted = true;
 			await this._context.close();
 		}
@@ -593,7 +601,7 @@ export class Context extends BaseContext {
 	}
 
 	/**
-	 * Clear the function scheduled by [[setInterval]]
+	 * Clear the function scheduled by {@link setInterval}
 	 */
 	clearInterval(id: number): this {
 		return this.clearTimeout(id);

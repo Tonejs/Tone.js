@@ -1,8 +1,8 @@
-import { isAudioNode, isAudioParam } from "../util/AdvancedTypeCheck";
-import { isDefined } from "../util/TypeCheck";
-import { Param } from "./Param";
-import { ToneWithContext, ToneWithContextOptions } from "./ToneWithContext";
-import { assert, warn } from "../util/Debug";
+import { isAudioNode, isAudioParam } from "../util/AdvancedTypeCheck.js";
+import { isDefined } from "../util/TypeCheck.js";
+import { Param } from "./Param.js";
+import { ToneWithContext, ToneWithContextOptions } from "./ToneWithContext.js";
+import { assert, warn } from "../util/Debug.js";
 
 export type InputNode = ToneAudioNode | AudioNode | Param<any> | AudioParam;
 export type OutputNode = ToneAudioNode | AudioNode;
@@ -20,10 +20,11 @@ export type ToneAudioNodeOptions = ToneWithContextOptions;
 
 /**
  * ToneAudioNode is the base class for classes which process audio.
+ * @category Core
  */
-export abstract class ToneAudioNode<Options extends ToneAudioNodeOptions = ToneAudioNodeOptions>
-	extends ToneWithContext<Options> {
-
+export abstract class ToneAudioNode<
+	Options extends ToneAudioNodeOptions = ToneAudioNodeOptions,
+> extends ToneWithContext<Options> {
 	/**
 	 * The name of the class
 	 */
@@ -87,7 +88,10 @@ export abstract class ToneAudioNode<Options extends ToneAudioNodeOptions = ToneA
 	 * Used to decide which nodes to get/set properties on
 	 */
 	private _isAudioNode(node: any): node is AudioNode | ToneAudioNode {
-		return isDefined(node) && (node instanceof ToneAudioNode || isAudioNode(node));
+		return (
+			isDefined(node) &&
+			(node instanceof ToneAudioNode || isAudioNode(node))
+		);
 	}
 
 	/**
@@ -114,7 +118,7 @@ export abstract class ToneAudioNode<Options extends ToneAudioNodeOptions = ToneA
 	 */
 	private _setChannelProperties(options: ChannelProperties): void {
 		const nodeList = this._getInternalNodes();
-		nodeList.forEach(node => {
+		nodeList.forEach((node) => {
 			node.channelCount = options.channelCount;
 			node.channelCountMode = options.channelCountMode;
 			node.channelInterpretation = options.channelInterpretation;
@@ -127,7 +131,10 @@ export abstract class ToneAudioNode<Options extends ToneAudioNodeOptions = ToneA
 	 */
 	private _getChannelProperties(): ChannelProperties {
 		const nodeList = this._getInternalNodes();
-		assert(nodeList.length > 0, "ToneAudioNode does not have any internal nodes");
+		assert(
+			nodeList.length > 0,
+			"ToneAudioNode does not have any internal nodes"
+		);
 		// use the first node to get properties
 		// they should all be the same
 		const node = nodeList[0];
@@ -180,7 +187,9 @@ export abstract class ToneAudioNode<Options extends ToneAudioNodeOptions = ToneA
 	set channelInterpretation(channelInterpretation) {
 		const props = this._getChannelProperties();
 		// merge it with the other properties
-		this._setChannelProperties(Object.assign(props, { channelInterpretation }));
+		this._setChannelProperties(
+			Object.assign(props, { channelInterpretation })
+		);
 	}
 
 	//-------------------------------------
@@ -211,7 +220,7 @@ export abstract class ToneAudioNode<Options extends ToneAudioNodeOptions = ToneA
 
 	/**
 	 * Connect the output to the context's destination node.
-	 * See [[toDestination]]
+	 * @see {@link toDestination}
 	 * @deprecated
 	 */
 	toMaster(): this {
@@ -253,7 +262,7 @@ export abstract class ToneAudioNode<Options extends ToneAudioNodeOptions = ToneA
 	 * player.fan(pitchShift, filter);
 	 */
 	fan(...nodes: InputNode[]): this {
-		nodes.forEach(node => this.connect(node));
+		nodes.forEach((node) => this.connect(node));
 		return this;
 	}
 
@@ -309,18 +318,28 @@ export function connectSeries(...nodes: InputNode[]): void {
  * @param outputNumber The output channel of the srcNode
  * @param inputNumber The input channel of the dstNode
  */
-export function connect(srcNode: OutputNode, dstNode: InputNode, outputNumber = 0, inputNumber = 0): void {
-
+export function connect(
+	srcNode: OutputNode,
+	dstNode: InputNode,
+	outputNumber = 0,
+	inputNumber = 0
+): void {
 	assert(isDefined(srcNode), "Cannot connect from undefined node");
 	assert(isDefined(dstNode), "Cannot connect to undefined node");
 
 	if (dstNode instanceof ToneAudioNode || isAudioNode(dstNode)) {
-		assert(dstNode.numberOfInputs > 0, "Cannot connect to node with no inputs");
+		assert(
+			dstNode.numberOfInputs > 0,
+			"Cannot connect to node with no inputs"
+		);
 	}
-	assert(srcNode.numberOfOutputs > 0, "Cannot connect from node with no outputs");
+	assert(
+		srcNode.numberOfOutputs > 0,
+		"Cannot connect from node with no outputs"
+	);
 
 	// resolve the input of the dstNode
-	while ((dstNode instanceof ToneAudioNode || dstNode instanceof Param)) {
+	while (dstNode instanceof ToneAudioNode || dstNode instanceof Param) {
 		if (isDefined(dstNode.input)) {
 			dstNode = dstNode.input;
 		}
@@ -351,9 +370,8 @@ export function disconnect(
 	srcNode: OutputNode,
 	dstNode?: InputNode,
 	outputNumber = 0,
-	inputNumber = 0,
+	inputNumber = 0
 ): void {
-
 	// resolve the destination node
 	if (isDefined(dstNode)) {
 		while (dstNode instanceof ToneAudioNode) {
@@ -362,7 +380,7 @@ export function disconnect(
 	}
 
 	// resolve the src node
-	while (!(isAudioNode(srcNode))) {
+	while (!isAudioNode(srcNode)) {
 		if (isDefined(srcNode.output)) {
 			srcNode = srcNode.output;
 		}
@@ -385,12 +403,12 @@ export function disconnect(
  * const player1 = new Tone.Player("https://tonejs.github.io/audio/drum-samples/conga-rhythm.mp3");
  * const filter = new Tone.Filter("G5").toDestination();
  * // connect nodes to a common destination
- * fanIn(player, player1, filter);
+ * Tone.fanIn(player, player1, filter);
  */
 export function fanIn(...nodes: OutputNode[]): void {
 	const dstNode = nodes.pop();
 
 	if (isDefined(dstNode)) {
-		nodes.forEach(node => connect(node, dstNode));
+		nodes.forEach((node) => connect(node, dstNode));
 	}
 }

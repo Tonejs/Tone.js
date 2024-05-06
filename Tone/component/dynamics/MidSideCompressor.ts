@@ -1,9 +1,14 @@
-import { InputNode, OutputNode, ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
-import { Compressor, CompressorOptions } from "./Compressor";
-import { optionsFromArguments } from "../../core/util/Defaults";
-import { MidSideSplit } from "../channel/MidSideSplit";
-import { MidSideMerge } from "../channel/MidSideMerge";
-import { readOnly, RecursivePartial } from "../../core/util/Interface";
+import {
+	InputNode,
+	OutputNode,
+	ToneAudioNode,
+	ToneAudioNodeOptions,
+} from "../../core/context/ToneAudioNode.js";
+import { Compressor, CompressorOptions } from "./Compressor.js";
+import { optionsFromArguments } from "../../core/util/Defaults.js";
+import { MidSideSplit } from "../channel/MidSideSplit.js";
+import { MidSideMerge } from "../channel/MidSideMerge.js";
+import { readOnly, RecursivePartial } from "../../core/util/Interface.js";
 
 export interface MidSideCompressorOptions extends ToneAudioNodeOptions {
 	mid: Omit<CompressorOptions, keyof ToneAudioNodeOptions>;
@@ -11,12 +16,12 @@ export interface MidSideCompressorOptions extends ToneAudioNodeOptions {
 }
 
 /**
- * MidSideCompressor applies two different compressors to the [[mid]]
- * and [[side]] signal components of the input. See [[MidSideSplit]] and [[MidSideMerge]].
+ * MidSideCompressor applies two different compressors to the {@link mid}
+ * and {@link side} signal components of the input.
+ * @see {@link MidSideSplit} and {@link MidSideMerge}.
  * @category Component
  */
 export class MidSideCompressor extends ToneAudioNode<MidSideCompressorOptions> {
-
 	readonly name: string = "MidSideCompressor";
 
 	readonly input: InputNode;
@@ -44,13 +49,24 @@ export class MidSideCompressor extends ToneAudioNode<MidSideCompressorOptions> {
 
 	constructor(options?: RecursivePartial<MidSideCompressorOptions>);
 	constructor() {
-		super(Object.assign(optionsFromArguments(MidSideCompressor.getDefaults(), arguments)));
-		const options = optionsFromArguments(MidSideCompressor.getDefaults(), arguments);
+		const options = optionsFromArguments(
+			MidSideCompressor.getDefaults(),
+			arguments
+		);
+		super(options);
 
-		this._midSideSplit = this.input = new MidSideSplit({ context: this.context });
-		this._midSideMerge = this.output = new MidSideMerge({ context: this.context });
-		this.mid = new Compressor(Object.assign(options.mid, { context: this.context }));
-		this.side = new Compressor(Object.assign(options.side, { context: this.context }));
+		this._midSideSplit = this.input = new MidSideSplit({
+			context: this.context,
+		});
+		this._midSideMerge = this.output = new MidSideMerge({
+			context: this.context,
+		});
+		this.mid = new Compressor(
+			Object.assign(options.mid, { context: this.context })
+		);
+		this.side = new Compressor(
+			Object.assign(options.side, { context: this.context })
+		);
 
 		this._midSideSplit.mid.chain(this.mid, this._midSideMerge.mid);
 		this._midSideSplit.side.chain(this.side, this._midSideMerge.side);
@@ -64,15 +80,15 @@ export class MidSideCompressor extends ToneAudioNode<MidSideCompressorOptions> {
 				threshold: -24,
 				release: 0.03,
 				attack: 0.02,
-				knee: 16
+				knee: 16,
 			},
 			side: {
 				ratio: 6,
 				threshold: -30,
 				release: 0.25,
 				attack: 0.03,
-				knee: 10
-			}
+				knee: 10,
+			},
 		});
 	}
 

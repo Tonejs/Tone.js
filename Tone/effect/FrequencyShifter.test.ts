@@ -1,27 +1,29 @@
 import { expect } from "chai";
-import { BasicTests } from "test/helper/Basic";
-import { CompareToFile } from "test/helper/CompareToFile";
-import { EffectTests } from "test/helper/EffectTests";
-import { Offline } from "test/helper/Offline";
-import { Oscillator } from "Tone/source/oscillator/Oscillator";
-import { FrequencyShifter } from "./FrequencyShifter";
+import { BasicTests } from "../../test/helper/Basic.js";
+import { CompareToFile } from "../../test/helper/CompareToFile.js";
+import { EffectTests } from "../../test/helper/EffectTests.js";
+import { Offline } from "../../test/helper/Offline.js";
+import { Oscillator } from "../source/oscillator/Oscillator.js";
+import { FrequencyShifter } from "./FrequencyShifter.js";
 
 describe("FrequencyShifter", () => {
-
 	BasicTests(FrequencyShifter);
 	EffectTests(FrequencyShifter);
 
 	it("matches a file", () => {
-		return CompareToFile(() => {
-			const shifter = new FrequencyShifter().toDestination();
-			shifter.frequency.value = -60;
-			const osc = new Oscillator().connect(shifter);
-			osc.start(0);
-		}, "frequencyShifter.wav", 0.1);
+		return CompareToFile(
+			() => {
+				const shifter = new FrequencyShifter().toDestination();
+				shifter.frequency.value = -60;
+				const osc = new Oscillator().connect(shifter);
+				osc.start(0);
+			},
+			"frequencyShifter.wav",
+			0.1
+		);
 	});
 
 	context("API", () => {
-
 		it("can pass in options in the constructor", () => {
 			const shifter = new FrequencyShifter({
 				frequency: -20,

@@ -1,9 +1,9 @@
-import { connect } from "../../core/context/ToneAudioNode";
-import { Param } from "../../core/context/Param";
-import { Cents, Frequency, Seconds, Time } from "../../core/type/Units";
-import { optionsFromArguments } from "../../core/util/Defaults";
-import { OneShotSource, OneShotSourceOptions } from "../OneShotSource";
-import { readOnly } from "../../core/util/Interface";
+import { connect } from "../../core/context/ToneAudioNode.js";
+import { Param } from "../../core/context/Param.js";
+import { Cents, Frequency, Seconds, Time } from "../../core/type/Units.js";
+import { optionsFromArguments } from "../../core/util/Defaults.js";
+import { OneShotSource, OneShotSourceOptions } from "../OneShotSource.js";
+import { readOnly } from "../../core/util/Interface.js";
 
 export interface ToneOscillatorNodeOptions extends OneShotSourceOptions {
 	frequency: Frequency;
@@ -14,11 +14,10 @@ export interface ToneOscillatorNodeOptions extends OneShotSourceOptions {
 /**
  * Wrapper around the native fire-and-forget OscillatorNode.
  * Adds the ability to reschedule the stop method.
- * ***[[Oscillator]] is better for most use-cases***
+ * ***{@link Oscillator} is better for most use-cases***
  * @category Source
  */
 export class ToneOscillatorNode extends OneShotSource<ToneOscillatorNodeOptions> {
-
 	readonly name: string = "ToneOscillatorNode";
 
 	/**
@@ -41,15 +40,15 @@ export class ToneOscillatorNode extends OneShotSource<ToneOscillatorNodeOptions>
 	 * @param  frequency   The frequency value
 	 * @param  type  The basic oscillator type
 	 */
-	constructor(
-		frequency: Frequency,
-		type: OscillatorType,
-	);
+	constructor(frequency: Frequency, type: OscillatorType);
 	constructor(options?: Partial<ToneOscillatorNodeOptions>);
 	constructor() {
-
-		super(optionsFromArguments(ToneOscillatorNode.getDefaults(), arguments, ["frequency", "type"]));
-		const options = optionsFromArguments(ToneOscillatorNode.getDefaults(), arguments, ["frequency", "type"]);
+		const options = optionsFromArguments(
+			ToneOscillatorNode.getDefaults(),
+			arguments,
+			["frequency", "type"]
+		);
+		super(options);
 
 		connect(this._oscillator, this._gainNode);
 

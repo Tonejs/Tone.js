@@ -1,6 +1,6 @@
-import { Timeline, TimelineEvent } from "./Timeline";
-import { Tone } from "../Tone";
-import { Seconds } from "../type/Units";
+import { Timeline, TimelineEvent } from "./Timeline.js";
+import { Tone } from "../Tone.js";
+import { Seconds } from "../type/Units.js";
 
 interface TimelineValueEvent<T> extends TimelineEvent {
 	value: T;
@@ -10,13 +10,14 @@ interface TimelineValueEvent<T> extends TimelineEvent {
  * Represents a single value which is gettable and settable in a timed way
  */
 export class TimelineValue<Type> extends Tone {
-
 	readonly name: string = "TimelineValue";
 
 	/**
 	 * The timeline which stores the values
 	 */
-	private _timeline: Timeline<TimelineValueEvent<Type>> = new Timeline({ memory: 10 })
+	private _timeline: Timeline<TimelineValueEvent<Type>> = new Timeline({
+		memory: 10,
+	});
 
 	/**
 	 * Hold the value to return if there is no scheduled values
@@ -27,7 +28,6 @@ export class TimelineValue<Type> extends Tone {
 	 * @param initialValue The value to return if there is no scheduled values
 	 */
 	constructor(initialValue: Type) {
-
 		super();
 		this._initialValue = initialValue;
 	}
@@ -37,11 +37,12 @@ export class TimelineValue<Type> extends Tone {
 	 */
 	set(value: Type, time: Seconds): this {
 		this._timeline.add({
-			value, time
+			value,
+			time,
 		});
 		return this;
 	}
-	
+
 	/**
 	 * Get the value at the given time
 	 */

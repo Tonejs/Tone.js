@@ -1,0 +1,12 @@
+{
+	"name": "tone-webpack-test",
+	"type": "module",
+	"dependencies": {
+		"tone": "file:../../..",
+		"webpack": "^5.91.0",
+		"webpack-cli": "^5.1.4"
+	},
+	"scripts": {
+		"test": "webpack ./test.js --target=web"
+	}
+}

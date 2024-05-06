@@ -1,19 +1,17 @@
 import { expect } from "chai";
-import { BasicTests } from "test/helper/Basic";
-import { CompareToFile } from "test/helper/CompareToFile";
-import { connectFrom, connectTo } from "test/helper/Connect";
-import { Offline } from "test/helper/Offline";
-import { Signal } from "Tone/signal/Signal";
-import { Oscillator } from "Tone/source/oscillator/Oscillator";
-import { AmplitudeEnvelope } from "./AmplitudeEnvelope";
-import { Envelope } from "./Envelope";
+import { BasicTests } from "../../../test/helper/Basic.js";
+import { CompareToFile } from "../../../test/helper/CompareToFile.js";
+import { connectFrom, connectTo } from "../../../test/helper/Connect.js";
+import { Offline } from "../../../test/helper/Offline.js";
+import { Signal } from "../../signal/Signal.js";
+import { Oscillator } from "../../source/oscillator/Oscillator.js";
+import { AmplitudeEnvelope } from "./AmplitudeEnvelope.js";
+import { Envelope } from "./Envelope.js";
 
 describe("AmplitudeEnvelope", () => {
-
 	BasicTests(AmplitudeEnvelope);
 
 	context("Comparisons", () => {
-
 		it("matches a file", () => {
 			return CompareToFile(() => {
 				const ampEnv = new AmplitudeEnvelope({
@@ -29,41 +27,47 @@ describe("AmplitudeEnvelope", () => {
 		});
 
 		it("matches a file with multiple retriggers", () => {
-			return CompareToFile(() => {
-				const ampEnv = new AmplitudeEnvelope({
-					attack: 0.1,
-					decay: 0.2,
-					release: 0.2,
-					sustain: 0.1,
-				}).toDestination();
-				const osc = new Oscillator().start(0).connect(ampEnv);
-				ampEnv.triggerAttack(0);
-				ampEnv.triggerAttack(0.3);
-			}, "ampEnvelope2.wav", 0.004);
+			return CompareToFile(
+				() => {
+					const ampEnv = new AmplitudeEnvelope({
+						attack: 0.1,
+						decay: 0.2,
+						release: 0.2,
+						sustain: 0.1,
+					}).toDestination();
+					const osc = new Oscillator().start(0).connect(ampEnv);
+					ampEnv.triggerAttack(0);
+					ampEnv.triggerAttack(0.3);
+				},
+				"ampEnvelope2.wav",
+				0.004
+			);
 		});
 
 		it("matches a file with ripple attack/release", () => {
-			return CompareToFile(() => {
-				const ampEnv = new AmplitudeEnvelope({
-					attack: 0.5,
-					attackCurve: "ripple",
-					decay: 0.2,
-					release: 0.3,
-					releaseCurve: "ripple",
-					sustain: 0.1,
-				}).toDestination();
-				const osc = new Oscillator().start(0).connect(ampEnv);
-				ampEnv.triggerAttack(0);
-				ampEnv.triggerRelease(0.7);
-				ampEnv.triggerAttack(1);
-				ampEnv.triggerRelease(1.6);
-			}, "ampEnvelope3.wav", 0.002);
+			return CompareToFile(
+				() => {
+					const ampEnv = new AmplitudeEnvelope({
+						attack: 0.5,
+						attackCurve: "ripple",
+						decay: 0.2,
+						release: 0.3,
+						releaseCurve: "ripple",
+						sustain: 0.1,
+					}).toDestination();
+					const osc = new Oscillator().start(0).connect(ampEnv);
+					ampEnv.triggerAttack(0);
+					ampEnv.triggerRelease(0.7);
+					ampEnv.triggerAttack(1);
+					ampEnv.triggerRelease(1.6);
+				},
+				"ampEnvelope3.wav",
+				0.002
+			);
 		});
-
 	});
 
 	context("Envelope", () => {
-
 		it("extends envelope", () => {
 			const ampEnv = new AmplitudeEnvelope();
 			expect(ampEnv).to.be.instanceOf(Envelope);

@@ -1,16 +1,14 @@
-import { BasicTests } from "test/helper/Basic";
-import { connectFrom, connectTo } from "test/helper/Connect";
-import { ConstantOutput } from "test/helper/ConstantOutput";
-import { Zero } from "Tone/signal/Zero";
-import { GainToAudio } from "./GainToAudio";
-import { Signal } from "./Signal";
+import { BasicTests } from "../../test/helper/Basic.js";
+import { connectFrom, connectTo } from "../../test/helper/Connect.js";
+import { ConstantOutput } from "../../test/helper/ConstantOutput.js";
+import { Zero } from "./Zero.js";
+import { GainToAudio } from "./GainToAudio.js";
+import { Signal } from "./Signal.js";
 
 describe("GainToAudio", () => {
-
 	BasicTests(GainToAudio);
 
 	context("Gain To Audio", () => {
-
 		it("outputs 0 for an input value of 0.5", () => {
 			return ConstantOutput(() => {
 				const sig = new Signal(0.5);

@@ -1,30 +1,32 @@
 import { expect } from "chai";
-import { BasicTests } from "test/helper/Basic";
-import { CompareToFile } from "test/helper/CompareToFile";
-import { Offline } from "test/helper/Offline";
-import { OscillatorTests } from "test/helper/OscillatorTests";
-import { OutputAudio } from "test/helper/OutputAudio";
-import { SourceTests } from "test/helper/SourceTests";
-import { Oscillator } from "./Oscillator";
-import { ToneOscillatorType } from "./OscillatorInterface";
+import { BasicTests } from "../../../test/helper/Basic.js";
+import { CompareToFile } from "../../../test/helper/CompareToFile.js";
+import { Offline } from "../../../test/helper/Offline.js";
+import { OscillatorTests } from "../../../test/helper/OscillatorTests.js";
+import { OutputAudio } from "../../../test/helper/OutputAudio.js";
+import { SourceTests } from "../../../test/helper/SourceTests.js";
+import { Oscillator } from "./Oscillator.js";
+import { ToneOscillatorType } from "./OscillatorInterface.js";
 
 describe("Oscillator", () => {
-
 	// run the common tests
 	BasicTests(Oscillator);
 	SourceTests(Oscillator);
 	OscillatorTests(Oscillator);
 
 	it("matches a file", () => {
-		return CompareToFile(() => {
-			const osc = new Oscillator().toDestination();
-			osc.type = "square";
-			osc.start(0).stop(0.2);
-		}, "oscillator.wav", 0.1);
+		return CompareToFile(
+			() => {
+				const osc = new Oscillator().toDestination();
+				osc.type = "square";
+				osc.start(0).stop(0.2);
+			},
+			"oscillator.wav",
+			0.1
+		);
 	});
 
 	context("Get/Set", () => {
-
 		it("can be set with an options object", () => {
 			const osc = new Oscillator();
 			osc.set({
@@ -92,11 +94,9 @@ describe("Oscillator", () => {
 			}
 			osc.dispose();
 		});
-
 	});
 
 	context("Type", () => {
-
 		it("can get and set the type", () => {
 			const osc = new Oscillator({
 				type: "sawtooth",
@@ -115,7 +115,12 @@ describe("Oscillator", () => {
 
 		it("handles 4 basic types", () => {
 			const osc = new Oscillator();
-			const types: ToneOscillatorType[] = ["triangle", "sawtooth", "sine", "square"];
+			const types: ToneOscillatorType[] = [
+				"triangle",
+				"sawtooth",
+				"sine",
+				"square",
+			];
 			for (const type of types) {
 				osc.type = type;
 				expect(osc.type).to.equal(type);
@@ -161,7 +166,6 @@ describe("Oscillator", () => {
 	});
 
 	context("Partials", () => {
-
 		it("can pass partials in the constructor", () => {
 			const osc = new Oscillator({
 				partials: [1, 0.3, 0.3],
@@ -218,7 +222,6 @@ describe("Oscillator", () => {
 			expect(osc.type).to.equal("sine4");
 			osc.dispose();
 		});
-
 	});
 
 	context("Synchronization", () => {
@@ -274,5 +277,4 @@ describe("Oscillator", () => {
 			osc.dispose();
 		});
 	});
-
 });

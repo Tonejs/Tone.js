@@ -1,10 +1,10 @@
-import { Frequency, NormalRange, Time } from "../core/type/Units";
-import { LowpassCombFilter } from "../component/filter/LowpassCombFilter";
-import { deepMerge } from "../core/util/Defaults";
-import { optionsFromArguments } from "../core/util/Defaults";
-import { RecursivePartial } from "../core/util/Interface";
-import { Noise } from "../source/Noise";
-import { Instrument, InstrumentOptions } from "./Instrument";
+import { Frequency, NormalRange, Time } from "../core/type/Units.js";
+import { LowpassCombFilter } from "../component/filter/LowpassCombFilter.js";
+import { deepMerge } from "../core/util/Defaults.js";
+import { optionsFromArguments } from "../core/util/Defaults.js";
+import { RecursivePartial } from "../core/util/Interface.js";
+import { Noise } from "../source/Noise.js";
+import { Instrument, InstrumentOptions } from "./Instrument.js";
 
 export interface PluckSynthOptions extends InstrumentOptions {
 	attackNoise: number;
@@ -24,7 +24,6 @@ export interface PluckSynthOptions extends InstrumentOptions {
  * @category Instrument
  */
 export class PluckSynth extends Instrument<PluckSynthOptions> {
-
 	readonly name = "PluckSynth";
 
 	/**
@@ -51,15 +50,17 @@ export class PluckSynth extends Instrument<PluckSynthOptions> {
 	 */
 	release: Time;
 
-	constructor(options?: RecursivePartial<PluckSynthOptions>)
+	constructor(options?: RecursivePartial<PluckSynthOptions>);
 	constructor() {
-
-		super(optionsFromArguments(PluckSynth.getDefaults(), arguments));
-		const options = optionsFromArguments(PluckSynth.getDefaults(), arguments);
+		const options = optionsFromArguments(
+			PluckSynth.getDefaults(),
+			arguments
+		);
+		super(options);
 
 		this._noise = new Noise({
 			context: this.context,
-			type: "pink"
+			type: "pink",
 		});
 
 		this.attackNoise = options.attackNoise;
@@ -111,7 +112,7 @@ export class PluckSynth extends Instrument<PluckSynthOptions> {
 	}
 
 	/**
-	 * Ramp down the [[resonance]] to 0 over the duration of the release time.
+	 * Ramp down the {@link resonance} to 0 over the duration of the release time.
 	 */
 	triggerRelease(time?: Time): this {
 		this._lfcf.resonance.linearRampTo(0, this.release, time);

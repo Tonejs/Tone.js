@@ -1,34 +1,40 @@
 import { expect } from "chai";
-import { BasicTests } from "test/helper/Basic";
-import { CompareToFile } from "test/helper/CompareToFile";
-import { InstrumentTest } from "test/helper/InstrumentTests";
-import { MembraneSynth } from "./MembraneSynth";
+import { BasicTests } from "../../test/helper/Basic.js";
+import { CompareToFile } from "../../test/helper/CompareToFile.js";
+import { InstrumentTest } from "../../test/helper/InstrumentTests.js";
+import { MembraneSynth } from "./MembraneSynth.js";
 
 describe("MembraneSynth", () => {
-
 	BasicTests(MembraneSynth);
 	InstrumentTest(MembraneSynth, "C2");
 
 	it("matches a file", () => {
-		return CompareToFile(() => {
-			const synth = new MembraneSynth().toDestination();
-			synth.triggerAttackRelease("F#2", 0.1, 0.05);
-		}, "membraneSynth.wav", 0.5);
+		return CompareToFile(
+			() => {
+				const synth = new MembraneSynth().toDestination();
+				synth.triggerAttackRelease("F#2", 0.1, 0.05);
+			},
+			"membraneSynth.wav",
+			0.5
+		);
 	});
 
 	it("matches another file", () => {
-		return CompareToFile(() => {
-			const synth = new MembraneSynth({
-				envelope: {
-					sustain: 0,
-				},
-			}).toDestination();
-			synth.triggerAttackRelease("C2", 0.1);
-		}, "membraneSynth2.wav", 0.5);
+		return CompareToFile(
+			() => {
+				const synth = new MembraneSynth({
+					envelope: {
+						sustain: 0,
+					},
+				}).toDestination();
+				synth.triggerAttackRelease("C2", 0.1);
+			},
+			"membraneSynth2.wav",
+			0.5
+		);
 	});
 
 	context("API", () => {
-
 		it("can get and set oscillator attributes", () => {
 			const drumSynth = new MembraneSynth();
 			drumSynth.oscillator.type = "triangle";

@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { Timeline } from "./Timeline";
+import { Timeline } from "./Timeline.js";
 
 interface StateTimelineEvent {
 	state: string;
@@ -17,14 +17,12 @@ interface TimelineValueEvent {
 }
 
 describe("Timeline", () => {
-
 	it("can be created and disposed", () => {
 		const sched = new Timeline();
 		sched.dispose();
 	});
 
 	it("accepts events into the timeline", () => {
-
 		const sched = new Timeline<StateTimelineEvent>();
 		sched.add({
 			state: "A",
@@ -384,7 +382,6 @@ describe("Timeline", () => {
 	});
 
 	context("Iterators", () => {
-
 		it("iterates over all items and returns and item", () => {
 			const sched = new Timeline();
 			sched.add({ time: 0 });

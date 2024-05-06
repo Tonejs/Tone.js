@@ -1,10 +1,9 @@
-import { Time, UnitMap, UnitName } from "../type/Units";
+import { Time, UnitMap, UnitName } from "../type/Units.js";
 
 /**
- * Abstract base class for [[Param]] and [[Signal]]
+ * Abstract base class for {@link Param} and {@link Signal}
  */
 export abstract class AbstractParam<TypeName extends UnitName> {
-
 	/**
 	 * Schedules a parameter value change at the given time.
 	 * @param value The value to set the signal.
@@ -37,10 +36,10 @@ export abstract class AbstractParam<TypeName extends UnitName> {
 
 	/**
 	 * Creates a schedule point with the current value at the current time.
-	 * Automation methods like [[linearRampToValueAtTime]] and [[exponentialRampToValueAtTime]]
-	 * require a starting automation value usually set by [[setValueAtTime]]. This method
+	 * Automation methods like {@link linearRampToValueAtTime} and {@link exponentialRampToValueAtTime}
+	 * require a starting automation value usually set by {@link setValueAtTime}. This method
 	 * is useful since it will do a `setValueAtTime` with whatever the currently computed
-	 * value at the given time is. 
+	 * value at the given time is.
 	 * @param time When to add a ramp point.
 	 * @example
 	 * const osc = new Tone.Oscillator().toDestination().start();
@@ -61,7 +60,10 @@ export abstract class AbstractParam<TypeName extends UnitName> {
 	 * 	signal.linearRampToValueAtTime(1, 0.4);
 	 * }, 0.5, 1);
 	 */
-	abstract linearRampToValueAtTime(value: UnitMap[TypeName], time: Time): this;
+	abstract linearRampToValueAtTime(
+		value: UnitMap[TypeName],
+		time: Time
+	): this;
 
 	/**
 	 * Schedules an exponential continuous change in parameter value from
@@ -74,7 +76,10 @@ export abstract class AbstractParam<TypeName extends UnitName> {
 	 * 	signal.exponentialRampToValueAtTime(0, 0.4);
 	 * }, 0.5, 1);
 	 */
-	abstract exponentialRampToValueAtTime(value: UnitMap[TypeName], time: Time): this;
+	abstract exponentialRampToValueAtTime(
+		value: UnitMap[TypeName],
+		time: Time
+	): this;
 
 	/**
 	 * Schedules an exponential continuous change in parameter value from
@@ -96,7 +101,11 @@ export abstract class AbstractParam<TypeName extends UnitName> {
 	 * 	signal.exponentialRampTo(5, 0.3, 0.1);
 	 * }, 0.5, 1);
 	 */
-	abstract exponentialRampTo(value: UnitMap[TypeName], rampTime: Time, startTime?: Time): this;
+	abstract exponentialRampTo(
+		value: UnitMap[TypeName],
+		rampTime: Time,
+		startTime?: Time
+	): this;
 
 	/**
 	 * Schedules an linear continuous change in parameter value from
@@ -120,7 +129,11 @@ export abstract class AbstractParam<TypeName extends UnitName> {
 	 * 	signal.linearRampTo(0, 0.3, 0.1);
 	 * }, 0.5, 1);
 	 */
-	abstract linearRampTo(value: UnitMap[TypeName], rampTime: Time, startTime?: Time): this;
+	abstract linearRampTo(
+		value: UnitMap[TypeName],
+		rampTime: Time,
+		startTime?: Time
+	): this;
 
 	/**
 	 * Start exponentially approaching the target value at the given time. Since it
@@ -137,7 +150,11 @@ export abstract class AbstractParam<TypeName extends UnitName> {
 	 * 	signal.targetRampTo(0, 0.3, 0.1);
 	 * }, 0.5, 1);
 	 */
-	abstract targetRampTo(value: UnitMap[TypeName], rampTime: Time, startTime?: Time): this;
+	abstract targetRampTo(
+		value: UnitMap[TypeName],
+		rampTime: Time,
+		startTime?: Time
+	): this;
 
 	/**
 	 * Start exponentially approaching the target value at the given time. Since it
@@ -152,7 +169,11 @@ export abstract class AbstractParam<TypeName extends UnitName> {
 	 * // exponential approach over 4 seconds starting in 1 second
 	 * osc.frequency.exponentialApproachValueAtTime("C4", "+1", 4);
 	 */
-	abstract exponentialApproachValueAtTime(value: UnitMap[TypeName], time: Time, rampTime: Time): this;
+	abstract exponentialApproachValueAtTime(
+		value: UnitMap[TypeName],
+		time: Time,
+		rampTime: Time
+	): this;
 
 	/**
 	 * Start exponentially approaching the target value at the given time with
@@ -161,7 +182,11 @@ export abstract class AbstractParam<TypeName extends UnitName> {
 	 * @param startTime
 	 * @param timeConstant
 	 */
-	abstract setTargetAtTime(value: UnitMap[TypeName], startTime: Time, timeConstant: number): this;
+	abstract setTargetAtTime(
+		value: UnitMap[TypeName],
+		startTime: Time,
+		timeConstant: number
+	): this;
 
 	/**
 	 * Sets an array of arbitrary parameter values starting at the given time
@@ -177,7 +202,12 @@ export abstract class AbstractParam<TypeName extends UnitName> {
 	 * 	signal.setValueCurveAtTime([1, 0.2, 0.8, 0.1, 0], 0.2, 0.3);
 	 * }, 0.5, 1);
 	 */
-	abstract setValueCurveAtTime(values: UnitMap[TypeName][], startTime: Time, duration: Time, scaling?: number): this;
+	abstract setValueCurveAtTime(
+		values: UnitMap[TypeName][],
+		startTime: Time,
+		duration: Time,
+		scaling?: number
+	): this;
 
 	/**
 	 * Cancels all scheduled parameter changes with times greater than or
@@ -196,7 +226,7 @@ export abstract class AbstractParam<TypeName extends UnitName> {
 	abstract cancelScheduledValues(time: Time): this;
 
 	/**
-	 * This is similar to [[cancelScheduledValues]] except
+	 * This is similar to {@link cancelScheduledValues} except
 	 * it holds the automated value at time until the next automated event.
 	 * @example
 	 * return Tone.Offline(() => {
@@ -224,7 +254,11 @@ export abstract class AbstractParam<TypeName extends UnitName> {
 	 * // schedule it to ramp starting at a specific time
 	 * osc.frequency.rampTo("A2", 10, "+2");
 	 */
-	abstract rampTo(value: UnitMap[TypeName], rampTime: Time, startTime?: Time): this;
+	abstract rampTo(
+		value: UnitMap[TypeName],
+		rampTime: Time,
+		startTime?: Time
+	): this;
 
 	/**
 	 * The current value of the parameter. Setting this value

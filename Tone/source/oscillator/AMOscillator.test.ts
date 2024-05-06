@@ -1,26 +1,28 @@
 import { expect } from "chai";
-import { BasicTests } from "test/helper/Basic";
-import { CompareToFile } from "test/helper/CompareToFile";
-import { OscillatorTests } from "test/helper/OscillatorTests";
-import { SourceTests } from "test/helper/SourceTests";
-import { AMOscillator } from "./AMOscillator";
+import { BasicTests } from "../../../test/helper/Basic.js";
+import { CompareToFile } from "../../../test/helper/CompareToFile.js";
+import { OscillatorTests } from "../../../test/helper/OscillatorTests.js";
+import { SourceTests } from "../../../test/helper/SourceTests.js";
+import { AMOscillator } from "./AMOscillator.js";
 
 describe("AMOscillator", () => {
-
 	// run the common tests
 	BasicTests(AMOscillator);
 	SourceTests(AMOscillator);
 	OscillatorTests(AMOscillator);
 
 	it("matches a file", () => {
-		return CompareToFile(() => {
-			const osc = new AMOscillator().toDestination();
-			osc.start(0.1).stop(0.4);
-		}, "amOscillator.wav", 0.03);
+		return CompareToFile(
+			() => {
+				const osc = new AMOscillator().toDestination();
+				osc.start(0.1).stop(0.4);
+			},
+			"amOscillator.wav",
+			0.03
+		);
 	});
 
 	context("Amplitude Modulation", () => {
-
 		it("can pass in parameters in the constructor", () => {
 			const amOsc = new AMOscillator({
 				harmonicity: 3,

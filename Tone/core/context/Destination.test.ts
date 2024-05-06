@@ -1,19 +1,18 @@
 import { expect } from "chai";
-import { warns } from "test/helper/Basic";
-import { Offline } from "test/helper/Offline";
-import { PassAudio } from "test/helper/PassAudio";
-import { Oscillator } from "Tone/source/oscillator/Oscillator";
-import { getContext } from "../Global";
-import { Destination } from "./Destination";
+import { warns } from "../../../test/helper/Basic.js";
+import { Offline } from "../../../test/helper/Offline.js";
+import { PassAudio } from "../../../test/helper/PassAudio.js";
+import { Oscillator } from "../../source/oscillator/Oscillator.js";
+import { getContext } from "../Global.js";
+import { DestinationClass } from "./Destination.js";
 
 describe("Destination", () => {
-
 	it("creates itself on the context", () => {
-		expect(getContext().destination).instanceOf(Destination);
+		expect(getContext().destination).instanceOf(DestinationClass);
 	});
 
 	it("can be muted and unmuted", () => {
-		return Offline(context => {
+		return Offline((context) => {
 			context.destination.mute = false;
 			expect(context.destination.mute).to.equal(false);
 			context.destination.mute = true;
@@ -22,7 +21,7 @@ describe("Destination", () => {
 	});
 
 	it("passes audio through", () => {
-		return PassAudio(input => {
+		return PassAudio((input) => {
 			input.toDestination();
 		});
 	});
@@ -31,7 +30,7 @@ describe("Destination", () => {
 		return Offline((context) => {
 			new Oscillator().toDestination().start(0);
 			context.destination.mute = true;
-		}).then(buffer => {
+		}).then((buffer) => {
 			expect(buffer.isSilent()).to.equal(true);
 		});
 	});
@@ -51,23 +50,35 @@ describe("Destination", () => {
 	});
 
 	it("can get the maxChannelCount", () => {
-		return Offline((context) => {
-			expect(context.destination.maxChannelCount).to.equal(4);
-		}, 0.1, 4);
+		return Offline(
+			(context) => {
+				expect(context.destination.maxChannelCount).to.equal(4);
+			},
+			0.1,
+			4
+		);
 	});
 
 	it("can set the audio channel configuration", () => {
-		return Offline((context) => {
-			expect(context.destination.channelCount).to.equal(4);
-			context.destination.channelCountMode = "explicit";
-			context.destination.channelInterpretation = "discrete";
-			expect(context.destination.channelCountMode).to.equal("explicit");
-			expect(context.destination.channelInterpretation).to.equal("discrete");
-		}, 0.1, 4);
+		return Offline(
+			(context) => {
+				expect(context.destination.channelCount).to.equal(4);
+				context.destination.channelCountMode = "explicit";
+				context.destination.channelInterpretation = "discrete";
+				expect(context.destination.channelCountMode).to.equal(
+					"explicit"
+				);
+				expect(context.destination.channelInterpretation).to.equal(
+					"discrete"
+				);
+			},
+			0.1,
+			4
+		);
 	});
 
 	it("can pass audio through chained nodes", () => {
-		return PassAudio(input => {
+		return PassAudio((input) => {
 			const gain = input.context.createGain();
 			input.connect(gain);
 			input.context.destination.chain(gain);

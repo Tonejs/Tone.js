@@ -1,7 +1,13 @@
-import { ToneWithContext, ToneWithContextOptions } from "../context/ToneWithContext";
-import { Seconds, Time } from "../type/Units";
-import { Timeline, TimelineEvent } from "./Timeline";
-import { onContextClose, onContextInit } from "../context/ContextInitialization";
+import {
+	ToneWithContext,
+	ToneWithContextOptions,
+} from "../context/ToneWithContext.js";
+import { Seconds, Time } from "../type/Units.js";
+import { Timeline, TimelineEvent } from "./Timeline.js";
+import {
+	onContextClose,
+	onContextInit,
+} from "../context/ContextInitialization.js";
 
 interface DrawEvent extends TimelineEvent {
 	callback: () => void;
@@ -25,8 +31,7 @@ interface DrawEvent extends TimelineEvent {
  * Tone.Transport.start();
  * @category Core
  */
-export class Draw extends ToneWithContext<ToneWithContextOptions> {
-
+export class DrawClass extends ToneWithContext<ToneWithContextOptions> {
 	readonly name: string = "Draw";
 
 	/**
@@ -93,7 +98,10 @@ export class Draw extends ToneWithContext<ToneWithContextOptions> {
 	 */
 	private _drawLoop(): void {
 		const now = this.context.currentTime;
-		while (this._events.length && (this._events.peek() as DrawEvent).time - this.anticipation <= now) {
+		while (
+			this._events.length &&
+			(this._events.peek() as DrawEvent).time - this.anticipation <= now
+		) {
 			const event = this._events.shift();
 			if (event && now - event.time <= this.expiration) {
 				event.callback();
@@ -116,10 +124,10 @@ export class Draw extends ToneWithContext<ToneWithContextOptions> {
 // 	INITIALIZATION
 //-------------------------------------
 
-onContextInit(context => {
-	context.draw = new Draw({ context });
+onContextInit((context) => {
+	context.draw = new DrawClass({ context });
 });
 
-onContextClose(context => {
+onContextClose((context) => {
 	context.draw.dispose();
 });

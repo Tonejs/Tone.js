@@ -1,11 +1,18 @@
-import { TicksClass } from "../core/type/Ticks";
-import { NormalRange, Positive, Seconds, Ticks, Time, TransportTime } from "../core/type/Units";
-import { omitFromObject, optionsFromArguments } from "../core/util/Defaults";
-import { isArray, isString } from "../core/util/TypeCheck";
-import { Part } from "./Part";
-import { ToneEvent, ToneEventCallback, ToneEventOptions } from "./ToneEvent";
+import { TicksClass } from "../core/type/Ticks.js";
+import {
+	NormalRange,
+	Positive,
+	Seconds,
+	Ticks,
+	Time,
+	TransportTime,
+} from "../core/type/Units.js";
+import { omitFromObject, optionsFromArguments } from "../core/util/Defaults.js";
+import { isArray, isString } from "../core/util/TypeCheck.js";
+import { Part } from "./Part.js";
+import { ToneEvent, ToneEventCallback, ToneEventOptions } from "./ToneEvent.js";
 
-type SequenceEventDescription<T> = Array<T | Array<T | Array<T | Array<T | Array<T | T[]>>>>>;
+type SequenceEventDescription<T> = Array<T | SequenceEventDescription<T>>;
 
 interface SequenceOptions<T> extends Omit<ToneEventOptions<T>, "value"> {
 	loopStart: number;
@@ -31,7 +38,6 @@ interface SequenceOptions<T> extends Omit<ToneEventOptions<T>, "value"> {
  * @category Event
  */
 export class Sequence<ValueType = any> extends ToneEvent<ValueType> {
-
 	readonly name: string = "Sequence";
 
 	/**
@@ -59,19 +65,22 @@ export class Sequence<ValueType = any> extends ToneEvent<ValueType> {
 
 	/**
 	 * @param  callback  The callback to invoke with every note
-	 * @param  sequence  The sequence
+	 * @param  events  The sequence of events
 	 * @param  subdivision  The subdivision between which events are placed.
 	 */
 	constructor(
 		callback?: ToneEventCallback<ValueType>,
 		events?: SequenceEventDescription<ValueType>,
-		subdivision?: Time,
+		subdivision?: Time
 	);
 	constructor(options?: Partial<SequenceOptions<ValueType>>);
 	constructor() {
-
-		super(optionsFromArguments(Sequence.getDefaults(), arguments, ["callback", "events", "subdivision"]));
-		const options = optionsFromArguments(Sequence.getDefaults(), arguments, ["callback", "events", "subdivision"]);
+		const options = optionsFromArguments(
+			Sequence.getDefaults(),
+			arguments,
+			["callback", "events", "subdivision"]
+		);
+		super(options);
 
 		this._subdivision = this.toTicks(options.subdivision);
 
@@ -89,13 +98,16 @@ export class Sequence<ValueType = any> extends ToneEvent<ValueType> {
 	}
 
 	static getDefaults(): SequenceOptions<any> {
-		return Object.assign(omitFromObject(ToneEvent.getDefaults(), ["value"]), {
-			events: [],
-			loop: true,
-			loopEnd: 0,
-			loopStart: 0,
-			subdivision: "8n",
-		});
+		return Object.assign(
+			omitFromObject(ToneEvent.getDefaults(), ["value"]),
+			{
+				events: [],
+				loop: true,
+				loopEnd: 0,
+				loopStart: 0,
+				subdivision: "8n",
+			}
+		);
 	}
 
 	/**
@@ -157,7 +169,11 @@ export class Sequence<ValueType = any> extends ToneEvent<ValueType> {
 				// property is index in this case
 				return target[property];
 			},
-			set: (target: any[], property: PropertyKey, value: any): boolean => {
+			set: (
+				target: any[],
+				property: PropertyKey,
+				value: any
+			): boolean => {
 				if (isString(property) && isFinite(parseInt(property, 10))) {
 					if (isArray(value)) {
 						target[property] = this._createSequence(value);
@@ -179,7 +195,11 @@ export class Sequence<ValueType = any> extends ToneEvent<ValueType> {
 	 */
 	private _eventsUpdated(): void {
 		this._part.clear();
-		this._rescheduleSequence(this._eventsArray, this._subdivision, this.startOffset);
+		this._rescheduleSequence(
+			this._eventsArray,
+			this._subdivision,
+			this.startOffset
+		);
 		// update the loopEnd
 		this.loopEnd = this.loopEnd;
 	}
@@ -187,13 +207,25 @@ export class Sequence<ValueType = any> extends ToneEvent<ValueType> {
 	/**
 	 * reschedule all of the events that need to be rescheduled
 	 */
-	private _rescheduleSequence(sequence: any[], subdivision: Ticks, startOffset: Ticks): void {
+	private _rescheduleSequence(
+		sequence: any[],
+		subdivision: Ticks,
+		startOffset: Ticks
+	): void {
 		sequence.forEach((value, index) => {
-			const eventOffset = index * (subdivision) + startOffset;
+			const eventOffset = index * subdivision + startOffset;
 			if (isArray(value)) {
-				this._rescheduleSequence(value, subdivision / value.length, eventOffset);
+				this._rescheduleSequence(
+					value,
+					subdivision / value.length,
+					eventOffset
+				);
 			} else {
-				const startTime = new TicksClass(this.context, eventOffset, "i").toSeconds();
+				const startTime = new TicksClass(
+					this.context,
+					eventOffset,
+					"i"
+				).toSeconds();
 				this._part.add(startTime, value);
 			}
 		});
@@ -205,7 +237,10 @@ export class Sequence<ValueType = any> extends ToneEvent<ValueType> {
 	 * @return The time of that index
 	 */
 	private _indexTime(index: number): Seconds {
-		return new TicksClass(this.context, index * (this._subdivision) + this.startOffset).toSeconds();
+		return new TicksClass(
+			this.context,
+			index * this._subdivision + this.startOffset
+		).toSeconds();
 	}
 
 	/**

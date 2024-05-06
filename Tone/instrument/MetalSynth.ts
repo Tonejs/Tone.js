@@ -1,28 +1,28 @@
-import { Envelope, EnvelopeOptions } from "../component/envelope/Envelope";
-import { Filter } from "../component/filter/Filter";
-import { Gain } from "../core/context/Gain";
+import { Envelope, EnvelopeOptions } from "../component/envelope/Envelope.js";
+import { Filter } from "../component/filter/Filter.js";
+import { Gain } from "../core/context/Gain.js";
 import {
 	ToneAudioNode,
 	ToneAudioNodeOptions,
-} from "../core/context/ToneAudioNode";
+} from "../core/context/ToneAudioNode.js";
 import {
 	Frequency,
 	NormalRange,
 	Positive,
 	Seconds,
 	Time,
-} from "../core/type/Units";
+} from "../core/type/Units.js";
 import {
 	deepMerge,
 	omitFromObject,
 	optionsFromArguments,
-} from "../core/util/Defaults";
-import { noOp, RecursivePartial } from "../core/util/Interface";
-import { Multiply } from "../signal/Multiply";
-import { Scale } from "../signal/Scale";
-import { Signal } from "../signal/Signal";
-import { FMOscillator } from "../source/oscillator/FMOscillator";
-import { Monophonic, MonophonicOptions } from "./Monophonic";
+} from "../core/util/Defaults.js";
+import { noOp, RecursivePartial } from "../core/util/Interface.js";
+import { Multiply } from "../signal/Multiply.js";
+import { Scale } from "../signal/Scale.js";
+import { Signal } from "../signal/Signal.js";
+import { FMOscillator } from "../source/oscillator/FMOscillator.js";
+import { Monophonic, MonophonicOptions } from "./Monophonic.js";
 
 export interface MetalSynthOptions extends MonophonicOptions {
 	harmonicity: Positive;
@@ -91,17 +91,17 @@ export class MetalSynth extends Monophonic<MetalSynthOptions> {
 	/**
 	 * The envelope which is connected both to the
 	 * amplitude and a highpass filter's cutoff frequency.
-	 * The lower-limit of the filter is controlled by the [[resonance]]
+	 * The lower-limit of the filter is controlled by the {@link resonance}
 	 */
 	readonly envelope: Envelope;
 
 	constructor(options?: RecursivePartial<MetalSynthOptions>);
 	constructor() {
-		super(optionsFromArguments(MetalSynth.getDefaults(), arguments));
 		const options = optionsFromArguments(
 			MetalSynth.getDefaults(),
 			arguments
 		);
+		super(options);
 
 		this.detune = new Signal({
 			context: this.context,
@@ -231,7 +231,7 @@ export class MetalSynth extends Monophonic<MetalSynthOptions> {
 
 	/**
 	 * The modulationIndex of the oscillators which make up the source.
-	 * see [[FMOscillator.modulationIndex]]
+	 * see {@link FMOscillator.modulationIndex}
 	 * @min 1
 	 * @max 100
 	 */

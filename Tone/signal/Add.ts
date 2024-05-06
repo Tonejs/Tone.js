@@ -1,8 +1,8 @@
-import { connectSeries } from "../core/context/ToneAudioNode";
-import { Gain } from "../core/context/Gain";
-import { Param } from "../core/context/Param";
-import { optionsFromArguments } from "../core/util/Defaults";
-import { Signal, SignalOptions } from "./Signal";
+import { connectSeries } from "../core/context/ToneAudioNode.js";
+import { Gain } from "../core/context/Gain.js";
+import { Param } from "../core/context/Param.js";
+import { optionsFromArguments } from "../core/util/Defaults.js";
+import { Signal, SignalOptions } from "./Signal.js";
 
 /**
  * Add a signal and a number or two signals. When no value is
@@ -21,7 +21,6 @@ import { Signal, SignalOptions } from "./Signal";
  * @category Signal
  */
 export class Add extends Signal {
-
 	override = false;
 
 	readonly name: string = "Add";
@@ -39,12 +38,12 @@ export class Add extends Signal {
 	readonly addend: Param<"number"> = this._param;
 
 	/**
-	 * @param value If no value is provided, will sum the input and [[addend]].
+	 * @param value If no value is provided, will sum the input and {@link addend}.
 	 */
 	constructor(value?: number);
 	constructor(options?: Partial<SignalOptions<"number">>);
 	constructor() {
-		super(Object.assign(optionsFromArguments(Add.getDefaults(), arguments, ["value"])));
+		super(optionsFromArguments(Add.getDefaults(), arguments, ["value"]));
 
 		connectSeries(this._constantSource, this._sum);
 	}

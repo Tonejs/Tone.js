@@ -1,10 +1,17 @@
-import { version } from "../version";
-import { AnyAudioContext, hasAudioContext, theWindow } from "./context/AudioContext";
-import { Context } from "./context/Context";
-import { DummyContext } from "./context/DummyContext";
-import { BaseContext } from "./context/BaseContext";
-import { OfflineContext } from "./context/OfflineContext";
-import { isAudioContext, isOfflineAudioContext } from "./util/AdvancedTypeCheck";
+import { version } from "../version.js";
+import {
+	AnyAudioContext,
+	hasAudioContext,
+	theWindow,
+} from "./context/AudioContext.js";
+import { Context } from "./context/Context.js";
+import { DummyContext } from "./context/DummyContext.js";
+import { BaseContext } from "./context/BaseContext.js";
+import { OfflineContext } from "./context/OfflineContext.js";
+import {
+	isAudioContext,
+	isOfflineAudioContext,
+} from "./util/AdvancedTypeCheck.js";
 
 /**
  * This dummy context is used to avoid throwing immediate errors when importing in Node.js
@@ -18,7 +25,7 @@ const dummyContext = new DummyContext();
 let globalContext: BaseContext = dummyContext;
 
 /**
- * Returns the default system-wide [[Context]]
+ * Returns the default system-wide {@link Context}
  * @category Core
  */
 export function getContext(): BaseContext {
@@ -34,7 +41,10 @@ export function getContext(): BaseContext {
  * @param disposeOld Pass `true` if you don't need the old context to dispose it.
  * @category Core
  */
-export function setContext(context: BaseContext | AnyAudioContext, disposeOld = false): void {
+export function setContext(
+	context: BaseContext | AnyAudioContext,
+	disposeOld = false
+): void {
 	if (disposeOld) {
 		globalContext.dispose();
 	}

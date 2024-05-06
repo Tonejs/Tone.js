@@ -1,12 +1,19 @@
 {
 	"name" : "Tone.js",
-	"mode": "file",
+	"entryPoints": ["../Tone"],
+	"out":"../docs",
 	"defaultCategory" : "Global",
 	"categorizeByGroup" : true,
 	"categoryOrder" : ["Core", "Source", "Instrument", "Effect", "Component", "Signal"],
-	"exclude" : ["./Tone/**/*.test.ts", "./test/**/*.ts"],
+	"navigation" : {
+		"includeCategories": true,
+		"includeFolders": false,
+		"includeGroups": true
+	},
+	"externalPattern": ["**/node_modules/**"],
 	"excludeProtected" : true,
 	"excludePrivate" : true,
-	"listInvalidSymbolLinks" : true,
-	"excludeNotExported" : false
+	"hideGenerator": true,
+	"includeVersion": false,
+	"excludeInternal": true,
 }

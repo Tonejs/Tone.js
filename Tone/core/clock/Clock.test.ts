@@ -1,16 +1,13 @@
 import { expect } from "chai";
-import { BasicTests } from "test/helper/Basic";
-import { atTime, Offline, whenBetween } from "test/helper/Offline";
-import { ONLINE_TESTING } from "test/helper/Supports";
-import { noOp } from "../util/Interface";
-import { Clock } from "./Clock";
+import { BasicTests } from "../../../test/helper/Basic.js";
+import { atTime, Offline, whenBetween } from "../../../test/helper/Offline.js";
+import { noOp } from "../util/Interface.js";
+import { Clock } from "./Clock.js";
 
 describe("Clock", () => {
-
 	BasicTests(Clock);
 
 	context("Get/Set values", () => {
-
 		it("can get and set the frequency", () => {
 			const clock = new Clock(noOp, 2);
 			expect(clock.frequency.value).to.equal(2);
@@ -19,27 +16,23 @@ describe("Clock", () => {
 			clock.dispose();
 		});
 
-		if (ONLINE_TESTING) {
+		it("invokes the callback when started", (done) => {
+			const clock = new Clock((time) => {
+				clock.dispose();
+				done();
+			}, 10).start();
+		});
 
-			it("invokes the callback when started", (done) => {
-				const clock = new Clock((time) => {
+		it("can be constructed with an options object", (done) => {
+			const clock = new Clock({
+				callback(): void {
 					clock.dispose();
 					done();
-				}, 10).start();
-			});
-
-			it("can be constructed with an options object", (done) => {
-				const clock = new Clock({
-					callback(): void {
-						clock.dispose();
-						done();
-					},
-					frequency: 8,
-				}).start();
-				expect(clock.frequency.value).to.equal(8);
-			});
-
-		}
+				},
+				frequency: 8,
+			}).start();
+			expect(clock.frequency.value).to.equal(8);
+		});
 
 		it("can get and set it's values with the set/get", () => {
 			const clock = new Clock();
@@ -53,7 +46,6 @@ describe("Clock", () => {
 	});
 
 	context("State", () => {
-
 		it("correctly returns the scheduled play state", () => {
 			return Offline(() => {
 				const clock = new Clock();
@@ -93,7 +85,6 @@ describe("Clock", () => {
 						expect(clock.state).to.equal("stopped");
 					});
 				};
-
 			}, 0.5);
 		});
 
@@ -137,44 +128,39 @@ describe("Clock", () => {
 						expect(clock.state).to.equal("started");
 					});
 				};
-
 			}, 0.5);
 		});
 	});
 
 	context("Scheduling", () => {
+		it("passes a time to the callback", (done) => {
+			const clock = new Clock((time) => {
+				expect(time).to.be.a("number");
+				clock.dispose();
+				done();
+			}, 10).start();
+		});
 
-		if (ONLINE_TESTING) {
+		it("invokes the callback with a time great than now", (done) => {
+			const clock = new Clock((time) => {
+				clock.dispose();
+				expect(time).to.be.greaterThan(now);
+				done();
+			}, 10);
+			const now = clock.now();
+			const startTime = now + 0.1;
+			clock.start(startTime);
+		});
 
-			it("passes a time to the callback", (done) => {
-				const clock = new Clock((time) => {
-					expect(time).to.be.a("number");
-					clock.dispose();
-					done();
-				}, 10).start();
-			});
-
-			it("invokes the callback with a time great than now", (done) => {
-				const clock = new Clock((time) => {
-					clock.dispose();
-					expect(time).to.be.greaterThan(now);
-					done();
-				}, 10);
-				const now = clock.now();
-				const startTime = now + 0.1;
-				clock.start(startTime);
-			});
-
-			it("invokes the first callback at the given start time", (done) => {
-				const clock = new Clock((time) => {
-					clock.dispose();
-					expect(time).to.be.closeTo(startTime, 0.01);
-					done();
-				}, 10);
-				const startTime = clock.now() + 0.1;
-				clock.start(startTime);
-			});
-		}
+		it("invokes the first callback at the given start time", (done) => {
+			const clock = new Clock((time) => {
+				clock.dispose();
+				expect(time).to.be.closeTo(startTime, 0.01);
+				done();
+			}, 10);
+			const startTime = clock.now() + 0.1;
+			clock.start(startTime);
+		});
 
 		it("can be scheduled to start in the future", () => {
 			let invokations = 0;
@@ -192,7 +178,9 @@ describe("Clock", () => {
 			return Offline(() => {
 				new Clock((time) => {
 					invokations++;
-				}, 10).start(0).stop(0.45);
+				}, 10)
+					.start(0)
+					.stop(0.45);
 			}, 0.6).then(() => {
 				expect(invokations).to.equal(5);
 			});
@@ -210,11 +198,9 @@ describe("Clock", () => {
 				expect(invokations).to.equal(4);
 			});
 		});
-
 	});
 
 	context("Seconds", () => {
-
 		it("can set the current seconds", () => {
 			return Offline(() => {
 				const clock = new Clock(noOp, 10);
@@ -274,7 +260,6 @@ describe("Clock", () => {
 	});
 
 	context("Ticks", () => {
-
 		it("has 0 ticks when first created", () => {
 			const clock = new Clock();
 			expect(clock.ticks).to.equal(0);
@@ -332,9 +317,11 @@ describe("Clock", () => {
 		});
 
 		it("starts incrementing where it left off after pause", () => {
-
 			return Offline(() => {
-				const clock = new Clock(noOp, 20).start(0).pause(0.1).start(0.2);
+				const clock = new Clock(noOp, 20)
+					.start(0)
+					.pause(0.1)
+					.start(0.2);
 
 				let pausedTicks = 0;
 				let tested = false;
@@ -369,11 +356,9 @@ describe("Clock", () => {
 				clock.start(0, 4);
 			});
 		});
-
 	});
 
 	context("Events", () => {
-
 		it("triggers the start event on start", (done) => {
 			Offline(() => {
 				const clock = new Clock(noOp, 20);
@@ -415,12 +400,14 @@ describe("Clock", () => {
 		it("triggers pause stop event", (done) => {
 			Offline(() => {
 				const clock = new Clock(noOp, 20);
-				clock.on("pause", (time) => {
-					expect(time).to.be.closeTo(0.1, 0.05);
-				}).on("stop", (time) => {
-					expect(time).to.be.closeTo(0.2, 0.05);
-					done();
-				});
+				clock
+					.on("pause", (time) => {
+						expect(time).to.be.closeTo(0.1, 0.05);
+					})
+					.on("stop", (time) => {
+						expect(time).to.be.closeTo(0.2, 0.05);
+						done();
+					});
 				clock.start().pause(0.1).stop(0.2);
 			}, 0.4);
 		});
@@ -481,7 +468,6 @@ describe("Clock", () => {
 	});
 
 	context("[get/set]Ticks", () => {
-
 		it("always reports 0 if not started", () => {
 			return Offline(() => {
 				const clock = new Clock(noOp, 20);
@@ -657,7 +643,5 @@ describe("Clock", () => {
 				clock.dispose();
 			});
 		});
-
 	});
-
 });

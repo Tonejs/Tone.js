@@ -1,4 +1,4 @@
-import { Seconds } from "../type/Units";
+import { Seconds } from "../type/Units.js";
 
 export type TickerClockSource = "worker" | "timeout" | "offline";
 
@@ -7,7 +7,6 @@ export type TickerClockSource = "worker" | "timeout" | "offline";
  * a Web Worker, or if that isn't supported, falls back to setTimeout.
  */
 export class Ticker {
-
 	/**
 	 * Either "worker" or "timeout" or "offline"
 	 */
@@ -38,11 +37,18 @@ export class Ticker {
 	 */
 	private _worker!: Worker;
 
-	constructor(callback: () => void, type: TickerClockSource, updateInterval: Seconds, contextSampleRate?: number) {
-
+	constructor(
+		callback: () => void,
+		type: TickerClockSource,
+		updateInterval: Seconds,
+		contextSampleRate?: number
+	) {
 		this._callback = callback;
 		this._type = type;
-		this._minimumUpdateInterval = Math.max( 128/(contextSampleRate || 44100), .001 );
+		this._minimumUpdateInterval = Math.max(
+			128 / (contextSampleRate || 44100),
+			0.001
+		);
 		this.updateInterval = updateInterval;
 
 		// create the clock source for the first time
@@ -53,9 +59,9 @@ export class Ticker {
 	 * Generate a web worker
 	 */
 	private _createWorker(): void {
-
-		const blob = new Blob([
-			/* javascript */`
+		const blob = new Blob(
+			[
+				/* javascript */ `
 			// the initial timeout time
 			let timeoutTime =  ${(this._updateInterval * 1000).toFixed(1)};
 			// onmessage callback
@@ -70,8 +76,10 @@ export class Ticker {
 			}
 			// call tick initially
 			tick();
-			`
-		], { type: "text/javascript" });
+			`,
+			],
+			{ type: "text/javascript" }
+		);
 		const blobUrl = URL.createObjectURL(blob);
 		const worker = new Worker(blobUrl);
 

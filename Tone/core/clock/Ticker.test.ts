@@ -1,9 +1,7 @@
 import { expect } from "chai";
-import { ONLINE_TESTING } from "test/helper/Supports";
-import { Ticker } from "./Ticker";
+import { Ticker } from "./Ticker.js";
 
 describe("Ticker", () => {
-
 	function empty(): void {
 		// do nothing
 	}
@@ -31,56 +29,69 @@ describe("Ticker", () => {
 		ticker.dispose();
 	});
 
-	if (ONLINE_TESTING) {
-
-		context("timeout", () => {
-
-			it("provides a callback when set to timeout", done => {
-				const ticker = new Ticker(() => {
+	context("timeout", () => {
+		it("provides a callback when set to timeout", (done) => {
+			const ticker = new Ticker(
+				() => {
 					ticker.dispose();
 					done();
-				}, "timeout", 0.01);
-			});
-
-			it("can adjust the interval when set to timeout", (done) => {
-				const ticker = new Ticker(() => {
-					ticker.dispose();
-					done();
-				}, "timeout", 0.01);
-				ticker.updateInterval = 0.1;
-			});
+				},
+				"timeout",
+				0.01
+			);
 		});
-	}
+
+		it("can adjust the interval when set to timeout", (done) => {
+			const ticker = new Ticker(
+				() => {
+					ticker.dispose();
+					done();
+				},
+				"timeout",
+				0.01
+			);
+			ticker.updateInterval = 0.1;
+		});
+	});
 
 	context("worker", () => {
-
-		it("provides a callback when set to worker", done => {
-			const ticker = new Ticker(() => {
-				ticker.dispose();
-				done();
-			}, "worker", 0.01);
+		it("provides a callback when set to worker", (done) => {
+			const ticker = new Ticker(
+				() => {
+					ticker.dispose();
+					done();
+				},
+				"worker",
+				0.01
+			);
 		});
 
-		it("falls back to timeout if the constructor throws an error", done => {
+		it("falls back to timeout if the constructor throws an error", (done) => {
 			const URL = window.URL;
 			// @ts-ignore
 			window.URL = null;
-			const ticker = new Ticker(() => {
-				expect(ticker.type).to.equal("timeout");
-				ticker.dispose();
-				window.URL = URL;
-				done();
-			}, "worker", 0.01);
-
+			const ticker = new Ticker(
+				() => {
+					expect(ticker.type).to.equal("timeout");
+					ticker.dispose();
+					window.URL = URL;
+					done();
+				},
+				"worker",
+				0.01
+			);
 		});
 
 		it("can adjust the interval when set to worker", (done) => {
-			const ticker = new Ticker(() => {
-				ticker.dispose();
-				done();
-			}, "worker", 0.01);
+			const ticker = new Ticker(
+				() => {
+					ticker.dispose();
+					done();
+				},
+				"worker",
+				0.01
+			);
 			ticker.updateInterval = 0.1;
 		});
-
 	});
 });

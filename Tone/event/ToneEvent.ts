@@ -1,12 +1,25 @@
-import "../core/clock/Transport";
-import { ToneWithContext, ToneWithContextOptions } from "../core/context/ToneWithContext";
-import { TicksClass } from "../core/type/Ticks";
-import { TransportTimeClass } from "../core/type/TransportTime";
-import { NormalRange, Positive, Seconds, Ticks, Time, TransportTime } from "../core/type/Units";
-import { defaultArg, optionsFromArguments } from "../core/util/Defaults";
-import { noOp } from "../core/util/Interface";
-import { BasicPlaybackState, StateTimeline } from "../core/util/StateTimeline";
-import { isBoolean, isNumber } from "../core/util/TypeCheck";
+import "../core/clock/Transport.js";
+import {
+	ToneWithContext,
+	ToneWithContextOptions,
+} from "../core/context/ToneWithContext.js";
+import { TicksClass } from "../core/type/Ticks.js";
+import { TransportTimeClass } from "../core/type/TransportTime.js";
+import {
+	NormalRange,
+	Positive,
+	Seconds,
+	Ticks,
+	Time,
+	TransportTime,
+} from "../core/type/Units.js";
+import { defaultArg, optionsFromArguments } from "../core/util/Defaults.js";
+import { noOp } from "../core/util/Interface.js";
+import {
+	BasicPlaybackState,
+	StateTimeline,
+} from "../core/util/StateTimeline.js";
+import { isBoolean, isNumber } from "../core/util/TypeCheck.js";
 
 export type ToneEventCallback<T> = (time: Seconds, value: T) => void;
 
@@ -40,8 +53,9 @@ export interface ToneEventOptions<T> extends ToneWithContextOptions {
  * chordEvent.loopEnd = "1m";
  * @category Event
  */
-export class ToneEvent<ValueType = any> extends ToneWithContext<ToneEventOptions<ValueType>> {
-
+export class ToneEvent<ValueType = any> extends ToneWithContext<
+	ToneEventOptions<ValueType>
+> {
 	readonly name: string = "ToneEvent";
 
 	/**
@@ -110,9 +124,12 @@ export class ToneEvent<ValueType = any> extends ToneWithContext<ToneEventOptions
 	constructor(callback?: ToneEventCallback<ValueType>, value?: ValueType);
 	constructor(options?: Partial<ToneEventOptions<ValueType>>);
 	constructor() {
-
-		super(optionsFromArguments(ToneEvent.getDefaults(), arguments, ["callback", "value"]));
-		const options = optionsFromArguments(ToneEvent.getDefaults(), arguments, ["callback", "value"]);
+		const options = optionsFromArguments(
+			ToneEvent.getDefaults(),
+			arguments,
+			["callback", "value"]
+		);
+		super(options);
 
 		this._loop = options.loop;
 		this.callback = options.callback;
@@ -150,30 +167,48 @@ export class ToneEvent<ValueType = any> extends ToneWithContext<ToneEventOptions
 	 */
 	private _rescheduleEvents(after: Ticks = -1): void {
 		// if no argument is given, schedules all of the events
-		this._state.forEachFrom(after, event => {
+		this._state.forEachFrom(after, (event) => {
 			let duration;
 			if (event.state === "started") {
 				if (event.id !== -1) {
 					this.context.transport.clear(event.id);
 				}
-				const startTick = event.time + Math.round(this.startOffset / this._playbackRate);
-				if (this._loop === true || isNumber(this._loop) && this._loop > 1) {
+				const startTick =
+					event.time +
+					Math.round(this.startOffset / this._playbackRate);
+				if (
+					this._loop === true ||
+					(isNumber(this._loop) && this._loop > 1)
+				) {
 					duration = Infinity;
 					if (isNumber(this._loop)) {
-						duration = (this._loop) * this._getLoopDuration();
+						duration = this._loop * this._getLoopDuration();
 					}
 					const nextEvent = this._state.getAfter(startTick);
 					if (nextEvent !== null) {
-						duration = Math.min(duration, nextEvent.time - startTick);
+						duration = Math.min(
+							duration,
+							nextEvent.time - startTick
+						);
 					}
 					if (duration !== Infinity) {
 						duration = new TicksClass(this.context, duration);
 					}
-					const interval = new TicksClass(this.context, this._getLoopDuration());
+					const interval = new TicksClass(
+						this.context,
+						this._getLoopDuration()
+					);
 					event.id = this.context.transport.scheduleRepeat(
-						this._tick.bind(this), interval, new TicksClass(this.context, startTick), duration);
+						this._tick.bind(this),
+						interval,
+						new TicksClass(this.context, startTick),
+						duration
+					);
 				} else {
-					event.id = this.context.transport.schedule(this._tick.bind(this), new TicksClass(this.context, startTick));
+					event.id = this.context.transport.schedule(
+						this._tick.bind(this),
+						new TicksClass(this.context, startTick)
+					);
 				}
 			}
 		});
@@ -183,7 +218,9 @@ export class ToneEvent<ValueType = any> extends ToneWithContext<ToneEventOptions
 	 * Returns the playback state of the note, either "started" or "stopped".
 	 */
 	get state(): BasicPlaybackState {
-		return this._state.getValueAtTime(this.context.transport.ticks) as BasicPlaybackState;
+		return this._state.getValueAtTime(
+			this.context.transport.ticks
+		) as BasicPlaybackState;
 	}
 
 	/**
@@ -265,7 +302,7 @@ export class ToneEvent<ValueType = any> extends ToneWithContext<ToneEventOptions
 	cancel(time?: TransportTime | TransportTimeClass): this {
 		time = defaultArg(time, -Infinity);
 		const ticks = this.toTicks(time);
-		this._state.forEachFrom(ticks, event => {
+		this._state.forEachFrom(ticks, (event) => {
 			this.context.transport.clear(event.id);
 		});
 		this._state.cancel(ticks);

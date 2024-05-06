@@ -1,6 +1,6 @@
-import { Tone } from "../Tone";
-import { isDefined } from "./TypeCheck";
-import { assert } from "./Debug";
+import { Tone } from "../Tone.js";
+import { isDefined } from "./TypeCheck.js";
+import { assert } from "./Debug.js";
 
 /**
  * An IntervalTimeline event must have a time and duration
@@ -20,9 +20,9 @@ type IteratorCallback = (event: IntervalTimelineEvent) => void;
  * for querying an intersection point with the timeline
  * events. Internally uses an [Interval Tree](https://en.wikipedia.org/wiki/Interval_tree)
  * to represent the data.
+ * @internal
  */
 export class IntervalTimeline extends Tone {
-
 	readonly name: string = "IntervalTimeline";
 
 	/**
@@ -42,10 +42,17 @@ export class IntervalTimeline extends Tone {
 	 */
 	add(event: IntervalTimelineEvent): this {
 		assert(isDefined(event.time), "Events must have a time property");
-		assert(isDefined(event.duration), "Events must have a duration parameter");
+		assert(
+			isDefined(event.duration),
+			"Events must have a duration parameter"
+		);
 
 		event.time = event.time.valueOf();
-		let node: IntervalNode | null = new IntervalNode(event.time, event.time + event.duration, event);
+		let node: IntervalNode | null = new IntervalNode(
+			event.time,
+			event.time + event.duration,
+			event
+		);
 		if (this._root === null) {
 			this._root = node;
 		} else {
@@ -94,7 +101,7 @@ export class IntervalTimeline extends Tone {
 	 * @param  after  The time to query.
 	 */
 	cancel(after: number): this {
-		this.forEachFrom(after, event => this.remove(event));
+		this.forEachFrom(after, (event) => this.remove(event));
 		return this;
 	}
 
@@ -112,7 +119,10 @@ export class IntervalTimeline extends Tone {
 	 * Replace the references to the node in the node's parent
 	 * with the replacement node.
 	 */
-	private _replaceNodeInParent(node: IntervalNode, replacement: IntervalNode | null): void {
+	private _replaceNodeInParent(
+		node: IntervalNode,
+		replacement: IntervalNode | null
+	): void {
 		if (node.parent !== null) {
 			if (node.isLeftChild()) {
 				node.parent.left = replacement;
@@ -288,8 +298,8 @@ export class IntervalTimeline extends Tone {
 	forEach(callback: IteratorCallback): this {
 		if (this._root !== null) {
 			const allNodes: IntervalNode[] = [];
-			this._root.traverse(node => allNodes.push(node));
-			allNodes.forEach(node => {
+			this._root.traverse((node) => allNodes.push(node));
+			allNodes.forEach((node) => {
 				if (node.event) {
 					callback(node.event);
 				}
@@ -308,7 +318,7 @@ export class IntervalTimeline extends Tone {
 		if (this._root !== null) {
 			const results: IntervalNode[] = [];
 			this._root.search(time, results);
-			results.forEach(node => {
+			results.forEach((node) => {
 				if (node.event) {
 					callback(node.event);
 				}
@@ -327,7 +337,7 @@ export class IntervalTimeline extends Tone {
 		if (this._root !== null) {
 			const results: IntervalNode[] = [];
 			this._root.searchAfter(time, results);
-			results.forEach(node => {
+			results.forEach((node) => {
 				if (node.event) {
 					callback(node.event);
 				}
@@ -342,7 +352,7 @@ export class IntervalTimeline extends Tone {
 	dispose(): this {
 		super.dispose();
 		if (this._root !== null) {
-			this._root.traverse(node => node.dispose());
+			this._root.traverse((node) => node.dispose());
 		}
 		this._root = null;
 		return this;
@@ -364,7 +374,6 @@ export class IntervalTimeline extends Tone {
  * @param high
  */
 class IntervalNode {
-
 	// the event container
 	event: IntervalTimelineEvent | null;
 	// the low value

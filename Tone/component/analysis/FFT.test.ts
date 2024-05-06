@@ -1,11 +1,9 @@
 import { expect } from "chai";
-import { BasicTests } from "test/helper/Basic";
-import { ONLINE_TESTING } from "test/helper/Supports";
-import { Noise } from "Tone/source/Noise";
-import { FFT } from "./FFT";
+import { BasicTests } from "../../../test/helper/Basic.js";
+import { Noise } from "../../source/Noise.js";
+import { FFT } from "./FFT.js";
 
 describe("FFT", () => {
-
 	BasicTests(FFT);
 
 	it("can get and set properties", () => {
@@ -38,7 +36,10 @@ describe("FFT", () => {
 	it("can get the frequency values of each index of the return array", () => {
 		const fft = new FFT(32);
 		expect(fft.getFrequencyOfIndex(0)).to.be.closeTo(0, 1);
-		expect(fft.getFrequencyOfIndex(16)).to.be.closeTo(fft.context.sampleRate / 4, 1);
+		expect(fft.getFrequencyOfIndex(16)).to.be.closeTo(
+			fft.context.sampleRate / 4,
+			1
+		);
 		fft.dispose();
 	});
 
@@ -51,7 +52,7 @@ describe("FFT", () => {
 		setTimeout(() => {
 			const analysis = fft.getValue();
 			expect(analysis.length).to.equal(256);
-			analysis.forEach(value => {
+			analysis.forEach((value) => {
 				expect(value).is.within(-Infinity, 0);
 			});
 			fft.dispose();
@@ -60,24 +61,22 @@ describe("FFT", () => {
 		}, 300);
 	});
 
-	if (ONLINE_TESTING) {
-		it("outputs a normal range", (done) => {
-			const noise = new Noise();
-			const fft = new FFT({
-				normalRange: true,
-			});
-			noise.connect(fft);
-			noise.start();
-
-			setTimeout(() => {
-				const analysis = fft.getValue();
-				analysis.forEach(value => {
-					expect(value).is.within(0, 1);
-				});
-				fft.dispose();
-				noise.dispose();
-				done();
-			}, 300);
+	it("outputs a normal range", (done) => {
+		const noise = new Noise();
+		const fft = new FFT({
+			normalRange: true,
 		});
-	}
+		noise.connect(fft);
+		noise.start();
+
+		setTimeout(() => {
+			const analysis = fft.getValue();
+			analysis.forEach((value) => {
+				expect(value).is.within(0, 1);
+			});
+			fft.dispose();
+			noise.dispose();
+			done();
+		}, 300);
+	});
 });

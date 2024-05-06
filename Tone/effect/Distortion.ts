@@ -1,6 +1,6 @@
-import { optionsFromArguments } from "../core/util/Defaults";
-import { WaveShaper } from "../signal/WaveShaper";
-import { Effect, EffectOptions } from "./Effect";
+import { optionsFromArguments } from "../core/util/Defaults.js";
+import { WaveShaper } from "../signal/WaveShaper.js";
+import { Effect, EffectOptions } from "./Effect.js";
 
 export interface DistortionOptions extends EffectOptions {
 	distortion: number;
@@ -10,7 +10,7 @@ export interface DistortionOptions extends EffectOptions {
 /**
  * A simple distortion effect using Tone.WaveShaper.
  * Algorithm from [this stackoverflow answer](http://stackoverflow.com/a/22313408).
- *
+ * Read more about distortion on [Wikipedia] (https://en.wikipedia.org/wiki/Distortion_(music)).
  * @example
  * const dist = new Tone.Distortion(0.8).toDestination();
  * const fm = new Tone.FMSynth().connect(dist);
@@ -18,7 +18,6 @@ export interface DistortionOptions extends EffectOptions {
  * @category Effect
  */
 export class Distortion extends Effect<DistortionOptions> {
-
 	readonly name: string = "Distortion";
 
 	/**
@@ -37,9 +36,12 @@ export class Distortion extends Effect<DistortionOptions> {
 	constructor(distortion?: number);
 	constructor(options?: Partial<DistortionOptions>);
 	constructor() {
-
-		super(optionsFromArguments(Distortion.getDefaults(), arguments, ["distortion"]));
-		const options = optionsFromArguments(Distortion.getDefaults(), arguments, ["distortion"]);
+		const options = optionsFromArguments(
+			Distortion.getDefaults(),
+			arguments,
+			["distortion"]
+		);
+		super(options);
 
 		this._shaper = new WaveShaper({
 			context: this.context,
@@ -75,7 +77,7 @@ export class Distortion extends Effect<DistortionOptions> {
 				// should output 0 when input is 0
 				return 0;
 			} else {
-				return (3 + k) * x * 20 * deg / (Math.PI + k * Math.abs(x));
+				return ((3 + k) * x * 20 * deg) / (Math.PI + k * Math.abs(x));
 			}
 		});
 	}

@@ -1,15 +1,18 @@
-import { ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
-import { Merge } from "./Merge";
-import { Add } from "../../signal/Add";
-import { Multiply } from "../../signal/Multiply";
-import { Subtract } from "../../signal/Subtract";
-import { Gain } from "../../core/context/Gain";
-import { optionsFromArguments } from "../../core/util/Defaults";
+import {
+	ToneAudioNode,
+	ToneAudioNodeOptions,
+} from "../../core/context/ToneAudioNode.js";
+import { Merge } from "./Merge.js";
+import { Add } from "../../signal/Add.js";
+import { Multiply } from "../../signal/Multiply.js";
+import { Subtract } from "../../signal/Subtract.js";
+import { Gain } from "../../core/context/Gain.js";
+import { optionsFromArguments } from "../../core/util/Defaults.js";
 
 export type MidSideMergeOptions = ToneAudioNodeOptions;
 
 /**
- * MidSideMerge merges the mid and side signal after they've been separated by [[MidSideSplit]]
+ * MidSideMerge merges the mid and side signal after they've been separated by {@link MidSideSplit}
  * ```
  * Mid = (Left+Right)/sqrt(2);   // obtain mid-signal from left and right
  * Side = (Left-Right)/sqrt(2);   // obtain side-signal from left and right
@@ -17,11 +20,10 @@ export type MidSideMergeOptions = ToneAudioNodeOptions;
  * @category Component
  */
 export class MidSideMerge extends ToneAudioNode<MidSideMergeOptions> {
-	
 	readonly name: string = "MidSideMerge";
 
 	/**
-	 * There is no input, connect sources to either [[mid]] or [[side]] inputs.
+	 * There is no input, connect sources to either {@link mid} or {@link side} inputs.
 	 */
 	readonly input: undefined;
 
@@ -64,7 +66,7 @@ export class MidSideMerge extends ToneAudioNode<MidSideMergeOptions> {
 	 * Multiply the left by sqrt(1/2)
 	 */
 	private _rightMult: Multiply;
-	
+
 	constructor(options?: Partial<MidSideMergeOptions>);
 	constructor() {
 		super(optionsFromArguments(MidSideMerge.getDefaults(), arguments));
@@ -72,13 +74,13 @@ export class MidSideMerge extends ToneAudioNode<MidSideMergeOptions> {
 		this.side = new Gain({ context: this.context });
 		this._left = new Add({ context: this.context });
 		this._leftMult = new Multiply({
-			context: this.context, 
-			value: Math.SQRT1_2
+			context: this.context,
+			value: Math.SQRT1_2,
 		});
 		this._right = new Subtract({ context: this.context });
 		this._rightMult = new Multiply({
-			context: this.context, 
-			value: Math.SQRT1_2
+			context: this.context,
+			value: Math.SQRT1_2,
 		});
 		this._merge = this.output = new Merge({ context: this.context });
 
@@ -91,7 +93,7 @@ export class MidSideMerge extends ToneAudioNode<MidSideMergeOptions> {
 		this._leftMult.connect(this._merge, 0, 0);
 		this._rightMult.connect(this._merge, 0, 1);
 	}
-	
+
 	dispose(): this {
 		super.dispose();
 		this.mid.dispose();

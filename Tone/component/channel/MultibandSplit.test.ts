@@ -1,11 +1,10 @@
 import { expect } from "chai";
-import { BasicTests } from "test/helper/Basic";
-import { connectFrom, connectTo } from "test/helper/Connect";
-import { PassAudio } from "test/helper/PassAudio";
-import { MultibandSplit } from "./MultibandSplit";
+import { BasicTests } from "../../../test/helper/Basic.js";
+import { connectFrom, connectTo } from "../../../test/helper/Connect.js";
+import { PassAudio } from "../../../test/helper/PassAudio.js";
+import { MultibandSplit } from "./MultibandSplit.js";
 
 describe("MultibandSplit", () => {
-
 	BasicTests(MultibandSplit);
 
 	it("handles input and output connections", () => {
@@ -41,21 +40,21 @@ describe("MultibandSplit", () => {
 	});
 
 	it("passes the incoming signal through low", () => {
-		return PassAudio(input => {
+		return PassAudio((input) => {
 			const split = new MultibandSplit().low.toDestination();
 			input.connect(split);
 		});
 	});
 
 	it("passes the incoming signal through mid", () => {
-		return PassAudio(input => {
+		return PassAudio((input) => {
 			const split = new MultibandSplit().mid.toDestination();
 			input.connect(split);
 		});
 	});
 
 	it("passes the incoming signal through high", () => {
-		return PassAudio(input => {
+		return PassAudio((input) => {
 			const split = new MultibandSplit({
 				highFrequency: 10,
 				lowFrequency: 5,

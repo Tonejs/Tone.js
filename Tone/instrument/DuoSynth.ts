@@ -1,13 +1,23 @@
-import { Monophonic, MonophonicOptions } from "./Monophonic";
-import { MonoSynth, MonoSynthOptions } from "./MonoSynth";
-import { Signal } from "../signal/Signal";
-import { readOnly, RecursivePartial } from "../core/util/Interface";
-import { LFO } from "../source/oscillator/LFO";
-import { Gain, } from "../core/context/Gain";
-import { Multiply } from "../signal/Multiply";
-import { Frequency, NormalRange, Positive, Seconds, Time } from "../core/type/Units";
-import { deepMerge, omitFromObject, optionsFromArguments } from "../core/util/Defaults";
-import { Param } from "../core/context/Param";
+import { Monophonic, MonophonicOptions } from "./Monophonic.js";
+import { MonoSynth, MonoSynthOptions } from "./MonoSynth.js";
+import { Signal } from "../signal/Signal.js";
+import { readOnly, RecursivePartial } from "../core/util/Interface.js";
+import { LFO } from "../source/oscillator/LFO.js";
+import { Gain } from "../core/context/Gain.js";
+import { Multiply } from "../signal/Multiply.js";
+import {
+	Frequency,
+	NormalRange,
+	Positive,
+	Seconds,
+	Time,
+} from "../core/type/Units.js";
+import {
+	deepMerge,
+	omitFromObject,
+	optionsFromArguments,
+} from "../core/util/Defaults.js";
+import { Param } from "../core/context/Param.js";
 
 export interface DuoSynthOptions extends MonophonicOptions {
 	voice0: Omit<MonoSynthOptions, keyof MonophonicOptions>;
@@ -18,7 +28,7 @@ export interface DuoSynthOptions extends MonophonicOptions {
 }
 
 /**
- * DuoSynth is a monophonic synth composed of two [[MonoSynths]] run in parallel with control over the
+ * DuoSynth is a monophonic synth composed of two {@link MonoSynth}s run in parallel with control over the
  * frequency ratio between the two voices and vibrato effect.
  * @example
  * const duoSynth = new Tone.DuoSynth().toDestination();
@@ -26,7 +36,6 @@ export interface DuoSynthOptions extends MonophonicOptions {
  * @category Instrument
  */
 export class DuoSynth extends Monophonic<DuoSynthOptions> {
-
 	readonly name: string = "DuoSynth";
 
 	readonly frequency: Signal<"frequency">;
@@ -75,16 +84,20 @@ export class DuoSynth extends Monophonic<DuoSynthOptions> {
 
 	constructor(options?: RecursivePartial<DuoSynthOptions>);
 	constructor() {
-		super(optionsFromArguments(DuoSynth.getDefaults(), arguments));
 		const options = optionsFromArguments(DuoSynth.getDefaults(), arguments);
+		super(options);
 
-		this.voice0 = new MonoSynth(Object.assign(options.voice0, {
-			context: this.context,
-			onsilence: () => this.onsilence(this)
-		}));
-		this.voice1 = new MonoSynth(Object.assign(options.voice1, {
-			context: this.context,
-		}));
+		this.voice0 = new MonoSynth(
+			Object.assign(options.voice0, {
+				context: this.context,
+				onsilence: () => this.onsilence(this),
+			})
+		);
+		this.voice1 = new MonoSynth(
+			Object.assign(options.voice1, {
+				context: this.context,
+			})
+		);
 
 		this.harmonicity = new Multiply({
 			context: this.context,
@@ -96,7 +109,7 @@ export class DuoSynth extends Monophonic<DuoSynthOptions> {
 			frequency: options.vibratoRate,
 			context: this.context,
 			min: -50,
-			max: 50
+			max: 50,
 		});
 		// start the vibrato immediately
 		this._vibrato.start();
@@ -104,19 +117,19 @@ export class DuoSynth extends Monophonic<DuoSynthOptions> {
 		this._vibratoGain = new Gain({
 			context: this.context,
 			units: "normalRange",
-			gain: options.vibratoAmount
+			gain: options.vibratoAmount,
 		});
 		this.vibratoAmount = this._vibratoGain.gain;
 
 		this.frequency = new Signal({
 			context: this.context,
 			units: "frequency",
-			value: 440
+			value: 440,
 		});
 		this.detune = new Signal({
 			context: this.context,
 			units: "cents",
-			value: options.detune
+			value: options.detune,
 		});
 
 		// control the two voices frequency
@@ -131,12 +144,21 @@ export class DuoSynth extends Monophonic<DuoSynthOptions> {
 		this.voice0.connect(this.output);
 		this.voice1.connect(this.output);
 
-		readOnly(this, ["voice0", "voice1", "frequency", "vibratoAmount", "vibratoRate"]);
+		readOnly(this, [
+			"voice0",
+			"voice1",
+			"frequency",
+			"vibratoAmount",
+			"vibratoRate",
+		]);
 	}
 
 	getLevelAtTime(time: Time): NormalRange {
 		time = this.toSeconds(time);
-		return this.voice0.envelope.getValueAtTime(time) + this.voice1.envelope.getValueAtTime(time);
+		return (
+			this.voice0.envelope.getValueAtTime(time) +
+			this.voice1.envelope.getValueAtTime(time)
+		);
 	}
 
 	static getDefaults(): DuoSynthOptions {
@@ -145,38 +167,45 @@ export class DuoSynth extends Monophonic<DuoSynthOptions> {
 			vibratoRate: 5,
 			harmonicity: 1.5,
 			voice0: deepMerge(
-				omitFromObject(MonoSynth.getDefaults(), Object.keys(Monophonic.getDefaults())),
+				omitFromObject(
+					MonoSynth.getDefaults(),
+					Object.keys(Monophonic.getDefaults())
+				),
 				{
 					filterEnvelope: {
 						attack: 0.01,
 						decay: 0.0,
 						sustain: 1,
-						release: 0.5
+						release: 0.5,
 					},
 					envelope: {
 						attack: 0.01,
 						decay: 0.0,
 						sustain: 1,
-						release: 0.5
-					}
-				}),
+						release: 0.5,
+					},
+				}
+			),
 			voice1: deepMerge(
-				omitFromObject(MonoSynth.getDefaults(), Object.keys(Monophonic.getDefaults())),
+				omitFromObject(
+					MonoSynth.getDefaults(),
+					Object.keys(Monophonic.getDefaults())
+				),
 				{
-
 					filterEnvelope: {
 						attack: 0.01,
 						decay: 0.0,
 						sustain: 1,
-						release: 0.5
+						release: 0.5,
 					},
 					envelope: {
 						attack: 0.01,
 						decay: 0.0,
 						sustain: 1,
-						release: 0.5
-					}
-				}),
+						release: 0.5,
+					},
+				}
+			),
 		}) as unknown as DuoSynthOptions;
 	}
 	/**
@@ -213,4 +242,3 @@ export class DuoSynth extends Monophonic<DuoSynthOptions> {
 		return this;
 	}
 }
-

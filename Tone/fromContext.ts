@@ -1,28 +1,31 @@
-import * as Classes from "./classes";
-import { Transport } from "./core/clock/Transport";
-import { Context } from "./core/context/Context";
-import { Listener } from "./core/context/Listener";
-import { Destination } from "./core/context/Destination";
-import { FrequencyClass } from "./core/type/Frequency";
-import { MidiClass } from "./core/type/Midi";
-import { TicksClass } from "./core/type/Ticks";
-import { TimeClass } from "./core/type/Time";
-import { TransportTimeClass } from "./core/type/TransportTime";
-import { isDefined, isFunction } from "./core/util/TypeCheck";
-import { omitFromObject } from "./core/util/Defaults";
-import { Draw } from "./core/util/Draw";
+import * as Classes from "./classes.js";
+import { TransportClass } from "./core/clock/Transport.js";
+import { Context } from "./core/context/Context.js";
+import { ListenerClass } from "./core/context/Listener.js";
+import { DestinationClass } from "./core/context/Destination.js";
+import { FrequencyClass } from "./core/type/Frequency.js";
+import { MidiClass } from "./core/type/Midi.js";
+import { TicksClass } from "./core/type/Ticks.js";
+import { TimeClass } from "./core/type/Time.js";
+import { TransportTimeClass } from "./core/type/TransportTime.js";
+import { isDefined, isFunction } from "./core/util/TypeCheck.js";
+import { omitFromObject } from "./core/util/Defaults.js";
+import { DrawClass } from "./core/util/Draw.js";
 
-type ClassesWithoutSingletons = Omit<typeof Classes, "Transport" | "Destination" | "Draw">;
+type ClassesWithoutSingletons = Omit<
+	typeof Classes,
+	"Transport" | "Destination" | "Draw"
+>;
 
 /**
  * The exported Tone object. Contains all of the classes that default
  * to the same context and contains a singleton Transport and Destination node.
  */
 type ToneObject = {
-	Transport: Transport;
-	Destination: Destination;
-	Listener: Listener;
-	Draw: Draw;
+	Transport: TransportClass;
+	Destination: DestinationClass;
+	Listener: ListenerClass;
+	Draw: DrawClass;
 	context: Context;
 	now: () => number;
 	immediate: () => number;
@@ -32,7 +35,7 @@ type ToneObject = {
  * Bind the TimeBaseClass to the context
  */
 function bindTypeClass(context: Context, type) {
-	return (...args: any[]) => new type(context, ...args);
+	return (...args: unknown[]) => new type(context, ...args);
 }
 
 /**
@@ -40,9 +43,10 @@ function bindTypeClass(context: Context, type) {
  * @param context The context to bind all of the nodes to
  */
 export function fromContext(context: Context): ToneObject {
-
 	const classesWithContext: Partial<ClassesWithoutSingletons> = {};
-	Object.keys(omitFromObject(Classes, ["Transport", "Destination", "Draw"])).map(key => {
+	Object.keys(
+		omitFromObject(Classes, ["Transport", "Destination", "Draw"])
+	).map((key) => {
 		const cls = Classes[key];
 		if (isDefined(cls) && isFunction(cls.getDefaults)) {
 			classesWithContext[key] = class ToneFromContextNode extends cls {

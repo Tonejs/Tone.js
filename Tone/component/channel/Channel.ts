@@ -1,11 +1,16 @@
-import { AudioRange, Decibels } from "../../core/type/Units";
-import { InputNode, OutputNode, ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
-import { optionsFromArguments } from "../../core/util/Defaults";
-import { Solo } from "./Solo";
-import { PanVol } from "./PanVol";
-import { Param } from "../../core/context/Param";
-import { readOnly } from "../../core/util/Interface";
-import { Gain } from "../../core/context/Gain";
+import { AudioRange, Decibels } from "../../core/type/Units.js";
+import {
+	InputNode,
+	OutputNode,
+	ToneAudioNode,
+	ToneAudioNodeOptions,
+} from "../../core/context/ToneAudioNode.js";
+import { optionsFromArguments } from "../../core/util/Defaults.js";
+import { Solo } from "./Solo.js";
+import { PanVol } from "./PanVol.js";
+import { Param } from "../../core/context/Param.js";
+import { readOnly } from "../../core/util/Interface.js";
+import { Gain } from "../../core/context/Gain.js";
 
 export interface ChannelOptions extends ToneAudioNodeOptions {
 	pan: AudioRange;
@@ -16,15 +21,14 @@ export interface ChannelOptions extends ToneAudioNodeOptions {
 }
 
 /**
- * Channel provides a channel strip interface with volume, pan, solo and mute controls. 
- * See [[PanVol]] and [[Solo]]
+ * Channel provides a channel strip interface with volume, pan, solo and mute controls.
+ * @see {@link PanVol} and {@link Solo}
  * @example
  * // pan the incoming signal left and drop the volume 12db
  * const channel = new Tone.Channel(-0.25, -12);
  * @category Component
  */
 export class Channel extends ToneAudioNode<ChannelOptions> {
-
 	readonly name: string = "Channel";
 
 	readonly input: InputNode;
@@ -59,8 +63,11 @@ export class Channel extends ToneAudioNode<ChannelOptions> {
 	constructor(volume?: Decibels, pan?: AudioRange);
 	constructor(options?: Partial<ChannelOptions>);
 	constructor() {
-		super(optionsFromArguments(Channel.getDefaults(), arguments, ["volume", "pan"]));
-		const options = optionsFromArguments(Channel.getDefaults(), arguments, ["volume", "pan"]);
+		const options = optionsFromArguments(Channel.getDefaults(), arguments, [
+			"volume",
+			"pan",
+		]);
+		super(options);
 
 		this._solo = this.input = new Solo({
 			solo: options.solo,
@@ -71,7 +78,7 @@ export class Channel extends ToneAudioNode<ChannelOptions> {
 			pan: options.pan,
 			volume: options.volume,
 			mute: options.mute,
-			channelCount: options.channelCount
+			channelCount: options.channelCount,
 		});
 		this.pan = this._panVol.pan;
 		this.volume = this._panVol.volume;
@@ -91,7 +98,7 @@ export class Channel extends ToneAudioNode<ChannelOptions> {
 	}
 
 	/**
-	 * Solo/unsolo the channel. Soloing is only relative to other [[Channels]] and [[Solo]] instances
+	 * Solo/unsolo the channel. Soloing is only relative to other {@link Channel}s and {@link Solo} instances
 	 */
 	get solo(): boolean {
 		return this._solo.solo;
@@ -119,7 +126,7 @@ export class Channel extends ToneAudioNode<ChannelOptions> {
 	}
 
 	/**
-	 * Store the send/receive channels by name. 
+	 * Store the send/receive channels by name.
 	 */
 	private static buses: Map<string, Gain> = new Map();
 
@@ -137,11 +144,11 @@ export class Channel extends ToneAudioNode<ChannelOptions> {
 
 	/**
 	 * Send audio to another channel using a string. `send` is a lot like
-	 * [[connect]], except it uses a string instead of an object. This can 
-	 * be useful in large applications to decouple sections since [[send]]
-	 * and [[receive]] can be invoked separately in order to connect an object
+	 * {@link connect}, except it uses a string instead of an object. This can
+	 * be useful in large applications to decouple sections since {@link send}
+	 * and {@link receive} can be invoked separately in order to connect an object
 	 * @param name The channel name to send the audio
-	 * @param volume The amount of the signal to send. 
+	 * @param volume The amount of the signal to send.
 	 * 	Defaults to 0db, i.e. send the entire signal
 	 * @returns Returns the gain node of this connection.
 	 */
@@ -158,7 +165,7 @@ export class Channel extends ToneAudioNode<ChannelOptions> {
 	}
 
 	/**
-	 * Receive audio from a channel which was connected with [[send]]. 
+	 * Receive audio from a channel which was connected with {@link send}.
 	 * @param name The channel name to receive audio from.
 	 */
 	receive(name: string): this {

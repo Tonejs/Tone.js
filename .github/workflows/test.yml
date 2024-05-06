@@ -1,0 +1,168 @@
+name: Tests
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+    branches:
+      - dev
+      - main
+  push:
+    branches:
+      - dev
+      - main
+jobs:
+  run-tests:
+    name: All tests
+    permissions:
+      contents: read
+      id-token: write
+    runs-on: ubuntu-latest
+    env:
+      BROWSER: chrome
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v4
+      - name: Setup Nodejs
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18.18.0
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm install
+      - name: All tests
+        run: npm run test
+      - name: Upload coverage
+        uses: codecov/codecov-action@v4
+        with:
+          fail_ci_if_error: false
+          codecov_yml_path: ./.github/codecov.yml
+          token: ${{ secrets.CODECOV_TOKEN }}
+  test-code-examples:
+    name: Check typedocs
+    permissions:
+      contents: read
+      id-token: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v4
+      - name: Setup Nodejs
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18.18.0
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm install
+      - name: Build Docs
+        run: npm run build && npm run docs:json
+      - name: tsdoc @example checks
+        run: npm run test:examples
+  test-html-examples:
+    name: Run HTML Examples
+    permissions:
+      contents: read
+      id-token: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v4
+      - name: Setup Nodejs
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18.18.0
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm install
+      - name: Build
+        run: npm run build
+      - name: Code example tests
+        run: npm run test:html
+  test-lint:
+    name: Linting and environment checks
+    permissions:
+      contents: read
+      id-token: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v4
+      - name: Setup Nodejs
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18.18.0
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm install
+      - name: Linting
+        run: npm run lint
+  test-readme:
+    name: Ensure that examples in the README compile
+    permissions:
+      contents: read
+      id-token: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v4
+      - name: Setup Nodejs
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18.18.0
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm install
+      - name: Build
+        run: npm run build
+      - name: Test
+        run: npm run test:readme
+  test-integrations:
+    name: Test integrations
+    permissions:
+      contents: read
+      id-token: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v4
+      - name: Setup Nodejs
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18.18.0
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm install
+      - name: Build
+        run: npm run build
+      - name: Test
+        run: npm run test:integrations
+  publish:
+    runs-on: ubuntu-latest
+    # make sure all the tests pass first
+    needs: [run-tests, test-code-examples, test-html-examples, test-lint, test-readme, test-integrations]
+    # not on PRs
+    if: github.event_name != 'pull_request'
+    env:
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        GITHUB_CI: true
+    steps:
+      - uses: actions/checkout@v4
+      # Setup .npmrc file to publish to npm
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18.18.0
+          registry-url: 'https://registry.npmjs.org'
+      - name: Install dependencies
+        run: npm install
+      - name: Build
+        run: npm run build
+      - name: Increment version
+        run: npm run increment
+      - name: Publish @next
+        # dev branch gets published with @next tag
+        run: npm publish --tag next
+        if: ${{ github.ref == 'refs/heads/dev' }}
+      - name: Publish @latest
+        # main branch gets published with @latest tag
+        run: npm publish
+        if: ${{ github.ref == 'refs/heads/main' }}

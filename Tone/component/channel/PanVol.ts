@@ -1,10 +1,15 @@
-import { readOnly } from "../../core/util/Interface";
-import { Param } from "../../core/context/Param";
-import { InputNode, OutputNode, ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
-import { AudioRange, Decibels } from "../../core/type/Units";
-import { optionsFromArguments } from "../../core/util/Defaults";
-import { Panner } from "./Panner";
-import { Volume } from "./Volume";
+import { readOnly } from "../../core/util/Interface.js";
+import { Param } from "../../core/context/Param.js";
+import {
+	InputNode,
+	OutputNode,
+	ToneAudioNode,
+	ToneAudioNodeOptions,
+} from "../../core/context/ToneAudioNode.js";
+import { AudioRange, Decibels } from "../../core/type/Units.js";
+import { optionsFromArguments } from "../../core/util/Defaults.js";
+import { Panner } from "./Panner.js";
+import { Volume } from "./Volume.js";
 
 export interface PanVolOptions extends ToneAudioNodeOptions {
 	pan: AudioRange;
@@ -22,7 +27,6 @@ export interface PanVolOptions extends ToneAudioNodeOptions {
  * @category Component
  */
 export class PanVol extends ToneAudioNode<PanVolOptions> {
-
 	readonly name: string = "PanVol";
 
 	readonly input: InputNode;
@@ -57,9 +61,11 @@ export class PanVol extends ToneAudioNode<PanVolOptions> {
 	constructor(pan?: AudioRange, volume?: Decibels);
 	constructor(options?: Partial<PanVolOptions>);
 	constructor() {
-
-		super(optionsFromArguments(PanVol.getDefaults(), arguments, ["pan", "volume"]));
-		const options = optionsFromArguments(PanVol.getDefaults(), arguments, ["pan", "volume"]);
+		const options = optionsFromArguments(PanVol.getDefaults(), arguments, [
+			"pan",
+			"volume",
+		]);
+		super(options);
 
 		this._panner = this.input = new Panner({
 			context: this.context,

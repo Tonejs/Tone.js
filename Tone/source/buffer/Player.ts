@@ -1,12 +1,12 @@
-import { ToneAudioBuffer } from "../../core/context/ToneAudioBuffer";
-import { Positive, Seconds, Time } from "../../core/type/Units";
-import { defaultArg, optionsFromArguments } from "../../core/util/Defaults";
-import { noOp } from "../../core/util/Interface";
-import { isUndef } from "../../core/util/TypeCheck";
-import { Source, SourceOptions } from "../Source";
-import { ToneBufferSource } from "./ToneBufferSource";
-import { assertRange } from "../../core/util/Debug";
-import { timeRange } from "../../core/util/Decorator";
+import { ToneAudioBuffer } from "../../core/context/ToneAudioBuffer.js";
+import { Positive, Seconds, Time } from "../../core/type/Units.js";
+import { defaultArg, optionsFromArguments } from "../../core/util/Defaults.js";
+import { noOp } from "../../core/util/Interface.js";
+import { isUndef } from "../../core/util/TypeCheck.js";
+import { Source, SourceOptions } from "../Source.js";
+import { ToneBufferSource } from "./ToneBufferSource.js";
+import { assertRange } from "../../core/util/Debug.js";
+import { timeRange } from "../../core/util/Decorator.js";
 
 export interface PlayerOptions extends SourceOptions {
 	onload: () => void;
@@ -91,16 +91,11 @@ export class Player extends Source<PlayerOptions> {
 	);
 	constructor(options?: Partial<PlayerOptions>);
 	constructor() {
-		super(
-			optionsFromArguments(Player.getDefaults(), arguments, [
-				"url",
-				"onload",
-			])
-		);
 		const options = optionsFromArguments(Player.getDefaults(), arguments, [
 			"url",
 			"onload",
 		]);
+		super(options);
 
 		this._buffer = new ToneAudioBuffer({
 			onload: this._onload.bind(this, options.onload),
@@ -432,7 +427,7 @@ export class Player extends Source<PlayerOptions> {
 	}
 
 	/**
-	 * If the buffer should be reversed. Note that this sets the underlying [[ToneAudioBuffer.reverse]], so
+	 * If the buffer should be reversed. Note that this sets the underlying {@link ToneAudioBuffer.reverse}, so
 	 * if multiple players are pointing at the same ToneAudioBuffer, they will all be reversed.
 	 * @example
 	 * const player = new Tone.Player("https://tonejs.github.io/audio/berklee/chime_1.mp3").toDestination();
