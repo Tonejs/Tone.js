@@ -186,19 +186,12 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	);
 	constructor(options?: Partial<EnvelopeOptions>);
 	constructor() {
-		super(
-			optionsFromArguments(Envelope.getDefaults(), arguments, [
-				"attack",
-				"decay",
-				"sustain",
-				"release",
-			])
-		);
 		const options = optionsFromArguments(
 			Envelope.getDefaults(),
 			arguments,
 			["attack", "decay", "sustain", "release"]
 		);
+		super(options);
 
 		this.attack = options.attack;
 		this.decay = options.decay;

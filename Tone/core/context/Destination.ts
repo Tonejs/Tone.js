@@ -48,11 +48,11 @@ export class DestinationClass extends ToneAudioNode<DestinationOptions> {
 
 	constructor(options: Partial<DestinationOptions>);
 	constructor() {
-		super(optionsFromArguments(DestinationClass.getDefaults(), arguments));
 		const options = optionsFromArguments(
 			DestinationClass.getDefaults(),
 			arguments
 		);
+		super(options);
 
 		connectSeries(
 			this.input,

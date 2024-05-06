@@ -35,11 +35,7 @@ export class GreaterThanZero extends SignalOperator<GreaterThanZeroOptions> {
 
 	constructor(options?: Partial<GreaterThanZeroOptions>);
 	constructor() {
-		super(
-			Object.assign(
-				optionsFromArguments(GreaterThanZero.getDefaults(), arguments)
-			)
-		);
+		super(optionsFromArguments(GreaterThanZero.getDefaults(), arguments));
 
 		this._thresh = this.output = new WaveShaper({
 			context: this.context,

@@ -32,20 +32,12 @@ export class ScaleExp extends Scale<ScaleExpOptions> {
 	constructor(min?: number, max?: number, exponent?: number);
 	constructor(options?: Partial<ScaleExpOptions>);
 	constructor() {
-		super(
-			Object.assign(
-				optionsFromArguments(ScaleExp.getDefaults(), arguments, [
-					"min",
-					"max",
-					"exponent",
-				])
-			)
-		);
 		const options = optionsFromArguments(
 			ScaleExp.getDefaults(),
 			arguments,
 			["min", "max", "exponent"]
 		);
+		super(options);
 
 		this.input = this._exp = new Pow({
 			context: this.context,

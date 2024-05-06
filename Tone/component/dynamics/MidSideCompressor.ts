@@ -49,15 +49,11 @@ export class MidSideCompressor extends ToneAudioNode<MidSideCompressorOptions> {
 
 	constructor(options?: RecursivePartial<MidSideCompressorOptions>);
 	constructor() {
-		super(
-			Object.assign(
-				optionsFromArguments(MidSideCompressor.getDefaults(), arguments)
-			)
-		);
 		const options = optionsFromArguments(
 			MidSideCompressor.getDefaults(),
 			arguments
 		);
+		super(options);
 
 		this._midSideSplit = this.input = new MidSideSplit({
 			context: this.context,

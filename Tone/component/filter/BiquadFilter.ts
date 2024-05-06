@@ -61,17 +61,12 @@ export class BiquadFilter extends ToneAudioNode<BiquadFilterOptions> {
 	constructor(frequency?: Frequency, type?: BiquadFilterType);
 	constructor(options?: Partial<BiquadFilterOptions>);
 	constructor() {
-		super(
-			optionsFromArguments(BiquadFilter.getDefaults(), arguments, [
-				"frequency",
-				"type",
-			])
-		);
 		const options = optionsFromArguments(
 			BiquadFilter.getDefaults(),
 			arguments,
 			["frequency", "type"]
 		);
+		super(options);
 
 		this._filter = this.context.createBiquadFilter();
 		this.input = this.output = this._filter;

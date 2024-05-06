@@ -110,20 +110,13 @@ export class Sampler extends Instrument<SamplerOptions> {
 	);
 	constructor(options?: Partial<SamplerOptions>);
 	constructor() {
-		super(
-			optionsFromArguments(
-				Sampler.getDefaults(),
-				arguments,
-				["urls", "onload", "baseUrl"],
-				"urls"
-			)
-		);
 		const options = optionsFromArguments(
 			Sampler.getDefaults(),
 			arguments,
 			["urls", "onload", "baseUrl"],
 			"urls"
 		);
+		super(options);
 
 		const urlMap = {};
 		Object.keys(options.urls).forEach((note) => {

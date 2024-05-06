@@ -57,8 +57,8 @@ export class Recorder extends ToneAudioNode<RecorderOptions> {
 
 	constructor(options?: Partial<RecorderOptions>);
 	constructor() {
-		super(optionsFromArguments(Recorder.getDefaults(), arguments));
 		const options = optionsFromArguments(Recorder.getDefaults(), arguments);
+		super(options);
 
 		this.input = new Gain({
 			context: this.context,

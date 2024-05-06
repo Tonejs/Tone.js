@@ -90,18 +90,12 @@ export class EQ3 extends ToneAudioNode<EQ3Options> {
 	constructor(lowLevel?: Decibels, midLevel?: Decibels, highLevel?: Decibels);
 	constructor(options: Partial<EQ3Options>);
 	constructor() {
-		super(
-			optionsFromArguments(EQ3.getDefaults(), arguments, [
-				"low",
-				"mid",
-				"high",
-			])
-		);
 		const options = optionsFromArguments(EQ3.getDefaults(), arguments, [
 			"low",
 			"mid",
 			"high",
 		]);
+		super(options);
 
 		this.input = this._multibandSplit = new MultibandSplit({
 			context: this.context,

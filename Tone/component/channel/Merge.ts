@@ -44,12 +44,10 @@ export class Merge extends ToneAudioNode<MergeOptions> {
 	constructor(channels?: Positive);
 	constructor(options?: Partial<MergeOptions>);
 	constructor() {
-		super(
-			optionsFromArguments(Merge.getDefaults(), arguments, ["channels"])
-		);
 		const options = optionsFromArguments(Merge.getDefaults(), arguments, [
 			"channels",
 		]);
+		super(options);
 
 		this._merger =
 			this.output =

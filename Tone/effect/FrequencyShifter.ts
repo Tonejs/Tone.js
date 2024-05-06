@@ -81,16 +81,12 @@ export class FrequencyShifter extends Effect<FrequencyShifterOptions> {
 	constructor(frequency?: Frequency);
 	constructor(options?: Partial<FrequencyShifterOptions>);
 	constructor() {
-		super(
-			optionsFromArguments(FrequencyShifter.getDefaults(), arguments, [
-				"frequency",
-			])
-		);
 		const options = optionsFromArguments(
 			FrequencyShifter.getDefaults(),
 			arguments,
 			["frequency"]
 		);
+		super(options);
 
 		this.frequency = new Signal({
 			context: this.context,

@@ -84,8 +84,8 @@ export class DuoSynth extends Monophonic<DuoSynthOptions> {
 
 	constructor(options?: RecursivePartial<DuoSynthOptions>);
 	constructor() {
-		super(optionsFromArguments(DuoSynth.getDefaults(), arguments));
 		const options = optionsFromArguments(DuoSynth.getDefaults(), arguments);
+		super(options);
 
 		this.voice0 = new MonoSynth(
 			Object.assign(options.voice0, {

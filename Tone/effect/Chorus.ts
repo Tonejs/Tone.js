@@ -88,18 +88,12 @@ export class Chorus extends StereoFeedbackEffect<ChorusOptions> {
 	);
 	constructor(options?: Partial<ChorusOptions>);
 	constructor() {
-		super(
-			optionsFromArguments(Chorus.getDefaults(), arguments, [
-				"frequency",
-				"delayTime",
-				"depth",
-			])
-		);
 		const options = optionsFromArguments(Chorus.getDefaults(), arguments, [
 			"frequency",
 			"delayTime",
 			"depth",
 		]);
+		super(options);
 
 		this._depth = options.depth;
 		this._delayTime = options.delayTime / 1000;

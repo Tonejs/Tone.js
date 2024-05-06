@@ -50,16 +50,12 @@ export class Follower extends ToneAudioNode<FollowerOptions> {
 	constructor(smoothing?: Time);
 	constructor(options?: Partial<FollowerOptions>);
 	constructor() {
-		super(
-			optionsFromArguments(Follower.getDefaults(), arguments, [
-				"smoothing",
-			])
-		);
 		const options = optionsFromArguments(
 			Follower.getDefaults(),
 			arguments,
 			["smoothing"]
 		);
+		super(options);
 
 		this._abs = this.input = new Abs({ context: this.context });
 		this._lowpass = this.output = new OnePoleFilter({

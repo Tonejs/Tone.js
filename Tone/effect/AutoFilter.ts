@@ -50,18 +50,12 @@ export class AutoFilter extends LFOEffect<AutoFilterOptions> {
 	);
 	constructor(options?: Partial<AutoFilterOptions>);
 	constructor() {
-		super(
-			optionsFromArguments(AutoFilter.getDefaults(), arguments, [
-				"frequency",
-				"baseFrequency",
-				"octaves",
-			])
-		);
 		const options = optionsFromArguments(
 			AutoFilter.getDefaults(),
 			arguments,
 			["frequency", "baseFrequency", "octaves"]
 		);
+		super(options);
 
 		this.filter = new Filter(
 			Object.assign(options.filter, {

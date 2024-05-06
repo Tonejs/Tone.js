@@ -52,11 +52,11 @@ export class PluckSynth extends Instrument<PluckSynthOptions> {
 
 	constructor(options?: RecursivePartial<PluckSynthOptions>);
 	constructor() {
-		super(optionsFromArguments(PluckSynth.getDefaults(), arguments));
 		const options = optionsFromArguments(
 			PluckSynth.getDefaults(),
 			arguments
 		);
+		super(options);
 
 		this._noise = new Noise({
 			context: this.context,

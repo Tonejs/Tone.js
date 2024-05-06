@@ -97,11 +97,11 @@ export class MetalSynth extends Monophonic<MetalSynthOptions> {
 
 	constructor(options?: RecursivePartial<MetalSynthOptions>);
 	constructor() {
-		super(optionsFromArguments(MetalSynth.getDefaults(), arguments));
 		const options = optionsFromArguments(
 			MetalSynth.getDefaults(),
 			arguments
 		);
+		super(options);
 
 		this.detune = new Signal({
 			context: this.context,

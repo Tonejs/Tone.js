@@ -32,16 +32,12 @@ export class AutoPanner extends LFOEffect<AutoPannerOptions> {
 	constructor(frequency?: Frequency);
 	constructor(options?: Partial<AutoPannerOptions>);
 	constructor() {
-		super(
-			optionsFromArguments(AutoPanner.getDefaults(), arguments, [
-				"frequency",
-			])
-		);
 		const options = optionsFromArguments(
 			AutoPanner.getDefaults(),
 			arguments,
 			["frequency"]
 		);
+		super(options);
 
 		this._panner = new Panner({
 			context: this.context,

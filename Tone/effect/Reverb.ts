@@ -56,10 +56,10 @@ export class Reverb extends Effect<ReverbOptions> {
 	constructor(decay?: Seconds);
 	constructor(options?: Partial<ReverbOptions>);
 	constructor() {
-		super(optionsFromArguments(Reverb.getDefaults(), arguments, ["decay"]));
 		const options = optionsFromArguments(Reverb.getDefaults(), arguments, [
 			"decay",
 		]);
+		super(options);
 
 		this._decay = options.decay;
 		this._preDelay = options.preDelay;

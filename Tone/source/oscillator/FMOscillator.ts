@@ -99,18 +99,12 @@ export class FMOscillator
 	);
 	constructor(options?: Partial<FMConstructorOptions>);
 	constructor() {
-		super(
-			optionsFromArguments(FMOscillator.getDefaults(), arguments, [
-				"frequency",
-				"type",
-				"modulationType",
-			])
-		);
 		const options = optionsFromArguments(
 			FMOscillator.getDefaults(),
 			arguments,
 			["frequency", "type", "modulationType"]
 		);
+		super(options);
 
 		this._carrier = new Oscillator({
 			context: this.context,

@@ -52,11 +52,11 @@ export abstract class Instrument<
 
 	constructor(options?: Partial<InstrumentOptions>);
 	constructor() {
-		super(optionsFromArguments(Instrument.getDefaults(), arguments));
 		const options = optionsFromArguments(
 			Instrument.getDefaults(),
 			arguments
 		);
+		super(options);
 
 		this._volume = this.output = new Volume({
 			context: this.context,

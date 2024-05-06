@@ -87,20 +87,13 @@ export class Players extends ToneAudioNode<PlayersOptions> {
 	);
 	constructor(options?: Partial<PlayersOptions>);
 	constructor() {
-		super(
-			optionsFromArguments(
-				Players.getDefaults(),
-				arguments,
-				["urls", "onload"],
-				"urls"
-			)
-		);
 		const options = optionsFromArguments(
 			Players.getDefaults(),
 			arguments,
 			["urls", "onload"],
 			"urls"
 		);
+		super(options);
 
 		/**
 		 * The output volume node

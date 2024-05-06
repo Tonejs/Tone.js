@@ -42,16 +42,12 @@ export class ToneConstantSource<
 	constructor(offset: UnitMap[TypeName]);
 	constructor(options?: Partial<ToneConstantSourceOptions<TypeName>>);
 	constructor() {
-		super(
-			optionsFromArguments(ToneConstantSource.getDefaults(), arguments, [
-				"offset",
-			])
-		);
 		const options = optionsFromArguments(
 			ToneConstantSource.getDefaults(),
 			arguments,
 			["offset"]
 		);
+		super(options);
 
 		connect(this._source, this._gainNode);
 

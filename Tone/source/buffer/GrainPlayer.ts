@@ -92,17 +92,12 @@ export class GrainPlayer extends Source<GrainPlayerOptions> {
 	);
 	constructor(options?: Partial<GrainPlayerOptions>);
 	constructor() {
-		super(
-			optionsFromArguments(GrainPlayer.getDefaults(), arguments, [
-				"url",
-				"onload",
-			])
-		);
 		const options = optionsFromArguments(
 			GrainPlayer.getDefaults(),
 			arguments,
 			["url", "onload"]
 		);
+		super(options);
 
 		this.buffer = new ToneAudioBuffer({
 			onload: options.onload,

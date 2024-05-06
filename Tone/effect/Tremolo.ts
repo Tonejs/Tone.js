@@ -68,16 +68,11 @@ export class Tremolo extends StereoEffect<TremoloOptions> {
 	constructor(frequency?: Frequency, depth?: NormalRange);
 	constructor(options?: Partial<TremoloOptions>);
 	constructor() {
-		super(
-			optionsFromArguments(Tremolo.getDefaults(), arguments, [
-				"frequency",
-				"depth",
-			])
-		);
 		const options = optionsFromArguments(Tremolo.getDefaults(), arguments, [
 			"frequency",
 			"depth",
 		]);
+		super(options);
 
 		this._lfoL = new LFO({
 			context: this.context,

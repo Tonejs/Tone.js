@@ -54,12 +54,10 @@ export class Volume extends ToneAudioNode<VolumeOptions> {
 	constructor(volume?: Decibels);
 	constructor(options?: Partial<VolumeOptions>);
 	constructor() {
-		super(
-			optionsFromArguments(Volume.getDefaults(), arguments, ["volume"])
-		);
 		const options = optionsFromArguments(Volume.getDefaults(), arguments, [
 			"volume",
 		]);
+		super(options);
 
 		this.input = this.output = new Gain({
 			context: this.context,

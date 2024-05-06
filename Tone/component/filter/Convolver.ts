@@ -50,17 +50,12 @@ export class Convolver extends ToneAudioNode<ConvolverOptions> {
 	);
 	constructor(options?: Partial<ConvolverOptions>);
 	constructor() {
-		super(
-			optionsFromArguments(Convolver.getDefaults(), arguments, [
-				"url",
-				"onload",
-			])
-		);
 		const options = optionsFromArguments(
 			Convolver.getDefaults(),
 			arguments,
 			["url", "onload"]
 		);
+		super(options);
 
 		this._buffer = new ToneAudioBuffer(options.url, (buffer) => {
 			this.buffer = buffer;

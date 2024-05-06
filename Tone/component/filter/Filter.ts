@@ -73,18 +73,12 @@ export class Filter extends ToneAudioNode<FilterOptions> {
 	);
 	constructor(options?: Partial<FilterOptions>);
 	constructor() {
-		super(
-			optionsFromArguments(Filter.getDefaults(), arguments, [
-				"frequency",
-				"type",
-				"rolloff",
-			])
-		);
 		const options = optionsFromArguments(Filter.getDefaults(), arguments, [
 			"frequency",
 			"type",
 			"rolloff",
 		]);
+		super(options);
 
 		this._filters = [];
 

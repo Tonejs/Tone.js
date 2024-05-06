@@ -124,18 +124,12 @@ export class LFO extends ToneAudioNode<LFOOptions> {
 	constructor(frequency?: Frequency, min?: number, max?: number);
 	constructor(options?: Partial<LFOOptions>);
 	constructor() {
-		super(
-			optionsFromArguments(LFO.getDefaults(), arguments, [
-				"frequency",
-				"min",
-				"max",
-			])
-		);
 		const options = optionsFromArguments(LFO.getDefaults(), arguments, [
 			"frequency",
 			"min",
 			"max",
 		]);
+		super(options);
 
 		this._oscillator = new Oscillator(
 			options as ToneOscillatorConstructorOptions

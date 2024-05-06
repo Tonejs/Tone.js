@@ -40,17 +40,12 @@ export class FeedbackDelay extends FeedbackEffect<FeedbackDelayOptions> {
 	constructor(delayTime?: Time, feedback?: NormalRange);
 	constructor(options?: Partial<FeedbackDelayOptions>);
 	constructor() {
-		super(
-			optionsFromArguments(FeedbackDelay.getDefaults(), arguments, [
-				"delayTime",
-				"feedback",
-			])
-		);
 		const options = optionsFromArguments(
 			FeedbackDelay.getDefaults(),
 			arguments,
 			["delayTime", "feedback"]
 		);
+		super(options);
 
 		this._delayNode = new Delay({
 			context: this.context,

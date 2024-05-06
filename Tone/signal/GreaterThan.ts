@@ -55,18 +55,12 @@ export class GreaterThan extends Signal<"number"> {
 	constructor(value?: number);
 	constructor(options?: Partial<GreaterThanOptions>);
 	constructor() {
-		super(
-			Object.assign(
-				optionsFromArguments(GreaterThan.getDefaults(), arguments, [
-					"value",
-				])
-			)
-		);
 		const options = optionsFromArguments(
 			GreaterThan.getDefaults(),
 			arguments,
 			["value"]
 		);
+		super(options);
 
 		this._subtract = this.input = new Subtract({
 			context: this.context,

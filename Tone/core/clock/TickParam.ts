@@ -44,14 +44,12 @@ export class TickParam<
 	constructor(value?: number);
 	constructor(options: Partial<TickParamOptions<TypeName>>);
 	constructor() {
-		super(
-			optionsFromArguments(TickParam.getDefaults(), arguments, ["value"])
-		);
 		const options = optionsFromArguments(
 			TickParam.getDefaults(),
 			arguments,
 			["value"]
 		);
+		super(options);
 
 		// set the multiplier
 		this._multiplier = options.multiplier;

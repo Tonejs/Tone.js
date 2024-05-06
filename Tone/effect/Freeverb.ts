@@ -71,17 +71,12 @@ export class Freeverb extends StereoEffect<FreeverbOptions> {
 	constructor(roomSize?: NormalRange, dampening?: Frequency);
 	constructor(options?: Partial<FreeverbOptions>);
 	constructor() {
-		super(
-			optionsFromArguments(Freeverb.getDefaults(), arguments, [
-				"roomSize",
-				"dampening",
-			])
-		);
 		const options = optionsFromArguments(
 			Freeverb.getDefaults(),
 			arguments,
 			["roomSize", "dampening"]
 		);
+		super(options);
 
 		this.roomSize = new Signal({
 			context: this.context,

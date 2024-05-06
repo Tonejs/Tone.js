@@ -48,17 +48,12 @@ export class FeedbackCombFilter extends ToneAudioWorklet<FeedbackCombFilterOptio
 	constructor(delayTime?: Time, resonance?: NormalRange);
 	constructor(options?: RecursivePartial<FeedbackCombFilterOptions>);
 	constructor() {
-		super(
-			optionsFromArguments(FeedbackCombFilter.getDefaults(), arguments, [
-				"delayTime",
-				"resonance",
-			])
-		);
 		const options = optionsFromArguments(
 			FeedbackCombFilter.getDefaults(),
 			arguments,
 			["delayTime", "resonance"]
 		);
+		super(options);
 
 		this.input = new Gain({ context: this.context });
 		this.output = new Gain({ context: this.context });

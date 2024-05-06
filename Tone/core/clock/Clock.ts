@@ -80,16 +80,11 @@ export class Clock<TypeName extends "bpm" | "hertz" = "hertz">
 	constructor(callback?: ClockCallback, frequency?: Frequency);
 	constructor(options: Partial<ClockOptions>);
 	constructor() {
-		super(
-			optionsFromArguments(Clock.getDefaults(), arguments, [
-				"callback",
-				"frequency",
-			])
-		);
 		const options = optionsFromArguments(Clock.getDefaults(), arguments, [
 			"callback",
 			"frequency",
 		]);
+		super(options);
 
 		this.callback = options.callback;
 		this._tickSource = new TickSource({

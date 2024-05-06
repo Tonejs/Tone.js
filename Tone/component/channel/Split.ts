@@ -33,12 +33,10 @@ export class Split extends ToneAudioNode<SplitOptions> {
 	constructor(channels?: number);
 	constructor(options?: Partial<SplitOptions>);
 	constructor() {
-		super(
-			optionsFromArguments(Split.getDefaults(), arguments, ["channels"])
-		);
 		const options = optionsFromArguments(Split.getDefaults(), arguments, [
 			"channels",
 		]);
+		super(options);
 
 		this._splitter =
 			this.input =

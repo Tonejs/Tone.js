@@ -54,18 +54,11 @@ export class Gate extends ToneAudioNode<GateOptions> {
 	constructor(threshold?: Decibels, smoothing?: Time);
 	constructor(options?: Partial<GateOptions>);
 	constructor() {
-		super(
-			Object.assign(
-				optionsFromArguments(Gate.getDefaults(), arguments, [
-					"threshold",
-					"smoothing",
-				])
-			)
-		);
 		const options = optionsFromArguments(Gate.getDefaults(), arguments, [
 			"threshold",
 			"smoothing",
 		]);
+		super(options);
 
 		this._follower = new Follower({
 			context: this.context,

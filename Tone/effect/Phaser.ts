@@ -83,18 +83,12 @@ export class Phaser extends StereoEffect<PhaserOptions> {
 	);
 	constructor(options?: Partial<PhaserOptions>);
 	constructor() {
-		super(
-			optionsFromArguments(Phaser.getDefaults(), arguments, [
-				"frequency",
-				"octaves",
-				"baseFrequency",
-			])
-		);
 		const options = optionsFromArguments(Phaser.getDefaults(), arguments, [
 			"frequency",
 			"octaves",
 			"baseFrequency",
 		]);
+		super(options);
 
 		this._lfoL = new LFO({
 			context: this.context,

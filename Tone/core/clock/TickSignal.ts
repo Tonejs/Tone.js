@@ -36,14 +36,12 @@ export class TickSignal<
 	constructor(value?: UnitMap[TypeName]);
 	constructor(options: Partial<TickSignalOptions<TypeName>>);
 	constructor() {
-		super(
-			optionsFromArguments(TickSignal.getDefaults(), arguments, ["value"])
-		);
 		const options = optionsFromArguments(
 			TickSignal.getDefaults(),
 			arguments,
 			["value"]
 		);
+		super(options);
 
 		this.input = this._param = new TickParam({
 			context: this.context,

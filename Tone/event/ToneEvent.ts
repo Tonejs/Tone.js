@@ -124,17 +124,12 @@ export class ToneEvent<ValueType = any> extends ToneWithContext<
 	constructor(callback?: ToneEventCallback<ValueType>, value?: ValueType);
 	constructor(options?: Partial<ToneEventOptions<ValueType>>);
 	constructor() {
-		super(
-			optionsFromArguments(ToneEvent.getDefaults(), arguments, [
-				"callback",
-				"value",
-			])
-		);
 		const options = optionsFromArguments(
 			ToneEvent.getDefaults(),
 			arguments,
 			["callback", "value"]
 		);
+		super(options);
 
 		this._loop = options.loop;
 		this.callback = options.callback;

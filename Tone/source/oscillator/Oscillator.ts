@@ -87,17 +87,12 @@ export class Oscillator
 	constructor(frequency?: Frequency, type?: ToneOscillatorType);
 	constructor(options?: Partial<ToneOscillatorConstructorOptions>);
 	constructor() {
-		super(
-			optionsFromArguments(Oscillator.getDefaults(), arguments, [
-				"frequency",
-				"type",
-			])
-		);
 		const options = optionsFromArguments(
 			Oscillator.getDefaults(),
 			arguments,
 			["frequency", "type"]
 		);
+		super(options);
 
 		this.frequency = new Signal<"frequency">({
 			context: this.context,

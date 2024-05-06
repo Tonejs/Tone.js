@@ -34,10 +34,10 @@ export class Solo extends ToneAudioNode<SoloOptions> {
 	constructor(solo?: boolean);
 	constructor(options?: Partial<SoloOptions>);
 	constructor() {
-		super(optionsFromArguments(Solo.getDefaults(), arguments, ["solo"]));
 		const options = optionsFromArguments(Solo.getDefaults(), arguments, [
 			"solo",
 		]);
+		super(options);
 
 		this.input = this.output = new Gain({
 			context: this.context,

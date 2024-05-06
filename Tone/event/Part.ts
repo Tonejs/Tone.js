@@ -83,16 +83,11 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 	);
 	constructor(options?: Partial<PartOptions<ValueType>>);
 	constructor() {
-		super(
-			optionsFromArguments(Part.getDefaults(), arguments, [
-				"callback",
-				"events",
-			])
-		);
 		const options = optionsFromArguments(Part.getDefaults(), arguments, [
 			"callback",
 			"events",
 		]);
+		super(options);
 
 		// make sure things are assigned in the right order
 		this._state.increasing = true;

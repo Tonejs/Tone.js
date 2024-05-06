@@ -51,16 +51,11 @@ export class SyncedSignal<
 	constructor(value?: UnitMap[TypeName], units?: TypeName);
 	constructor(options?: Partial<SignalOptions<TypeName>>);
 	constructor() {
-		super(
-			optionsFromArguments(Signal.getDefaults(), arguments, [
-				"value",
-				"units",
-			])
-		);
 		const options = optionsFromArguments(Signal.getDefaults(), arguments, [
 			"value",
 			"units",
 		]) as SignalOptions<TypeName>;
+		super(options);
 
 		this._lastVal = options.value;
 		this._synced = this.context.transport.scheduleRepeat(

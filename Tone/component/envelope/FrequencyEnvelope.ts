@@ -62,19 +62,12 @@ export class FrequencyEnvelope extends Envelope {
 	);
 	constructor(options?: Partial<FrequencyEnvelopeOptions>);
 	constructor() {
-		super(
-			optionsFromArguments(FrequencyEnvelope.getDefaults(), arguments, [
-				"attack",
-				"decay",
-				"sustain",
-				"release",
-			])
-		);
 		const options = optionsFromArguments(
 			FrequencyEnvelope.getDefaults(),
 			arguments,
 			["attack", "decay", "sustain", "release"]
 		);
+		super(options);
 
 		this._octaves = options.octaves;
 		this._baseFrequency = this.toFrequency(options.baseFrequency);

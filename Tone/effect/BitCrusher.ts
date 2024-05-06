@@ -44,14 +44,12 @@ export class BitCrusher extends Effect<BitCrusherOptions> {
 	constructor(bits?: Positive);
 	constructor(options?: Partial<BitCrusherWorkletOptions>);
 	constructor() {
-		super(
-			optionsFromArguments(BitCrusher.getDefaults(), arguments, ["bits"])
-		);
 		const options = optionsFromArguments(
 			BitCrusher.getDefaults(),
 			arguments,
 			["bits"]
 		);
+		super(options);
 
 		this._bitCrusherWorklet = new BitCrusherWorklet({
 			context: this.context,
@@ -93,11 +91,11 @@ class BitCrusherWorklet extends ToneAudioWorklet<BitCrusherWorkletOptions> {
 
 	constructor(options?: Partial<BitCrusherWorkletOptions>);
 	constructor() {
-		super(optionsFromArguments(BitCrusherWorklet.getDefaults(), arguments));
 		const options = optionsFromArguments(
 			BitCrusherWorklet.getDefaults(),
 			arguments
 		);
+		super(options);
 
 		this.input = new Gain({ context: this.context });
 		this.output = new Gain({ context: this.context });

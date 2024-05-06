@@ -64,8 +64,8 @@ export class Synth<
 	 */
 	constructor(options?: RecursivePartial<SynthOptions>);
 	constructor() {
-		super(optionsFromArguments(Synth.getDefaults(), arguments));
 		const options = optionsFromArguments(Synth.getDefaults(), arguments);
+		super(options);
 
 		this.oscillator = new OmniOscillator(
 			Object.assign(

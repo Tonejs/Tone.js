@@ -59,18 +59,11 @@ export class Scale<
 	constructor(min?: number, max?: number);
 	constructor(options?: Partial<ScaleOptions>);
 	constructor() {
-		super(
-			Object.assign(
-				optionsFromArguments(Scale.getDefaults(), arguments, [
-					"min",
-					"max",
-				])
-			)
-		);
 		const options = optionsFromArguments(Scale.getDefaults(), arguments, [
 			"min",
 			"max",
 		]);
+		super(options as Options);
 
 		this._mult = this.input = new Multiply({
 			context: this.context,

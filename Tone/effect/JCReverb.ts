@@ -73,16 +73,12 @@ export class JCReverb extends StereoEffect<JCReverbOptions> {
 	constructor(roomSize?: NormalRange);
 	constructor(options?: Partial<JCReverbOptions>);
 	constructor() {
-		super(
-			optionsFromArguments(JCReverb.getDefaults(), arguments, [
-				"roomSize",
-			])
-		);
 		const options = optionsFromArguments(
 			JCReverb.getDefaults(),
 			arguments,
 			["roomSize"]
 		);
+		super(options);
 
 		this.roomSize = new Signal({
 			context: this.context,

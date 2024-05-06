@@ -188,11 +188,11 @@ export class TransportClass
 
 	constructor(options?: Partial<TransportOptions>);
 	constructor() {
-		super(optionsFromArguments(TransportClass.getDefaults(), arguments));
 		const options = optionsFromArguments(
 			TransportClass.getDefaults(),
 			arguments
 		);
+		super(options);
 
 		// CLOCK/TEMPO
 		this._ppq = options.ppq;

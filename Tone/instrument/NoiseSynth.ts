@@ -43,11 +43,12 @@ export class NoiseSynth extends Instrument<NoiseSynthOptions> {
 
 	constructor(options?: RecursivePartial<NoiseSynthOptions>);
 	constructor() {
-		super(optionsFromArguments(NoiseSynth.getDefaults(), arguments));
 		const options = optionsFromArguments(
 			NoiseSynth.getDefaults(),
 			arguments
 		);
+		super(options);
+
 		this.noise = new Noise(
 			Object.assign(
 				{

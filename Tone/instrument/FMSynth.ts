@@ -33,8 +33,8 @@ export class FMSynth extends ModulationSynth<FMSynthOptions> {
 
 	constructor(options?: RecursivePartial<FMSynthOptions>);
 	constructor() {
-		super(optionsFromArguments(FMSynth.getDefaults(), arguments));
 		const options = optionsFromArguments(FMSynth.getDefaults(), arguments);
+		super(options);
 
 		this.modulationIndex = new Multiply({
 			context: this.context,

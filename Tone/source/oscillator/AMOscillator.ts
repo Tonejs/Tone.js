@@ -97,18 +97,12 @@ export class AMOscillator
 	);
 	constructor(options?: Partial<AMConstructorOptions>);
 	constructor() {
-		super(
-			optionsFromArguments(AMOscillator.getDefaults(), arguments, [
-				"frequency",
-				"type",
-				"modulationType",
-			])
-		);
 		const options = optionsFromArguments(
 			AMOscillator.getDefaults(),
 			arguments,
 			["frequency", "type", "modulationType"]
 		);
+		super(options);
 
 		this._carrier = new Oscillator({
 			context: this.context,

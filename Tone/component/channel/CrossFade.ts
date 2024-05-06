@@ -100,18 +100,12 @@ export class CrossFade extends ToneAudioNode<CrossFadeOptions> {
 	constructor(fade?: NormalRange);
 	constructor(options?: Partial<CrossFadeOptions>);
 	constructor() {
-		super(
-			Object.assign(
-				optionsFromArguments(CrossFade.getDefaults(), arguments, [
-					"fade",
-				])
-			)
-		);
 		const options = optionsFromArguments(
 			CrossFade.getDefaults(),
 			arguments,
 			["fade"]
 		);
+		super(options);
 
 		this.fade = new Signal({
 			context: this.context,

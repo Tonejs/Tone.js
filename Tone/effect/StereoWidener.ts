@@ -63,16 +63,13 @@ export class StereoWidener extends MidSideEffect<StereoWidenerOptions> {
 	constructor(width?: NormalRange);
 	constructor(options?: Partial<StereoWidenerOptions>);
 	constructor() {
-		super(
-			optionsFromArguments(StereoWidener.getDefaults(), arguments, [
-				"width",
-			])
-		);
 		const options = optionsFromArguments(
 			StereoWidener.getDefaults(),
 			arguments,
 			["width"]
 		);
+		super(options);
+
 		this.width = new Signal({
 			context: this.context,
 			value: options.width,

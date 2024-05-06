@@ -61,16 +61,11 @@ export class PanVol extends ToneAudioNode<PanVolOptions> {
 	constructor(pan?: AudioRange, volume?: Decibels);
 	constructor(options?: Partial<PanVolOptions>);
 	constructor() {
-		super(
-			optionsFromArguments(PanVol.getDefaults(), arguments, [
-				"pan",
-				"volume",
-			])
-		);
 		const options = optionsFromArguments(PanVol.getDefaults(), arguments, [
 			"pan",
 			"volume",
 		]);
+		super(options);
 
 		this._panner = this.input = new Panner({
 			context: this.context,

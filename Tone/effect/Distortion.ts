@@ -36,16 +36,12 @@ export class Distortion extends Effect<DistortionOptions> {
 	constructor(distortion?: number);
 	constructor(options?: Partial<DistortionOptions>);
 	constructor() {
-		super(
-			optionsFromArguments(Distortion.getDefaults(), arguments, [
-				"distortion",
-			])
-		);
 		const options = optionsFromArguments(
 			Distortion.getDefaults(),
 			arguments,
 			["distortion"]
 		);
+		super(options);
 
 		this._shaper = new WaveShaper({
 			context: this.context,

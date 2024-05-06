@@ -54,17 +54,11 @@ export class Delay extends ToneAudioNode<DelayOptions> {
 	constructor(delayTime?: Time, maxDelay?: Time);
 	constructor(options?: Partial<DelayOptions>);
 	constructor() {
-		super(
-			optionsFromArguments(Delay.getDefaults(), arguments, [
-				"delayTime",
-				"maxDelay",
-			])
-		);
-
 		const options = optionsFromArguments(Delay.getDefaults(), arguments, [
 			"delayTime",
 			"maxDelay",
 		]);
+		super(options);
 
 		const maxDelayInSeconds = this.toSeconds(options.maxDelay);
 		this._maxDelay = Math.max(

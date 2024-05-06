@@ -59,18 +59,12 @@ export class Multiply<
 	constructor(value?: number);
 	constructor(options?: Partial<SignalOptions<TypeName>>);
 	constructor() {
-		super(
-			Object.assign(
-				optionsFromArguments(Multiply.getDefaults(), arguments, [
-					"value",
-				])
-			)
-		);
 		const options = optionsFromArguments(
 			Multiply.getDefaults(),
 			arguments,
 			["value"]
 		);
+		super(options);
 
 		this._mult =
 			this.input =

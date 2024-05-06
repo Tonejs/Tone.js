@@ -49,11 +49,11 @@ export abstract class Monophonic<
 
 	constructor(options?: Partial<MonophonicOptions>);
 	constructor() {
-		super(optionsFromArguments(Monophonic.getDefaults(), arguments));
 		const options = optionsFromArguments(
 			Monophonic.getDefaults(),
 			arguments
 		);
+		super(options);
 
 		this.portamento = options.portamento;
 		this.onsilence = options.onsilence;

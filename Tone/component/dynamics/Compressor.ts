@@ -79,17 +79,12 @@ export class Compressor extends ToneAudioNode<CompressorOptions> {
 	constructor(threshold?: Decibels, ratio?: Positive);
 	constructor(options?: Partial<CompressorOptions>);
 	constructor() {
-		super(
-			optionsFromArguments(Compressor.getDefaults(), arguments, [
-				"threshold",
-				"ratio",
-			])
-		);
 		const options = optionsFromArguments(
 			Compressor.getDefaults(),
 			arguments,
 			["threshold", "ratio"]
 		);
+		super(options);
 
 		this.threshold = new Param({
 			minValue: this._compressor.threshold.minValue,

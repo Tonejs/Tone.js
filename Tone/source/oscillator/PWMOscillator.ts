@@ -77,17 +77,12 @@ export class PWMOscillator
 	constructor(frequency?: Frequency, modulationFrequency?: Frequency);
 	constructor(options?: Partial<PWMOscillatorOptions>);
 	constructor() {
-		super(
-			optionsFromArguments(PWMOscillator.getDefaults(), arguments, [
-				"frequency",
-				"modulationFrequency",
-			])
-		);
 		const options = optionsFromArguments(
 			PWMOscillator.getDefaults(),
 			arguments,
 			["frequency", "modulationFrequency"]
 		);
+		super(options);
 
 		this._pulse = new PulseOscillator({
 			context: this.context,

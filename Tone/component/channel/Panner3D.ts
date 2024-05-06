@@ -54,18 +54,12 @@ export class Panner3D extends ToneAudioNode<Panner3DOptions> {
 	constructor(positionX: number, positionY: number, positionZ: number);
 	constructor(options?: Partial<Panner3DOptions>);
 	constructor() {
-		super(
-			optionsFromArguments(Panner3D.getDefaults(), arguments, [
-				"positionX",
-				"positionY",
-				"positionZ",
-			])
-		);
 		const options = optionsFromArguments(
 			Panner3D.getDefaults(),
 			arguments,
 			["positionX", "positionY", "positionZ"]
 		);
+		super(options);
 
 		this._panner = this.input = this.output = this.context.createPanner();
 		// set some values

@@ -77,11 +77,11 @@ export class MonoSynth extends Monophonic<MonoSynthOptions> {
 
 	constructor(options?: RecursivePartial<MonoSynthOptions>);
 	constructor() {
-		super(optionsFromArguments(MonoSynth.getDefaults(), arguments));
 		const options = optionsFromArguments(
 			MonoSynth.getDefaults(),
 			arguments
 		);
+		super(options);
 
 		this.oscillator = new OmniOscillator(
 			Object.assign(options.oscillator, {

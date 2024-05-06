@@ -75,18 +75,12 @@ export class Sequence<ValueType = any> extends ToneEvent<ValueType> {
 	);
 	constructor(options?: Partial<SequenceOptions<ValueType>>);
 	constructor() {
-		super(
-			optionsFromArguments(Sequence.getDefaults(), arguments, [
-				"callback",
-				"events",
-				"subdivision",
-			])
-		);
 		const options = optionsFromArguments(
 			Sequence.getDefaults(),
 			arguments,
 			["callback", "events", "subdivision"]
 		);
+		super(options);
 
 		this._subdivision = this.toTicks(options.subdivision);
 
