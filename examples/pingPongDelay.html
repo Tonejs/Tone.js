@@ -1,54 +1,77 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head>
-  <meta charset="utf-8">
-	<title>Ping Pong Delay</title>
+	<head>
+		<meta charset="utf-8" />
+		<title>Ping Pong Delay</title>
 
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-	<link rel="icon" type="image/png" sizes="174x174" href="./favicon.png">
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1, maximum-scale=1"
+		/>
+		<link
+			rel="icon"
+			type="image/png"
+			sizes="174x174"
+			href="./favicon.png"
+		/>
 
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/2.4.3/webcomponents-bundle.js"></script>
-	<link href="https://fonts.googleapis.com/css?family=Material+Icons&display=block" rel="stylesheet"/>
-	<script src="../build/Tone.js"></script>
-	<script src="./js/tone-ui.js"></script>
-	<script src="./js/components.js"></script>
-</head>
-<body>
-	<tone-example label="Ping Pong Delay">
-		<tone-loader></tone-loader>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/2.4.3/webcomponents-bundle.js"></script>
+		<link
+			href="https://fonts.googleapis.com/css?family=Material+Icons&display=block"
+			rel="stylesheet"
+		/>
+		<script src="../build/Tone.js"></script>
+		<script src="./js/tone-ui.js"></script>
+		<script src="./js/components.js"></script>
+	</head>
+	<body>
+		<tone-example label="Ping Pong Delay">
+			<tone-loader></tone-loader>
 
-		<div slot="explanation">
-			A Ping Pong Delay is a stereo feedback delay where the delay bounces back and forth between the left and right channels. Hit the button to trigger a snare sample into the effect. 
-			<br><br>
-			<a href="https://tonejs.github.io/docs/PingPongDelay">Tone.PingPongDelay</a> docs.
-		</div>
+			<div slot="explanation">
+				A Ping Pong Delay is a stereo feedback delay where the delay
+				bounces back and forth between the left and right channels. Hit
+				the button to trigger a snare sample into the effect.
+				<br /><br />
+				<a
+					href="https://tonejs.github.io/docs/latest/classes/PingPongDelay"
+					>Tone.PingPongDelay</a
+				>
+				docs.
+			</div>
 
-		<div id="content">
-			<tone-momentary-button></tone-momentary-button>
-		</div>
-	</tone-example>
-	
-	<script type="text/javascript">
-		// the feedback delay
-		const feedbackDelay = new Tone.PingPongDelay({
-			delayTime: "8n",
-			feedback: 0.6,
-			wet: 0.5
-		}).toDestination();
+			<div id="content">
+				<tone-momentary-button></tone-momentary-button>
+			</div>
+		</tone-example>
 
-		// play a snare sound through it
-		const player = new Tone.Player("https://tonejs.github.io/audio/drum-samples/CR78/snare.mp3").connect(feedbackDelay);
+		<script type="text/javascript">
+			// the feedback delay
+			const feedbackDelay = new Tone.PingPongDelay({
+				delayTime: "8n",
+				feedback: 0.6,
+				wet: 0.5,
+			}).toDestination();
 
-		const toneMeter = new Tone.Meter({ channelCount: 2 });
-		feedbackDelay.connect(toneMeter);
+			// play a snare sound through it
+			const player = new Tone.Player(
+				"https://tonejs.github.io/audio/drum-samples/CR78/snare.mp3"
+			).connect(feedbackDelay);
 
-		meter({
-			tone: toneMeter,
-			parent: document.querySelector("#content")
-		});
+			const toneMeter = new Tone.Meter({ channelCount: 2 });
+			feedbackDelay.connect(toneMeter);
 
-		document.querySelector("tone-momentary-button").addEventListener("down", () => player.start());
-		document.querySelector("tone-momentary-button").addEventListener("up", () => player.stop());
-	</script>
-</body>
+			meter({
+				tone: toneMeter,
+				parent: document.querySelector("#content"),
+			});
+
+			document
+				.querySelector("tone-momentary-button")
+				.addEventListener("down", () => player.start());
+			document
+				.querySelector("tone-momentary-button")
+				.addEventListener("up", () => player.stop());
+		</script>
+	</body>
 </html>
