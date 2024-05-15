@@ -1,17 +1,17 @@
 import { expect } from "chai";
-import { BasicTests } from "test/helper/Basic";
-import { CompareToFile } from "test/helper/CompareToFile";
-import { atTime, Offline, whenBetween } from "test/helper/Offline";
-import { SourceTests } from "test/helper/SourceTests";
-import { ToneAudioBuffer } from "Tone/core/context/ToneAudioBuffer";
-import { getContext } from "Tone/core/Global";
-import { Player } from "./Player";
+import { BasicTests } from "../../../test/helper/Basic.js";
+import { CompareToFile } from "../../../test/helper/CompareToFile.js";
+import { atTime, Offline, whenBetween } from "../../../test/helper/Offline.js";
+import { SourceTests } from "../../../test/helper/SourceTests.js";
+import { ToneAudioBuffer } from "../../core/context/ToneAudioBuffer.js";
+import { getContext } from "../../core/Global.js";
+import { Player } from "./Player.js";
 
 describe("Player", () => {
 	const buffer = new ToneAudioBuffer();
 
 	beforeEach(() => {
-		return buffer.load("./audio/sine.wav");
+		return buffer.load("./test/audio/sine.wav");
 	});
 
 	// run the common tests
@@ -44,7 +44,7 @@ describe("Player", () => {
 		});
 
 		it("can be constructed with an unloaded Tone.Buffer", (done) => {
-			const playerBuffer = new ToneAudioBuffer("./audio/sine.wav");
+			const playerBuffer = new ToneAudioBuffer("./test/audio/sine.wav");
 			const player = new Player(playerBuffer, () => {
 				expect(player.buffer.get()).to.equal(playerBuffer.get());
 				player.dispose();
@@ -107,7 +107,7 @@ describe("Player", () => {
 
 	context("Loading", () => {
 		it("loads a url which was passed in", (done) => {
-			const player = new Player("./audio/sine.wav", () => {
+			const player = new Player("./test/audio/sine.wav", () => {
 				expect(player.loaded).to.be.true;
 				player.dispose();
 				done();
@@ -116,7 +116,7 @@ describe("Player", () => {
 
 		it("loads a url using the load method", () => {
 			const player = new Player();
-			return player.load("./audio/sine.wav").then(() => {
+			return player.load("./test/audio/sine.wav").then(() => {
 				expect(player.buffer).to.be.instanceof(ToneAudioBuffer);
 			});
 		});
@@ -124,7 +124,7 @@ describe("Player", () => {
 		it("can be created with an options object", () => {
 			const player = new Player({
 				loop: true,
-				url: "./audio/sine.wav",
+				url: "./test/audio/sine.wav",
 			});
 			player.dispose();
 		});
@@ -149,7 +149,7 @@ describe("Player", () => {
 						done();
 					}, 10);
 				},
-				url: "./audio/sine.wav",
+				url: "./test/audio/sine.wav",
 			});
 		});
 	});
@@ -184,7 +184,7 @@ describe("Player", () => {
 
 	context("Looping", () => {
 		beforeEach(() => {
-			return buffer.load("./audio/short_sine.wav");
+			return buffer.load("./test/audio/short_sine.wav");
 		});
 
 		it("can be set to loop", () => {
@@ -383,7 +383,7 @@ describe("Player", () => {
 				loopEnd: 0.3,
 				loopStart: 0.2,
 				reverse: true,
-				url: "./audio/sine.wav",
+				url: "./test/audio/sine.wav",
 			});
 			expect(player.get().loopStart).to.equal(0.2);
 			expect(player.get().loopEnd).to.equal(0.3);
@@ -502,9 +502,9 @@ describe("Player", () => {
 				const player = new Player(buffer);
 				player.toDestination();
 				player
-						.start(0, 0, 0.05)
-						.start(0.1, 0, 0.05)
-						.start(0.2, 0, 0.05);
+					.start(0, 0, 0.05)
+					.start(0.1, 0, 0.05)
+					.start(0.2, 0, 0.05);
 				player.stop(0.1);
 			}, 0.3).then((buff) => {
 				expect(buff.getTimeOfLastSound()).to.be.closeTo(0.1, 0.02);
@@ -559,9 +559,9 @@ describe("Player", () => {
 		it("plays synced to the Transport", () => {
 			return Offline(({ transport }) => {
 				const player = new Player(buffer)
-						.sync()
-						.start(0)
-						.toDestination();
+					.sync()
+					.start(0)
+					.toDestination();
 				transport.start(0);
 			}, 0.05).then((buff) => {
 				expect(buff.isSilent()).to.be.false;
@@ -587,13 +587,13 @@ describe("Player", () => {
 		it("offsets correctly when started by the Transport", () => {
 			const testSample =
 				buffer.toArray(0)[
-						Math.floor(0.13125 * getContext().sampleRate)
+					Math.floor(0.13125 * getContext().sampleRate)
 				];
 			return Offline(({ transport }) => {
 				const player = new Player(buffer)
-						.sync()
-						.start(0, 0.1)
-						.toDestination();
+					.sync()
+					.start(0, 0.1)
+					.toDestination();
 				transport.start(0, 0.03125);
 			}, 0.05).then((buff) => {
 				expect(buff.toArray()[0][0]).to.equal(testSample);
@@ -699,29 +699,40 @@ describe("Player", () => {
 
 		it("stops only last activeSource when restarting at intervals < latencyHint", (done) => {
 			const originalLookAhead = getContext().lookAhead;
-			getContext().lookAhead = .3;
+			getContext().lookAhead = 0.3;
 			const player = new Player({
 				onload(): void {
 					player.start(undefined, undefined, 1);
-					setTimeout(() => player.restart(undefined, undefined, 1), 50);
-					setTimeout(() => player.restart(undefined, undefined, 1), 100);
-					setTimeout(() => player.restart(undefined, undefined, 1), 150);
+					setTimeout(
+						() => player.restart(undefined, undefined, 1),
+						50
+					);
+					setTimeout(
+						() => player.restart(undefined, undefined, 1),
+						100
+					);
+					setTimeout(
+						() => player.restart(undefined, undefined, 1),
+						150
+					);
 					setTimeout(() => {
 						player.restart(undefined, undefined, 1);
 						const checkStopTimes = new Set();
 						// @ts-ignore
-						player._activeSources.forEach(source => {
+						player._activeSources.forEach((source) => {
 							// @ts-ignore
 							checkStopTimes.add(source._stopTime);
 						});
 						getContext().lookAhead = originalLookAhead;
 						// ensure each source has a different stopTime
-						// @ts-ignore
-						expect(checkStopTimes.size).to.equal(player._activeSources.size);
+						expect(checkStopTimes.size).to.equal(
+							// @ts-ignore
+							player._activeSources.size
+						);
 						done();
 					}, 250);
 				},
-				url: "./audio/sine.wav",
+				url: "./test/audio/sine.wav",
 			});
 		});
 	});

@@ -1,9 +1,9 @@
-import "../core/worklet/SingleIOProcessor.worklet";
-import { registerProcessor } from "../core/worklet/WorkletGlobalScope";
+import "../core/worklet/SingleIOProcessor.worklet.js";
+import { registerProcessor } from "../core/worklet/WorkletGlobalScope.js";
 
 export const workletName = "bit-crusher";
 
-export const bitCrusherWorklet = /* javascript */`
+export const bitCrusherWorklet = /* javascript */ `
 	class BitCrusherWorklet extends SingleIOProcessor {
 
 		static get parameterDescriptors() {

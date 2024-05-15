@@ -1,14 +1,12 @@
-import { ConstantOutput } from "test/helper/ConstantOutput";
-import { BasicTests } from "test/helper/Basic";
-import { GreaterThanZero } from "./GreaterThanZero";
-import { Signal } from "Tone/signal/Signal";
+import { ConstantOutput } from "../../test/helper/ConstantOutput.js";
+import { BasicTests } from "../../test/helper/Basic.js";
+import { GreaterThanZero } from "./GreaterThanZero.js";
+import { Signal } from "./Signal.js";
 
 describe("GreaterThanZero", () => {
-
 	BasicTests(GreaterThanZero);
 
 	describe("Comparison", () => {
-
 		it("Outputs 0 when the value is less than 0", () => {
 			return ConstantOutput(() => {
 				const signal = new Signal(-1);
@@ -46,4 +44,3 @@ describe("GreaterThanZero", () => {
 		});
 	});
 });
-

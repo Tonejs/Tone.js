@@ -1,20 +1,36 @@
-import { TicksClass } from "../core/type/Ticks";
-import { TransportTimeClass } from "../core/type/TransportTime";
-import { NormalRange, Positive, Seconds, Ticks, Time, TransportTime } from "../core/type/Units";
-import { defaultArg, optionsFromArguments } from "../core/util/Defaults";
-import { StateTimeline } from "../core/util/StateTimeline";
-import { isArray, isDefined, isObject, isUndef } from "../core/util/TypeCheck";
-import { ToneEvent, ToneEventCallback, ToneEventOptions } from "./ToneEvent";
+import { TicksClass } from "../core/type/Ticks.js";
+import { TransportTimeClass } from "../core/type/TransportTime.js";
+import {
+	NormalRange,
+	Positive,
+	Seconds,
+	Ticks,
+	Time,
+	TransportTime,
+} from "../core/type/Units.js";
+import { defaultArg, optionsFromArguments } from "../core/util/Defaults.js";
+import { StateTimeline } from "../core/util/StateTimeline.js";
+import {
+	isArray,
+	isDefined,
+	isObject,
+	isUndef,
+} from "../core/util/TypeCheck.js";
+import { ToneEvent, ToneEventCallback, ToneEventOptions } from "./ToneEvent.js";
 
-type CallbackType<T> =
-	T extends {
-		time: Time;
-		[key: string]: any;
-	} ? T :
-		T extends ArrayLike<any> ? T[1] :
-			T extends Time ? null : never;
+type CallbackType<T> = T extends {
+	time: Time;
+	[key: string]: any;
+}
+	? T
+	: T extends ArrayLike<any>
+		? T[1]
+		: T extends Time
+			? null
+			: never;
 
-interface PartOptions<T> extends Omit<ToneEventOptions<CallbackType<T>>, "value"> {
+interface PartOptions<T>
+	extends Omit<ToneEventOptions<CallbackType<T>>, "value"> {
 	events: T[];
 }
 
@@ -42,7 +58,6 @@ interface PartOptions<T> extends Omit<ToneEventOptions<CallbackType<T>>, "value"
  * @category Event
  */
 export class Part<ValueType = any> extends ToneEvent<ValueType> {
-
 	readonly name: string = "Part";
 
 	/**
@@ -62,18 +77,23 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 	 * @param callback The callback to invoke on each event
 	 * @param value the array of events
 	 */
-	constructor(callback?: ToneEventCallback<CallbackType<ValueType>>, value?: ValueType[]);
+	constructor(
+		callback?: ToneEventCallback<CallbackType<ValueType>>,
+		value?: ValueType[]
+	);
 	constructor(options?: Partial<PartOptions<ValueType>>);
 	constructor() {
-
-		super(optionsFromArguments(Part.getDefaults(), arguments, ["callback", "events"]));
-		const options = optionsFromArguments(Part.getDefaults(), arguments, ["callback", "events"]);
+		const options = optionsFromArguments(Part.getDefaults(), arguments, [
+			"callback",
+			"events",
+		]);
+		super(options);
 
 		// make sure things are assigned in the right order
 		this._state.increasing = true;
 
 		// add the events
-		options.events.forEach(event => {
+		options.events.forEach((event) => {
 			if (isArray(event)) {
 				this.add(event[0], event[1]);
 			} else {
@@ -109,7 +129,7 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 				state: "started",
 				time: ticks,
 			});
-			this._forEach(event => {
+			this._forEach((event) => {
 				this._startNote(event, ticks, computedOffset);
 			});
 		}
@@ -126,13 +146,19 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 	private _startNote(event: ToneEvent, ticks: Ticks, offset: Ticks): void {
 		ticks -= offset;
 		if (this._loop) {
-			if (event.startOffset >= this._loopStart && event.startOffset < this._loopEnd) {
+			if (
+				event.startOffset >= this._loopStart &&
+				event.startOffset < this._loopEnd
+			) {
 				if (event.startOffset < offset) {
 					// start it on the next loop
 					ticks += this._getLoopDuration();
 				}
 				event.start(new TicksClass(this.context, ticks));
-			} else if (event.startOffset < this._loopStart && event.startOffset >= offset) {
+			} else if (
+				event.startOffset < this._loopStart &&
+				event.startOffset >= offset
+			) {
 				event.loop = false;
 				event.start(new TicksClass(this.context, ticks));
 			}
@@ -146,7 +172,7 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 	}
 	set startOffset(offset) {
 		this._startOffset = offset;
-		this._forEach(event => {
+		this._forEach((event) => {
 			event.startOffset += this._startOffset;
 		});
 	}
@@ -159,7 +185,7 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 		const ticks = this.toTicks(time);
 		this._state.cancel(ticks);
 		this._state.setStateAtTime("stopped", ticks);
-		this._forEach(event => {
+		this._forEach((event) => {
 			event.stop(time);
 		});
 		return this;
@@ -180,7 +206,10 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 	 * @param value If a value is passed in, the value of the event at the given time will be set to it.
 	 */
 	at(time: Time, value?: any): ToneEvent | null {
-		const timeInTicks = new TransportTimeClass(this.context, time).toTicks();
+		const timeInTicks = new TransportTimeClass(
+			this.context,
+			time
+		).toTicks();
 		const tickTime = new TicksClass(this.context, 1).toSeconds();
 
 		const iterator = this._events.values();
@@ -214,10 +243,7 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 	 * const part = new Tone.Part();
 	 * part.add("1m", "C#+11");
 	 */
-	add(obj: {
-		time: Time;
-		[key: string]: any;
-	}): this;
+	add(obj: { time: Time; [key: string]: any }): this;
 	add(time: Time, value?: any): this;
 	add(time: Time | object, value?: any): this {
 		// extract the parameters
@@ -277,10 +303,7 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 	 * @param time The time of the event
 	 * @param value Optionally select only a specific event value
 	 */
-	remove(obj: {
-		time: Time;
-		[key: string]: any;
-	}): this;
+	remove(obj: { time: Time; [key: string]: any }): this;
 	remove(time: Time, value?: any): this;
 	remove(time: Time | object, value?: any): this {
 		// extract the parameters
@@ -289,9 +312,12 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 			time = value.time;
 		}
 		time = this.toTicks(time);
-		this._events.forEach(event => {
+		this._events.forEach((event) => {
 			if (event.startOffset === time) {
-				if (isUndef(value) || (isDefined(value) && event.value === value)) {
+				if (
+					isUndef(value) ||
+					(isDefined(value) && event.value === value)
+				) {
 					this._events.delete(event);
 					event.dispose();
 				}
@@ -304,7 +330,7 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 	 * Remove all of the notes from the group.
 	 */
 	clear(): this {
-		this._forEach(event => event.dispose());
+		this._forEach((event) => event.dispose());
 		this._events.clear();
 		return this;
 	}
@@ -314,7 +340,7 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 	 * @param after The time after which to cancel the scheduled events.
 	 */
 	cancel(after?: TransportTime | TransportTimeClass): this {
-		this._forEach(event => event.cancel(after));
+		this._forEach((event) => event.cancel(after));
 		this._state.cancel(this.toTicks(after));
 		return this;
 	}
@@ -324,7 +350,7 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 	 */
 	private _forEach(callback: (event: ToneEvent) => void): this {
 		if (this._events) {
-			this._events.forEach(event => {
+			this._events.forEach((event) => {
 				if (event instanceof Part) {
 					event._forEach(callback);
 				} else {
@@ -341,7 +367,7 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 	 * @param  value      The value to set it to
 	 */
 	private _setAll(attr: string, value: any): void {
-		this._forEach(event => {
+		this._forEach((event) => {
 			event[attr] = value;
 		});
 	}
@@ -362,7 +388,11 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 	 * @param  event  The event to test
 	 */
 	private _testLoopBoundries(event: ToneEvent): void {
-		if (this._loop && (event.startOffset < this._loopStart || event.startOffset >= this._loopEnd)) {
+		if (
+			this._loop &&
+			(event.startOffset < this._loopStart ||
+				event.startOffset >= this._loopEnd)
+		) {
 			event.cancel(0);
 		} else if (event.state === "stopped") {
 			// reschedule it if it's stopped
@@ -405,7 +435,7 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 	}
 	set loop(loop) {
 		this._loop = loop;
-		this._forEach(event => {
+		this._forEach((event) => {
 			event.loopStart = this.loopStart;
 			event.loopEnd = this.loopEnd;
 			event.loop = loop;
@@ -423,7 +453,7 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 	set loopEnd(loopEnd) {
 		this._loopEnd = this.toTicks(loopEnd);
 		if (this._loop) {
-			this._forEach(event => {
+			this._forEach((event) => {
 				event.loopEnd = loopEnd;
 				this._testLoopBoundries(event);
 			});
@@ -440,7 +470,7 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 	set loopStart(loopStart) {
 		this._loopStart = this.toTicks(loopStart);
 		if (this._loop) {
-			this._forEach(event => {
+			this._forEach((event) => {
 				event.loopStart = this.loopStart;
 				this._testLoopBoundries(event);
 			});

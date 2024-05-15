@@ -3,6 +3,7 @@
 		"sourceMap": true,
 		"declaration": true,
 		"noUnusedLocals": true,
+		"rootDir": "../Tone"
 	},
 	"extends": "../tsconfig.json",
 	"include": [

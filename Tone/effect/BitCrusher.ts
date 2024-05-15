@@ -1,11 +1,14 @@
-import { ToneAudioWorklet, ToneAudioWorkletOptions } from "../core/worklet/ToneAudioWorklet";
-import { Effect, EffectOptions } from "./Effect";
-import { Positive } from "../core/type/Units";
-import { Gain } from "../core/context/Gain";
-import { optionsFromArguments } from "../core/util/Defaults";
-import { connectSeries } from "../core/context/ToneAudioNode";
-import { Param } from "../core/context/Param";
-import { workletName } from "./BitCrusher.worklet";
+import {
+	ToneAudioWorklet,
+	ToneAudioWorkletOptions,
+} from "../core/worklet/ToneAudioWorklet.js";
+import { Effect, EffectOptions } from "./Effect.js";
+import { Positive } from "../core/type/Units.js";
+import { Gain } from "../core/context/Gain.js";
+import { optionsFromArguments } from "../core/util/Defaults.js";
+import { connectSeries } from "../core/context/ToneAudioNode.js";
+import { Param } from "../core/context/Param.js";
+import { workletName } from "./BitCrusher.worklet.js";
 
 export interface BitCrusherOptions extends EffectOptions {
 	bits: Positive;
@@ -20,11 +23,10 @@ export interface BitCrusherOptions extends EffectOptions {
  * const crusher = new Tone.BitCrusher(4).toDestination();
  * const synth = new Tone.Synth().connect(crusher);
  * synth.triggerAttackRelease("C2", 2);
- * 
+ *
  * @category Effect
  */
 export class BitCrusher extends Effect<BitCrusherOptions> {
-
 	readonly name: string = "BitCrusher";
 
 	/**
@@ -42,8 +44,12 @@ export class BitCrusher extends Effect<BitCrusherOptions> {
 	constructor(bits?: Positive);
 	constructor(options?: Partial<BitCrusherWorkletOptions>);
 	constructor() {
-		super(optionsFromArguments(BitCrusher.getDefaults(), arguments, ["bits"]));
-		const options = optionsFromArguments(BitCrusher.getDefaults(), arguments, ["bits"]);
+		const options = optionsFromArguments(
+			BitCrusher.getDefaults(),
+			arguments,
+			["bits"]
+		);
+		super(options);
 
 		this._bitCrusherWorklet = new BitCrusherWorklet({
 			context: this.context,
@@ -76,7 +82,6 @@ interface BitCrusherWorkletOptions extends ToneAudioWorkletOptions {
  * Internal class which creates an AudioWorklet to do the bit crushing
  */
 class BitCrusherWorklet extends ToneAudioWorklet<BitCrusherWorkletOptions> {
-
 	readonly name: string = "BitCrusherWorklet";
 
 	readonly input: Gain;
@@ -86,8 +91,11 @@ class BitCrusherWorklet extends ToneAudioWorklet<BitCrusherWorkletOptions> {
 
 	constructor(options?: Partial<BitCrusherWorkletOptions>);
 	constructor() {
-		super(optionsFromArguments(BitCrusherWorklet.getDefaults(), arguments));
-		const options = optionsFromArguments(BitCrusherWorklet.getDefaults(), arguments);
+		const options = optionsFromArguments(
+			BitCrusherWorklet.getDefaults(),
+			arguments
+		);
+		super(options);
 
 		this.input = new Gain({ context: this.context });
 		this.output = new Gain({ context: this.context });

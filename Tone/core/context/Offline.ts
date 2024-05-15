@@ -1,13 +1,15 @@
-import { getContext, setContext } from "../Global";
-import { Seconds } from "../type/Units";
-import { OfflineContext } from "./OfflineContext";
-import { ToneAudioBuffer } from "./ToneAudioBuffer";
+import { getContext, setContext } from "../Global.js";
+import { Seconds } from "../type/Units.js";
+import { OfflineContext } from "./OfflineContext.js";
+import { ToneAudioBuffer } from "./ToneAudioBuffer.js";
+import "./Destination.js";
+import "./Listener.js";
 
 /**
  * Generate a buffer by rendering all of the Tone.js code within the callback using the OfflineAudioContext.
  * The OfflineAudioContext is capable of rendering much faster than real time in many cases.
  * The callback function also passes in an offline instance of {@link Context} which can be used
- * to schedule events along the Transport. 
+ * to schedule events along the Transport.
  * @param  callback  All Tone.js nodes which are created and scheduled within this callback are recorded into the output Buffer.
  * @param  duration     the amount of time to record for.
  * @return  The promise which is invoked with the ToneAudioBuffer of the recorded output.
@@ -40,7 +42,7 @@ export async function Offline(
 	callback: (context: OfflineContext) => Promise<void> | void,
 	duration: Seconds,
 	channels = 2,
-	sampleRate: number = getContext().sampleRate,
+	sampleRate: number = getContext().sampleRate
 ): Promise<ToneAudioBuffer> {
 	// set the OfflineAudioContext based on the current context
 	const originalContext = getContext();

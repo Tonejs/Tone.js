@@ -32,14 +32,18 @@ async function testExampleString(str) {
 	// work with file here in fd
 	await writeFile(path, str);
 	try {
-		await execPromise(`tsc  --noEmit --target es5 --lib dom,ES2015 ${path}`);
+		await execPromise(
+			`tsc  --noEmit --target es5 --lib dom,ES2015 ${path}`
+		);
 	} finally {
 		cleanup();
 	}
 }
 
 async function main() {
-	const readme = (await readFile(resolve(__dirname, "../../README.md"))).toString();
+	const readme = (
+		await readFile(resolve(__dirname, "../../README.md"))
+	).toString();
 	const html = new Converter().makeHtml(readme);
 	const dom = new JSDOM(html);
 	const scripts = dom.window.document.querySelectorAll("code.javascript");

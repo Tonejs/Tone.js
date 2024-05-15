@@ -1,15 +1,15 @@
-import { AmplitudeEnvelope } from "../component/envelope/AmplitudeEnvelope";
-import { NormalRange, Time } from "../core/type/Units";
-import { omitFromObject, optionsFromArguments } from "../core/util/Defaults";
-import { RecursivePartial } from "../core/util/Interface";
-import { Noise, NoiseOptions } from "../source/Noise";
-import { Instrument, InstrumentOptions } from "./Instrument";
+import { AmplitudeEnvelope } from "../component/envelope/AmplitudeEnvelope.js";
+import { NormalRange, Time } from "../core/type/Units.js";
+import { omitFromObject, optionsFromArguments } from "../core/util/Defaults.js";
+import { RecursivePartial } from "../core/util/Interface.js";
+import { Noise, NoiseOptions } from "../source/Noise.js";
+import { Instrument, InstrumentOptions } from "./Instrument.js";
 import {
 	ToneAudioNode,
 	ToneAudioNodeOptions,
-} from "../core/context/ToneAudioNode";
-import { Envelope, EnvelopeOptions } from "../component/envelope/Envelope";
-import { Source } from "../source/Source";
+} from "../core/context/ToneAudioNode.js";
+import { Envelope, EnvelopeOptions } from "../component/envelope/Envelope.js";
+import { Source } from "../source/Source.js";
 
 export interface NoiseSynthOptions extends InstrumentOptions {
 	envelope: Omit<EnvelopeOptions, keyof ToneAudioNodeOptions>;
@@ -43,11 +43,12 @@ export class NoiseSynth extends Instrument<NoiseSynthOptions> {
 
 	constructor(options?: RecursivePartial<NoiseSynthOptions>);
 	constructor() {
-		super(optionsFromArguments(NoiseSynth.getDefaults(), arguments));
 		const options = optionsFromArguments(
 			NoiseSynth.getDefaults(),
 			arguments
 		);
+		super(options);
+
 		this.noise = new Noise(
 			Object.assign(
 				{

@@ -1,8 +1,8 @@
-import { Param } from "../context/Param";
-import { UnitMap, UnitName } from "../type/Units";
-import { optionsFromArguments } from "../util/Defaults";
-import { readOnly } from "../util/Interface";
-import { ToneAudioNode, ToneAudioNodeOptions } from "./ToneAudioNode";
+import { Param } from "../context/Param.js";
+import { UnitMap, UnitName } from "../type/Units.js";
+import { optionsFromArguments } from "../util/Defaults.js";
+import { readOnly } from "../util/Interface.js";
+import { ToneAudioNode, ToneAudioNodeOptions } from "./ToneAudioNode.js";
 
 interface GainOptions<TypeName extends UnitName> extends ToneAudioNodeOptions {
 	gain: UnitMap[TypeName];
@@ -25,8 +25,9 @@ interface GainOptions<TypeName extends UnitName> extends ToneAudioNodeOptions {
  * 	gainNode.gain.rampTo(0, 0.4, 0.2);
  * }, 0.7, 1);
  */
-export class Gain<TypeName extends "gain" | "decibels" | "normalRange" = "gain"> extends ToneAudioNode<GainOptions<TypeName>> {
-
+export class Gain<
+	TypeName extends "gain" | "decibels" | "normalRange" = "gain",
+> extends ToneAudioNode<GainOptions<TypeName>> {
 	readonly name: string = "Gain";
 
 	/**
@@ -55,8 +56,11 @@ export class Gain<TypeName extends "gain" | "decibels" | "normalRange" = "gain">
 	constructor(gain?: UnitMap[TypeName], units?: TypeName);
 	constructor(options?: Partial<GainOptions<TypeName>>);
 	constructor() {
-		super(optionsFromArguments(Gain.getDefaults(), arguments, ["gain", "units"]));
-		const options = optionsFromArguments(Gain.getDefaults(), arguments, ["gain", "units"]);
+		const options = optionsFromArguments(Gain.getDefaults(), arguments, [
+			"gain",
+			"units",
+		]);
+		super(options);
 
 		this.gain = new Param({
 			context: this.context,

@@ -1,7 +1,10 @@
-import { BaseContext } from "../../core/context/BaseContext";
-import { Gain } from "../../core/context/Gain";
-import { ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
-import { optionsFromArguments } from "../../core/util/Defaults";
+import { BaseContext } from "../../core/context/BaseContext.js";
+import { Gain } from "../../core/context/Gain.js";
+import {
+	ToneAudioNode,
+	ToneAudioNodeOptions,
+} from "../../core/context/ToneAudioNode.js";
+import { optionsFromArguments } from "../../core/util/Defaults.js";
 
 export interface SoloOptions extends ToneAudioNodeOptions {
 	solo: boolean;
@@ -20,7 +23,6 @@ export interface SoloOptions extends ToneAudioNodeOptions {
  * @category Component
  */
 export class Solo extends ToneAudioNode<SoloOptions> {
-
 	readonly name: string = "Solo";
 
 	readonly input: Gain;
@@ -32,9 +34,10 @@ export class Solo extends ToneAudioNode<SoloOptions> {
 	constructor(solo?: boolean);
 	constructor(options?: Partial<SoloOptions>);
 	constructor() {
-
-		super(optionsFromArguments(Solo.getDefaults(), arguments, ["solo"]));
-		const options = optionsFromArguments(Solo.getDefaults(), arguments, ["solo"]);
+		const options = optionsFromArguments(Solo.getDefaults(), arguments, [
+			"solo",
+		]);
+		super(options);
 
 		this.input = this.output = new Gain({
 			context: this.context,
@@ -79,7 +82,9 @@ export class Solo extends ToneAudioNode<SoloOptions> {
 		} else {
 			this._removeSolo();
 		}
-		(Solo._allSolos.get(this.context) as Set<Solo>).forEach(instance => instance._updateSolo());
+		(Solo._allSolos.get(this.context) as Set<Solo>).forEach((instance) =>
+			instance._updateSolo()
+		);
 	}
 
 	/**
@@ -112,7 +117,10 @@ export class Solo extends ToneAudioNode<SoloOptions> {
 	 * Is this on the soloed array
 	 */
 	private _isSoloed(): boolean {
-		return Solo._soloed.has(this.context) && (Solo._soloed.get(this.context) as Set<Solo>).has(this);
+		return (
+			Solo._soloed.has(this.context) &&
+			(Solo._soloed.get(this.context) as Set<Solo>).has(this)
+		);
 	}
 
 	/**
@@ -120,9 +128,12 @@ export class Solo extends ToneAudioNode<SoloOptions> {
 	 */
 	private _noSolos(): boolean {
 		// either does not have any soloed added
-		return !Solo._soloed.has(this.context) ||
+		return (
+			!Solo._soloed.has(this.context) ||
 			// or has a solo set but doesn't include any items
-			(Solo._soloed.has(this.context) && (Solo._soloed.get(this.context) as Set<Solo>).size === 0);
+			(Solo._soloed.has(this.context) &&
+				(Solo._soloed.get(this.context) as Set<Solo>).size === 0)
+		);
 	}
 
 	/**

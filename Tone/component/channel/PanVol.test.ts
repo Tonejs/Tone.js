@@ -1,16 +1,14 @@
 import { expect } from "chai";
-import { BasicTests } from "test/helper/Basic";
-import { Offline } from "test/helper/Offline";
-import { PassAudio } from "test/helper/PassAudio";
-import { Signal } from "Tone/signal/Signal";
-import { PanVol } from "./PanVol";
+import { BasicTests } from "../../../test/helper/Basic.js";
+import { Offline } from "../../../test/helper/Offline.js";
+import { PassAudio } from "../../../test/helper/PassAudio.js";
+import { Signal } from "../../signal/Signal.js";
+import { PanVol } from "./PanVol.js";
 
 describe("PanVol", () => {
-
 	BasicTests(PanVol);
 
 	context("Pan and Volume", () => {
-
 		it("can be constructed with the panning and volume value", () => {
 			const panVol = new PanVol(0.3, -12);
 			expect(panVol.pan.value).to.be.closeTo(0.3, 0.001);
@@ -53,6 +51,5 @@ describe("PanVol", () => {
 				expect(buffer.isSilent()).to.be.true;
 			});
 		});
-
 	});
 });

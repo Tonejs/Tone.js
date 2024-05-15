@@ -1,20 +1,20 @@
-import { TimeClass } from "../../core/type/Time";
-import { PlaybackState } from "../../core/util/StateTimeline";
-import { TimelineValue } from "../../core/util/TimelineValue";
-import { ToneAudioNode } from "../../core/context/ToneAudioNode";
-import { Pow } from "../../signal/Pow";
-import { Signal } from "../../signal/Signal";
+import { TimeClass } from "../../core/type/Time.js";
+import { PlaybackState } from "../../core/util/StateTimeline.js";
+import { TimelineValue } from "../../core/util/TimelineValue.js";
+import { ToneAudioNode } from "../../core/context/ToneAudioNode.js";
+import { Pow } from "../../signal/Pow.js";
+import { Signal } from "../../signal/Signal.js";
 import {
 	onContextClose,
 	onContextInit,
-} from "../context/ContextInitialization";
-import { Gain } from "../context/Gain";
+} from "../context/ContextInitialization.js";
+import { Gain } from "../context/Gain.js";
 import {
 	ToneWithContext,
 	ToneWithContextOptions,
-} from "../context/ToneWithContext";
-import { TicksClass } from "../type/Ticks";
-import { TransportTimeClass } from "../type/TransportTime";
+} from "../context/ToneWithContext.js";
+import { TicksClass } from "../type/Ticks.js";
+import { TransportTimeClass } from "../type/TransportTime.js";
 import {
 	BarsBeatsSixteenths,
 	BPM,
@@ -25,18 +25,18 @@ import {
 	Time,
 	TimeSignature,
 	TransportTime,
-} from "../type/Units";
-import { enterScheduledCallback } from "../util/Debug";
-import { optionsFromArguments } from "../util/Defaults";
-import { Emitter } from "../util/Emitter";
-import { readOnly, writable } from "../util/Interface";
-import { IntervalTimeline } from "../util/IntervalTimeline";
-import { Timeline } from "../util/Timeline";
-import { isArray, isDefined } from "../util/TypeCheck";
-import { Clock } from "./Clock";
-import { TickParam } from "./TickParam";
-import { TransportEvent } from "./TransportEvent";
-import { TransportRepeatEvent } from "./TransportRepeatEvent";
+} from "../type/Units.js";
+import { enterScheduledCallback } from "../util/Debug.js";
+import { optionsFromArguments } from "../util/Defaults.js";
+import { Emitter } from "../util/Emitter.js";
+import { readOnly, writable } from "../util/Interface.js";
+import { IntervalTimeline } from "../util/IntervalTimeline.js";
+import { Timeline } from "../util/Timeline.js";
+import { isArray, isDefined } from "../util/TypeCheck.js";
+import { Clock } from "./Clock.js";
+import { TickParam } from "./TickParam.js";
+import { TransportEvent } from "./TransportEvent.js";
+import { TransportRepeatEvent } from "./TransportRepeatEvent.js";
 
 interface TransportOptions extends ToneWithContextOptions {
 	bpm: BPM;
@@ -89,7 +89,8 @@ type TransportCallback = (time: Seconds) => void;
  */
 export class TransportClass
 	extends ToneWithContext<TransportOptions>
-	implements Emitter<TransportEventNames> {
+	implements Emitter<TransportEventNames>
+{
 	readonly name: string = "Transport";
 
 	//-------------------------------------
@@ -187,11 +188,11 @@ export class TransportClass
 
 	constructor(options?: Partial<TransportOptions>);
 	constructor() {
-		super(optionsFromArguments(TransportClass.getDefaults(), arguments));
 		const options = optionsFromArguments(
 			TransportClass.getDefaults(),
 			arguments
 		);
+		super(options);
 
 		// CLOCK/TEMPO
 		this._ppq = options.ppq;
@@ -366,7 +367,10 @@ export class TransportClass
 	 * timeline it was added to.
 	 * @returns the event id which was just added
 	 */
-	private _addEvent(event: TransportEvent, timeline: Timeline<TransportEvent>): number {
+	private _addEvent(
+		event: TransportEvent,
+		timeline: Timeline<TransportEvent>
+	): number {
 		this._scheduledEvents[event.id.toString()] = {
 			event,
 			timeline,
@@ -625,7 +629,10 @@ export class TransportClass
 			if (this.state === "started") {
 				const ticks = this._clock.getTicksAtTime(now);
 				// schedule to start on the next tick, #573
-				const remainingTick = this._clock.frequency.getDurationOfTicks(Math.ceil(ticks) - ticks, now);
+				const remainingTick = this._clock.frequency.getDurationOfTicks(
+					Math.ceil(ticks) - ticks,
+					now
+				);
 				const time = now + remainingTick;
 				this.emit("stop", time);
 				this._clock.setTicksAtTime(t, time);
@@ -710,9 +717,9 @@ export class TransportClass
 	 */
 	syncSignal(signal: Signal<any>, ratio?: number): this {
 		const now = this.now();
-		let source : TickParam<"bpm"> | ToneAudioNode<any> = this.bpm;
+		let source: TickParam<"bpm"> | ToneAudioNode<any> = this.bpm;
 		let sourceValue = 1 / (60 / source.getValueAtTime(now) / this.PPQ);
-		let nodes : ToneAudioNode<any>[] = [];
+		let nodes: ToneAudioNode<any>[] = [];
 		// If the signal is in the time domain, sync it to the reciprocal of
 		// the tempo instead of the tempo.
 		if (signal.units === "time") {

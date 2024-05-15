@@ -1,10 +1,9 @@
 import { expect } from "chai";
-import { BasicTests } from "test/helper/Basic";
-import { Noise } from "../../source/Noise";
-import { Analyser } from "./Analyser";
+import { BasicTests } from "../../../test/helper/Basic.js";
+import { Noise } from "../../source/Noise.js";
+import { Analyser } from "./Analyser.js";
 
 describe("Analyser", () => {
-
 	BasicTests(Analyser);
 
 	it("can get and set properties", () => {
@@ -31,7 +30,7 @@ describe("Analyser", () => {
 		const anl = new Analyser("fft", 512);
 		const analysis = anl.getValue();
 		expect(analysis.length).to.equal(512);
-		analysis.forEach(val => {
+		analysis.forEach((val) => {
 			expect(val).is.lessThan(0);
 		});
 		anl.dispose();
@@ -46,7 +45,7 @@ describe("Analyser", () => {
 		setTimeout(() => {
 			const analysis = anl.getValue();
 			expect(analysis.length).to.equal(256);
-			analysis.forEach(val => {
+			analysis.forEach((val) => {
 				expect(val).is.within(-1, 1);
 			});
 			anl.dispose();
@@ -74,5 +73,4 @@ describe("Analyser", () => {
 		expect((anl.getValue()[0] as Float32Array).length).to.equal(512);
 		anl.dispose();
 	});
-
 });

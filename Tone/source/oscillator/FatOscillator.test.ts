@@ -1,26 +1,28 @@
 import { expect } from "chai";
-import { BasicTests } from "test/helper/Basic";
-import { CompareToFile } from "test/helper/CompareToFile";
-import { OscillatorTests } from "test/helper/OscillatorTests";
-import { SourceTests } from "test/helper/SourceTests";
-import { FatOscillator } from "./FatOscillator";
+import { BasicTests } from "../../../test/helper/Basic.js";
+import { CompareToFile } from "../../../test/helper/CompareToFile.js";
+import { OscillatorTests } from "../../../test/helper/OscillatorTests.js";
+import { SourceTests } from "../../../test/helper/SourceTests.js";
+import { FatOscillator } from "./FatOscillator.js";
 
 describe("FatOscillator", () => {
-
 	// run the common tests
 	BasicTests(FatOscillator);
 	SourceTests(FatOscillator);
 	OscillatorTests(FatOscillator);
 
 	it("matches a file", () => {
-		return CompareToFile(() => {
-			const osc = new FatOscillator().toDestination();
-			osc.start(0);
-		}, "fatOscillator.wav", 0.2);
+		return CompareToFile(
+			() => {
+				const osc = new FatOscillator().toDestination();
+				osc.start(0);
+			},
+			"fatOscillator.wav",
+			0.2
+		);
 	});
 
 	context("Detuned Oscillators", () => {
-
 		it("can pass in parameters in the constructor", () => {
 			const fatOsc = new FatOscillator({
 				count: 4,
@@ -86,6 +88,5 @@ describe("FatOscillator", () => {
 			expect(osc.type).to.equal("square");
 			osc.dispose();
 		});
-
 	});
 });

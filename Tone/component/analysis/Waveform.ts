@@ -1,6 +1,6 @@
-import { PowerOfTwo } from "../../core/type/Units";
-import { optionsFromArguments } from "../../core/util/Defaults";
-import { MeterBase, MeterBaseOptions } from "./MeterBase";
+import { PowerOfTwo } from "../../core/type/Units.js";
+import { optionsFromArguments } from "../../core/util/Defaults.js";
+import { MeterBase, MeterBaseOptions } from "./MeterBase.js";
 
 export interface WaveformOptions extends MeterBaseOptions {
 	/**
@@ -14,7 +14,6 @@ export interface WaveformOptions extends MeterBaseOptions {
  * @category Component
  */
 export class Waveform extends MeterBase<WaveformOptions> {
-
 	readonly name: string = "Waveform";
 
 	/**
@@ -23,8 +22,12 @@ export class Waveform extends MeterBase<WaveformOptions> {
 	constructor(size?: PowerOfTwo);
 	constructor(options?: Partial<WaveformOptions>);
 	constructor() {
-		super(optionsFromArguments(Waveform.getDefaults(), arguments, ["size"]));
-		const options = optionsFromArguments(Waveform.getDefaults(), arguments, ["size"]);
+		const options = optionsFromArguments(
+			Waveform.getDefaults(),
+			arguments,
+			["size"]
+		);
+		super(options);
 
 		this._analyser.type = "waveform";
 		this.size = options.size;

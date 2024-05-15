@@ -3,5 +3,12 @@
  * that the AudioParamMap extends Map
  */
 interface AudioParamMap extends Map<string, AudioParam> {
-	forEach(callbackfn: (value: AudioParam, key: string, parent: AudioParamMap) => void, thisArg?: any): void;
+	forEach(
+		callbackfn: (
+			value: AudioParam,
+			key: string,
+			parent: AudioParamMap
+		) => void,
+		thisArg?: any
+	): void;
 }

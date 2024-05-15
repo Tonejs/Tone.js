@@ -1,10 +1,10 @@
-import "../../core/worklet/SingleIOProcessor.worklet";
-import "../../core/worklet/DelayLine.worklet";
-import { registerProcessor } from "../../core/worklet/WorkletGlobalScope";
+import "../../core/worklet/SingleIOProcessor.worklet.js";
+import "../../core/worklet/DelayLine.worklet.js";
+import { registerProcessor } from "../../core/worklet/WorkletGlobalScope.js";
 
 export const workletName = "feedback-comb-filter";
 
-const feedbackCombFilter = /* javascript */`
+const feedbackCombFilter = /* javascript */ `
 	class FeedbackCombFilterWorklet extends SingleIOProcessor {
 
 		constructor(options) {

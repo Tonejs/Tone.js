@@ -1,20 +1,17 @@
 import { expect } from "chai";
-import "test/helper/ToneAudioBuffer";
-import { getContext } from "../Global";
-import { ToneAudioBuffer } from "./ToneAudioBuffer";
+import { getContext } from "../Global.js";
+import { ToneAudioBuffer } from "./ToneAudioBuffer.js";
 
-const testFile = "./audio/sine.wav";
+const testFile = "./test/audio/sine.wav";
 
 describe("ToneAudioBuffer", () => {
-
 	context("basic", () => {
-
 		it("can be created and disposed", () => {
 			const buff = new ToneAudioBuffer(testFile);
 			buff.dispose();
 		});
 
-		it("loads a file from a url string", done => {
+		it("loads a file from a url string", (done) => {
 			const buffer = new ToneAudioBuffer(testFile, (buff) => {
 				expect(buff).to.be.instanceof(ToneAudioBuffer);
 				buffer.dispose();
@@ -22,7 +19,7 @@ describe("ToneAudioBuffer", () => {
 			});
 		});
 
-		it("has a duration", done => {
+		it("has a duration", (done) => {
 			const buffer = new ToneAudioBuffer(testFile, () => {
 				expect(buffer.duration).to.be.closeTo(3, 0.01);
 				buffer.dispose();
@@ -38,7 +35,7 @@ describe("ToneAudioBuffer", () => {
 			buffer.dispose();
 		});
 
-		it("can get the number of channels", done => {
+		it("can get the number of channels", (done) => {
 			const buffer = new ToneAudioBuffer(testFile, () => {
 				expect(buffer.numberOfChannels).to.be.equal(1);
 				buffer.dispose();
@@ -46,7 +43,7 @@ describe("ToneAudioBuffer", () => {
 			});
 		});
 
-		it("can get the length of the buffer", done => {
+		it("can get the length of the buffer", (done) => {
 			const buffer = new ToneAudioBuffer(testFile, () => {
 				expect(buffer.length).to.be.a("number");
 				expect(buffer.length).to.be.above(130000);
@@ -55,7 +52,7 @@ describe("ToneAudioBuffer", () => {
 			});
 		});
 
-		it("can be constructed with an options object", done => {
+		it("can be constructed with an options object", (done) => {
 			const buffer = new ToneAudioBuffer({
 				onload: () => {
 					buffer.dispose();
@@ -89,12 +86,14 @@ describe("ToneAudioBuffer", () => {
 			buffer.dispose();
 		});
 
-		it("takes an unloaded Tone.ToneAudioBuffer in the constructor method", done => {
+		it("takes an unloaded Tone.ToneAudioBuffer in the constructor method", (done) => {
 			const unloadedToneAudioBuffer = new ToneAudioBuffer(testFile);
 			const buffer = new ToneAudioBuffer({
 				onload(): void {
 					const testOne = new ToneAudioBuffer(buffer);
-					expect(unloadedToneAudioBuffer.get()).to.equal(buffer.get());
+					expect(unloadedToneAudioBuffer.get()).to.equal(
+						buffer.get()
+					);
 					unloadedToneAudioBuffer.dispose();
 					buffer.dispose();
 					done();
@@ -103,7 +102,7 @@ describe("ToneAudioBuffer", () => {
 			});
 		});
 
-		it("takes Tone.ToneAudioBuffer in the set method", done => {
+		it("takes Tone.ToneAudioBuffer in the set method", (done) => {
 			const buffer = new ToneAudioBuffer({
 				url: testFile,
 				onload(): void {
@@ -116,18 +115,20 @@ describe("ToneAudioBuffer", () => {
 				},
 			});
 		});
-
 	});
 
 	context("loading", () => {
-
-		it("invokes the error callback if there is a problem with the file", done => {
-			const buffer = new ToneAudioBuffer("nosuchfile.wav", () => {
-				throw new Error("shouldn't invoke this function");
-			}, e => {
-				buffer.dispose();
-				done();
-			});
+		it("invokes the error callback if there is a problem with the file", (done) => {
+			const buffer = new ToneAudioBuffer(
+				"nosuchfile.wav",
+				() => {
+					throw new Error("shouldn't invoke this function");
+				},
+				(e) => {
+					buffer.dispose();
+					done();
+				}
+			);
 		});
 
 		it("invokes the error callback on static .load method", async () => {
@@ -141,17 +142,21 @@ describe("ToneAudioBuffer", () => {
 		});
 
 		it("can load a file with fallback extensions", async () => {
-			const buffer = await ToneAudioBuffer.load("./audio/sine.[nope|nada|wav]");
+			const buffer = await ToneAudioBuffer.load(
+				"./test/audio/sine.[nope|nada|wav]"
+			);
 			expect(buffer).to.exist;
 		});
 
 		it("takes the first supported format when multiple extensions are provided", async () => {
-			const buffer = await ToneAudioBuffer.load("./audio/sine.[wav|nope]");
+			const buffer = await ToneAudioBuffer.load(
+				"./test/audio/sine.[wav|nope]"
+			);
 			expect(buffer).to.exist;
 		});
 
-		it("instance .load method returns Promise", done => {
-			const promise = (new ToneAudioBuffer()).load(testFile);
+		it("instance .load method returns Promise", (done) => {
+			const promise = new ToneAudioBuffer().load(testFile);
 			expect(promise).to.have.property("then");
 			promise.then((buff) => {
 				expect(buff).to.be.instanceOf(ToneAudioBuffer);
@@ -162,34 +167,39 @@ describe("ToneAudioBuffer", () => {
 			});
 		});
 
-		it("invokes the error callback if the file is corrupt", done => {
-			const buffer = new ToneAudioBuffer("./audio/corrupt.wav", () => {
-				throw new Error("shouldn't invoke this function");
-			}, e => {
-				buffer.dispose();
-				done();
-			});
+		it("invokes the error callback if the file is corrupt", (done) => {
+			const buffer = new ToneAudioBuffer(
+				"./test/audio/corrupt.wav",
+				() => {
+					throw new Error("shouldn't invoke this function");
+				},
+				(e) => {
+					buffer.dispose();
+					done();
+				}
+			);
 		});
 	});
 
 	context("buffer manipulation", () => {
-
 		it("returns an empty array if there is no channel data", () => {
 			const buffer = new ToneAudioBuffer();
 			expect(buffer.getChannelData(0).length).to.equal(0);
 			buffer.dispose();
 		});
 
-		it("can get the channel data as an array", done => {
+		it("can get the channel data as an array", (done) => {
 			const buffer = new ToneAudioBuffer(testFile, () => {
-				expect(buffer.getChannelData(0)).to.be.an.instanceOf(Float32Array);
+				expect(buffer.getChannelData(0)).to.be.an.instanceOf(
+					Float32Array
+				);
 				expect(buffer.getChannelData(0).length).to.be.above(130000);
 				buffer.dispose();
 				done();
 			});
 		});
 
-		it("can reverse a buffer", done => {
+		it("can reverse a buffer", (done) => {
 			const buffer = new ToneAudioBuffer(testFile, () => {
 				const buffArray = buffer.get() as AudioBuffer;
 				const lastSample = buffArray[buffArray.length - 1];
@@ -230,7 +240,10 @@ describe("ToneAudioBuffer", () => {
 
 		it("can convert from a multidimentional array", () => {
 			const buffer = new ToneAudioBuffer();
-			const arr = [new Float32Array(0.5 * buffer.sampleRate), new Float32Array(0.5 * buffer.sampleRate)];
+			const arr = [
+				new Float32Array(0.5 * buffer.sampleRate),
+				new Float32Array(0.5 * buffer.sampleRate),
+			];
 			arr[0][0] = 0.5;
 			buffer.fromArray(arr);
 			expect(buffer.duration).to.equal(0.5);
@@ -241,7 +254,10 @@ describe("ToneAudioBuffer", () => {
 
 		it("can convert to and from an array", () => {
 			const buffer = new ToneAudioBuffer();
-			const arr = [new Float32Array(0.5 * buffer.sampleRate), new Float32Array(0.5 * buffer.sampleRate)];
+			const arr = [
+				new Float32Array(0.5 * buffer.sampleRate),
+				new Float32Array(0.5 * buffer.sampleRate),
+			];
 			arr[0][0] = 0.5;
 			buffer.fromArray(arr);
 			expect(buffer.toArray(0)[0]).to.equal(0.5);
@@ -264,8 +280,11 @@ describe("ToneAudioBuffer", () => {
 			const sliced2 = sliced1.slice(0.5);
 			expect(sliced2.duration).to.be.closeTo(0.5, 0.01);
 			const sliced3 = buffer.slice(2);
-			expect(sliced3.toArray(0)[Math.floor(0.5 * buffer.sampleRate) + 1])
-					.to.equal(buffer.toArray(0)[Math.floor(2.5 * buffer.sampleRate) + 1]);
+			expect(
+				sliced3.toArray(0)[Math.floor(0.5 * buffer.sampleRate) + 1]
+			).to.equal(
+				buffer.toArray(0)[Math.floor(2.5 * buffer.sampleRate) + 1]
+			);
 			buffer.dispose();
 			sliced1.dispose();
 			sliced2.dispose();
@@ -284,7 +303,10 @@ describe("ToneAudioBuffer", () => {
 
 		it("can convert a buffer to mono", () => {
 			const buffer = new ToneAudioBuffer();
-			const arr = [new Float32Array(0.5 * buffer.sampleRate), new Float32Array(0.5 * buffer.sampleRate)];
+			const arr = [
+				new Float32Array(0.5 * buffer.sampleRate),
+				new Float32Array(0.5 * buffer.sampleRate),
+			];
 			arr[0][0] = 0.5;
 			buffer.fromArray(arr);
 			expect(buffer.duration).to.equal(0.5);
@@ -298,7 +320,10 @@ describe("ToneAudioBuffer", () => {
 
 		it("can use just the second channel of a buffer when making mono", () => {
 			const buffer = new ToneAudioBuffer();
-			const arr = [new Float32Array(0.5 * buffer.sampleRate), new Float32Array(0.5 * buffer.sampleRate)];
+			const arr = [
+				new Float32Array(0.5 * buffer.sampleRate),
+				new Float32Array(0.5 * buffer.sampleRate),
+			];
 			arr[0][0] = 0.5;
 			buffer.fromArray(arr);
 			expect(buffer.duration).to.equal(0.5);
@@ -312,20 +337,25 @@ describe("ToneAudioBuffer", () => {
 	});
 
 	context("static methods", () => {
-
 		it("Test if the browser supports the given type", () => {
 			expect(ToneAudioBuffer.supportsType("test.wav")).to.equal(true);
 			expect(ToneAudioBuffer.supportsType("wav")).to.equal(true);
-			expect(ToneAudioBuffer.supportsType("path/to/test.wav")).to.equal(true);
-			expect(ToneAudioBuffer.supportsType("path/to/test.nope")).to.equal(false);
+			expect(ToneAudioBuffer.supportsType("path/to/test.wav")).to.equal(
+				true
+			);
+			expect(ToneAudioBuffer.supportsType("path/to/test.nope")).to.equal(
+				false
+			);
 		});
 
-		it("can be constructed with ToneAudioBuffer.fromUrl", done => {
-			ToneAudioBuffer.fromUrl("nosuchfile.wav").then(() => {
-				throw new Error("shouldn't invoke this function");
-			}).catch(() => {
-				done();
-			});
+		it("can be constructed with ToneAudioBuffer.fromUrl", (done) => {
+			ToneAudioBuffer.fromUrl("nosuchfile.wav")
+				.then(() => {
+					throw new Error("shouldn't invoke this function");
+				})
+				.catch(() => {
+					done();
+				});
 		});
 	});
 

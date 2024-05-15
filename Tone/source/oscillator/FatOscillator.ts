@@ -1,16 +1,26 @@
-import { Cents, Degrees, Frequency, Seconds, Time } from "../../core/type/Units";
-import { optionsFromArguments } from "../../core/util/Defaults";
-import { noOp, readOnly } from "../../core/util/Interface";
-import { Signal } from "../../signal/Signal";
-import { Source } from "../Source";
-import { Oscillator } from "./Oscillator";
 import {
-	FatConstructorOptions, FatOscillatorOptions,
-	generateWaveform, NonCustomOscillatorType, ToneOscillatorInterface, ToneOscillatorType
-} from "./OscillatorInterface";
-import { assertRange } from "../../core/util/Debug";
+	Cents,
+	Degrees,
+	Frequency,
+	Seconds,
+	Time,
+} from "../../core/type/Units.js";
+import { optionsFromArguments } from "../../core/util/Defaults.js";
+import { noOp, readOnly } from "../../core/util/Interface.js";
+import { Signal } from "../../signal/Signal.js";
+import { Source } from "../Source.js";
+import { Oscillator } from "./Oscillator.js";
+import {
+	FatConstructorOptions,
+	FatOscillatorOptions,
+	generateWaveform,
+	NonCustomOscillatorType,
+	ToneOscillatorInterface,
+	ToneOscillatorType,
+} from "./OscillatorInterface.js";
+import { assertRange } from "../../core/util/Debug.js";
 
-export { FatOscillatorOptions } from "./OscillatorInterface";
+export { FatOscillatorOptions } from "./OscillatorInterface.js";
 
 /**
  * FatOscillator is an array of oscillators with detune spread between the oscillators
@@ -18,8 +28,10 @@ export { FatOscillatorOptions } from "./OscillatorInterface";
  * const fatOsc = new Tone.FatOscillator("Ab3", "sawtooth", 40).toDestination().start();
  * @category Source
  */
-export class FatOscillator extends Source<FatOscillatorOptions> implements ToneOscillatorInterface {
-
+export class FatOscillator
+	extends Source<FatOscillatorOptions>
+	implements ToneOscillatorInterface
+{
 	readonly name: string = "FatOscillator";
 
 	readonly frequency: Signal<"frequency">;
@@ -60,12 +72,19 @@ export class FatOscillator extends Source<FatOscillatorOptions> implements ToneO
 	 * @param type The type of the oscillator.
 	 * @param spread The detune spread between the oscillators.
 	 */
-	constructor(frequency?: Frequency, type?: ToneOscillatorType, spread?: Cents);
+	constructor(
+		frequency?: Frequency,
+		type?: ToneOscillatorType,
+		spread?: Cents
+	);
 	constructor(options?: Partial<FatConstructorOptions>);
 	constructor() {
-
-		super(optionsFromArguments(FatOscillator.getDefaults(), arguments, ["frequency", "type", "spread"]));
-		const options = optionsFromArguments(FatOscillator.getDefaults(), arguments, ["frequency", "type", "spread"]);
+		const options = optionsFromArguments(
+			FatOscillator.getDefaults(),
+			arguments,
+			["frequency", "type", "spread"]
+		);
+		super(options);
 
 		this.frequency = new Signal({
 			context: this.context,
@@ -103,7 +122,7 @@ export class FatOscillator extends Source<FatOscillatorOptions> implements ToneO
 	 */
 	protected _start(time: Time): void {
 		time = this.toSeconds(time);
-		this._forEach(osc => osc.start(time));
+		this._forEach((osc) => osc.start(time));
 	}
 
 	/**
@@ -111,11 +130,11 @@ export class FatOscillator extends Source<FatOscillatorOptions> implements ToneO
 	 */
 	protected _stop(time: Time): void {
 		time = this.toSeconds(time);
-		this._forEach(osc => osc.stop(time));
+		this._forEach((osc) => osc.stop(time));
 	}
 
 	protected _restart(time: Seconds): void {
-		this._forEach(osc => osc.restart(time));
+		this._forEach((osc) => osc.restart(time));
 	}
 
 	/**
@@ -135,7 +154,7 @@ export class FatOscillator extends Source<FatOscillatorOptions> implements ToneO
 	}
 	set type(type: ToneOscillatorType) {
 		this._type = type;
-		this._forEach(osc => osc.type = type);
+		this._forEach((osc) => (osc.type = type));
 	}
 
 	/**
@@ -155,7 +174,7 @@ export class FatOscillator extends Source<FatOscillatorOptions> implements ToneO
 		if (this._oscillators.length > 1) {
 			const start = -spread / 2;
 			const step = spread / (this._oscillators.length - 1);
-			this._forEach((osc, i) => osc.detune.value = start + step * i);
+			this._forEach((osc, i) => (osc.detune.value = start + step * i));
 		}
 	}
 
@@ -173,7 +192,7 @@ export class FatOscillator extends Source<FatOscillatorOptions> implements ToneO
 		assertRange(count, 1);
 		if (this._oscillators.length !== count) {
 			// dispose the previous oscillators
-			this._forEach(osc => osc.dispose());
+			this._forEach((osc) => osc.dispose());
 			this._oscillators = [];
 			for (let i = 0; i < count; i++) {
 				const osc = new Oscillator({
@@ -196,7 +215,7 @@ export class FatOscillator extends Source<FatOscillatorOptions> implements ToneO
 			// set the spread
 			this.spread = this._spread;
 			if (this.state === "started") {
-				this._forEach(osc => osc.start());
+				this._forEach((osc) => osc.start());
 			}
 		}
 	}
@@ -206,14 +225,16 @@ export class FatOscillator extends Source<FatOscillatorOptions> implements ToneO
 	}
 	set phase(phase: Degrees) {
 		this._phase = phase;
-		this._forEach((osc, i) => osc.phase = this._phase + (i / this.count) * 360);
+		this._forEach(
+			(osc, i) => (osc.phase = this._phase + (i / this.count) * 360)
+		);
 	}
 
 	get baseType(): OscillatorType {
 		return this._oscillators[0].baseType;
 	}
 	set baseType(baseType: OscillatorType) {
-		this._forEach(osc => osc.baseType = baseType);
+		this._forEach((osc) => (osc.baseType = baseType));
 		this._type = this._oscillators[0].type;
 	}
 
@@ -225,7 +246,7 @@ export class FatOscillator extends Source<FatOscillatorOptions> implements ToneO
 		this._partialCount = this._partials.length;
 		if (partials.length) {
 			this._type = "custom";
-			this._forEach(osc => osc.partials = partials);
+			this._forEach((osc) => (osc.partials = partials));
 		}
 	}
 
@@ -234,7 +255,7 @@ export class FatOscillator extends Source<FatOscillatorOptions> implements ToneO
 	}
 	set partialCount(partialCount: number) {
 		this._partialCount = partialCount;
-		this._forEach(osc => osc.partialCount = partialCount);
+		this._forEach((osc) => (osc.partialCount = partialCount));
 		this._type = this._oscillators[0].type;
 	}
 
@@ -249,7 +270,7 @@ export class FatOscillator extends Source<FatOscillatorOptions> implements ToneO
 		super.dispose();
 		this.frequency.dispose();
 		this.detune.dispose();
-		this._forEach(osc => osc.dispose());
+		this._forEach((osc) => osc.dispose());
 		return this;
 	}
 }

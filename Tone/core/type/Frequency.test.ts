@@ -1,20 +1,18 @@
 import { expect } from "chai";
-import teoria from "teoria";
-import { BasicTests } from "test/helper/Basic";
-import { Offline } from "test/helper/Offline";
-import { getContext } from "../Global";
-import { Frequency, FrequencyClass } from "./Frequency";
-import { Midi } from "./Midi";
-import { Ticks } from "./Ticks";
-import { Time } from "./Time";
-import { TransportTime } from "./TransportTime";
+import { BasicTests } from "../../../test/helper/Basic.js";
+import { Offline } from "../../../test/helper/Offline.js";
+import { getContext } from "../Global.js";
+import { Frequency, FrequencyClass } from "./Frequency.js";
+import { Midi } from "./Midi.js";
+import { Ticks } from "./Ticks.js";
+import { Time } from "./Time.js";
+import { TransportTime } from "./TransportTime.js";
+import { Note, Midi as TonalMidi } from "tonal";
 
 describe("FrequencyClass", () => {
-
 	BasicTests(Frequency);
 
 	context("Constructor", () => {
-
 		it("can be made with or without 'new'", () => {
 			const f0 = Frequency();
 			expect(f0).to.be.instanceOf(FrequencyClass);
@@ -73,9 +71,15 @@ describe("FrequencyClass", () => {
 		});
 
 		it("can convert from Midi", () => {
-			expect(Frequency(Midi("C4")).valueOf()).to.equal(Frequency("C4").valueOf());
-			expect(Frequency(Midi(60)).valueOf()).to.equal(Frequency("C4").valueOf());
-			expect(Frequency(Midi(61)).valueOf()).to.equal(Frequency("C#4").valueOf());
+			expect(Frequency(Midi("C4")).valueOf()).to.equal(
+				Frequency("C4").valueOf()
+			);
+			expect(Frequency(Midi(60)).valueOf()).to.equal(
+				Frequency("C4").valueOf()
+			);
+			expect(Frequency(Midi(61)).valueOf()).to.equal(
+				Frequency("C#4").valueOf()
+			);
 		});
 
 		it("can convert from Ticks", () => {
@@ -87,7 +91,6 @@ describe("FrequencyClass", () => {
 	});
 
 	context("Eval Types", () => {
-
 		it("evaluates numbers as frequency", () => {
 			expect(Frequency("1").valueOf()).to.equal(1);
 			expect(Frequency("123").valueOf()).to.equal(123);
@@ -130,8 +133,14 @@ describe("FrequencyClass", () => {
 		});
 
 		it("evalutes midi", () => {
-			expect(Frequency(48, "midi").valueOf()).to.be.closeTo(teoria.Note.fromMIDI(48).fq(), 0.0001);
-			expect(Frequency(69, "midi").valueOf()).to.be.closeTo(teoria.Note.fromMIDI(69).fq(), 0.0001);
+			expect(Frequency(48, "midi").valueOf()).to.be.closeTo(
+				TonalMidi.midiToFreq(48),
+				0.0001
+			);
+			expect(Frequency(69, "midi").valueOf()).to.be.closeTo(
+				TonalMidi.midiToFreq(69),
+				0.0001
+			);
 		});
 
 		it("evalutes hz", () => {
@@ -140,41 +149,105 @@ describe("FrequencyClass", () => {
 		});
 
 		it("can convert notes into frequencies", () => {
-			expect(Frequency("C4").valueOf()).to.be.closeTo(teoria.note("C4").fq(), 0.0001);
-			expect(Frequency("D4").valueOf()).to.be.closeTo(teoria.note("D4").fq(), 0.0001);
-			expect(Frequency("Db4").valueOf()).to.be.closeTo(teoria.note("Db4").fq(), 0.0001);
-			expect(Frequency("E4").valueOf()).to.be.closeTo(teoria.note("E4").fq(), 0.0001);
-			expect(Frequency("F2").valueOf()).to.be.closeTo(teoria.note("F2").fq(), 0.0001);
-			expect(Frequency("Gb-1").valueOf()).to.be.closeTo(teoria.note("Gb-1").fq(), 0.0001);
-			expect(Frequency("A#10").valueOf()).to.be.closeTo(teoria.note("A#10").fq(), 0.0001);
-			expect(Frequency("Bb2").valueOf()).to.be.closeTo(teoria.note("Bb2").fq(), 0.0001);
+			expect(Frequency("C4").valueOf()).to.be.closeTo(
+				Note.freq("C4") as number,
+				0.0001
+			);
+			expect(Frequency("D4").valueOf()).to.be.closeTo(
+				Note.freq("D4") as number,
+				0.0001
+			);
+			expect(Frequency("Db4").valueOf()).to.be.closeTo(
+				Note.freq("Db4") as number,
+				0.0001
+			);
+			expect(Frequency("E4").valueOf()).to.be.closeTo(
+				Note.freq("E4") as number,
+				0.0001
+			);
+			expect(Frequency("F2").valueOf()).to.be.closeTo(
+				Note.freq("F2") as number,
+				0.0001
+			);
+			expect(Frequency("Gb-1").valueOf()).to.be.closeTo(
+				Note.freq("Gb-1") as number,
+				0.0001
+			);
+			expect(Frequency("A#10").valueOf()).to.be.closeTo(
+				Note.freq("A#10") as number,
+				0.0001
+			);
+			expect(Frequency("Bb2").valueOf()).to.be.closeTo(
+				Note.freq("Bb2") as number,
+				0.0001
+			);
 		});
 
 		it("handles double accidentals", () => {
-			expect(Frequency("Cbb4").valueOf()).to.be.closeTo(teoria.note("Cbb4").fq(), 0.0001);
-			expect(Frequency("Dx4").valueOf()).to.be.closeTo(teoria.note("Dx4").fq(), 0.0001);
-			expect(Frequency("Dbb4").valueOf()).to.be.closeTo(teoria.note("Dbb4").fq(), 0.0001);
-			expect(Frequency("Ex4").valueOf()).to.be.closeTo(teoria.note("Ex4").fq(), 0.0001);
-			expect(Frequency("Fx2").valueOf()).to.be.closeTo(teoria.note("Fx2").fq(), 0.0001);
-			expect(Frequency("Gbb-1").valueOf()).to.be.closeTo(teoria.note("Gbb-1").fq(), 0.0001);
-			expect(Frequency("Ax10").valueOf()).to.be.closeTo(teoria.note("Ax10").fq(), 0.0001);
-			expect(Frequency("Bbb2").valueOf()).to.be.closeTo(teoria.note("Bbb2").fq(), 0.0001);
+			expect(Frequency("Cbb4").valueOf()).to.be.closeTo(
+				Note.freq("Cbb4") as number,
+				0.0001
+			);
+			expect(Frequency("Dx4").valueOf()).to.be.closeTo(
+				Note.freq("Dx4") as number,
+				0.0001
+			);
+			expect(Frequency("Dbb4").valueOf()).to.be.closeTo(
+				Note.freq("Dbb4") as number,
+				0.0001
+			);
+			expect(Frequency("Ex4").valueOf()).to.be.closeTo(
+				Note.freq("Ex4") as number,
+				0.0001
+			);
+			expect(Frequency("Fx2").valueOf()).to.be.closeTo(
+				Note.freq("Fx2") as number,
+				0.0001
+			);
+			expect(Frequency("Gbb-1").valueOf()).to.be.closeTo(
+				Note.freq("Gbb-1") as number,
+				0.0001
+			);
+			expect(Frequency("Ax10").valueOf()).to.be.closeTo(
+				Note.freq("Ax10") as number,
+				0.0001
+			);
+			expect(Frequency("Bbb2").valueOf()).to.be.closeTo(
+				Note.freq("Bbb2") as number,
+				0.0001
+			);
 		});
 
 		it("can accomidate different concert tuning", () => {
 			FrequencyClass.A4 = 444;
-			expect(Frequency("C4").valueOf()).to.be.closeTo(teoria.note("C4").fq(FrequencyClass.A4), 0.0001);
-			expect(Frequency("D1").valueOf()).to.be.closeTo(teoria.note("D1").fq(FrequencyClass.A4), 0.0001);
+			expect(Frequency("C4").valueOf()).to.be.closeTo(
+				TonalMidi.midiToFreq(
+					TonalMidi.toMidi("C4") as number,
+					FrequencyClass.A4
+				),
+				0.0001
+			);
+			expect(Frequency("D1").valueOf()).to.be.closeTo(
+				TonalMidi.midiToFreq(
+					TonalMidi.toMidi("D1") as number,
+					FrequencyClass.A4
+				),
+				0.0001
+			);
 			FrequencyClass.A4 = 100;
-			expect(Frequency("C4").valueOf()).to.be.closeTo(teoria.note("C4").fq(FrequencyClass.A4), 0.0001);
+			expect(Frequency("C4").valueOf()).to.be.closeTo(
+				TonalMidi.midiToFreq(
+					TonalMidi.toMidi("C4") as number,
+					FrequencyClass.A4
+				),
+				0.0001
+			);
 			// return it to normal
 			FrequencyClass.A4 = 440;
 		});
-
 	});
 
 	context("transpose/harmonize", () => {
-
 		it("can transpose a value", () => {
 			expect(Frequency("A4").transpose(3).toMidi()).to.equal(72);
 			expect(Frequency("A4").transpose(-3).toMidi()).to.equal(66);
@@ -184,31 +257,48 @@ describe("FrequencyClass", () => {
 		it("can harmonize a value", () => {
 			expect(Frequency("A4").harmonize([0, 3])).to.be.an("array");
 			expect(Frequency("A4").harmonize([0, 3]).length).to.equal(2);
-			expect(Frequency("A4").harmonize([0, 3])[0].toNote()).to.equal("A4");
-			expect(Frequency("A4").harmonize([0, 3])[1].toNote()).to.equal("C5");
+			expect(Frequency("A4").harmonize([0, 3])[0].toNote()).to.equal(
+				"A4"
+			);
+			expect(Frequency("A4").harmonize([0, 3])[1].toNote()).to.equal(
+				"C5"
+			);
 
 			expect(Frequency("A4").harmonize([-12, 0, 12])).to.be.an("array");
 			expect(Frequency("A4").harmonize([-12, 0, 12]).length).to.equal(3);
-			expect(Frequency("A4").harmonize([-12, 0, 12])[0].toNote()).to.equal("A3");
-			expect(Frequency("A4").harmonize([-12, 0, 12])[1].toNote()).to.equal("A4");
-			expect(Frequency("A4").harmonize([-12, 0, 12])[2].toNote()).to.equal("A5");
+			expect(
+				Frequency("A4").harmonize([-12, 0, 12])[0].toNote()
+			).to.equal("A3");
+			expect(
+				Frequency("A4").harmonize([-12, 0, 12])[1].toNote()
+			).to.equal("A4");
+			expect(
+				Frequency("A4").harmonize([-12, 0, 12])[2].toNote()
+			).to.equal("A5");
 		});
 	});
 
 	context("Conversions", () => {
-
 		it("can convert frequencies into notes", () => {
-			expect(Frequency(261.625).toNote()).to.equal(teoria.Note.fromFrequency(261.625).note.scientific());
-			expect(Frequency(440).toNote()).to.equal(teoria.Note.fromFrequency(440).note.scientific());
-			expect(Frequency(220).toNote()).to.equal(teoria.Note.fromFrequency(220).note.scientific());
-			expect(Frequency(13.75).toNote()).to.equal(teoria.Note.fromFrequency(13.75).note.scientific());
+			expect(Frequency(261.625).toNote()).to.equal(
+				Note.fromFreq(261.625)
+			);
+			expect(Frequency(440).toNote()).to.equal(Note.fromFreq(440));
+			expect(Frequency(220).toNote()).to.equal(Note.fromFreq(220));
+			expect(Frequency(13.75).toNote()).to.equal(Note.fromFreq(13.75));
 			expect(Frequency(4979).toNote()).to.equal("D#8");
 		});
 
 		it("can convert note to midi values", () => {
-			expect(Frequency("C4").toMidi()).to.equal(teoria.note("C4").midi());
-			expect(Frequency("C#0").toMidi()).to.equal(teoria.note("C#0").midi());
-			expect(Frequency("A-4").toMidi()).to.equal(teoria.note("A-4").midi());
+			expect(Frequency("C4").toMidi()).to.equal(
+				TonalMidi.toMidi("C4") as number
+			);
+			expect(Frequency("C#0").toMidi()).to.equal(
+				TonalMidi.toMidi("C#0") as number
+			);
+			expect(Frequency("A-1").toMidi()).to.equal(
+				TonalMidi.toMidi("A-1") as number
+			);
 		});
 
 		it("can convert hertz to seconds", () => {
@@ -216,5 +306,4 @@ describe("FrequencyClass", () => {
 			expect(Frequency("2hz").toSeconds()).to.equal(0.5);
 		});
 	});
-
 });

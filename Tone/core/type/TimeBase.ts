@@ -1,14 +1,32 @@
-import { BaseContext } from "../context/BaseContext";
-import { Tone } from "../Tone";
-import { isDefined, isObject, isString, isUndef } from "../util/TypeCheck";
-import { BPM, Hertz, MidiNote, Milliseconds, Samples, Seconds, Ticks, Time } from "./Units";
+import { BaseContext } from "../context/BaseContext.js";
+import { Tone } from "../Tone.js";
+import { isDefined, isObject, isString, isUndef } from "../util/TypeCheck.js";
+import {
+	BPM,
+	Hertz,
+	MidiNote,
+	Milliseconds,
+	Samples,
+	Seconds,
+	Ticks,
+	Time,
+} from "./Units.js";
 
 export type TimeValue = Time | TimeBaseClass<any, any>;
 
 /**
  * The units that the TimeBase can accept. extended by other classes
  */
-export type TimeBaseUnit = "s" | "n" | "t" | "m" | "i" | "hz" | "tr" | "samples" | "number";
+export type TimeBaseUnit =
+	| "s"
+	| "n"
+	| "t"
+	| "m"
+	| "i"
+	| "hz"
+	| "tr"
+	| "samples"
+	| "number";
 
 export interface TypeFunction {
 	regexp: RegExp;
@@ -25,8 +43,10 @@ export interface TimeExpression<Type extends number> {
 /**
  * TimeBase is a flexible encoding of time which can be evaluated to and from a string.
  */
-export abstract class TimeBaseClass<Type extends number, Unit extends string> extends Tone {
-
+export abstract class TimeBaseClass<
+	Type extends number,
+	Unit extends string,
+> extends Tone {
 	readonly context: BaseContext;
 
 	/**
@@ -83,7 +103,9 @@ export abstract class TimeBaseClass<Type extends number, Unit extends string> ex
 			},
 			m: {
 				method: (value) => {
-					return this._beatsToUnits(parseInt(value, 10) * this._getTimeSignature());
+					return this._beatsToUnits(
+						parseInt(value, 10) * this._getTimeSignature()
+					);
 				},
 				regexp: /^(\d+)m$/i,
 			},
@@ -92,16 +114,21 @@ export abstract class TimeBaseClass<Type extends number, Unit extends string> ex
 					const numericValue = parseInt(value, 10);
 					const scalar = dot === "." ? 1.5 : 1;
 					if (numericValue === 1) {
-						return this._beatsToUnits(this._getTimeSignature()) * scalar as Type;
+						return (this._beatsToUnits(this._getTimeSignature()) *
+							scalar) as Type;
 					} else {
-						return this._beatsToUnits(4 / numericValue) * scalar as Type;
+						return (this._beatsToUnits(4 / numericValue) *
+							scalar) as Type;
 					}
 				},
 				regexp: /^(\d+)n(\.?)$/i,
 			},
 			number: {
 				method: (value) => {
-					return this._expressions[this.defaultUnits].method.call(this, value);
+					return this._expressions[this.defaultUnits].method.call(
+						this,
+						value
+					);
 				},
 				regexp: /^(\d+(?:\.\d+)?)$/,
 			},
@@ -113,14 +140,17 @@ export abstract class TimeBaseClass<Type extends number, Unit extends string> ex
 			},
 			samples: {
 				method: (value) => {
-					return parseInt(value, 10) / this.context.sampleRate as Type;
+					return (parseInt(value, 10) /
+						this.context.sampleRate) as Type;
 				},
 				regexp: /^(\d+)samples$/,
 			},
 			t: {
 				method: (value) => {
 					const numericValue = parseInt(value, 10);
-					return this._beatsToUnits(8 / (Math.floor(numericValue) * 3));
+					return this._beatsToUnits(
+						8 / (Math.floor(numericValue) * 3)
+					);
 				},
 				regexp: /^(\d+)t$/i,
 			},
@@ -128,7 +158,9 @@ export abstract class TimeBaseClass<Type extends number, Unit extends string> ex
 				method: (m, q, s) => {
 					let total = 0;
 					if (m && m !== "0") {
-						total += this._beatsToUnits(this._getTimeSignature() * parseFloat(m));
+						total += this._beatsToUnits(
+							this._getTimeSignature() * parseFloat(m)
+						);
 					}
 					if (q && q !== "0") {
 						total += this._beatsToUnits(parseFloat(q));
@@ -168,8 +200,10 @@ export abstract class TimeBaseClass<Type extends number, Unit extends string> ex
 			for (const typeName in this._val) {
 				if (isDefined(this._val[typeName])) {
 					const quantity = this._val[typeName];
-					// @ts-ignore
-					const time = (new this.constructor(this.context, typeName)).valueOf() * quantity;
+					const time =
+						// @ts-ignore
+						new this.constructor(this.context, typeName).valueOf() *
+						quantity;
 					total += time;
 				}
 			}
@@ -198,14 +232,14 @@ export abstract class TimeBaseClass<Type extends number, Unit extends string> ex
 	 * Returns the value of a frequency in the current units
 	 */
 	protected _frequencyToUnits(freq: Hertz): Type {
-		return 1 / freq as Type;
+		return (1 / freq) as Type;
 	}
 
 	/**
 	 * Return the value of the beats in the current units
 	 */
 	protected _beatsToUnits(beats: number): Type {
-		return (60 / this._getBpm()) * beats as Type;
+		return ((60 / this._getBpm()) * beats) as Type;
 	}
 
 	/**
@@ -219,7 +253,7 @@ export abstract class TimeBaseClass<Type extends number, Unit extends string> ex
 	 * Returns the value of a tick in the current time units
 	 */
 	protected _ticksToUnits(ticks: Ticks): Type {
-		return (ticks * (this._beatsToUnits(1)) / this._getPPQ()) as Type;
+		return ((ticks * this._beatsToUnits(1)) / this._getPPQ()) as Type;
 	}
 
 	/**

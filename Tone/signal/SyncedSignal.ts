@@ -1,19 +1,27 @@
-import { Signal, SignalOptions } from "./Signal";
-import { NormalRange, Seconds, Time, TransportTime, UnitMap, UnitName } from "../core/type/Units";
-import { optionsFromArguments } from "../core/util/Defaults";
-import { TransportTimeClass } from "../core/type/TransportTime";
-import { ToneConstantSource } from "./ToneConstantSource";
-import { OutputNode } from "../core/context/ToneAudioNode";
-import type { TransportClass } from "../core/clock/Transport";
+import { Signal, SignalOptions } from "./Signal.js";
+import {
+	NormalRange,
+	Seconds,
+	Time,
+	TransportTime,
+	UnitMap,
+	UnitName,
+} from "../core/type/Units.js";
+import { optionsFromArguments } from "../core/util/Defaults.js";
+import { TransportTimeClass } from "../core/type/TransportTime.js";
+import { ToneConstantSource } from "./ToneConstantSource.js";
+import { OutputNode } from "../core/context/ToneAudioNode.js";
+import type { TransportClass } from "../core/clock/Transport.js";
 
 /**
  * Adds the ability to synchronize the signal to the {@link TransportClass}
  * @category Signal
  */
-export class SyncedSignal<TypeName extends UnitName = "number"> extends Signal<TypeName> {
-
+export class SyncedSignal<
+	TypeName extends UnitName = "number",
+> extends Signal<TypeName> {
 	readonly name: string = "SyncedSignal";
-	
+
 	/**
 	 * Don't override when something is connected to the input
 	 */
@@ -43,12 +51,17 @@ export class SyncedSignal<TypeName extends UnitName = "number"> extends Signal<T
 	constructor(value?: UnitMap[TypeName], units?: TypeName);
 	constructor(options?: Partial<SignalOptions<TypeName>>);
 	constructor() {
-
-		super(optionsFromArguments(Signal.getDefaults(), arguments, ["value", "units"]));
-		const options = optionsFromArguments(Signal.getDefaults(), arguments, ["value", "units"]) as SignalOptions<TypeName>;
+		const options = optionsFromArguments(Signal.getDefaults(), arguments, [
+			"value",
+			"units",
+		]) as SignalOptions<TypeName>;
+		super(options);
 
 		this._lastVal = options.value;
-		this._synced = this.context.transport.scheduleRepeat(this._onTick.bind(this), "1i");
+		this._synced = this.context.transport.scheduleRepeat(
+			this._onTick.bind(this),
+			"1i"
+		);
 
 		this._syncedCallback = this._anchorValue.bind(this);
 		this.context.transport.on("start", this._syncedCallback);
@@ -60,7 +73,7 @@ export class SyncedSignal<TypeName extends UnitName = "number"> extends Signal<T
 		this._constantSource.stop(0);
 
 		// create a new one
-		this._constantSource = this.output = new ToneConstantSource<TypeName>({ 
+		this._constantSource = this.output = new ToneConstantSource<TypeName>({
 			context: this.context,
 			offset: options.value,
 			units: options.units,
@@ -91,73 +104,133 @@ export class SyncedSignal<TypeName extends UnitName = "number"> extends Signal<T
 	}
 
 	getValueAtTime(time: TransportTime): UnitMap[TypeName] {
-		const computedTime = new TransportTimeClass(this.context, time).toSeconds();
+		const computedTime = new TransportTimeClass(
+			this.context,
+			time
+		).toSeconds();
 		return super.getValueAtTime(computedTime);
 	}
-	
+
 	setValueAtTime(value: UnitMap[TypeName], time: TransportTime) {
-		const computedTime = new TransportTimeClass(this.context, time).toSeconds();
+		const computedTime = new TransportTimeClass(
+			this.context,
+			time
+		).toSeconds();
 		super.setValueAtTime(value, computedTime);
 		return this;
 	}
 
 	linearRampToValueAtTime(value: UnitMap[TypeName], time: TransportTime) {
-		const computedTime = new TransportTimeClass(this.context, time).toSeconds();
+		const computedTime = new TransportTimeClass(
+			this.context,
+			time
+		).toSeconds();
 		super.linearRampToValueAtTime(value, computedTime);
 		return this;
 	}
 
-	exponentialRampToValueAtTime(value: UnitMap[TypeName], time: TransportTime) {
-		const computedTime = new TransportTimeClass(this.context, time).toSeconds();
+	exponentialRampToValueAtTime(
+		value: UnitMap[TypeName],
+		time: TransportTime
+	) {
+		const computedTime = new TransportTimeClass(
+			this.context,
+			time
+		).toSeconds();
 		super.exponentialRampToValueAtTime(value, computedTime);
 		return this;
 	}
 
-	setTargetAtTime(value, startTime: TransportTime, timeConstant: number): this {
-		const computedTime = new TransportTimeClass(this.context, startTime).toSeconds();
+	setTargetAtTime(
+		value,
+		startTime: TransportTime,
+		timeConstant: number
+	): this {
+		const computedTime = new TransportTimeClass(
+			this.context,
+			startTime
+		).toSeconds();
 		super.setTargetAtTime(value, computedTime, timeConstant);
 		return this;
 	}
 
 	cancelScheduledValues(startTime: TransportTime): this {
-		const computedTime = new TransportTimeClass(this.context, startTime).toSeconds();
+		const computedTime = new TransportTimeClass(
+			this.context,
+			startTime
+		).toSeconds();
 		super.cancelScheduledValues(computedTime);
 		return this;
 	}
 
-	setValueCurveAtTime(values: UnitMap[TypeName][], startTime: TransportTime, duration: Time, scaling: NormalRange): this {
-		const computedTime = new TransportTimeClass(this.context, startTime).toSeconds();
+	setValueCurveAtTime(
+		values: UnitMap[TypeName][],
+		startTime: TransportTime,
+		duration: Time,
+		scaling: NormalRange
+	): this {
+		const computedTime = new TransportTimeClass(
+			this.context,
+			startTime
+		).toSeconds();
 		duration = this.toSeconds(duration);
 		super.setValueCurveAtTime(values, computedTime, duration, scaling);
 		return this;
 	}
 
 	cancelAndHoldAtTime(time: TransportTime): this {
-		const computedTime = new TransportTimeClass(this.context, time).toSeconds();
+		const computedTime = new TransportTimeClass(
+			this.context,
+			time
+		).toSeconds();
 		super.cancelAndHoldAtTime(computedTime);
 		return this;
 	}
-	
+
 	setRampPoint(time: TransportTime): this {
-		const computedTime = new TransportTimeClass(this.context, time).toSeconds();
+		const computedTime = new TransportTimeClass(
+			this.context,
+			time
+		).toSeconds();
 		super.setRampPoint(computedTime);
 		return this;
 	}
-	
-	exponentialRampTo(value: UnitMap[TypeName], rampTime: Time, startTime?: TransportTime): this {
-		const computedTime = new TransportTimeClass(this.context, startTime).toSeconds();
+
+	exponentialRampTo(
+		value: UnitMap[TypeName],
+		rampTime: Time,
+		startTime?: TransportTime
+	): this {
+		const computedTime = new TransportTimeClass(
+			this.context,
+			startTime
+		).toSeconds();
 		super.exponentialRampTo(value, rampTime, computedTime);
 		return this;
 	}
-	
-	linearRampTo(value: UnitMap[TypeName], rampTime: Time, startTime?: TransportTime): this {
-		const computedTime = new TransportTimeClass(this.context, startTime).toSeconds();
+
+	linearRampTo(
+		value: UnitMap[TypeName],
+		rampTime: Time,
+		startTime?: TransportTime
+	): this {
+		const computedTime = new TransportTimeClass(
+			this.context,
+			startTime
+		).toSeconds();
 		super.linearRampTo(value, rampTime, computedTime);
 		return this;
 	}
 
-	targetRampTo(value: UnitMap[TypeName], rampTime: Time, startTime?: TransportTime): this {
-		const computedTime = new TransportTimeClass(this.context, startTime).toSeconds();
+	targetRampTo(
+		value: UnitMap[TypeName],
+		rampTime: Time,
+		startTime?: TransportTime
+	): this {
+		const computedTime = new TransportTimeClass(
+			this.context,
+			startTime
+		).toSeconds();
 		super.targetRampTo(value, rampTime, computedTime);
 		return this;
 	}

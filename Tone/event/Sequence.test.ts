@@ -1,16 +1,14 @@
 import { expect } from "chai";
-import { BasicTests } from "test/helper/Basic";
-import { atTime, Offline } from "test/helper/Offline";
-import { Time } from "Tone/core/type/Time";
-import { noOp } from "Tone/core/util/Interface";
-import { Sequence } from "./Sequence";
+import { BasicTests } from "../../test/helper/Basic.js";
+import { atTime, Offline } from "../../test/helper/Offline.js";
+import { Time } from "../core/type/Time.js";
+import { noOp } from "../core/util/Interface.js";
+import { Sequence } from "./Sequence.js";
 
 describe("Sequence", () => {
-
 	BasicTests(Sequence);
 
 	context("Constructor", () => {
-
 		it("takes a callback and a sequence of values", () => {
 			return Offline(() => {
 				const callback = noOp;
@@ -73,7 +71,6 @@ describe("Sequence", () => {
 	});
 
 	context("Adding / Removing / Getting Events", () => {
-
 		it("can add an event using the index", () => {
 			return Offline(() => {
 				const seq = new Sequence();
@@ -154,10 +151,8 @@ describe("Sequence", () => {
 				seq.dispose();
 			});
 		});
-
 	});
 	context("Sequence callback", () => {
-
 		it("invokes the callback after it's started", () => {
 			let invoked = false;
 			return Offline(({ transport }) => {
@@ -174,9 +169,15 @@ describe("Sequence", () => {
 		it("can be scheduled to stop", () => {
 			let invoked = 0;
 			return Offline(({ transport }) => {
-				const seq = new Sequence(() => {
-					invoked++;
-				}, [0, 1], 0.1).start(0).stop(0.5);
+				const seq = new Sequence(
+					() => {
+						invoked++;
+					},
+					[0, 1],
+					0.1
+				)
+					.start(0)
+					.stop(0.5);
 				transport.start();
 			}, 1).then(() => {
 				expect(invoked).to.equal(6);
@@ -187,12 +188,15 @@ describe("Sequence", () => {
 			let invoked = false;
 			return Offline(({ transport }) => {
 				const now = 0.1;
-				const seq = new Sequence((time) => {
-					expect(time).to.be.a("number");
-					expect(time - now).to.be.closeTo(0.3, 0.01);
-					seq.dispose();
-					invoked = true;
-				}, [0.5]);
+				const seq = new Sequence(
+					(time) => {
+						expect(time).to.be.a("number");
+						expect(time - now).to.be.closeTo(0.3, 0.01);
+						seq.dispose();
+						invoked = true;
+					},
+					[0.5]
+				);
 				seq.start(0.3);
 				transport.start(now);
 			}, 0.5).then(() => {
@@ -203,12 +207,15 @@ describe("Sequence", () => {
 		it("passes in the value to the callback", () => {
 			let invoked = false;
 			return Offline(({ transport }) => {
-				const seq = new Sequence((time, thing) => {
-					expect(time).to.be.a("number");
-					expect(thing).to.equal("thing");
-					seq.dispose();
-					invoked = true;
-				}, ["thing"]).start();
+				const seq = new Sequence(
+					(time, thing) => {
+						expect(time).to.be.a("number");
+						expect(thing).to.equal("thing");
+						seq.dispose();
+						invoked = true;
+					},
+					["thing"]
+				).start();
 				transport.start();
 			}, 0.1).then(() => {
 				expect(invoked).to.be.true;
@@ -218,10 +225,14 @@ describe("Sequence", () => {
 		it("invokes the scheduled events in the right order", () => {
 			let count = 0;
 			return Offline(({ transport }) => {
-				const seq = new Sequence((time, value) => {
-					expect(value).to.equal(count);
-					count++;
-				}, [0, [1, 2], [3, 4]], "16n").start();
+				const seq = new Sequence(
+					(time, value) => {
+						expect(value).to.equal(count);
+						count++;
+					},
+					[0, [1, 2], [3, 4]],
+					"16n"
+				).start();
 				seq.loop = false;
 				transport.start(0);
 			}, 0.5).then(() => {
@@ -233,11 +244,22 @@ describe("Sequence", () => {
 			let count = 0;
 			return Offline(({ transport }) => {
 				const eighth = transport.toSeconds("8n");
-				const times = [0, eighth, eighth * 1.5, eighth * 2, eighth * (2 + 1 / 3), eighth * (2 + 2 / 3)];
-				const seq = new Sequence((time) => {
-					expect(time).to.be.closeTo(times[count], 0.01);
-					count++;
-				}, [0, [1, 2], [3, 4, 5]], "8n").start(0);
+				const times = [
+					0,
+					eighth,
+					eighth * 1.5,
+					eighth * 2,
+					eighth * (2 + 1 / 3),
+					eighth * (2 + 2 / 3),
+				];
+				const seq = new Sequence(
+					(time) => {
+						expect(time).to.be.closeTo(times[count], 0.01);
+						count++;
+					},
+					[0, [1, 2], [3, 4, 5]],
+					"8n"
+				).start(0);
 				seq.loop = false;
 				transport.start(0);
 			}, 0.8).then(() => {
@@ -250,10 +272,14 @@ describe("Sequence", () => {
 			return Offline(({ transport }) => {
 				const eighth = transport.toSeconds("8n");
 				const times = [0, eighth * 2.5];
-				const seq = new Sequence((time, value) => {
-					expect(time).to.be.closeTo(times[count], 0.01);
-					count++;
-				}, [0, null, [null, 1]], "8n").start(0);
+				const seq = new Sequence(
+					(time, value) => {
+						expect(time).to.be.closeTo(times[count], 0.01);
+						count++;
+					},
+					[0, null, [null, 1]],
+					"8n"
+				).start(0);
 				seq.loop = false;
 				transport.start(0);
 			}, 0.8).then(() => {
@@ -266,10 +292,14 @@ describe("Sequence", () => {
 			return Offline(({ transport }) => {
 				const eighth = transport.toSeconds("8n");
 				const times = [0, eighth, eighth * 1.5, eighth * 1.75];
-				const seq = new Sequence((time) => {
-					expect(time).to.be.closeTo(times[count], 0.01);
-					count++;
-				}, [0, [1, [2, 3]]], "8n").start(0);
+				const seq = new Sequence(
+					(time) => {
+						expect(time).to.be.closeTo(times[count], 0.01);
+						count++;
+					},
+					[0, [1, [2, 3]]],
+					"8n"
+				).start(0);
 				seq.loop = false;
 				transport.start(0);
 			}, 0.7).then(() => {
@@ -309,11 +339,9 @@ describe("Sequence", () => {
 				transport.start();
 			}, 0.5);
 		});
-
 	});
 
 	context("Looping", () => {
-
 		it("can be set to loop", () => {
 			let callCount = 0;
 			return Offline(({ transport }) => {
@@ -381,7 +409,6 @@ describe("Sequence", () => {
 	});
 
 	context("playbackRate", () => {
-
 		it("can adjust the playbackRate", () => {
 			let invoked = false;
 			return Offline(({ transport }) => {
@@ -409,7 +436,10 @@ describe("Sequence", () => {
 			return Offline(({ transport }) => {
 				let lastCall;
 				new Sequence({
-					events: [[0, 1], [2, 3]],
+					events: [
+						[0, 1],
+						[2, 3],
+					],
 					playbackRate: 0.5,
 					subdivision: "8n",
 					callback(time): void {

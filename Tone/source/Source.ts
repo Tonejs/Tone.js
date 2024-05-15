@@ -1,23 +1,23 @@
-import { Volume } from "../component/channel/Volume";
-import "../core/context/Destination";
-import "../core/clock/Transport";
-import { Param } from "../core/context/Param";
+import { Volume } from "../component/channel/Volume.js";
+import "../core/context/Destination.js";
+import "../core/clock/Transport.js";
+import { Param } from "../core/context/Param.js";
 import {
 	OutputNode,
 	ToneAudioNode,
 	ToneAudioNodeOptions,
-} from "../core/context/ToneAudioNode";
-import { Decibels, Seconds, Time } from "../core/type/Units";
-import { defaultArg } from "../core/util/Defaults";
-import { noOp, readOnly } from "../core/util/Interface";
+} from "../core/context/ToneAudioNode.js";
+import { Decibels, Seconds, Time } from "../core/type/Units.js";
+import { defaultArg } from "../core/util/Defaults.js";
+import { noOp, readOnly } from "../core/util/Interface.js";
 import {
 	BasicPlaybackState,
 	StateTimeline,
 	StateTimelineEvent,
-} from "../core/util/StateTimeline";
-import { isDefined, isUndef } from "../core/util/TypeCheck";
-import { assert, assertContextRunning } from "../core/util/Debug";
-import { GT } from "../core/util/Math";
+} from "../core/util/StateTimeline.js";
+import { isDefined, isUndef } from "../core/util/TypeCheck.js";
+import { assert, assertContextRunning } from "../core/util/Debug.js";
+import { GT } from "../core/util/Math.js";
 
 type onStopCallback = (source: Source<any>) => void;
 
@@ -45,7 +45,7 @@ export interface SourceOptions extends ToneAudioNodeOptions {
  * ```
  */
 export abstract class Source<
-	Options extends SourceOptions
+	Options extends SourceOptions,
 > extends ToneAudioNode<Options> {
 	/**
 	 * The output volume node
@@ -362,7 +362,7 @@ export abstract class Source<
 	}
 
 	/**
-	 * Unsync the source to the Transport. 
+	 * Unsync the source to the Transport.
 	 * @see {@link sync}
 	 */
 	unsync(): this {

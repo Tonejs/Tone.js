@@ -1,10 +1,10 @@
-import { getContext } from "../Global";
-import { Tone } from "../Tone";
-import { Samples, Seconds } from "../type/Units";
-import { optionsFromArguments } from "../util/Defaults";
-import { noOp } from "../util/Interface";
-import { isArray, isNumber, isString } from "../util/TypeCheck";
-import { assert } from "../util/Debug";
+import { getContext } from "../Global.js";
+import { Tone } from "../Tone.js";
+import { Samples, Seconds } from "../type/Units.js";
+import { optionsFromArguments } from "../util/Defaults.js";
+import { noOp } from "../util/Interface.js";
+import { isArray, isNumber, isString } from "../util/TypeCheck.js";
+import { assert } from "../util/Debug.js";
 
 interface ToneAudioBufferOptions {
 	url?: string | AudioBuffer | ToneAudioBuffer;
@@ -397,9 +397,9 @@ export class ToneAudioBuffer extends Tone {
 		const location = document.createElement("a");
 		location.href = baseUrl + url;
 		location.pathname = (location.pathname + location.hash)
-				.split("/")
-				.map(encodeURIComponent)
-				.join("/");
+			.split("/")
+			.map(encodeURIComponent)
+			.join("/");
 
 		const response = await fetch(location.href);
 		if (!response.ok) {
@@ -425,8 +425,8 @@ export class ToneAudioBuffer extends Tone {
 		const extensions = url.split(".");
 		const extension = extensions[extensions.length - 1];
 		const response = document
-				.createElement("audio")
-				.canPlayType("audio/" + extension);
+			.createElement("audio")
+			.canPlayType("audio/" + extension);
 		return response !== "";
 	}
 

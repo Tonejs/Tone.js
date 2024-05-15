@@ -1,16 +1,14 @@
-import { Follower } from "./Follower";
-import { BasicTests } from "test/helper/Basic";
-import { Offline } from "test/helper/Offline";
-import { Signal } from "Tone/signal/Signal";
-import { PassAudio } from "test/helper/PassAudio";
+import { Follower } from "./Follower.js";
+import { BasicTests } from "../../../test/helper/Basic.js";
+import { Offline } from "../../../test/helper/Offline.js";
+import { Signal } from "../../signal/Signal.js";
+import { PassAudio } from "../../../test/helper/PassAudio.js";
 import { expect } from "chai";
 
 describe("Follower", () => {
-
 	BasicTests(Follower);
 
 	context("Envelope Following", () => {
-
 		it("handles getter/setter as Object", () => {
 			const foll = new Follower();
 			const values = {
@@ -108,4 +106,3 @@ describe("Follower", () => {
 		});
 	});
 });
-
