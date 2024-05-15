@@ -259,8 +259,6 @@ Tone.js runs an extensive test suite using [mocha](https://mochajs.org/) and [ch
 
 There are many ways to contribute to Tone.js. Check out [this wiki](https://github.com/Tonejs/Tone.js/wiki/Contributing) if you're interested.
 
-If you have questions (or answers) that are not necessarily bugs/issues, please post them to the [forum](https://groups.google.com/forum/#!forum/tonejs).
-
 # References and Inspiration
 
 -   [Many of Chris Wilson's Repositories](https://github.com/cwilso)
