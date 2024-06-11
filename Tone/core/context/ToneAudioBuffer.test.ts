@@ -115,6 +115,24 @@ describe("ToneAudioBuffer", () => {
 				},
 			});
 		});
+
+		it("can load an audio file with a space in the name", async () => {
+			const buffer = new ToneAudioBuffer(
+				"./test/audio/name with space.wav"
+			);
+			expect(buffer.loaded).to.be.false;
+			await ToneAudioBuffer.loaded();
+			expect(buffer.loaded).to.be.true;
+		});
+
+		it("can load an encoded audio file with a space in the name", async () => {
+			const buffer = new ToneAudioBuffer(
+				"./test/audio/" + encodeURIComponent("name with space.wav")
+			);
+			expect(buffer.loaded).to.be.false;
+			await ToneAudioBuffer.loaded();
+			expect(buffer.loaded).to.be.true;
+		});
 	});
 
 	context("baseUrl", () => {
