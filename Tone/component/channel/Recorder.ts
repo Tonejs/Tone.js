@@ -107,7 +107,7 @@ export class Recorder extends ToneAudioNode<RecorderOptions> {
 	}
 
 	/**
-	 * Start the Recorder. Returns a promise which resolves
+	 * Start/Resume the Recorder. Returns a promise which resolves
 	 * when the recorder has started.
 	 */
 	async start() {
@@ -121,8 +121,11 @@ export class Recorder extends ToneAudioNode<RecorderOptions> {
 
 			this._recorder.addEventListener("start", handleStart, false);
 		});
-
-		this._recorder.start();
+		if(this.state === "stopped") {
+			this._recorder.start();
+		} else {
+			this._recorder.resume();
+		}
 		return await startPromise;
 	}
 
