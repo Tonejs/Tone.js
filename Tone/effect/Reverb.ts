@@ -8,7 +8,7 @@ import { OfflineContext } from "../core/context/OfflineContext.js";
 import { noOp } from "../core/util/Interface.js";
 import { assertRange } from "../core/util/Debug.js";
 
-interface ReverbOptions extends EffectOptions {
+export interface ReverbOptions extends EffectOptions {
 	decay: Seconds;
 	preDelay: Seconds;
 }
