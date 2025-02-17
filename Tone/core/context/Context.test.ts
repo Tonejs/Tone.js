@@ -217,6 +217,21 @@ describe("Context", () => {
 				}, 0.01);
 			}, 0.05);
 		});
+
+		it("is robust against altering the timeline within the callback fn", (done) => {
+			let invokeCount = 0;
+			function checkDone(id: number) {
+				// clearing the current event alters the timeline and should not cause an issue
+				ctx.clearTimeout(id);
+				invokeCount++;
+				if (invokeCount === 3) {
+					done();
+				}
+			}
+			const id0 = ctx.setTimeout(() => checkDone(id0), 0.01);
+			const id1 = ctx.setTimeout(() => checkDone(id1), 0.01);
+			const id2 = ctx.setTimeout(() => checkDone(id2), 0.01);
+		});
 	});
 
 	context("setInterval", () => {
