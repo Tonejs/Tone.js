@@ -61,8 +61,14 @@ export class Reverb extends Effect<ReverbOptions> {
 		]);
 		super(options);
 
-		this._decay = options.decay;
-		this._preDelay = options.preDelay;
+		const decayTime = this.toSeconds(options.decay);
+		assertRange(decayTime, 0.001);
+		this._decay = decayTime;
+
+		const preDelayTime = this.toSeconds(options.preDelay);
+		assertRange(preDelayTime, 0);
+		this._preDelay = preDelayTime;
+
 		this.generate();
 
 		this.connectEffect(this._convolver);

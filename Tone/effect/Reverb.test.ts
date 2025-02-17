@@ -69,5 +69,22 @@ describe("Reverb", () => {
 				expect(buffer.getRmsAtTime(0.2)).to.be.greaterThan(0);
 			});
 		});
+
+		it("parses number from string in input", () => {
+			// @ts-ignore
+			const reverb = new Reverb("1");
+			expect(reverb.decay).to.equal(1);
+			reverb.dispose();
+		});
+
+		it("throws an error with invalid input", () => {
+			expect(
+				() =>
+					new Reverb({
+						decay: 0,
+						preDelay: -1,
+					})
+			).to.throw(Error);
+		});
 	});
 });
