@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const path = require("path");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 // /////////////////////////////////////
 // Defaults
@@ -44,12 +45,40 @@ const production = Object.assign({}, defaults, {
 	devtool: "source-map",
 });
 
+// /////////////////////////////////////
+// Scratch
+// create a file called examples/scratch.ts to test things out locally
+// /////////////////////////////////////
+
+const scratch = Object.assign({}, defaults, {
+	entry: {
+		scratch: "../examples/scratch.ts",
+	},
+	output: {
+		path: path.resolve(__dirname, "../scratch"),
+		filename: "[name].js",
+	},
+	devtool: "source-map",
+	plugins: [
+		new HtmlWebpackPlugin({
+			filename: "index.html",
+		}),
+	],
+	devServer: {
+		static: {
+			directory: path.join(__dirname, "../scratch/"),
+		},
+		hot: true,
+		port: 9000,
+	},
+});
+
 module.exports = (env) => {
 	if (env.test) {
 		return test;
 	} else if (env.production) {
 		return production;
-	} else {
+	} else if (env.scratch) {
 		return scratch;
 	}
 };
