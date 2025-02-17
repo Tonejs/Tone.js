@@ -102,6 +102,7 @@ export class DrawClass extends ToneWithContext<ToneWithContextOptions> {
 			if (now - event.time <= this.expiration) {
 				event.callback();
 			}
+			this._events.remove(event);
 		});
 		if (this._events.length > 0) {
 			this._animationFrame = requestAnimationFrame(this._boundDrawLoop);
