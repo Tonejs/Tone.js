@@ -16,7 +16,7 @@ export interface RecorderOptions extends ToneAudioNodeOptions {
  * A wrapper around the MediaRecorder API. Unlike the rest of Tone.js, this module does not offer
  * any sample-accurate scheduling because it is not a feature of the MediaRecorder API.
  * This is only natively supported in Chrome and Firefox.
- * For a cross-browser shim, install (audio-recorder-polyfill)[https://www.npmjs.com/package/audio-recorder-polyfill].
+ * For a cross-browser shim, install [audio-recorder-polyfill](https://www.npmjs.com/package/audio-recorder-polyfill).
  * @example
  * const recorder = new Tone.Recorder();
  * const synth = new Tone.Synth().connect(recorder);
