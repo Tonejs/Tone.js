@@ -68,6 +68,19 @@ describe("Recorder", () => {
 			rec.dispose();
 		});
 
+		it("can be resumed after pausing", async () => {
+			const rec = new Recorder();
+			rec.start();
+			expect(rec.state).to.equal("started");
+			await wait(100);
+			rec.pause();
+			expect(rec.state).to.equal("paused");
+			await wait(100);
+			rec.start();
+			expect(rec.state).to.equal("started");
+			rec.dispose();
+		});
+
 		it("can be stopped after starting", async () => {
 			const rec = new Recorder();
 			rec.start();
