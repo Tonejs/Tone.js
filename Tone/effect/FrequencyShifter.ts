@@ -9,7 +9,7 @@ import { Signal } from "../signal/Signal.js";
 import { Oscillator } from "../source/oscillator/Oscillator.js";
 import { ToneOscillatorNode } from "../source/oscillator/ToneOscillatorNode.js";
 
-interface FrequencyShifterOptions extends EffectOptions {
+export interface FrequencyShifterOptions extends EffectOptions {
 	frequency: Frequency;
 }
 
