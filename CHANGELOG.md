@@ -153,7 +153,7 @@
 
 # r7
 
-* MetalSynth creates metalic, cymbal sounds
+* MetalSynth creates metallic, cymbal sounds
 * DrumSynth -> MembraneSynth
 * FMOscillator, AMOscillator types
 * FatOscillator creates multiple oscillators and detunes them slightly
@@ -197,7 +197,7 @@ DEPRECATED:
 * Tone.Param wraps the native AudioParam and allows for unit conversion.
 * Quantization with Transport.quantize and using "@" in any Time. [Read more](https://github.com/Tonejs/Tone.js/wiki/Time).
 * Control-rate generators for value interpolation, patterns, random numbers, and markov chains.
-* Scheduable musical events: Tone.Event, Tone.Loop, Tone.Part, Tone.Pattern, Tone.Sequence.
+* schedulable musical events: Tone.Event, Tone.Loop, Tone.Part, Tone.Pattern, Tone.Sequence.
 * Player's playbackRate is now a signal and Noise includes a playbackRate signal.
 * All filterEnvelopes use new Tone.FrequencyEnvelope with frequency units and `baseFrequency` and `octaves` instead of `min` and `max`.
 * Phaser uses "octaves" instead of "depth" to be more consistent across the whole Tone.js API.
@@ -242,7 +242,7 @@ DEPRECATED:
 * Functions return `this` to allow for chaining. i.e. `player.toMaster().start(2)`.
 * Added `units` to Signal class which allows signals to be set in terms of Tone.Time, Tone.Frequency, Numbers, or Decibels.
 * Replaced set/get method with ES5 dot notation. i.e. `player.setVolume(-10)` is now `player.volume.value = -10`.
-	To ramp the volume use either `player.volume.linearRampToValueNow(-10, "4n")`, or the new `rampTo` method which automaically selects the ramp (linear|exponential) based on the type of data.
+	To ramp the volume use either `player.volume.linearRampToValueNow(-10, "4n")`, or the new `rampTo` method which automatically selects the ramp (linear|exponential) based on the type of data.
 * set/get methods for all components
 * syncSignal and unsyncSignal moved from Signal to Transport
 * Add/Multiply/Subtract/Min/Max/GreaterThan/LessThan all extend Tone.Signal which allows them to be scheduled and automated just like Tone.Signal.
