@@ -1,4 +1,4 @@
-## 15.0.x
+# 15.0.x
 
 -   `set` in constructor even if AudioBuffer is not from std-audio-context ([0399687](https://github.com/Tonejs/Tone.js/commit/0399687)), closes [#991](https://github.com/Tonejs/Tone.js/issues/991)
 -   ability to mute a sequence ([ac856bc](https://github.com/Tonejs/Tone.js/commit/ac856bc)), closes [#823](https://github.com/Tonejs/Tone.js/issues/823)
