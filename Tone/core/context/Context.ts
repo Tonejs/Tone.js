@@ -346,9 +346,9 @@ export class Context extends BaseContext {
 	//--------------------------------------------
 
 	/**
-	 * Maps a module name to promise of the addModule method
+	 * A set of unsettled promises returned by the addModule method
 	 */
-	private _workletPromise: null | Promise<void> = null;
+	private _workletPromises = new Set<Promise<void>>();
 
 	/**
 	 * Create an audio worklet node from a name and options. The module
@@ -370,17 +370,19 @@ export class Context extends BaseContext {
 			isDefined(this.rawContext.audioWorklet),
 			"AudioWorkletNode is only available in a secure context (https or localhost)"
 		);
-		if (!this._workletPromise) {
-			this._workletPromise = this.rawContext.audioWorklet.addModule(url);
-		}
-		await this._workletPromise;
+		const workletPromise = this.rawContext.audioWorklet.addModule(url);
+
+		this._workletPromises.add(workletPromise);
+		workletPromise.finally(() => this._workletPromises.delete(workletPromise));
+
+		return workletPromise;
 	}
 
 	/**
 	 * Returns a promise which resolves when all of the worklets have been loaded on this context
 	 */
 	protected async workletsAreReady(): Promise<void> {
-		(await this._workletPromise) ? this._workletPromise : Promise.resolve();
+		await Promise.all(this._workletPromises);
 	}
 
 	//---------------------------

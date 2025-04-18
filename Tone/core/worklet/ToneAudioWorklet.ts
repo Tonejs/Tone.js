@@ -59,7 +59,15 @@ export abstract class ToneAudioWorklet<
 		this._dummyParam = this._dummyGain.gain;
 
 		// Register the processor
-		this.context.addAudioWorkletModule(blobUrl).then(() => {
+		let workletPromise = ToneAudioWorklet._workletPromises.get(this.context);
+
+		if (workletPromise === undefined) {
+			workletPromise = this.context.addAudioWorkletModule(blobUrl);
+
+			ToneAudioWorklet._workletPromises.set(this.context, workletPromise);
+		}
+
+		workletPromise.then(() => {
 			// create the worklet when it's read
 			if (!this.disposed) {
 				this._worklet = this.context.createAudioWorkletNode(
@@ -72,6 +80,8 @@ export abstract class ToneAudioWorklet<
 			}
 		});
 	}
+
+	private static _workletPromises = new WeakMap<any, Promise<void>>();
 
 	dispose(): this {
 		super.dispose();
