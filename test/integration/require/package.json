@@ -1,9 +1,0 @@
-{
-	"name": "tone-require",
-	"dependencies": {
-		"tone": "file:../../.."
-	},
-	"scripts": {
-		"test": "node test.cjs"
-	}
-}
