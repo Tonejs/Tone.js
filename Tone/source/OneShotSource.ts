@@ -196,20 +196,20 @@ export abstract class OneShotSource<
 	 * Invoke the onended callback
 	 */
 	protected _onended(): void {
-		if (this.onended !== noOp) {
-			this.onended(this);
-			// overwrite onended to make sure it only is called once
-			this.onended = noOp;
-			// dispose when it's ended to free up for garbage collection only in the online context
-			if (!this.context.isOffline) {
-				const disposeCallback = () => this.dispose();
-				// @ts-ignore
-				if (typeof window.requestIdleCallback !== "undefined") {
-					// @ts-ignore
-					window.requestIdleCallback(disposeCallback);
-				} else {
-					setTimeout(disposeCallback, 1000);
-				}
+		if (this.onended === noOp) {
+			return;
+		}
+
+		this.onended(this);
+		// overwrite onended to make sure it only is called once
+		this.onended = noOp;
+		// dispose when it's ended to free up for garbage collection only in the online context
+		if (!this.context.isOffline) {
+			const disposeCallback = () => this.dispose();
+			if (typeof requestIdleCallback !== "undefined") {
+				requestIdleCallback(disposeCallback);
+			} else {
+				setTimeout(disposeCallback, 10);
 			}
 		}
 	}

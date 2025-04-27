@@ -8,7 +8,7 @@ import { OfflineContext } from "../core/context/OfflineContext.js";
 import { noOp } from "../core/util/Interface.js";
 import { assertRange } from "../core/util/Debug.js";
 
-interface ReverbOptions extends EffectOptions {
+export interface ReverbOptions extends EffectOptions {
 	decay: Seconds;
 	preDelay: Seconds;
 }
@@ -61,8 +61,14 @@ export class Reverb extends Effect<ReverbOptions> {
 		]);
 		super(options);
 
-		this._decay = options.decay;
-		this._preDelay = options.preDelay;
+		const decayTime = this.toSeconds(options.decay);
+		assertRange(decayTime, 0.001);
+		this._decay = decayTime;
+
+		const preDelayTime = this.toSeconds(options.preDelay);
+		assertRange(preDelayTime, 0);
+		this._preDelay = preDelayTime;
+
 		this.generate();
 
 		this.connectEffect(this._convolver);

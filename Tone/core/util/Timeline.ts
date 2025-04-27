@@ -141,6 +141,7 @@ export class Timeline<GenericEvent extends TimelineEvent> extends Tone {
 	/**
 	 * Return the first event in the timeline without removing it
 	 * @returns {Object} The first event object
+	 * @deprecated
 	 */
 	peek(): GenericEvent | undefined {
 		return this._timeline[0];
@@ -148,6 +149,7 @@ export class Timeline<GenericEvent extends TimelineEvent> extends Tone {
 
 	/**
 	 * Return the first event in the timeline and remove it
+	 * @deprecated
 	 */
 	shift(): GenericEvent | undefined {
 		return this._timeline.shift();

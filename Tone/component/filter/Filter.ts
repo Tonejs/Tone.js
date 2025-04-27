@@ -191,6 +191,7 @@ export class Filter extends ToneAudioNode<FilterOptions> {
 	 */
 	getFrequencyResponse(len = 128): Float32Array {
 		const filterClone = new BiquadFilter({
+			context: this.context,
 			frequency: this.frequency.value,
 			gain: this.gain.value,
 			Q: this.Q.value,

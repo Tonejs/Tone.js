@@ -8,6 +8,10 @@ describe("Draw", () => {
 		draw.dispose();
 	});
 
+	afterEach(() => {
+		draw.cancel(0);
+	});
+
 	it("can schedule a callback at a AudioContext time", (done) => {
 		const scheduledTime = draw.now() + 0.2;
 		draw.schedule(() => {

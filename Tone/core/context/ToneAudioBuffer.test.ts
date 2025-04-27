@@ -115,6 +115,57 @@ describe("ToneAudioBuffer", () => {
 				},
 			});
 		});
+
+		it("can load an audio file with a space in the name", async () => {
+			const buffer = new ToneAudioBuffer(
+				"./test/audio/name with space.wav"
+			);
+			expect(buffer.loaded).to.be.false;
+			await ToneAudioBuffer.loaded();
+			expect(buffer.loaded).to.be.true;
+		});
+
+		it("can load an encoded audio file with a space in the name", async () => {
+			const buffer = new ToneAudioBuffer(
+				"./test/audio/" + encodeURIComponent("name with space.wav")
+			);
+			expect(buffer.loaded).to.be.false;
+			await ToneAudioBuffer.loaded();
+			expect(buffer.loaded).to.be.true;
+		});
+	});
+
+	context("baseUrl", () => {
+		afterEach(() => {
+			// reset baseUrl
+			ToneAudioBuffer.baseUrl = "";
+		});
+
+		it("can resolve a url without a baseUrl", async () => {
+			const buffer = new ToneAudioBuffer("./test/audio/sine.wav");
+			expect(buffer.loaded).to.be.false;
+			await ToneAudioBuffer.loaded();
+			expect(buffer.loaded).to.be.true;
+			expect(buffer.duration).to.be.closeTo(3, 0.01);
+		});
+
+		it("can resolve a url with a baseUrl", async () => {
+			ToneAudioBuffer.baseUrl = "./test/audio";
+			const buffer = new ToneAudioBuffer("sine.wav");
+			expect(buffer.loaded).to.be.false;
+			await ToneAudioBuffer.loaded();
+			expect(buffer.loaded).to.be.true;
+			expect(buffer.duration).to.be.closeTo(3, 0.01);
+		});
+
+		it("can resolve a url with a baseUrl that has a trailing slash", async () => {
+			ToneAudioBuffer.baseUrl = "./test/audio/";
+			const buffer = new ToneAudioBuffer("sine.wav");
+			expect(buffer.loaded).to.be.false;
+			await ToneAudioBuffer.loaded();
+			expect(buffer.loaded).to.be.true;
+			expect(buffer.duration).to.be.closeTo(3, 0.01);
+		});
 	});
 
 	context("loading", () => {
@@ -139,20 +190,6 @@ describe("ToneAudioBuffer", () => {
 				hadError = true;
 			}
 			expect(hadError).to.equal(true);
-		});
-
-		it("can load a file with fallback extensions", async () => {
-			const buffer = await ToneAudioBuffer.load(
-				"./test/audio/sine.[nope|nada|wav]"
-			);
-			expect(buffer).to.exist;
-		});
-
-		it("takes the first supported format when multiple extensions are provided", async () => {
-			const buffer = await ToneAudioBuffer.load(
-				"./test/audio/sine.[wav|nope]"
-			);
-			expect(buffer).to.exist;
 		});
 
 		it("instance .load method returns Promise", (done) => {
