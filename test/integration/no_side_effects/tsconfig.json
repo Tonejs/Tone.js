@@ -1,0 +1,11 @@
+{
+	"compilerOptions": {
+		"target": "ES2016",
+		"module": "NodeNext",
+		"moduleResolution": "nodenext",
+		"strict": true,
+		"noEmit": true,
+		"lib": ["DOM"]
+	},
+	"include": ["./test.ts"]
+}

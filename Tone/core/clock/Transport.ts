@@ -436,7 +436,7 @@ export class TransportClass
 	start(time?: Time, offset?: TransportTime): this {
 		// start the context
 		this.context.resume();
-		let offsetTicks;
+		let offsetTicks: Ticks | undefined;
 		if (isDefined(offset)) {
 			offsetTicks = this.toTicks(offset);
 		}
