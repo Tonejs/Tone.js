@@ -1,6 +1,5 @@
 export * from "./exports.js";
 import { getContext } from "./exports.js";
-import { ToneAudioBuffer } from "./core/context/ToneAudioBuffer.js";
 
 /**
  * The Transport object belonging to the global Tone.js Context.
@@ -48,6 +47,8 @@ export const context = getContext();
 // this fills in name changes from 13.x to 14.x
 import { ToneAudioBuffers } from "./core/context/ToneAudioBuffers.js";
 import { ToneBufferSource } from "./source/buffer/ToneBufferSource.js";
+import { ToneAudioBuffer } from "./core/context/ToneAudioBuffer.js";
+
 /** @deprecated Use {@link ToneAudioBuffer} */
 export const Buffer: typeof ToneAudioBuffer = ToneAudioBuffer;
 /** @deprecated Use {@link ToneAudioBuffers} */
