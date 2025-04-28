@@ -166,7 +166,10 @@ export default tseslint.config(
 		name: "globally-ignored-files",
 		ignores: [
 			"**/node_modules",
-			"build/**/*",
+			"build/**",
+			"coverage/**",
+			"**/dist/**",
+			"docs/**",
 			"examples/**/*.js",
 		]
 	},
