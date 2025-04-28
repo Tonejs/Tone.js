@@ -58,6 +58,8 @@
 	},
 	"devDependencies": {
 		"@rollup/plugin-commonjs": "^25.0.7",
+		"@stylistic/eslint-plugin-js": "^4.2.0",
+		"@stylistic/eslint-plugin-ts": "^4.2.0",
 		"@types/chai": "^4.3.0",
 		"@types/mocha": "^5.2.6",
 		"@types/ua-parser-js": "^0.7.36",

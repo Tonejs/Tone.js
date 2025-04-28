@@ -1,6 +1,7 @@
 // @ts-check
 import tseslint from 'typescript-eslint';
-
+import stylisticJs from '@stylistic/eslint-plugin-js';
+import stylisticTs from '@stylistic/eslint-plugin-ts';
 import jsdoc from 'eslint-plugin-jsdoc';
 import html from 'eslint-plugin-html';
 
@@ -12,6 +13,8 @@ import html from 'eslint-plugin-html';
 const customConfig = {
 	files: ["**/*.js", "**/*.ts", "**/*.html"],
 	plugins: {
+		"@stylistic/js": stylisticJs,
+		"@stylistic/ts": stylisticTs,
 		jsdoc,
 		html
 	},
@@ -36,18 +39,14 @@ const customConfig = {
 			"error",
 			"all"
 		],
-		// deprecated
-		// https://eslint.style/rules/default/dot-location
-		"dot-location": [
+		"@stylistic/js/dot-location": [
 			"error",
 			"property"
 		],
 		"dot-notation": [
 			"error"
 		],
-		// deprecated
-		// https://eslint.style/rules/js/eol-last#js-eol-last
-		"eol-last": [
+		"@stylistic/js/eol-last": [
 			"error",
 			"always"
 		],
@@ -58,16 +57,10 @@ const customConfig = {
 		"@typescript-eslint/explicit-member-accessibility": "off",
 		// requires eslint flat compat
 		// "file-extension-in-import-ts/file-extension-in-import-ts": "error",
-		// deprecated
-		// https://eslint.style/rules/js/linebreak-style#js-linebreak-style
-		"linebreak-style": [
+		"@stylistic/js/linebreak-style": [
 			"error",
 			"unix"
 		],
-		// deprecated
-		// https://eslint.style/rules/js/lines-between-class-members#js-lines-between-class-members
-		// rule is turned off, therefore remove it
-		// "lines-between-class-members": "off",
 		"no-cond-assign": [
 			"error",
 			"always"
@@ -104,15 +97,11 @@ const customConfig = {
 		"no-var": "error",
 		"prefer-arrow-callback": "error",
 		"prefer-rest-params": "off",
-		// deprecated
-		// https://eslint.style/rules/ts/quote-props#ts-quote-props
-		"quote-props": [
+		"@stylistic/ts/quote-props": [
 			"error",
 			"as-needed"
 		],
-		// deprecated
-		// https://eslint.style/rules/ts/quotes#ts-quotes
-		"quotes": [
+		"@stylistic/ts/quotes": [
 			"error",
 			"double",
 			{
@@ -133,9 +122,7 @@ const customConfig = {
 				]
 			}
 		],
-		// deprecated
-		// https://eslint.style/rules/js/spaced-comment#js-spaced-comment
-		"spaced-comment": [
+		"@stylistic/js/spaced-comment": [
 			"error",
 			"always",
 			{
