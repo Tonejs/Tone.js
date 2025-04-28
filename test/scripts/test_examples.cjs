@@ -1,5 +1,3 @@
-/* eslint-disable no-console */
-/* eslint-disable @typescript-eslint/no-var-requires */
 const { resolve } = require("path");
 const { exec } = require("child_process");
 const { dir } = require("tmp-promise");

@@ -1,5 +1,3 @@
-/* eslint-disable no-console */
-/* eslint-disable @typescript-eslint/no-var-requires */
 const { JSDOM } = require("jsdom");
 const { resolve } = require("path");
 const { readFile, writeFile } = require("fs-extra");
