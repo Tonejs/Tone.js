@@ -1,9 +1,9 @@
 // @ts-check
-import tseslint from 'typescript-eslint';
-import stylisticJs from '@stylistic/eslint-plugin-js';
-import stylisticTs from '@stylistic/eslint-plugin-ts';
-import jsdoc from 'eslint-plugin-jsdoc';
-import html from 'eslint-plugin-html';
+import tseslint from "typescript-eslint";
+import stylisticJs from "@stylistic/eslint-plugin-js";
+import stylisticTs from "@stylistic/eslint-plugin-ts";
+import jsdoc from "eslint-plugin-jsdoc";
+import html from "eslint-plugin-html";
 
 // @todo requires eslint flat compat
 // or use custom rules as mentioned here:https://typescript-eslint.io/troubleshooting/typed-linting/performance#eslint-plugin-import
@@ -11,7 +11,7 @@ import html from 'eslint-plugin-html';
 
 /** @type {import("typescript-eslint").ConfigWithExtends} */
 const customConfig = {
-	files: ["**/*.js", "**/*.ts", "**/*.html"],
+	files: ["**/*.js", "**/*.ts", "**/*.html", "eslint.config.mjs"],
 	plugins: {
 		"@stylistic/js": stylisticJs,
 		"@stylistic/ts": stylisticTs,
@@ -26,7 +26,7 @@ const customConfig = {
 		"jsdoc/check-indentation": [
 			"error",
 			{
-				"excludeTags": [
+				excludeTags: [
 					"example",
 					"param"
 				]
@@ -35,7 +35,7 @@ const customConfig = {
 		"jsdoc/check-param-names": [
 			"error"
 		],
-		"curly": [
+		curly: [
 			"error",
 			"all"
 		],
@@ -50,7 +50,7 @@ const customConfig = {
 			"error",
 			"always"
 		],
-		"eqeqeq": [
+		eqeqeq: [
 			"error"
 		],
 		"@typescript-eslint/explicit-function-return-type": "off",
@@ -68,12 +68,18 @@ const customConfig = {
 		"no-console": [
 			"error",
 			{
-				"allow": [
+				allow: [
 					"warn"
 				]
 			}
 		],
 		"@typescript-eslint/no-empty-function": "off",
+		"@typescript-eslint/no-empty-object-type": [
+			"error",
+			{
+				allowInterfaces: "always"
+			}
+		],
 		"@typescript-eslint/no-explicit-any": "off",
 		"no-lonely-if": [
 			"error"
@@ -105,16 +111,16 @@ const customConfig = {
 			"error",
 			"double",
 			{
-				"avoidEscape": true
+				avoidEscape: true
 			}
 		],
 		"sort-imports": [
 			"error",
 			{
-				"ignoreCase": true,
-				"ignoreDeclarationSort": true,
-				"ignoreMemberSort": false,
-				"memberSyntaxSortOrder": [
+				ignoreCase: true,
+				ignoreDeclarationSort: true,
+				ignoreMemberSort: false,
+				memberSyntaxSortOrder: [
 					"none",
 					"all",
 					"multiple",
@@ -126,13 +132,13 @@ const customConfig = {
 			"error",
 			"always",
 			{
-				"line": {
-					"exceptions": [
+				line: {
+					exceptions: [
 						"-"
 					]
 				},
-				"block": {
-					"balanced": true
+				block: {
+					balanced: true
 				}
 			}
 		]
@@ -157,12 +163,11 @@ export default tseslint.config(
 		}
 	},
 	{
-		name: 'globally-ignored-files',
+		name: "globally-ignored-files",
 		ignores: [
 			"**/node_modules",
 			"build/**/*",
 			"examples/**/*.js",
-			'eslint.config.mjs'
 		]
 	},
 );
