@@ -1,0 +1,10 @@
+{
+	"name": "tone-no-export-test",
+	"dependencies": {
+		"tone": "file:../../..",
+		"typescript": "^5.4.5"
+	},
+	"scripts": {
+		"test": "tsc"
+	}
+}

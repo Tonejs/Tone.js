@@ -1,6 +1,6 @@
 {
 	"name": "tone",
-	"version": "15.1.0",
+	"version": "16.0.0",
 	"description": "A Web Audio framework for making interactive music in the browser.",
 	"type": "module",
 	"main": "build/esm/index.js",
@@ -14,6 +14,21 @@
 		"docs",
 		"Tone"
 	],
+	"exports": {
+		".": {
+			"types": "./build/esm/index.d.ts",
+			"require": "./build/esm/index.js",
+			"import": "./build/esm/index.js"
+		},
+		"./no-side-effects": {
+			"types": "./build/esm/exports.d.ts",
+			"import": "./build/esm/exports.js"
+		},
+		"./*": {
+			"types": "./build/esm/*.d.ts",
+			"import": "./build/esm/*.js"
+		}
+	},
 	"scripts": {
 		"build": "npm run increment && rimraf build && npm run ts:build && npm run webpack:build",
 		"docs": "node scripts/generate_docs.cjs",
