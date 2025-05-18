@@ -1,8 +1,8 @@
 import { expect } from "chai";
 import { BasicTests } from "../../test/helper/Basic.js";
-import { CompareToFile } from "../../test/helper/CompareToFile.js";
 import { Offline, whenBetween } from "../../test/helper/Offline.js";
 import { ToneConstantSource } from "./ToneConstantSource.js";
+import { Context } from "../core/context/Context.js";
 
 describe("ToneConstantSource", () => {
 	BasicTests(ToneConstantSource);
@@ -36,7 +36,7 @@ describe("ToneConstantSource", () => {
 			source.stop("+0.3");
 			const now = source.now();
 			source.onended = () => {
-				expect(source.now() - now).to.be.within(0.25, 0.5);
+				expect(source.now() - now).to.be.closeTo(0.3, 0.15);
 				source.dispose();
 				done();
 			};
@@ -184,6 +184,67 @@ describe("ToneConstantSource", () => {
 					});
 				};
 			}, 0.2);
+		});
+	});
+
+	context.only("Suspended AudioContext", () => {
+		it("does nothing when AudioContext returns to suspended", () => {
+			const context = new Context();
+			expect(context.state).to.equal("suspended");
+
+			const source = new ToneConstantSource({
+				context,
+			});
+
+			source.start(0);
+
+			context.dispose();
+			source.dispose();
+		});
+
+		it("starts when the audio context is resumed", async () => {
+			const context = new Context();
+			expect(context.state).to.equal("suspended");
+
+			const source = new ToneConstantSource({
+				context,
+			});
+
+			source.start(0);
+
+			await context.resume();
+
+			context.dispose();
+			source.dispose();
+		});
+
+		it("context can be suspended again", async () => {
+			const context = new Context();
+			expect(context.state).to.equal("suspended");
+
+			const source = new ToneConstantSource({
+				context,
+			});
+
+			source.start(0);
+
+			await context.resume();
+
+			source.stop(0.1);
+
+			await context.rawContext.suspend(0);
+
+			// wait for the context to be suspended
+			await new Promise<void>((resolve) =>
+				context.on("statechange", () => {
+					if (context.state === "suspended") {
+						resolve();
+					}
+				})
+			);
+
+			context.dispose();
+			source.dispose();
 		});
 	});
 });
