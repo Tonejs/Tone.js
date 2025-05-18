@@ -1,6 +1,6 @@
 {
 	"name": "tone",
-	"version": "15.1.0",
+	"version": "15.2.0",
 	"description": "A Web Audio framework for making interactive music in the browser.",
 	"type": "module",
 	"main": "build/esm/index.js",
