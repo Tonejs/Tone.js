@@ -2,6 +2,7 @@ import { expect } from "chai";
 import { BasicTests } from "../../test/helper/Basic.js";
 import { Offline, whenBetween } from "../../test/helper/Offline.js";
 import { ToneConstantSource } from "./ToneConstantSource.js";
+import { Context } from "../core/context/Context.js";
 
 describe("ToneConstantSource", () => {
 	BasicTests(ToneConstantSource);
@@ -183,6 +184,67 @@ describe("ToneConstantSource", () => {
 					});
 				};
 			}, 0.2);
+		});
+	});
+
+	context.only("Suspended AudioContext", () => {
+		it("does nothing when AudioContext returns to suspended", () => {
+			const context = new Context();
+			expect(context.state).to.equal("suspended");
+
+			const source = new ToneConstantSource({
+				context,
+			});
+
+			source.start(0);
+
+			context.dispose();
+			source.dispose();
+		});
+
+		it("starts when the audio context is resumed", async () => {
+			const context = new Context();
+			expect(context.state).to.equal("suspended");
+
+			const source = new ToneConstantSource({
+				context,
+			});
+
+			source.start(0);
+
+			await context.resume();
+
+			context.dispose();
+			source.dispose();
+		});
+
+		it("context can be suspended again", async () => {
+			const context = new Context();
+			expect(context.state).to.equal("suspended");
+
+			const source = new ToneConstantSource({
+				context,
+			});
+
+			source.start(0);
+
+			await context.resume();
+
+			source.stop(0.1);
+
+			await context.rawContext.suspend(0);
+
+			// wait for the context to be suspended
+			await new Promise<void>((resolve) =>
+				context.on("statechange", () => {
+					if (context.state === "suspended") {
+						resolve();
+					}
+				})
+			);
+
+			context.dispose();
+			source.dispose();
 		});
 	});
 });
