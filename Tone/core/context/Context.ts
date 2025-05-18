@@ -373,7 +373,9 @@ export class Context extends BaseContext {
 		const workletPromise = this.rawContext.audioWorklet.addModule(url);
 
 		this._workletPromises.add(workletPromise);
-		workletPromise.finally(() => this._workletPromises.delete(workletPromise));
+		workletPromise.finally(() =>
+			this._workletPromises.delete(workletPromise)
+		);
 
 		return workletPromise;
 	}
@@ -561,9 +563,11 @@ export class Context extends BaseContext {
 	private _timeoutLoop(): void {
 		const now = this.now();
 		this._timeouts.forEachBefore(now, (event) => {
-			// invoke the callback
-			event.callback();
-			this._timeouts.remove(event);
+			try {
+				event.callback();
+			} finally {
+				this._timeouts.remove(event);
+			}
 		});
 	}
 
