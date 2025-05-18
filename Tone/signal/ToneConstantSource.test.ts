@@ -36,7 +36,7 @@ describe("ToneConstantSource", () => {
 			source.stop("+0.3");
 			const now = source.now();
 			source.onended = () => {
-				expect(source.now() - now).to.be.within(0.25, 0.5);
+				expect(source.now() - now).to.be.closeTo(0.3, 0.15);
 				source.dispose();
 				done();
 			};
