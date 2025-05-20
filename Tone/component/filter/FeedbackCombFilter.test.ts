@@ -42,24 +42,23 @@ describe("FeedbackCombFilter", () => {
 			});
 		});
 
-		it("can delay by the delayTime", () => {
-			return Offline(() => {
+		it("can delay by the delayTime", async () => {
+			const buffer = await Offline(() => {
 				const fbcf = new FeedbackCombFilter({
 					delayTime: 0.1,
 					resonance: 0,
 				}).toDestination();
 				const sig = new Signal(0).connect(fbcf);
 				sig.setValueAtTime(1, 0);
-			}, 0.2).then((buffer) => {
-				expect(buffer.getValueAtTime(0)).to.equal(0);
-				expect(buffer.getValueAtTime(0.999)).to.equal(0);
-				expect(buffer.getValueAtTime(0.101)).to.equal(1);
-				expect(buffer.getValueAtTime(0.15)).to.equal(1);
-			});
+			}, 0.2);
+			expect(buffer.getValueAtTime(0)).to.equal(0);
+			expect(buffer.getValueAtTime(0.999)).to.equal(0);
+			expect(buffer.getValueAtTime(0.101)).to.equal(1);
+			expect(buffer.getValueAtTime(0.15)).to.equal(1);
 		});
 
-		it("can delay with feedback", () => {
-			return Offline(() => {
+		it("can delay with feedback", async () => {
+			const buffer = await Offline(() => {
 				const fbcf = new FeedbackCombFilter({
 					delayTime: 0.1,
 					resonance: 0.5,
@@ -67,12 +66,11 @@ describe("FeedbackCombFilter", () => {
 				const sig = new Signal(0).connect(fbcf);
 				sig.setValueAtTime(1, 0);
 				sig.setValueAtTime(0, 0.1);
-			}, 0.4).then((buffer) => {
-				expect(buffer.getValueAtTime(0)).to.equal(0);
-				expect(buffer.getValueAtTime(0.101)).to.equal(1);
-				expect(buffer.getValueAtTime(0.201)).to.equal(0.5);
-				expect(buffer.getValueAtTime(0.301)).to.equal(0.25);
-			});
+			}, 0.4);
+			expect(buffer.getValueAtTime(0)).to.equal(0);
+			expect(buffer.getValueAtTime(0.101)).to.equal(1);
+			expect(buffer.getValueAtTime(0.201)).to.equal(0.5);
+			expect(buffer.getValueAtTime(0.301)).to.equal(0.25);
 		});
 	});
 

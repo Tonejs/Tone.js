@@ -36,38 +36,35 @@ describe("Reverb", () => {
 			reverb.dispose();
 		});
 
-		it("can generate an IR", () => {
+		it("can generate an IR", async () => {
 			const reverb = new Reverb();
 			const promise = reverb.generate();
 			expect(promise).to.have.property("then");
-			return promise.then(() => {
-				reverb.dispose();
-			});
+			await promise;
+			reverb.dispose();
 		});
 
-		it.skip("is silent before the reverb is generated", () => {
-			return Offline(() => {
+		it.skip("is silent before the reverb is generated", async () => {
+			const buffer = await Offline(() => {
 				const osc = new Oscillator();
 				osc.start(0).stop(0.1);
 				const reverb = new Reverb(0.2).toDestination();
 				osc.connect(reverb);
-			}).then((buffer) => {
-				expect(buffer.isSilent()).to.be.true;
 			});
+			expect(buffer.isSilent()).to.be.true;
 		});
 
-		it("passes audio from input to output", () => {
-			return Offline(async () => {
+		it("passes audio from input to output", async () => {
+			const buffer = await Offline(async () => {
 				const osc = new Oscillator();
 				osc.start(0).stop(0.1);
 				const reverb = new Reverb(0.2).toDestination();
 				osc.connect(reverb);
 				await reverb.ready;
-			}, 0.3).then((buffer) => {
-				expect(buffer.getRmsAtTime(0.05)).to.be.greaterThan(0);
-				expect(buffer.getRmsAtTime(0.1)).to.be.greaterThan(0);
-				expect(buffer.getRmsAtTime(0.2)).to.be.greaterThan(0);
-			});
+			}, 0.3);
+			expect(buffer.getRmsAtTime(0.05)).to.be.greaterThan(0);
+			expect(buffer.getRmsAtTime(0.1)).to.be.greaterThan(0);
+			expect(buffer.getRmsAtTime(0.2)).to.be.greaterThan(0);
 		});
 
 		it("parses number from string in input", () => {

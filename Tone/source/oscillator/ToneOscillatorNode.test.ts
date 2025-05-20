@@ -99,9 +99,9 @@ describe("ToneOscillatorNode", () => {
 			};
 		});
 
-		it("invokes the onended callback in the offline context", () => {
+		it("invokes the onended callback in the offline context", async () => {
 			let wasInvoked = false;
-			return Offline(() => {
+			await Offline(() => {
 				const osc = new ToneOscillatorNode();
 				osc.start(0);
 				osc.stop(0.2);
@@ -110,14 +110,13 @@ describe("ToneOscillatorNode", () => {
 					osc.dispose();
 					wasInvoked = true;
 				};
-			}, 0.3).then(() => {
-				expect(wasInvoked).to.equal(true);
-			});
+			}, 0.3);
+			expect(wasInvoked).to.equal(true);
 		});
 
-		it("invokes the onended callback only once in offline context", () => {
+		it("invokes the onended callback only once in offline context", async () => {
 			let wasInvoked = false;
-			return Offline(() => {
+			await Offline(() => {
 				const osc = new ToneOscillatorNode();
 				osc.start(0);
 				osc.stop(0.1);
@@ -129,9 +128,8 @@ describe("ToneOscillatorNode", () => {
 					expect(wasInvoked).to.equal(false);
 					wasInvoked = true;
 				};
-			}, 0.4).then(() => {
-				expect(wasInvoked).to.equal(true);
-			});
+			}, 0.4);
+			expect(wasInvoked).to.equal(true);
 		});
 	});
 
@@ -145,27 +143,25 @@ describe("ToneOscillatorNode", () => {
 			osc.dispose();
 		});
 
-		it("can play for a specific duration", () => {
-			return Offline(() => {
+		it("can play for a specific duration", async () => {
+			const buffer = await Offline(() => {
 				const osc = new ToneOscillatorNode().toDestination();
 				osc.start(0).stop(0.1);
-			}, 0.4).then((buffer) => {
-				expect(buffer.getRmsAtTime(0)).to.be.above(0);
-				expect(buffer.getRmsAtTime(0.09)).to.be.above(0);
-				expect(buffer.getRmsAtTime(0.1)).to.equal(0);
-			});
+			}, 0.4);
+			expect(buffer.getRmsAtTime(0)).to.be.above(0);
+			expect(buffer.getRmsAtTime(0.09)).to.be.above(0);
+			expect(buffer.getRmsAtTime(0.1)).to.equal(0);
 		});
 
-		it("can call stop multiple times and takes the last value", () => {
-			return Offline(() => {
+		it("can call stop multiple times and takes the last value", async () => {
+			const buffer = await Offline(() => {
 				const osc = new ToneOscillatorNode().toDestination();
 				osc.start(0).stop(0.1).stop(0.2);
-			}, 0.4).then((buffer) => {
-				expect(buffer.getRmsAtTime(0)).to.be.above(0);
-				expect(buffer.getRmsAtTime(0.1)).to.be.above(0);
-				expect(buffer.getRmsAtTime(0.19)).to.be.above(0);
-				expect(buffer.getRmsAtTime(0.2)).to.equal(0);
-			});
+			}, 0.4);
+			expect(buffer.getRmsAtTime(0)).to.be.above(0);
+			expect(buffer.getRmsAtTime(0.1)).to.be.above(0);
+			expect(buffer.getRmsAtTime(0.19)).to.be.above(0);
+			expect(buffer.getRmsAtTime(0.2)).to.equal(0);
 		});
 
 		it("clamps start time to the currentTime", () => {
@@ -196,8 +192,8 @@ describe("ToneOscillatorNode", () => {
 	});
 
 	context("State", () => {
-		it("reports the right state", () => {
-			return Offline(() => {
+		it("reports the right state", async () => {
+			await Offline(() => {
 				const osc = new ToneOscillatorNode();
 				osc.start(0);
 				osc.stop(0.05);
@@ -212,8 +208,8 @@ describe("ToneOscillatorNode", () => {
 			}, 0.1);
 		});
 
-		it("can call stop multiple times, takes the last value", () => {
-			return Offline(() => {
+		it("can call stop multiple times, takes the last value", async () => {
+			await Offline(() => {
 				const osc = new ToneOscillatorNode();
 				osc.start(0);
 				osc.stop(0.05);

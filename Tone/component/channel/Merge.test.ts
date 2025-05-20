@@ -40,8 +40,8 @@ describe("Merge", () => {
 			});
 		});
 
-		it("merge two signal into one stereo signal", () => {
-			return Offline(
+		it("merge two signal into one stereo signal", async () => {
+			const buffer = await Offline(
 				() => {
 					const sigL = new Signal(1);
 					const sigR = new Signal(2);
@@ -52,10 +52,9 @@ describe("Merge", () => {
 				},
 				0.1,
 				2
-			).then((buffer) => {
-				expect(buffer.toArray()[0][0]).to.be.closeTo(1, 0.001);
-				expect(buffer.toArray()[1][0]).to.be.closeTo(2, 0.001);
-			});
+			);
+			expect(buffer.toArray()[0][0]).to.be.closeTo(1, 0.001);
+			expect(buffer.toArray()[1][0]).to.be.closeTo(2, 0.001);
 		});
 	});
 });

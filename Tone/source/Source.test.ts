@@ -318,71 +318,66 @@ describe("Source", () => {
 			}, 0.1);
 		});
 
-		it("gives the correct offset on time on start/stop events", () => {
-			return Offline(({ transport }) => {
+		it("gives the correct offset on time on start/stop events", async () => {
+			const output = await Offline(({ transport }) => {
 				const source = new Player(rampBuffer).toDestination();
 				source.sync().start(0.2, 0.1).stop(0.3);
 				transport.start(0.2);
-			}, 0.7).then((output) => {
-				expect(output.getValueAtTime(0.41)).to.be.closeTo(0.1, 0.01);
-				expect(output.getValueAtTime(0.45)).to.be.closeTo(0.15, 0.001);
-				expect(output.getValueAtTime(0.5)).to.be.equal(0);
-			});
+			}, 0.7);
+			expect(output.getValueAtTime(0.41)).to.be.closeTo(0.1, 0.01);
+			expect(output.getValueAtTime(0.45)).to.be.closeTo(0.15, 0.001);
+			expect(output.getValueAtTime(0.5)).to.be.equal(0);
 		});
 
-		it("gives the correct offset on time on start/stop events when started with an offset", () => {
-			return Offline(({ transport }) => {
+		it("gives the correct offset on time on start/stop events when started with an offset", async () => {
+			const output = await Offline(({ transport }) => {
 				const source = new Player(rampBuffer).toDestination();
 				source.sync().start(0.2, 0.1).stop(0.4);
 				transport.start(0.2, 0.1);
-			}, 0.7).then((output) => {
-				expect(output.getValueAtTime(0.21)).to.be.closeTo(0.0, 0.01);
-				expect(output.getValueAtTime(0.31)).to.be.closeTo(0.1, 0.01);
-				expect(output.getValueAtTime(0.41)).to.be.closeTo(0.2, 0.01);
-				expect(output.getValueAtTime(0.45)).to.be.closeTo(0.25, 0.01);
-				expect(output.getValueAtTime(0.51)).to.be.equal(0);
-			});
+			}, 0.7);
+			expect(output.getValueAtTime(0.21)).to.be.closeTo(0.0, 0.01);
+			expect(output.getValueAtTime(0.31)).to.be.closeTo(0.1, 0.01);
+			expect(output.getValueAtTime(0.41)).to.be.closeTo(0.2, 0.01);
+			expect(output.getValueAtTime(0.45)).to.be.closeTo(0.25, 0.01);
+			expect(output.getValueAtTime(0.51)).to.be.equal(0);
 		});
 
-		it("gives the correct offset on time on start/stop events invoked with an transport offset that's in the middle of the event", () => {
-			return Offline(({ transport }) => {
+		it("gives the correct offset on time on start/stop events invoked with a transport offset that's in the middle of the event", async () => {
+			const output = await Offline(({ transport }) => {
 				const source = new Player(rampBuffer).toDestination();
 				source.sync().start(0.2, 0.1).stop(0.4);
 				transport.start(0, 0.3);
-			}, 0.7).then((output) => {
-				expect(output.getValueAtTime(0.01)).to.be.closeTo(0.2, 0.01);
-				expect(output.getValueAtTime(0.05)).to.be.closeTo(0.25, 0.01);
-				expect(output.getValueAtTime(0.11)).to.be.equal(0);
-			});
+			}, 0.7);
+			expect(output.getValueAtTime(0.01)).to.be.closeTo(0.2, 0.01);
+			expect(output.getValueAtTime(0.05)).to.be.closeTo(0.25, 0.01);
+			expect(output.getValueAtTime(0.11)).to.be.equal(0);
 		});
 
-		it("gives the correct duration when invoked with an transport offset that's in the middle of the event", () => {
-			return Offline(({ transport }) => {
+		it("gives the correct duration when invoked with a transport offset that's in the middle of the event", async () => {
+			const output = await Offline(({ transport }) => {
 				const source = new Player(rampBuffer).toDestination();
 				source.sync().start(0.2, 0.1, 0.3);
 				transport.start(0, 0.3);
-			}, 0.7).then((output) => {
-				expect(output.getValueAtTime(0.01)).to.be.closeTo(0.2, 0.01);
-				expect(output.getValueAtTime(0.1)).to.be.closeTo(0.3, 0.01);
-				expect(output.getValueAtTime(0.199)).to.be.closeTo(0.4, 0.01);
-				expect(output.getValueAtTime(0.31)).to.be.equal(0);
-			});
+			}, 0.7);
+			expect(output.getValueAtTime(0.01)).to.be.closeTo(0.2, 0.01);
+			expect(output.getValueAtTime(0.1)).to.be.closeTo(0.3, 0.01);
+			expect(output.getValueAtTime(0.199)).to.be.closeTo(0.4, 0.01);
+			expect(output.getValueAtTime(0.31)).to.be.equal(0);
 		});
 
-		it("stops at the right time when transport.stop is invoked before the scheduled stop", () => {
-			return Offline(({ transport }) => {
+		it("stops at the right time when transport.stop is invoked before the scheduled stop", async () => {
+			const output = await Offline(({ transport }) => {
 				const source = new Player(rampBuffer).toDestination();
 				source.sync().start(0.2).stop(0.4);
 				transport.start(0).stop(0.3);
-			}, 0.7).then((output) => {
-				expect(output.getValueAtTime(0.2)).to.be.closeTo(0.0, 0.01);
-				expect(output.getValueAtTime(0.25)).to.be.closeTo(0.05, 0.01);
-				expect(output.getValueAtTime(0.31)).to.be.equal(0);
-			});
+			}, 0.7);
+			expect(output.getValueAtTime(0.2)).to.be.closeTo(0.0, 0.01);
+			expect(output.getValueAtTime(0.25)).to.be.closeTo(0.05, 0.01);
+			expect(output.getValueAtTime(0.31)).to.be.equal(0);
 		});
 
-		it("invokes the right methods and offsets when the transport is seeked", () => {
-			return Offline(({ transport }) => {
+		it("invokes the right methods and offsets when the transport is seeked", async () => {
+			const output = await Offline(({ transport }) => {
 				const source = new Player(rampBuffer).toDestination();
 				source.sync().start(0.2);
 				transport.start(0, 0.3);
@@ -391,14 +386,13 @@ describe("Source", () => {
 					// seek forward in time
 					transport.seconds = 0.1;
 				});
-			}, 0.7).then((output) => {
-				expect(output.getValueAtTime(0.01)).to.be.closeTo(0.1, 0.01);
-				expect(output.getValueAtTime(0.05)).to.be.closeTo(0.15, 0.01);
-				expect(output.getValueAtTime(0.11)).to.be.closeTo(0.0, 0.01);
-				expect(output.getValueAtTime(0.21)).to.be.closeTo(0.0, 0.01);
-				expect(output.getValueAtTime(0.25)).to.be.closeTo(0.05, 0.01);
-				expect(output.getValueAtTime(0.3)).to.be.closeTo(0.1, 0.01);
-			});
+			}, 0.7);
+			expect(output.getValueAtTime(0.01)).to.be.closeTo(0.1, 0.01);
+			expect(output.getValueAtTime(0.05)).to.be.closeTo(0.15, 0.01);
+			expect(output.getValueAtTime(0.11)).to.be.closeTo(0.0, 0.01);
+			expect(output.getValueAtTime(0.21)).to.be.closeTo(0.0, 0.01);
+			expect(output.getValueAtTime(0.25)).to.be.closeTo(0.05, 0.01);
+			expect(output.getValueAtTime(0.3)).to.be.closeTo(0.1, 0.01);
 		});
 	});
 });

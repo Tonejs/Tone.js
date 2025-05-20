@@ -162,41 +162,38 @@ describe("Clock", () => {
 			clock.start(startTime);
 		});
 
-		it("can be scheduled to start in the future", () => {
+		it("can be scheduled to start in the future", async () => {
 			let invokations = 0;
-			return Offline(() => {
+			await Offline(() => {
 				const clock = new Clock((time) => {
 					invokations++;
 				}, 2).start(0.1);
-			}, 0.4).then(() => {
-				expect(invokations).to.equal(1);
-			});
+			}, 0.4);
+			expect(invokations).to.equal(1);
 		});
 
-		it("invokes the right number of callbacks given the duration", () => {
+		it("invokes the right number of callbacks given the duration", async () => {
 			let invokations = 0;
-			return Offline(() => {
+			await Offline(() => {
 				new Clock((time) => {
 					invokations++;
 				}, 10)
 					.start(0)
 					.stop(0.45);
-			}, 0.6).then(() => {
-				expect(invokations).to.equal(5);
-			});
+			}, 0.6);
+			expect(invokations).to.equal(5);
 		});
 
-		it("can schedule the frequency of the clock", () => {
+		it("can schedule the frequency of the clock", async () => {
 			let invokations = 0;
-			return Offline(() => {
+			await Offline(() => {
 				const clock = new Clock((time, ticks) => {
 					invokations++;
 				}, 2);
 				clock.start(0).stop(1.01);
 				clock.frequency.setValueAtTime(4, 0.5);
-			}, 2).then(() => {
-				expect(invokations).to.equal(4);
-			});
+			}, 2);
+			expect(invokations).to.equal(4);
 		});
 	});
 

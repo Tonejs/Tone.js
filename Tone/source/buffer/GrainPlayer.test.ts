@@ -59,13 +59,12 @@ describe("GrainPlayer", () => {
 			done();
 		});
 
-		it("makes a sound", () => {
-			return Offline(() => {
+		it("makes a sound", async () => {
+			const output = await Offline(() => {
 				const player = new GrainPlayer(buffer).toDestination();
 				player.start();
-			}).then((output) => {
-				expect(output.isSilent()).to.be.false;
 			});
+			expect(output.isSilent()).to.be.false;
 		});
 	});
 
@@ -119,8 +118,8 @@ describe("GrainPlayer", () => {
 			buffer.load("./test/audio/short_sine.wav");
 		});
 
-		it("can be play for a specific duration", () => {
-			return Offline(() => {
+		it("can be play for a specific duration", async () => {
+			const output = await Offline(() => {
 				const player = new GrainPlayer(buffer);
 				player.toDestination();
 				player.start(0).stop(0.1);
@@ -132,13 +131,12 @@ describe("GrainPlayer", () => {
 						expect(player.state).to.equal("started");
 					});
 				};
-			}, 0.3).then((output) => {
-				expect(output.getTimeOfLastSound()).to.be.closeTo(0.1, 0.02);
-			});
+			}, 0.3);
+			expect(output.getTimeOfLastSound()).to.be.closeTo(0.1, 0.02);
 		});
 
-		it("can be play for a specific duration passed in the 'start' method", () => {
-			return Offline(() => {
+		it("can be play for a specific duration passed in the 'start' method", async () => {
+			const output = await Offline(() => {
 				const player = new GrainPlayer(buffer);
 				player.toDestination();
 				player.start(0, 0, 0.1);
@@ -150,50 +148,46 @@ describe("GrainPlayer", () => {
 						expect(player.state).to.equal("started");
 					});
 				};
-			}, 0.3).then((output) => {
-				expect(output.getTimeOfLastSound()).to.be.closeTo(0.1, 0.02);
-			});
+			}, 0.3);
+			expect(output.getTimeOfLastSound()).to.be.closeTo(0.1, 0.02);
 		});
 
-		it("invokes the onstop method on restart", () => {
+		it("invokes the onstop method on restart", async () => {
 			let wasInvoked = 0;
-			return Offline(() => {
+			await Offline(() => {
 				const player = new GrainPlayer(buffer);
 				player.start(0).restart(0.1).stop(0.2);
 				player.onstop = () => {
 					wasInvoked++;
 				};
-			}, 0.3).then(() => {
-				expect(wasInvoked).to.equal(2);
-			});
+			}, 0.3);
+			expect(wasInvoked).to.equal(2);
 		});
 
-		it("can play to the end of the file", () => {
+		it("can play to the end of the file", async () => {
 			const bufferDuration = buffer.duration;
-			return Offline(() => {
+			const output = await Offline(() => {
 				const player = new GrainPlayer(buffer).toDestination();
 				player.grainSize = 0.1;
 				player.start(0);
-			}, bufferDuration * 1.2).then((output) => {
-				expect(output.getTimeOfLastSound()).to.be.closeTo(
-					bufferDuration,
-					0.1
-				);
-			});
+			}, bufferDuration * 1.2);
+			expect(output.getTimeOfLastSound()).to.be.closeTo(
+				bufferDuration,
+				0.1
+			);
 		});
 
-		it("plays for the right time when playbackRate = 2", () => {
+		it("plays for the right time when playbackRate = 2", async () => {
 			const bufferDuration = buffer.duration;
-			return Offline(() => {
+			const output = await Offline(() => {
 				const player = new GrainPlayer(buffer).toDestination();
 				player.playbackRate = 2;
 				player.start(0);
-			}, bufferDuration).then((output) => {
-				expect(output.getTimeOfLastSound()).to.be.closeTo(
-					bufferDuration * 0.5,
-					0.1
-				);
-			});
+			}, bufferDuration);
+			expect(output.getTimeOfLastSound()).to.be.closeTo(
+				bufferDuration * 0.5,
+				0.1
+			);
 		});
 	});
 

@@ -110,16 +110,15 @@ describe("Filter", () => {
 			filter.dispose();
 		});
 
-		it("attenuates the incoming signal", () => {
-			return Offline(() => {
+		it("attenuates the incoming signal", async () => {
+			const buffer = await Offline(() => {
 				const filter = new Filter(700, "lowpass").toDestination();
 				filter.Q.value = 0;
 				const osc = new Oscillator(880).connect(filter);
 				osc.start(0);
-			}, 0.2).then((buffer) => {
-				expect(buffer.getRmsAtTime(0.05)).to.be.within(0.37, 0.53);
-				expect(buffer.getRmsAtTime(0.1)).to.be.within(0.37, 0.53);
-			});
+			}, 0.2);
+			expect(buffer.getRmsAtTime(0.05)).to.be.within(0.37, 0.53);
+			expect(buffer.getRmsAtTime(0.1)).to.be.within(0.37, 0.53);
 		});
 	});
 });

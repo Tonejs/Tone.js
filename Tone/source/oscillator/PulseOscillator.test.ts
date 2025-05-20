@@ -26,8 +26,8 @@ describe("PulseOscillator", () => {
 	});
 
 	context("Phase Rotation", () => {
-		it("can change the phase to 90", () => {
-			return Offline(() => {
+		it("can change the phase to 90", async () => {
+			const buffer = await Offline(() => {
 				const osc = new PulseOscillator({
 					frequency: 1,
 					phase: 90,
@@ -35,19 +35,18 @@ describe("PulseOscillator", () => {
 				});
 				osc.toDestination();
 				osc.start(0);
-			}, 1).then(async (buffer) => {
-				buffer.forEach((sample, time) => {
-					if (time < 0.25) {
-						expect(sample).to.be.within(-1, 0);
-					} else if (time > 0.25 && time < 0.5) {
-						expect(sample).to.be.within(0, 1);
-					}
-				});
+			}, 1);
+			buffer.forEach((sample, time) => {
+				if (time < 0.25) {
+					expect(sample).to.be.within(-1, 0);
+				} else if (time > 0.25 && time < 0.5) {
+					expect(sample).to.be.within(0, 1);
+				}
 			});
 		});
 
-		it("can change the phase to -90", () => {
-			return Offline(() => {
+		it("can change the phase to -90", async () => {
+			const buffer = await Offline(() => {
 				const osc = new PulseOscillator({
 					frequency: 1,
 					phase: 270,
@@ -55,14 +54,13 @@ describe("PulseOscillator", () => {
 				});
 				osc.toDestination();
 				osc.start(0);
-			}, 1).then((buffer) => {
-				buffer.forEach((sample, time) => {
-					if (time < 0.25) {
-						expect(sample).to.be.within(0, 1);
-					} else if (time > 0.25 && time < 0.5) {
-						expect(sample).to.be.within(-1, 0);
-					}
-				});
+			}, 1);
+			buffer.forEach((sample, time) => {
+				if (time < 0.25) {
+					expect(sample).to.be.within(0, 1);
+				} else if (time > 0.25 && time < 0.5) {
+					expect(sample).to.be.within(-1, 0);
+				}
 			});
 		});
 	});
@@ -76,41 +74,39 @@ describe("PulseOscillator", () => {
 			osc.dispose();
 		});
 
-		it("outputs correctly with a width of 0", () => {
-			return Offline(() => {
+		it("outputs correctly with a width of 0", async () => {
+			const buffer = await Offline(() => {
 				const osc = new PulseOscillator({
 					frequency: 1,
 					width: 0,
 				});
 				osc.toDestination();
 				osc.start(0);
-			}, 0.9).then((buffer) => {
-				buffer.forEach((sample, time) => {
-					if (time > 0.51) {
-						expect(sample).to.be.within(-1, 0);
-					}
-				});
+			}, 0.9);
+			buffer.forEach((sample, time) => {
+				if (time > 0.51) {
+					expect(sample).to.be.within(-1, 0);
+				}
 			});
 		});
 
-		it("outputs correctly with a width of 0.5", () => {
-			return Offline(() => {
+		it("outputs correctly with a width of 0.5", async () => {
+			const buffer = await Offline(() => {
 				const osc = new PulseOscillator({
 					frequency: 1,
 					width: 0.5,
 				});
 				osc.toDestination();
 				osc.start(0);
-			}, 1).then((buffer) => {
-				buffer.forEach((sample, time) => {
-					if (time <= 0.6) {
-						expect(sample).to.be.within(0, 1);
-					} else if (time >= 0.63 && time <= 0.87) {
-						expect(sample).to.be.within(-1, 0);
-					} else if (time > 0.9) {
-						expect(sample).to.be.within(0, 1);
-					}
-				});
+			}, 1);
+			buffer.forEach((sample, time) => {
+				if (time <= 0.6) {
+					expect(sample).to.be.within(0, 1);
+				} else if (time >= 0.63 && time <= 0.87) {
+					expect(sample).to.be.within(-1, 0);
+				} else if (time > 0.9) {
+					expect(sample).to.be.within(0, 1);
+				}
 			});
 		});
 	});

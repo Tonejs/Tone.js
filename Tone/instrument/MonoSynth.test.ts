@@ -71,7 +71,7 @@ describe("MonoSynth", () => {
 		});
 
 		it("is silent after triggerAttack if sustain is 0", async () => {
-			return await Offline(() => {
+			const buffer = await Offline(() => {
 				const synth = new MonoSynth({
 					envelope: {
 						attack: 0.1,
@@ -80,9 +80,8 @@ describe("MonoSynth", () => {
 					},
 				}).toDestination();
 				synth.triggerAttack("C4", 0);
-			}, 0.5).then((buffer) => {
-				expect(buffer.getTimeOfLastSound()).to.be.closeTo(0.2, 0.01);
-			});
+			}, 0.5);
+			expect(buffer.getTimeOfLastSound()).to.be.closeTo(0.2, 0.01);
 		});
 	});
 });

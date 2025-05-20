@@ -74,33 +74,30 @@ describe("Volume", () => {
 			// });
 		});
 
-		it("can lower the volume", () => {
-			return Offline(() => {
+		it("can lower the volume", async () => {
+			const buffer = await Offline(() => {
 				const vol = new Volume(-10).toDestination();
 				new Signal(1).connect(vol);
-			}).then((buffer) => {
-				expect(buffer.value()).to.be.closeTo(0.315, 0.01);
 			});
+			expect(buffer.value()).to.be.closeTo(0.315, 0.01);
 		});
 
-		it("can mute the volume", () => {
-			return Offline(() => {
+		it("can mute the volume", async () => {
+			const buffer = await Offline(() => {
 				const vol = new Volume(0).toDestination();
 				new Signal(1).connect(vol);
 				vol.mute = true;
-			}).then((buffer) => {
-				expect(buffer.isSilent()).to.equal(true);
 			});
+			expect(buffer.isSilent()).to.equal(true);
 		});
 
-		it("muted when volume is set to -Infinity", () => {
-			return Offline(() => {
+		it("muted when volume is set to -Infinity", async () => {
+			const buffer = await Offline(() => {
 				const vol = new Volume(-Infinity).toDestination();
 				new Signal(1).connect(vol);
 				expect(vol.mute).to.equal(true);
-			}).then((buffer) => {
-				expect(buffer.isSilent()).to.equal(true);
 			});
+			expect(buffer.isSilent()).to.equal(true);
 		});
 
 		it("setting the volume unmutes it and reports itself as unmuted", () => {

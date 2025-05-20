@@ -26,13 +26,12 @@ describe("Destination", () => {
 		});
 	});
 
-	it("passes no audio when muted", () => {
-		return Offline((context) => {
+	it("passes no audio when muted", async () => {
+		const buffer = await Offline((context) => {
 			new Oscillator().toDestination().start(0);
 			context.destination.mute = true;
-		}).then((buffer) => {
-			expect(buffer.isSilent()).to.equal(true);
 		});
+		expect(buffer.isSilent()).to.equal(true);
 	});
 
 	it("has a master volume control", () => {

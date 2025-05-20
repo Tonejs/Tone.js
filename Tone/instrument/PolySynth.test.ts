@@ -76,29 +76,28 @@ describe("PolySynth", () => {
 	});
 
 	context("Playing Notes", () => {
-		it("triggerAttackRelease can take an array of durations", () => {
-			return OutputAudio(() => {
+		it("triggerAttackRelease can take an array of durations", async () => {
+			await OutputAudio(() => {
 				const polySynth = new PolySynth();
 				polySynth.toDestination();
 				polySynth.triggerAttackRelease(["C4", "D4"], [0.1, 0.2]);
 			});
 		});
 
-		it("triggerAttack and triggerRelease can be invoked without arrays", () => {
-			return Offline(() => {
+		it("triggerAttack and triggerRelease can be invoked without arrays", async () => {
+			const buffer = await Offline(() => {
 				const polySynth = new PolySynth();
 				polySynth.set({ envelope: { release: 0.1 } });
 				polySynth.toDestination();
 				polySynth.triggerAttack("C4", 0);
 				polySynth.triggerRelease("C4", 0.1);
-			}, 0.3).then((buffer) => {
-				expect(buffer.getTimeOfFirstSound()).to.be.closeTo(0, 0.01);
-				expect(buffer.getValueAtTime(0.2)).to.be.closeTo(0, 0.01);
-			});
+			}, 0.3);
+			expect(buffer.getTimeOfFirstSound()).to.be.closeTo(0, 0.01);
+			expect(buffer.getValueAtTime(0.2)).to.be.closeTo(0, 0.01);
 		});
 
-		it("can stop all of the currently playing sounds", () => {
-			return Offline(() => {
+		it("can stop all of the currently playing sounds", async () => {
+			const buffer = await Offline(() => {
 				const polySynth = new PolySynth();
 				polySynth.set({ envelope: { release: 0.1 } });
 				polySynth.toDestination();
@@ -106,33 +105,30 @@ describe("PolySynth", () => {
 				return atTime(0.1, () => {
 					polySynth.releaseAll();
 				});
-			}, 0.3).then((buffer) => {
-				expect(buffer.getTimeOfFirstSound()).to.be.closeTo(0, 0.01);
-				expect(buffer.getTimeOfLastSound()).to.be.closeTo(0.2, 0.01);
-			});
+			}, 0.3);
+			expect(buffer.getTimeOfFirstSound()).to.be.closeTo(0, 0.01);
+			expect(buffer.getTimeOfLastSound()).to.be.closeTo(0.2, 0.01);
 		});
 
-		it("is silent before being triggered", () => {
-			return Offline(() => {
+		it("is silent before being triggered", async () => {
+			const buffer = await Offline(() => {
 				const polySynth = new PolySynth();
 				polySynth.toDestination();
-			}).then((buffer) => {
-				expect(buffer.isSilent()).to.be.true;
 			});
+			expect(buffer.isSilent()).to.be.true;
 		});
 
-		it("can be scheduled to start in the future", () => {
-			return Offline(() => {
+		it("can be scheduled to start in the future", async () => {
+			const buffer = await Offline(() => {
 				const polySynth = new PolySynth();
 				polySynth.toDestination();
 				polySynth.triggerAttack("C4", 0.1);
-			}, 0.3).then((buffer) => {
-				expect(buffer.getTimeOfFirstSound()).to.be.closeTo(0.1, 0.01);
-			});
+			}, 0.3);
+			expect(buffer.getTimeOfFirstSound()).to.be.closeTo(0.1, 0.01);
 		});
 
-		it("can stop all sounds scheduled to start in the future when disposed", () => {
-			return Offline(() => {
+		it("can stop all sounds scheduled to start in the future when disposed", async () => {
+			const buffer = await Offline(() => {
 				const polySynth = new PolySynth();
 				polySynth.set({ envelope: { release: 0.1 } });
 				polySynth.toDestination();
@@ -140,13 +136,12 @@ describe("PolySynth", () => {
 				return atTime(0.1, () => {
 					polySynth.dispose();
 				});
-			}, 0.3).then((buffer) => {
-				expect(buffer.isSilent()).to.be.true;
-			});
+			}, 0.3);
+			expect(buffer.isSilent()).to.be.true;
 		});
 
-		it("disposes voices when they are no longer used", () => {
-			return Offline(() => {
+		it("disposes voices when they are no longer used", async () => {
+			await Offline(() => {
 				const polySynth = new PolySynth(Synth, {
 					envelope: {
 						release: 0.1,
@@ -181,8 +176,8 @@ describe("PolySynth", () => {
 			});
 		});
 
-		it("reports the active notes", () => {
-			return Offline(() => {
+		it("reports the active notes", async () => {
+			await Offline(() => {
 				const polySynth = new PolySynth();
 				polySynth.set({ envelope: { release: 0.1 } });
 				polySynth.toDestination();
@@ -222,9 +217,9 @@ describe("PolySynth", () => {
 			}, 1);
 		});
 
-		it("can trigger another attack before the release has ended", () => {
+		it("can trigger another attack before the release has ended", async () => {
 			// compute the end time
-			return Offline(() => {
+			const buffer = await Offline(() => {
 				const synth = new PolySynth(Synth, {
 					envelope: {
 						release: 0.1,
@@ -235,14 +230,13 @@ describe("PolySynth", () => {
 				synth.triggerRelease("C4", 0.1);
 				synth.triggerAttack("C4", 0.15);
 				synth.triggerRelease("C4", 0.2);
-			}, 1).then((buffer) => {
-				expect(buffer.getTimeOfLastSound()).to.be.closeTo(0.3, 0.01);
-			});
+			}, 1);
+			expect(buffer.getTimeOfLastSound()).to.be.closeTo(0.3, 0.01);
 		});
 
-		it("can trigger another attack right after the release has ended", () => {
+		it("can trigger another attack right after the release has ended", async () => {
 			// compute the end time
-			return Offline(() => {
+			const buffer = await Offline(() => {
 				const synth = new PolySynth(Synth, {
 					envelope: {
 						release: 0.1,
@@ -256,15 +250,14 @@ describe("PolySynth", () => {
 				return atTime(0.41, () => {
 					expect(synth.activeVoices).to.equal(0);
 				});
-			}, 1).then((buffer) => {
-				expect(buffer.getTimeOfLastSound()).to.be.closeTo(0.4, 0.01);
-			});
+			}, 1);
+			expect(buffer.getTimeOfLastSound()).to.be.closeTo(0.4, 0.01);
 		});
 	});
 
 	context("Transport sync", () => {
-		it("can be synced to the transport", () => {
-			return Offline(({ transport }) => {
+		it("can be synced to the transport", async () => {
+			const buffer = await Offline(({ transport }) => {
 				const polySynth = new PolySynth(Synth, {
 					envelope: {
 						release: 0.1,
@@ -274,24 +267,22 @@ describe("PolySynth", () => {
 				polySynth.triggerAttackRelease("C4", 0.1, 0.1);
 				polySynth.triggerAttackRelease("E4", 0.1, 0.3);
 				transport.start(0.1);
-			}, 0.8).then((buffer) => {
-				expect(buffer.getTimeOfFirstSound()).to.be.closeTo(0.2, 0.01);
-				expect(buffer.getTimeOfLastSound()).to.be.closeTo(0.6, 0.01);
-			});
+			}, 0.8);
+			expect(buffer.getTimeOfFirstSound()).to.be.closeTo(0.2, 0.01);
+			expect(buffer.getTimeOfLastSound()).to.be.closeTo(0.6, 0.01);
 		});
 
-		it("is silent until the transport is started", () => {
-			return Offline(({ transport }) => {
+		it("is silent until the transport is started", async () => {
+			const buffer = await Offline(({ transport }) => {
 				const synth = new PolySynth(Synth).sync().toDestination();
 				synth.triggerAttackRelease("C4", 0.5);
 				transport.start(0.5);
-			}, 1).then((buffer) => {
-				expect(buffer.getTimeOfFirstSound()).is.closeTo(0.5, 0.1);
-			});
+			}, 1);
+			expect(buffer.getTimeOfFirstSound()).is.closeTo(0.5, 0.1);
 		});
 
-		it("stops when the transport is stopped", () => {
-			return Offline(({ transport }) => {
+		it("stops when the transport is stopped", async () => {
+			const buffer = await Offline(({ transport }) => {
 				const synth = new PolySynth(Synth, {
 					envelope: {
 						release: 0,
@@ -301,13 +292,12 @@ describe("PolySynth", () => {
 					.toDestination();
 				synth.triggerAttackRelease("C4", 0.5);
 				transport.start(0.5).stop(1);
-			}, 1.5).then((buffer) => {
-				expect(buffer.getTimeOfLastSound()).is.closeTo(1, 0.1);
-			});
+			}, 1.5);
+			expect(buffer.getTimeOfLastSound()).is.closeTo(1, 0.1);
 		});
 
-		it("goes silent at the loop boundary", () => {
-			return Offline(({ transport }) => {
+		it("goes silent at the loop boundary", async () => {
+			const buffer = await Offline(({ transport }) => {
 				const synth = new PolySynth(Synth, {
 					envelope: {
 						release: 0,
@@ -319,16 +309,15 @@ describe("PolySynth", () => {
 				transport.loopEnd = 1;
 				transport.loop = true;
 				transport.start();
-			}, 2).then((buffer) => {
-				expect(buffer.getRmsAtTime(0)).to.be.closeTo(0, 0.05);
-				expect(buffer.getRmsAtTime(0.6)).to.be.closeTo(0.2, 0.05);
-				expect(buffer.getRmsAtTime(1.1)).to.be.closeTo(0, 0.05);
-				expect(buffer.getRmsAtTime(1.6)).to.be.closeTo(0.2, 0.05);
-			});
+			}, 2);
+			expect(buffer.getRmsAtTime(0)).to.be.closeTo(0, 0.05);
+			expect(buffer.getRmsAtTime(0.6)).to.be.closeTo(0.2, 0.05);
+			expect(buffer.getRmsAtTime(1.1)).to.be.closeTo(0, 0.05);
+			expect(buffer.getRmsAtTime(1.6)).to.be.closeTo(0.2, 0.05);
 		});
 
-		it("can unsync", () => {
-			return Offline(({ transport }) => {
+		it("can unsync", async () => {
+			const buffer = await Offline(({ transport }) => {
 				const synth = new PolySynth(Synth, {
 					envelope: {
 						sustain: 1,
@@ -340,12 +329,11 @@ describe("PolySynth", () => {
 					.unsync();
 				synth.triggerAttackRelease("C4", 1, 0.5);
 				transport.start().stop(1);
-			}, 2).then((buffer) => {
-				expect(buffer.getRmsAtTime(0)).to.be.closeTo(0, 0.05);
-				expect(buffer.getRmsAtTime(0.6)).to.be.closeTo(0.6, 0.05);
-				expect(buffer.getRmsAtTime(1.4)).to.be.closeTo(0.6, 0.05);
-				expect(buffer.getRmsAtTime(1.6)).to.be.closeTo(0, 0.05);
-			});
+			}, 2);
+			expect(buffer.getRmsAtTime(0)).to.be.closeTo(0, 0.05);
+			expect(buffer.getRmsAtTime(0.6)).to.be.closeTo(0.6, 0.05);
+			expect(buffer.getRmsAtTime(1.4)).to.be.closeTo(0.6, 0.05);
+			expect(buffer.getRmsAtTime(1.6)).to.be.closeTo(0, 0.05);
 		});
 	});
 

@@ -25,39 +25,37 @@ context("OfflineContext", () => {
 		return ctx.close();
 	});
 
-	it("can render audio", () => {
+	it("can render audio", async () => {
 		const ctx = new OfflineContext(1, 0.2, 44100);
 		const osc = ctx.createOscillator();
 		osc.connect(ctx.rawContext.destination);
 		osc.start(0.1);
-		return ctx.render().then((buffer) => {
-			expect(buffer).to.have.property("length");
-			expect(buffer).to.have.property("sampleRate");
-			const array = buffer.getChannelData(0);
-			for (let i = 0; i < array.length; i++) {
-				if (array[i] !== 0) {
-					expect(i / array.length).to.be.closeTo(0.5, 0.01);
-					break;
-				}
+		const buffer = await ctx.render();
+		expect(buffer).to.have.property("length");
+		expect(buffer).to.have.property("sampleRate");
+		const array = buffer.getChannelData(0);
+		for (let i = 0; i < array.length; i++) {
+			if (array[i] !== 0) {
+				expect(i / array.length).to.be.closeTo(0.5, 0.01);
+				break;
 			}
-		});
+		}
 	});
 
-	it("can render audio not async", () => {
+	it("can render audio not async", async () => {
 		const ctx = new OfflineContext(1, 0.2, 44100);
 		const osc = ctx.createOscillator();
 		osc.connect(ctx.rawContext.destination);
 		osc.start(0.1);
-		return ctx.render(false).then((buffer) => {
-			expect(buffer).to.have.property("length");
-			expect(buffer).to.have.property("sampleRate");
-			const array = buffer.getChannelData(0);
-			for (let i = 0; i < array.length; i++) {
-				if (array[i] !== 0) {
-					expect(i / array.length).to.be.closeTo(0.5, 0.01);
-					break;
-				}
+		const buffer = await ctx.render(false);
+		expect(buffer).to.have.property("length");
+		expect(buffer).to.have.property("sampleRate");
+		const array = buffer.getChannelData(0);
+		for (let i = 0; i < array.length; i++) {
+			if (array[i] !== 0) {
+				expect(i / array.length).to.be.closeTo(0.5, 0.01);
+				break;
 			}
-		});
+		}
 	});
 });

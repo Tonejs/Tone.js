@@ -84,9 +84,9 @@ describe("Pattern", () => {
 	});
 
 	context("Callback", () => {
-		it("is invoked after it's started", () => {
+		it("is invoked after it's started", async () => {
 			let invoked = false;
-			return Offline(({ transport }) => {
+			await Offline(({ transport }) => {
 				const values = ["a", "b", "c"];
 				let index = 0;
 				const pattern = new Pattern(() => {
@@ -96,14 +96,13 @@ describe("Pattern", () => {
 					index++;
 				}, values).start(0);
 				transport.start();
-			}, 0.2).then(() => {
-				expect(invoked).to.be.true;
-			});
+			}, 0.2);
+			expect(invoked).to.be.true;
 		});
 
-		it("passes in the scheduled time and pattern note to the callback", () => {
+		it("passes in the scheduled time and pattern note to the callback", async () => {
 			let invoked = false;
-			return Offline(({ transport }) => {
+			await Offline(({ transport }) => {
 				const startTime = 0.05;
 				const pattern = new Pattern(
 					(time, note) => {
@@ -119,14 +118,13 @@ describe("Pattern", () => {
 				);
 				transport.start(startTime);
 				pattern.start(0.3);
-			}, 0.4).then(() => {
-				expect(invoked).to.be.true;
-			});
+			}, 0.4);
+			expect(invoked).to.be.true;
 		});
 
-		it("passes in the next note of the pattern", () => {
+		it("passes in the next note of the pattern", async () => {
 			let counter = 0;
-			return Offline(({ transport }) => {
+			await Offline(({ transport }) => {
 				const values = ["a", "b", "c"];
 				const pattern = new Pattern(
 					(time, note) => {
@@ -140,14 +138,13 @@ describe("Pattern", () => {
 				).start(0);
 				pattern.interval = "16n";
 				transport.start(0);
-			}, 0.7).then(() => {
-				expect(counter).to.equal(6);
-			});
+			}, 0.7);
+			expect(counter).to.equal(6);
 		});
 
-		it("can modify the pattern type and values", () => {
+		it("can modify the pattern type and values", async () => {
 			let counter = 0;
-			return Offline(({ transport }) => {
+			await Offline(({ transport }) => {
 				const values = ["a", "b", "c"];
 				const pattern = new Pattern(
 					(time, note) => {
@@ -163,9 +160,8 @@ describe("Pattern", () => {
 				pattern.pattern = "up";
 				pattern.values = values;
 				transport.start(0);
-			}, 0.7).then(() => {
-				expect(counter).to.equal(6);
-			});
+			}, 0.7);
+			expect(counter).to.equal(6);
 		});
 	});
 });

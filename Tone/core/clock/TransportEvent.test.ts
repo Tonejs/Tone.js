@@ -25,9 +25,9 @@ describe("TransportEvent", () => {
 		});
 	});
 
-	it("can invoke the callback", () => {
+	it("can invoke the callback", async () => {
 		let wasInvoked = false;
-		return Offline((context) => {
+		await Offline((context) => {
 			const transport = new TransportClass({ context });
 			const event = new TransportEvent(transport, {
 				callback: (time) => {
@@ -37,8 +37,7 @@ describe("TransportEvent", () => {
 				time: 0,
 			});
 			event.invoke(100);
-		}).then(() => {
-			expect(wasInvoked).to.equal(true);
 		});
+		expect(wasInvoked).to.equal(true);
 	});
 });
