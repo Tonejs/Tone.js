@@ -227,6 +227,17 @@ describe("Players", () => {
 			}, 0.2);
 		});
 
+		it("can start multiple samples", async () => {
+			await OutputAudio(() => {
+				const players = new Players({
+					test0: buffer,
+					test1: buffer,
+				}).toDestination();
+				players.player("test0").start(0).stop(0.01);
+				players.player("test1").start(0);
+			});
+		});
+
 		it("can stop all of the samples in the future", async () => {
 			const output = await Offline(() => {
 				const players = new Players({

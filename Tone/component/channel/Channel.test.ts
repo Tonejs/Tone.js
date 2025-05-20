@@ -30,7 +30,7 @@ describe("Channel", () => {
 			channel.dispose();
 		});
 
-		it("passes the incoming signal through", async () => {
+		it("passes the incoming signal through", () => {
 			return PassAudio((input) => {
 				const channel = new Channel().toDestination();
 				input.connect(channel);
