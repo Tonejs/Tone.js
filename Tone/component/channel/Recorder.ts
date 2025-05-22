@@ -121,7 +121,7 @@ export class Recorder extends ToneAudioNode<RecorderOptions> {
 
 			this._recorder.addEventListener("start", handleStart, false);
 		});
-		if(this.state === "stopped") {
+		if (this.state === "stopped") {
 			this._recorder.start();
 		} else {
 			this._recorder.resume();
