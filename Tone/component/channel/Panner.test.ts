@@ -30,56 +30,53 @@ describe("Panner", () => {
 			});
 		});
 
-		it("pans hard left when the pan is set to -1", () => {
-			return Offline(
+		it("pans hard left when the pan is set to -1", async () => {
+			const buffer = await Offline(
 				() => {
 					const panner = new Panner(-1).toDestination();
 					new Signal(1).connect(panner);
 				},
 				0.1,
 				2
-			).then((buffer) => {
-				const l = buffer.toArray()[0];
-				const r = buffer.toArray()[1];
-				expect(l[0]).to.be.closeTo(1, 0.01);
-				expect(r[0]).to.be.closeTo(0, 0.01);
-			});
+			);
+			const l = buffer.toArray()[0];
+			const r = buffer.toArray()[1];
+			expect(l[0]).to.be.closeTo(1, 0.01);
+			expect(r[0]).to.be.closeTo(0, 0.01);
 		});
 
-		it("pans hard right when the pan is set to 1", () => {
-			return Offline(
+		it("pans hard right when the pan is set to 1", async () => {
+			const buffer = await Offline(
 				() => {
 					const panner = new Panner(1).toDestination();
 					new Signal(1).connect(panner);
 				},
 				0.1,
 				2
-			).then((buffer) => {
-				const l = buffer.toArray()[0];
-				const r = buffer.toArray()[1];
-				expect(l[0]).to.be.closeTo(0, 0.01);
-				expect(r[0]).to.be.closeTo(1, 0.01);
-			});
+			);
+			const l = buffer.toArray()[0];
+			const r = buffer.toArray()[1];
+			expect(l[0]).to.be.closeTo(0, 0.01);
+			expect(r[0]).to.be.closeTo(1, 0.01);
 		});
 
-		it("mixes the signal in equal power when panned center", () => {
-			return Offline(
+		it("mixes the signal in equal power when panned center", async () => {
+			const buffer = await Offline(
 				() => {
 					const panner = new Panner(0).toDestination();
 					new Signal(1).connect(panner);
 				},
 				0.1,
 				2
-			).then((buffer) => {
-				const l = buffer.toArray()[0];
-				const r = buffer.toArray()[1];
-				expect(l[0]).to.be.closeTo(0.707, 0.01);
-				expect(r[0]).to.be.closeTo(0.707, 0.01);
-			});
+			);
+			const l = buffer.toArray()[0];
+			const r = buffer.toArray()[1];
+			expect(l[0]).to.be.closeTo(0.707, 0.01);
+			expect(r[0]).to.be.closeTo(0.707, 0.01);
 		});
 
-		it("can chain two panners when channelCount is 2", () => {
-			return Offline(
+		it("can chain two panners when channelCount is 2", async () => {
+			const buffer = await Offline(
 				() => {
 					const panner1 = new Panner({
 						channelCount: 2,
@@ -89,12 +86,11 @@ describe("Panner", () => {
 				},
 				0.1,
 				2
-			).then((buffer) => {
-				const l = buffer.toArray()[0];
-				const r = buffer.toArray()[1];
-				expect(l[0]).to.be.closeTo(1, 0.01);
-				expect(r[0]).to.be.closeTo(0, 0.01);
-			});
+			);
+			const l = buffer.toArray()[0];
+			const r = buffer.toArray()[1];
+			expect(l[0]).to.be.closeTo(1, 0.01);
+			expect(r[0]).to.be.closeTo(0, 0.01);
 		});
 	});
 });

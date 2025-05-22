@@ -279,20 +279,19 @@ describe("Context", () => {
 			}, 0.01);
 		});
 
-		it("is invoked in the offline context", () => {
+		it("is invoked in the offline context", async () => {
 			let invocationCount = 0;
-			return Offline((context) => {
+			await Offline((context) => {
 				context.setInterval(() => {
 					invocationCount++;
 				}, 0.01);
-			}, 0.051).then(() => {
-				expect(invocationCount).to.equal(4);
-			});
+			}, 0.051);
+			expect(invocationCount).to.equal(4);
 		});
 
-		it("is invoked in with the right interval", () => {
+		it("is invoked with the right interval", async () => {
 			let numberOfInvocations = 0;
-			return Offline((context) => {
+			await Offline((context) => {
 				let intervalTime = context.now();
 				context.setInterval(() => {
 					expect(context.now() - intervalTime).to.be.closeTo(
@@ -302,9 +301,8 @@ describe("Context", () => {
 					intervalTime = context.now();
 					numberOfInvocations++;
 				}, 0.01);
-			}, 0.051).then(() => {
-				expect(numberOfInvocations).to.equal(4);
-			});
+			}, 0.051);
+			expect(numberOfInvocations).to.equal(4);
 		});
 	});
 

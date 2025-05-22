@@ -308,9 +308,9 @@ describe("Param", () => {
 	});
 
 	context("apply", () => {
-		it("can apply a scheduled curve", () => {
+		it("can apply a scheduled curve", async () => {
 			let sig;
-			return Offline((context) => {
+			const buffer = await Offline((context) => {
 				const signal = new Signal();
 				sig = signal;
 				signal.setValueAtTime(0, 0);
@@ -325,20 +325,18 @@ describe("Param", () => {
 				return atTime(0.4, () => {
 					signal.apply(source.offset);
 				});
-			}, 2).then(async (buffer) => {
-				for (let time = 0.41; time < 2; time += 0.1) {
-					expect(buffer.getValueAtTime(time)).to.be.closeTo(
-						sig.getValueAtTime(time),
-						0.01
-					);
-				}
-				document.body.appendChild(await Plot.signal(buffer));
-			});
+			}, 2);
+			for (let time = 0.41; time < 2; time += 0.1) {
+				expect(buffer.getValueAtTime(time)).to.be.closeTo(
+					sig.getValueAtTime(time),
+					0.01
+				);
+			}
 		});
 
-		it("can apply a scheduled curve that starts with a setTargetAtTime", () => {
+		it("can apply a scheduled curve that starts with a setTargetAtTime", async () => {
 			let sig;
-			return Offline((context) => {
+			const buffer = await Offline((context) => {
 				const signal = new Signal();
 				sig = signal;
 				signal.setTargetAtTime(2, 0, 0.2);
@@ -348,20 +346,18 @@ describe("Param", () => {
 				return atTime(0.4, () => {
 					signal.apply(source.offset);
 				});
-			}, 2).then(async (buffer) => {
-				for (let time = 0.41; time < 2; time += 0.1) {
-					expect(buffer.getValueAtTime(time)).to.be.closeTo(
-						sig.getValueAtTime(time),
-						0.05
-					);
-				}
-				// document.body.appendChild(await Plot.signal(buffer));
-			});
+			}, 2);
+			for (let time = 0.41; time < 2; time += 0.1) {
+				expect(buffer.getValueAtTime(time)).to.be.closeTo(
+					sig.getValueAtTime(time),
+					0.05
+				);
+			}
 		});
 
-		it("can apply a scheduled curve that starts with a setTargetAtTime and then schedules other things", () => {
+		it("can apply a scheduled curve that starts with a setTargetAtTime and then schedules other things", async () => {
 			let sig;
-			return Offline((context) => {
+			const buffer = await Offline((context) => {
 				const signal = new Signal();
 				sig = signal;
 				signal.setTargetAtTime(2, 0, 0.2);
@@ -373,19 +369,17 @@ describe("Param", () => {
 				return atTime(0.4, () => {
 					signal.apply(source.offset);
 				});
-			}, 2).then(async (buffer) => {
-				for (let time = 0.41; time < 2; time += 0.1) {
-					expect(buffer.getValueAtTime(time)).to.be.closeTo(
-						sig.getValueAtTime(time),
-						0.05
-					);
-				}
-				// document.body.appendChild(await Plot.signal(buffer));
-			});
+			}, 2);
+			for (let time = 0.41; time < 2; time += 0.1) {
+				expect(buffer.getValueAtTime(time)).to.be.closeTo(
+					sig.getValueAtTime(time),
+					0.05
+				);
+			}
 		});
 
-		it("can set the param if the Param is marked as swappable", () => {
-			return Offline((context) => {
+		it("can set the param if the Param is marked as swappable", async () => {
+			const buffer = await Offline((context) => {
 				const constSource = context.createConstantSource();
 				const param = new Param({
 					swappable: true,
@@ -398,11 +392,10 @@ describe("Param", () => {
 				constSource2.start(0);
 				param.setParam(constSource2.offset);
 				connect(constSource2, context.destination);
-			}, 0.5).then((buffer) => {
-				expect(buffer.getValueAtTime(0.1)).to.be.closeTo(0.1, 0.001);
-				expect(buffer.getValueAtTime(0.2)).to.be.closeTo(0.2, 0.001);
-				expect(buffer.getValueAtTime(0.3)).to.be.closeTo(0.3, 0.001);
-			});
+			}, 0.5);
+			expect(buffer.getValueAtTime(0.1)).to.be.closeTo(0.1, 0.001);
+			expect(buffer.getValueAtTime(0.2)).to.be.closeTo(0.2, 0.001);
+			expect(buffer.getValueAtTime(0.3)).to.be.closeTo(0.3, 0.001);
 		});
 
 		it("throws an error if the param is not set to swappable", () => {

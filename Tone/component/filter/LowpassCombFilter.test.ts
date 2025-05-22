@@ -41,8 +41,8 @@ describe("LowpassCombFilter", () => {
 			});
 		});
 
-		it("produces a decay signal at high resonance", () => {
-			return Offline(() => {
+		it("produces a decay signal at high resonance", async () => {
+			const buffer = await Offline(() => {
 				const lpcf = new LowpassCombFilter(
 					0.01,
 					0.9,
@@ -51,27 +51,25 @@ describe("LowpassCombFilter", () => {
 				const burst = new Oscillator(440).connect(lpcf);
 				burst.start(0);
 				burst.stop(0.1);
-			}, 0.8).then((buffer) => {
-				expect(buffer.getRmsAtTime(0.05)).to.be.within(0.2, 0.6);
-				expect(buffer.getRmsAtTime(0.1)).to.be.within(0.2, 0.6);
-				expect(buffer.getRmsAtTime(0.15)).to.be.within(0.15, 0.4);
-				expect(buffer.getRmsAtTime(0.3)).to.be.within(0.01, 0.15);
-				expect(buffer.getRmsAtTime(0.7)).to.be.below(0.01);
-			});
+			}, 0.8);
+			expect(buffer.getRmsAtTime(0.05)).to.be.within(0.2, 0.6);
+			expect(buffer.getRmsAtTime(0.1)).to.be.within(0.2, 0.6);
+			expect(buffer.getRmsAtTime(0.15)).to.be.within(0.15, 0.4);
+			expect(buffer.getRmsAtTime(0.3)).to.be.within(0.01, 0.15);
+			expect(buffer.getRmsAtTime(0.7)).to.be.below(0.01);
 		});
 
-		it("produces a decay signal at moderate resonance", () => {
-			return Offline(() => {
+		it("produces a decay signal at moderate resonance", async () => {
+			const buffer = await Offline(() => {
 				const lpcf = new LowpassCombFilter(0.05, 0.5).toDestination();
 				const burst = new Oscillator(440).connect(lpcf);
 				burst.start(0);
 				burst.stop(0.1);
-			}, 0.6).then((buffer) => {
-				expect(buffer.getRmsAtTime(0.05)).to.be.closeTo(0.7, 0.1);
-				expect(buffer.getRmsAtTime(0.1)).to.be.within(0.7, 1.1);
-				expect(buffer.getRmsAtTime(0.2)).to.be.closeTo(0.25, 0.1);
-				expect(buffer.getRmsAtTime(0.4)).to.be.closeTo(0.015, 0.01);
-			});
+			}, 0.6);
+			expect(buffer.getRmsAtTime(0.05)).to.be.closeTo(0.7, 0.1);
+			expect(buffer.getRmsAtTime(0.1)).to.be.within(0.7, 1.1);
+			expect(buffer.getRmsAtTime(0.2)).to.be.closeTo(0.25, 0.1);
+			expect(buffer.getRmsAtTime(0.4)).to.be.closeTo(0.015, 0.01);
 		});
 	});
 });

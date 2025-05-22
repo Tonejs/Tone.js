@@ -143,8 +143,8 @@ describe("Signal", () => {
 			expect(buffer.getValueAtTime(1)).to.be.closeTo(0, 0.001);
 		});
 
-		it("can disconnect from all the connected notes", () => {
-			return ConstantOutput((context) => {
+		it("can disconnect from all the connected notes", async () => {
+			await ConstantOutput(async (context) => {
 				const output0 = new Signal(1).toDestination();
 				const output1 = new Signal(1).toDestination();
 				const sig = new Signal(0).connect(output0);
@@ -156,8 +156,8 @@ describe("Signal", () => {
 			}, 0);
 		});
 
-		it("can disconnect from a specific node", () => {
-			return ConstantOutput((context) => {
+		it("can disconnect from a specific node", async () => {
+			await ConstantOutput(async (context) => {
 				const output = new Signal(1).toDestination();
 				const sig = new Signal(0).connect(output);
 				sig.disconnect(output);
@@ -166,8 +166,9 @@ describe("Signal", () => {
 				sig.linearRampToValueAtTime(0, 1);
 			}, 0);
 		});
+
 		it("can schedule multiple automations from a connected signal through a multiple nodes", async () => {
-			const buffer = await Offline(() => {
+			const buffer = await Offline(async () => {
 				const output = new Signal(0).toDestination();
 				const proxy = new Signal(0).connect(output);
 				const gain = new Gain(1).connect(proxy);
@@ -192,6 +193,7 @@ describe("Signal", () => {
 				sig.cancelScheduledValues(0);
 			}, 1);
 		});
+
 		it("can cancel and hold a linear automation curve", async () => {
 			const buffer = await Offline(() => {
 				const sig = new Signal(0).toDestination();
@@ -204,188 +206,164 @@ describe("Signal", () => {
 			expect(buffer.getValueAtTime(0.75)).to.be.closeTo(1, 0.1);
 		});
 
-		it("can cancel and hold an exponential automation curve", () => {
-			return Offline(() => {
+		it("can cancel and hold an exponential automation curve", async () => {
+			const buffer = await Offline(() => {
 				const sig = new Signal(1).toDestination();
 				sig.exponentialRampTo(2, 1);
 				sig.cancelAndHoldAtTime(0.5);
-			}, 1).then((buffer) => {
-				expect(buffer.getValueAtTime(0)).to.be.closeTo(1, 0.1);
-				expect(buffer.getValueAtTime(0.25)).to.be.closeTo(1.2, 0.1);
-				expect(buffer.getValueAtTime(0.5)).to.be.closeTo(1.4, 0.1);
-				expect(buffer.getValueAtTime(0.75)).to.be.closeTo(1.4, 0.1);
-			});
+			}, 1);
+			expect(buffer.getValueAtTime(0)).to.be.closeTo(1, 0.1);
+			expect(buffer.getValueAtTime(0.25)).to.be.closeTo(1.2, 0.1);
+			expect(buffer.getValueAtTime(0.5)).to.be.closeTo(1.4, 0.1);
+			expect(buffer.getValueAtTime(0.75)).to.be.closeTo(1.4, 0.1);
 		});
 
-		it("can set a linear ramp from the current time", () => {
-			return Offline(() => {
+		it("can set a linear ramp from the current time", async () => {
+			const buffer = await Offline(() => {
 				const sig = new Signal(0).toDestination();
 				sig.linearRampTo(2, 0.3);
-			}, 0.5).then((buffer) => {
-				buffer.forEach((sample, time) => {
-					if (time > 0.3) {
-						expect(sample).to.be.closeTo(2, 0.02);
-					}
-				});
+			}, 0.5);
+			buffer.forEach((sample, time) => {
+				if (time > 0.3) {
+					expect(sample).to.be.closeTo(2, 0.02);
+				}
 			});
 		});
 
-		it("can set an linear ramp in the future", () => {
-			return Offline(() => {
+		it("can set an linear ramp in the future", async () => {
+			const buffer = await Offline(() => {
 				const sig = new Signal(1).toDestination();
 				sig.linearRampTo(50, 0.3, 0.2);
-			}, 0.7).then((buffer) => {
-				buffer.forEach((sample, time) => {
-					if (time >= 0.6) {
-						expect(sample).to.be.closeTo(50, 0.5);
-					} else if (time < 0.2) {
-						expect(sample).to.closeTo(1, 0.01);
-					}
-				});
+			}, 0.7);
+			buffer.forEach((sample, time) => {
+				if (time >= 0.6) {
+					expect(sample).to.be.closeTo(50, 0.5);
+				} else if (time < 0.2) {
+					expect(sample).to.closeTo(1, 0.01);
+				}
 			});
 		});
 
-		it("can set a exponential approach ramp from the current time", () => {
-			return Offline(() => {
+		it("can set a exponential approach ramp from the current time", async () => {
+			const buffer = await Offline(() => {
 				const sig = new Signal(0).toDestination();
 				sig.targetRampTo(1, 0.3);
-			}, 0.5).then((buffer) => {
-				expect(buffer.getValueAtTime(0)).to.be.below(0.0001);
-				expect(buffer.getValueAtTime(0.3)).to.be.closeTo(1, 0.02);
-			});
+			}, 0.5);
+			expect(buffer.getValueAtTime(0)).to.be.below(0.0001);
+			expect(buffer.getValueAtTime(0.3)).to.be.closeTo(1, 0.02);
 		});
 
-		it("can set an exponential approach ramp in the future", () => {
-			return Offline(() => {
+		it("can set an exponential approach ramp in the future", async () => {
+			const buffer = await Offline(() => {
 				const sig = new Signal(1).toDestination();
 				sig.targetRampTo(50, 0.3, 0.2);
-			}, 0.7).then((buffer) => {
-				expect(buffer.getValueAtTime(0)).to.be.closeTo(1, 0.0001);
-				expect(buffer.getValueAtTime(0.2)).to.be.closeTo(1, 0.0001);
-				expect(buffer.getValueAtTime(0.6)).to.be.closeTo(50, 0.5);
-			});
+			}, 0.7);
+			expect(buffer.getValueAtTime(0)).to.be.closeTo(1, 0.0001);
+			expect(buffer.getValueAtTime(0.2)).to.be.closeTo(1, 0.0001);
+			expect(buffer.getValueAtTime(0.6)).to.be.closeTo(50, 0.5);
 		});
-		it("can set an exponential ramp from the current time", () => {
-			return Offline(() => {
+
+		it("can set an exponential ramp from the current time", async () => {
+			const buffer = await Offline(() => {
 				const sig = new Signal(1).toDestination();
 				sig.exponentialRampTo(50, 0.4);
-			}, 0.6).then((buffer) => {
-				buffer.forEach((sample, time) => {
-					if (time >= 0.4) {
-						expect(sample).to.be.closeTo(50, 0.5);
-					} else if (time < 0.39) {
-						expect(sample).to.be.lessThan(50);
-					}
-				});
+			}, 0.6);
+			buffer.forEach((sample, time) => {
+				if (time >= 0.4) {
+					expect(sample).to.be.closeTo(50, 0.5);
+				} else if (time < 0.39) {
+					expect(sample).to.be.lessThan(50);
+				}
 			});
 		});
 
-		it("can set an exponential ramp in the future", () => {
-			return Offline(() => {
+		it("can set an exponential ramp in the future", async () => {
+			const buffer = await Offline(() => {
 				const sig = new Signal(1).toDestination();
 				sig.exponentialRampTo(50, 0.3, 0.2);
-			}, 0.8).then((buffer) => {
-				buffer.forEach((sample, time) => {
-					if (time >= 0.6) {
-						expect(sample).to.be.closeTo(50, 0.5);
-					} else if (time < 0.2) {
-						expect(sample).to.equal(1);
-					}
-				});
+			}, 0.8);
+			buffer.forEach((sample, time) => {
+				if (time >= 0.6) {
+					expect(sample).to.be.closeTo(50, 0.5);
+				} else if (time < 0.2) {
+					expect(sample).to.equal(1);
+				}
 			});
 		});
 
-		it("rampTo ramps from the current value", () => {
-			return Offline(() => {
+		it("rampTo ramps from the current value", async () => {
+			const buffer = await Offline(() => {
 				const sig = new Signal(3).toDestination();
 				sig.rampTo(0.2, 0.1);
-			}, 0.4).then((buffer) => {
-				buffer.forEach((sample, time) => {
-					if (time >= 0.1) {
-						expect(sample).to.be.closeTo(0.2, 0.1);
-					} else {
-						expect(sample).to.be.greaterThan(0.2);
-					}
-				});
+			}, 0.4);
+			buffer.forEach((sample, time) => {
+				if (time >= 0.1) {
+					expect(sample).to.be.closeTo(0.2, 0.1);
+				} else {
+					expect(sample).to.be.greaterThan(0.2);
+				}
 			});
 		});
 
-		it("rampTo ramps from the current value at a specific time", () => {
-			return Offline(() => {
+		it("rampTo ramps from the current value at a specific time", async () => {
+			const buffer = await Offline(() => {
 				const sig = new Signal(0).toDestination();
 				sig.rampTo(2, 0.1, 0.4);
-			}, 0.6).then((buffer) => {
-				buffer.forEach((sample, time) => {
-					if (time < 0.4) {
-						expect(sample).to.be.closeTo(0, 0.1);
-					} else if (time > 0.5) {
-						expect(sample).to.be.closeTo(2, 0.1);
-					}
-				});
+			}, 0.6);
+			buffer.forEach((sample, time) => {
+				if (time < 0.4) {
+					expect(sample).to.be.closeTo(0, 0.1);
+				} else if (time > 0.5) {
+					expect(sample).to.be.closeTo(2, 0.1);
+				}
 			});
 		});
 
-		it("can set a value curve", () => {
-			return Offline(() => {
+		it("can set a value curve", async () => {
+			const buffer = await Offline(() => {
 				const sig = new Signal(0).toDestination();
 				sig.setValueCurveAtTime([0, 1, 0.5, 0.2], 0, 1);
-			}, 1).then((buffer) => {
-				expect(buffer.getValueAtTime(0)).to.be.closeTo(0, 0.01);
-				expect(buffer.getValueAtTime(0.33 / 2)).to.be.closeTo(
-					0.5,
-					0.01
-				);
-				expect(buffer.getValueAtTime(0.33)).to.be.closeTo(1, 0.02);
-				expect(buffer.getValueAtTime(0.66)).to.be.closeTo(0.5, 0.02);
-				expect(buffer.getValueAtTime(0.99)).to.be.closeTo(0.2, 0.02);
-			});
+			}, 1);
+			expect(buffer.getValueAtTime(0)).to.be.closeTo(0, 0.01);
+			expect(buffer.getValueAtTime(0.33 / 2)).to.be.closeTo(0.5, 0.01);
+			expect(buffer.getValueAtTime(0.33)).to.be.closeTo(1, 0.02);
+			expect(buffer.getValueAtTime(0.66)).to.be.closeTo(0.5, 0.02);
+			expect(buffer.getValueAtTime(0.99)).to.be.closeTo(0.2, 0.02);
 		});
 
-		it("can set a value curve in the future", () => {
-			return Offline(() => {
+		it("can set a value curve in the future", async () => {
+			const buffer = await Offline(() => {
 				const sig = new Signal(0).toDestination();
 				sig.setValueCurveAtTime([0, 1, 0.5, 0.2], 0.5, 1);
-			}, 1.5).then((buffer) => {
-				expect(buffer.getValueAtTime(0 + 0.5)).to.be.closeTo(0, 0.01);
-				expect(buffer.getValueAtTime(0.33 / 2 + 0.5)).to.be.closeTo(
-					0.5,
-					0.01
-				);
-				expect(buffer.getValueAtTime(0.33 + 0.5)).to.be.closeTo(
-					1,
-					0.02
-				);
-				expect(buffer.getValueAtTime(0.66 + 0.5)).to.be.closeTo(
-					0.5,
-					0.02
-				);
-				expect(buffer.getValueAtTime(0.99 + 0.5)).to.be.closeTo(
-					0.2,
-					0.02
-				);
-			});
+			}, 1.5);
+			expect(buffer.getValueAtTime(0 + 0.5)).to.be.closeTo(0, 0.01);
+			expect(buffer.getValueAtTime(0.33 / 2 + 0.5)).to.be.closeTo(
+				0.5,
+				0.01
+			);
+			expect(buffer.getValueAtTime(0.33 + 0.5)).to.be.closeTo(1, 0.02);
+			expect(buffer.getValueAtTime(0.66 + 0.5)).to.be.closeTo(0.5, 0.02);
+			expect(buffer.getValueAtTime(0.99 + 0.5)).to.be.closeTo(0.2, 0.02);
 		});
 
-		it("can set an exponential approach", () => {
-			return Offline(() => {
+		it("can set an exponential approach", async () => {
+			const buffer = await Offline(() => {
 				const sig = new Signal(0).toDestination();
 				sig.exponentialApproachValueAtTime(2, 0.1, 0.5);
-			}, 1).then((buffer) => {
-				expect(buffer.getValueAtTime(0)).to.be.closeTo(0, 0.01);
-				expect(buffer.getValueAtTime(0.1)).to.be.closeTo(0, 0.01);
-				expect(buffer.getValueAtTime(0.4)).to.be.closeTo(1.9, 0.1);
-				expect(buffer.getValueAtTime(0.6)).to.be.closeTo(2, 0.01);
-			});
+			}, 1);
+			expect(buffer.getValueAtTime(0)).to.be.closeTo(0, 0.01);
+			expect(buffer.getValueAtTime(0.1)).to.be.closeTo(0, 0.01);
+			expect(buffer.getValueAtTime(0.4)).to.be.closeTo(1.9, 0.1);
+			expect(buffer.getValueAtTime(0.6)).to.be.closeTo(2, 0.01);
 		});
 
-		it("can set a target at time", () => {
-			return Offline(() => {
+		it("can set a target at time", async () => {
+			const buffer = await Offline(() => {
 				const sig = new Signal(0).toDestination();
 				sig.setTargetAtTime(2, 0.1, 0.1);
-			}, 1).then((buffer) => {
-				expect(buffer.getValueAtTime(0)).to.be.closeTo(0, 0.01);
-				expect(buffer.getValueAtTime(0.6)).to.be.closeTo(2, 0.1);
-			});
+			}, 1);
+			expect(buffer.getValueAtTime(0)).to.be.closeTo(0, 0.01);
+			expect(buffer.getValueAtTime(0.6)).to.be.closeTo(2, 0.1);
 		});
 	});
 
@@ -507,20 +485,19 @@ describe("Signal", () => {
 			}, 0);
 		});
 
-		it("can ramp along with the bpm", () => {
-			return Offline(({ transport }) => {
+		it("can ramp along with the bpm", async () => {
+			const buffer = await Offline(({ transport }) => {
 				transport.bpm.value = 120;
 				const sig = new Signal(2).toDestination();
 				transport.syncSignal(sig);
 				transport.bpm.rampTo(240, 0.5);
-			}).then((buffer) => {
-				buffer.forEach((sample, time) => {
-					if (time >= 0.5) {
-						expect(sample).to.be.closeTo(4, 0.04);
-					} else if (time < 0.4) {
-						expect(sample).to.be.within(1.95, 3);
-					}
-				});
+			});
+			buffer.forEach((sample, time) => {
+				if (time >= 0.5) {
+					expect(sample).to.be.closeTo(4, 0.04);
+				} else if (time < 0.4) {
+					expect(sample).to.be.within(1.95, 3);
+				}
 			});
 		});
 

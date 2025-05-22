@@ -86,30 +86,28 @@ describe("AutoFilter", () => {
 			autoFilter.dispose();
 		});
 
-		it("can sync the frequency to the transport", () => {
-			return Offline(({ transport }) => {
+		it("can sync the frequency to the transport", async () => {
+			const buffer = await Offline(({ transport }) => {
 				const autoFilter = new AutoFilter(2);
 				autoFilter.sync();
 				autoFilter.frequency.toDestination();
 				transport.bpm.setValueAtTime(transport.bpm.value * 2, 0.05);
 				// transport.start(0)
-			}, 0.1).then((buffer) => {
-				expect(buffer.getValueAtTime(0)).to.be.closeTo(2, 0.1);
-				expect(buffer.getValueAtTime(0.05)).to.be.closeTo(4, 0.1);
-			});
+			}, 0.1);
+			expect(buffer.getValueAtTime(0)).to.be.closeTo(2, 0.1);
+			expect(buffer.getValueAtTime(0.05)).to.be.closeTo(4, 0.1);
 		});
 
-		it("can unsync the frequency to the transport", () => {
-			return Offline(({ transport }) => {
+		it("can unsync the frequency to the transport", async () => {
+			const buffer = await Offline(({ transport }) => {
 				const autoFilter = new AutoFilter(2);
 				autoFilter.sync();
 				autoFilter.frequency.toDestination();
 				transport.bpm.setValueAtTime(transport.bpm.value * 2, 0.05);
 				autoFilter.unsync();
-			}, 0.1).then((buffer) => {
-				expect(buffer.getValueAtTime(0)).to.be.closeTo(2, 0.1);
-				expect(buffer.getValueAtTime(0.05)).to.be.closeTo(2, 0.1);
-			});
+			}, 0.1);
+			expect(buffer.getValueAtTime(0)).to.be.closeTo(2, 0.1);
+			expect(buffer.getValueAtTime(0.05)).to.be.closeTo(2, 0.1);
 		});
 	});
 });

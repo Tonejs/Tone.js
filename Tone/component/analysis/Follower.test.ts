@@ -28,74 +28,70 @@ describe("Follower", () => {
 			follower.dispose();
 		});
 
-		it("smooths the incoming signal at 0.1", () => {
-			return Offline(() => {
+		it("smooths the incoming signal at 0.1", async () => {
+			const buffer = await Offline(() => {
 				const foll = new Follower(0.1).toDestination();
 				const sig = new Signal(0);
 				sig.connect(foll);
 				sig.setValueAtTime(1, 0.1);
 				sig.setValueAtTime(0, 0.3);
-			}, 0.41).then((buffer) => {
-				expect(buffer.getValueAtTime(0)).to.be.closeTo(0, 0.01);
-				expect(buffer.getValueAtTime(0.1)).to.be.closeTo(0.0, 0.01);
-				expect(buffer.getValueAtTime(0.15)).to.be.closeTo(0.95, 0.05);
-				expect(buffer.getValueAtTime(0.2)).to.be.closeTo(1, 0.01);
-				expect(buffer.getValueAtTime(0.3)).to.be.closeTo(1, 0.01);
-				expect(buffer.getValueAtTime(0.35)).to.be.closeTo(0.05, 0.05);
-				expect(buffer.getValueAtTime(0.4)).to.be.closeTo(0, 0.01);
-			});
+			}, 0.41);
+			expect(buffer.getValueAtTime(0)).to.be.closeTo(0, 0.01);
+			expect(buffer.getValueAtTime(0.1)).to.be.closeTo(0.0, 0.01);
+			expect(buffer.getValueAtTime(0.15)).to.be.closeTo(0.95, 0.05);
+			expect(buffer.getValueAtTime(0.2)).to.be.closeTo(1, 0.01);
+			expect(buffer.getValueAtTime(0.3)).to.be.closeTo(1, 0.01);
+			expect(buffer.getValueAtTime(0.35)).to.be.closeTo(0.05, 0.05);
+			expect(buffer.getValueAtTime(0.4)).to.be.closeTo(0, 0.01);
 		});
 
-		it("smooths the incoming signal at 0.05", () => {
-			return Offline(() => {
+		it("smooths the incoming signal at 0.05", async () => {
+			const buffer = await Offline(() => {
 				const foll = new Follower(0.05).toDestination();
 				const sig = new Signal(0);
 				sig.connect(foll);
 				sig.setValueAtTime(1, 0.1);
 				sig.setValueAtTime(0, 0.3);
-			}, 0.41).then((buffer) => {
-				expect(buffer.getValueAtTime(0)).to.be.closeTo(0, 0.01);
-				expect(buffer.getValueAtTime(0.1)).to.be.closeTo(0.0, 0.01);
-				expect(buffer.getValueAtTime(0.125)).to.be.closeTo(0.95, 0.05);
-				expect(buffer.getValueAtTime(0.15)).to.be.closeTo(1, 0.01);
-				expect(buffer.getValueAtTime(0.3)).to.be.closeTo(1, 0.01);
-				expect(buffer.getValueAtTime(0.325)).to.be.closeTo(0.05, 0.05);
-				expect(buffer.getValueAtTime(0.35)).to.be.closeTo(0, 0.01);
-			});
+			}, 0.41);
+			expect(buffer.getValueAtTime(0)).to.be.closeTo(0, 0.01);
+			expect(buffer.getValueAtTime(0.1)).to.be.closeTo(0.0, 0.01);
+			expect(buffer.getValueAtTime(0.125)).to.be.closeTo(0.95, 0.05);
+			expect(buffer.getValueAtTime(0.15)).to.be.closeTo(1, 0.01);
+			expect(buffer.getValueAtTime(0.3)).to.be.closeTo(1, 0.01);
+			expect(buffer.getValueAtTime(0.325)).to.be.closeTo(0.05, 0.05);
+			expect(buffer.getValueAtTime(0.35)).to.be.closeTo(0, 0.01);
 		});
 
-		it("smooths the incoming signal at 0.2", () => {
-			return Offline(() => {
+		it("smooths the incoming signal at 0.2", async () => {
+			const buffer = await Offline(() => {
 				const foll = new Follower(0.2).toDestination();
 				const sig = new Signal(0);
 				sig.connect(foll);
 				sig.setValueAtTime(1, 0.1);
 				sig.setValueAtTime(0, 0.3);
-			}, 0.51).then((buffer) => {
-				expect(buffer.getValueAtTime(0)).to.be.closeTo(0, 0.01);
-				expect(buffer.getValueAtTime(0.1)).to.be.closeTo(0.0, 0.01);
-				expect(buffer.getValueAtTime(0.2)).to.be.closeTo(0.95, 0.05);
-				expect(buffer.getValueAtTime(0.3)).to.be.closeTo(1, 0.01);
-				expect(buffer.getValueAtTime(0.4)).to.be.closeTo(0.05, 0.05);
-				expect(buffer.getValueAtTime(0.5)).to.be.closeTo(0, 0.01);
-			});
+			}, 0.51);
+			expect(buffer.getValueAtTime(0)).to.be.closeTo(0, 0.01);
+			expect(buffer.getValueAtTime(0.1)).to.be.closeTo(0.0, 0.01);
+			expect(buffer.getValueAtTime(0.2)).to.be.closeTo(0.95, 0.05);
+			expect(buffer.getValueAtTime(0.3)).to.be.closeTo(1, 0.01);
+			expect(buffer.getValueAtTime(0.4)).to.be.closeTo(0.05, 0.05);
+			expect(buffer.getValueAtTime(0.5)).to.be.closeTo(0, 0.01);
 		});
 
-		it("smooths the incoming signal at 0.5", () => {
-			return Offline(() => {
+		it("smooths the incoming signal at 0.5", async () => {
+			const buffer = await Offline(() => {
 				const foll = new Follower(0.5).toDestination();
 				const sig = new Signal(0);
 				sig.connect(foll);
 				sig.setValueAtTime(1, 0.1);
 				sig.setValueAtTime(0, 0.6);
-			}, 1.11).then((buffer) => {
-				expect(buffer.getValueAtTime(0)).to.be.closeTo(0, 0.01);
-				expect(buffer.getValueAtTime(0.1)).to.be.closeTo(0.0, 0.01);
-				expect(buffer.getValueAtTime(0.35)).to.be.closeTo(0.95, 0.05);
-				expect(buffer.getValueAtTime(0.6)).to.be.closeTo(1, 0.01);
-				expect(buffer.getValueAtTime(0.85)).to.be.closeTo(0.05, 0.05);
-				expect(buffer.getValueAtTime(1.1)).to.be.closeTo(0, 0.01);
-			});
+			}, 1.11);
+			expect(buffer.getValueAtTime(0)).to.be.closeTo(0, 0.01);
+			expect(buffer.getValueAtTime(0.1)).to.be.closeTo(0.0, 0.01);
+			expect(buffer.getValueAtTime(0.35)).to.be.closeTo(0.95, 0.05);
+			expect(buffer.getValueAtTime(0.6)).to.be.closeTo(1, 0.01);
+			expect(buffer.getValueAtTime(0.85)).to.be.closeTo(0.05, 0.05);
+			expect(buffer.getValueAtTime(1.1)).to.be.closeTo(0, 0.01);
 		});
 
 		it("passes the incoming signal through", () => {

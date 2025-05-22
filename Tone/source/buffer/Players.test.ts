@@ -150,8 +150,8 @@ describe("Players", () => {
 
 		it("can add a player with an unloaded ToneAudioBuffer", (done) => {
 			const players = new Players();
-			const buffer2 = new ToneAudioBuffer("./test/audio/sine.wav");
-			players.add("test", buffer2, () => {
+			const output = new ToneAudioBuffer("./test/audio/sine.wav");
+			players.add("test", output, () => {
 				expect(players.has("test")).to.be.true;
 				expect(players.player("test").loaded).to.be.true;
 				players.dispose();
@@ -169,52 +169,48 @@ describe("Players", () => {
 				players.player("test").start(0);
 			});
 		});
-
-		it("can be muted", () => {
-			return Offline(() => {
+		it("can be muted", async () => {
+			const output = await Offline(() => {
 				const players = new Players({
 					test: buffer,
 				}).toDestination();
 				players.player("test").start(0);
 				players.mute = true;
 				expect(players.mute).to.be.true;
-			}, 0.3).then((buffer2) => {
-				expect(buffer2.isSilent()).to.be.true;
-			});
+			}, 0.3);
+			expect(output.isSilent()).to.be.true;
 		});
 
-		it("be scheduled to start in the future", () => {
-			return Offline(() => {
+		it("be scheduled to start in the future", async () => {
+			const output = await Offline(() => {
 				const players = new Players({
 					test: buffer,
 				}).toDestination();
 				players.player("test").start(0.1);
-			}, 0.3).then((buffer2) => {
-				buffer2.forEach((sample, time) => {
-					if (sample > 0) {
-						expect(time).to.be.at.least(0.099);
-					}
-				});
+			}, 0.3);
+			output.forEach((sample, time) => {
+				if (sample > 0) {
+					expect(time).to.be.at.least(0.099);
+				}
 			});
 		});
 
-		it("be scheduled to stop in the future", () => {
-			return Offline(() => {
+		it("be scheduled to stop in the future", async () => {
+			const output = await Offline(() => {
 				const players = new Players({
 					test: buffer,
 				}).toDestination();
 				players.player("test").start(0).stop(0.2);
-			}, 0.3).then((buffer2) => {
-				buffer2.forEach((sample, time) => {
-					if (time > 0.2) {
-						expect(sample).to.equal(0);
-					}
-				});
+			}, 0.3);
+			output.forEach((sample, time) => {
+				if (time > 0.2) {
+					expect(sample).to.equal(0);
+				}
 			});
 		});
 
-		it("if any of the players are playing, reports state as 'started'", () => {
-			return Offline(() => {
+		it("if any of the players are playing, reports state as 'started'", async () => {
+			await Offline(() => {
 				const players = new Players({
 					test0: buffer,
 					test1: buffer,
@@ -231,8 +227,8 @@ describe("Players", () => {
 			}, 0.2);
 		});
 
-		it("can start multiple samples", () => {
-			return OutputAudio(() => {
+		it("can start multiple samples", async () => {
+			await OutputAudio(() => {
 				const players = new Players({
 					test0: buffer,
 					test1: buffer,
@@ -242,8 +238,8 @@ describe("Players", () => {
 			});
 		});
 
-		it("can stop all of the samples in the future", () => {
-			return Offline(() => {
+		it("can stop all of the samples in the future", async () => {
+			const output = await Offline(() => {
 				const players = new Players({
 					test0: buffer,
 					test1: buffer,
@@ -251,17 +247,16 @@ describe("Players", () => {
 				players.player("test0").start(0);
 				players.player("test1").start(0);
 				players.stopAll(0.2);
-			}, 0.3).then((buffer2) => {
-				buffer2.forEach((sample, time) => {
-					if (time > 0.2) {
-						expect(sample).to.equal(0);
-					}
-				});
+			}, 0.3);
+			output.forEach((sample, time) => {
+				if (time > 0.2) {
+					expect(sample).to.equal(0);
+				}
 			});
 		});
 
-		it("fades in and out correctly", () => {
-			return Offline(() => {
+		it("fades in and out correctly", async () => {
+			const output = await Offline(() => {
 				const onesArray = new Float32Array(
 					getContext().sampleRate * 0.5
 				);
@@ -279,18 +274,17 @@ describe("Players", () => {
 					}
 				).toDestination();
 				players.player("test").start(0);
-			}, 0.6).then((buffer2) => {
-				buffer2.forEach((sample, time) => {
-					if (time < 0.1) {
-						expect(sample).to.be.within(0, 1);
-					} else if (time < 0.4) {
-						expect(sample).to.equal(1);
-					} else if (time < 0.5) {
-						expect(sample).to.be.within(0, 1);
-					} else {
-						expect(sample).to.equal(0);
-					}
-				});
+			}, 0.6);
+			output.forEach((sample, time) => {
+				if (time < 0.1) {
+					expect(sample).to.be.within(0, 1);
+				} else if (time < 0.4) {
+					expect(sample).to.equal(1);
+				} else if (time < 0.5) {
+					expect(sample).to.be.within(0, 1);
+				} else {
+					expect(sample).to.equal(0);
+				}
 			});
 		});
 	});

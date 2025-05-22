@@ -59,7 +59,9 @@ export abstract class ToneAudioWorklet<
 		this._dummyParam = this._dummyGain.gain;
 
 		// Register the processor
-		let workletPromise = ToneAudioWorklet._workletPromises.get(this.context);
+		let workletPromise = ToneAudioWorklet._workletPromises.get(
+			this.context
+		);
 
 		if (workletPromise === undefined) {
 			workletPromise = this.context.addAudioWorkletModule(blobUrl);

@@ -49,41 +49,39 @@ describe("Oscillator", () => {
 	});
 
 	context("Phase Rotation", () => {
-		it("can change the phase to 90", () => {
-			return Offline(() => {
+		it("can change the phase to 90", async () => {
+			const buffer = await Offline(() => {
 				const instance = new Oscillator({
 					frequency: 1,
 					phase: 90,
 				});
 				instance.toDestination();
 				instance.start(0);
-			}, 1).then((buffer) => {
-				buffer.forEach((sample, time) => {
-					if (time < 0.25) {
-						expect(sample).to.be.within(-1, 0);
-					} else if (time > 0.25 && time < 0.5) {
-						expect(sample).to.be.within(0, 1);
-					}
-				});
+			}, 1);
+			buffer.forEach((sample, time) => {
+				if (time < 0.25) {
+					expect(sample).to.be.within(-1, 0);
+				} else if (time > 0.25 && time < 0.5) {
+					expect(sample).to.be.within(0, 1);
+				}
 			});
 		});
 
-		it("can change the phase to -90", () => {
-			return Offline(() => {
+		it("can change the phase to -90", async () => {
+			const buffer = await Offline(() => {
 				const instance = new Oscillator({
 					frequency: 1,
 					phase: 270,
 				});
 				instance.toDestination();
 				instance.start(0);
-			}, 1).then((buffer) => {
-				buffer.forEach((sample, time) => {
-					if (time < 0.25) {
-						expect(sample).to.be.within(0, 1);
-					} else if (time > 0.25 && time < 0.5) {
-						expect(sample).to.be.within(-1, 0);
-					}
-				});
+			}, 1);
+			buffer.forEach((sample, time) => {
+				if (time < 0.25) {
+					expect(sample).to.be.within(0, 1);
+				} else if (time > 0.25 && time < 0.5) {
+					expect(sample).to.be.within(-1, 0);
+				}
 			});
 		});
 
@@ -225,29 +223,27 @@ describe("Oscillator", () => {
 	});
 
 	context("Synchronization", () => {
-		it("can sync the frequency to the Transport", () => {
-			return Offline(({ transport }) => {
+		it("can unsync the frequency from the Transport", async () => {
+			const buffer = await Offline(({ transport }) => {
 				transport.bpm.value = 120;
 				const osc = new Oscillator(2);
 				osc.frequency.toDestination();
 				osc.syncFrequency();
 				transport.bpm.value = 240;
-			}).then((buffer) => {
-				expect(buffer.value()).to.be.closeTo(4, 0.001);
 			});
+			expect(buffer.value()).to.be.closeTo(4, 0.001);
 		});
 
-		it("can unsync the frequency from the Transport", () => {
-			return Offline(({ transport }) => {
+		it("can sync the frequency to the Transport", async () => {
+			const buffer = await Offline(({ transport }) => {
 				transport.bpm.value = 120;
 				const osc = new Oscillator(2);
 				osc.frequency.toDestination();
 				osc.syncFrequency();
 				transport.bpm.value = 240;
 				osc.unsyncFrequency();
-			}).then((buffer) => {
-				expect(buffer.value()).to.be.closeTo(2, 0.001);
 			});
+			expect(buffer.value()).to.be.closeTo(2, 0.001);
 		});
 	});
 

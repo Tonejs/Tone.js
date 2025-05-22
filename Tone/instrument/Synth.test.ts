@@ -87,17 +87,16 @@ describe("Synth", () => {
 			simple.dispose();
 		});
 
-		it("can be trigged with a Tone.Frequency", () => {
-			return Offline(() => {
+		it("can be trigged with a Tone.Frequency", async () => {
+			const buffer = await Offline(() => {
 				const synth = new Synth().toDestination();
 				synth.triggerAttack(Frequency("C4"), 0);
-			}).then((buffer) => {
-				expect(buffer.isSilent()).to.be.false;
 			});
+			expect(buffer.isSilent()).to.be.false;
 		});
 
-		it("is silent after triggerAttack if sustain is 0", () => {
-			return Offline(() => {
+		it("is silent after triggerAttack if sustain is 0", async () => {
+			const buffer = await Offline(() => {
 				const synth = new Synth({
 					envelope: {
 						attack: 0.1,
@@ -106,25 +105,23 @@ describe("Synth", () => {
 					},
 				}).toDestination();
 				synth.triggerAttack("C4", 0);
-			}, 0.5).then((buffer) => {
-				expect(buffer.getTimeOfLastSound()).to.be.closeTo(0.2, 0.01);
-			});
+			}, 0.5);
+			expect(buffer.getTimeOfLastSound()).to.be.closeTo(0.2, 0.01);
 		});
 	});
 
 	context("Transport sync", () => {
-		it("is silent until the transport is started", () => {
-			return Offline(({ transport }) => {
+		it("is silent until the transport is started", async () => {
+			const buffer = await Offline(({ transport }) => {
 				const synth = new Synth().sync().toDestination();
 				synth.triggerAttackRelease("C4", 0.5);
 				transport.start(0.5);
-			}, 1).then((buffer) => {
-				expect(buffer.getTimeOfFirstSound()).is.closeTo(0.5, 0.1);
-			});
+			}, 1);
+			expect(buffer.getTimeOfFirstSound()).is.closeTo(0.5, 0.1);
 		});
 
-		it("stops when the transport is stopped", () => {
-			return Offline(({ transport }) => {
+		it("stops when the transport is stopped", async () => {
+			const buffer = await Offline(({ transport }) => {
 				const synth = new Synth({
 					envelope: {
 						release: 0,
@@ -134,13 +131,12 @@ describe("Synth", () => {
 					.toDestination();
 				synth.triggerAttackRelease("C4", 0.5);
 				transport.start(0.5).stop(1);
-			}, 1.5).then((buffer) => {
-				expect(buffer.getTimeOfLastSound()).is.closeTo(1, 0.1);
-			});
+			}, 1.5);
+			expect(buffer.getTimeOfLastSound()).is.closeTo(1, 0.1);
 		});
 
-		it("goes silent at the loop boundary", () => {
-			return Offline(({ transport }) => {
+		it("goes silent at the loop boundary", async () => {
+			const buffer = await Offline(({ transport }) => {
 				const synth = new Synth({
 					envelope: {
 						release: 0,
@@ -152,16 +148,15 @@ describe("Synth", () => {
 				transport.loopEnd = 1;
 				transport.loop = true;
 				transport.start();
-			}, 2).then((buffer) => {
-				expect(buffer.getRmsAtTime(0)).to.be.closeTo(0, 0.05);
-				expect(buffer.getRmsAtTime(0.6)).to.be.closeTo(0.2, 0.05);
-				expect(buffer.getRmsAtTime(1.1)).to.be.closeTo(0, 0.05);
-				expect(buffer.getRmsAtTime(1.6)).to.be.closeTo(0.2, 0.05);
-			});
+			}, 2);
+			expect(buffer.getRmsAtTime(0)).to.be.closeTo(0, 0.05);
+			expect(buffer.getRmsAtTime(0.6)).to.be.closeTo(0.2, 0.05);
+			expect(buffer.getRmsAtTime(1.1)).to.be.closeTo(0, 0.05);
+			expect(buffer.getRmsAtTime(1.6)).to.be.closeTo(0.2, 0.05);
 		});
 
-		it("can unsync", () => {
-			return Offline(({ transport }) => {
+		it("can unsync", async () => {
+			const buffer = await Offline(({ transport }) => {
 				const synth = new Synth({
 					envelope: {
 						sustain: 1,
@@ -173,18 +168,17 @@ describe("Synth", () => {
 					.unsync();
 				synth.triggerAttackRelease("C4", 1, 0.5);
 				transport.start().stop(1);
-			}, 2).then((buffer) => {
-				expect(buffer.getRmsAtTime(0)).to.be.closeTo(0, 0.05);
-				expect(buffer.getRmsAtTime(0.6)).to.be.closeTo(0.6, 0.05);
-				expect(buffer.getRmsAtTime(1.4)).to.be.closeTo(0.6, 0.05);
-				expect(buffer.getRmsAtTime(1.6)).to.be.closeTo(0, 0.05);
-			});
+			}, 2);
+			expect(buffer.getRmsAtTime(0)).to.be.closeTo(0, 0.05);
+			expect(buffer.getRmsAtTime(0.6)).to.be.closeTo(0.6, 0.05);
+			expect(buffer.getRmsAtTime(1.4)).to.be.closeTo(0.6, 0.05);
+			expect(buffer.getRmsAtTime(1.6)).to.be.closeTo(0, 0.05);
 		});
 	});
 
 	context("Portamento", () => {
-		it("can play notes with a portamento", () => {
-			return Offline(() => {
+		it("can play notes with a portamento", async () => {
+			const buffer = await Offline(() => {
 				const synth = new Synth({
 					portamento: 0.1,
 				});
@@ -192,16 +186,15 @@ describe("Synth", () => {
 				synth.frequency.toDestination();
 				synth.triggerAttack(440, 0);
 				synth.triggerAttack(880, 0.1);
-			}, 0.2).then((buffer) => {
-				buffer.forEach((val, time) => {
-					if (time < 0.1) {
-						expect(val).to.be.closeTo(440, 1);
-					} else if (time < 0.2) {
-						expect(val).to.within(440, 880);
-					} else {
-						expect(val).to.be.closeTo(880, 1);
-					}
-				});
+			}, 0.2);
+			buffer.forEach((val, time) => {
+				if (time < 0.1) {
+					expect(val).to.be.closeTo(440, 1);
+				} else if (time < 0.2) {
+					expect(val).to.within(440, 880);
+				} else {
+					expect(val).to.be.closeTo(880, 1);
+				}
 			});
 		});
 	});

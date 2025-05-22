@@ -74,23 +74,21 @@ describe("AmplitudeEnvelope", () => {
 			ampEnv.dispose();
 		});
 
-		it("passes no signal before being triggered", () => {
-			return Offline(() => {
+		it("passes no signal before being triggered", async () => {
+			const buffer = await Offline(() => {
 				const ampEnv = new AmplitudeEnvelope().toDestination();
 				new Signal(1).connect(ampEnv);
-			}).then((buffer) => {
-				expect(buffer.isSilent()).to.be.true;
 			});
+			expect(buffer.isSilent()).to.be.true;
 		});
 
-		it("passes signal once triggered", () => {
-			return Offline(() => {
+		it("passes signal once triggered", async () => {
+			const buffer = await Offline(() => {
 				const ampEnv = new AmplitudeEnvelope().toDestination();
 				new Signal(1).connect(ampEnv);
 				ampEnv.triggerAttack(0.1);
-			}, 0.2).then((buffer) => {
-				expect(buffer.getTimeOfFirstSound()).to.be.closeTo(0.1, 0.001);
-			});
+			}, 0.2);
+			expect(buffer.getTimeOfFirstSound()).to.be.closeTo(0.1, 0.001);
 		});
 	});
 });

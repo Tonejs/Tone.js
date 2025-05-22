@@ -46,28 +46,24 @@ describe("Gate", () => {
 			gate.dispose();
 		});
 
-		it("gates the incoming signal when below the threshold", () => {
-			return Offline(() => {
+		it("gates the incoming signal when below the threshold", async () => {
+			const buffer = await Offline(() => {
 				const gate = new Gate(-9);
 				const sig = new Signal(-12, "decibels");
 				sig.connect(gate);
 				gate.toDestination();
-			}).then((buffer) => {
-				expect(buffer.isSilent()).to.be.true;
 			});
+			expect(buffer.isSilent()).to.be.true;
 		});
 
-		it("passes the incoming signal when above the threshold", () => {
-			it("gates the incoming signal when below the threshold", () => {
-				return Offline(() => {
-					const gate = new Gate(-11);
-					const sig = new Signal(-10, "decibels");
-					sig.connect(gate);
-					gate.toDestination();
-				}).then((buffer) => {
-					expect(buffer.min()).to.be.above(0);
-				});
+		it("passes the incoming signal when above the threshold", async () => {
+			const buffer = await Offline(() => {
+				const gate = new Gate(-11);
+				const sig = new Signal(-10, "decibels");
+				sig.connect(gate);
+				gate.toDestination();
 			});
+			expect(buffer.min()).to.be.above(0);
 		});
 	});
 });

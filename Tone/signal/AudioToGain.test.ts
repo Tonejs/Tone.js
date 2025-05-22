@@ -11,16 +11,15 @@ import { Zero } from "./Zero.js";
 describe("AudioToGain", () => {
 	BasicTests(AudioToGain);
 
-	it("normalizes an oscillator to 0,1", () => {
-		return Offline(() => {
+	it("normalizes an oscillator to 0,1", async () => {
+		const buffer = await Offline(() => {
 			const osc = new Oscillator(1000).start();
 			const a2g = new AudioToGain();
 			osc.connect(a2g);
 			a2g.toDestination();
-		}).then((buffer) => {
-			expect(buffer.min()).to.be.closeTo(0, 0.01);
-			expect(buffer.max()).to.be.closeTo(1, 0.01);
 		});
+		expect(buffer.min()).to.be.closeTo(0, 0.01);
+		expect(buffer.max()).to.be.closeTo(1, 0.01);
 	});
 
 	it("outputs 0.5 for an input value of 0", () => {

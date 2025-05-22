@@ -42,14 +42,13 @@ describe("PanVol", () => {
 			});
 		});
 
-		it("can mute the volume", () => {
-			return Offline(() => {
+		it("can mute the volume", async () => {
+			const buffer = await Offline(() => {
 				const vol = new PanVol(0).toDestination();
 				new Signal(1).connect(vol);
 				vol.mute = true;
-			}).then((buffer) => {
-				expect(buffer.isSilent()).to.be.true;
 			});
+			expect(buffer.isSilent()).to.be.true;
 		});
 	});
 });

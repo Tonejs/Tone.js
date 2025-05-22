@@ -65,62 +65,57 @@ describe("LFO", () => {
 			});
 		});
 
-		it("can be creates an oscillation in a specific range", () => {
-			return Offline(() => {
+		it("can be creates an oscillation in a specific range", async () => {
+			const buffer = await Offline(() => {
 				const lfo = new LFO(100, 10, 20).toDestination();
 				lfo.start();
-			}).then((buffer) => {
-				expect(buffer.min()).to.be.gte(10);
-				expect(buffer.max()).to.be.lte(20);
 			});
+			expect(buffer.min()).to.be.gte(10);
+			expect(buffer.max()).to.be.lte(20);
 		});
 
-		it("can change the oscillation range", () => {
-			return Offline(() => {
+		it("can change the oscillation range", async () => {
+			const buffer = await Offline(() => {
 				const lfo = new LFO(100, 10, 20).toDestination();
 				lfo.start();
 				lfo.min = 15;
 				lfo.max = 18;
-			}).then((buffer) => {
-				expect(buffer.min()).to.be.gte(15);
-				expect(buffer.max()).to.be.lte(18);
 			});
+			expect(buffer.min()).to.be.gte(15);
+			expect(buffer.max()).to.be.lte(18);
 		});
 
-		it("initially outputs a signal at the center of it's phase", () => {
-			return Offline(() => {
+		it("initially outputs a signal at the center of it's phase", async () => {
+			const buffer = await Offline(() => {
 				new LFO(100, 10, 20).toDestination();
-			}).then((buffer) => {
-				expect(buffer.value()).to.be.closeTo(15, 0.1);
 			});
+			expect(buffer.value()).to.be.closeTo(15, 0.1);
 		});
 
-		it("outputs a signal at the correct phase angle", () => {
-			return Offline(() => {
+		it("outputs a signal at the correct phase angle", async () => {
+			const buffer = await Offline(() => {
 				new LFO({
 					min: 0,
 					phase: 90,
 				}).toDestination();
-			}).then((buffer) => {
-				expect(buffer.value()).to.be.closeTo(0, 0.1);
 			});
+			expect(buffer.value()).to.be.closeTo(0, 0.1);
 		});
 
-		it("outputs the right phase when setting a new phase", () => {
-			return Offline(() => {
+		it("outputs the right phase when setting a new phase", async () => {
+			const buffer = await Offline(() => {
 				const lfo = new LFO({
 					max: 1,
 					min: -1,
 					phase: 0,
 				}).toDestination();
 				lfo.phase = 270;
-			}).then((buffer) => {
-				expect(buffer.value()).to.be.closeTo(1, 0.1);
 			});
+			expect(buffer.value()).to.be.closeTo(1, 0.1);
 		});
 
-		it("can convert to other units", () => {
-			return Offline(() => {
+		it("can convert to other units", async () => {
+			const buffer = await Offline(() => {
 				const lfo = new LFO({
 					frequency: 20,
 					max: 5,
@@ -128,14 +123,13 @@ describe("LFO", () => {
 					units: "decibels",
 				}).toDestination();
 				lfo.start();
-			}).then((buffer) => {
-				expect(buffer.min()).to.be.closeTo(0.099, 0.01);
-				expect(buffer.max()).to.be.closeTo(1.78, 0.01);
 			});
+			expect(buffer.min()).to.be.closeTo(0.099, 0.01);
+			expect(buffer.max()).to.be.closeTo(1.78, 0.01);
 		});
 
-		it("can converts to the units of the connecting node", () => {
-			return Offline(() => {
+		it("can converts to the units of the connecting node", async () => {
+			const buffer = await Offline(() => {
 				const lfo = new LFO(20, -35, -10);
 				const signal = new Signal(0, "decibels");
 				expect(lfo.units).to.equal("number");
@@ -143,14 +137,13 @@ describe("LFO", () => {
 				lfo.connect(signal);
 				expect(lfo.units).to.equal("decibels");
 				lfo.start();
-			}).then((buffer) => {
-				expect(buffer.min()).to.be.closeTo(0.017, 0.01);
-				expect(buffer.max()).to.be.closeTo(0.31, 0.01);
 			});
+			expect(buffer.min()).to.be.closeTo(0.017, 0.01);
+			expect(buffer.max()).to.be.closeTo(0.31, 0.01);
 		});
 
-		it("does not convert to the connected value if that is not set to convert", () => {
-			return Offline(() => {
+		it("does not convert to the connected value if that is not set to convert", async () => {
+			const buffer = await Offline(() => {
 				const lfo = new LFO(20, -35, -10);
 				const signal = new Signal({
 					convert: false,
@@ -162,61 +155,56 @@ describe("LFO", () => {
 				lfo.connect(signal);
 				expect(lfo.units).to.equal("decibels");
 				lfo.start();
-			}).then((buffer) => {
-				expect(buffer.min()).to.be.closeTo(-35, 0.01);
-				expect(buffer.max()).to.be.closeTo(-10, 0.01);
 			});
+			expect(buffer.min()).to.be.closeTo(-35, 0.01);
+			expect(buffer.max()).to.be.closeTo(-10, 0.01);
 		});
 
-		it("can sync the frequency to the Transport", () => {
-			return Offline(({ transport }) => {
+		it("can sync the frequency to the Transport", async () => {
+			const buffer = await Offline(({ transport }) => {
 				const lfo = new LFO(2);
 				lfo.sync();
 				lfo.frequency.toDestination();
 				transport.bpm.setValueAtTime(transport.bpm.value * 2, 0.05);
 				// transport.start(0)
-			}, 0.1).then((buffer) => {
-				expect(buffer.getValueAtTime(0)).to.be.closeTo(2, 0.1);
-				expect(buffer.getValueAtTime(0.05)).to.be.closeTo(4, 0.1);
-			});
+			}, 0.1);
+			expect(buffer.getValueAtTime(0)).to.be.closeTo(2, 0.1);
+			expect(buffer.getValueAtTime(0.05)).to.be.closeTo(4, 0.1);
 		});
 
-		it("can unsync the frequency to the transport", () => {
-			return Offline(({ transport }) => {
+		it("can unsync the frequency to the transport", async () => {
+			const buffer = await Offline(({ transport }) => {
 				const lfo = new LFO(2);
 				lfo.sync();
 				lfo.frequency.toDestination();
 				transport.bpm.setValueAtTime(transport.bpm.value * 2, 0.05);
 				lfo.unsync();
 				transport.start(0);
-			}, 0.1).then((buffer) => {
-				expect(buffer.getValueAtTime(0)).to.be.closeTo(2, 0.1);
-				expect(buffer.getValueAtTime(0.05)).to.be.closeTo(2, 0.1);
-			});
+			}, 0.1);
+			expect(buffer.getValueAtTime(0)).to.be.closeTo(2, 0.1);
+			expect(buffer.getValueAtTime(0.05)).to.be.closeTo(2, 0.1);
 		});
 
-		it("can adjust the amplitude", () => {
-			return Offline(() => {
+		it("can adjust the amplitude", async () => {
+			const buffer = await Offline(() => {
 				const lfo = new LFO(10, -10, 10);
 				lfo.amplitude.value = 0.5;
 				lfo.toDestination();
 				lfo.start();
-			}, 0.1).then((buffer) => {
-				expect(buffer.min()).to.be.closeTo(-5, 0.1);
-				expect(buffer.max()).to.be.closeTo(5, 0.1);
-			});
+			}, 0.1);
+			expect(buffer.min()).to.be.closeTo(-5, 0.1);
+			expect(buffer.max()).to.be.closeTo(5, 0.1);
 		});
 
-		it("can adjust the amplitude not centered at 0", () => {
-			return Offline(() => {
+		it("can adjust the amplitude not centered at 0", async () => {
+			const buffer = await Offline(() => {
 				const lfo = new LFO(10, 400, 4000);
 				lfo.amplitude.value = 0.5;
 				lfo.toDestination();
 				lfo.start();
-			}, 0.1).then((buffer) => {
-				expect(buffer.min()).to.be.closeTo(1300, 1);
-				expect(buffer.max()).to.be.closeTo(3100, 1);
-			});
+			}, 0.1);
+			expect(buffer.min()).to.be.closeTo(1300, 1);
+			expect(buffer.max()).to.be.closeTo(3100, 1);
 		});
 
 		it("can pass in partials to the constructor", () => {
