@@ -262,18 +262,18 @@ describe("Player", () => {
 				player.toDestination();
 				player.start(0, 0, playDur);
 			}, buffer.duration * 2);
-			for (let time_1 = 0; time_1 < buffer.duration * 2; time_1 += 0.1) {
-				const val = buff.getRmsAtTime(time_1);
-				if (time_1 < playDur - 0.01) {
+			for (let time = 0; time < buffer.duration * 2; time += 0.1) {
+				const val = buff.getRmsAtTime(time);
+				if (time < playDur - 0.01) {
 					expect(val).to.be.greaterThan(0);
-				} else if (time_1 > playDur) {
+				} else if (time > playDur) {
 					expect(val).to.equal(0);
 				}
 			}
 		});
 
 		it("correctly compensates if the offset is greater than the loopEnd", async () => {
-			const buff_1 = await Offline(() => {
+			const buff = await Offline(() => {
 				// make a ramp between 0-1
 				const ramp = new Float32Array(
 					Math.floor(getContext().sampleRate * 0.3)
@@ -281,17 +281,17 @@ describe("Player", () => {
 				for (let i = 0; i < ramp.length; i++) {
 					ramp[i] = (i / ramp.length) * 0.3;
 				}
-				const buff = ToneAudioBuffer.fromArray(ramp);
-				const player = new Player(buff).toDestination();
+				const playerBuff = ToneAudioBuffer.fromArray(ramp);
+				const player = new Player(playerBuff).toDestination();
 				player.loopStart = 0.1;
 				player.loopEnd = 0.2;
 				player.loop = true;
 				player.start(0, 0.35);
 			}, 0.05);
-			buff_1.forEach((sample, time_1) => {
-				if (time_1 < 0.04) {
+			buff.forEach((sample, time) => {
+				if (time < 0.04) {
 					expect(sample).to.be.within(0.15, 0.2);
-				} else if (time_1 > 0.05 && time_1 < 0.09) {
+				} else if (time > 0.05 && time < 0.09) {
 					expect(sample).to.be.within(0.1, 0.15);
 				}
 			});
@@ -402,7 +402,7 @@ describe("Player", () => {
 		});
 
 		it("is stopped and restarted when start is called twice", async () => {
-			const buff_1 = await Offline(() => {
+			const buff = await Offline(() => {
 				// make a ramp between 0-1
 				const ramp = new Float32Array(
 					Math.floor(getContext().sampleRate * 0.3)
@@ -410,12 +410,12 @@ describe("Player", () => {
 				for (let i = 0; i < ramp.length; i++) {
 					ramp[i] = i / (ramp.length - 1);
 				}
-				const buff = new ToneAudioBuffer().fromArray(ramp);
-				const player = new Player(buff).toDestination();
+				const playerBuff = new ToneAudioBuffer().fromArray(ramp);
+				const player = new Player(playerBuff).toDestination();
 				player.start(0);
 				player.start(0.1);
 			}, 0.31);
-			expect(buff_1.max()).to.be.lessThan(1);
+			expect(buff.max()).to.be.lessThan(1);
 		});
 
 		it("only seeks if player is started", async () => {
@@ -427,22 +427,22 @@ describe("Player", () => {
 		});
 
 		it("can seek to a position at the given time", async () => {
-			const buff_1 = await Offline(() => {
+			const buff = await Offline(() => {
 				const ramp = new Float32Array(
 					Math.floor(getContext().sampleRate * 0.3)
 				);
 				for (let i = 0; i < ramp.length; i++) {
 					ramp[i] = (i / ramp.length) * 0.3;
 				}
-				const buff = new ToneAudioBuffer().fromArray(ramp);
-				const player = new Player(buff).toDestination();
+				const playerBuff = new ToneAudioBuffer().fromArray(ramp);
+				const player = new Player(playerBuff).toDestination();
 				player.start(0);
 				player.seek(0.2, 0.1);
 			}, 0.3);
-			buff_1.forEach((sample, time_1) => {
-				if (time_1 < 0.09) {
+			buff.forEach((sample, time) => {
+				if (time < 0.09) {
 					expect(sample).to.be.within(0, 0.1);
-				} else if (time_1 > 0.1 && time_1 < 0.19) {
+				} else if (time > 0.1 && time < 0.19) {
 					expect(sample).to.be.within(0.2, 0.3);
 				}
 			});
@@ -508,11 +508,11 @@ describe("Player", () => {
 				const player = new Player(buffer);
 				player.toDestination();
 				player.start(0, 0, 0.1);
-				return (time_1) => {
-					whenBetween(time_1, 0.1, Infinity, () => {
+				return (time) => {
+					whenBetween(time, 0.1, Infinity, () => {
 						expect(player.state).to.equal("stopped");
 					});
-					whenBetween(time_1, 0, 0.1, () => {
+					whenBetween(time, 0, 0.1, () => {
 						expect(player.state).to.equal("started");
 					});
 				};
@@ -579,7 +579,7 @@ describe("Player", () => {
 		});
 
 		it("starts at the correct position when Transport is offset and playbackRate is not 1", async () => {
-			const buff_1 = await Offline(({ transport }) => {
+			const buff = await Offline(({ transport }) => {
 				// make a ramp between 0-1
 				const ramp = new Float32Array(
 					Math.floor(getContext().sampleRate * 0.3)
@@ -587,59 +587,59 @@ describe("Player", () => {
 				for (let i = 0; i < ramp.length; i++) {
 					ramp[i] = i / ramp.length;
 				}
-				const buff = ToneAudioBuffer.fromArray(ramp);
-				const player = new Player(buff).toDestination();
+				const playerBuff = ToneAudioBuffer.fromArray(ramp);
+				const player = new Player(playerBuff).toDestination();
 				player.playbackRate = 0.5;
 				player.sync().start(0);
 				// start halfway through
 				transport.start(0, 0.15);
 			}, 0.05);
-			expect(buff_1.getValueAtTime(0)).to.be.closeTo(0.5, 0.05);
+			expect(buff.getValueAtTime(0)).to.be.closeTo(0.5, 0.05);
 		});
 
 		it("starts with an offset when synced and started after Transport is running", async () => {
-			const buff_1 = await Offline(({ transport }) => {
+			const buff = await Offline(({ transport }) => {
 				const ramp = new Float32Array(
 					Math.floor(getContext().sampleRate * 0.3)
 				);
 				for (let i = 0; i < ramp.length; i++) {
 					ramp[i] = (i / ramp.length) * 0.3;
 				}
-				const buff = new ToneAudioBuffer().fromArray(ramp);
-				const player = new Player(buff).toDestination();
+				const playerBuff = new ToneAudioBuffer().fromArray(ramp);
+				const player = new Player(playerBuff).toDestination();
 				transport.start(0);
 				return atTime(0.1, () => {
 					player.sync().start(0);
 				});
 			}, 0.3);
-			expect(buff_1.getValueAtTime(0)).to.equal(0);
-			expect(buff_1.getValueAtTime(0.05)).to.equal(0);
-			expect(buff_1.getValueAtTime(0.11)).to.be.closeTo(0.11, 0.01);
-			expect(buff_1.getValueAtTime(0.2)).to.be.closeTo(0.2, 0.01);
+			expect(buff.getValueAtTime(0)).to.equal(0);
+			expect(buff.getValueAtTime(0.05)).to.equal(0);
+			expect(buff.getValueAtTime(0.11)).to.be.closeTo(0.11, 0.01);
+			expect(buff.getValueAtTime(0.2)).to.be.closeTo(0.2, 0.01);
 		});
 
 		it("can pass in an offset when synced and started after Transport is running", async () => {
-			const buff_1 = await Offline(({ transport }) => {
+			const buff = await Offline(({ transport }) => {
 				const ramp = new Float32Array(
 					Math.floor(getContext().sampleRate * 0.3)
 				);
 				for (let i = 0; i < ramp.length; i++) {
 					ramp[i] = (i / ramp.length) * 0.3;
 				}
-				const buff = new ToneAudioBuffer().fromArray(ramp);
-				const player = new Player(buff).toDestination();
+				const playerBuff = new ToneAudioBuffer().fromArray(ramp);
+				const player = new Player(playerBuff).toDestination();
 				player.loop = true;
 				transport.start(0);
 				return atTime(0.1, () => {
 					player.sync().start(0, 0.1);
 				});
 			}, 0.3);
-			expect(buff_1.getValueAtTime(0)).to.equal(0);
-			expect(buff_1.getValueAtTime(0.05)).to.equal(0);
-			expect(buff_1.getValueAtTime(0.11)).to.be.closeTo(0.21, 0.01);
-			expect(buff_1.getValueAtTime(0.15)).to.be.closeTo(0.25, 0.01);
-			expect(buff_1.getValueAtTime(0.2)).to.be.closeTo(0.0, 0.01);
-			expect(buff_1.getValueAtTime(0.25)).to.be.closeTo(0.05, 0.01);
+			expect(buff.getValueAtTime(0)).to.equal(0);
+			expect(buff.getValueAtTime(0.05)).to.equal(0);
+			expect(buff.getValueAtTime(0.11)).to.be.closeTo(0.21, 0.01);
+			expect(buff.getValueAtTime(0.15)).to.be.closeTo(0.25, 0.01);
+			expect(buff.getValueAtTime(0.2)).to.be.closeTo(0.0, 0.01);
+			expect(buff.getValueAtTime(0.25)).to.be.closeTo(0.05, 0.01);
 		});
 
 		it("fades in and out correctly", async () => {

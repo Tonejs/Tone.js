@@ -366,6 +366,24 @@ describe("ToneBufferSource", () => {
 			expect(rms.getRmsAtTime(buffer.duration * 0.7)).to.closeTo(0, 0.01);
 		});
 
+		it("can play for a specific duration passed in the 'start' method", async () => {
+			const rms = await Offline(() => {
+				const player = new ToneBufferSource(buffer).toDestination();
+				player.start(0, 0, 0.1);
+
+				return (time_1) => {
+					if (time_1 > 0.1) {
+						expect(player.state).to.equal("stopped");
+					}
+				};
+			}, 0.4);
+			expect(rms.getRmsAtTime(0)).to.be.gt(0);
+			expect(rms.getRmsAtTime(0.09)).to.be.gt(0);
+			// after stop is scheduled
+			expect(rms.getRmsAtTime(0.11)).to.equal(0);
+			expect(rms.getRmsAtTime(0.3)).to.equal(0);
+		});
+
 		it("can start at an offset", async () => {
 			const offsetTime = 0.1;
 			const offsetSample =
