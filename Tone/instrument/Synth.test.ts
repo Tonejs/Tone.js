@@ -79,7 +79,7 @@ describe("Synth", () => {
 			simple.dispose();
 		});
 
-		it("can get does not include omited oscillator attributes", () => {
+		it("can get does not include omitted oscillator attributes", () => {
 			const simple = new Synth();
 			expect(simple.get().oscillator).to.not.have.key("frequency");
 			expect(simple.get().oscillator).to.not.have.key("detune");

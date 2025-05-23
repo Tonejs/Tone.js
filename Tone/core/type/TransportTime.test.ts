@@ -116,7 +116,7 @@ describe("TransportTimeClass", () => {
 			});
 		});
 
-		it("can get the next subdivison when the transport is started", () => {
+		it("can get the next subdivision when the transport is started", () => {
 			return Offline((context) => {
 				const transport = context.transport;
 				transport.start();

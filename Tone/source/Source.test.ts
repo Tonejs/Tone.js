@@ -55,7 +55,7 @@ describe("Source", () => {
 		source.dispose();
 	});
 
-	it("is initally stopped", () => {
+	it("is initially stopped", () => {
 		const source = new Oscillator();
 		expect(source.state).to.equal("stopped");
 		source.dispose();

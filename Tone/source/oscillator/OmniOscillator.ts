@@ -296,7 +296,6 @@ export class OmniOscillator<OscType extends AnyOscillator>
 		return this._sourceType;
 	}
 	set sourceType(sType) {
-		// the basetype defaults to sine
 		let baseType = "sine";
 		if (
 			this._oscillator.type !== "pwm" &&

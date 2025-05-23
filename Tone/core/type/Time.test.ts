@@ -72,7 +72,7 @@ describe("TimeClass", () => {
 			});
 		});
 
-		it("evalutes objects", () => {
+		it("evaluates objects", () => {
 			return Offline(() => {
 				expect(Time({ "4n": 3 }).valueOf()).to.equal(1.5);
 				expect(Time({ "8t": 2, "1m": 3 }).valueOf()).to.be.closeTo(
@@ -98,7 +98,7 @@ describe("TimeClass", () => {
 			expect(Time(2).quantize(8, 0.75).valueOf()).to.equal(0.5);
 		});
 
-		it("can get the next subdivison when the transport is started", () => {
+		it("can get the next subdivision when the transport is started", () => {
 			return Offline((context) => {
 				const transport = context.transport;
 				transport.start(0.1);

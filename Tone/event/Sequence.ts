@@ -41,7 +41,7 @@ export class Sequence<ValueType = any> extends ToneEvent<ValueType> {
 	readonly name: string = "Sequence";
 
 	/**
-	 * The subdivison of each note
+	 * The subdivision of each note
 	 */
 	private _subdivision: Ticks;
 

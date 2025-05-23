@@ -20,7 +20,7 @@ export abstract class Instrument<
 	Options extends InstrumentOptions,
 > extends ToneAudioNode<Options> {
 	/**
-	 * The output and volume triming node
+	 * The output and volume trimming node
 	 */
 	private _volume: Volume;
 	output: OutputNode;

@@ -51,7 +51,7 @@ export class LowpassCombFilter extends ToneAudioNode<LowpassCombFilterOptions> {
 	/**
 	 * @param delayTime The delay time of the comb filter
 	 * @param resonance The resonance (feedback) of the comb filter
-	 * @param dampening The cutoff of the lowpass filter dampens the signal as it is fedback.
+	 * @param dampening The cutoff of the lowpass filter dampens the signal as it is fed back.
 	 */
 	constructor(
 		delayTime?: Time,
