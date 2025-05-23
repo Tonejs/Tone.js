@@ -268,7 +268,7 @@ describe("ToneAudioBuffer", () => {
 			buffer.dispose();
 		});
 
-		it("can convert from a multidimentional array", () => {
+		it("can convert from a multidimensional array", () => {
 			const buffer = new ToneAudioBuffer();
 			const arr = [
 				new Float32Array(0.5 * buffer.sampleRate),

@@ -163,37 +163,37 @@ describe("Clock", () => {
 		});
 
 		it("can be scheduled to start in the future", async () => {
-			let invokations = 0;
+			let invocations = 0;
 			await Offline(() => {
 				const clock = new Clock((time) => {
-					invokations++;
+					invocations++;
 				}, 2).start(0.1);
 			}, 0.4);
-			expect(invokations).to.equal(1);
+			expect(invocations).to.equal(1);
 		});
 
 		it("invokes the right number of callbacks given the duration", async () => {
-			let invokations = 0;
+			let invocations = 0;
 			await Offline(() => {
 				new Clock((time) => {
-					invokations++;
+					invocations++;
 				}, 10)
 					.start(0)
 					.stop(0.45);
 			}, 0.6);
-			expect(invokations).to.equal(5);
+			expect(invocations).to.equal(5);
 		});
 
 		it("can schedule the frequency of the clock", async () => {
-			let invokations = 0;
+			let invocations = 0;
 			await Offline(() => {
 				const clock = new Clock((time, ticks) => {
-					invokations++;
+					invocations++;
 				}, 2);
 				clock.start(0).stop(1.01);
 				clock.frequency.setValueAtTime(4, 0.5);
 			}, 2);
-			expect(invokations).to.equal(4);
+			expect(invocations).to.equal(4);
 		});
 	});
 

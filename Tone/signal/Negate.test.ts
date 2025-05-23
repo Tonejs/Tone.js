@@ -7,7 +7,7 @@ describe("Negate", () => {
 	BasicTests(Negate);
 
 	context("Negating", () => {
-		it("negateates a positive value", () => {
+		it("negates a positive value", () => {
 			return ConstantOutput(() => {
 				const signal = new Signal(1);
 				const negate = new Negate();
@@ -16,7 +16,7 @@ describe("Negate", () => {
 			}, -1);
 		});
 
-		it("makes a negateative value positive", () => {
+		it("makes a negative value positive", () => {
 			return ConstantOutput(() => {
 				const signal = new Signal(-10);
 				const negate = new Negate();

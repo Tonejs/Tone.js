@@ -353,7 +353,7 @@ describe("Sequence", () => {
 		});
 
 		it("can loop between loopStart and loopEnd", async () => {
-			let invokations = 0;
+			let invocations = 0;
 			await Offline(({ transport }) => {
 				const seq = new Sequence({
 					events: [0, [1, 2, 3], [4, 5]],
@@ -363,12 +363,12 @@ describe("Sequence", () => {
 					callback(time, value): void {
 						expect(value).to.be.at.least(1);
 						expect(value).to.be.at.most(3);
-						invokations++;
+						invocations++;
 					},
 				}).start(0);
 				transport.start();
 			}, 0.7);
-			expect(invokations).to.equal(9);
+			expect(invocations).to.equal(9);
 		});
 
 		it("can set the loop points after starting", async () => {

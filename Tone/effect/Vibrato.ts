@@ -65,7 +65,7 @@ export class Vibrato extends Effect<VibratoOptions> {
 			min: 0,
 			max: options.maxDelay,
 			frequency: options.frequency,
-			phase: -90, // offse the phase so the resting position is in the center
+			phase: -90, // offset the phase so the resting position is in the center
 		})
 			.start()
 			.connect(this._delayNode.delayTime);

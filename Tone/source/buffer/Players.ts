@@ -215,7 +215,7 @@ export class Players extends ToneAudioNode<PlayersOptions> {
 	/**
 	 * Add a player by name and url to the Players
 	 * @param  name A unique name to give the player
-	 * @param  url  Either the url of the bufer or a buffer which will be added with the given name.
+	 * @param  url  Either the url of the buffer or a buffer which will be added with the given name.
 	 * @param callback  The callback to invoke when the url is loaded.
 	 * @example
 	 * const players = new Tone.Players();

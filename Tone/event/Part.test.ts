@@ -301,14 +301,14 @@ describe("Part", () => {
 		});
 
 		it("is invoked after it's started", async () => {
-			let invokations = 0;
+			let invocations = 0;
 			await Offline(({ transport }) => {
 				const part = new Part(() => {
-					invokations++;
+					invocations++;
 				}, [0, 0.1]).start(0);
 				transport.start();
 			}, 0.2);
-			expect(invokations).to.equal(2);
+			expect(invocations).to.equal(2);
 		});
 
 		it("passes in the scheduled time to the callback", async () => {
@@ -421,7 +421,7 @@ describe("Part", () => {
 		});
 
 		it("can schedule a subpart", async () => {
-			let invokations = 0;
+			let invocations = 0;
 			await Offline(({ transport }) => {
 				const startTime = 0.1;
 				const subPart = new Part({
@@ -431,7 +431,7 @@ describe("Part", () => {
 					],
 				});
 				const part = new Part((time, value) => {
-					invokations++;
+					invocations++;
 					if (value === 0) {
 						expect(time - startTime).to.be.closeTo(0, 0.01);
 					} else if (value === 1) {
@@ -446,7 +446,7 @@ describe("Part", () => {
 					.start(0);
 				transport.start(startTime);
 			}, 0.7);
-			expect(invokations).to.equal(3);
+			expect(invocations).to.equal(3);
 		});
 
 		it("can start with an offset", async () => {

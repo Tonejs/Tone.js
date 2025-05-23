@@ -20,7 +20,7 @@ describe("Multiply", () => {
 			mult.dispose();
 		});
 
-		it("correctly multiplys a signal and a scalar", () => {
+		it("correctly multiplies a signal and a scalar", () => {
 			return ConstantOutput(() => {
 				const signal = new Signal(2);
 				const mult = new Multiply(10);

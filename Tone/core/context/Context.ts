@@ -394,7 +394,7 @@ export class Context extends BaseContext {
 	/**
 	 * How often the interval callback is invoked.
 	 * This number corresponds to how responsive the scheduling
-	 * can be. Setting to 0 will result in the lowest practial interval
+	 * can be. Setting to 0 will result in the lowest practical interval
 	 * based on context properties. context.updateInterval + context.lookAhead
 	 * gives you the total latency between scheduling an event and hearing it.
 	 */

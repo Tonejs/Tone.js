@@ -26,7 +26,7 @@ export class IntervalTimeline extends Tone {
 	readonly name: string = "IntervalTimeline";
 
 	/**
-	 * The root node of the inteval tree
+	 * The root node of the interval tree
 	 */
 	private _root: IntervalNode | null = null;
 

@@ -31,7 +31,7 @@ export interface SignalOptions<TypeName extends UnitName>
  *
  * @example
  * const osc = new Tone.Oscillator().toDestination().start();
- * // a scheduleable signal which can be connected to control an AudioParam or another Signal
+ * // a schedulable signal which can be connected to control an AudioParam or another Signal
  * const signal = new Tone.Signal({
  * 	value: "C4",
  * 	units: "frequency"

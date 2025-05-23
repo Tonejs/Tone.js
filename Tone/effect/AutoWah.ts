@@ -75,7 +75,7 @@ export class AutoWah extends Effect<AutoWahOptions> {
 	private _bandpass: Filter;
 
 	/**
-	 * The peaking fitler
+	 * The peaking filter
 	 */
 	private _peaking: Filter;
 

@@ -187,7 +187,7 @@ export class PolySynth<
 
 	/**
 	 * Invoked when the source is done making sound, so that it can be
-	 * readded to the pool of available voices
+	 * re-added to the pool of available voices
 	 */
 	private _makeVoiceAvailable(voice: Voice): void {
 		this._availableVoices.push(voice);

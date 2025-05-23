@@ -149,7 +149,7 @@ describe("TickSource", () => {
 			source.dispose();
 		});
 
-		it("can invoke stop multiple times, takes the last invokation", () => {
+		it("can invoke stop multiple times, takes the last invocation", () => {
 			const source = new TickSource(1);
 			source.start(0).stop(3).stop(2).stop(4);
 			expect(source.getTicksAtTime(0)).to.be.closeTo(0, 0.01);

@@ -99,8 +99,7 @@ describe("UserMedia", () => {
 				return extIn
 					.open("doesn't exist")
 					.then(() => {
-						// shouldn't call 'then'
-						throw new Error("shouldnt call 'then'");
+						throw new Error("shouldn't call 'then'");
 					})
 					.catch(() => {
 						extIn.dispose();

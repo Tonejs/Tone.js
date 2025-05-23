@@ -112,27 +112,27 @@ describe("FrequencyClass", () => {
 			});
 		});
 
-		it("evalutes hertz", () => {
+		it("evaluates hertz", () => {
 			expect(Frequency("1hz").valueOf()).to.equal(1);
 			expect(Frequency("2hz").valueOf()).to.equal(2);
 			expect(Frequency(4, "hz").valueOf()).to.equal(4);
 			expect(Frequency("0.25hz").valueOf()).to.equal(0.25);
 		});
 
-		it("evalutes ticks", () => {
+		it("evaluates ticks", () => {
 			return Offline(({ transport }) => {
 				expect(Frequency(transport.PPQ, "i").valueOf()).to.equal(2);
 				expect(Frequency(1, "i").valueOf()).to.equal(transport.PPQ * 2);
 			});
 		});
 
-		it("evalutes transport time", () => {
+		it("evaluates transport time", () => {
 			expect(Frequency("1:0").valueOf()).to.equal(0.5);
 			expect(Frequency("1:4:0").valueOf()).to.equal(0.25);
 			// expect(Frequency("2:1:0").valueOf()).to.equal(0.25);
 		});
 
-		it("evalutes midi", () => {
+		it("evaluates midi", () => {
 			expect(Frequency(48, "midi").valueOf()).to.be.closeTo(
 				TonalMidi.midiToFreq(48),
 				0.0001
@@ -143,7 +143,7 @@ describe("FrequencyClass", () => {
 			);
 		});
 
-		it("evalutes hz", () => {
+		it("evaluates hz", () => {
 			expect(Frequency(48, "hz").valueOf()).to.equal(48);
 			expect(Frequency(480, "hz").valueOf()).to.equal(480);
 		});
@@ -218,7 +218,7 @@ describe("FrequencyClass", () => {
 			);
 		});
 
-		it("can accomidate different concert tuning", () => {
+		it("can accommodate different concert tuning", () => {
 			FrequencyClass.A4 = 444;
 			expect(Frequency("C4").valueOf()).to.be.closeTo(
 				TonalMidi.midiToFreq(

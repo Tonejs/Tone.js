@@ -96,6 +96,8 @@ jobs:
               run: npm install
             - name: Linting
               run: npm run lint
+            - name: Spell check
+              run: npm run spellcheck
     test-readme:
         name: Ensure that examples in the README compile
         permissions:
