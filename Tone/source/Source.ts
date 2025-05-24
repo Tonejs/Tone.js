@@ -83,7 +83,7 @@ export abstract class Source<
 		offset?: Seconds;
 		/**
 		 * Either the buffer is explicitly scheduled to end using the stop method,
-		 * or it's implicitly ended when the buffer is over.
+		 * or its implicitly ended when the buffer is over.
 		 */
 		implicitEnd?: boolean;
 	}> = new StateTimeline("stopped");

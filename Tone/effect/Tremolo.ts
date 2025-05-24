@@ -19,7 +19,7 @@ export interface TremoloOptions extends StereoEffectOptions {
  * The effect is a stereo effect where the modulation phase is inverted in each channel.
  *
  * @example
- * // create a tremolo and start it's LFO
+ * // create a tremolo and start its LFO
  * const tremolo = new Tone.Tremolo(9, 0.75).toDestination().start();
  * // route an oscillator through the tremolo and start it
  * const oscillator = new Tone.Oscillator().connect(tremolo).start();

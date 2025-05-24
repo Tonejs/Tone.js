@@ -9,7 +9,7 @@ import { SignalOperator } from "./SignalOperator.js";
 
 /**
  * Tone.Zero outputs 0's at audio-rate. The reason this has to be
- * it's own class is that many browsers optimize out Tone.Signal
+ * its own class is that many browsers optimize out Tone.Signal
  * with a value of 0 and will not process nodes further down the graph.
  * @category Signal
  */

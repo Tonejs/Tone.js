@@ -112,7 +112,7 @@ describe("PulseOscillator", () => {
 	});
 
 	context("Types", () => {
-		it("reports it's type", () => {
+		it("reports its type", () => {
 			const osc = new PulseOscillator();
 			expect(osc.type).to.equal("pulse");
 			expect(osc.baseType).to.equal("pulse");
