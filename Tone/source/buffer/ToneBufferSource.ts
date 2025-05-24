@@ -248,7 +248,7 @@ export class ToneBufferSource extends OneShotSource<ToneBufferSourceOptions> {
 	}
 
 	/**
-	 * If the buffer should loop once it's over.
+	 * If the buffer should loop once its over.
 	 */
 	get loop(): boolean {
 		return this._source.loop;

@@ -10,7 +10,7 @@ const toneAudioWorkletProcessor = /* javascript */ `
 			
 			super(options);
 			/**
-			 * If the processor was disposed or not. Keep alive until it's disposed.
+			 * If the processor was disposed or not. Keep alive until its disposed.
 			 */
 			this.disposed = false;
 		   	/** 

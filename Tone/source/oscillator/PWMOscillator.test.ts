@@ -39,7 +39,7 @@ describe("PWMOscillator", () => {
 	});
 
 	context("Types", () => {
-		it("reports it's type", () => {
+		it("reports its type", () => {
 			const osc = new PWMOscillator();
 			expect(osc.type).to.equal("pwm");
 			expect(osc.baseType).to.equal("pwm");
