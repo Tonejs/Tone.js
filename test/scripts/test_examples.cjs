@@ -73,7 +73,6 @@ async function testExampleString(str, tmpDir, index) {
 
 async function main() {
 	const examples = findExamples(toneJson);
-	let passed = 0;
 
 	const tmp = await dir({ unsafeCleanup: true });
 	await Promise.all(

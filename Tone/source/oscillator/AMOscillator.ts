@@ -39,8 +39,7 @@ export { AMOscillatorOptions } from "./OscillatorInterface.js";
  */
 export class AMOscillator
 	extends Source<AMOscillatorOptions>
-	implements ToneOscillatorInterface
-{
+	implements ToneOscillatorInterface {
 	readonly name: string = "AMOscillator";
 
 	/**
@@ -112,8 +111,8 @@ export class AMOscillator
 			phase: options.phase,
 			type: options.type,
 		} as OscillatorOptions);
-		(this.frequency = this._carrier.frequency),
-			(this.detune = this._carrier.detune);
+		(this.frequency = this._carrier.frequency);
+		(this.detune = this._carrier.detune);
 
 		this._modulator = new Oscillator({
 			context: this.context,
