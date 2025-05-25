@@ -5,10 +5,6 @@ import stylisticTs from "@stylistic/eslint-plugin-ts";
 import jsdoc from "eslint-plugin-jsdoc";
 import html from "eslint-plugin-html";
 
-// @todo requires eslint flat compat
-// or use custom rules as mentioned here:https://typescript-eslint.io/troubleshooting/typed-linting/performance#eslint-plugin-import
-// import fileExtensions from 'eslint-plugin-file-extension-in-import-ts'
-
 /** @type {import("typescript-eslint").ConfigWithExtends} */
 const customConfig = {
 	files: ["**/*.js", "**/*.ts", "**/*.html", "eslint.config.mjs"],
