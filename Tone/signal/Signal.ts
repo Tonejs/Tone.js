@@ -1,6 +1,7 @@
 import { AbstractParam } from "../core/context/AbstractParam.js";
 import { Param } from "../core/context/Param.js";
 import {
+	disconnect,
 	InputNode,
 	OutputNode,
 	ToneAudioNode,
@@ -95,6 +96,12 @@ export class Signal<TypeName extends UnitName = "number">
 	connect(destination: InputNode, outputNum = 0, inputNum = 0): this {
 		// start it only when connected to something
 		connectSignal(this, destination, outputNum, inputNum);
+		return this;
+	}
+
+	disconnect(destination?: InputNode, outputNum = 0, inputNum = 0): this {
+		// disconnect the signal
+		// disconnectSignal(this, destination, outputNum, inputNum);
 		return this;
 	}
 
@@ -234,6 +241,22 @@ export class Signal<TypeName extends UnitName = "number">
 }
 
 /**
+ * Keep track of connected signals so they can be disconnected and restored to their previous value
+ */
+const connectedSignals = new WeakMap<
+	OutputNode,
+	Array<{
+		destination: Param | AudioParam | Signal;
+		outputNum: number;
+		inputNum: number;
+		/**
+		 * The value before overriding
+		 */
+		previousValue: number;
+	}>
+>();
+
+/**
  * When connecting from a signal, it's necessary to zero out the node destination
  * node if that node is also a signal. If the destination is not 0, then the values
  * will be summed. This method insures that the output of the destination signal will
@@ -254,6 +277,7 @@ export function connectSignal(
 		isAudioParam(destination) ||
 		(destination instanceof Signal && destination.override)
 	) {
+		const previousValue = destination.value;
 		// cancel changes
 		destination.cancelScheduledValues(0);
 		// reset the value
@@ -262,6 +286,71 @@ export function connectSignal(
 		if (destination instanceof Signal) {
 			destination.overridden = true;
 		}
+		// store the connection
+		if (!connectedSignals.has(signal)) {
+			connectedSignals.set(signal, []);
+		}
+		connectedSignals.get(signal)?.push({
+			destination,
+			outputNum: outputNum || 0,
+			inputNum: inputNum || 0,
+			previousValue,
+		});
 	}
 	connect(signal, destination, outputNum, inputNum);
+}
+
+/**
+ * Disconnect a signal connection and restore the value of the destination if
+ * it was a signal that was overridden by the connection.
+ * @param signal
+ * @param destination
+ * @param outputNum
+ * @param inputNum
+ */
+export function disconnectSignal(
+	signal: OutputNode,
+	destination?: InputNode,
+	outputNum?: number,
+	inputNum?: number
+): void {
+	if (
+		destination instanceof Param ||
+		isAudioParam(destination) ||
+		(destination instanceof Signal && destination.override) ||
+		destination === undefined
+	) {
+		if (connectedSignals.has(signal)) {
+			const connection = connectedSignals
+				.get(signal)!
+				.find(
+					(conn) =>
+						(conn.destination === destination ||
+							destination === undefined) &&
+						conn.outputNum === (outputNum || 0) &&
+						conn.inputNum === (inputNum || 0)
+				);
+			if (connection) {
+				// restore the value
+				if (destination instanceof Signal) {
+					destination.overridden = false;
+				}
+				destination?.setValueAtTime(connection.previousValue, 0);
+
+				// remove the connection from the stored array
+				connectedSignals.set(
+					signal,
+					connectedSignals
+						.get(signal)!
+						.filter((conn) => conn !== connection)
+				);
+
+				// if no destination was passed in, then remove all connections
+				if (destination === undefined) {
+					connectedSignals.delete(signal);
+				}
+			}
+		}
+	}
+	disconnect(signal, destination, outputNum, inputNum);
 }

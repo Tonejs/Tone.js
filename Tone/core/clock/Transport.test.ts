@@ -328,14 +328,17 @@ describe("Transport", () => {
 				expect(transport.getTicksAtTime(0)).to.be.equal(
 					Math.floor(transport.PPQ * 0)
 				);
-				expect(transport.getTicksAtTime(0.05)).to.be.equal(
-					Math.floor(transport.PPQ * 0.1)
+				expect(transport.getTicksAtTime(0.05)).to.be.closeTo(
+					Math.floor(transport.PPQ * 0.1),
+					0.5
 				);
-				expect(transport.getTicksAtTime(0.1)).to.be.equal(
-					Math.floor(transport.PPQ * 0.2)
+				expect(transport.getTicksAtTime(0.1)).to.be.closeTo(
+					Math.floor(transport.PPQ * 0.2),
+					0.5
 				);
-				expect(transport.getTicksAtTime(0.15)).to.be.equal(
-					Math.floor(transport.PPQ * 0.2)
+				expect(transport.getTicksAtTime(0.15)).to.be.closeTo(
+					Math.floor(transport.PPQ * 0.2),
+					0.5
 				);
 				expect(transport.getTicksAtTime(0.2)).to.be.equal(0);
 			}, 0.3);

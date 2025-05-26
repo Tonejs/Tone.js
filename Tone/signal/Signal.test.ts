@@ -5,7 +5,7 @@ import { ConstantOutput } from "../../test/helper/ConstantOutput.js";
 import { Offline } from "../../test/helper/Offline.js";
 import { Decibels, Frequency, Time } from "../core/type/Units.js";
 import { Gain } from "../core/context/Gain.js";
-import { Signal } from "./Signal.js";
+import { connectSignal, disconnectSignal, Signal } from "./Signal.js";
 
 describe("Signal", () => {
 	BasicTests(Signal);
@@ -509,6 +509,165 @@ describe("Signal", () => {
 				transport.bpm.value = 240;
 				transport.unsyncSignal(sig);
 			}, 5);
+		});
+	});
+
+	context("connectSignal/disconnectSignal", () => {
+		it("can connect a Signal to an AudioNode", () => {
+			return ConstantOutput((context) => {
+				const sig = new Signal({
+					value: 3,
+					context,
+				});
+				const gain = new Gain({
+					gain: 0.5,
+					context,
+				}).toDestination();
+				connectSignal(sig, gain);
+			}, 1.5);
+		});
+
+		it("can connect a Signal to a Param", () => {
+			return ConstantOutput((context) => {
+				const sig = new Signal({
+					value: 3,
+					context,
+				});
+				const scalar = new Signal({
+					value: 2,
+					context,
+				});
+				const gain = new Gain({
+					gain: 0.5,
+					context,
+				}).toDestination();
+				connectSignal(sig, gain);
+				connectSignal(scalar, gain.gain);
+				// gain of 0.5 is overridden
+				expect(gain.gain.value).to.equal(0);
+			}, 6);
+		});
+
+		it("can connect a Signal to a Signal", () => {
+			return ConstantOutput((context) => {
+				const sig = new Signal({
+					value: 3,
+					context,
+				});
+				const output = new Signal({
+					value: 0.5,
+					context,
+				}).toDestination();
+
+				connectSignal(sig, output);
+				expect(output.overridden).to.be.true;
+			}, 3);
+		});
+
+		it("can disconnect a Signal from an AudioNode", () => {
+			return ConstantOutput((context) => {
+				const sig = new Signal({
+					value: 3,
+					context,
+				});
+				const gain = new Gain({
+					gain: 0.5,
+					context,
+				}).toDestination();
+				connectSignal(sig, gain);
+				disconnectSignal(sig, gain);
+			}, 0);
+		});
+
+		it("can disconnect a Signal from a Param", () => {
+			return ConstantOutput((context) => {
+				const sig = new Signal({
+					value: 3,
+					context,
+				});
+				const scalar = new Signal({
+					value: 2,
+					context,
+				});
+				const gain = new Gain({
+					gain: 0.5,
+					context,
+				}).toDestination();
+				connectSignal(sig, gain);
+				connectSignal(scalar, gain.gain);
+				// gain of 0.5 is overridden
+				expect(gain.gain.value).to.equal(0);
+
+				disconnectSignal(scalar, gain.gain);
+				// the original value is restored
+				expect(gain.gain.value).to.equal(0.5);
+			}, 1.5);
+		});
+
+		it("can disconnect a Signal from a Signal", () => {
+			return ConstantOutput((context) => {
+				const sig = new Signal({
+					value: 3,
+					context,
+				});
+				const output = new Signal({
+					value: 2,
+					context,
+				}).toDestination();
+
+				connectSignal(sig, output);
+				expect(output.overridden).to.be.true;
+				expect(output.value).to.equal(0);
+
+				disconnectSignal(sig, output);
+				expect(output.value).to.equal(2);
+				expect(output.overridden).to.be.false;
+			}, 2);
+		});
+
+		it("does not disconnect if the inlet or outlet number are wrong", () => {
+			return ConstantOutput((context) => {
+				const sig = new Signal({
+					value: 3,
+					context,
+				});
+				const output = new Signal({
+					value: 2,
+					context,
+				}).toDestination();
+
+				connectSignal(sig, output);
+				expect(output.overridden).to.be.true;
+				expect(output.value).to.equal(0);
+
+				disconnectSignal(sig, output, 1, 0);
+				expect(output.overridden).to.be.true;
+				disconnectSignal(sig, output, 0, 1);
+				expect(output.overridden).to.be.true;
+			}, 2);
+		});
+
+		it("disconnects everything if no destination is passed in", () => {
+			throw new Error("test not implemented");
+			return ConstantOutput((context) => {
+				const sig = new Signal({
+					value: 3,
+					context,
+				});
+				const output = new Signal({
+					value: 2,
+					context,
+				}).toDestination();
+
+				connectSignal(sig, output);
+				expect(output.overridden).to.be.true;
+				expect(output.value).to.equal(0);
+
+				disconnectSignal(sig, output, 1, 0);
+				expect(output.overridden).to.be.true;
+				disconnectSignal(sig, output, 0, 1);
+				expect(output.overridden).to.be.true;
+			}, 2);
 		});
 	});
 });
