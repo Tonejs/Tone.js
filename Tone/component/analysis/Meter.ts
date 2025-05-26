@@ -63,15 +63,15 @@ export class Meter extends MeterBase<MeterOptions> {
 		this.input =
 			this.output =
 			this._analyser =
-				new Analyser({
-					context: this.context,
-					size: 256,
-					type: "waveform",
-					channels: options.channelCount,
-				});
+			new Analyser({
+				context: this.context,
+				size: 256,
+				type: "waveform",
+				channels: options.channelCount,
+			});
 
-		(this.smoothing = options.smoothing),
-			(this.normalRange = options.normalRange);
+		(this.smoothing = options.smoothing);
+		(this.normalRange = options.normalRange);
 		this._rms = new Array(options.channelCount);
 		this._rms.fill(0);
 	}

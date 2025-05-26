@@ -12,7 +12,6 @@ import { log } from "./util/Debug.js";
 // 	TONE
 //-------------------------------------
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface BaseToneOptions {}
 
 /**

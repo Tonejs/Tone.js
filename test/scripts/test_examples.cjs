@@ -1,5 +1,3 @@
-/* eslint-disable no-console */
-/* eslint-disable @typescript-eslint/no-var-requires */
 const { resolve } = require("path");
 const { exec } = require("child_process");
 const { dir } = require("tmp-promise");
@@ -75,7 +73,6 @@ async function testExampleString(str, tmpDir, index) {
 
 async function main() {
 	const examples = findExamples(toneJson);
-	let passed = 0;
 
 	const tmp = await dir({ unsafeCleanup: true });
 	await Promise.all(
