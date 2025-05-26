@@ -19,7 +19,7 @@ export interface AutoFilterOptions extends LFOEffectOptions {
  * and depth.
  *
  * @example
- * // create an autofilter and start it's LFO
+ * // create an autofilter and start its LFO
  * const autoFilter = new Tone.AutoFilter("4n").toDestination().start();
  * // route an oscillator through the filter and start it
  * const oscillator = new Tone.Oscillator().connect(autoFilter).start();

@@ -267,7 +267,7 @@ describe("Sampler", () => {
 	});
 
 	context("add samples", () => {
-		it("can add a note with it's midi value", async () => {
+		it("can add a note with its midi value", async () => {
 			const buffer = await Offline(() => {
 				const sampler = new Sampler().toDestination();
 				sampler.add(69, A4_buffer);
@@ -276,7 +276,7 @@ describe("Sampler", () => {
 			expect(buffer.isSilent()).to.be.false;
 		});
 
-		it("can add a note with it's note name", async () => {
+		it("can add a note with its note name", async () => {
 			const buffer = await Offline(() => {
 				const sampler = new Sampler().toDestination();
 				sampler.add("A4", A4_buffer);

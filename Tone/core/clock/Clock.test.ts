@@ -34,7 +34,7 @@ describe("Clock", () => {
 			expect(clock.frequency.value).to.equal(8);
 		});
 
-		it("can get and set it's values with the set/get", () => {
+		it("can get and set its values with the set/get", () => {
 			const clock = new Clock();
 			clock.set({
 				frequency: 2,

@@ -25,7 +25,7 @@ export function BasicTests(Constr, ...args: any[]): void {
 			instance.dispose();
 			// check that all of the attributes were disposed
 			expect(instance.disposed).to.equal(true);
-			// also check all of it's attributes to see if they also have the right context
+			// also check all of its attributes to see if they also have the right context
 			for (const member in instance) {
 				if (instance[member] instanceof Tone && member !== "context") {
 					expect(
@@ -59,7 +59,7 @@ export function BasicTests(Constr, ...args: any[]): void {
 			);
 			if (instance instanceof ToneWithContext) {
 				expect(instance.context).to.equal(testAudioContext);
-				// also check all of it's attributes to see if they also have the right context
+				// also check all of its attributes to see if they also have the right context
 				for (const member in instance) {
 					if (instance[member] instanceof ToneWithContext) {
 						expect(
