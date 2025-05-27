@@ -1,7 +1,7 @@
 const { resolve } = require("path");
 const { exec } = require("child_process");
 const { dir } = require("tmp-promise");
-const { writeFile } = require("fs-extra");
+const { writeFile } = require("fs/promises");
 const toneJson = require("../../docs/tone.json");
 
 /**

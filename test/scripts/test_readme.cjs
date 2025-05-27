@@ -1,6 +1,6 @@
 const { JSDOM } = require("jsdom");
 const { resolve } = require("path");
-const { readFile, writeFile } = require("fs-extra");
+const { readFile, writeFile } = require("fs/promises");
 const { exec } = require("child_process");
 const { file } = require("tmp-promise");
 const { Converter } = require("showdown");
