@@ -1,3 +1,4 @@
+import { Gain } from "../../core/context/Gain.js";
 import {
 	InputNode,
 	OutputNode,
@@ -5,10 +6,9 @@ import {
 	ToneAudioNodeOptions,
 } from "../../core/context/ToneAudioNode.js";
 import { NormalRange, PowerOfTwo } from "../../core/type/Units.js";
+import { assert, assertRange } from "../../core/util/Debug.js";
 import { optionsFromArguments } from "../../core/util/Defaults.js";
 import { Split } from "../channel/Split.js";
-import { Gain } from "../../core/context/Gain.js";
-import { assert, assertRange } from "../../core/util/Debug.js";
 
 export type AnalyserType = "fft" | "waveform";
 

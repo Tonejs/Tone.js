@@ -1,5 +1,6 @@
-import { TestAudioBuffer } from "../../../test/helper/compare/TestAudioBuffer.js";
 import { expect } from "chai";
+
+import { TestAudioBuffer } from "../../../test/helper/compare/TestAudioBuffer.js";
 import { ToneOscillatorNode } from "../../source/oscillator/ToneOscillatorNode.js";
 import { noOp } from "../util/Interface.js";
 import { Offline } from "./Offline.js";

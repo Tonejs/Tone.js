@@ -1,10 +1,10 @@
+import { theWindow } from "../../core/context/AudioContext.js";
+import { Gain } from "../../core/context/Gain.js";
 import {
 	ToneAudioNode,
 	ToneAudioNodeOptions,
 } from "../../core/context/ToneAudioNode.js";
-import { Gain } from "../../core/context/Gain.js";
 import { assert } from "../../core/util/Debug.js";
-import { theWindow } from "../../core/context/AudioContext.js";
 import { optionsFromArguments } from "../../core/util/Defaults.js";
 import { PlaybackState } from "../../core/util/StateTimeline.js";
 

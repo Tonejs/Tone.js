@@ -1,9 +1,9 @@
-import { optionsFromArguments } from "../../core/util/Defaults.js";
 import { Frequency, Hertz, NormalRange, Time } from "../../core/type/Units.js";
-import { Envelope, EnvelopeOptions } from "./Envelope.js";
-import { Scale } from "../../signal/Scale.js";
-import { Pow } from "../../signal/Pow.js";
 import { assertRange } from "../../core/util/Debug.js";
+import { optionsFromArguments } from "../../core/util/Defaults.js";
+import { Pow } from "../../signal/Pow.js";
+import { Scale } from "../../signal/Scale.js";
+import { Envelope, EnvelopeOptions } from "./Envelope.js";
 
 export interface FrequencyEnvelopeOptions extends EnvelopeOptions {
 	baseFrequency: Frequency;

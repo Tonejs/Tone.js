@@ -1,9 +1,10 @@
 import { expect } from "chai";
+
 import { connectFrom } from "../../../test/helper/Connect.js";
-import { Recorder } from "./Recorder.js";
 import { Context } from "../../core/context/Context.js";
 import { ToneWithContext } from "../../core/context/ToneWithContext.js";
 import { Synth } from "../../instrument/Synth.js";
+import { Recorder } from "./Recorder.js";
 
 describe("Recorder", () => {
 	context("basic", () => {

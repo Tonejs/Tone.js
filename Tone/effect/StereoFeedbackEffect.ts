@@ -1,10 +1,10 @@
-import { StereoEffect, StereoEffectOptions } from "./StereoEffect.js";
-import { NormalRange } from "../core/type/Units.js";
-import { Signal } from "../signal/Signal.js";
-import { Gain } from "../core/context/Gain.js";
-import { readOnly } from "../core/util/Interface.js";
-import { Split } from "../component/channel/Split.js";
 import { Merge } from "../component/channel/Merge.js";
+import { Split } from "../component/channel/Split.js";
+import { Gain } from "../core/context/Gain.js";
+import { NormalRange } from "../core/type/Units.js";
+import { readOnly } from "../core/util/Interface.js";
+import { Signal } from "../signal/Signal.js";
+import { StereoEffect, StereoEffectOptions } from "./StereoEffect.js";
 
 export interface StereoFeedbackEffectOptions extends StereoEffectOptions {
 	feedback: NormalRange;

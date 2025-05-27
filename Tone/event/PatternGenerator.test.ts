@@ -1,4 +1,5 @@
 import { expect } from "chai";
+
 import { PatternGenerator } from "./PatternGenerator.js";
 
 describe("PatternGenerator", () => {

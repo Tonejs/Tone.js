@@ -1,9 +1,9 @@
 import { BasicTests } from "../../test/helper/Basic.js";
 import { connectFrom, connectTo } from "../../test/helper/Connect.js";
 import { ConstantOutput } from "../../test/helper/ConstantOutput.js";
-import { Zero } from "./Zero.js";
 import { GainToAudio } from "./GainToAudio.js";
 import { Signal } from "./Signal.js";
+import { Zero } from "./Zero.js";
 
 describe("GainToAudio", () => {
 	BasicTests(GainToAudio);

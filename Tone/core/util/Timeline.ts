@@ -1,7 +1,7 @@
 import { Tone } from "../Tone.js";
 import { Seconds } from "../type/Units.js";
-import { optionsFromArguments } from "./Defaults.js";
 import { assert } from "./Debug.js";
+import { optionsFromArguments } from "./Defaults.js";
 import { EQ, GT, GTE, LT } from "./Math.js";
 
 type TimelineSearchParam = "ticks" | "time";

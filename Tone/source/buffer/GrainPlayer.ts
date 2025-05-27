@@ -1,12 +1,12 @@
-import { Source, SourceOptions } from "../Source.js";
-import { noOp } from "../../core/util/Interface.js";
-import { ToneAudioBuffer } from "../../core/context/ToneAudioBuffer.js";
-import { defaultArg, optionsFromArguments } from "../../core/util/Defaults.js";
 import { Clock } from "../../core/clock/Clock.js";
-import { Cents, Positive, Seconds, Time } from "../../core/type/Units.js";
-import { ToneBufferSource } from "./ToneBufferSource.js";
+import { ToneAudioBuffer } from "../../core/context/ToneAudioBuffer.js";
 import { intervalToFrequencyRatio } from "../../core/type/Conversions.js";
+import { Cents, Positive, Seconds, Time } from "../../core/type/Units.js";
 import { assertRange } from "../../core/util/Debug.js";
+import { defaultArg, optionsFromArguments } from "../../core/util/Defaults.js";
+import { noOp } from "../../core/util/Interface.js";
+import { Source, SourceOptions } from "../Source.js";
+import { ToneBufferSource } from "./ToneBufferSource.js";
 
 interface GrainPlayerOptions extends SourceOptions {
 	onload: () => void;

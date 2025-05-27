@@ -1,4 +1,5 @@
 import { expect } from "chai";
+
 import { BasicTests } from "../../../test/helper/Basic.js";
 import { ConstantOutput } from "../../../test/helper/ConstantOutput.js";
 import { Signal } from "../../signal/Signal.js";

@@ -1,10 +1,5 @@
-import { Monophonic, MonophonicOptions } from "./Monophonic.js";
-import { MonoSynth, MonoSynthOptions } from "./MonoSynth.js";
-import { Signal } from "../signal/Signal.js";
-import { readOnly, RecursivePartial } from "../core/util/Interface.js";
-import { LFO } from "../source/oscillator/LFO.js";
 import { Gain } from "../core/context/Gain.js";
-import { Multiply } from "../signal/Multiply.js";
+import { Param } from "../core/context/Param.js";
 import {
 	Frequency,
 	NormalRange,
@@ -17,7 +12,12 @@ import {
 	omitFromObject,
 	optionsFromArguments,
 } from "../core/util/Defaults.js";
-import { Param } from "../core/context/Param.js";
+import { readOnly, RecursivePartial } from "../core/util/Interface.js";
+import { Multiply } from "../signal/Multiply.js";
+import { Signal } from "../signal/Signal.js";
+import { LFO } from "../source/oscillator/LFO.js";
+import { Monophonic, MonophonicOptions } from "./Monophonic.js";
+import { MonoSynth, MonoSynthOptions } from "./MonoSynth.js";
 
 export interface DuoSynthOptions extends MonophonicOptions {
 	voice0: Omit<MonoSynthOptions, keyof MonophonicOptions>;

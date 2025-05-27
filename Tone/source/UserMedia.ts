@@ -1,3 +1,5 @@
+import { Volume } from "../component/channel/Volume.js";
+import { Param } from "../core/context/Param.js";
 import {
 	connect,
 	OutputNode,
@@ -5,10 +7,8 @@ import {
 	ToneAudioNodeOptions,
 } from "../core/context/ToneAudioNode.js";
 import { Decibels } from "../core/type/Units.js";
-import { Volume } from "../component/channel/Volume.js";
-import { optionsFromArguments } from "../core/util/Defaults.js";
 import { assert } from "../core/util/Debug.js";
-import { Param } from "../core/context/Param.js";
+import { optionsFromArguments } from "../core/util/Defaults.js";
 import { readOnly } from "../core/util/Interface.js";
 import { isDefined, isNumber } from "../core/util/TypeCheck.js";
 

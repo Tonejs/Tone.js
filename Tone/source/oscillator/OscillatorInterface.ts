@@ -1,3 +1,4 @@
+import { OfflineContext } from "../../core/context/OfflineContext.js";
 import {
 	AudioRange,
 	Cents,
@@ -8,7 +9,6 @@ import {
 import { Omit } from "../../core/util/Interface.js";
 import { Signal } from "../../signal/Signal.js";
 import { SourceOptions } from "../Source.js";
-import { OfflineContext } from "../../core/context/OfflineContext.js";
 
 /**
  * The common interface of all Oscillators

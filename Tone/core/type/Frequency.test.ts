@@ -1,4 +1,6 @@
 import { expect } from "chai";
+import { Midi as TonalMidi, Note } from "tonal";
+
 import { BasicTests } from "../../../test/helper/Basic.js";
 import { Offline } from "../../../test/helper/Offline.js";
 import { getContext } from "../Global.js";
@@ -7,7 +9,6 @@ import { Midi } from "./Midi.js";
 import { Ticks } from "./Ticks.js";
 import { Time } from "./Time.js";
 import { TransportTime } from "./TransportTime.js";
-import { Note, Midi as TonalMidi } from "tonal";
 
 describe("FrequencyClass", () => {
 	BasicTests(Frequency);

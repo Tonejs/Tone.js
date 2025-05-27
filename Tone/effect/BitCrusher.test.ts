@@ -1,10 +1,11 @@
-import { BitCrusher } from "./BitCrusher.js";
+import { expect } from "chai";
+
+import { BasicTests } from "../../test/helper/Basic.js";
+import { CompareToFile } from "../../test/helper/CompareToFile.js";
+import { EffectTests } from "../../test/helper/EffectTests.js";
 import { FeedbackCombFilter } from "../component/filter/FeedbackCombFilter.js";
 import { Oscillator } from "../source/oscillator/Oscillator.js";
-import { BasicTests } from "../../test/helper/Basic.js";
-import { EffectTests } from "../../test/helper/EffectTests.js";
-import { CompareToFile } from "../../test/helper/CompareToFile.js";
-import { expect } from "chai";
+import { BitCrusher } from "./BitCrusher.js";
 
 describe("BitCrusher", () => {
 	BasicTests(BitCrusher);

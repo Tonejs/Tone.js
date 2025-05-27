@@ -1,10 +1,10 @@
 import { getContext } from "../Global.js";
 import { Tone } from "../Tone.js";
 import { Samples, Seconds } from "../type/Units.js";
+import { assert } from "../util/Debug.js";
 import { optionsFromArguments } from "../util/Defaults.js";
 import { noOp } from "../util/Interface.js";
 import { isArray, isNumber, isString } from "../util/TypeCheck.js";
-import { assert } from "../util/Debug.js";
 
 interface ToneAudioBufferOptions {
 	url?: string | AudioBuffer | ToneAudioBuffer;

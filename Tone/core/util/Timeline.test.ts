@@ -1,4 +1,5 @@
 import { expect } from "chai";
+
 import { Timeline } from "./Timeline.js";
 
 interface StateTimelineEvent {

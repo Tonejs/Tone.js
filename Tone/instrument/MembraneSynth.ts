@@ -1,10 +1,10 @@
 import { FrequencyClass } from "../core/type/Frequency.js";
 import { Frequency, Positive, Time } from "../core/type/Units.js";
+import { range, timeRange } from "../core/util/Decorator.js";
 import { deepMerge, optionsFromArguments } from "../core/util/Defaults.js";
 import { readOnly, RecursivePartial } from "../core/util/Interface.js";
 import { Monophonic } from "./Monophonic.js";
 import { Synth, SynthOptions } from "./Synth.js";
-import { range, timeRange } from "../core/util/Decorator.js";
 
 export interface MembraneSynthOptions extends SynthOptions {
 	pitchDecay: Time;

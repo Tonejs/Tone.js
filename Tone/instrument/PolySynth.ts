@@ -6,6 +6,7 @@ import {
 	Seconds,
 	Time,
 } from "../core/type/Units.js";
+import { assert, warn } from "../core/util/Debug.js";
 import {
 	deepMerge,
 	omitFromObject,
@@ -13,15 +14,14 @@ import {
 } from "../core/util/Defaults.js";
 import { RecursivePartial } from "../core/util/Interface.js";
 import { isArray, isNumber } from "../core/util/TypeCheck.js";
+import { AMSynth, AMSynthOptions } from "./AMSynth.js";
+import { FMSynth, FMSynthOptions } from "./FMSynth.js";
 import { Instrument, InstrumentOptions } from "./Instrument.js";
 import { MembraneSynth, MembraneSynthOptions } from "./MembraneSynth.js";
-import { FMSynth, FMSynthOptions } from "./FMSynth.js";
-import { AMSynth, AMSynthOptions } from "./AMSynth.js";
-import { MonoSynth, MonoSynthOptions } from "./MonoSynth.js";
 import { MetalSynth, MetalSynthOptions } from "./MetalSynth.js";
 import { Monophonic } from "./Monophonic.js";
+import { MonoSynth, MonoSynthOptions } from "./MonoSynth.js";
 import { Synth, SynthOptions } from "./Synth.js";
-import { assert, warn } from "../core/util/Debug.js";
 
 type VoiceConstructor<V> = {
 	getDefaults: () => VoiceOptions<V>;

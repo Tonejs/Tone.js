@@ -1,16 +1,18 @@
-import { expect } from "chai";
 import "../../Tone/core/clock/Transport.js";
 import "../../Tone/core/context/Destination.js";
-import { OfflineContext } from "../../Tone/core/context/OfflineContext.js";
-import { ToneWithContext } from "../../Tone/core/context/ToneWithContext.js";
-import { Tone } from "../../Tone/core/Tone.js";
-import { ConnectTest } from "./Connect.js";
-import { setLogger } from "../../Tone/core/util/Debug.js";
-import { ToneAudioNode } from "../../Tone/core/context/ToneAudioNode.js";
-import { getContext } from "../../Tone/core/Global.js";
+
+import { expect } from "chai";
+
 import * as Classes from "../../Tone/classes.js";
-import { isFunction } from "../../Tone/core/util/TypeCheck.js";
+import { OfflineContext } from "../../Tone/core/context/OfflineContext.js";
+import { ToneAudioNode } from "../../Tone/core/context/ToneAudioNode.js";
+import { ToneWithContext } from "../../Tone/core/context/ToneWithContext.js";
+import { getContext } from "../../Tone/core/Global.js";
+import { Tone } from "../../Tone/core/Tone.js";
+import { setLogger } from "../../Tone/core/util/Debug.js";
 import { noOp } from "../../Tone/core/util/Interface.js";
+import { isFunction } from "../../Tone/core/util/TypeCheck.js";
+import { ConnectTest } from "./Connect.js";
 
 export const testAudioContext = new OfflineContext(1, 1, 11025);
 

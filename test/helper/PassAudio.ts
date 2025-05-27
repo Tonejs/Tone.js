@@ -1,7 +1,8 @@
 import { expect } from "chai";
-import { Offline } from "./Offline.js";
+
 import { ToneAudioNode } from "../../Tone/core/context/ToneAudioNode.js";
 import { Signal } from "../../Tone/signal/Signal.js";
+import { Offline } from "./Offline.js";
 
 /**
  * Make sure that the audio passes from input node

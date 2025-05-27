@@ -7,8 +7,8 @@ import {
 } from "../../core/context/ToneAudioBuffers.js";
 import { OutputNode, ToneAudioNode } from "../../core/context/ToneAudioNode.js";
 import { Decibels, Time } from "../../core/type/Units.js";
-import { optionsFromArguments } from "../../core/util/Defaults.js";
 import { assert } from "../../core/util/Debug.js";
+import { optionsFromArguments } from "../../core/util/Defaults.js";
 import { noOp, readOnly } from "../../core/util/Interface.js";
 import { BasicPlaybackState } from "../../core/util/StateTimeline.js";
 import { Source, SourceOptions } from "../Source.js";

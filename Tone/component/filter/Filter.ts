@@ -4,11 +4,11 @@ import {
 	ToneAudioNode,
 } from "../../core/context/ToneAudioNode.js";
 import { Frequency } from "../../core/type/Units.js";
+import { assert } from "../../core/util/Debug.js";
 import { optionsFromArguments } from "../../core/util/Defaults.js";
 import { readOnly, writable } from "../../core/util/Interface.js";
 import { isNumber } from "../../core/util/TypeCheck.js";
 import { Signal } from "../../signal/Signal.js";
-import { assert } from "../../core/util/Debug.js";
 import { BiquadFilter, BiquadFilterOptions } from "./BiquadFilter.js";
 
 export type FilterRollOff = -12 | -24 | -48 | -96;

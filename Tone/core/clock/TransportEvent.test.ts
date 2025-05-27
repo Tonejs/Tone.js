@@ -1,4 +1,5 @@
 import { expect } from "chai";
+
 import { Offline } from "../../../test/helper/Offline.js";
 import { TransportClass } from "./Transport.js";
 import { TransportEvent } from "./TransportEvent.js";

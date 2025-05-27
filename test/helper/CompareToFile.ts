@@ -1,7 +1,7 @@
-import { Compare, TestAudioBuffer } from "./compare/index.js";
-import { ToneAudioBuffer } from "../../Tone/core/context/ToneAudioBuffer.js";
-import { Offline } from "../../Tone/core/context/Offline.js";
 import { Context } from "../../Tone/core/context/Context.js";
+import { Offline } from "../../Tone/core/context/Offline.js";
+import { ToneAudioBuffer } from "../../Tone/core/context/ToneAudioBuffer.js";
+import { Compare, TestAudioBuffer } from "./compare/index.js";
 
 /**
  * Load a file for comparison

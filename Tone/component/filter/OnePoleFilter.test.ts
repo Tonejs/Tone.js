@@ -1,10 +1,11 @@
-import { OnePoleFilter } from "./OnePoleFilter.js";
-import { BasicTests } from "../../../test/helper/Basic.js";
-import { PassAudio } from "../../../test/helper/PassAudio.js";
-import { Oscillator } from "../../source/oscillator/Oscillator.js";
 import { expect } from "chai";
+
+import { BasicTests } from "../../../test/helper/Basic.js";
 import { CompareToFile } from "../../../test/helper/CompareToFile.js";
 import { atTime, Offline } from "../../../test/helper/Offline.js";
+import { PassAudio } from "../../../test/helper/PassAudio.js";
+import { Oscillator } from "../../source/oscillator/Oscillator.js";
+import { OnePoleFilter } from "./OnePoleFilter.js";
 
 describe("OnePoleFilter", () => {
 	BasicTests(OnePoleFilter);

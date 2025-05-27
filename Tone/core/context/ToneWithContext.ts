@@ -1,3 +1,4 @@
+import type { TransportClass } from "../clock/Transport.js";
 import { getContext } from "../Global.js";
 import { Tone } from "../Tone.js";
 import { FrequencyClass } from "../type/Frequency.js";
@@ -19,7 +20,6 @@ import {
 	isUndef,
 } from "../util/TypeCheck.js";
 import { BaseContext } from "./BaseContext.js";
-import type { TransportClass } from "../clock/Transport.js";
 
 /**
  * A unit which process audio

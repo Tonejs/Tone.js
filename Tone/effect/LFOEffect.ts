@@ -1,10 +1,10 @@
-import { Effect, EffectOptions } from "../effect/Effect.js";
+import { Param } from "../core/context/Param.js";
 import { Frequency, NormalRange, Time } from "../core/type/Units.js";
+import { readOnly } from "../core/util/Interface.js";
+import { Effect, EffectOptions } from "../effect/Effect.js";
+import { Signal } from "../signal/Signal.js";
 import { LFO } from "../source/oscillator/LFO.js";
 import { ToneOscillatorType } from "../source/oscillator/OscillatorInterface.js";
-import { Signal } from "../signal/Signal.js";
-import { readOnly } from "../core/util/Interface.js";
-import { Param } from "../core/context/Param.js";
 
 export interface LFOEffectOptions extends EffectOptions {
 	frequency: Frequency;

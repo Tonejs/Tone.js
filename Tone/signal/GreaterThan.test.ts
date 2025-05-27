@@ -1,5 +1,5 @@
-import { ConstantOutput } from "../../test/helper/ConstantOutput.js";
 import { BasicTests } from "../../test/helper/Basic.js";
+import { ConstantOutput } from "../../test/helper/ConstantOutput.js";
 import { GreaterThan } from "./GreaterThan.js";
 import { Signal } from "./Signal.js";
 

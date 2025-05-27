@@ -1,13 +1,14 @@
 import { expect } from "chai";
+
 import { ConstantOutput } from "../../../test/helper/ConstantOutput.js";
 import { Offline } from "../../../test/helper/Offline.js";
 import { TransportClass } from "../clock/Transport.js";
 import { getContext } from "../Global.js";
+import { DrawClass } from "../util/Draw.js";
 import { createAudioContext } from "./AudioContext.js";
 import { Context } from "./Context.js";
 import { DestinationClass } from "./Destination.js";
 import { ListenerClass } from "./Listener.js";
-import { DrawClass } from "../util/Draw.js";
 import { connect } from "./ToneAudioNode.js";
 
 describe("Context", () => {
