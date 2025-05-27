@@ -105,6 +105,7 @@ export class Ticker {
 		if (this._type === "worker") {
 			try {
 				this._createWorker();
+				// eslint-disable-next-line unused-imports/no-unused-vars
 			} catch (e) {
 				// workers not supported, fallback to timeout
 				this._type = "timeout";
