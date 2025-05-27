@@ -55,9 +55,6 @@ const htmlFiles = globSync(
 	}
 );
 
-console.log(htmlFiles);
-process.exit();
-
 async function main() {
 	for (let i = 0; i < htmlFiles.length; i++) {
 		const path = htmlFiles[i];
