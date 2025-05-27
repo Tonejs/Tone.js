@@ -1,9 +1,10 @@
-import * as Tone from "./index.js";
 import { expect } from "chai";
-import { DestinationClass } from "./core/context/Destination.js";
-import { Context } from "./core/context/Context.js";
+
 import { TransportClass } from "./core/clock/Transport.js";
+import { Context } from "./core/context/Context.js";
+import { DestinationClass } from "./core/context/Destination.js";
 import { DrawClass } from "./core/util/Draw.js";
+import * as Tone from "./index.js";
 
 describe("Tone", () => {
 	it("has 'now' and 'immediate' methods", () => {

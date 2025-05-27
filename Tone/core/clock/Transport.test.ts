@@ -1,14 +1,16 @@
-import { expect } from "chai";
-import { atTime, Offline, whenBetween } from "../../../test/helper/Offline.js";
-import { Time } from "../type/Time.js";
-import { noOp } from "../util/Interface.js";
-import { Signal } from "../../signal/Signal.js";
-import { TransportTime } from "../type/TransportTime.js";
-import { TransportClass } from "./Transport.js";
 // importing for side affects
 import "../context/Destination.js";
+
+import { expect } from "chai";
+
 import { warns } from "../../../test/helper/Basic.js";
+import { atTime, Offline, whenBetween } from "../../../test/helper/Offline.js";
 import { Synth } from "../../instrument/Synth.js";
+import { Signal } from "../../signal/Signal.js";
+import { Time } from "../type/Time.js";
+import { TransportTime } from "../type/TransportTime.js";
+import { noOp } from "../util/Interface.js";
+import { TransportClass } from "./Transport.js";
 
 describe("Transport", () => {
 	context("BPM and timeSignature", () => {

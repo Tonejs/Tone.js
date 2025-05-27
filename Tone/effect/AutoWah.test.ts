@@ -1,9 +1,10 @@
-import { AutoWah } from "./AutoWah.js";
-import { BasicTests } from "../../test/helper/Basic.js";
-import { EffectTests } from "../../test/helper/EffectTests.js";
 import { expect } from "chai";
+
+import { BasicTests } from "../../test/helper/Basic.js";
 import { CompareToFile } from "../../test/helper/CompareToFile.js";
+import { EffectTests } from "../../test/helper/EffectTests.js";
 import { Synth } from "../instrument/Synth.js";
+import { AutoWah } from "./AutoWah.js";
 
 describe("AutoWah", () => {
 	BasicTests(AutoWah);

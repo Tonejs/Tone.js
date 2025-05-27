@@ -1,13 +1,13 @@
 import {
+	onContextClose,
+	onContextInit,
+} from "../context/ContextInitialization.js";
+import {
 	ToneWithContext,
 	ToneWithContextOptions,
 } from "../context/ToneWithContext.js";
 import { Seconds, Time } from "../type/Units.js";
 import { Timeline, TimelineEvent } from "./Timeline.js";
-import {
-	onContextClose,
-	onContextInit,
-} from "../context/ContextInitialization.js";
 
 interface DrawEvent extends TimelineEvent {
 	callback: () => void;

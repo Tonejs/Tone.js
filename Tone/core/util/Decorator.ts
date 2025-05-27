@@ -1,5 +1,5 @@
-import { assertRange } from "./Debug.js";
 import { Time } from "../type/Units.js";
+import { assertRange } from "./Debug.js";
 
 /**
  * Assert that the number is in the given range.

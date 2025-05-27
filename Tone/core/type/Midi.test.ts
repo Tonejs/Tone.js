@@ -1,4 +1,6 @@
 import { expect } from "chai";
+import { Midi as TonalMidi } from "tonal";
+
 import { BasicTests } from "../../../test/helper/Basic.js";
 import { Offline } from "../../../test/helper/Offline.js";
 import { Frequency } from "./Frequency.js";
@@ -6,7 +8,6 @@ import { Midi, MidiClass } from "./Midi.js";
 import { Ticks } from "./Ticks.js";
 import { Time } from "./Time.js";
 import { TransportTime } from "./TransportTime.js";
-import { Midi as TonalMidi } from "tonal";
 
 describe("MidiClass", () => {
 	BasicTests(MidiClass);

@@ -5,6 +5,7 @@ import {
 	Seconds,
 	Time,
 } from "../../core/type/Units.js";
+import { assertRange } from "../../core/util/Debug.js";
 import { optionsFromArguments } from "../../core/util/Defaults.js";
 import { noOp, readOnly } from "../../core/util/Interface.js";
 import { Signal } from "../../signal/Signal.js";
@@ -18,7 +19,6 @@ import {
 	ToneOscillatorInterface,
 	ToneOscillatorType,
 } from "./OscillatorInterface.js";
-import { assertRange } from "../../core/util/Debug.js";
 
 export { FatOscillatorOptions } from "./OscillatorInterface.js";
 

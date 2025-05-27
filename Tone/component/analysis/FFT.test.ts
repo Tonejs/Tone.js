@@ -1,4 +1,5 @@
 import { expect } from "chai";
+
 import { BasicTests } from "../../../test/helper/Basic.js";
 import { Noise } from "../../source/Noise.js";
 import { FFT } from "./FFT.js";

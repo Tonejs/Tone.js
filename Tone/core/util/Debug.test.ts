@@ -1,9 +1,10 @@
 import { expect } from "chai";
-import { ToneOscillatorNode } from "../../source/oscillator/ToneOscillatorNode.js";
-import { assertRange, setLogger } from "./Debug.js";
-import { theWindow } from "../context/AudioContext.js";
+
 import { Oscillator } from "../../source/index.js";
+import { ToneOscillatorNode } from "../../source/oscillator/ToneOscillatorNode.js";
+import { theWindow } from "../context/AudioContext.js";
 import { Context } from "../context/Context.js";
+import { assertRange, setLogger } from "./Debug.js";
 
 describe("Debug", () => {
 	it("can log a class when that class is set to 'debug'", () => {

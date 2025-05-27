@@ -1,10 +1,10 @@
+import type { BaseToneOptions } from "../Tone.js";
 import {
 	isAudioBuffer,
 	isAudioNode,
 	isAudioParam,
 } from "./AdvancedTypeCheck.js";
 import { isDefined, isObject, isUndef } from "./TypeCheck.js";
-import type { BaseToneOptions } from "../Tone.js";
 
 /**
  * Some objects should not be merged

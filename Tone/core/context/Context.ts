@@ -1,7 +1,10 @@
 import { Ticker, TickerClockSource } from "../clock/Ticker.js";
+import type { TransportClass as Transport } from "../clock/Transport.js";
 import { Seconds } from "../type/Units.js";
 import { isAudioContext } from "../util/AdvancedTypeCheck.js";
+import { assert } from "../util/Debug.js";
 import { optionsFromArguments } from "../util/Defaults.js";
+import type { DrawClass as Draw } from "../util/Draw.js";
 import { Timeline } from "../util/Timeline.js";
 import { isDefined } from "../util/TypeCheck.js";
 import {
@@ -9,12 +12,9 @@ import {
 	createAudioContext,
 	createAudioWorkletNode,
 } from "./AudioContext.js";
-import { closeContext, initializeContext } from "./ContextInitialization.js";
 import { BaseContext, ContextLatencyHint } from "./BaseContext.js";
-import { assert } from "../util/Debug.js";
-import type { DrawClass as Draw } from "../util/Draw.js";
+import { closeContext, initializeContext } from "./ContextInitialization.js";
 import type { DestinationClass as Destination } from "./Destination.js";
-import type { TransportClass as Transport } from "../clock/Transport.js";
 import type { ListenerClass as Listener } from "./Listener.js";
 
 export interface ContextOptions {

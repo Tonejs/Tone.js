@@ -1,13 +1,13 @@
-import { Time } from "../../core/type/Units.js";
 import {
 	InputNode,
 	OutputNode,
 	ToneAudioNode,
 	ToneAudioNodeOptions,
 } from "../../core/context/ToneAudioNode.js";
+import { Time } from "../../core/type/Units.js";
 import { optionsFromArguments } from "../../core/util/Defaults.js";
-import { OnePoleFilter } from "../filter/OnePoleFilter.js";
 import { Abs } from "../../signal/Abs.js";
+import { OnePoleFilter } from "../filter/OnePoleFilter.js";
 
 export interface FollowerOptions extends ToneAudioNodeOptions {
 	smoothing: Time;

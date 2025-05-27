@@ -1,6 +1,7 @@
-import { Effect, EffectOptions } from "./Effect.js";
-import { Filter } from "../component/filter/Filter.js";
 import { Follower } from "../component/analysis/Follower.js";
+import { Filter } from "../component/filter/Filter.js";
+import { Gain } from "../core/context/Gain.js";
+import { dbToGain, gainToDb } from "../core/type/Conversions.js";
 import {
 	Decibels,
 	Frequency,
@@ -10,11 +11,10 @@ import {
 	Time,
 } from "../core/type/Units.js";
 import { optionsFromArguments } from "../core/util/Defaults.js";
-import { Gain } from "../core/context/Gain.js";
-import { dbToGain, gainToDb } from "../core/type/Conversions.js";
+import { readOnly } from "../core/util/Interface.js";
 import { ScaleExp } from "../signal/ScaleExp.js";
 import { Signal } from "../signal/Signal.js";
-import { readOnly } from "../core/util/Interface.js";
+import { Effect, EffectOptions } from "./Effect.js";
 
 export interface AutoWahOptions extends EffectOptions {
 	baseFrequency: Frequency;

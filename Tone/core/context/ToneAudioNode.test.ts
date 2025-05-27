@@ -1,11 +1,12 @@
 import { expect } from "chai";
-import { Merge } from "../../component/index.js";
+
+import { Offline } from "../../../test/helper/Offline.js";
+import { PassAudio } from "../../../test/helper/PassAudio.js";
 import { Split } from "../../component/channel/Split.js";
+import { Merge } from "../../component/index.js";
 import { Oscillator } from "../../source/index.js";
 import { Gain } from "./Gain.js";
 import { connect, disconnect, fanIn } from "./ToneAudioNode.js";
-import { PassAudio } from "../../../test/helper/PassAudio.js";
-import { Offline } from "../../../test/helper/Offline.js";
 
 describe("ToneAudioNode", () => {
 	context("constructor", () => {

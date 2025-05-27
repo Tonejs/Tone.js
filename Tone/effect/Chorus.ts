@@ -1,7 +1,4 @@
-import {
-	StereoFeedbackEffect,
-	StereoFeedbackEffectOptions,
-} from "../effect/StereoFeedbackEffect.js";
+import { Delay } from "../core/context/Delay.js";
 import {
 	Degrees,
 	Frequency,
@@ -10,12 +7,15 @@ import {
 	Seconds,
 	Time,
 } from "../core/type/Units.js";
-import { ToneOscillatorType } from "../source/oscillator/OscillatorInterface.js";
 import { optionsFromArguments } from "../core/util/Defaults.js";
-import { LFO } from "../source/oscillator/LFO.js";
-import { Delay } from "../core/context/Delay.js";
-import { Signal } from "../signal/Signal.js";
 import { readOnly } from "../core/util/Interface.js";
+import {
+	StereoFeedbackEffect,
+	StereoFeedbackEffectOptions,
+} from "../effect/StereoFeedbackEffect.js";
+import { Signal } from "../signal/Signal.js";
+import { LFO } from "../source/oscillator/LFO.js";
+import { ToneOscillatorType } from "../source/oscillator/OscillatorInterface.js";
 
 export interface ChorusOptions extends StereoFeedbackEffectOptions {
 	frequency: Frequency;

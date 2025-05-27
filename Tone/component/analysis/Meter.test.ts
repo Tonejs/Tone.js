@@ -1,11 +1,12 @@
 import { expect } from "chai";
+
 import { BasicTests, warns } from "../../../test/helper/Basic.js";
 import { PassAudio } from "../../../test/helper/PassAudio.js";
 import { Signal } from "../../signal/Signal.js";
 import { Oscillator } from "../../source/oscillator/Oscillator.js";
-import { Meter } from "./Meter.js";
-import { Panner } from "../channel/Panner.js";
 import { Merge } from "../channel/Merge.js";
+import { Panner } from "../channel/Panner.js";
+import { Meter } from "./Meter.js";
 
 describe("Meter", () => {
 	BasicTests(Meter);

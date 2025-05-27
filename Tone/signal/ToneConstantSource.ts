@@ -1,5 +1,5 @@
-import { connect } from "../core/context/ToneAudioNode.js";
 import { Param } from "../core/context/Param.js";
+import { connect } from "../core/context/ToneAudioNode.js";
 import { Seconds, Time, UnitMap, UnitName } from "../core/type/Units.js";
 import { optionsFromArguments } from "../core/util/Defaults.js";
 import {

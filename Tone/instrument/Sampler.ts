@@ -10,6 +10,8 @@ import {
 	Note,
 	Time,
 } from "../core/type/Units.js";
+import { assert } from "../core/util/Debug.js";
+import { timeRange } from "../core/util/Decorator.js";
 import { optionsFromArguments } from "../core/util/Defaults.js";
 import { noOp } from "../core/util/Interface.js";
 import { isArray, isNote, isNumber } from "../core/util/TypeCheck.js";
@@ -18,8 +20,6 @@ import {
 	ToneBufferSource,
 	ToneBufferSourceCurve,
 } from "../source/buffer/ToneBufferSource.js";
-import { timeRange } from "../core/util/Decorator.js";
-import { assert } from "../core/util/Debug.js";
 
 interface SamplesMap {
 	[note: string]: ToneAudioBuffer | AudioBuffer | string;

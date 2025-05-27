@@ -1,10 +1,10 @@
+import { FeedbackCombFilter } from "../component/filter/FeedbackCombFilter.js";
 import { NormalRange } from "../core/type/Units.js";
-import { StereoEffect, StereoEffectOptions } from "./StereoEffect.js";
 import { optionsFromArguments } from "../core/util/Defaults.js";
+import { readOnly } from "../core/util/Interface.js";
 import { Scale } from "../signal/Scale.js";
 import { Signal } from "../signal/Signal.js";
-import { FeedbackCombFilter } from "../component/filter/FeedbackCombFilter.js";
-import { readOnly } from "../core/util/Interface.js";
+import { StereoEffect, StereoEffectOptions } from "./StereoEffect.js";
 
 export interface JCReverbOptions extends StereoEffectOptions {
 	roomSize: NormalRange;

@@ -1,4 +1,5 @@
 import { expect } from "chai";
+
 import { Ticker } from "./Ticker.js";
 
 describe("Ticker", () => {

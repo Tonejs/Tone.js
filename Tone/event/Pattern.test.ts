@@ -1,8 +1,9 @@
+import { expect } from "chai";
+
 import { BasicTests } from "../../test/helper/Basic.js";
-import { Pattern } from "./Pattern.js";
 import { Offline } from "../../test/helper/Offline.js";
 import { Time } from "../core/type/Time.js";
-import { expect } from "chai";
+import { Pattern } from "./Pattern.js";
 
 describe("Pattern", () => {
 	BasicTests(Pattern);

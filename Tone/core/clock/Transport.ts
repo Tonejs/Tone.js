@@ -1,7 +1,7 @@
+import { ToneAudioNode } from "../../core/context/ToneAudioNode.js";
 import { TimeClass } from "../../core/type/Time.js";
 import { PlaybackState } from "../../core/util/StateTimeline.js";
 import { TimelineValue } from "../../core/util/TimelineValue.js";
-import { ToneAudioNode } from "../../core/context/ToneAudioNode.js";
 import { Pow } from "../../signal/Pow.js";
 import { Signal } from "../../signal/Signal.js";
 import {

@@ -1,6 +1,6 @@
 import { Tone } from "../Tone.js";
-import { isDefined } from "./TypeCheck.js";
 import { assert } from "./Debug.js";
+import { isDefined } from "./TypeCheck.js";
 
 /**
  * An IntervalTimeline event must have a time and duration

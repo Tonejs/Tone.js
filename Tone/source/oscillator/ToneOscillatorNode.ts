@@ -1,9 +1,9 @@
-import { connect } from "../../core/context/ToneAudioNode.js";
 import { Param } from "../../core/context/Param.js";
+import { connect } from "../../core/context/ToneAudioNode.js";
 import { Cents, Frequency, Seconds, Time } from "../../core/type/Units.js";
 import { optionsFromArguments } from "../../core/util/Defaults.js";
-import { OneShotSource, OneShotSourceOptions } from "../OneShotSource.js";
 import { readOnly } from "../../core/util/Interface.js";
+import { OneShotSource, OneShotSourceOptions } from "../OneShotSource.js";
 
 export interface ToneOscillatorNodeOptions extends OneShotSourceOptions {
 	frequency: Frequency;

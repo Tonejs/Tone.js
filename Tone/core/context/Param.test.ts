@@ -1,7 +1,10 @@
-import { Compare, Plot } from "../../../test/helper/compare/index.js";
 import { expect } from "chai";
+
 import { BasicTests, testAudioContext } from "../../../test/helper/Basic.js";
+import { Compare, Plot } from "../../../test/helper/compare/index.js";
 import { atTime, Offline } from "../../../test/helper/Offline.js";
+import { Signal } from "../../signal/Signal.js";
+import { getContext } from "../Global.js";
 import {
 	BPM,
 	Decibels,
@@ -12,8 +15,6 @@ import {
 	Unit,
 	UnitName,
 } from "../type/Units.js";
-import { Signal } from "../../signal/Signal.js";
-import { getContext } from "../Global.js";
 import { Param } from "./Param.js";
 import { connect } from "./ToneAudioNode.js";
 

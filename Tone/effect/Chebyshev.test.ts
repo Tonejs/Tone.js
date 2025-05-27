@@ -1,9 +1,10 @@
-import { Chebyshev } from "./Chebyshev.js";
-import { BasicTests } from "../../test/helper/Basic.js";
-import { EffectTests } from "../../test/helper/EffectTests.js";
 import { expect } from "chai";
+
+import { BasicTests } from "../../test/helper/Basic.js";
 import { CompareToFile } from "../../test/helper/CompareToFile.js";
+import { EffectTests } from "../../test/helper/EffectTests.js";
 import { Synth } from "../instrument/index.js";
+import { Chebyshev } from "./Chebyshev.js";
 
 describe("Chebyshev", () => {
 	BasicTests(Chebyshev);

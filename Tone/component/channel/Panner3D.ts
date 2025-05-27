@@ -1,3 +1,5 @@
+import "../../core/context/Listener.js";
+
 import { Param } from "../../core/context/Param.js";
 import {
 	ToneAudioNode,
@@ -5,7 +7,6 @@ import {
 } from "../../core/context/ToneAudioNode.js";
 import { Degrees, GainFactor } from "../../core/type/Units.js";
 import { optionsFromArguments } from "../../core/util/Defaults.js";
-import "../../core/context/Listener.js";
 
 export interface Panner3DOptions extends ToneAudioNodeOptions {
 	coneInnerAngle: Degrees;

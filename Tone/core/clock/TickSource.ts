@@ -5,6 +5,7 @@ import {
 import { Seconds, Ticks, Time } from "../type/Units.js";
 import { optionsFromArguments } from "../util/Defaults.js";
 import { readOnly } from "../util/Interface.js";
+import { EQ } from "../util/Math.js";
 import {
 	PlaybackState,
 	StateTimeline,
@@ -13,7 +14,6 @@ import {
 import { Timeline, TimelineEvent } from "../util/Timeline.js";
 import { isDefined } from "../util/TypeCheck.js";
 import { TickSignal } from "./TickSignal.js";
-import { EQ } from "../util/Math.js";
 
 interface TickSourceOptions extends ToneWithContextOptions {
 	frequency: number;

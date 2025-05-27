@@ -1,11 +1,11 @@
-import { StereoEffect, StereoEffectOptions } from "./StereoEffect.js";
-import { LFO } from "../source/oscillator/LFO.js";
 import { Gain } from "../core/context/Gain.js";
-import { Signal } from "../signal/Signal.js";
 import { Degrees, Frequency, NormalRange, Time } from "../core/type/Units.js";
-import { ToneOscillatorType } from "../source/oscillator/OscillatorInterface.js";
 import { optionsFromArguments } from "../core/util/Defaults.js";
 import { readOnly } from "../core/util/Interface.js";
+import { Signal } from "../signal/Signal.js";
+import { LFO } from "../source/oscillator/LFO.js";
+import { ToneOscillatorType } from "../source/oscillator/OscillatorInterface.js";
+import { StereoEffect, StereoEffectOptions } from "./StereoEffect.js";
 
 export interface TremoloOptions extends StereoEffectOptions {
 	frequency: Frequency;

@@ -2,15 +2,15 @@ export { getContext, setContext } from "./core/Global.js";
 import { Context } from "./core/context/Context.js";
 export * from "./classes.js";
 export * from "./version.js";
-import { getContext } from "./core/Global.js";
 import { ToneAudioBuffer } from "./core/context/ToneAudioBuffer.js";
+import { getContext } from "./core/Global.js";
 export { start } from "./core/Global.js";
 import { Seconds } from "./core/type/Units.js";
 export { supported } from "./core/context/AudioContext.js";
 import type { TransportClass } from "./core/clock/Transport.js";
 import type { DestinationClass } from "./core/context/Destination.js";
-import type { DrawClass } from "./core/util/Draw.js";
 import type { ListenerClass } from "./core/context/Listener.js";
+import type { DrawClass } from "./core/util/Draw.js";
 
 /**
  * The current audio context time of the global {@link BaseContext}.

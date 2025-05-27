@@ -1,12 +1,12 @@
 import { ToneAudioBuffer } from "../../core/context/ToneAudioBuffer.js";
 import { Positive, Seconds, Time } from "../../core/type/Units.js";
+import { assertRange } from "../../core/util/Debug.js";
+import { timeRange } from "../../core/util/Decorator.js";
 import { defaultArg, optionsFromArguments } from "../../core/util/Defaults.js";
 import { noOp } from "../../core/util/Interface.js";
 import { isUndef } from "../../core/util/TypeCheck.js";
 import { Source, SourceOptions } from "../Source.js";
 import { ToneBufferSource } from "./ToneBufferSource.js";
-import { assertRange } from "../../core/util/Debug.js";
-import { timeRange } from "../../core/util/Decorator.js";
 
 export interface PlayerOptions extends SourceOptions {
 	onload: () => void;

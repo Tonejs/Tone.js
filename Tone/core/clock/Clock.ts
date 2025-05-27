@@ -3,13 +3,13 @@ import {
 	ToneWithContextOptions,
 } from "../context/ToneWithContext.js";
 import { Frequency, Hertz, Seconds, Ticks, Time } from "../type/Units.js";
+import { assertContextRunning } from "../util/Debug.js";
 import { optionsFromArguments } from "../util/Defaults.js";
 import { Emitter } from "../util/Emitter.js";
 import { noOp, readOnly } from "../util/Interface.js";
 import { PlaybackState, StateTimeline } from "../util/StateTimeline.js";
 import { TickSignal } from "./TickSignal.js";
 import { TickSource } from "./TickSource.js";
-import { assertContextRunning } from "../util/Debug.js";
 
 type ClockCallback = (time: Seconds, ticks?: Ticks) => void;
 

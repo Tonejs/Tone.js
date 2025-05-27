@@ -1,8 +1,8 @@
-import { TestAudioBuffer } from "./compare/index.js";
 import { OfflineContext } from "../../Tone/core/context/OfflineContext.js";
 import { getContext, setContext } from "../../Tone/core/Global.js";
 import { Seconds } from "../../Tone/core/type/Units.js";
 import { isArray, isFunction } from "../../Tone/core/util/TypeCheck.js";
+import { TestAudioBuffer } from "./compare/index.js";
 
 type ReturnFunction = (time: Seconds) => void;
 

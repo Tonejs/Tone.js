@@ -1,8 +1,8 @@
-import { SignalOperator, SignalOperatorOptions } from "./SignalOperator.js";
-import { Multiply } from "./Multiply.js";
 import { ToneAudioNode } from "../core/context/ToneAudioNode.js";
-import { WaveShaper } from "./WaveShaper.js";
 import { optionsFromArguments } from "../core/util/Defaults.js";
+import { Multiply } from "./Multiply.js";
+import { SignalOperator, SignalOperatorOptions } from "./SignalOperator.js";
+import { WaveShaper } from "./WaveShaper.js";
 
 export type GreaterThanZeroOptions = SignalOperatorOptions;
 

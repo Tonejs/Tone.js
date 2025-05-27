@@ -1,10 +1,11 @@
+import { expect } from "chai";
+
 import { BasicTests } from "../../../test/helper/Basic.js";
-import { GrainPlayer } from "./GrainPlayer.js";
+import { CompareToFile } from "../../../test/helper/CompareToFile.js";
 import { Offline, whenBetween } from "../../../test/helper/Offline.js";
 import { SourceTests } from "../../../test/helper/SourceTests.js";
 import { ToneAudioBuffer } from "../../core/context/ToneAudioBuffer.js";
-import { CompareToFile } from "../../../test/helper/CompareToFile.js";
-import { expect } from "chai";
+import { GrainPlayer } from "./GrainPlayer.js";
 
 describe("GrainPlayer", () => {
 	const buffer = new ToneAudioBuffer();

@@ -1,9 +1,9 @@
+import { NormalRange } from "../core/type/Units.js";
+import { readOnly } from "../core/util/Interface.js";
 import {
 	StereoFeedbackEffect,
 	StereoFeedbackEffectOptions,
 } from "./StereoFeedbackEffect.js";
-import { NormalRange } from "../core/type/Units.js";
-import { readOnly } from "../core/util/Interface.js";
 
 export interface StereoXFeedbackEffectOptions
 	extends StereoFeedbackEffectOptions {
