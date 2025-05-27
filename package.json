@@ -75,6 +75,7 @@
 		"eslint-plugin-html": "^8.1.2",
 		"eslint-plugin-jsdoc": "^50.6.11",
 		"eslint-plugin-simple-import-sort": "^12.1.1",
+		"eslint-plugin-unused-imports": "^4.1.4",
 		"fft-windowing": "^0.1.4",
 		"fourier-transform": "^1.1.2",
 		"fs-extra": "^8.1.0",
