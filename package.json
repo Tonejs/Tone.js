@@ -15,7 +15,8 @@
 		"Tone"
 	],
 	"scripts": {
-		"build": "npm run increment && rimraf build && npm run ts:build && npm run webpack:build",
+		"remove": "node -e \"fs.rmSync('./build', { recursive: true, force: true })\"",
+		"build": "npm run increment && npm run remove && npm run ts:build && npm run webpack:build",
 		"docs": "node scripts/generate_docs.cjs",
 		"docs:json": "typedoc --options \"./scripts/typedoc.json\" --json \"./docs/tone.json\"",
 		"increment": "node scripts/increment_version.cjs",
@@ -85,7 +86,6 @@
 		"plotly.js-dist": "^2.32.0",
 		"prettier": "^3.2.5",
 		"puppeteer": "^24.2.1",
-		"rimraf": "^5.0.5",
 		"semver": "^5.7.1",
 		"showdown": "^2.1.0",
 		"teoria": "^2.5.0",
