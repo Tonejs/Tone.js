@@ -1,5 +1,5 @@
 const { JSDOM } = require("jsdom");
-const glob = require("glob");
+const { globSync } = require("tinyglobby");
 const { resolve } = require("path");
 const { readFile, writeFile } = require("fs/promises");
 const { exec } = require("child_process");
@@ -46,7 +46,16 @@ async function testExampleString(str) {
 	}
 }
 
-const htmlFiles = glob.sync(resolve(__dirname, "../../examples/*.html"));
+const htmlFiles = globSync(
+	"*.html",
+	{
+		cwd: resolve(__dirname, "../../examples"),
+		absolute: true
+	}
+);
+
+console.log(htmlFiles);
+process.exit();
 
 async function main() {
 	for (let i = 0; i < htmlFiles.length; i++) {
