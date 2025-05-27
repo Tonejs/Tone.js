@@ -3,13 +3,24 @@ import { expect } from "chai";
 import { DrawClass } from "./Draw.js";
 
 describe("Draw", () => {
+	const originalRAF = window.requestAnimationFrame;
+	before(async () => {
+		window.requestAnimationFrame = (callback) => {
+			return setTimeout(callback, 10);
+		};
+	});
+
+	after(() => {
+		window.requestAnimationFrame = originalRAF;
+	});
+
 	it("can schedule a callback at a AudioContext time", (done) => {
 		const draw = new DrawClass();
 		const scheduledTime = draw.now() + 0.2;
 		draw.schedule(() => {
-			done();
 			expect(draw.context.currentTime).to.be.closeTo(scheduledTime, 0.05);
 			draw.dispose();
+			done();
 		}, scheduledTime);
 	});
 
