@@ -3,25 +3,18 @@ import { expect } from "chai";
 import { DrawClass } from "./Draw.js";
 
 describe("Draw", () => {
-	const draw = new DrawClass();
-
-	after(() => {
-		draw.dispose();
-	});
-
-	afterEach(() => {
-		draw.cancel(0);
-	});
-
 	it("can schedule a callback at a AudioContext time", (done) => {
+		const draw = new DrawClass();
 		const scheduledTime = draw.now() + 0.2;
 		draw.schedule(() => {
-			expect(draw.context.currentTime).to.be.closeTo(scheduledTime, 0.05);
 			done();
+			expect(draw.context.currentTime).to.be.closeTo(scheduledTime, 0.05);
+			draw.dispose();
 		}, scheduledTime);
 	});
 
 	it("can schedule multiple callbacks", (done) => {
+		const draw = new DrawClass();
 		let callbackCount = 0;
 		const firstEvent = draw.now() + 0.1;
 		draw.schedule(() => {
@@ -35,6 +28,7 @@ describe("Draw", () => {
 			expect(draw.context.currentTime).to.be.closeTo(thirdEvent, 0.05);
 			expect(callbackCount).to.equal(3);
 			done();
+			draw.dispose();
 		}, thirdEvent);
 
 		const secondEvent = draw.now() + 0.2;
@@ -45,6 +39,7 @@ describe("Draw", () => {
 	});
 
 	it("can cancel scheduled events", (done) => {
+		const draw = new DrawClass();
 		let callbackCount = 0;
 		draw.schedule(() => {
 			callbackCount++;
@@ -66,6 +61,7 @@ describe("Draw", () => {
 			callbackCount++;
 			expect(callbackCount).to.equal(2);
 			done();
+			draw.dispose();
 		}, draw.now() + 0.3);
 	});
 });
