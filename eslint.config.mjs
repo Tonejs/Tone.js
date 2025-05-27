@@ -1,10 +1,11 @@
 // @ts-check
-import tseslint from "typescript-eslint";
 import stylisticJs from "@stylistic/eslint-plugin-js";
 import stylisticTs from "@stylistic/eslint-plugin-ts";
-import jsdoc from "eslint-plugin-jsdoc";
 import html from "eslint-plugin-html";
+import jsdoc from "eslint-plugin-jsdoc";
 import simpleImportSort from "eslint-plugin-simple-import-sort";
+import unusedImports from "eslint-plugin-unused-imports";
+import tseslint from "typescript-eslint";
 
 /** @type {import("typescript-eslint").ConfigWithExtends} */
 const customConfig = {
@@ -15,6 +16,7 @@ const customConfig = {
 		jsdoc,
 		html,
 		"simple-import-sort": simpleImportSort,
+		"unused-imports": unusedImports,
 	},
 	rules: {
 		"@typescript-eslint/array-type": "off",
@@ -88,6 +90,7 @@ const customConfig = {
 				},
 			},
 		],
+		"unused-imports/no-unused-imports": "error",
 	},
 };
 

@@ -1,4 +1,3 @@
-import type { TransportClass } from "../clock/Transport.js";
 import { getContext } from "../Global.js";
 import { Tone } from "../Tone.js";
 import { FrequencyClass } from "../type/Frequency.js";

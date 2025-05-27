@@ -1,6 +1,5 @@
-export { getContext, setContext } from "./core/Global.js";
-import { Context } from "./core/context/Context.js";
 export * from "./classes.js";
+export { getContext, setContext } from "./core/Global.js";
 export * from "./version.js";
 import { ToneAudioBuffer } from "./core/context/ToneAudioBuffer.js";
 import { getContext } from "./core/Global.js";

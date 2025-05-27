@@ -1,4 +1,3 @@
-import type { TransportClass } from "../core/clock/Transport.js";
 import { OutputNode } from "../core/context/ToneAudioNode.js";
 import { TransportTimeClass } from "../core/type/TransportTime.js";
 import {

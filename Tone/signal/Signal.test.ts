@@ -1,11 +1,9 @@
 import { expect } from "chai";
 
 import { BasicTests } from "../../test/helper/Basic.js";
-import { connectFrom, connectTo } from "../../test/helper/Connect.js";
 import { ConstantOutput } from "../../test/helper/ConstantOutput.js";
 import { Offline } from "../../test/helper/Offline.js";
 import { Gain } from "../core/context/Gain.js";
-import { Decibels, Frequency, Time } from "../core/type/Units.js";
 import { Signal } from "./Signal.js";
 
 describe("Signal", () => {
