@@ -1,8 +1,9 @@
+const { exec } = require("node:child_process");
+const { readFile, writeFile } = require("node:fs/promises");
+const { resolve } = require("node:path");
+
 const { JSDOM } = require("jsdom");
 const { globSync } = require("tinyglobby");
-const { resolve } = require("path");
-const { readFile, writeFile } = require("fs/promises");
-const { exec } = require("child_process");
 const { file } = require("tmp-promise");
 
 /**

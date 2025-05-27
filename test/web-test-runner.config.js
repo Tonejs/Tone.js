@@ -1,9 +1,10 @@
+import { resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+
 import rollupCommonjs from "@rollup/plugin-commonjs";
 import { esbuildPlugin } from "@web/dev-server-esbuild";
 import { fromRollup } from "@web/dev-server-rollup";
 import { puppeteerLauncher } from "@web/test-runner-puppeteer";
-import { resolve } from "path";
-import { fileURLToPath } from "url";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const commonjs = fromRollup(rollupCommonjs);

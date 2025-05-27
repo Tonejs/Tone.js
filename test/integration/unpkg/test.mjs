@@ -1,11 +1,12 @@
 /**
  * @fileoverview Ensure that the unpkg link can be loaded in the browser
  */
+import assert from "node:assert";
+import { readFile } from "node:fs/promises";
+import { resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+
 import puppeteer from "puppeteer";
-import { fileURLToPath } from "url";
-import { readFile } from "fs/promises";
-import { resolve } from "path";
-import assert from "assert";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const rootDir = resolve(__dirname, "../../../");

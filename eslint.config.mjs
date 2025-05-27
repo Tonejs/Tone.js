@@ -8,7 +8,7 @@ import simpleImportSort from "eslint-plugin-simple-import-sort";
 
 /** @type {import("typescript-eslint").ConfigWithExtends} */
 const customConfig = {
-	files: ["**/*.js", "**/*.ts", "**/*.html", "eslint.config.mjs"],
+	files: ["**/*.js", "**/*.cjs", "**/*.mjs", "**/*.ts", "**/*.html"],
 	plugins: {
 		"@stylistic/js": stylisticJs,
 		"@stylistic/ts": stylisticTs,
@@ -35,8 +35,6 @@ const customConfig = {
 		eqeqeq: ["error"],
 		"@typescript-eslint/explicit-function-return-type": "off",
 		"@typescript-eslint/explicit-member-accessibility": "off",
-		// requires eslint flat compat
-		// "file-extension-in-import-ts/file-extension-in-import-ts": "error",
 		"@stylistic/js/linebreak-style": ["error", "unix"],
 		"no-cond-assign": ["error", "always"],
 		"no-console": [
@@ -101,7 +99,7 @@ export default tseslint.config(
 		},
 	},
 	{
-		files: ["**/*.cjs"],
+		files: ["**/*.cjs", "**/*.mjs"],
 		rules: {
 			"no-console": "off",
 			"@typescript-eslint/no-require-imports": "off",

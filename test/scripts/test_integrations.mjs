@@ -1,7 +1,9 @@
 #!/usr/bin/env zx
 import "zx/globals";
+
+import { basename, resolve } from "node:path";
+
 import { glob } from "tinyglobby";
-import { basename, resolve } from "path";
 
 const integrations = await glob(
 	"*",
