@@ -55,7 +55,7 @@ jobs:
             - name: Install dependencies
               run: npm install
             - name: Build Docs
-              run: npm run build && npm run docs:json
+              run: npm run build && npm run docs
             - name: tsdoc @example checks
               run: npm run test:examples
     test-html-examples:
