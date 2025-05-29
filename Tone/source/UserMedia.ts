@@ -100,33 +100,17 @@ export class UserMedia extends ToneAudioNode<UserMediaOptions> {
 	 * Open the media stream. If a string is passed in, it is assumed
 	 * to be the label or id of the stream, if a number is passed in,
 	 * it is the input number of the stream.
-	 * @param  labelOrId The label or id of the audio input media device.
-	 *                   With no argument, the default stream is opened.
+	 * @param  labelOrIdOrConstraints The label or id of the audio input media device, or a getUserMedia constraints object.
+	 *                   			  With no argument, the default stream is opened.
 	 * @return The promise is resolved when the stream is open.
 	 */
-	async open(labelOrId?: string | number): Promise<this> {
+	async open(labelOrIdOrConstraints?: string | number | object): Promise<this> {
 		assert(UserMedia.supported, "UserMedia is not supported");
 		// close the previous stream
 		if (this.state === "started") {
 			this.close();
 		}
-		const devices = await UserMedia.enumerateDevices();
-		if (isNumber(labelOrId)) {
-			this._device = devices[labelOrId];
-		} else {
-			this._device = devices.find((device) => {
-				return (
-					device.label === labelOrId || device.deviceId === labelOrId
-				);
-			});
-			// didn't find a matching device
-			if (!this._device && devices.length > 0) {
-				this._device = devices[0];
-			}
-			assert(isDefined(this._device), `No matching device ${labelOrId}`);
-		}
-		// do getUserMedia
-		const constraints = {
+		let constraints = {
 			audio: {
 				echoCancellation: false,
 				sampleRate: this.context.sampleRate,
@@ -134,9 +118,31 @@ export class UserMedia extends ToneAudioNode<UserMediaOptions> {
 				mozNoiseSuppression: false,
 			},
 		};
-		if (this._device) {
-			// @ts-ignore
-			constraints.audio.deviceId = this._device.deviceId;
+		if(typeof labelOrIdOrConstraints === "object") {
+			// if the user passed in a constraints object
+			constraints = Object.assign(constraints, labelOrIdOrConstraints);
+		} else {
+			// if the user passed in a label or id
+			const devices = await UserMedia.enumerateDevices();
+			if (isNumber(labelOrIdOrConstraints)) {
+				this._device = devices[labelOrIdOrConstraints];
+			} else {
+				this._device = devices.find((device) => {
+					return (
+						device.label === labelOrIdOrConstraints || device.deviceId === labelOrIdOrConstraints
+					);
+				});
+				// didn't find a matching device
+				if (!this._device && devices.length > 0) {
+					this._device = devices[0];
+				}
+				assert(isDefined(this._device), `No matching device ${labelOrIdOrConstraints}`);
+			}
+			// if there is a device, set the deviceId
+			if (this._device) {
+				// @ts-ignore
+				constraints.audio.deviceId = this._device.deviceId;
+			}
 		}
 		const stream = await navigator.mediaDevices.getUserMedia(constraints);
 		// start a new source only if the previous one is closed
