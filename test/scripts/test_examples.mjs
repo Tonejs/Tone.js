@@ -1,10 +1,10 @@
-const { exec } = require("node:child_process");
-const { writeFile } = require("node:fs/promises");
-const { resolve } = require("node:path");
+import { writeFile } from "node:fs/promises";
+import { resolve } from "node:path";
 
-const { dir } = require("tmp-promise");
+import { dir } from "tmp-promise";
 
-const toneJson = require("../../docs/tone.json");
+import toneJson from "../../docs/tone.json" with { type: "json" };
+import { execPromise, ROOT_DIR } from "./utils.mjs";
 
 /**
  * Get all of the examples
@@ -44,27 +44,12 @@ function findExamples(obj) {
 }
 
 /**
- * A promise version of exec
- */
-function execPromise(cmd) {
-	return new Promise((done, error) => {
-		exec(cmd, (_, output) => {
-			if (output) {
-				error(output);
-			} else {
-				done();
-			}
-		});
-	});
-}
-
-/**
  * Run the string through the typescript compiler
  */
 async function testExampleString(str, tmpDir, index) {
 	// str = str.replace("from \"tone\"", `from "${resolve(__dirname, "../../")}"`);
 	str = `
-		import * as Tone from "${resolve(__dirname, "../../")}"
+		import * as Tone from "${ROOT_DIR}"
 		function main(){
 			${str}
 		}

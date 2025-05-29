@@ -1,30 +1,18 @@
-const { exec } = require("node:child_process");
-const { readFile, writeFile } = require("node:fs/promises");
-const { resolve } = require("node:path");
+import { readFile, writeFile } from "node:fs/promises";
+import { resolve } from "node:path";
 
-const { JSDOM } = require("jsdom");
-const { Converter } = require("showdown");
-const { file } = require("tmp-promise");
+import { JSDOM } from "jsdom";
+import showdown from "showdown";
+import { file } from "tmp-promise";
 
-/**
- * A promise version of exec
- */
-function execPromise(cmd) {
-	return new Promise((done, error) => {
-		exec(cmd, (e, output) => {
-			if (e) {
-				error(output);
-			} else {
-				done();
-			}
-		});
-	});
-}
+import { execPromise, ROOT_DIR } from "./utils.mjs";
+
+const { Converter } = showdown;
 
 async function testExampleString(str) {
 	// str = str.replace("from \"tone\"", `from "${resolve(__dirname, "../../")}"`);
 	str = `
-		import * as Tone from "${resolve(__dirname, "../../")}"
+		import * as Tone from "${ROOT_DIR}"
 		${str}
 	`;
 	const { path, cleanup } = await file({ postfix: ".ts" });
@@ -41,7 +29,7 @@ async function testExampleString(str) {
 
 async function main() {
 	const readme = (
-		await readFile(resolve(__dirname, "../../README.md"))
+		await readFile(resolve(ROOT_DIR, "README.md"))
 	).toString();
 	const html = new Converter().makeHtml(readme);
 	const dom = new JSDOM(html);

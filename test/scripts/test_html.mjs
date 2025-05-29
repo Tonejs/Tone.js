@@ -1,29 +1,16 @@
-const { JSDOM } = require("jsdom");
-const glob = require("glob");
-const { resolve } = require("path");
-const { readFile, writeFile } = require("fs/promises");
-const { exec } = require("child_process");
-const { file } = require("tmp-promise");
+import { readFile, writeFile } from "node:fs/promises";
+import { resolve } from "node:path";
 
-/**
- * A promise version of exec
- */
-function execPromise(cmd) {
-	return new Promise((done, error) => {
-		exec(cmd, (e, output) => {
-			if (e) {
-				error(output);
-			} else {
-				done();
-			}
-		});
-	});
-}
+import { globSync } from "glob";
+import { JSDOM } from "jsdom";
+import { file } from "tmp-promise";
+
+import { execPromise, ROOT_DIR } from "./utils.mjs";
 
 async function testExampleString(str) {
 	// str = str.replace("from \"tone\"", `from "${resolve(__dirname, "../../")}"`);
 	str = `
-		import * as Tone from "${resolve(__dirname, "../../")}"
+		import * as Tone from "${ROOT_DIR}"
 		let ui: any;
 		let drawer: any;
 		let meter: any;
@@ -46,7 +33,7 @@ async function testExampleString(str) {
 	}
 }
 
-const htmlFiles = glob.sync(resolve(__dirname, "../../examples/*.html"));
+const htmlFiles = globSync(resolve(ROOT_DIR, "examples/*.html"));
 
 async function main() {
 	for (let i = 0; i < htmlFiles.length; i++) {
