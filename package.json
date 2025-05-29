@@ -80,7 +80,7 @@
 		"fs-fixture": "^2.7.1",
 		"html-webpack-plugin": "^5.6.3",
 		"http-server": "^13.0.2",
-		"jsdom": "^16.7.0",
+		"jsdom": "^26.1.0",
 		"marked": "^15.0.12",
 		"mocha": "^11.1.0",
 		"plotly.js-dist": "^2.32.0",
