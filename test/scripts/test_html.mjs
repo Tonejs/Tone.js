@@ -1,8 +1,8 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 
-import { globSync } from "glob";
 import { JSDOM } from "jsdom";
+import { globSync } from "tinyglobby";
 import { file } from "tmp-promise";
 
 import { execPromise, ROOT_DIR } from "./utils.mjs";
@@ -33,7 +33,7 @@ async function testExampleString(str) {
 	}
 }
 
-const htmlFiles = globSync(resolve(ROOT_DIR, "examples/*.html"));
+const htmlFiles = globSync(resolve(ROOT_DIR, "examples/*.html"), { absolute: true });
 
 async function main() {
 	for (let i = 0; i < htmlFiles.length; i++) {
