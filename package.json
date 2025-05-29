@@ -17,8 +17,7 @@
 	"scripts": {
 		"remove": "node -e \"fs.rmSync('./build', { recursive: true, force: true })\"",
 		"build": "npm run increment && npm run remove && npm run ts:build && npm run webpack:build",
-		"docs": "node scripts/generate_docs.cjs",
-		"docs:json": "typedoc --options \"./scripts/typedoc.json\" --json \"./docs/tone.json\"",
+		"docs": "typedoc --options \"./scripts/typedoc.json\" --json \"./docs/tone.json\"",
 		"increment": "node scripts/increment_version.cjs",
 		"lint": "tsc --noEmit && eslint ./Tone",
 		"lint:fix": "tsc --noEmit && eslint ./Tone ./test --fix",
