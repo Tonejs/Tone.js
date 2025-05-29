@@ -3,19 +3,17 @@ import { resolve } from "node:path";
 
 import { createFixture } from "fs-fixture";
 import { JSDOM } from "jsdom";
-import showdown from "showdown";
+import { marked } from "marked";
 
 import { execPromise, ROOT_DIR } from "./utils.mjs";
-
-const { Converter } = showdown;
 
 const entry = "README.md";
 
 async function findScripts() {
 	const readme = await readFile(resolve(ROOT_DIR, entry), "utf-8");
-	const html = (new Converter()).makeHtml(readme);
+	const html = await marked.parse(readme);
 	const dom = new JSDOM(html);
-	return dom.window.document.querySelectorAll("code.javascript");
+	return dom.window.document.querySelectorAll("code.language-javascript");
 }
 
 async function createFixtureFiles(scripts) {
