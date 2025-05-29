@@ -1,9 +1,8 @@
-const { exec } = require("node:child_process");
-const { readFile, writeFile } = require("node:fs/promises");
-const { resolve } = require("node:path");
-
 const { JSDOM } = require("jsdom");
-const { globSync } = require("tinyglobby");
+const glob = require("glob");
+const { resolve } = require("path");
+const { readFile, writeFile } = require("fs/promises");
+const { exec } = require("child_process");
 const { file } = require("tmp-promise");
 
 /**
@@ -47,13 +46,7 @@ async function testExampleString(str) {
 	}
 }
 
-const htmlFiles = globSync(
-	"*.html",
-	{
-		cwd: resolve(__dirname, "../../examples"),
-		absolute: true
-	}
-);
+const htmlFiles = glob.sync(resolve(__dirname, "../../examples/*.html"));
 
 async function main() {
 	for (let i = 0; i < htmlFiles.length; i++) {

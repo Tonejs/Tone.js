@@ -1,19 +1,9 @@
 #!/usr/bin/env zx
 import "zx/globals";
+import { glob } from "glob";
+import { basename, resolve } from "path";
 
-import { basename, resolve } from "node:path";
-
-import { glob } from "tinyglobby";
-
-const integrations = await glob(
-	"*",
-	{
-		cwd: resolve(__dirname, "../integration"),
-		absolute: true,
-		onlyDirectories: true,
-	}
-);
-
+const integrations = await glob(resolve(__dirname, "../integration/*"));
 for (let dir of integrations) {
 	await within(async () => {
 		cd(dir);
