@@ -1,7 +1,4 @@
-import { writeFile } from "node:fs/promises";
-import { resolve } from "node:path";
-
-import { dir } from "tmp-promise";
+import { createFixture } from "fs-fixture";
 
 import toneJson from "../../docs/tone.json" with { type: "json" };
 import { execPromise, ROOT_DIR } from "./utils.mjs";
@@ -10,7 +7,7 @@ import { execPromise, ROOT_DIR } from "./utils.mjs";
  * Get all of the examples
  */
 function findExamples(obj) {
-	let examples = [];
+	const examples = [];
 
 	function traverse(node) {
 		if (node.comment && node.comment.blockTags) {
@@ -39,39 +36,43 @@ function findExamples(obj) {
 	}
 
 	traverse(obj);
+
 	// filter any repeats
 	return [...new Set(examples)];
+}
+
+async function createFixtureFiles(examples) {
+	const createExampleString = (str) => `
+import * as Tone from "${ROOT_DIR}"
+function main(){
+	${str}
+}
+main();
+`;
+
+	const data = {};
+
+	for (const [i, e] of Object.entries(examples)) {
+		data[`${i}.ts`] = createExampleString(e);
+	}
+
+	return await createFixture(data);
 }
 
 /**
  * Run the string through the typescript compiler
  */
-async function testExampleString(str, tmpDir, index) {
-	// str = str.replace("from \"tone\"", `from "${resolve(__dirname, "../../")}"`);
-	str = `
-		import * as Tone from "${ROOT_DIR}"
-		function main(){
-			${str}
-		}
-		main();
-	`;
-	await writeFile(resolve(tmpDir, index + ".ts"), str);
-}
-
 async function main() {
 	const examples = findExamples(toneJson);
-
-	const tmp = await dir({ unsafeCleanup: true });
-	await Promise.all(
-		examples.map((e, i) => testExampleString(e, tmp.path, i))
-	);
+	const fixtures = await createFixtureFiles(examples);
 
 	await execPromise(
-		`tsc --noEmit --target es5 --lib dom,ES2015 ${tmp.path}/*.ts`
+		`tsc --noEmit --target es5 --lib dom,ES2015 ${fixtures.path}/*.ts`
 	);
 
-	await tmp.cleanup();
+	await fixtures.rm();
 
 	console.log(`Tested ${examples.length} examples`);
 }
+
 main();

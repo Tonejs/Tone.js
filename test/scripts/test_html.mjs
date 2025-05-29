@@ -1,56 +1,65 @@
-import { readFile, writeFile } from "node:fs/promises";
-import { resolve } from "node:path";
+import { readFile } from "node:fs/promises";
+import { basename, resolve } from "node:path";
 
+import { createFixture } from "fs-fixture";
 import { JSDOM } from "jsdom";
 import { globSync } from "tinyglobby";
-import { file } from "tmp-promise";
 
 import { execPromise, ROOT_DIR } from "./utils.mjs";
 
-async function testExampleString(str) {
-	// str = str.replace("from \"tone\"", `from "${resolve(__dirname, "../../")}"`);
-	str = `
-		import * as Tone from "${ROOT_DIR}"
-		let ui: any;
-		let drawer: any;
-		let meter: any;
-		let piano: any;
-		let fft: any;
-		let waveform: any;
-		let document: any;
-		let p5: any;
-		${str}
-	`;
-	const { path, cleanup } = await file({ postfix: ".ts" });
-	// work with file here in fd
-	await writeFile(path, str);
-	try {
-		await execPromise(
-			`tsc  --noEmit --target es5 --lib dom,ES2015 ${path}`
-		);
-	} finally {
-		cleanup();
-	}
-}
-
 const htmlFiles = globSync(resolve(ROOT_DIR, "examples/*.html"), { absolute: true });
 
+async function createFixtureFiles(files) {
+	const createExampleString = (str) => `
+import * as Tone from "${ROOT_DIR}"
+let ui: any;
+let drawer: any;
+let meter: any;
+let piano: any;
+let fft: any;
+let waveform: any;
+let document: any;
+let p5: any;
+${str}
+`;
+
+	const data = {};
+
+	for (const file of files) {
+		const name = basename(file).split(".")[0];
+		const html = await readFile(file, "utf-8");
+		const dom = new JSDOM(html);
+		const script = dom.window.document.querySelector("body script");
+
+		if (!script || !script.textContent) {
+			console.warn("Could not get script contents: %s", file);
+			continue;
+		};
+
+		data[`${name}.ts`] = createExampleString(script.textContent);
+	}
+
+	return await createFixture(data);
+}
+
 async function main() {
-	for (let i = 0; i < htmlFiles.length; i++) {
-		const path = htmlFiles[i];
-		const fileAsString = (await readFile(path)).toString();
-		const dom = new JSDOM(fileAsString);
-		const scriptTag = dom.window.document.querySelector("body script");
-		if (scriptTag) {
-			try {
-				await testExampleString(scriptTag.textContent);
-				console.log("passed", path);
-			} catch (e) {
-				console.log("failed", path);
-				console.log(e);
-				throw new Error(e);
-			}
+	const fixtures = await createFixtureFiles(htmlFiles);
+
+	try {
+		await execPromise(
+			`tsc --noEmit --target es5 --lib dom,ES2015 ${fixtures.path}/*.ts`
+		);
+	} catch (error) {
+		if (error instanceof Error && error?.stdout) {
+			console.warn(error.stdout);
+		} else {
+			throw Error("Unexpected", { cause: error });
 		}
 	}
+
+	await fixtures.rm();
+
+	console.log(`Tested ${htmlFiles.length} examples`);
 }
+
 main();
