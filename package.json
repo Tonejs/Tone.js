@@ -55,7 +55,7 @@
 		"url": "https://github.com/Tonejs/Tone.js/issues"
 	},
 	"devDependencies": {
-		"@rollup/plugin-commonjs": "^28.0.3",
+		"@rollup/plugin-commonjs": "^25.0.7",
 		"@stylistic/eslint-plugin-js": "^4.2.0",
 		"@stylistic/eslint-plugin-ts": "^4.2.0",
 		"@types/chai": "^4.3.0",
