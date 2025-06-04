@@ -6,6 +6,7 @@ import { InstrumentTest } from "../../test/helper/InstrumentTests.js";
 import { atTime, Offline } from "../../test/helper/Offline.js";
 import { ToneAudioBuffer } from "../core/context/ToneAudioBuffer.js";
 import { Sampler } from "./Sampler.js";
+import { getContext } from "../core/Global.js";
 
 describe("Sampler", () => {
 	const A4_buffer = new ToneAudioBuffer();
@@ -56,6 +57,7 @@ describe("Sampler", () => {
 				{
 					attack: 0.2,
 					release: 0.3,
+                    loop: true
 				}
 			);
 			expect(sampler.attack).to.equal(0.2);
@@ -266,6 +268,97 @@ describe("Sampler", () => {
 			expect(buffer.getTimeOfLastSound()).to.be.closeTo(0.4, 0.01);
 		});
 	});
+
+    context("Looping", () => {
+
+        it("can be set to loop", () => {
+            const sampler = new Sampler();
+            sampler.loop = true;
+            expect(sampler.loop).to.be.true;
+            sampler.dispose();
+        });
+
+        it("can set the loop points", () => {
+            const sampler = new Sampler();
+            sampler.loopStart = 0.2;
+            expect(sampler.loopStart).to.equal(0.2);
+            sampler.loopEnd = 0.7;
+            expect(sampler.loopEnd).to.equal(0.7);
+            sampler.setLoopPoints(0, 0.5);
+            expect(sampler.loopStart).to.equal(0);
+            expect(sampler.loopEnd).to.equal(0.5);
+            sampler.dispose();
+        });
+
+        it("loops the audio", async () => {
+            const buff = await Offline(() => {
+                const sampler = new Sampler({
+                    urls: {
+                        A4: A4_buffer
+                    }
+                });
+                sampler.loop = true;
+                sampler.toDestination();
+                sampler.triggerAttack("A4");
+            }, A4_buffer.duration * 1.5);
+            expect(buff.getRmsAtTime(0)).to.be.above(0);
+            expect(buff.getRmsAtTime(A4_buffer.duration * 0.5)).to.be.above(0);
+            expect(buff.getRmsAtTime(A4_buffer.duration)).to.be.above(0);
+            expect(buff.getRmsAtTime(A4_buffer.duration * 1.2)).to.be.above(0);
+        });
+
+        it("setting the loop multiple times has no affect", async () => {
+            const buff = await Offline(() => {
+                const sampler = new Sampler({
+                    urls: {
+                        A4: A4_buffer
+                    }
+                });
+                sampler.loop = true;
+                sampler.loop = true;
+                sampler.toDestination();
+                sampler.triggerAttack("A4");
+            }, A4_buffer.duration * 1.5);
+            expect(buff.getRmsAtTime(0)).to.be.above(0);
+            expect(buff.getRmsAtTime(A4_buffer.duration * 0.5)).to.be.above(0);
+            expect(buff.getRmsAtTime(A4_buffer.duration)).to.be.above(0);
+            expect(buff.getRmsAtTime(A4_buffer.duration * 1.2)).to.be.above(0);
+        });
+
+        it("loops the audio when loop is set after start", async () => {
+            const buff = await Offline(() => {
+                const sampler = new Sampler({
+                    urls: {
+                        A4: A4_buffer
+                    }
+                });
+                sampler.toDestination();
+                sampler.triggerAttack("A4");
+                sampler.loop = true;
+            }, A4_buffer.duration * 1.5);
+            expect(buff.getRmsAtTime(0)).to.be.above(0);
+            expect(buff.getRmsAtTime(A4_buffer.duration * 0.5)).to.be.above(0);
+            expect(buff.getRmsAtTime(A4_buffer.duration)).to.be.above(0);
+            expect(buff.getRmsAtTime(A4_buffer.duration * 1.2)).to.be.above(0);
+        });
+
+        it("starts buffers at loopStart when set to loop", async () => {
+            const testSample =
+                A4_buffer.toArray(0)[Math.floor(0.1 * getContext().sampleRate)];
+            const buff = await Offline(() => {
+                const sampler = new Sampler({
+                    urls: {
+                        A4: A4_buffer
+                    }
+                });
+                sampler.loopStart = 0.1;
+                sampler.loop = true;
+                sampler.toDestination();
+                sampler.triggerAttack("A4");
+            }, 0.05);
+            expect(buff.toArray()[0][0]).to.equal(testSample);
+        });
+    });
 
 	context("add samples", () => {
 		it("can add a note with its midi value", async () => {
