@@ -79,8 +79,8 @@ export class Sampler extends Instrument<SamplerOptions> {
     private _providedMidiNotes: MidiNote[] = [];
 
     /**
-	 * if the buffer should loop once its over
-	 */
+     * if the buffer should loop once its over
+     */
 	private _loop: boolean;
 
 	/**
@@ -226,7 +226,7 @@ export class Sampler extends Instrument<SamplerOptions> {
 		if (!Array.isArray(notes)) {
 			notes = [notes];
 		}
-        const offset = defaultArg(0, this._loopStart);
+        const offset = defaultArg(this._loopStart, 0);
 		notes.forEach((note) => {
 			const midiFloat = ftomf(
 				new FrequencyClass(this.context, note).toFrequency()
@@ -240,7 +240,7 @@ export class Sampler extends Instrument<SamplerOptions> {
 			const playbackRate = intervalToFrequencyRatio(
 				difference + remainder
 			);
-            let duration = this._loop 
+            const duration = this._loop 
                 ? undefined
                 : buffer.duration / playbackRate;
 			// play that note
@@ -398,7 +398,11 @@ export class Sampler extends Instrument<SamplerOptions> {
      * @param loopStart The loop start time
      * @param loopEnd The loop end time
      * @example
-     * const sampler = new Tone.Sampler("https://tonejs.github.io/audio/berklee/guitar_chord4.mp3").toDestination();
+     * const sampler = new Tone.Sampler({
+     *      urls: {  
+     *           A1: "https://tonejs.github.io/audio/berklee/guitar_chord4.mp3",  
+     *      },
+     * }).toDestination();
      * // loop between the given points
      * sampler.setLoopPoints(0.2, 0.3);
      * sampler.loop = true;
@@ -448,7 +452,7 @@ export class Sampler extends Instrument<SamplerOptions> {
         // get the current sources
         this._activeSources.forEach((sourceList) => {
             sourceList.forEach((source) => {
-                source.loopStart = loopEnd;
+                source.loopEnd = loopEnd;
             });
         });
     }
@@ -457,7 +461,11 @@ export class Sampler extends Instrument<SamplerOptions> {
     /**
      * If the buffers should loop once they are over.
      * @example
-     * const sampler = new Tone.Sampler("https://tonejs.github.io/audio/berklee/femalevoice_aa_A4.mp3").toDestination();
+     * const sampler = new Tone.Sampler({
+     *      urls: {  
+     *           A4: "https://tonejs.github.io/audio/berklee/femalevoice_aa_A4.mp3",  
+     *      },
+     * }).toDestination();
      * sampler.loop = true;
      */
     get loop(): boolean {

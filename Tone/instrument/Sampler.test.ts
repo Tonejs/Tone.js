@@ -5,8 +5,8 @@ import { CompareToFile } from "../../test/helper/CompareToFile.js";
 import { InstrumentTest } from "../../test/helper/InstrumentTests.js";
 import { atTime, Offline } from "../../test/helper/Offline.js";
 import { ToneAudioBuffer } from "../core/context/ToneAudioBuffer.js";
-import { Sampler } from "./Sampler.js";
 import { getContext } from "../core/Global.js";
+import { Sampler } from "./Sampler.js";
 
 describe("Sampler", () => {
 	const A4_buffer = new ToneAudioBuffer();
