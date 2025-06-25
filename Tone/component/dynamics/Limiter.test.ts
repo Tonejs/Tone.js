@@ -1,14 +1,13 @@
-import { Limiter } from "./Limiter";
-import { BasicTests } from "test/helper/Basic";
-import { PassAudio } from "test/helper/PassAudio";
 import { expect } from "chai";
 
-describe("Limiter", () => {
+import { BasicTests } from "../../../test/helper/Basic.js";
+import { PassAudio } from "../../../test/helper/PassAudio.js";
+import { Limiter } from "./Limiter.js";
 
+describe("Limiter", () => {
 	BasicTests(Limiter);
 
 	context("Limiting", () => {
-
 		it("passes the incoming signal through", () => {
 			return PassAudio((input) => {
 				const limiter = new Limiter().toDestination();
@@ -40,4 +39,3 @@ describe("Limiter", () => {
 		});
 	});
 });
-

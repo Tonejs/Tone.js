@@ -1,14 +1,12 @@
-import { MidSideMerge } from "./MidSideMerge";
-import { BasicTests } from "test/helper/Basic";
-import { PassAudio } from "test/helper/PassAudio";
-import { connectFrom, connectTo } from "test/helper/Connect";
+import { BasicTests } from "../../../test/helper/Basic.js";
+import { connectFrom, connectTo } from "../../../test/helper/Connect.js";
+import { PassAudio } from "../../../test/helper/PassAudio.js";
+import { MidSideMerge } from "./MidSideMerge.js";
 
 describe("MidSideMerge", () => {
-
 	BasicTests(MidSideMerge);
 
 	context("Merging", () => {
-
 		it("handles inputs and outputs", () => {
 			const merge = new MidSideMerge();
 			merge.connect(connectTo());
@@ -25,4 +23,3 @@ describe("MidSideMerge", () => {
 		});
 	});
 });
-

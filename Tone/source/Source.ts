@@ -1,23 +1,24 @@
-import { Volume } from "../component/channel/Volume";
-import "../core/context/Destination";
-import "../core/clock/Transport";
-import { Param } from "../core/context/Param";
+import "../core/context/Destination.js";
+import "../core/clock/Transport.js";
+
+import { Volume } from "../component/channel/Volume.js";
+import { Param } from "../core/context/Param.js";
 import {
 	OutputNode,
 	ToneAudioNode,
 	ToneAudioNodeOptions,
-} from "../core/context/ToneAudioNode";
-import { Decibels, Seconds, Time } from "../core/type/Units";
-import { defaultArg } from "../core/util/Defaults";
-import { noOp, readOnly } from "../core/util/Interface";
+} from "../core/context/ToneAudioNode.js";
+import { Decibels, Seconds, Time } from "../core/type/Units.js";
+import { assert, assertContextRunning } from "../core/util/Debug.js";
+import { defaultArg } from "../core/util/Defaults.js";
+import { noOp, readOnly } from "../core/util/Interface.js";
+import { GT } from "../core/util/Math.js";
 import {
 	BasicPlaybackState,
 	StateTimeline,
 	StateTimelineEvent,
-} from "../core/util/StateTimeline";
-import { isDefined, isUndef } from "../core/util/TypeCheck";
-import { assert, assertContextRunning } from "../core/util/Debug";
-import { GT } from "../core/util/Math";
+} from "../core/util/StateTimeline.js";
+import { isDefined, isUndef } from "../core/util/TypeCheck.js";
 
 type onStopCallback = (source: Source<any>) => void;
 
@@ -45,7 +46,7 @@ export interface SourceOptions extends ToneAudioNodeOptions {
  * ```
  */
 export abstract class Source<
-	Options extends SourceOptions
+	Options extends SourceOptions,
 > extends ToneAudioNode<Options> {
 	/**
 	 * The output volume node
@@ -53,7 +54,7 @@ export abstract class Source<
 	private _volume: Volume;
 
 	/**
-	 * The output note
+	 * The output node
 	 */
 	output: OutputNode;
 
@@ -83,7 +84,7 @@ export abstract class Source<
 		offset?: Seconds;
 		/**
 		 * Either the buffer is explicitly scheduled to end using the stop method,
-		 * or it's implicitly ended when the buffer is over.
+		 * or its implicitly ended when the buffer is over.
 		 */
 		implicitEnd?: boolean;
 	}> = new StateTimeline("stopped");
@@ -362,7 +363,8 @@ export abstract class Source<
 	}
 
 	/**
-	 * Unsync the source to the Transport. See Source.sync
+	 * Unsync the source to the Transport.
+	 * @see {@link sync}
 	 */
 	unsync(): this {
 		if (this._synced) {

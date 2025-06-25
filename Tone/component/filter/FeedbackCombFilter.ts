@@ -1,11 +1,15 @@
-import { Gain } from "../../core/context/Gain";
-import { Param } from "../../core/context/Param";
-import { connectSeries, ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
-import { NormalRange, Time } from "../../core/type/Units";
-import { optionsFromArguments } from "../../core/util/Defaults";
-import { readOnly, RecursivePartial } from "../../core/util/Interface";
-import { ToneAudioWorklet } from "../../core/worklet/ToneAudioWorklet";
-import { workletName } from "./FeedbackCombFilter.worklet";
+import { Gain } from "../../core/context/Gain.js";
+import { Param } from "../../core/context/Param.js";
+import {
+	connectSeries,
+	ToneAudioNode,
+	ToneAudioNodeOptions,
+} from "../../core/context/ToneAudioNode.js";
+import { NormalRange, Time } from "../../core/type/Units.js";
+import { optionsFromArguments } from "../../core/util/Defaults.js";
+import { readOnly, RecursivePartial } from "../../core/util/Interface.js";
+import { ToneAudioWorklet } from "../../core/worklet/ToneAudioWorklet.js";
+import { workletName } from "./FeedbackCombFilter.worklet.js";
 
 export interface FeedbackCombFilterOptions extends ToneAudioNodeOptions {
 	delayTime: Time;
@@ -15,14 +19,13 @@ export interface FeedbackCombFilterOptions extends ToneAudioNodeOptions {
 /**
  * Comb filters are basic building blocks for physical modeling. Read more
  * about comb filters on [CCRMA's website](https://ccrma.stanford.edu/~jos/pasp/Feedback_Comb_Filters.html).
- * 
- * This comb filter is implemented with the AudioWorkletNode which allows it to have feedback delays less than the 
- * Web Audio processing block of 128 samples. There is a polyfill for browsers that don't yet support the 
- * AudioWorkletNode, but it will add some latency and have slower performance than the AudioWorkletNode. 
+ *
+ * This comb filter is implemented with the AudioWorkletNode which allows it to have feedback delays less than the
+ * Web Audio processing block of 128 samples. There is a polyfill for browsers that don't yet support the
+ * AudioWorkletNode, but it will add some latency and have slower performance than the AudioWorkletNode.
  * @category Component
  */
 export class FeedbackCombFilter extends ToneAudioWorklet<FeedbackCombFilterOptions> {
-
 	readonly name = "FeedbackCombFilter";
 
 	/**
@@ -45,8 +48,12 @@ export class FeedbackCombFilter extends ToneAudioWorklet<FeedbackCombFilterOptio
 	constructor(delayTime?: Time, resonance?: NormalRange);
 	constructor(options?: RecursivePartial<FeedbackCombFilterOptions>);
 	constructor() {
-		super(optionsFromArguments(FeedbackCombFilter.getDefaults(), arguments, ["delayTime", "resonance"]));
-		const options = optionsFromArguments(FeedbackCombFilter.getDefaults(), arguments, ["delayTime", "resonance"]);
+		const options = optionsFromArguments(
+			FeedbackCombFilter.getDefaults(),
+			arguments,
+			["delayTime", "resonance"]
+		);
+		super(options);
 
 		this.input = new Gain({ context: this.context });
 		this.output = new Gain({ context: this.context });

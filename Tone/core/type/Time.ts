@@ -1,7 +1,19 @@
-import { getContext } from "../Global";
-import { ftom } from "./Conversions";
-import { TimeBaseClass, TimeBaseUnit, TimeExpression, TimeValue } from "./TimeBase";
-import { BarsBeatsSixteenths, MidiNote, Seconds, Subdivision, Ticks, Time } from "./Units";
+import { getContext } from "../Global.js";
+import { ftom } from "./Conversions.js";
+import {
+	TimeBaseClass,
+	TimeBaseUnit,
+	TimeExpression,
+	TimeValue,
+} from "./TimeBase.js";
+import {
+	BarsBeatsSixteenths,
+	MidiNote,
+	Seconds,
+	Subdivision,
+	Ticks,
+	Time,
+} from "./Units.js";
 
 /**
  * TimeClass is a primitive type for encoding and decoding Time values.
@@ -12,23 +24,33 @@ import { BarsBeatsSixteenths, MidiNote, Seconds, Subdivision, Ticks, Time } from
  * const time = Tone.Time("4n"); // a quarter note
  * @category Unit
  */
-export class TimeClass<Type extends Seconds | Ticks = Seconds, Unit extends string = TimeBaseUnit>
-	extends TimeBaseClass<Type, Unit> {
-
+export class TimeClass<
+	Type extends Seconds | Ticks = Seconds,
+	Unit extends string = TimeBaseUnit,
+> extends TimeBaseClass<Type, Unit> {
 	readonly name: string = "TimeClass";
 
 	protected _getExpressions(): TimeExpression<Type> {
 		return Object.assign(super._getExpressions(), {
 			now: {
 				method: (capture: string): Type => {
-					return this._now() + new (this.constructor as typeof TimeClass)(this.context, capture).valueOf() as Type;
+					return (this._now() +
+						new (this.constructor as typeof TimeClass)(
+							this.context,
+							capture
+						).valueOf()) as Type;
 				},
 				regexp: /^\+(.+)/,
 			},
 			quantize: {
 				method: (capture: string): Type => {
-					const quantTo = new TimeClass(this.context, capture).valueOf();
-					return this._secondsToUnits(this.context.transport.nextSubdivision(quantTo));
+					const quantTo = new TimeClass(
+						this.context,
+						capture
+					).valueOf();
+					return this._secondsToUnits(
+						this.context.transport.nextSubdivision(quantTo)
+					);
 				},
 				regexp: /^@(.+)/,
 			},
@@ -46,12 +68,15 @@ export class TimeClass<Type extends Seconds | Ticks = Seconds, Unit extends stri
 	 * Tone.Time(0.6).quantize("4n", 0.5); // returns 0.55
 	 */
 	quantize(subdiv: Time, percent = 1): Type {
-		const subdivision = new (this.constructor as typeof TimeClass)(this.context, subdiv).valueOf();
+		const subdivision = new (this.constructor as typeof TimeClass)(
+			this.context,
+			subdiv
+		).valueOf();
 		const value = this.valueOf();
 		const multiple = Math.round(value / subdivision);
 		const ideal = multiple * subdivision;
 		const diff = ideal - value;
-		return value + diff * percent as Type;
+		return (value + diff * percent) as Type;
 	}
 
 	//-------------------------------------
@@ -70,17 +95,26 @@ export class TimeClass<Type extends Seconds | Ticks = Seconds, Unit extends stri
 		const testNotations: Subdivision[] = ["1m"];
 		for (let power = 1; power < 9; power++) {
 			const subdiv = Math.pow(2, power);
-			testNotations.push(subdiv + "n." as Subdivision);
-			testNotations.push(subdiv + "n" as Subdivision);
-			testNotations.push(subdiv + "t" as Subdivision);
+			testNotations.push((subdiv + "n.") as Subdivision);
+			testNotations.push((subdiv + "n") as Subdivision);
+			testNotations.push((subdiv + "t") as Subdivision);
 		}
 		testNotations.push("0");
 		// find the closets notation representation
 		let closest = testNotations[0];
-		let closestSeconds = new TimeClass(this.context, testNotations[0]).toSeconds();
-		testNotations.forEach(notation => {
-			const notationSeconds = new TimeClass(this.context, notation).toSeconds();
-			if (Math.abs(notationSeconds - time) < Math.abs(closestSeconds - time)) {
+		let closestSeconds = new TimeClass(
+			this.context,
+			testNotations[0]
+		).toSeconds();
+		testNotations.forEach((notation) => {
+			const notationSeconds = new TimeClass(
+				this.context,
+				notation
+			).toSeconds();
+			if (
+				Math.abs(notationSeconds - time) <
+				Math.abs(closestSeconds - time)
+			) {
 				closest = notation;
 				closestSeconds = notationSeconds;
 			}
@@ -104,7 +138,7 @@ export class TimeClass<Type extends Seconds | Ticks = Seconds, Unit extends stri
 			sixteenths = parseFloat(parseFloat(sixteenthString).toFixed(3));
 		}
 		const progress = [measures, quarters, sixteenths];
-		return progress.join(":");
+		return progress.join(":") as BarsBeatsSixteenths;
 	}
 
 	/**
@@ -136,8 +170,8 @@ export class TimeClass<Type extends Seconds | Ticks = Seconds, Unit extends stri
 }
 
 /**
- * Create a TimeClass from a time string or number. The time is computed against the 
- * global Tone.Context. To use a specific context, use [[TimeClass]]
+ * Create a TimeClass from a time string or number. The time is computed against the
+ * global Tone.Context. To use a specific context, use {@link TimeClass}
  * @param value A value which represents time
  * @param units The value's units if they can't be inferred by the value.
  * @category Unit
@@ -151,6 +185,9 @@ export class TimeClass<Type extends Seconds | Ticks = Seconds, Unit extends stri
  * const freq = Tone.Time(0.5).toFrequency();
  * console.log(freq);
  */
-export function Time(value?: TimeValue, units?: TimeBaseUnit): TimeClass<Seconds> {
+export function Time(
+	value?: TimeValue,
+	units?: TimeBaseUnit
+): TimeClass<Seconds> {
 	return new TimeClass(getContext(), value, units);
 }

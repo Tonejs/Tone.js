@@ -1,5 +1,5 @@
 /**
- * The threshold for correctness for operators. Less than one sample even 
+ * The threshold for correctness for operators. Less than one sample even
  * at very high sampling rates (e.g. `1e-6 < 1 / 192000`).
  */
 const EPSILON = 1e-6;

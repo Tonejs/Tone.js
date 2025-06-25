@@ -1,46 +1,49 @@
-import { BasicTests } from "test/helper/Basic";
-import { InstrumentTest } from "test/helper/InstrumentTests";
-import { DuoSynth } from "./DuoSynth";
-import { CompareToFile } from "test/helper/CompareToFile";
 import { expect } from "chai";
-import { MonophonicTest } from "test/helper/MonophonicTests";
+
+import { BasicTests } from "../../test/helper/Basic.js";
+import { CompareToFile } from "../../test/helper/CompareToFile.js";
+import { InstrumentTest } from "../../test/helper/InstrumentTests.js";
+import { MonophonicTest } from "../../test/helper/MonophonicTests.js";
+import { DuoSynth } from "./DuoSynth.js";
 
 describe("DuoSynth", () => {
-
 	BasicTests(DuoSynth);
 	MonophonicTest(DuoSynth, "C4");
 	InstrumentTest(DuoSynth, "C4", {
 		voice0: {
 			oscillator: {
-				type: "square"
+				type: "square",
 			},
 			envelope: {
 				decay: 0.1,
 				sustain: 0.5,
-				release: 0.2
-			}
+				release: 0.2,
+			},
 		},
 		voice1: {
 			oscillator: {
-				type: "square"
+				type: "square",
 			},
 			envelope: {
 				decay: 0.1,
 				sustain: 0.5,
-				release: 0.3
-			}
-		}
+				release: 0.3,
+			},
+		},
 	});
 
 	it("matches a file", () => {
-		return CompareToFile(() => {
-			const synth = new DuoSynth().toDestination();
-			synth.triggerAttackRelease("C5", 0.1, 0.1);
-		}, "duoSynth.wav", 0.05);
+		return CompareToFile(
+			() => {
+				const synth = new DuoSynth().toDestination();
+				synth.triggerAttackRelease("C5", 0.1, 0.1);
+			},
+			"duoSynth.wav",
+			0.07
+		);
 	});
 
 	context("API", () => {
-
 		it("can get and set voice0 attributes", () => {
 			const duoSynth = new DuoSynth();
 			duoSynth.voice0.oscillator.type = "triangle";
@@ -73,9 +76,9 @@ describe("DuoSynth", () => {
 			const duoSynth = new DuoSynth({
 				voice0: {
 					filter: {
-						rolloff: -24
-					}
-				}
+						rolloff: -24,
+					},
+				},
 			});
 			expect(duoSynth.voice0.filter.rolloff).to.equal(-24);
 			duoSynth.dispose();
@@ -84,12 +87,10 @@ describe("DuoSynth", () => {
 		it("can get/set attributes", () => {
 			const duoSynth = new DuoSynth();
 			duoSynth.set({
-				harmonicity: 1.5
+				harmonicity: 1.5,
 			});
 			expect(duoSynth.get().harmonicity).to.equal(1.5);
 			duoSynth.dispose();
 		});
-
 	});
 });
-

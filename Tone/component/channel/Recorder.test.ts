@@ -1,14 +1,13 @@
 import { expect } from "chai";
-import { connectFrom } from "test/helper/Connect";
-import { Recorder } from "./Recorder";
-import { Context } from "Tone/core/context/Context";
-import { ToneWithContext } from "Tone/core/context/ToneWithContext";
-import { Synth } from "Tone/instrument/Synth";
+
+import { connectFrom } from "../../../test/helper/Connect.js";
+import { Context } from "../../core/context/Context.js";
+import { ToneWithContext } from "../../core/context/ToneWithContext.js";
+import { Synth } from "../../instrument/Synth.js";
+import { Recorder } from "./Recorder.js";
 
 describe("Recorder", () => {
-
 	context("basic", () => {
-
 		it("can be created and disposed", () => {
 			const rec = new Recorder();
 			rec.dispose();
@@ -33,11 +32,13 @@ describe("Recorder", () => {
 		it("can set a different context", () => {
 			const testContext = new Context();
 			const rec = new Recorder({
-				context: testContext
+				context: testContext,
 			});
 			for (const member in rec) {
 				if (rec[member] instanceof ToneWithContext) {
-					expect(rec[member].context, `member: ${member}`).to.equal(testContext);
+					expect(rec[member].context, `member: ${member}`).to.equal(
+						testContext
+					);
 				}
 			}
 			testContext.dispose();
@@ -47,11 +48,10 @@ describe("Recorder", () => {
 	});
 
 	function wait(time) {
-		return new Promise(done => setTimeout(done, time));
+		return new Promise((done) => setTimeout(done, time));
 	}
 
 	context("start/stop/pause", () => {
-
 		it("can be started", () => {
 			const rec = new Recorder();
 			rec.start();
@@ -66,6 +66,19 @@ describe("Recorder", () => {
 			await wait(100);
 			rec.pause();
 			expect(rec.state).to.equal("paused");
+			rec.dispose();
+		});
+
+		it("can be resumed after pausing", async () => {
+			const rec = new Recorder();
+			rec.start();
+			expect(rec.state).to.equal("started");
+			await wait(100);
+			rec.pause();
+			expect(rec.state).to.equal("paused");
+			await wait(100);
+			rec.start();
+			expect(rec.state).to.equal("started");
 			rec.dispose();
 		});
 
@@ -114,6 +127,5 @@ describe("Recorder", () => {
 			rec.dispose();
 			synth.dispose();
 		});
-
 	});
 });

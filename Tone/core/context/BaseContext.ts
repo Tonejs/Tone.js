@@ -1,11 +1,10 @@
-import { Seconds } from "../type/Units";
-import { Emitter } from "../util/Emitter";
-import { AnyAudioContext } from "./AudioContext";
-
-type Draw = import("../util/Draw").Draw;
-type Destination = import("./Destination").Destination;
-type Transport = import("../clock/Transport").Transport;
-type Listener = import("./Listener").Listener;
+import type { TransportClass as Transport } from "../clock/Transport.js";
+import { Seconds } from "../type/Units.js";
+import type { DrawClass as Draw } from "../util/Draw.js";
+import { Emitter } from "../util/Emitter.js";
+import { AnyAudioContext } from "./AudioContext.js";
+import type { DestinationClass as Destination } from "./Destination.js";
+import type { ListenerClass as Listener } from "./Listener.js";
 
 // these are either not used in Tone.js or deprecated and not implemented.
 export type ExcludedFromBaseAudioContext =
@@ -20,15 +19,16 @@ export type ExcludedFromBaseAudioContext =
 
 // the subset of the BaseAudioContext which Tone.Context implements.
 export type BaseAudioContextSubset = Omit<
-BaseAudioContext,
-ExcludedFromBaseAudioContext
+	BaseAudioContext,
+	ExcludedFromBaseAudioContext
 >;
 
 export type ContextLatencyHint = AudioContextLatencyCategory;
 
 export abstract class BaseContext
 	extends Emitter<"statechange" | "tick">
-	implements BaseAudioContextSubset {
+	implements BaseAudioContextSubset
+{
 	//---------------------------
 	// BASE AUDIO CONTEXT METHODS
 	//---------------------------
@@ -104,10 +104,7 @@ export abstract class BaseContext
 
 	abstract get rawContext(): AnyAudioContext;
 
-	abstract addAudioWorkletModule(
-		_url: string,
-		_name: string
-	): Promise<void>;
+	abstract addAudioWorkletModule(_url: string): Promise<void>;
 
 	abstract lookAhead: number;
 

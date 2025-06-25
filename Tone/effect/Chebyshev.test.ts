@@ -1,25 +1,28 @@
-import { Chebyshev } from "./Chebyshev";
-import { BasicTests } from "test/helper/Basic";
-import { EffectTests } from "test/helper/EffectTests";
 import { expect } from "chai";
-import { CompareToFile } from "test/helper/CompareToFile";
-import { Synth } from "Tone/instrument";
+
+import { BasicTests } from "../../test/helper/Basic.js";
+import { CompareToFile } from "../../test/helper/CompareToFile.js";
+import { EffectTests } from "../../test/helper/EffectTests.js";
+import { Synth } from "../instrument/index.js";
+import { Chebyshev } from "./Chebyshev.js";
 
 describe("Chebyshev", () => {
-
 	BasicTests(Chebyshev);
 	EffectTests(Chebyshev, 51);
 
 	it("matches a file", () => {
-		return CompareToFile(() => {
-			const cheby = new Chebyshev(100).toDestination();
-			const synth = new Synth().connect(cheby);
-			synth.triggerAttackRelease("C2", 0.2);
-		}, "chebyshev.wav", 0.01);
+		return CompareToFile(
+			() => {
+				const cheby = new Chebyshev(100).toDestination();
+				const synth = new Synth().connect(cheby);
+				synth.triggerAttackRelease("C2", 0.2);
+			},
+			"chebyshev.wav",
+			0.01
+		);
 	});
 
 	context("API", () => {
-
 		it("can pass in options in the constructor", () => {
 			const cheby = new Chebyshev({
 				order: 2,
@@ -46,4 +49,3 @@ describe("Chebyshev", () => {
 		});
 	});
 });
-

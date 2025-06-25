@@ -1,5 +1,5 @@
-import { Gain } from "Tone/core/context/Gain";
-import { ToneAudioNode } from "Tone/core/context/ToneAudioNode";
+import { Gain } from "../../Tone/core/context/Gain.js";
+import { ToneAudioNode } from "../../Tone/core/context/ToneAudioNode.js";
 
 export function connectFrom(): Gain {
 	return new Gain();
@@ -10,7 +10,6 @@ export function connectTo(): Gain {
 }
 
 export function ConnectTest(constr, ...args: any[]): void {
-
 	it("handles input and output connections", () => {
 		const instance = new constr(...args);
 		// test each of the input and outputs and connect

@@ -1,16 +1,14 @@
-/* eslint-disable no-console */
-/* eslint-disable @typescript-eslint/no-var-requires */
 const fs = require("fs");
 const semver = require("semver");
 const { resolve } = require("path");
 const { execSync } = require("child_process");
 
 const tsVersion = execSync("npm show tone@next version").toString();
-const masterVersion = execSync("npm show tone version").toString();
+const mainVersion = execSync("npm show tone version").toString();
 
 // go with whichever is the latest version
-let version = masterVersion;
-if (tsVersion && semver.gt(tsVersion, masterVersion)) {
+let version = mainVersion;
+if (tsVersion && semver.gt(tsVersion, mainVersion)) {
 	version = tsVersion;
 }
 
@@ -29,9 +27,9 @@ if (semver.gt(packageObj.version, version)) {
 console.log(`incrementing to version ${version}`);
 packageObj.version = version;
 // only if it's travis, update the package.json
-if (process.env.TRAVIS) {
+if (process.env.GITHUB_CI) {
 	fs.writeFileSync(packageFile, JSON.stringify(packageObj, undefined, "  "));
-	
+
 	// write a version file
 	const versionFile = `export const version: string = ${JSON.stringify(version)};\n`;
 	fs.writeFileSync(resolve(__dirname, "../Tone/version.ts"), versionFile);

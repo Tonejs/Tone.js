@@ -1,31 +1,34 @@
-import { AutoWah } from "./AutoWah";
-import { BasicTests } from "test/helper/Basic";
-import { EffectTests } from "test/helper/EffectTests";
 import { expect } from "chai";
-import { CompareToFile } from "test/helper/CompareToFile";
-import { Synth } from "Tone/instrument/Synth";
+
+import { BasicTests } from "../../test/helper/Basic.js";
+import { CompareToFile } from "../../test/helper/CompareToFile.js";
+import { EffectTests } from "../../test/helper/EffectTests.js";
+import { Synth } from "../instrument/Synth.js";
+import { AutoWah } from "./AutoWah.js";
 
 describe("AutoWah", () => {
-
 	BasicTests(AutoWah);
 	EffectTests(AutoWah);
 
 	it("matches a file", () => {
-		return CompareToFile(() => {
-			const wah = new AutoWah().toDestination();
-			wah.follower = 0.4;
-			const synth = new Synth().connect(wah);
-			synth.triggerAttackRelease("C4", 0.5);
-		}, "autoWah.wav", 0.01);
+		return CompareToFile(
+			() => {
+				const wah = new AutoWah().toDestination();
+				wah.follower = 0.4;
+				const synth = new Synth().connect(wah);
+				synth.triggerAttackRelease("C4", 0.5);
+			},
+			"autoWah.wav",
+			0.01
+		);
 	});
 
 	context("API", () => {
-
 		it("can pass in options in the constructor", () => {
 			const autoWah = new AutoWah({
 				baseFrequency: 150,
 				octaves: 3,
-				sensitivity: -10
+				sensitivity: -10,
 			});
 			expect(autoWah.baseFrequency).to.be.closeTo(150, 0.01);
 			autoWah.baseFrequency = 250;
@@ -58,4 +61,3 @@ describe("AutoWah", () => {
 		});
 	});
 });
-

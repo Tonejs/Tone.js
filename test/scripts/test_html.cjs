@@ -1,5 +1,3 @@
-/* eslint-disable no-console */
-/* eslint-disable @typescript-eslint/no-var-requires */
 const { JSDOM } = require("jsdom");
 const glob = require("glob");
 const { resolve } = require("path");
@@ -40,7 +38,9 @@ async function testExampleString(str) {
 	// work with file here in fd
 	await writeFile(path, str);
 	try {
-		await execPromise(`tsc  --noEmit --target es5 --lib dom,ES2015 ${path}`);
+		await execPromise(
+			`tsc  --noEmit --target es5 --lib dom,ES2015 ${path}`
+		);
 	} finally {
 		cleanup();
 	}
@@ -50,7 +50,7 @@ const htmlFiles = glob.sync(resolve(__dirname, "../../examples/*.html"));
 
 async function main() {
 	for (let i = 0; i < htmlFiles.length; i++) {
-		const path = htmlFiles[i];	
+		const path = htmlFiles[i];
 		const fileAsString = (await readFile(path)).toString();
 		const dom = new JSDOM(fileAsString);
 		const scriptTag = dom.window.document.querySelector("body script");

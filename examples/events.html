@@ -1,143 +1,197 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head>
-  <meta charset="utf-8">
-	<title>Events</title>
+	<head>
+		<meta charset="utf-8" />
+		<title>Events</title>
 
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-	<link rel="icon" type="image/png" sizes="174x174" href="./favicon.png">
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1, maximum-scale=1"
+		/>
+		<link
+			rel="icon"
+			type="image/png"
+			sizes="174x174"
+			href="./favicon.png"
+		/>
 
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/2.4.3/webcomponents-bundle.js"></script>
-	<link href="https://fonts.googleapis.com/css?family=Material+Icons&display=block" rel="stylesheet"/>
-	<script src="../build/Tone.js"></script>
-	<script src="./js/tone-ui.js"></script>
-	<script src="./js/components.js"></script>
-</head>
-<body>
-	<tone-example label="Events">
-		<div slot="explanation">
-			Tone's Event classes (<a href="https://tonejs.github.io/docs/ToneEvent">Tone.ToneEvent</a>,
-				<a href="https://tonejs.github.io/docs/Loop">Tone.Loop</a>,
-				<a href="https://tonejs.github.io/docs/Part">Tone.Part</a> and
-				<a href="https://tonejs.github.io/docs/Sequence">Tone.Sequence</a>)
-			simplify scheduling events along the Transport. Each class abstracts away calls to
-				<a href="https://tonejs.github.io/docs/Transport.schedule">Transport.schedule</a> or
-				<a href="https://tonejs.github.io/docs/Transport.scheduleRepeat">scheduleRepeat</a>
-			and lets you create precise, rhythmic events which are startable, stoppable and loopable.
-			(note that ToneEvent was called <a href="https://tonejs.github.io/docs/Event">Event</a> before Tone.js 14.x)
-		</div>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/2.4.3/webcomponents-bundle.js"></script>
+		<link
+			href="https://fonts.googleapis.com/css?family=Material+Icons&display=block"
+			rel="stylesheet"
+		/>
+		<script src="../build/Tone.js"></script>
+		<script src="./js/tone-ui.js"></script>
+		<script src="./js/components.js"></script>
+	</head>
+	<body>
+		<tone-example label="Events">
+			<div slot="explanation">
+				Tone's Event classes (<a
+					href="https://tonejs.github.io/docs/latest/classes/ToneEvent"
+					>Tone.ToneEvent</a
+				>,
+				<a href="https://tonejs.github.io/docs/latest/classes/Loop"
+					>Tone.Loop</a
+				>,
+				<a href="https://tonejs.github.io/docs/latest/classes/Part"
+					>Tone.Part</a
+				>
+				and
+				<a href="https://tonejs.github.io/docs/latest/classes/Sequence"
+					>Tone.Sequence</a
+				>) simplify scheduling events along the Transport. Each class
+				abstracts away calls to
+				<a
+					href="https://tonejs.github.io/docs/latest/classes/Transport.schedule"
+					>Transport.schedule</a
+				>
+				or
+				<a
+					href="https://tonejs.github.io/docs/latest/classes/Transport.scheduleRepeat"
+					>scheduleRepeat</a
+				>
+				and lets you create precise, rhythmic events which are
+				startable, stoppable and loopable. (note that ToneEvent was
+				called
+				<a href="https://tonejs.github.io/docs/latest/classes/Event"
+					>Event</a
+				>
+				before Tone.js 14.x)
+			</div>
 
-		<div id="content">
-			<tone-play-toggle></tone-play-toggle>
-		</div>
-	</tone-example>
+			<div id="content">
+				<tone-play-toggle></tone-play-toggle>
+			</div>
+		</tone-example>
 
-	<script type="text/javascript">
-		/**
-		 * KICK
-		 */
-		const kick = new Tone.MembraneSynth({
-			envelope: {
-				sustain: 0,
-				attack: 0.02,
-				decay: 0.8
-			},
-			octaves: 10,
-			pitchDecay: 0.01,
-		}).toDestination();
+		<script type="text/javascript">
+			/**
+			 * KICK
+			 */
+			const kick = new Tone.MembraneSynth({
+				envelope: {
+					sustain: 0,
+					attack: 0.02,
+					decay: 0.8,
+				},
+				octaves: 10,
+				pitchDecay: 0.01,
+			}).toDestination();
 
-		const kickPart = new Tone.Loop(((time) => {
-			kick.triggerAttackRelease("C2", "8n", time);
-		}), "2n").start(0);
-				
-		/**
-		 * SNARE
-		 */
-		const snare = new Tone.NoiseSynth({
-			volume: -10,
-			envelope: {
-				attack: 0.001,
-				decay: 0.2,
-				sustain: 0
-			}
-		}).toDestination();
+			const kickPart = new Tone.Loop((time) => {
+				kick.triggerAttackRelease("C2", "8n", time);
+			}, "2n").start(0);
 
-		const snarePart = new Tone.Loop(((time) => {
-			snare.triggerAttack(time);
-		}), "2n").start("4n");
+			/**
+			 * SNARE
+			 */
+			const snare = new Tone.NoiseSynth({
+				volume: -10,
+				envelope: {
+					attack: 0.001,
+					decay: 0.2,
+					sustain: 0,
+				},
+			}).toDestination();
 
-		/**
-		 * PIANO
-		 */
-		const keys = new Tone.PolySynth(Tone.Synth, {
-			volume: -8,
-			oscillator: {
-				partials: [1, 2, 1],
-			},
-		}).toDestination();
+			const snarePart = new Tone.Loop((time) => {
+				snare.triggerAttack(time);
+			}, "2n").start("4n");
 
-		const cChord = ["C4", "E4", "G4", "B4"];
-		const dChord = ["D4", "F4", "A4", "C5"];
-		const gChord = ["B3", "D4", "E4", "A4"];
+			/**
+			 * PIANO
+			 */
+			const keys = new Tone.PolySynth(Tone.Synth, {
+				volume: -8,
+				oscillator: {
+					partials: [1, 2, 1],
+				},
+			}).toDestination();
 
-		const pianoPart = new Tone.Part(((time, chord) => {
-			keys.triggerAttackRelease(chord, "8n", time);
-		}), [["0:0:2", cChord], ["0:1", cChord], ["0:1:3", dChord], ["0:2:2", cChord], ["0:3", cChord], ["0:3:2", gChord]]).start("2m");
+			const cChord = ["C4", "E4", "G4", "B4"];
+			const dChord = ["D4", "F4", "A4", "C5"];
+			const gChord = ["B3", "D4", "E4", "A4"];
 
-		pianoPart.loop = true;
-		pianoPart.loopEnd = "1m";
-		pianoPart.humanize = true;
+			const pianoPart = new Tone.Part(
+				(time, chord) => {
+					keys.triggerAttackRelease(chord, "8n", time);
+				},
+				[
+					["0:0:2", cChord],
+					["0:1", cChord],
+					["0:1:3", dChord],
+					["0:2:2", cChord],
+					["0:3", cChord],
+					["0:3:2", gChord],
+				]
+			).start("2m");
 
-		/**
-		 * BASS
-		 */
-		const bass = new Tone.MonoSynth({
-			volume: -10,
-			envelope: {
-				attack: 0.1,
-				decay: 0.3,
-				release: 2,
-			},
-			filterEnvelope: {
-				attack: 0.001,
-				decay: 0.01,
-				sustain: 0.5,
-				baseFrequency: 200,
-				octaves: 2.6
-			}
-		}).toDestination();
+			pianoPart.loop = true;
+			pianoPart.loopEnd = "1m";
+			pianoPart.humanize = true;
 
-		const bassPart = new Tone.Sequence(((time, note) => {
-			bass.triggerAttackRelease(note, "16n", time);
-		}), ["C2", ["C3", ["C3", "D2"]], "E2", ["D2", "A1"]], "4n").start(0);
+			/**
+			 * BASS
+			 */
+			const bass = new Tone.MonoSynth({
+				volume: -10,
+				envelope: {
+					attack: 0.1,
+					decay: 0.3,
+					release: 2,
+				},
+				filterEnvelope: {
+					attack: 0.001,
+					decay: 0.01,
+					sustain: 0.5,
+					baseFrequency: 200,
+					octaves: 2.6,
+				},
+			}).toDestination();
 
-		bassPart.probability = 0.9;
+			const bassPart = new Tone.Sequence(
+				(time, note) => {
+					bass.triggerAttackRelease(note, "16n", time);
+				},
+				["C2", ["C3", ["C3", "D2"]], "E2", ["D2", "A1"]],
+				"4n"
+			).start(0);
 
-		// set the transport 
-		Tone.Transport.bpm.value = 90;
+			bassPart.probability = 0.9;
 
-		drawer().add({
-			name: "Kick",
-			tone: kick,
-			open: false,
-		}).add({
-			name: "Snare",
-			tone: snare,
-			open: false,
-		}).add({
-			name: "Bass",
-			tone: bass,
-			open: false,
-		}).add({
-			name: "Keys",
-			tone: keys,
-			open: false,
-		});
+			// set the transport
+			Tone.Transport.bpm.value = 90;
 
-		// bind the interface
-		document.querySelector("tone-play-toggle").addEventListener("start", e => Tone.Transport.start());
-		document.querySelector("tone-play-toggle").addEventListener("stop", e => Tone.Transport.stop());
-				
-	</script>
-</body>
+			drawer()
+				.add({
+					name: "Kick",
+					tone: kick,
+					open: false,
+				})
+				.add({
+					name: "Snare",
+					tone: snare,
+					open: false,
+				})
+				.add({
+					name: "Bass",
+					tone: bass,
+					open: false,
+				})
+				.add({
+					name: "Keys",
+					tone: keys,
+					open: false,
+				});
+
+			// bind the interface
+			document
+				.querySelector("tone-play-toggle")
+				.addEventListener("start", (e) => Tone.Transport.start());
+			document
+				.querySelector("tone-play-toggle")
+				.addEventListener("stop", (e) => Tone.Transport.stop());
+		</script>
+	</body>
 </html>

@@ -1,16 +1,15 @@
-import { BasicTests } from "test/helper/Basic";
-import { Loop } from "Tone/event/Loop";
-import { Offline, whenBetween } from "test/helper/Offline";
 import { expect } from "chai";
-import { noOp } from "Tone/core/util/Interface";
-import { Time } from "Tone/core/type/Time";
+
+import { BasicTests } from "../../test/helper/Basic.js";
+import { Offline, whenBetween } from "../../test/helper/Offline.js";
+import { Time } from "../core/type/Time.js";
+import { noOp } from "../core/util/Interface.js";
+import { Loop } from "./Loop.js";
 
 describe("Loop", () => {
-
 	BasicTests(Loop);
 
 	context("Constructor", () => {
-
 		it("takes a callback and an interval", () => {
 			return Offline(() => {
 				const callback = noOp;
@@ -36,7 +35,7 @@ describe("Loop", () => {
 					callback: callback,
 					iterations: 4,
 					probability: 0.3,
-					interval: "8t"
+					interval: "8t",
 				});
 				expect(loop.callback).to.equal(callback);
 				expect(loop.interval.valueOf()).to.equal(Time("8t").valueOf());
@@ -48,14 +47,13 @@ describe("Loop", () => {
 	});
 
 	context("Get/Set", () => {
-
 		it("can set values with object", () => {
 			return Offline(() => {
 				const callback = noOp;
 				const loop = new Loop();
 				loop.set({
 					callback: callback,
-					iterations: 8
+					iterations: 8,
 				});
 				expect(loop.callback).to.equal(callback);
 				expect(loop.iterations).to.equal(8);
@@ -80,7 +78,7 @@ describe("Loop", () => {
 				const loop = new Loop({
 					callback: callback,
 					iterations: 4,
-					probability: 0.3
+					probability: 0.3,
 				});
 				const values = loop.get();
 				expect(values.iterations).to.equal(4);
@@ -91,7 +89,6 @@ describe("Loop", () => {
 	});
 
 	context("Callback", () => {
-
 		it("does not invoke get invoked until started", () => {
 			return Offline(({ transport }) => {
 				new Loop(() => {
@@ -101,22 +98,21 @@ describe("Loop", () => {
 			}, 0.3);
 		});
 
-		it("is invoked after it's started", () => {
+		it("is invoked after it's started", async () => {
 			let invoked = false;
-			return Offline(({ transport }) => {
+			await Offline(({ transport }) => {
 				const loop = new Loop(() => {
 					invoked = true;
 					loop.dispose();
 				}, 0.05).start(0);
 				transport.start();
-			}).then(() => {
-				expect(invoked).to.be.true;
 			});
+			expect(invoked).to.be.true;
 		});
 
-		it("passes in the scheduled time to the callback", () => {
+		it("passes in the scheduled time to the callback", async () => {
 			let invoked = false;
-			return Offline(({ transport }) => {
+			await Offline(({ transport }) => {
 				const now = transport.now() + 0.1;
 				const loop = new Loop((time) => {
 					expect(time).to.be.a("number");
@@ -126,9 +122,8 @@ describe("Loop", () => {
 				});
 				transport.start(now);
 				loop.start(0.3);
-			}, 0.5).then(() => {
-				expect(invoked).to.be.true;
-			});
+			}, 0.5);
+			expect(invoked).to.be.true;
 		});
 
 		it("can mute the callback", () => {
@@ -155,7 +150,6 @@ describe("Loop", () => {
 	});
 
 	context("Scheduling", () => {
-
 		it("can be started and stopped multiple times", () => {
 			return Offline(({ transport }) => {
 				const loop = new Loop().start().stop(0.2).start(0.4);
@@ -220,29 +214,26 @@ describe("Loop", () => {
 				};
 			}, 0.5);
 		});
-
 	});
 
 	context("Looping", () => {
-
-		it("loops", () => {
+		it("loops", async () => {
 			let callCount = 0;
-			return Offline(({ transport }) => {
+			await Offline(({ transport }) => {
 				new Loop({
 					interval: 0.1,
 					callback: () => {
 						callCount++;
-					}
+					},
 				}).start(0);
 				transport.start();
-			}, 0.81).then(() => {
-				expect(callCount).to.equal(9);
-			});
+			}, 0.81);
+			expect(callCount).to.equal(9);
 		});
 
-		it("loops for the specified interval", () => {
+		it("loops for the specified interval", async () => {
 			let invoked = false;
-			return Offline(({ transport }) => {
+			await Offline(({ transport }) => {
 				let lastCall;
 				new Loop({
 					interval: "8n",
@@ -252,32 +243,30 @@ describe("Loop", () => {
 							expect(time - lastCall).to.be.closeTo(0.25, 0.01);
 						}
 						lastCall = time;
-					}
+					},
 				}).start(0);
 				transport.start();
-			}, 1).then(() => {
-				expect(invoked).to.be.true;
-			});
+			}, 1);
+			expect(invoked).to.be.true;
 		});
 
-		it("can loop a specific number of iterations", () => {
+		it("can loop a specific number of iterations", async () => {
 			let callCount = 0;
-			return Offline(({ transport }) => {
+			await Offline(({ transport }) => {
 				new Loop({
 					interval: 0.1,
 					iterations: 2,
 					callback: () => {
 						callCount++;
-					}
+					},
 				}).start(0);
 				transport.start();
-			}, 0.4).then(() => {
-				expect(callCount).to.equal(2);
-			});
+			}, 0.4);
+			expect(callCount).to.equal(2);
 		});
 
-		it("reports the progress of the loop", () => {
-			return Offline(({ transport }) => {
+		it("reports the progress of the loop", async () => {
+			await Offline(({ transport }) => {
 				const loop = new Loop({
 					interval: 1,
 				}).start(0);
@@ -290,10 +279,9 @@ describe("Loop", () => {
 	});
 
 	context("playbackRate", () => {
-
-		it("can adjust the playbackRate", () => {
+		it("can adjust the playbackRate", async () => {
 			let invoked = false;
-			return Offline(({ transport }) => {
+			await Offline(({ transport }) => {
 				let lastCall;
 				const loop = new Loop({
 					playbackRate: 2,
@@ -304,31 +292,28 @@ describe("Loop", () => {
 							expect(time - lastCall).to.be.closeTo(0.25, 0.01);
 						}
 						lastCall = time;
-					}
+					},
 				}).start(0);
 				expect(loop.playbackRate).to.equal(2);
 				transport.start();
-			}, 0.7).then(() => {
-				expect(invoked).to.be.true;
-			});
-
+			}, 0.7);
+			expect(invoked).to.be.true;
 		});
 
-		it("can playback at a faster rate", () => {
+		it("can playback at a faster rate", async () => {
 			let callCount = 0;
-			return Offline(({ transport }) => {
+			await Offline(({ transport }) => {
 				const loop = new Loop({
 					interval: 0.1,
 					callback: () => {
 						callCount++;
-					}
+					},
 				}).start(0);
 				loop.playbackRate = 1.5;
 				expect(loop.playbackRate).to.equal(1.5);
 				transport.start();
-			}, 0.81).then(() => {
-				expect(callCount).to.equal(13);
-			});
+			}, 0.81);
+			expect(callCount).to.equal(13);
 		});
 	});
 });

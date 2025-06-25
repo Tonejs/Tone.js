@@ -1,65 +1,87 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head>
-  <meta charset="utf-8">
-	<title>Grain Player</title>
+	<head>
+		<meta charset="utf-8" />
+		<title>Grain Player</title>
 
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-	<link rel="icon" type="image/png" sizes="174x174" href="./favicon.png">
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1, maximum-scale=1"
+		/>
+		<link
+			rel="icon"
+			type="image/png"
+			sizes="174x174"
+			href="./favicon.png"
+		/>
 
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/2.4.3/webcomponents-bundle.js"></script>
-	<link href="https://fonts.googleapis.com/css?family=Material+Icons&display=block" rel="stylesheet"/>
-	<script src="../build/Tone.js"></script>
-	<script src="./js/tone-ui.js"></script>
-	<script src="./js/components.js"></script>
-</head>
-<body>
-	<style type="text/css">
-		tone-play-toggle, tone-fft {
-			margin-bottom: 10px;
-		}
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/2.4.3/webcomponents-bundle.js"></script>
+		<link
+			href="https://fonts.googleapis.com/css?family=Material+Icons&display=block"
+			rel="stylesheet"
+		/>
+		<script src="../build/Tone.js"></script>
+		<script src="./js/tone-ui.js"></script>
+		<script src="./js/components.js"></script>
+	</head>
+	<body>
+		<style type="text/css">
+			tone-play-toggle,
+			tone-fft {
+				margin-bottom: 10px;
+			}
 
-		tone-fft {
-			background-color: black;
-			height: 40px;
-			width: 100%;
-			border-radius: 20px;
-		}
-	</style>
-	<tone-example label="Granular Synthesis">
-		<div slot="explanation">
-			<a href="https://tonejs.github.io/docs/GrainPlayer">Tone.GrainPlayer</a> uses
-			<a href="https://en.wikipedia.org/wiki/Granular_synthesis">granular synthesis</a>
-			to enable you to adjust pitch and playback rate independently. The grainSize is the 
-			amount of time each small chunk of audio is played for and the overlap is the 
-			amount of crossfading transition time between successive grains.
-		</div>
-		
-		<tone-loader></tone-loader>
+			tone-fft {
+				background-color: black;
+				height: 40px;
+				width: 100%;
+				border-radius: 20px;
+			}
+		</style>
+		<tone-example label="Granular Synthesis">
+			<div slot="explanation">
+				<a
+					href="https://tonejs.github.io/docs/latest/classes/GrainPlayer"
+					>Tone.GrainPlayer</a
+				>
+				uses
+				<a href="https://en.wikipedia.org/wiki/Granular_synthesis"
+					>granular synthesis</a
+				>
+				to enable you to adjust pitch and playback rate independently.
+				The grainSize is the amount of time each small chunk of audio is
+				played for and the overlap is the amount of crossfading
+				transition time between successive grains.
+			</div>
 
-		<div id="content">
-			<tone-play-toggle></tone-play-toggle>
-		</div>
-	</tone-example>
+			<tone-loader></tone-loader>
 
-	<script type="text/javascript">
-		// the player
-		const player = new Tone.GrainPlayer({
-			url: "https://tonejs.github.io/audio/berklee/arpeggio3crazy.mp3",
-			loop: true,
-			grainSize: 0.1,
-			overlap: 0.05,
-		}).toDestination();
+			<div id="content">
+				<tone-play-toggle></tone-play-toggle>
+			</div>
+		</tone-example>
 
-		ui({
-			parent: document.querySelector("#content"),
-			tone: player,
-		});
+		<script type="text/javascript">
+			// the player
+			const player = new Tone.GrainPlayer({
+				url: "https://tonejs.github.io/audio/berklee/arpeggio3crazy.mp3",
+				loop: true,
+				grainSize: 0.1,
+				overlap: 0.05,
+			}).toDestination();
 
-		// bind the interface
-		document.querySelector("tone-play-toggle").addEventListener("start", () => player.start());
-		document.querySelector("tone-play-toggle").addEventListener("stop", () => player.stop());
+			ui({
+				parent: document.querySelector("#content"),
+				tone: player,
+			});
 
-	</script>
-</body>
+			// bind the interface
+			document
+				.querySelector("tone-play-toggle")
+				.addEventListener("start", () => player.start());
+			document
+				.querySelector("tone-play-toggle")
+				.addEventListener("stop", () => player.stop());
+		</script>
+	</body>
 </html>

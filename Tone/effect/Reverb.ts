@@ -1,14 +1,14 @@
-import { Merge } from "../component/channel/Merge";
-import { Gain } from "../core/context/Gain";
-import { Seconds, Time } from "../core/type/Units";
-import { optionsFromArguments } from "../core/util/Defaults";
-import { Noise } from "../source/Noise";
-import { Effect, EffectOptions } from "./Effect";
-import { OfflineContext } from "../core/context/OfflineContext";
-import { noOp } from "../core/util/Interface";
-import { assertRange } from "../core/util/Debug";
+import { Merge } from "../component/channel/Merge.js";
+import { Gain } from "../core/context/Gain.js";
+import { OfflineContext } from "../core/context/OfflineContext.js";
+import { Seconds, Time } from "../core/type/Units.js";
+import { assertRange } from "../core/util/Debug.js";
+import { optionsFromArguments } from "../core/util/Defaults.js";
+import { noOp } from "../core/util/Interface.js";
+import { Noise } from "../source/Noise.js";
+import { Effect, EffectOptions } from "./Effect.js";
 
-interface ReverbOptions extends EffectOptions {
+export interface ReverbOptions extends EffectOptions {
 	decay: Seconds;
 	preDelay: Seconds;
 }
@@ -18,15 +18,14 @@ interface ReverbOptions extends EffectOptions {
  * Generates an Impulse Response Buffer
  * with Tone.Offline then feeds the IR into ConvolverNode.
  * The impulse response generation is async, so you have
- * to wait until [[ready]] resolves before it will make a sound. 
+ * to wait until {@link ready} resolves before it will make a sound.
  *
  * Inspiration from [ReverbGen](https://github.com/adelespinasse/reverbGen).
  * Copyright (c) 2014 Alan deLespinasse Apache 2.0 License.
- * 
+ *
  * @category Effect
  */
 export class Reverb extends Effect<ReverbOptions> {
-
 	readonly name: string = "Reverb";
 
 	/**
@@ -38,16 +37,16 @@ export class Reverb extends Effect<ReverbOptions> {
 	 * The duration of the reverb.
 	 */
 	private _decay: Seconds;
-	
+
 	/**
 	 * The amount of time before the reverb is fully ramped in.
 	 */
 	private _preDelay: Seconds;
 
 	/**
-	 * Resolves when the reverb buffer is generated. Whenever either [[decay]]
-	 * or [[preDelay]] are set, you have to wait until [[ready]] resolves
-	 * before the IR is generated with the latest values. 
+	 * Resolves when the reverb buffer is generated. Whenever either {@link decay}
+	 * or {@link preDelay} are set, you have to wait until {@link ready} resolves
+	 * before the IR is generated with the latest values.
 	 */
 	ready: Promise<void> = Promise.resolve();
 
@@ -57,12 +56,19 @@ export class Reverb extends Effect<ReverbOptions> {
 	constructor(decay?: Seconds);
 	constructor(options?: Partial<ReverbOptions>);
 	constructor() {
+		const options = optionsFromArguments(Reverb.getDefaults(), arguments, [
+			"decay",
+		]);
+		super(options);
 
-		super(optionsFromArguments(Reverb.getDefaults(), arguments, ["decay"]));
-		const options = optionsFromArguments(Reverb.getDefaults(), arguments, ["decay"]);
+		const decayTime = this.toSeconds(options.decay);
+		assertRange(decayTime, 0.001);
+		this._decay = decayTime;
 
-		this._decay = options.decay;
-		this._preDelay = options.preDelay;
+		const preDelayTime = this.toSeconds(options.preDelay);
+		assertRange(preDelayTime, 0);
+		this._preDelay = preDelayTime;
+
 		this.generate();
 
 		this.connectEffect(this._convolver);
@@ -109,7 +115,11 @@ export class Reverb extends Effect<ReverbOptions> {
 		const previousReady = this.ready;
 
 		// create a noise burst which decays over the duration in each channel
-		const context = new OfflineContext(2, this._decay + this._preDelay, this.context.sampleRate);
+		const context = new OfflineContext(
+			2,
+			this._decay + this._preDelay,
+			this.context.sampleRate
+		);
 		const noiseL = new Noise({ context });
 		const noiseR = new Noise({ context });
 		const merge = new Merge({ context });
@@ -123,12 +133,16 @@ export class Reverb extends Effect<ReverbOptions> {
 		gainNode.gain.setValueAtTime(0, 0);
 		gainNode.gain.setValueAtTime(1, this._preDelay);
 		// decay
-		gainNode.gain.exponentialApproachValueAtTime(0, this._preDelay, this.decay);
-		
+		gainNode.gain.exponentialApproachValueAtTime(
+			0,
+			this._preDelay,
+			this.decay
+		);
+
 		// render the buffer
 		const renderPromise = context.render();
 		this.ready = renderPromise.then(noOp);
-		
+
 		// wait for the previous `ready` to resolve
 		await previousReady;
 		// set the buffer

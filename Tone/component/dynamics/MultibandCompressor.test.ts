@@ -1,14 +1,13 @@
-import { MultibandCompressor } from "./MultibandCompressor";
-import { BasicTests } from "test/helper/Basic";
-import { PassAudio } from "test/helper/PassAudio";
 import { expect } from "chai";
 
-describe("MultibandCompressor", () => {
+import { BasicTests } from "../../../test/helper/Basic.js";
+import { PassAudio } from "../../../test/helper/PassAudio.js";
+import { MultibandCompressor } from "./MultibandCompressor.js";
 
+describe("MultibandCompressor", () => {
 	BasicTests(MultibandCompressor);
 
 	context("Compression", () => {
-
 		it("passes the incoming signal through", () => {
 			return PassAudio((input) => {
 				const comp = new MultibandCompressor().toDestination();
@@ -26,11 +25,17 @@ describe("MultibandCompressor", () => {
 				high: {
 					release: 0.5,
 					attack: 0.03,
-					knee: 20
-				}
+					knee: 20,
+				},
 			};
 			comp.set(values);
-			expect(comp.get()).to.have.keys(["low", "mid", "high", "lowFrequency", "highFrequency"]);
+			expect(comp.get()).to.have.keys([
+				"low",
+				"mid",
+				"high",
+				"lowFrequency",
+				"highFrequency",
+			]);
 			expect(comp.get().mid.ratio).be.closeTo(16, 0.01);
 			expect(comp.get().high.release).be.closeTo(0.5, 0.01);
 			comp.dispose();
@@ -51,4 +56,3 @@ describe("MultibandCompressor", () => {
 		});
 	});
 });
-

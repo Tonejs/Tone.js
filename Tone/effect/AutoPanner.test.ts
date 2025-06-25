@@ -1,32 +1,36 @@
-import { AutoPanner } from "./AutoPanner";
-import { BasicTests } from "test/helper/Basic";
-import { EffectTests } from "test/helper/EffectTests";
-import { Offline } from "test/helper/Offline";
 import { expect } from "chai";
-import { CompareToFile } from "test/helper/CompareToFile";
-import { Oscillator } from "Tone/source/oscillator/Oscillator";
+
+import { BasicTests } from "../../test/helper/Basic.js";
+import { CompareToFile } from "../../test/helper/CompareToFile.js";
+import { EffectTests } from "../../test/helper/EffectTests.js";
+import { Offline } from "../../test/helper/Offline.js";
+import { Oscillator } from "../source/oscillator/Oscillator.js";
+import { AutoPanner } from "./AutoPanner.js";
 
 describe("AutoPanner", () => {
 	BasicTests(AutoPanner);
 	EffectTests(AutoPanner);
 
 	it("matches a file", () => {
-		return CompareToFile(() => {
-			const autoFilter = new AutoPanner({
-				type: "sine",
-				frequency: 3,
-			}).toDestination();
-			new Oscillator().connect(autoFilter).start();
-			autoFilter.start(0.2);
-		}, "autoPanner.wav", 0.01);
+		return CompareToFile(
+			() => {
+				const autoFilter = new AutoPanner({
+					type: "sine",
+					frequency: 3,
+				}).toDestination();
+				new Oscillator().connect(autoFilter).start();
+				autoFilter.start(0.2);
+			},
+			"autoPanner.wav",
+			0.01
+		);
 	});
 
 	context("API", () => {
-
 		it("can pass in options in the constructor", () => {
 			const autoPanner = new AutoPanner({
 				type: "sawtooth",
-				depth: 0.2
+				depth: 0.2,
 			});
 			expect(autoPanner.depth.value).to.be.closeTo(0.2, 0.01);
 			expect(autoPanner.type).to.equal("sawtooth");
@@ -43,7 +47,7 @@ describe("AutoPanner", () => {
 			const autoPanner = new AutoPanner();
 			autoPanner.set({
 				frequency: 2.4,
-				type: "triangle"
+				type: "triangle",
 			});
 			expect(autoPanner.get().frequency).to.be.closeTo(2.4, 0.01);
 			expect(autoPanner.get().type).to.equal("triangle");
@@ -59,32 +63,29 @@ describe("AutoPanner", () => {
 			autoPanner.dispose();
 		});
 
-		it("can sync the frequency to the transport", () => {
-			return Offline(({ transport }) => {
+		it("can sync the frequency to the transport", async () => {
+			const buffer = await Offline(({ transport }) => {
 				const panner = new AutoPanner(2);
 				panner.sync();
 				panner.frequency.toDestination();
 				transport.bpm.setValueAtTime(transport.bpm.value * 2, 0.05);
 				// transport.start(0)
-			}, 0.1).then((buffer) => {
-				expect(buffer.getValueAtTime(0)).to.be.closeTo(2, 0.1);
-				expect(buffer.getValueAtTime(0.05)).to.be.closeTo(4, 0.1);
-			});
+			}, 0.1);
+			expect(buffer.getValueAtTime(0)).to.be.closeTo(2, 0.1);
+			expect(buffer.getValueAtTime(0.05)).to.be.closeTo(4, 0.1);
 		});
 
-		it("can unsync the frequency to the transport", () => {
-			return Offline(({ transport }) => {
+		it("can unsync the frequency to the transport", async () => {
+			const buffer = await Offline(({ transport }) => {
 				const panner = new AutoPanner(2);
 				panner.sync();
 				panner.frequency.toDestination();
 				transport.bpm.setValueAtTime(transport.bpm.value * 2, 0.05);
 				panner.unsync();
 				// transport.start(0)
-			}, 0.1).then((buffer) => {
-				expect(buffer.getValueAtTime(0)).to.be.closeTo(2, 0.1);
-				expect(buffer.getValueAtTime(0.05)).to.be.closeTo(2, 0.1);
-			});
+			}, 0.1);
+			expect(buffer.getValueAtTime(0)).to.be.closeTo(2, 0.1);
+			expect(buffer.getValueAtTime(0.05)).to.be.closeTo(2, 0.1);
 		});
 	});
 });
-

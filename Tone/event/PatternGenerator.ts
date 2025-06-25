@@ -1,10 +1,19 @@
-import { assert } from "../core/util/Debug";
-import { clamp } from "../core/util/Math";
+import { assert } from "../core/util/Debug.js";
+import { clamp } from "../core/util/Math.js";
 
 /**
  * The name of the patterns
  */
-export type PatternName = "up" | "down" | "upDown" | "downUp" | "alternateUp" | "alternateDown" | "random" | "randomOnce" | "randomWalk";
+export type PatternName =
+	| "up"
+	| "down"
+	| "upDown"
+	| "downUp"
+	| "alternateUp"
+	| "alternateDown"
+	| "random"
+	| "randomOnce"
+	| "randomWalk";
 
 /**
  * Start at the first value and go up to the last
@@ -33,7 +42,10 @@ function* downPatternGen<T>(numValues: number): IterableIterator<number> {
 /**
  * Infinitely yield the generator
  */
-function* infiniteGen<T>(numValues: number, gen: typeof upPatternGen): IterableIterator<number> {
+function* infiniteGen<T>(
+	numValues: number,
+	gen: typeof upPatternGen
+): IterableIterator<number> {
 	while (true) {
 		yield* gen(numValues);
 	}
@@ -42,7 +54,10 @@ function* infiniteGen<T>(numValues: number, gen: typeof upPatternGen): IterableI
 /**
  * Alternate between two generators
  */
-function* alternatingGenerator<T>(numValues: number, directionUp: boolean): IterableIterator<number> {
+function* alternatingGenerator<T>(
+	numValues: number,
+	directionUp: boolean
+): IterableIterator<number> {
 	let index = directionUp ? 0 : numValues - 1;
 	while (true) {
 		index = clamp(index, 0, numValues - 1);
@@ -71,7 +86,7 @@ function* jumpUp<T>(numValues: number): IterableIterator<number> {
 		index = clamp(index, 0, numValues - 1);
 		yield index;
 		stepIndex++;
-		index += (stepIndex % 2 ? 2 : -1);
+		index += stepIndex % 2 ? 2 : -1;
 	}
 }
 
@@ -85,7 +100,7 @@ function* jumpDown<T>(numValues: number): IterableIterator<number> {
 		index = clamp(index, 0, numValues - 1);
 		yield index;
 		stepIndex++;
-		index += (stepIndex % 2 ? -2 : 1);
+		index += stepIndex % 2 ? -2 : 1;
 	}
 }
 
@@ -127,7 +142,8 @@ function* randomWalk<T>(numValues: number): IterableIterator<number> {
 			index++; // at bottom, so force upward step
 		} else if (index === numValues - 1) {
 			index--; // at top, so force downward step
-		} else if (Math.random() < 0.5) { // else choose random downward or upward step
+		} else if (Math.random() < 0.5) {
+			// else choose random downward or upward step
 			index--;
 		} else {
 			index++;
@@ -143,17 +159,21 @@ function* randomWalk<T>(numValues: number): IterableIterator<number> {
  * @param pattern The name of the pattern use when iterating over
  * @param index Where to start in the offset of the values array
  */
-export function* PatternGenerator(numValues: number, pattern: PatternName = "up", index = 0): Iterator<number> {
+export function* PatternGenerator(
+	numValues: number,
+	pattern: PatternName = "up",
+	index = 0
+): Iterator<number> {
 	// safeguards
 	assert(numValues >= 1, "The number of values must be at least one");
 	switch (pattern) {
-		case "up" :
+		case "up":
 			yield* infiniteGen(numValues, upPatternGen);
-		case "down" :
+		case "down":
 			yield* infiniteGen(numValues, downPatternGen);
-		case "upDown" :
+		case "upDown":
 			yield* alternatingGenerator(numValues, true);
-		case "downUp" :
+		case "downUp":
 			yield* alternatingGenerator(numValues, false);
 		case "alternateUp":
 			yield* infiniteGen(numValues, jumpUp);

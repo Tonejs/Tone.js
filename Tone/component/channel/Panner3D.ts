@@ -1,8 +1,12 @@
-import { Param } from "../../core/context/Param";
-import { ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
-import { Degrees, GainFactor } from "../../core/type/Units";
-import { optionsFromArguments } from "../../core/util/Defaults";
-import "../../core/context/Listener";
+import "../../core/context/Listener.js";
+
+import { Param } from "../../core/context/Param.js";
+import {
+	ToneAudioNode,
+	ToneAudioNodeOptions,
+} from "../../core/context/ToneAudioNode.js";
+import { Degrees, GainFactor } from "../../core/type/Units.js";
+import { optionsFromArguments } from "../../core/util/Defaults.js";
 
 export interface Panner3DOptions extends ToneAudioNodeOptions {
 	coneInnerAngle: Degrees;
@@ -26,7 +30,6 @@ export interface Panner3DOptions extends ToneAudioNodeOptions {
  * @category Component
  */
 export class Panner3D extends ToneAudioNode<Panner3DOptions> {
-
 	readonly name: string = "Panner3D";
 
 	/**
@@ -52,9 +55,12 @@ export class Panner3D extends ToneAudioNode<Panner3DOptions> {
 	constructor(positionX: number, positionY: number, positionZ: number);
 	constructor(options?: Partial<Panner3DOptions>);
 	constructor() {
-
-		super(optionsFromArguments(Panner3D.getDefaults(), arguments, ["positionX", "positionY", "positionZ"]));
-		const options = optionsFromArguments(Panner3D.getDefaults(), arguments, ["positionX", "positionY", "positionZ"]);
+		const options = optionsFromArguments(
+			Panner3D.getDefaults(),
+			arguments,
+			["positionX", "positionY", "positionZ"]
+		);
+		super(options);
 
 		this._panner = this.input = this.output = this.context.createPanner();
 		// set some values

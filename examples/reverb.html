@@ -1,56 +1,73 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head>
-  <meta charset="utf-8">
-	<title>Reverb</title>
+	<head>
+		<meta charset="utf-8" />
+		<title>Reverb</title>
 
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-	<link rel="icon" type="image/png" sizes="174x174" href="./favicon.png">
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1, maximum-scale=1"
+		/>
+		<link
+			rel="icon"
+			type="image/png"
+			sizes="174x174"
+			href="./favicon.png"
+		/>
 
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/2.4.3/webcomponents-bundle.js"></script>
-	<link href="https://fonts.googleapis.com/css?family=Material+Icons&display=block" rel="stylesheet"/>
-	<script src="../build/Tone.js"></script>
-	<script src="./js/tone-ui.js"></script>
-	<script src="./js/components.js"></script>
-</head>
-<body>
-	<style>
-		tone-play-toggle {
-			margin-bottom: 10px;
-		}
-	</style>
-	<tone-example label="Reverb">
-		<div slot="explanation">
-			<a href="https://tonejs.github.io/docs/Reverb">Tone.Reverb</a>
-			is a convolution-based reverb. An impulse response is created with a
-			decaying noise burst when you click 'Generate Reverb'. The 'Decay Time' controls
-			how long the noise burst lasts. If the 'Decay Time' is changed, a new noise burst
-			will need to be generated. 
-		</div>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/2.4.3/webcomponents-bundle.js"></script>
+		<link
+			href="https://fonts.googleapis.com/css?family=Material+Icons&display=block"
+			rel="stylesheet"
+		/>
+		<script src="../build/Tone.js"></script>
+		<script src="./js/tone-ui.js"></script>
+		<script src="./js/components.js"></script>
+	</head>
+	<body>
+		<style>
+			tone-play-toggle {
+				margin-bottom: 10px;
+			}
+		</style>
+		<tone-example label="Reverb">
+			<div slot="explanation">
+				<a href="https://tonejs.github.io/docs/latest/classes/Reverb"
+					>Tone.Reverb</a
+				>
+				is a convolution-based reverb. An impulse response is created
+				with a decaying noise burst when you click 'Generate Reverb'.
+				The 'Decay Time' controls how long the noise burst lasts. If the
+				'Decay Time' is changed, a new noise burst will need to be
+				generated.
+			</div>
 
-		<div id="content">
-			<tone-play-toggle></tone-play-toggle>
-		</div>
-	</tone-example>
-	
-	<script type="text/javascript">
-		const reverb = new Tone.Reverb().toDestination();
+			<div id="content">
+				<tone-play-toggle></tone-play-toggle>
+			</div>
+		</tone-example>
 
-		const player = new Tone.Player({
-			url: "https://tonejs.github.io/audio/berklee/shaker_slow_1.mp3",
-			loop: true,
-			volume: 6,
-		}).connect(reverb);
+		<script type="text/javascript">
+			const reverb = new Tone.Reverb().toDestination();
 
-		ui({
-			parent: document.querySelector("#content"),
-			tone: reverb
-		});
+			const player = new Tone.Player({
+				url: "https://tonejs.github.io/audio/berklee/shaker_slow_1.mp3",
+				loop: true,
+				volume: 6,
+			}).connect(reverb);
 
-		// bind the interface
-		document.querySelector("tone-play-toggle").addEventListener("start", () => player.start());
-		document.querySelector("tone-play-toggle").addEventListener("stop", () => player.stop());
+			ui({
+				parent: document.querySelector("#content"),
+				tone: reverb,
+			});
 
-	</script>
-</body>
+			// bind the interface
+			document
+				.querySelector("tone-play-toggle")
+				.addEventListener("start", () => player.start());
+			document
+				.querySelector("tone-play-toggle")
+				.addEventListener("stop", () => player.stop());
+		</script>
+	</body>
 </html>

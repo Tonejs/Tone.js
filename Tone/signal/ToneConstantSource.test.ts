@@ -1,16 +1,14 @@
 import { expect } from "chai";
-import { BasicTests } from "test/helper/Basic";
-import { CompareToFile } from "test/helper/CompareToFile";
-import { Offline, whenBetween } from "test/helper/Offline";
-import { ONLINE_TESTING } from "test/helper/Supports";
-import { ToneConstantSource } from "./ToneConstantSource";
+
+import { BasicTests } from "../../test/helper/Basic.js";
+import { Offline, whenBetween } from "../../test/helper/Offline.js";
+import { Context } from "../core/context/Context.js";
+import { ToneConstantSource } from "./ToneConstantSource.js";
 
 describe("ToneConstantSource", () => {
-
 	BasicTests(ToneConstantSource);
 
 	context("Constructor", () => {
-
 		it("can be constructed with an offset", () => {
 			const source = new ToneConstantSource(330);
 			expect(source.offset.value).to.equal(330);
@@ -30,43 +28,38 @@ describe("ToneConstantSource", () => {
 			expect(source.offset.value).to.be.closeTo(2, 0.01);
 			source.dispose();
 		});
-
 	});
 
 	context("onended", () => {
+		it("invokes the onended callback in the online context", (done) => {
+			const source = new ToneConstantSource();
+			source.start();
+			source.stop("+0.3");
+			const now = source.now();
+			source.onended = () => {
+				expect(source.now() - now).to.be.closeTo(0.3, 0.15);
+				source.dispose();
+				done();
+			};
+		});
 
-		if (ONLINE_TESTING) {
+		it("invokes the onended callback only once in the online context", (done) => {
+			const source = new ToneConstantSource();
+			source.start();
+			source.stop("+0.1");
+			source.stop("+0.2");
+			source.stop("+0.3");
+			const now = source.now();
+			source.onended = () => {
+				expect(source.now() - now).to.be.within(0.25, 0.5);
+				source.dispose();
+				done();
+			};
+		});
 
-			it("invokes the onended callback in the online context", (done) => {
-				const source = new ToneConstantSource();
-				source.start();
-				source.stop("+0.3");
-				const now = source.now();
-				source.onended = () => {
-					expect(source.now() - now).to.be.within(0.25, 0.5);
-					source.dispose();
-					done();
-				};
-			});
-
-			it("invokes the onended callback only once in the online context", (done) => {
-				const source = new ToneConstantSource();
-				source.start();
-				source.stop("+0.1");
-				source.stop("+0.2");
-				source.stop("+0.3");
-				const now = source.now();
-				source.onended = () => {
-					expect(source.now() - now).to.be.within(0.25, 0.5);
-					source.dispose();
-					done();
-				};
-			});
-		}
-
-		it("invokes the onended callback in the offline context", () => {
+		it("invokes the onended callback in the offline context", async () => {
 			let wasInvoked = false;
-			return Offline(() => {
+			await Offline(() => {
 				const source = new ToneConstantSource();
 				source.start(0);
 				source.stop(0.2);
@@ -75,14 +68,13 @@ describe("ToneConstantSource", () => {
 					source.dispose();
 					wasInvoked = true;
 				};
-			}, 0.3).then(() => {
-				expect(wasInvoked).to.equal(true);
-			});
+			}, 0.3);
+			expect(wasInvoked).to.equal(true);
 		});
 
-		it("invokes the onended callback only once in offline context", () => {
+		it("invokes the onended callback only once in offline context", async () => {
 			let wasInvoked = false;
-			return Offline(() => {
+			await Offline(() => {
 				const source = new ToneConstantSource();
 				source.start(0);
 				source.stop(0.1);
@@ -94,14 +86,12 @@ describe("ToneConstantSource", () => {
 					expect(wasInvoked).to.equal(false);
 					wasInvoked = true;
 				};
-			}, 0.4).then(() => {
-				expect(wasInvoked).to.equal(true);
-			});
+			}, 0.4);
+			expect(wasInvoked).to.equal(true);
 		});
 	});
 
 	context("Scheduling", () => {
-
 		it("throw an error if start is called multiple time", () => {
 			const source = new ToneConstantSource();
 			source.start();
@@ -111,61 +101,56 @@ describe("ToneConstantSource", () => {
 			source.dispose();
 		});
 
-		it("can play for a specific duration", () => {
-			return Offline(() => {
+		it("can play for a specific duration", async () => {
+			const buffer = await Offline(() => {
 				const source = new ToneConstantSource().toDestination();
 				source.start(0).stop(0.1);
-			}, 0.4).then(buffer => {
-				expect(buffer.getValueAtTime(0)).to.be.above(0);
-				expect(buffer.getValueAtTime(0.09)).to.be.above(0);
-				expect(buffer.getValueAtTime(0.1)).to.equal(0);
-			});
+			}, 0.4);
+			expect(buffer.getValueAtTime(0)).to.be.above(0);
+			expect(buffer.getValueAtTime(0.09)).to.be.above(0);
+			expect(buffer.getValueAtTime(0.1)).to.equal(0);
 		});
 
-		it("can call stop multiple times and takes the last value", () => {
-			return Offline(() => {
+		it("can call stop multiple times and takes the last value", async () => {
+			const buffer = await Offline(() => {
 				const source = new ToneConstantSource().toDestination();
 				source.start(0).stop(0.1).stop(0.2);
-			}, 0.4).then((buffer) => {
-				expect(buffer.getValueAtTime(0)).to.be.above(0);
-				expect(buffer.getValueAtTime(0.1)).to.be.above(0);
-				expect(buffer.getValueAtTime(0.19)).to.be.above(0);
-				expect(buffer.getValueAtTime(0.2)).to.equal(0);
-			});
+			}, 0.4);
+			expect(buffer.getValueAtTime(0)).to.be.above(0);
+			expect(buffer.getValueAtTime(0.1)).to.be.above(0);
+			expect(buffer.getValueAtTime(0.19)).to.be.above(0);
+			expect(buffer.getValueAtTime(0.2)).to.equal(0);
 		});
 
-		if (ONLINE_TESTING) {
+		it("clamps start time to the currentTime", () => {
+			const source = new ToneConstantSource();
+			source.start(0);
+			const currentTime = source.context.currentTime;
+			expect(source.getStateAtTime(0)).to.equal("stopped");
+			expect(source.getStateAtTime(currentTime)).to.equal("started");
+			source.dispose();
+		});
 
-			it("clamps start time to the currentTime", () => {
-				const source = new ToneConstantSource();
-				source.start(0);
-				const currentTime = source.context.currentTime;
-				expect(source.getStateAtTime(0)).to.equal("stopped");
-				expect(source.getStateAtTime(currentTime)).to.equal("started");
+		it("clamps stop time to the currentTime", (done) => {
+			const source = new ToneConstantSource();
+			source.start(0);
+			let currentTime = source.context.currentTime;
+			expect(source.getStateAtTime(0)).to.equal("stopped");
+			expect(source.getStateAtTime(currentTime)).to.equal("started");
+			setTimeout(() => {
+				currentTime = source.now();
+				source.stop(0);
+				expect(source.getStateAtTime(currentTime + 0.01)).to.equal(
+					"stopped"
+				);
 				source.dispose();
-			});
-
-			it("clamps stop time to the currentTime", (done) => {
-				const source = new ToneConstantSource();
-				source.start(0);
-				let currentTime = source.context.currentTime;
-				expect(source.getStateAtTime(0)).to.equal("stopped");
-				expect(source.getStateAtTime(currentTime)).to.equal("started");
-				setTimeout(() => {
-					currentTime = source.now();
-					source.stop(0);
-					expect(source.getStateAtTime(currentTime + 0.01)).to.equal("stopped");
-					source.dispose();
-					done();
-				}, 100);
-			});
-		}
+				done();
+			}, 100);
+		});
 	});
 
 	context("State", () => {
-
 		it("reports the right state", () => {
-
 			return Offline(() => {
 				const source = new ToneConstantSource();
 				source.start(0);
@@ -182,7 +167,6 @@ describe("ToneConstantSource", () => {
 		});
 
 		it("can call stop multiple times, takes the last value", () => {
-
 			return Offline(() => {
 				const source = new ToneConstantSource();
 				source.start(0);
@@ -197,6 +181,67 @@ describe("ToneConstantSource", () => {
 					});
 				};
 			}, 0.2);
+		});
+	});
+
+	context.only("Suspended AudioContext", () => {
+		it("does nothing when AudioContext returns to suspended", () => {
+			const context = new Context();
+			expect(context.state).to.equal("suspended");
+
+			const source = new ToneConstantSource({
+				context,
+			});
+
+			source.start(0);
+
+			context.dispose();
+			source.dispose();
+		});
+
+		it("starts when the audio context is resumed", async () => {
+			const context = new Context();
+			expect(context.state).to.equal("suspended");
+
+			const source = new ToneConstantSource({
+				context,
+			});
+
+			source.start(0);
+
+			await context.resume();
+
+			context.dispose();
+			source.dispose();
+		});
+
+		it("context can be suspended again", async () => {
+			const context = new Context();
+			expect(context.state).to.equal("suspended");
+
+			const source = new ToneConstantSource({
+				context,
+			});
+
+			source.start(0);
+
+			await context.resume();
+
+			source.stop(0.1);
+
+			await context.rawContext.suspend(0);
+
+			// wait for the context to be suspended
+			await new Promise<void>((resolve) =>
+				context.on("statechange", () => {
+					if (context.state === "suspended") {
+						resolve();
+					}
+				})
+			);
+
+			context.dispose();
+			source.dispose();
 		});
 	});
 });

@@ -1,5 +1,6 @@
-import "./ToneAudioWorkletProcessor.worklet";
-import { addToWorklet } from "./WorkletGlobalScope";
+import "./ToneAudioWorkletProcessor.worklet.js";
+
+import { addToWorklet } from "./WorkletGlobalScope.js";
 
 export const singleIOProcess = /* javascript */ `
 	/**

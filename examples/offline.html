@@ -1,103 +1,139 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head>
-  <meta charset="utf-8">
-	<title>Offline</title>
+	<head>
+		<meta charset="utf-8" />
+		<title>Offline</title>
 
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-	<link rel="icon" type="image/png" sizes="174x174" href="./favicon.png">
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1, maximum-scale=1"
+		/>
+		<link
+			rel="icon"
+			type="image/png"
+			sizes="174x174"
+			href="./favicon.png"
+		/>
 
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/2.4.3/webcomponents-bundle.js"></script>
-	<link href="https://fonts.googleapis.com/css?family=Material+Icons&display=block" rel="stylesheet"/>
-	<script src="../build/Tone.js"></script>
-	<script src="./js/tone-ui.js"></script>
-	<script src="./js/components.js"></script>
-	<style type="text/css">
-		tone-button {
-			margin-bottom: 10px;
-		}
-	</style>
-</head>
-<body>
-	<tone-example label="Offline Rendering">
-		<tone-loader></tone-loader>
-		<div slot="explanation">
-			Tone.Offline renders a chunk of Tone.js code into an AudioBuffer. An offline instance of Tone.Transport is passed into the callback which can be used to schedule events. It may take a moment to render the sound. 
-			<br><br>
-			<a href="https://tonejs.github.io/docs/Tone#offline-static">Tone.Offline</a> docs.
-		</div>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/2.4.3/webcomponents-bundle.js"></script>
+		<link
+			href="https://fonts.googleapis.com/css?family=Material+Icons&display=block"
+			rel="stylesheet"
+		/>
+		<script src="../build/Tone.js"></script>
+		<script src="./js/tone-ui.js"></script>
+		<script src="./js/components.js"></script>
+		<style type="text/css">
+			tone-button {
+				margin-bottom: 10px;
+			}
+		</style>
+	</head>
+	<body>
+		<tone-example label="Offline Rendering">
+			<tone-loader></tone-loader>
+			<div slot="explanation">
+				Tone.Offline renders a chunk of Tone.js code into an
+				AudioBuffer. An offline instance of Tone.Transport is passed
+				into the callback which can be used to schedule events. It may
+				take a moment to render the sound.
+				<br /><br />
+				<a
+					href="https://tonejs.github.io/docs/latest/functions/Offline.html"
+					>Tone.Offline</a
+				>
+				docs.
+			</div>
 
-		<div id="content">
-			<tone-play-toggle disabled></tone-play-toggle>
-		</div>
-	</tone-example>
+			<div id="content">
+				<tone-play-toggle disabled></tone-play-toggle>
+			</div>
+		</tone-example>
 
-	<script type="text/javascript">
-		// play the buffer with a Tone.Player when it's been generated
-		const player = new Tone.Player().toDestination();
+		<script type="text/javascript">
+			// play the buffer with a Tone.Player when it's been generated
+			const player = new Tone.Player().toDestination();
 
-		const renderingPromise = Tone.Offline(({ transport }) => {
+			const renderingPromise = Tone.Offline(({ transport }) => {
+				const reverb = new Tone.Reverb().toDestination();
 
-			const reverb = new Tone.Reverb().toDestination();
+				const pannerA = new Tone.Panner(-1).connect(reverb);
+				const synthA = new Tone.Synth({
+					envelope: {
+						attack: 0.01,
+						decay: 5,
+						sustain: 0,
+					},
+					oscillator: {
+						type: "sawtooth4",
+					},
+				}).connect(pannerA);
+				const seqA = new Tone.Sequence(
+					(time, note) => {
+						synthA.triggerAttack(note, time);
+					},
+					["A4", "G4", "G#4", "F#4", "E4"],
+					"8n"
+				).start(0);
+				seqA.loop = false;
 
-			const pannerA = new Tone.Panner(-1).connect(reverb);
-			const synthA = new Tone.Synth({
-				envelope: {
-					attack: 0.01,
-					decay: 5,
-					sustain: 0
-				},
-				oscillator: {
-					type: "sawtooth4"
-				}
-			}).connect(pannerA);
-			const seqA = new Tone.Sequence(((time, note) => {
-				synthA.triggerAttack(note, time);
-			}), ["A4", "G4", "G#4", "F#4", "E4"], "8n").start(0);
-			seqA.loop = false;
+				const pannerB = new Tone.Panner(1).connect(reverb);
+				const synthB = new Tone.Synth({
+					envelope: {
+						attack: 0.001,
+						decay: 3,
+						sustain: 0,
+					},
+					oscillator: {
+						type: "square8",
+					},
+				}).connect(pannerB);
+				const seqB = new Tone.Sequence(
+					(time, note) => {
+						synthB.triggerAttack(note, time);
+					},
+					["G#4", "A4", "G4", "F4", "C4"],
+					"8n"
+				).start("16n");
+				seqB.loop = false;
 
-			const pannerB = new Tone.Panner(1).connect(reverb);
-			const synthB = new Tone.Synth({
-				envelope: {
-					attack: 0.001,
-					decay: 3,
-					sustain: 0
-				},
-				oscillator: {
-					type: "square8"
-				}
-			}).connect(pannerB);
-			const seqB = new Tone.Sequence(((time, note) => {
-				synthB.triggerAttack(note, time);
-			}), ["G#4", "A4", "G4", "F4", "C4"], "8n").start("16n");
-			seqB.loop = false;
+				const bass = new Tone.MonoSynth({
+					envelope: {
+						attack: 0.01,
+						decay: 3,
+						sustain: 0.1,
+					},
+				}).toDestination();
+				const bassSeq = new Tone.Sequence(
+					(time, note) => {
+						bass.triggerAttackRelease(note, "1n", time);
+					},
+					["C2", "C2", "F1", "F1"],
+					"4n"
+				).start(0);
+				bassSeq.loop = false;
 
-			const bass = new Tone.MonoSynth({
-				envelope: {
-					attack: 0.01,
-					decay: 3,
-					sustain: 0.1
-				},
-			}).toDestination();
-			const bassSeq = new Tone.Sequence(((time, note) => {
-				bass.triggerAttackRelease(note, "1n", time);
-			}), ["C2", "C2", "F1", "F1"], "4n").start(0);
-			bassSeq.loop = false;
+				transport.bpm.value = 150;
+				transport.start();
 
-			transport.bpm.value = 150;
-			transport.start();
+				// return a promise
+				return reverb.ready;
+			}, 7);
 
-			// return a promise 
-			return reverb.ready;
-		}, 7);
+			// set the buffer when it's done
+			renderingPromise.then((buffer) => (player.buffer = buffer));
+			renderingPromise.then(
+				() =>
+					(document.querySelector("tone-play-toggle").disabled =
+						false)
+			);
 
-		// set the buffer when it's done
-		renderingPromise.then(buffer => player.buffer = buffer);
-		renderingPromise.then(() => document.querySelector("tone-play-toggle").disabled = false);
-
-		document.querySelector("tone-play-toggle").addEventListener("start", () => player.start());
-		document.querySelector("tone-play-toggle").addEventListener("stop", () => player.stop());
-
-	</script>
-</body>
+			document
+				.querySelector("tone-play-toggle")
+				.addEventListener("start", () => player.start());
+			document
+				.querySelector("tone-play-toggle")
+				.addEventListener("stop", () => player.stop());
+		</script>
+	</body>
 </html>

@@ -1,0 +1,21 @@
+name: "Close stale issues and PRs"
+on:
+    schedule:
+        - cron: "30 1 * * *"
+
+jobs:
+    stale:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/stale@v9
+              with:
+                  any-of-labels: "cant reproduce"
+                  stale-issue-message: "Please provide a way to reproduce the issue. Issues without a minimal (Tone.js-only) repro will be closed. A Tone.js-only repro helps ensure that the issue is not caused by another library."
+                  days-before-close: 7
+                  days-before-stale: 14
+            - uses: actions/stale@v9
+              with:
+                  any-of-labels: "feature request"
+                  stale-issue-message: "Unfortunately with limited development time, not all feature requests can be tackled. If you are interested in contributing this feature, please open a PR."
+                  days-before-close: 30
+                  days-before-stale: 90

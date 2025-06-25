@@ -1,12 +1,12 @@
-import { Gain } from "../core/context/Gain";
+import { Gain } from "../core/context/Gain.js";
 import {
 	ToneAudioNode,
 	ToneAudioNodeOptions,
-} from "../core/context/ToneAudioNode";
-import { GainFactor, Seconds, Time } from "../core/type/Units";
-import { noOp } from "../core/util/Interface";
-import { assert } from "../core/util/Debug";
-import { BasicPlaybackState } from "../core/util/StateTimeline";
+} from "../core/context/ToneAudioNode.js";
+import { GainFactor, Seconds, Time } from "../core/type/Units.js";
+import { assert } from "../core/util/Debug.js";
+import { noOp } from "../core/util/Interface.js";
+import { BasicPlaybackState } from "../core/util/StateTimeline.js";
 
 export type OneShotSourceCurve = "linear" | "exponential";
 
@@ -23,7 +23,7 @@ export interface OneShotSourceOptions extends ToneAudioNodeOptions {
  * Base class for fire-and-forget nodes
  */
 export abstract class OneShotSource<
-	Options extends ToneAudioNodeOptions
+	Options extends ToneAudioNodeOptions,
 > extends ToneAudioNode<Options> {
 	/**
 	 * The callback to invoke after the
@@ -196,20 +196,20 @@ export abstract class OneShotSource<
 	 * Invoke the onended callback
 	 */
 	protected _onended(): void {
-		if (this.onended !== noOp) {
-			this.onended(this);
-			// overwrite onended to make sure it only is called once
-			this.onended = noOp;
-			// dispose when it's ended to free up for garbage collection only in the online context
-			if (!this.context.isOffline) {
-				const disposeCallback = () => this.dispose();
-				// @ts-ignore
-				if (typeof window.requestIdleCallback !== "undefined") {
-					// @ts-ignore
-					window.requestIdleCallback(disposeCallback);
-				} else {
-					setTimeout(disposeCallback, 1000);
-				}
+		if (this.onended === noOp) {
+			return;
+		}
+
+		this.onended(this);
+		// overwrite onended to make sure it only is called once
+		this.onended = noOp;
+		// dispose when it's ended to free up for garbage collection only in the online context
+		if (!this.context.isOffline) {
+			const disposeCallback = () => this.dispose();
+			if (typeof requestIdleCallback !== "undefined") {
+				requestIdleCallback(disposeCallback);
+			} else {
+				setTimeout(disposeCallback, 10);
 			}
 		}
 	}
@@ -217,7 +217,7 @@ export abstract class OneShotSource<
 	/**
 	 * Get the playback state at the given time
 	 */
-	getStateAtTime = function(time: Time): BasicPlaybackState {
+	getStateAtTime = function (time: Time): BasicPlaybackState {
 		const computedTime = this.toSeconds(time);
 		if (
 			this._startTime !== -1 &&

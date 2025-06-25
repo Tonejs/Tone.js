@@ -1,79 +1,98 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head>
-  <meta charset="utf-8">
-	<title>Sampler</title>
+	<head>
+		<meta charset="utf-8" />
+		<title>Sampler</title>
 
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-	<link rel="icon" type="image/png" sizes="174x174" href="./favicon.png">
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1, maximum-scale=1"
+		/>
+		<link
+			rel="icon"
+			type="image/png"
+			sizes="174x174"
+			href="./favicon.png"
+		/>
 
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/2.4.3/webcomponents-bundle.js"></script>
-	<link href="https://fonts.googleapis.com/css?family=Material+Icons&display=block" rel="stylesheet"/>
-	<script src="../build/Tone.js"></script>
-	<script src="./js/tone-ui.js"></script>
-	<script src="./js/components.js"></script>
-</head>
-<body>
-	<style>
-		tone-piano {
-			margin-bottom: 10px;
-		}
-	</style>
-	<tone-example label="Sampler">
-		<tone-loader></tone-loader>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/2.4.3/webcomponents-bundle.js"></script>
+		<link
+			href="https://fonts.googleapis.com/css?family=Material+Icons&display=block"
+			rel="stylesheet"
+		/>
+		<script src="../build/Tone.js"></script>
+		<script src="./js/tone-ui.js"></script>
+		<script src="./js/components.js"></script>
+	</head>
+	<body>
+		<style>
+			tone-piano {
+				margin-bottom: 10px;
+			}
+		</style>
+		<tone-example label="Sampler">
+			<tone-loader></tone-loader>
 
-		<div slot="explanation">
-			<a href="https://tonejs.github.io/docs/Sampler" target="_blank">Tone.Sampler</a> makes it easy to create an instrument from audio samples. Pass in an object which maps the note's pitch or midi value to the url, then you can trigger the attack and release of that note like other instruments. By automatically repitching the samples, it is possible to play pitches which were not explicitly included which can save loading time.
-		</div>
+			<div slot="explanation">
+				<a
+					href="https://tonejs.github.io/docs/latest/classes/Sampler"
+					target="_blank"
+					>Tone.Sampler</a
+				>
+				makes it easy to create an instrument from audio samples. Pass
+				in an object which maps the note's pitch or midi value to the
+				url, then you can trigger the attack and release of that note
+				like other instruments. By automatically repitching the samples,
+				it is possible to play pitches which were not explicitly
+				included which can save loading time.
+			</div>
 
-		<div id="content">
-		</div>
-	</tone-example>
+			<div id="content"></div>
+		</tone-example>
 
-	<script type="text/javascript">
-		const sampler = new Tone.Sampler({
-			urls: {
-				A0: "A0.mp3",
-				C1: "C1.mp3",
-				"D#1": "Ds1.mp3",
-				"F#1": "Fs1.mp3",
-				A1: "A1.mp3",
-				C2: "C2.mp3",
-				"D#2": "Ds2.mp3",
-				"F#2": "Fs2.mp3",
-				A2: "A2.mp3",
-				C3: "C3.mp3",
-				"D#3": "Ds3.mp3",
-				"F#3": "Fs3.mp3",
-				A3: "A3.mp3",
-				C4: "C4.mp3",
-				"D#4": "Ds4.mp3",
-				"F#4": "Fs4.mp3",
-				A4: "A4.mp3",
-				C5: "C5.mp3",
-				"D#5": "Ds5.mp3",
-				"F#5": "Fs5.mp3",
-				A5: "A5.mp3",
-				C6: "C6.mp3",
-				"D#6": "Ds6.mp3",
-				"F#6": "Fs6.mp3",
-				A6: "A6.mp3",
-				C7: "C7.mp3",
-				"D#7": "Ds7.mp3",
-				"F#7": "Fs7.mp3",
-				A7: "A7.mp3",
-				C8: "C8.mp3"
-			},
-			release: 1,
-			baseUrl: "https://tonejs.github.io/audio/salamander/"
-		}).toDestination();
+		<script type="text/javascript">
+			const sampler = new Tone.Sampler({
+				urls: {
+					A0: "A0.mp3",
+					C1: "C1.mp3",
+					"D#1": "Ds1.mp3",
+					"F#1": "Fs1.mp3",
+					A1: "A1.mp3",
+					C2: "C2.mp3",
+					"D#2": "Ds2.mp3",
+					"F#2": "Fs2.mp3",
+					A2: "A2.mp3",
+					C3: "C3.mp3",
+					"D#3": "Ds3.mp3",
+					"F#3": "Fs3.mp3",
+					A3: "A3.mp3",
+					C4: "C4.mp3",
+					"D#4": "Ds4.mp3",
+					"F#4": "Fs4.mp3",
+					A4: "A4.mp3",
+					C5: "C5.mp3",
+					"D#5": "Ds5.mp3",
+					"F#5": "Fs5.mp3",
+					A5: "A5.mp3",
+					C6: "C6.mp3",
+					"D#6": "Ds6.mp3",
+					"F#6": "Fs6.mp3",
+					A6: "A6.mp3",
+					C7: "C7.mp3",
+					"D#7": "Ds7.mp3",
+					"F#7": "Fs7.mp3",
+					A7: "A7.mp3",
+					C8: "C8.mp3",
+				},
+				release: 1,
+				baseUrl: "https://tonejs.github.io/audio/salamander/",
+			}).toDestination();
 
-		piano({
-			parent: document.querySelector("#content"),
-			noteon: note => sampler.triggerAttack(note.name),
-			noteoff: note => sampler.triggerRelease(note.name),
-		});
-	</script>
-
-</body>
+			piano({
+				parent: document.querySelector("#content"),
+				noteon: (note) => sampler.triggerAttack(note.name),
+				noteoff: (note) => sampler.triggerRelease(note.name),
+			});
+		</script>
+	</body>
 </html>

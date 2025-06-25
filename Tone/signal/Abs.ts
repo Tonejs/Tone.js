@@ -1,6 +1,6 @@
-import { ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
-import { SignalOperator } from "./SignalOperator";
-import { WaveShaper } from "./WaveShaper";
+import { ToneAudioNodeOptions } from "../core/context/ToneAudioNode.js";
+import { SignalOperator } from "./SignalOperator.js";
+import { WaveShaper } from "./WaveShaper.js";
 
 /**
  * Return the absolute value of an incoming signal.
@@ -15,7 +15,6 @@ import { WaveShaper } from "./WaveShaper";
  * @category Signal
  */
 export class Abs extends SignalOperator<ToneAudioNodeOptions> {
-
 	readonly name: string = "Abs";
 
 	/**
@@ -23,7 +22,7 @@ export class Abs extends SignalOperator<ToneAudioNodeOptions> {
 	 */
 	private _abs = new WaveShaper({
 		context: this.context,
-		mapping: val => {
+		mapping: (val) => {
 			if (Math.abs(val) < 0.001) {
 				return 0;
 			} else {

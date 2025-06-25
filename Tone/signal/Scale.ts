@@ -1,8 +1,12 @@
-import { InputNode, OutputNode, ToneAudioNodeOptions } from "../core/context/ToneAudioNode";
-import { optionsFromArguments } from "../core/util/Defaults";
-import { Add } from "./Add";
-import { Multiply } from "./Multiply";
-import { SignalOperator } from "./SignalOperator";
+import {
+	InputNode,
+	OutputNode,
+	ToneAudioNodeOptions,
+} from "../core/context/ToneAudioNode.js";
+import { optionsFromArguments } from "../core/util/Defaults.js";
+import { Add } from "./Add.js";
+import { Multiply } from "./Multiply.js";
+import { SignalOperator } from "./SignalOperator.js";
 
 export interface ScaleOptions extends ToneAudioNodeOptions {
 	min: number;
@@ -20,8 +24,9 @@ export interface ScaleOptions extends ToneAudioNodeOptions {
  * // the output of scale equals 75
  * @category Signal
  */
-export class Scale<Options extends ScaleOptions = ScaleOptions> extends SignalOperator<Options> {
-
+export class Scale<
+	Options extends ScaleOptions = ScaleOptions,
+> extends SignalOperator<Options> {
 	readonly name: string = "Scale";
 
 	input: InputNode;
@@ -54,8 +59,11 @@ export class Scale<Options extends ScaleOptions = ScaleOptions> extends SignalOp
 	constructor(min?: number, max?: number);
 	constructor(options?: Partial<ScaleOptions>);
 	constructor() {
-		super(Object.assign(optionsFromArguments(Scale.getDefaults(), arguments, ["min", "max"])));
-		const options = optionsFromArguments(Scale.getDefaults(), arguments, ["min", "max"]);
+		const options = optionsFromArguments(Scale.getDefaults(), arguments, [
+			"min",
+			"max",
+		]);
+		super(options as Options);
 
 		this._mult = this.input = new Multiply({
 			context: this.context,

@@ -1,17 +1,16 @@
 import { expect } from "chai";
-import { BasicTests } from "test/helper/Basic";
-import { connectFrom, connectTo } from "test/helper/Connect";
-import { Offline } from "test/helper/Offline";
-import { PassAudio } from "test/helper/PassAudio";
-import { Signal } from "Tone/signal/Signal";
-import { Volume } from "./Volume";
+
+import { BasicTests } from "../../../test/helper/Basic.js";
+import { connectFrom, connectTo } from "../../../test/helper/Connect.js";
+import { Offline } from "../../../test/helper/Offline.js";
+import { PassAudio } from "../../../test/helper/PassAudio.js";
+import { Signal } from "../../signal/Signal.js";
+import { Volume } from "./Volume.js";
 
 describe("Volume", () => {
-
 	BasicTests(Volume);
 
 	context("Volume", () => {
-
 		it("handles input and output connections", () => {
 			const vol = new Volume();
 			vol.connect(connectTo());
@@ -63,7 +62,7 @@ describe("Volume", () => {
 		});
 
 		it("passes the incoming signal through", () => {
-			return PassAudio(input => {
+			return PassAudio((input) => {
 				const vol = new Volume().toDestination();
 				input.connect(vol);
 			});
@@ -76,33 +75,30 @@ describe("Volume", () => {
 			// });
 		});
 
-		it("can lower the volume", () => {
-			return Offline(() => {
+		it("can lower the volume", async () => {
+			const buffer = await Offline(() => {
 				const vol = new Volume(-10).toDestination();
 				new Signal(1).connect(vol);
-			}).then((buffer) => {
-				expect(buffer.value()).to.be.closeTo(0.315, 0.01);
 			});
+			expect(buffer.value()).to.be.closeTo(0.315, 0.01);
 		});
 
-		it("can mute the volume", () => {
-			return Offline(() => {
+		it("can mute the volume", async () => {
+			const buffer = await Offline(() => {
 				const vol = new Volume(0).toDestination();
 				new Signal(1).connect(vol);
 				vol.mute = true;
-			}).then((buffer) => {
-				expect(buffer.isSilent()).to.equal(true);
 			});
+			expect(buffer.isSilent()).to.equal(true);
 		});
 
-		it("muted when volume is set to -Infinity", () => {
-			return Offline(() => {
+		it("muted when volume is set to -Infinity", async () => {
+			const buffer = await Offline(() => {
 				const vol = new Volume(-Infinity).toDestination();
 				new Signal(1).connect(vol);
 				expect(vol.mute).to.equal(true);
-			}).then(buffer => {
-				expect(buffer.isSilent()).to.equal(true);
 			});
+			expect(buffer.isSilent()).to.equal(true);
 		});
 
 		it("setting the volume unmutes it and reports itself as unmuted", () => {

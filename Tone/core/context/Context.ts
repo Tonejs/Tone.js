@@ -1,22 +1,21 @@
-import { Ticker, TickerClockSource } from "../clock/Ticker";
-import { Seconds } from "../type/Units";
-import { isAudioContext } from "../util/AdvancedTypeCheck";
-import { optionsFromArguments } from "../util/Defaults";
-import { Timeline } from "../util/Timeline";
-import { isDefined } from "../util/TypeCheck";
+import { Ticker, TickerClockSource } from "../clock/Ticker.js";
+import type { TransportClass as Transport } from "../clock/Transport.js";
+import { Seconds } from "../type/Units.js";
+import { isAudioContext } from "../util/AdvancedTypeCheck.js";
+import { assert } from "../util/Debug.js";
+import { optionsFromArguments } from "../util/Defaults.js";
+import type { DrawClass as Draw } from "../util/Draw.js";
+import { Timeline } from "../util/Timeline.js";
+import { isDefined } from "../util/TypeCheck.js";
 import {
 	AnyAudioContext,
 	createAudioContext,
 	createAudioWorkletNode,
-} from "./AudioContext";
-import { closeContext, initializeContext } from "./ContextInitialization";
-import { BaseContext, ContextLatencyHint } from "./BaseContext";
-import { assert } from "../util/Debug";
-
-type Transport = import("../clock/Transport").Transport;
-type Destination = import("./Destination").Destination;
-type Listener = import("./Listener").Listener;
-type Draw = import("../util/Draw").Draw;
+} from "./AudioContext.js";
+import { BaseContext, ContextLatencyHint } from "./BaseContext.js";
+import { closeContext, initializeContext } from "./ContextInitialization.js";
+import type { DestinationClass as Destination } from "./Destination.js";
+import type { ListenerClass as Listener } from "./Listener.js";
 
 export interface ContextOptions {
 	clockSource: TickerClockSource;
@@ -95,6 +94,11 @@ export class Context extends BaseContext {
 	private _initialized = false;
 
 	/**
+	 * Private indicator if a close() has been called on the context, since close is async
+	 */
+	private _closeStarted = false;
+
+	/**
 	 * Indicates if the context is an OfflineAudioContext or an AudioContext
 	 */
 	readonly isOffline: boolean = false;
@@ -130,9 +134,13 @@ export class Context extends BaseContext {
 		this._context.onstatechange = () => {
 			this.emit("statechange", this.state);
 		};
-		
+
 		// if no custom updateInterval provided, updateInterval will be derived by lookAhead setter
-		this[arguments[0]?.hasOwnProperty("updateInterval") ? "_lookAhead" : "lookAhead"] = options.lookAhead;
+		this[
+			arguments[0]?.hasOwnProperty("updateInterval")
+				? "_lookAhead"
+				: "lookAhead"
+		] = options.lookAhead;
 	}
 
 	static getDefaults(): ContextOptions {
@@ -338,13 +346,13 @@ export class Context extends BaseContext {
 	//--------------------------------------------
 
 	/**
-	 * Maps a module name to promise of the addModule method
+	 * A set of unsettled promises returned by the addModule method
 	 */
-	private _workletModules: Map<string, Promise<void>> = new Map();
+	private _workletPromises = new Set<Promise<void>>();
 
 	/**
 	 * Create an audio worklet node from a name and options. The module
-	 * must first be loaded using [[addAudioWorkletModule]].
+	 * must first be loaded using {@link addAudioWorkletModule}.
 	 */
 	createAudioWorkletNode(
 		name: string,
@@ -356,29 +364,27 @@ export class Context extends BaseContext {
 	/**
 	 * Add an AudioWorkletProcessor module
 	 * @param url The url of the module
-	 * @param name The name of the module
 	 */
-	async addAudioWorkletModule(url: string, name: string): Promise<void> {
+	async addAudioWorkletModule(url: string): Promise<void> {
 		assert(
 			isDefined(this.rawContext.audioWorklet),
 			"AudioWorkletNode is only available in a secure context (https or localhost)"
 		);
-		if (!this._workletModules.has(name)) {
-			this._workletModules.set(
-				name,
-				this.rawContext.audioWorklet.addModule(url)
-			);
-		}
-		await this._workletModules.get(name);
+		const workletPromise = this.rawContext.audioWorklet.addModule(url);
+
+		this._workletPromises.add(workletPromise);
+		workletPromise.finally(() =>
+			this._workletPromises.delete(workletPromise)
+		);
+
+		return workletPromise;
 	}
 
 	/**
 	 * Returns a promise which resolves when all of the worklets have been loaded on this context
 	 */
 	protected async workletsAreReady(): Promise<void> {
-		const promises: Promise<void>[] = [];
-		this._workletModules.forEach((promise) => promises.push(promise));
-		await Promise.all(promises);
+		await Promise.all(this._workletPromises);
 	}
 
 	//---------------------------
@@ -388,7 +394,7 @@ export class Context extends BaseContext {
 	/**
 	 * How often the interval callback is invoked.
 	 * This number corresponds to how responsive the scheduling
-	 * can be. Setting to 0 will result in the lowest practial interval
+	 * can be. Setting to 0 will result in the lowest practical interval
 	 * based on context properties. context.updateInterval + context.lookAhead
 	 * gives you the total latency between scheduling an event and hearing it.
 	 */
@@ -414,7 +420,7 @@ export class Context extends BaseContext {
 	 * The amount of time into the future events are scheduled. Giving Web Audio
 	 * a short amount of time into the future to schedule events can reduce clicks and
 	 * improve performance. This value can be set to 0 to get the lowest latency.
-	 * Adjusting this value also affects the [[updateInterval]].
+	 * Adjusting this value also affects the {@link updateInterval}.
 	 */
 	get lookAhead(): Seconds {
 		return this._lookAhead;
@@ -422,8 +428,8 @@ export class Context extends BaseContext {
 	set lookAhead(time: Seconds) {
 		this._lookAhead = time;
 		// if lookAhead is 0, default to .01 updateInterval
-		this.updateInterval = time ? (time / 2) : .01;
-	}	
+		this.updateInterval = time ? time / 2 : 0.01;
+	}
 	private _lookAhead!: Seconds;
 
 	/**
@@ -453,7 +459,7 @@ export class Context extends BaseContext {
 	}
 
 	/**
-	 * The current audio context time plus a short [[lookAhead]].
+	 * The current audio context time plus a short {@link lookAhead}.
 	 * @example
 	 * setInterval(() => {
 	 * 	console.log("now", Tone.now());
@@ -464,11 +470,11 @@ export class Context extends BaseContext {
 	}
 
 	/**
-	 * The current audio context time without the [[lookAhead]].
-	 * In most cases it is better to use [[now]] instead of [[immediate]] since
-	 * with [[now]] the [[lookAhead]] is applied equally to _all_ components including internal components,
-	 * to making sure that everything is scheduled in sync. Mixing [[now]] and [[immediate]]
-	 * can cause some timing issues. If no lookAhead is desired, you can set the [[lookAhead]] to `0`.
+	 * The current audio context time without the {@link lookAhead}.
+	 * In most cases it is better to use {@link now} instead of {@link immediate} since
+	 * with {@link now} the {@link lookAhead} is applied equally to _all_ components including internal components,
+	 * to making sure that everything is scheduled in sync. Mixing {@link now} and {@link immediate}
+	 * can cause some timing issues. If no lookAhead is desired, you can set the {@link lookAhead} to `0`.
 	 */
 	immediate(): Seconds {
 		return this._context.currentTime;
@@ -476,7 +482,8 @@ export class Context extends BaseContext {
 
 	/**
 	 * Starts the audio context from a suspended state. This is required
-	 * to initially start the AudioContext. See [[Tone.start]]
+	 * to initially start the AudioContext.
+	 * @see {@link start}
 	 */
 	resume(): Promise<void> {
 		if (isAudioContext(this._context)) {
@@ -491,7 +498,12 @@ export class Context extends BaseContext {
 	 * any AudioNodes created from the context will be silent.
 	 */
 	async close(): Promise<void> {
-		if (isAudioContext(this._context)) {
+		if (
+			isAudioContext(this._context) &&
+			this.state !== "closed" &&
+			!this._closeStarted
+		) {
+			this._closeStarted = true;
 			await this._context.close();
 		}
 		if (this._initialized) {
@@ -536,6 +548,7 @@ export class Context extends BaseContext {
 		Object.keys(this._constants).map((val) =>
 			this._constants[val].disconnect()
 		);
+		this.close();
 		return this;
 	}
 
@@ -549,15 +562,13 @@ export class Context extends BaseContext {
 	 */
 	private _timeoutLoop(): void {
 		const now = this.now();
-		let firstEvent = this._timeouts.peek();
-		while (this._timeouts.length && firstEvent && firstEvent.time <= now) {
-			// invoke the callback
-			firstEvent.callback();
-			// shift the first event off
-			this._timeouts.shift();
-			// get the next one
-			firstEvent = this._timeouts.peek();
-		}
+		this._timeouts.forEachBefore(now, (event) => {
+			try {
+				event.callback();
+			} finally {
+				this._timeouts.remove(event);
+			}
+		});
 	}
 
 	/**
@@ -592,7 +603,7 @@ export class Context extends BaseContext {
 	}
 
 	/**
-	 * Clear the function scheduled by [[setInterval]]
+	 * Clear the function scheduled by {@link setInterval}
 	 */
 	clearInterval(id: number): this {
 		return this.clearTimeout(id);

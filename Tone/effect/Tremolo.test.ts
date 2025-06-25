@@ -1,24 +1,28 @@
-import { Tremolo } from "./Tremolo";
-import { BasicTests } from "test/helper/Basic";
-import { EffectTests } from "test/helper/EffectTests";
-import { Offline } from "test/helper/Offline";
 import { expect } from "chai";
-import { CompareToFile } from "test/helper/CompareToFile";
-import { Oscillator } from "Tone/source";
+
+import { BasicTests } from "../../test/helper/Basic.js";
+import { CompareToFile } from "../../test/helper/CompareToFile.js";
+import { EffectTests } from "../../test/helper/EffectTests.js";
+import { Offline } from "../../test/helper/Offline.js";
+import { Oscillator } from "../source/index.js";
+import { Tremolo } from "./Tremolo.js";
 
 describe("Tremolo", () => {
 	BasicTests(Tremolo);
 	EffectTests(Tremolo);
 
 	it("matches a file", () => {
-		return CompareToFile(() => {
-			const tremolo = new Tremolo().toDestination().start(0.2);
-			const osc = new Oscillator().connect(tremolo).start();
-		}, "tremolo.wav", 0.05);
+		return CompareToFile(
+			() => {
+				const tremolo = new Tremolo().toDestination().start(0.2);
+				const osc = new Oscillator().connect(tremolo).start();
+			},
+			"tremolo.wav",
+			0.05
+		);
 	});
 
 	context("API", () => {
-
 		it("can pass in options in the constructor", () => {
 			const tremolo = new Tremolo({
 				depth: 0.2,
@@ -41,7 +45,7 @@ describe("Tremolo", () => {
 			const tremolo = new Tremolo();
 			tremolo.set({
 				frequency: 2.4,
-				type: "triangle"
+				type: "triangle",
 			});
 			expect(tremolo.get().frequency).to.be.closeTo(2.4, 0.01);
 			expect(tremolo.get().type).to.equal("triangle");
@@ -57,32 +61,27 @@ describe("Tremolo", () => {
 			tremolo.dispose();
 		});
 
-		it("can sync the frequency to the transport", () => {
-
-			return Offline(({ transport }) => {
+		it("can sync the frequency to the transport", async () => {
+			const buffer = await Offline(({ transport }) => {
 				const tremolo = new Tremolo(2);
 				tremolo.sync();
 				tremolo.frequency.toDestination();
 				transport.bpm.setValueAtTime(transport.bpm.value * 2, 0.05);
-			}, 0.1).then((buffer) => {
-				expect(buffer.getValueAtTime(0)).to.be.closeTo(2, 0.1);
-				expect(buffer.getValueAtTime(0.05)).to.be.closeTo(4, 0.1);
-			});
+			}, 0.1);
+			expect(buffer.getValueAtTime(0)).to.be.closeTo(2, 0.1);
+			expect(buffer.getValueAtTime(0.05)).to.be.closeTo(4, 0.1);
 		});
 
-		it("can unsync the frequency to the transport", () => {
-
-			return Offline(({ transport }) => {
+		it("can unsync the frequency to the transport", async () => {
+			const buffer = await Offline(({ transport }) => {
 				const tremolo = new Tremolo(2);
 				tremolo.sync();
 				tremolo.frequency.toDestination();
 				transport.bpm.setValueAtTime(transport.bpm.value * 2, 0.05);
 				tremolo.unsync();
-			}, 0.1).then((buffer) => {
-				expect(buffer.getValueAtTime(0)).to.be.closeTo(2, 0.1);
-				expect(buffer.getValueAtTime(0.05)).to.be.closeTo(2, 0.1);
-			});
+			}, 0.1);
+			expect(buffer.getValueAtTime(0)).to.be.closeTo(2, 0.1);
+			expect(buffer.getValueAtTime(0.05)).to.be.closeTo(2, 0.1);
 		});
 	});
 });
-

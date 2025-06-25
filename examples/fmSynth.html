@@ -1,59 +1,74 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head>
-  <meta charset="utf-8">
-	<title>FMSynth</title>
+	<head>
+		<meta charset="utf-8" />
+		<title>FMSynth</title>
 
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-	<link rel="icon" type="image/png" sizes="174x174" href="./favicon.png">
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1, maximum-scale=1"
+		/>
+		<link
+			rel="icon"
+			type="image/png"
+			sizes="174x174"
+			href="./favicon.png"
+		/>
 
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/2.4.3/webcomponents-bundle.js"></script>
-	<link href="https://fonts.googleapis.com/css?family=Material+Icons&display=block" rel="stylesheet"/>
-	<script src="../build/Tone.js"></script>
-	<script src="./js/tone-ui.js"></script>
-	<script src="./js/components.js"></script>
-</head>
-<body>
-	<tone-example label="FMSynth">
-		<div slot="explanation">
-			<a href="https://tonejs.github.io/docs/FMSynth">Tone.FMSynth</a>
-			is composed of two 
-			<a href="https://tonejs.github.io/docs/Synth">Tone.Synths</a> 
-			where one Tone.Synth modulates the frequency of a second Tone.Synth. 
-		</div>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/2.4.3/webcomponents-bundle.js"></script>
+		<link
+			href="https://fonts.googleapis.com/css?family=Material+Icons&display=block"
+			rel="stylesheet"
+		/>
+		<script src="../build/Tone.js"></script>
+		<script src="./js/tone-ui.js"></script>
+		<script src="./js/components.js"></script>
+	</head>
+	<body>
+		<tone-example label="FMSynth">
+			<div slot="explanation">
+				<a href="https://tonejs.github.io/docs/latest/classes/FMSynth"
+					>Tone.FMSynth</a
+				>
+				is composed of two
+				<a href="https://tonejs.github.io/docs/latest/classes/Synth"
+					>Tone.Synths</a
+				>
+				where one Tone.Synth modulates the frequency of a second
+				Tone.Synth.
+			</div>
 
-		<div id="content">
-		</div>
-	</tone-example>
-	
-	<script type="text/javascript">
-		const synth = new Tone.FMSynth({
-			modulationIndex: 12.22,
-			envelope: {
-				attack: 0.01,
-				decay: 0.2
-			},
-			modulation: {
-				type: "square"
-			},
-			modulationEnvelope: {
-				attack: 0.2,
-				decay: 0.01
-			}
-		}).toDestination();
+			<div id="content"></div>
+		</tone-example>
 
-		piano({
-			tone: synth,
-			parent: document.querySelector("#content"),
-			noteon: (note) => synth.triggerAttack(note.name),
-			noteoff: (note) => synth.triggerRelease()
-		});
+		<script type="text/javascript">
+			const synth = new Tone.FMSynth({
+				modulationIndex: 12.22,
+				envelope: {
+					attack: 0.01,
+					decay: 0.2,
+				},
+				modulation: {
+					type: "square",
+				},
+				modulationEnvelope: {
+					attack: 0.2,
+					decay: 0.01,
+				},
+			}).toDestination();
 
-		ui({
-			tone: synth,
-			name: "FMSynth",
-			parent: document.querySelector("#content"),
-		});
-	</script>
-</body>
+			piano({
+				tone: synth,
+				parent: document.querySelector("#content"),
+				noteon: (note) => synth.triggerAttack(note.name),
+				noteoff: (note) => synth.triggerRelease(),
+			});
+
+			ui({
+				tone: synth,
+				name: "FMSynth",
+				parent: document.querySelector("#content"),
+			});
+		</script>
+	</body>
 </html>

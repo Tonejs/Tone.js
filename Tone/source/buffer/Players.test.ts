@@ -1,25 +1,23 @@
 import { expect } from "chai";
-import { BasicTests } from "test/helper/Basic";
-import { Offline } from "test/helper/Offline";
-import { OutputAudio } from "test/helper/OutputAudio";
-import "test/helper/ToneAudioBuffer";
-import { ToneAudioBuffer } from "Tone/core/context/ToneAudioBuffer";
-import { getContext } from "Tone/core/Global";
-import { Player } from "./Player";
-import { Players } from "./Players";
+
+import { BasicTests } from "../../../test/helper/Basic.js";
+import { Offline } from "../../../test/helper/Offline.js";
+import { OutputAudio } from "../../../test/helper/OutputAudio.js";
+import { ToneAudioBuffer } from "../../core/context/ToneAudioBuffer.js";
+import { getContext } from "../../core/Global.js";
+import { Player } from "./Player.js";
+import { Players } from "./Players.js";
 
 describe("Players", () => {
-
 	const buffer = new ToneAudioBuffer();
 
 	beforeEach(() => {
-		return buffer.load("./audio/sine.wav");
+		return buffer.load("./test/audio/sine.wav");
 	});
 
 	BasicTests(Players, { test: buffer });
 
 	context("Constructor", () => {
-
 		it("can be constructed with an object containing a ToneAudioBuffer", () => {
 			const players = new Players({
 				test: buffer,
@@ -37,53 +35,62 @@ describe("Players", () => {
 		});
 
 		it("can be constructed with a url", (done) => {
-			const players = new Players({
-				test0: "./audio/sine.wav",
-				test1: "./audio/sine.wav",
-			}, () => {
-				expect(players.player("test0")).to.be.instanceOf(Player);
-				expect(players.player("test0").buffer.loaded).to.be.true;
-				expect(players.player("test1")).to.be.instanceOf(Player);
-				expect(players.player("test1").buffer.loaded).to.be.true;
-				expect(players.loaded).to.be.true;
-				players.dispose();
-				done();
-			});
+			const players = new Players(
+				{
+					test0: "./test/audio/sine.wav",
+					test1: "./test/audio/sine.wav",
+				},
+				() => {
+					expect(players.player("test0")).to.be.instanceOf(Player);
+					expect(players.player("test0").buffer.loaded).to.be.true;
+					expect(players.player("test1")).to.be.instanceOf(Player);
+					expect(players.player("test1").buffer.loaded).to.be.true;
+					expect(players.loaded).to.be.true;
+					players.dispose();
+					done();
+				}
+			);
 		});
 
 		it("can pass in additional args in the second parameters", (done) => {
-			const players = new Players({
-				test: "./audio/sine.wav",
-			}, {
-				onload: () => {
-					expect(players.player("test").buffer.loaded).to.be.true;
-					expect(players.volume.value).to.be.closeTo(-12, 0.1);
-					players.dispose();
-					done();
+			const players = new Players(
+				{
+					test: "./test/audio/sine.wav",
 				},
-				volume: -12,
-			});
+				{
+					onload: () => {
+						expect(players.player("test").buffer.loaded).to.be.true;
+						expect(players.volume.value).to.be.closeTo(-12, 0.1);
+						players.dispose();
+						done();
+					},
+					volume: -12,
+				}
+			);
 		});
 
 		it("invokes onerror if no url", (done) => {
 			const source = new Players({
 				urls: {
-					test: "./nosuchfile.wav"
-				}, 
+					test: "./nosuchfile.wav",
+				},
 				onerror() {
 					source.dispose();
 					done();
-				}
+				},
 			});
 		});
 
 		it("can get and set fadeIn/Out", () => {
-			const players = new Players({
-				test: "./audio/sine.wav",
-			}, {
-				fadeIn: 0.1,
-				fadeOut: 0.2,
-			});
+			const players = new Players(
+				{
+					test: "./test/audio/sine.wav",
+				},
+				{
+					fadeIn: 0.1,
+					fadeOut: 0.2,
+				}
+			);
 			expect(players.fadeIn).to.equal(0.1);
 			expect(players.fadeOut).to.equal(0.2);
 			expect(players.player("test").fadeIn).to.equal(0.1);
@@ -97,7 +104,6 @@ describe("Players", () => {
 	});
 
 	context("get/has/add buffers", () => {
-
 		it("says it 'has' a sample", () => {
 			const players = new Players({
 				test: buffer,
@@ -136,7 +142,7 @@ describe("Players", () => {
 		it("can add a player with a url", (done) => {
 			const players = new Players();
 			expect(players.has("test")).to.be.false;
-			players.add("test", "./audio/sine.wav", () => {
+			players.add("test", "./test/audio/sine.wav", () => {
 				expect(players.has("test")).to.be.true;
 				players.dispose();
 				done();
@@ -145,8 +151,8 @@ describe("Players", () => {
 
 		it("can add a player with an unloaded ToneAudioBuffer", (done) => {
 			const players = new Players();
-			const buffer2 = new ToneAudioBuffer("./audio/sine.wav");
-			players.add("test", buffer2, () => {
+			const output = new ToneAudioBuffer("./test/audio/sine.wav");
+			players.add("test", output, () => {
 				expect(players.has("test")).to.be.true;
 				expect(players.player("test").loaded).to.be.true;
 				players.dispose();
@@ -156,7 +162,6 @@ describe("Players", () => {
 	});
 
 	context("start/stop players", () => {
-
 		it("makes a sound", () => {
 			return OutputAudio(() => {
 				const players = new Players({
@@ -165,52 +170,48 @@ describe("Players", () => {
 				players.player("test").start(0);
 			});
 		});
-
-		it("can be muted", () => {
-			return Offline(() => {
+		it("can be muted", async () => {
+			const output = await Offline(() => {
 				const players = new Players({
 					test: buffer,
 				}).toDestination();
 				players.player("test").start(0);
 				players.mute = true;
 				expect(players.mute).to.be.true;
-			}, 0.3).then((buffer2) => {
-				expect(buffer2.isSilent()).to.be.true;
-			});
+			}, 0.3);
+			expect(output.isSilent()).to.be.true;
 		});
 
-		it("be scheduled to start in the future", () => {
-			return Offline(() => {
+		it("be scheduled to start in the future", async () => {
+			const output = await Offline(() => {
 				const players = new Players({
 					test: buffer,
 				}).toDestination();
 				players.player("test").start(0.1);
-			}, 0.3).then((buffer2) => {
-				buffer2.forEach((sample, time) => {
-					if (sample > 0) {
-						expect(time).to.be.at.least(0.099);
-					}
-				});
+			}, 0.3);
+			output.forEach((sample, time) => {
+				if (sample > 0) {
+					expect(time).to.be.at.least(0.099);
+				}
 			});
 		});
 
-		it("be scheduled to stop in the future", () => {
-			return Offline(() => {
+		it("be scheduled to stop in the future", async () => {
+			const output = await Offline(() => {
 				const players = new Players({
 					test: buffer,
 				}).toDestination();
 				players.player("test").start(0).stop(0.2);
-			}, 0.3).then((buffer2) => {
-				buffer2.forEach((sample, time) => {
-					if (time > 0.2) {
-						expect(sample).to.equal(0);
-					}
-				});
+			}, 0.3);
+			output.forEach((sample, time) => {
+				if (time > 0.2) {
+					expect(sample).to.equal(0);
+				}
 			});
 		});
 
-		it("if any of the players are playing, reports state as 'started'", () => {
-			return Offline(() => {
+		it("if any of the players are playing, reports state as 'started'", async () => {
+			await Offline(() => {
 				const players = new Players({
 					test0: buffer,
 					test1: buffer,
@@ -227,8 +228,8 @@ describe("Players", () => {
 			}, 0.2);
 		});
 
-		it("can start multiple samples", () => {
-			return OutputAudio(() => {
+		it("can start multiple samples", async () => {
+			await OutputAudio(() => {
 				const players = new Players({
 					test0: buffer,
 					test1: buffer,
@@ -238,8 +239,8 @@ describe("Players", () => {
 			});
 		});
 
-		it("can stop all of the samples in the future", () => {
-			return Offline(() => {
+		it("can stop all of the samples in the future", async () => {
+			const output = await Offline(() => {
 				const players = new Players({
 					test0: buffer,
 					test1: buffer,
@@ -247,41 +248,44 @@ describe("Players", () => {
 				players.player("test0").start(0);
 				players.player("test1").start(0);
 				players.stopAll(0.2);
-			}, 0.3).then((buffer2) => {
-				buffer2.forEach((sample, time) => {
-					if (time > 0.2) {
-						expect(sample).to.equal(0);
-					}
-				});
+			}, 0.3);
+			output.forEach((sample, time) => {
+				if (time > 0.2) {
+					expect(sample).to.equal(0);
+				}
 			});
 		});
 
-		it("fades in and out correctly", () => {
-			return Offline(() => {
-				const onesArray = new Float32Array(getContext().sampleRate * 0.5);
+		it("fades in and out correctly", async () => {
+			const output = await Offline(() => {
+				const onesArray = new Float32Array(
+					getContext().sampleRate * 0.5
+				);
 				onesArray.forEach((sample, index) => {
 					onesArray[index] = 1;
 				});
 				const onesBuffer = ToneAudioBuffer.fromArray(onesArray);
-				const players = new Players({
-					test: onesBuffer,
-				}, {
-					fadeIn: 0.1,
-					fadeOut: 0.1,
-				}).toDestination();
-				players.player("test").start(0);
-			}, 0.6).then((buffer2) => {
-				buffer2.forEach((sample, time) => {
-					if (time < 0.1) {
-						expect(sample).to.be.within(0, 1);
-					} else if (time < 0.4) {
-						expect(sample).to.equal(1);
-					} else if (time < 0.5) {
-						expect(sample).to.be.within(0, 1);
-					} else {
-						expect(sample).to.equal(0);
+				const players = new Players(
+					{
+						test: onesBuffer,
+					},
+					{
+						fadeIn: 0.1,
+						fadeOut: 0.1,
 					}
-				});
+				).toDestination();
+				players.player("test").start(0);
+			}, 0.6);
+			output.forEach((sample, time) => {
+				if (time < 0.1) {
+					expect(sample).to.be.within(0, 1);
+				} else if (time < 0.4) {
+					expect(sample).to.equal(1);
+				} else if (time < 0.5) {
+					expect(sample).to.be.within(0, 1);
+				} else {
+					expect(sample).to.equal(0);
+				}
 			});
 		});
 	});

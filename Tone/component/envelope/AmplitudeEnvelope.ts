@@ -1,7 +1,7 @@
-import { Gain } from "../../core/context/Gain";
-import { NormalRange, Time } from "../../core/type/Units";
-import { optionsFromArguments } from "../../core/util/Defaults";
-import { Envelope, EnvelopeOptions } from "./Envelope";
+import { Gain } from "../../core/context/Gain.js";
+import { NormalRange, Time } from "../../core/type/Units.js";
+import { optionsFromArguments } from "../../core/util/Defaults.js";
+import { Envelope, EnvelopeOptions } from "./Envelope.js";
 
 /**
  * AmplitudeEnvelope is a Tone.Envelope connected to a gain node.
@@ -26,7 +26,6 @@ import { Envelope, EnvelopeOptions } from "./Envelope";
  * @category Component
  */
 export class AmplitudeEnvelope extends Envelope {
-
 	readonly name: string = "AmplitudeEnvelope";
 
 	private _gainNode: Gain = new Gain({
@@ -37,7 +36,7 @@ export class AmplitudeEnvelope extends Envelope {
 	input: Gain = this._gainNode;
 
 	/**
-	 * @param attack The amount of time it takes for the envelope to go from 0 to it's maximum value.
+	 * @param attack The amount of time it takes for the envelope to go from 0 to its maximum value.
 	 * @param decay	The period of time after the attack that it takes for the envelope
 	 *                      	to fall to the sustain value. Value must be greater than 0.
 	 * @param sustain	The percent of the maximum value that the envelope rests at until
@@ -45,10 +44,22 @@ export class AmplitudeEnvelope extends Envelope {
 	 * @param release	The amount of time after the release is triggered it takes to reach 0.
 	 *                        	Value must be greater than 0.
 	 */
-	constructor(attack?: Time, decay?: Time, sustain?: NormalRange, release?: Time);
-	constructor(options?: Partial<EnvelopeOptions>)
+	constructor(
+		attack?: Time,
+		decay?: Time,
+		sustain?: NormalRange,
+		release?: Time
+	);
+	constructor(options?: Partial<EnvelopeOptions>);
 	constructor() {
-		super(optionsFromArguments(AmplitudeEnvelope.getDefaults(), arguments, ["attack", "decay", "sustain", "release"]));
+		super(
+			optionsFromArguments(AmplitudeEnvelope.getDefaults(), arguments, [
+				"attack",
+				"decay",
+				"sustain",
+				"release",
+			])
+		);
 		this._sig.connect(this._gainNode.gain);
 		this.output = this._gainNode;
 		this.input = this._gainNode;

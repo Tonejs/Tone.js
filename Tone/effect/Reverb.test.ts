@@ -1,15 +1,14 @@
 import { expect } from "chai";
-import { BasicTests } from "test/helper/Basic";
-import { Offline } from "test/helper/Offline";
-import { Oscillator } from "Tone/source/oscillator/Oscillator";
-import { Reverb } from "./Reverb";
+
+import { BasicTests } from "../../test/helper/Basic.js";
+import { Offline } from "../../test/helper/Offline.js";
+import { Oscillator } from "../source/oscillator/Oscillator.js";
+import { Reverb } from "./Reverb.js";
 
 describe("Reverb", () => {
-
 	BasicTests(Reverb);
 
 	context("API", () => {
-
 		it("can pass in options in the constructor", () => {
 			const reverb = new Reverb({
 				decay: 2,
@@ -38,38 +37,52 @@ describe("Reverb", () => {
 			reverb.dispose();
 		});
 
-		it("can generate an IR", () => {
+		it("can generate an IR", async () => {
 			const reverb = new Reverb();
 			const promise = reverb.generate();
 			expect(promise).to.have.property("then");
-			return promise.then(() => {
-				reverb.dispose();
-			});
+			await promise;
+			reverb.dispose();
 		});
 
-		it.skip("is silent before the reverb is generated", () => {
-			return Offline(() => {
+		it.skip("is silent before the reverb is generated", async () => {
+			const buffer = await Offline(() => {
 				const osc = new Oscillator();
 				osc.start(0).stop(0.1);
 				const reverb = new Reverb(0.2).toDestination();
 				osc.connect(reverb);
-			}).then((buffer) => {
-				expect(buffer.isSilent()).to.be.true;
 			});
+			expect(buffer.isSilent()).to.be.true;
 		});
 
-		it("passes audio from input to output", () => {
-			return Offline(async () => {
+		it("passes audio from input to output", async () => {
+			const buffer = await Offline(async () => {
 				const osc = new Oscillator();
 				osc.start(0).stop(0.1);
 				const reverb = new Reverb(0.2).toDestination();
 				osc.connect(reverb);
 				await reverb.ready;
-			}, 0.3).then((buffer) => {
-				expect(buffer.getRmsAtTime(0.05)).to.be.greaterThan(0);
-				expect(buffer.getRmsAtTime(0.1)).to.be.greaterThan(0);
-				expect(buffer.getRmsAtTime(0.2)).to.be.greaterThan(0);
-			});
+			}, 0.3);
+			expect(buffer.getRmsAtTime(0.05)).to.be.greaterThan(0);
+			expect(buffer.getRmsAtTime(0.1)).to.be.greaterThan(0);
+			expect(buffer.getRmsAtTime(0.2)).to.be.greaterThan(0);
+		});
+
+		it("parses number from string in input", () => {
+			// @ts-ignore
+			const reverb = new Reverb("1");
+			expect(reverb.decay).to.equal(1);
+			reverb.dispose();
+		});
+
+		it("throws an error with invalid input", () => {
+			expect(
+				() =>
+					new Reverb({
+						decay: 0,
+						preDelay: -1,
+					})
+			).to.throw(Error);
 		});
 	});
 });

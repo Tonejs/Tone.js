@@ -1,27 +1,21 @@
 import { expect } from "chai";
-import { BasicTests } from "test/helper/Basic";
-import { ToneAudioBuffer } from "Tone/core/context/ToneAudioBuffer";
-import { Convolver } from "./Convolver";
 
-// @ts-ignore
-if (window.__karma__) {
-	ToneAudioBuffer.baseUrl = "/base/test/";
-}
+import { BasicTests } from "../../../test/helper/Basic.js";
+import { ToneAudioBuffer } from "../../core/context/ToneAudioBuffer.js";
+import { Convolver } from "./Convolver.js";
 
 describe("Convolver", () => {
-
 	BasicTests(Convolver);
 
 	const ir = new ToneAudioBuffer();
 
-	const testFile = "./audio/sineStereo.wav";
+	const testFile = "./test/audio/sineStereo.wav";
 
 	before(() => {
 		return ir.load(testFile);
 	});
 
 	context("API", () => {
-
 		it("can pass in options in the constructor", () => {
 			const convolver = new Convolver({
 				normalize: false,
@@ -48,19 +42,16 @@ describe("Convolver", () => {
 			});
 		});
 
-		it("load returns a Promise", (done) => {
+		it("load returns a Promise", async () => {
 			const convolver = new Convolver();
-			convolver.load(testFile).then(() => {
-				convolver.dispose();
-				done();
-			});
+			await convolver.load(testFile);
+			convolver.dispose();
 		});
 
-		it("load invokes the second callback", () => {
+		it("load invokes the second callback", async () => {
 			const convolver = new Convolver();
-			return convolver.load(testFile).then(() => {
-				convolver.dispose();
-			});
+			await convolver.load(testFile);
+			convolver.dispose();
 		});
 
 		it("can assign the buffer twice", () => {
@@ -71,7 +62,9 @@ describe("Convolver", () => {
 
 		it("can be constructed with a buffer", () => {
 			const convolver = new Convolver(ir);
-			expect((convolver.buffer as ToneAudioBuffer).get()).to.equal(ir.get());
+			expect((convolver.buffer as ToneAudioBuffer).get()).to.equal(
+				ir.get()
+			);
 			convolver.dispose();
 		});
 

@@ -1,0 +1,9 @@
+{
+	"name": "tone-node-test",
+	"dependencies": {
+		"tone": "file:../../.."
+	},
+	"scripts": {
+		"test": "node test.mjs"
+	}
+}

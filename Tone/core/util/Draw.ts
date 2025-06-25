@@ -1,7 +1,13 @@
-import { ToneWithContext, ToneWithContextOptions } from "../context/ToneWithContext";
-import { Seconds, Time } from "../type/Units";
-import { Timeline, TimelineEvent } from "./Timeline";
-import { onContextClose, onContextInit } from "../context/ContextInitialization";
+import {
+	onContextClose,
+	onContextInit,
+} from "../context/ContextInitialization.js";
+import {
+	ToneWithContext,
+	ToneWithContextOptions,
+} from "../context/ToneWithContext.js";
+import { Seconds, Time } from "../type/Units.js";
+import { Timeline, TimelineEvent } from "./Timeline.js";
 
 interface DrawEvent extends TimelineEvent {
 	callback: () => void;
@@ -25,8 +31,7 @@ interface DrawEvent extends TimelineEvent {
  * Tone.Transport.start();
  * @category Core
  */
-export class Draw extends ToneWithContext<ToneWithContextOptions> {
-
+export class DrawClass extends ToneWithContext<ToneWithContextOptions> {
 	readonly name: string = "Draw";
 
 	/**
@@ -93,12 +98,12 @@ export class Draw extends ToneWithContext<ToneWithContextOptions> {
 	 */
 	private _drawLoop(): void {
 		const now = this.context.currentTime;
-		while (this._events.length && (this._events.peek() as DrawEvent).time - this.anticipation <= now) {
-			const event = this._events.shift();
-			if (event && now - event.time <= this.expiration) {
+		this._events.forEachBefore(now + this.anticipation, (event) => {
+			if (now - event.time <= this.expiration) {
 				event.callback();
 			}
-		}
+			this._events.remove(event);
+		});
 		if (this._events.length > 0) {
 			this._animationFrame = requestAnimationFrame(this._boundDrawLoop);
 		}
@@ -116,10 +121,10 @@ export class Draw extends ToneWithContext<ToneWithContextOptions> {
 // 	INITIALIZATION
 //-------------------------------------
 
-onContextInit(context => {
-	context.draw = new Draw({ context });
+onContextInit((context) => {
+	context.draw = new DrawClass({ context });
 });
 
-onContextClose(context => {
+onContextClose((context) => {
 	context.draw.dispose();
 });

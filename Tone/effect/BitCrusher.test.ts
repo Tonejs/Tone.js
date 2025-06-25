@@ -1,23 +1,27 @@
-import { BitCrusher } from "./BitCrusher";
-import { Oscillator } from "Tone/source/oscillator/Oscillator";
-import { BasicTests } from "test/helper/Basic";
-import { EffectTests } from "test/helper/EffectTests";
-import { CompareToFile } from "test/helper/CompareToFile";
 import { expect } from "chai";
 
-describe("BitCrusher", () => {
+import { BasicTests } from "../../test/helper/Basic.js";
+import { CompareToFile } from "../../test/helper/CompareToFile.js";
+import { EffectTests } from "../../test/helper/EffectTests.js";
+import { FeedbackCombFilter } from "../component/filter/FeedbackCombFilter.js";
+import { Oscillator } from "../source/oscillator/Oscillator.js";
+import { BitCrusher } from "./BitCrusher.js";
 
+describe("BitCrusher", () => {
 	BasicTests(BitCrusher);
 	EffectTests(BitCrusher);
 
 	context("API", () => {
-
 		it("matches a file", () => {
-			return CompareToFile(() => {
-				const crusher = new BitCrusher({ bits: 4 }).toDestination();
-				const osc = new Oscillator(110).connect(crusher);
-				osc.start(0);
-			}, "bitCrusher.wav", 0.01);
+			return CompareToFile(
+				() => {
+					const crusher = new BitCrusher({ bits: 4 }).toDestination();
+					const osc = new Oscillator(110).connect(crusher);
+					osc.start(0);
+				},
+				"bitCrusher.wav",
+				0.01
+			);
 		});
 
 		it("can pass in options in the constructor", () => {
@@ -38,5 +42,19 @@ describe("BitCrusher", () => {
 			crusher.dispose();
 		});
 	});
-});
 
+	it("should be usable with the FeedbackCombFilter", (done) => {
+		new BitCrusher(4);
+		new FeedbackCombFilter();
+
+		const handle = setTimeout(() => {
+			window.onunhandledrejection = null;
+			done();
+		}, 100);
+
+		window.onunhandledrejection = (event) => {
+			done(event.reason);
+			clearTimeout(handle);
+		};
+	});
+});

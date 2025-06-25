@@ -1,7 +1,7 @@
-import { getContext } from "../Global";
-import { TimeBaseUnit, TimeValue } from "./TimeBase";
-import { TransportTimeClass } from "./TransportTime";
-import { Seconds, Ticks } from "./Units";
+import { getContext } from "../Global.js";
+import { TimeBaseUnit, TimeValue } from "./TimeBase.js";
+import { TransportTimeClass } from "./TransportTime.js";
+import { Seconds, Ticks } from "./Units.js";
 
 /**
  * Ticks is a primitive type for encoding Time values.
@@ -12,7 +12,6 @@ import { Seconds, Ticks } from "./Units";
  * @category Unit
  */
 export class TicksClass extends TransportTimeClass<Ticks> {
-
 	readonly name: string = "Ticks";
 
 	readonly defaultUnits: TimeBaseUnit = "i";
@@ -35,7 +34,7 @@ export class TicksClass extends TransportTimeClass<Ticks> {
 	 * Returns the value of a second in the current units
 	 */
 	protected _secondsToUnits(seconds: Seconds): Ticks {
-		return Math.floor(seconds / (60 / this._getBpm()) * this._getPPQ());
+		return Math.floor((seconds / (60 / this._getBpm())) * this._getPPQ());
 	}
 
 	/**

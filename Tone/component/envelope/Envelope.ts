@@ -1,12 +1,15 @@
-import { InputNode, OutputNode } from "../../core/context/ToneAudioNode";
-import { ToneAudioNode, ToneAudioNodeOptions } from "../../core/context/ToneAudioNode";
-import { NormalRange, Time } from "../../core/type/Units";
-import { optionsFromArguments } from "../../core/util/Defaults";
-import { isArray, isObject, isString } from "../../core/util/TypeCheck";
-import { connectSignal, Signal } from "../../signal/Signal";
-import { OfflineContext } from "../../core/context/OfflineContext";
-import { assert } from "../../core/util/Debug";
-import { range, timeRange } from "../../core/util/Decorator";
+import { OfflineContext } from "../../core/context/OfflineContext.js";
+import { InputNode, OutputNode } from "../../core/context/ToneAudioNode.js";
+import {
+	ToneAudioNode,
+	ToneAudioNodeOptions,
+} from "../../core/context/ToneAudioNode.js";
+import { NormalRange, Time } from "../../core/type/Units.js";
+import { assert } from "../../core/util/Debug.js";
+import { range, timeRange } from "../../core/util/Decorator.js";
+import { optionsFromArguments } from "../../core/util/Defaults.js";
+import { isArray, isObject, isString } from "../../core/util/TypeCheck.js";
+import { connectSignal, Signal } from "../../signal/Signal.js";
 
 type BasicEnvelopeCurve = "linear" | "exponential";
 type InternalEnvelopeCurve = BasicEnvelopeCurve | number[];
@@ -50,12 +53,11 @@ export interface EnvelopeOptions extends ToneAudioNodeOptions {
  * @category Component
  */
 export class Envelope extends ToneAudioNode<EnvelopeOptions> {
-
 	readonly name: string = "Envelope";
 
 	/**
 	 * When triggerAttack is called, the attack time is the amount of
-	 * time it takes for the envelope to reach it's maximum value.
+	 * time it takes for the envelope to reach its maximum value.
 	 * ```
 	 *           /\
 	 *          /X \
@@ -75,7 +77,7 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 
 	/**
 	 * After the attack portion of the envelope, the value will fall
-	 * over the duration of the decay time to it's sustain value.
+	 * over the duration of the decay time to its sustain value.
 	 * ```
 	 *           /\
 	 *          / X\
@@ -114,7 +116,7 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 
 	/**
 	 * After triggerRelease is called, the envelope's
-	 * value will fall to it's miminum value over the
+	 * value will fall to its minimum value over the
 	 * duration of the release time.
 	 * ```
 	 *           /\
@@ -141,7 +143,7 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	/**
 	 * The automation curve type for the decay
 	 */
-	private _decayCurve!: BasicEnvelopeCurve;
+	private _decayCurve!: InternalEnvelopeCurve;
 
 	/**
 	 * The automation curve type for the release
@@ -168,7 +170,7 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 
 	/**
 	 * @param attack The amount of time it takes for the envelope to go from
-	 *                        0 to it's maximum value.
+	 *                        0 to its maximum value.
 	 * @param decay	The period of time after the attack that it takes for the envelope
 	 *                      	to fall to the sustain value. Value must be greater than 0.
 	 * @param sustain	The percent of the maximum value that the envelope rests at until
@@ -176,12 +178,20 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	 * @param release	The amount of time after the release is triggered it takes to reach 0.
 	 *                        	Value must be greater than 0.
 	 */
-	constructor(attack?: Time, decay?: Time, sustain?: NormalRange, release?: Time);
-	constructor(options?: Partial<EnvelopeOptions>)
+	constructor(
+		attack?: Time,
+		decay?: Time,
+		sustain?: NormalRange,
+		release?: Time
+	);
+	constructor(options?: Partial<EnvelopeOptions>);
 	constructor() {
-
-		super(optionsFromArguments(Envelope.getDefaults(), arguments, ["attack", "decay", "sustain", "release"]));
-		const options = optionsFromArguments(Envelope.getDefaults(), arguments, ["attack", "decay", "sustain", "release"]);
+		const options = optionsFromArguments(
+			Envelope.getDefaults(),
+			arguments,
+			["attack", "decay", "sustain", "release"]
+		);
+		super(options);
 
 		this.attack = options.attack;
 		this.decay = options.decay;
@@ -218,7 +228,10 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	 * @param  direction  In/Out
 	 * @return The curve name
 	 */
-	private _getCurve(curve: InternalEnvelopeCurve, direction: EnvelopeDirection): EnvelopeCurve {
+	private _getCurve(
+		curve: InternalEnvelopeCurve,
+		direction: EnvelopeDirection
+	): EnvelopeCurve {
 		if (isString(curve)) {
 			return curve;
 		} else {
@@ -243,7 +256,7 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	private _setCurve(
 		name: "_attackCurve" | "_decayCurve" | "_releaseCurve",
 		direction: EnvelopeDirection,
-		curve: EnvelopeCurve,
+		curve: EnvelopeCurve
 	): void {
 		// check if it's a valid type
 		if (isString(curve) && Reflect.has(EnvelopeCurves, curve)) {
@@ -322,12 +335,11 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	 * 	env.triggerAttack();
 	 * }, 1, 1);
 	 */
-	get decayCurve(): BasicEnvelopeCurve {
-		return this._decayCurve;
+	get decayCurve(): EnvelopeCurve {
+		return this._getCurve(this._decayCurve, "Out");
 	}
 	set decayCurve(curve) {
-		assert(["linear", "exponential"].some(c => c === curve), `Invalid envelope curve: ${curve}`);
-		this._decayCurve = curve;
+		this._setCurve("_decayCurve", "Out", curve);
 	}
 
 	/**
@@ -386,9 +398,16 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 			const decayStart = time + attack;
 			this.log("decay", decayStart);
 			if (this._decayCurve === "linear") {
-				this._sig.linearRampToValueAtTime(decayValue, decay + decayStart);
+				this._sig.linearRampToValueAtTime(
+					decayValue,
+					decay + decayStart
+				);
 			} else {
-				this._sig.exponentialApproachValueAtTime(decayValue, decayStart, decay);
+				this._sig.exponentialApproachValueAtTime(
+					decayValue,
+					decayStart,
+					decay
+				);
 			}
 		}
 		return this;
@@ -419,9 +438,17 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 			} else if (this._releaseCurve === "exponential") {
 				this._sig.targetRampTo(0, release, time);
 			} else {
-				assert(isArray(this._releaseCurve), "releaseCurve must be either 'linear', 'exponential' or an array");
+				assert(
+					isArray(this._releaseCurve),
+					"releaseCurve must be either 'linear', 'exponential' or an array"
+				);
 				this._sig.cancelAndHoldAtTime(time);
-				this._sig.setValueCurveAtTime(this._releaseCurve, time, release, currentValue);
+				this._sig.setValueCurveAtTime(
+					this._releaseCurve,
+					time,
+					release,
+					currentValue
+				);
 			}
 		}
 		return this;
@@ -451,7 +478,11 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	 * // trigger the release 0.5 seconds after the attack
 	 * env.triggerAttackRelease(0.5);
 	 */
-	triggerAttackRelease(duration: Time, time?: Time, velocity: NormalRange = 1): this {
+	triggerAttackRelease(
+		duration: Time,
+		time?: Time,
+		velocity: NormalRange = 1
+	): this {
 		time = this.toSeconds(time);
 		this.triggerAttack(time, velocity);
 		this.triggerRelease(time + this.toSeconds(duration));
@@ -475,27 +506,39 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	}
 
 	/**
-	 * Render the envelope curve to an array of the given length. 
+	 * Render the envelope curve to an array of the given length.
 	 * Good for visualizing the envelope curve. Rescales the duration of the
 	 * envelope to fit the length.
 	 */
 	async asArray(length = 1024): Promise<Float32Array> {
 		const duration = length / this.context.sampleRate;
-		const context = new OfflineContext(1, duration, this.context.sampleRate);
+		const context = new OfflineContext(
+			1,
+			duration,
+			this.context.sampleRate
+		);
 		// normalize the ADSR for the given duration with 20% sustain time
-		const attackPortion = this.toSeconds(this.attack) + this.toSeconds(this.decay);
+		const attackPortion =
+			this.toSeconds(this.attack) + this.toSeconds(this.decay);
 		const envelopeDuration = attackPortion + this.toSeconds(this.release);
 		const sustainTime = envelopeDuration * 0.1;
 		const totalDuration = envelopeDuration + sustainTime;
 		// @ts-ignore
-		const clone = new this.constructor(Object.assign(this.get(), {
-			attack: duration * this.toSeconds(this.attack) / totalDuration,
-			decay: duration * this.toSeconds(this.decay) / totalDuration,
-			release: duration * this.toSeconds(this.release) / totalDuration,
-			context
-		})) as Envelope;
+		const clone = new this.constructor(
+			Object.assign(this.get(), {
+				attack:
+					(duration * this.toSeconds(this.attack)) / totalDuration,
+				decay: (duration * this.toSeconds(this.decay)) / totalDuration,
+				release:
+					(duration * this.toSeconds(this.release)) / totalDuration,
+				context,
+			})
+		) as Envelope;
 		clone._sig.toDestination();
-		clone.triggerAttackRelease(duration * (attackPortion + sustainTime) / totalDuration, 0);
+		clone.triggerAttackRelease(
+			(duration * (attackPortion + sustainTime)) / totalDuration,
+			0
+		);
 		const buffer = await context.render();
 		return buffer.getChannelData(0);
 	}
@@ -530,7 +573,6 @@ type EnvelopeCurveName = keyof EnvelopeCurveMap;
  * Generate some complex envelope curves.
  */
 const EnvelopeCurves: EnvelopeCurveMap = (() => {
-
 	const curveLen = 128;
 
 	let i: number;
@@ -546,8 +588,9 @@ const EnvelopeCurves: EnvelopeCurveMap = (() => {
 	const rippleCurve: number[] = [];
 	const rippleCurveFreq = 6.4;
 	for (i = 0; i < curveLen - 1; i++) {
-		k = (i / (curveLen - 1));
-		const sineWave = Math.sin(k * (Math.PI * 2) * rippleCurveFreq - Math.PI / 2) + 1;
+		k = i / (curveLen - 1);
+		const sineWave =
+			Math.sin(k * (Math.PI * 2) * rippleCurveFreq - Math.PI / 2) + 1;
 		rippleCurve[i] = sineWave / 10 + k * 0.83;
 	}
 	rippleCurve[curveLen - 1] = 1;
