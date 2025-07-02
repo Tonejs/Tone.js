@@ -41,7 +41,7 @@ async function main() {
 
 	await fixtures.rm();
 
-	console.log("Tested %o scripts in %o", scripts.length, entry);
+	console.log("Successfully tested %o scripts in %o", scripts.length, entry);
 }
 
 main();

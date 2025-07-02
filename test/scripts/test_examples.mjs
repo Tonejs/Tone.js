@@ -72,7 +72,7 @@ async function main() {
 
 	await fixtures.rm();
 
-	console.log(`Tested ${examples.length} examples`);
+	console.log(`Successfully tested ${examples.length} examples.`);
 }
 
 main();

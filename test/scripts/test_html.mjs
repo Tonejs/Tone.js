@@ -59,7 +59,7 @@ async function main() {
 
 	await fixtures.rm();
 
-	console.log(`Tested ${htmlFiles.length} examples`);
+	console.log(`Successfully tested ${htmlFiles.length} examples.`);
 }
 
 main();
