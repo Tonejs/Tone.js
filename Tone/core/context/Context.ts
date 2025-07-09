@@ -23,6 +23,7 @@ export interface ContextOptions {
 	lookAhead: Seconds;
 	updateInterval: Seconds;
 	context: AnyAudioContext;
+	sampleRate: number;
 }
 
 export interface ContextTimeoutEvent {
@@ -116,7 +117,10 @@ export class Context extends BaseContext {
 			// custom context provided, latencyHint unknown (unless explicitly provided in options)
 			this._latencyHint = arguments[0]?.latencyHint || "";
 		} else {
-			this._context = createAudioContext({
+			this._context = createAudioContext(options.sampleRate ? {
+				latencyHint: options.latencyHint,
+				sampleRate: options.sampleRate,
+			} : {
 				latencyHint: options.latencyHint,
 			});
 			this._latencyHint = options.latencyHint;

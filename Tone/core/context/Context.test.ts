@@ -74,11 +74,13 @@ describe("Context", () => {
 				latencyHint: "playback",
 				lookAhead: 0.2,
 				updateInterval: 0.1,
+				sampleRate: 32000,
 			});
 			expect(ctx.lookAhead).to.equal(0.2);
 			expect(ctx.updateInterval).to.equal(0.1);
 			expect(ctx.latencyHint).to.equal("playback");
 			expect(ctx.clockSource).to.equal("timeout");
+			expect(ctx.sampleRate).to.equal(32000);
 			ctx.dispose();
 			return ctx.close();
 		});
