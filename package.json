@@ -90,7 +90,7 @@
 		"semver": "^5.7.1",
 		"showdown": "^2.1.0",
 		"teoria": "^2.5.0",
-		"tmp-promise": "^2.1.1",
+		"tmp-promise": "^3.0.3",
 		"tonal": "^6.0.1",
 		"ts-loader": "^9.5.1",
 		"typedoc": "^0.25.13",
