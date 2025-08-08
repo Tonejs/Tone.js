@@ -105,7 +105,7 @@
 	},
 	"dependencies": {
 		"standardized-audio-context": "^25.3.70",
-		"tone": "^15.1.22",
+		
 		"tslib": "^2.3.1"
 	},
 	"prettier": {
