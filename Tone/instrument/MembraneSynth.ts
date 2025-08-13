@@ -32,7 +32,7 @@ export class MembraneSynth extends Synth<MembraneSynthOptions> {
 	 * @min 0.5
 	 * @max 8
 	 */
-	@range(0)
+	@range(0.5, 8)
 	octaves: Positive;
 
 	/**
@@ -40,7 +40,7 @@ export class MembraneSynth extends Synth<MembraneSynthOptions> {
 	 * @min 0
 	 * @max 0.5
 	 */
-	@timeRange(0)
+	@timeRange(0, 0.5)
 	pitchDecay: Time;
 
 	/**
@@ -73,7 +73,7 @@ export class MembraneSynth extends Synth<MembraneSynthOptions> {
 				release: 1.4,
 				sustain: 0.01,
 			},
-			octaves: 10,
+			octaves: 8,
 			oscillator: {
 				type: "sine",
 			},
@@ -86,7 +86,7 @@ export class MembraneSynth extends Synth<MembraneSynthOptions> {
 		const hertz = this.toFrequency(
 			note instanceof FrequencyClass ? note.toFrequency() : note
 		);
-		const maxNote = hertz * this.octaves;
+		const maxNote = hertz * Math.pow(2, this.octaves);
 		this.oscillator.frequency.setValueAtTime(maxNote, seconds);
 		this.oscillator.frequency.exponentialRampToValueAtTime(
 			hertz,
