@@ -1,7 +1,8 @@
-const fs = require("fs");
+const { execSync } = require("node:child_process");
+const fs = require("node:fs");
+const { resolve } = require("node:path");
+
 const semver = require("semver");
-const { resolve } = require("path");
-const { execSync } = require("child_process");
 
 const tsVersion = execSync("npm show tone@next version").toString();
 const mainVersion = execSync("npm show tone version").toString();
