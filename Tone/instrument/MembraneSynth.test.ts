@@ -52,12 +52,42 @@ describe("MembraneSynth", () => {
 
 		it("can get and set the octaves and pitch decay", () => {
 			const drumSynth = new MembraneSynth();
-			drumSynth.octaves = 12;
+			drumSynth.octaves = 8;
 			drumSynth.pitchDecay = 0.2;
 			expect(drumSynth.pitchDecay).to.equal(0.2);
-			expect(drumSynth.octaves).to.equal(12);
+			expect(drumSynth.octaves).to.equal(8);
 			drumSynth.dispose();
 		});
+
+		it("validates octaves range", () => {
+			const drumSynth = new MembraneSynth();
+			// Test minimum boundary
+			drumSynth.octaves = 0.5;
+			expect(drumSynth.octaves).to.equal(0.5);
+			// Test maximum boundary
+			drumSynth.octaves = 8;
+			expect(drumSynth.octaves).to.equal(8);
+			drumSynth.dispose();
+		});
+
+		it("validates pitchDecay range", () => {
+			const drumSynth = new MembraneSynth();
+			drumSynth.pitchDecay = 0;
+			expect(drumSynth.pitchDecay).to.equal(0);
+			drumSynth.pitchDecay = 0.5;
+			expect(drumSynth.pitchDecay).to.equal(0.5);
+			drumSynth.dispose();
+		});
+
+		it("Finds correct maximum note frequency", () => {
+			const drumSynth = new MembraneSynth();
+			const hertz = 65.4; // C2 
+			drumSynth.octaves = 8;
+			const maxNote = hertz * Math.pow(2, drumSynth.octaves); 
+			expect(maxNote).to.equal(16742.4); // C2 + 8 octaves 
+			drumSynth.dispose();
+		});
+
 
 		it("can be constructed with an options object", () => {
 			const drumSynth = new MembraneSynth({
