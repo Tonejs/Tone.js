@@ -1,3 +1,4 @@
+import { TickParam } from "../../core/clock/TickParam.js";
 import { ToneAudioBuffer } from "../../core/context/ToneAudioBuffer.js";
 import { Positive, Seconds, Time } from "../../core/type/Units.js";
 import { assertRange } from "../../core/util/Debug.js";
@@ -7,6 +8,8 @@ import { noOp } from "../../core/util/Interface.js";
 import { isUndef } from "../../core/util/TypeCheck.js";
 import { Source, SourceOptions } from "../Source.js";
 import { ToneBufferSource } from "./ToneBufferSource.js";
+import { ToneConstantSource } from "../../signal/ToneConstantSource.js";
+import { Timeline } from "../../core/util/Timeline.js";
 
 export interface PlayerOptions extends SourceOptions {
 	onload: () => void;
@@ -68,6 +71,33 @@ export class Player extends Source<PlayerOptions> {
 	 * All of the active buffer source nodes
 	 */
 	private _activeSources: Set<ToneBufferSource> = new Set();
+
+	/**
+	 * Used as the source of the TickParam, but not started or used for anything else.
+	 */
+	private _constantSource = new ToneConstantSource({
+		context: this.context,
+		units: "hertz",
+		offset: 0,
+	});
+
+	/**
+	 * Used to track the progress of the player.
+	 */
+	private _progressTracker = new TickParam({
+		context: this.context,
+		units: "hertz",
+		value: 0,
+		param: this._constantSource.offset,
+	});
+
+	/**
+	 * Combined with the _progressTracker param to track the progress of the player in seconds.
+	 */
+	private _progressOffset = new Timeline<{
+		time: Seconds;
+		seek: Seconds;
+	}>(Infinity);
 
 	/**
 	 * The fadeIn time of the amplitude envelope.
@@ -140,6 +170,33 @@ export class Player extends Source<PlayerOptions> {
 		await this._buffer.load(url);
 		this._onload();
 		return this;
+	}
+
+	/**
+	 * Internal method to get the progress at a specific time.
+	 * @param time The time to evaluate the progress at.
+	 */
+	private _getProgressAtTime(time: Seconds): Seconds {
+		const state = this._state.getValueAtTime(time);
+		if (state === "stopped") {
+			return 0;
+		}
+		const progress =
+			this._progressTracker.getTicksAtTime(this.now()) +
+			(this._progressOffset.get(this.now())?.seek ?? 0);
+		if (this._loop) {
+			return progress % this._buffer.duration;
+		}
+
+		return progress;
+	}
+
+	/**
+	 * The progress of the player.
+	 */
+	get progress(): Seconds {
+		const now = this.now();
+		return this._getProgressAtTime(now);
 	}
 
 	/**
@@ -245,6 +302,18 @@ export class Player extends Source<PlayerOptions> {
 		// add it to the array of active sources
 		this._activeSources.add(source);
 
+		// used to track the progress of the player
+		// console.log("_start", startTime, computedOffset);
+		const seekDelta = computedOffset - this._getProgressAtTime(startTime);
+		console.log(seekDelta);
+		// if the seekDelta is greater than the
+		this._progressOffset.add({
+			time: startTime,
+			seek: seekDelta,
+		});
+		console.log("progressOffset", this._progressOffset);
+		this._progressTracker.setValueAtTime(this._playbackRate, startTime);
+
 		// start it
 		if (this._loop && isUndef(origDuration)) {
 			source.start(startTime, computedOffset);
@@ -264,6 +333,7 @@ export class Player extends Source<PlayerOptions> {
 	protected _stop(time?: Time): void {
 		const computedTime = this.toSeconds(time);
 		this._activeSources.forEach((source) => source.stop(computedTime));
+		this._progressTracker.setValueAtTime(0, computedTime);
 	}
 
 	/**
@@ -412,12 +482,21 @@ export class Player extends Source<PlayerOptions> {
 	set playbackRate(rate) {
 		this._playbackRate = rate;
 		const now = this.now();
+		this._progressTracker.setValueAtTime(rate, now);
 
 		// cancel the stop event since it's at a different time now
 		const stopEvent = this._state.getNextState("stopped", now);
 		if (stopEvent && stopEvent.implicitEnd) {
 			this._state.cancel(stopEvent.time);
 			this._activeSources.forEach((source) => source.cancelStop());
+
+			const progress = this._getProgressAtTime(now);
+			const remainingTime = this._buffer.duration - progress;
+			const newStopTime = now + remainingTime / rate;
+			// reschedule the implicit stop event
+			this._state.setStateAtTime("stopped", newStopTime, {
+				implicitEnd: true,
+			});
 		}
 
 		// set all the sources
