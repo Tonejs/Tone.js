@@ -5,11 +5,11 @@ import { assertRange } from "../../core/util/Debug.js";
 import { timeRange } from "../../core/util/Decorator.js";
 import { defaultArg, optionsFromArguments } from "../../core/util/Defaults.js";
 import { noOp } from "../../core/util/Interface.js";
+import { Timeline } from "../../core/util/Timeline.js";
 import { isUndef } from "../../core/util/TypeCheck.js";
+import { ToneConstantSource } from "../../signal/ToneConstantSource.js";
 import { Source, SourceOptions } from "../Source.js";
 import { ToneBufferSource } from "./ToneBufferSource.js";
-import { ToneConstantSource } from "../../signal/ToneConstantSource.js";
-import { Timeline } from "../../core/util/Timeline.js";
 
 export interface PlayerOptions extends SourceOptions {
 	onload: () => void;
@@ -182,8 +182,8 @@ export class Player extends Source<PlayerOptions> {
 			return 0;
 		}
 		const progress =
-			this._progressTracker.getTicksAtTime(this.now()) +
-			(this._progressOffset.get(this.now())?.seek ?? 0);
+			this._progressTracker.getTicksAtTime(time) +
+			(this._progressOffset.get(time)?.seek ?? 0);
 		if (this._loop) {
 			return progress % this._buffer.duration;
 		}
@@ -285,7 +285,7 @@ export class Player extends Source<PlayerOptions> {
 			playbackRate: this._playbackRate,
 		}).connect(this.output);
 
-		// set the looping properties
+		// schedule the "stopped" state
 		if (!this._loop && !this._synced) {
 			// cancel the previous stop
 			this._state.cancel(startTime + computedDuration);
@@ -303,15 +303,11 @@ export class Player extends Source<PlayerOptions> {
 		this._activeSources.add(source);
 
 		// used to track the progress of the player
-		// console.log("_start", startTime, computedOffset);
 		const seekDelta = computedOffset - this._getProgressAtTime(startTime);
-		console.log(seekDelta);
-		// if the seekDelta is greater than the
 		this._progressOffset.add({
 			time: startTime,
 			seek: seekDelta,
 		});
-		console.log("progressOffset", this._progressOffset);
 		this._progressTracker.setValueAtTime(this._playbackRate, startTime);
 
 		// start it
@@ -371,6 +367,8 @@ export class Player extends Source<PlayerOptions> {
 			const computedOffset = this.toSeconds(offset);
 			// if it's currently playing, stop it
 			this._stop(computedTime);
+			// remove the stop event
+			this._state.cancel(computedTime);
 			// restart it at the given time
 			this._start(computedTime, computedOffset);
 		}
@@ -533,6 +531,9 @@ export class Player extends Source<PlayerOptions> {
 		this._activeSources.forEach((source) => source.dispose());
 		this._activeSources.clear();
 		this._buffer.dispose();
+		this._constantSource.dispose();
+		this._progressTracker.dispose();
+		this._progressOffset.dispose();
 		return this;
 	}
 }

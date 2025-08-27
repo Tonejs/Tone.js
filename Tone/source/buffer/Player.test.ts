@@ -427,6 +427,31 @@ describe("Player", () => {
 			expect(buff.isSilent()).to.be.true;
 		});
 
+		it("seeking updates stopped state", async () => {
+			await Offline(() => {
+				const player = new Player(buffer).toDestination();
+				player.start(0);
+				player.seek(buffer.duration * 0.75, 0.5);
+
+				return (time) => {
+					whenBetween(time, 0, 0.5, () => {
+						expect(player.state).to.equal("started");
+					});
+					whenBetween(time, 0.5, 0.5 + buffer.duration * 0.25, () => {
+						expect(player.state).to.equal("started");
+					});
+					whenBetween(
+						time,
+						0.5 + buffer.duration * 0.25,
+						Infinity,
+						() => {
+							expect(player.state).to.equal("stopped");
+						}
+					);
+				};
+			}, buffer.duration);
+		});
+
 		it("can seek to a position at the given time", async () => {
 			const buff = await Offline(() => {
 				const ramp = new Float32Array(
@@ -709,7 +734,7 @@ describe("Player", () => {
 		});
 	});
 
-	context.only("progress", () => {
+	context("progress", () => {
 		it("can get the progress of the player", async () => {
 			await Offline(() => {
 				const player = new Player(buffer);
@@ -799,7 +824,7 @@ describe("Player", () => {
 			}, buffer.duration);
 		});
 
-		it("progress can start at an offset", async () => {
+		it("can start at an offset", async () => {
 			await Offline(() => {
 				const player = new Player(buffer);
 				player.start(0, buffer.duration / 2);
@@ -817,13 +842,12 @@ describe("Player", () => {
 			}, buffer.duration);
 		});
 
-		it.only("progress can seek to a new position", async () => {
+		it("can seek to a new position", async () => {
 			await Offline(() => {
 				const player = new Player(buffer);
 				player.start(0);
 				player.seek(0, buffer.duration / 2);
 				return (time) => {
-					// console.log(time.toFixed(2), player.progress.toFixed(2));
 					whenBetween(time, 0, buffer.duration * 0.5, () => {
 						expect(player.progress).to.be.closeTo(time, 0.01);
 					});
@@ -832,10 +856,10 @@ describe("Player", () => {
 						buffer.duration * 0.5,
 						buffer.duration * 1.5,
 						() => {
-							// expect(player.progress).to.be.closeTo(
-							// 	time - buffer.duration * 0.5,
-							// 	0.01
-							// );
+							expect(player.progress).to.be.closeTo(
+								time - buffer.duration * 0.5,
+								0.01
+							);
 						}
 					);
 					whenBetween(time, buffer.duration * 1.5, Infinity, () => {
@@ -843,6 +867,33 @@ describe("Player", () => {
 					});
 				};
 			}, buffer.duration * 2);
+		});
+
+		it("can start and stop multiple times", async () => {
+			await Offline(() => {
+				const player = new Player(buffer);
+				player.start(0);
+				player.stop(0.1);
+				player.start(0.2, buffer.duration / 2);
+				player.stop(0.3);
+				return (time) => {
+					whenBetween(time, 0, 0.1, () => {
+						expect(player.progress).to.be.closeTo(time, 0.01);
+					});
+					whenBetween(time, 0.1, 0.2, () => {
+						expect(player.progress).to.equal(0);
+					});
+					whenBetween(time, 0.2, 0.3, () => {
+						expect(player.progress).to.be.closeTo(
+							time - 0.2 + buffer.duration / 2,
+							0.01
+						);
+					});
+					whenBetween(time, 0.3, 0.4, () => {
+						expect(player.progress).to.equal(0);
+					});
+				};
+			}, 0.4);
 		});
 	});
 });
