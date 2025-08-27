@@ -181,9 +181,19 @@ export class Player extends Source<PlayerOptions> {
 		if (state === "stopped") {
 			return 0;
 		}
+		const startTime = this._state.getLastState("started", time);
+
+		// sum all of the offsets between the start time and the time
+		let seeksSinceStart = 0;
+		this._progressOffset.forEachBetween(
+			startTime?.time ?? 0,
+			time,
+			(event) => {
+				seeksSinceStart += event.seek;
+			}
+		);
 		const progress =
-			this._progressTracker.getTicksAtTime(time) +
-			(this._progressOffset.get(time)?.seek ?? 0);
+			this._progressTracker.getTicksAtTime(time) + seeksSinceStart;
 		if (this._loop) {
 			return progress % this._buffer.duration;
 		}

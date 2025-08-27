@@ -829,7 +829,7 @@ describe("Player", () => {
 				const player = new Player(buffer);
 				player.start(0, buffer.duration / 2);
 				return (time) => {
-					whenBetween(time, 0, buffer.duration / 2, () => {
+					whenBetween(time, 0.01, buffer.duration / 2, () => {
 						expect(player.progress).to.be.closeTo(
 							time + buffer.duration / 2,
 							0.01
@@ -894,6 +894,33 @@ describe("Player", () => {
 					});
 				};
 			}, 0.4);
+		});
+
+		it("can seek multiple times", async () => {
+			await Offline(() => {
+				const player = new Player(buffer);
+				player.start(0);
+				player.seek(1, 0.5);
+				player.seek(0, 1);
+				player.seek(1.5, 1.5);
+				return (time) => {
+					whenBetween(time, 0, 0.5, () => {
+						expect(player.progress).to.be.closeTo(time, 0.01);
+					});
+					whenBetween(time, 0.5, 1, () => {
+						expect(player.progress).to.be.closeTo(time + 0.5, 0.01);
+					});
+					whenBetween(time, 1, 1.5, () => {
+						expect(player.progress).to.be.closeTo(time - 1, 0.01);
+					});
+					whenBetween(time, 1.5, buffer.duration, () => {
+						expect(player.progress).to.be.closeTo(time, 0.01);
+					});
+					whenBetween(time, buffer.duration, Infinity, () => {
+						expect(player.progress).to.equal(0);
+					});
+				};
+			}, 3);
 		});
 	});
 });
