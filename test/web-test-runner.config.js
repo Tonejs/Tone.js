@@ -8,8 +8,49 @@ import { puppeteerLauncher } from "@web/test-runner-puppeteer";
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const commonjs = fromRollup(rollupCommonjs);
 
+const BUILD_DIR = resolve(__dirname, "../build/esm");
+
+function getFilesInToneDir(dir) {
+	return [
+		resolve(BUILD_DIR, "Tone", dir, "**/*.test.js"),
+		resolve(BUILD_DIR, "Tone", dir, "*.test.js"),
+	];
+}
+
 export default {
-	files: ["./build/*/Tone/**/*.test.js", "./build/*/Tone/*.test.js"],
+	groups: [
+		{
+			name: "core",
+			files: [
+				...getFilesInToneDir("core"),
+				resolve(BUILD_DIR, "Tone/*.test.js"),
+			],
+		},
+		{
+			name: "component",
+			files: getFilesInToneDir("component"),
+		},
+		{
+			name: "effect",
+			files: getFilesInToneDir("effect"),
+		},
+		{
+			name: "event",
+			files: getFilesInToneDir("event"),
+		},
+		{
+			name: "instrument",
+			files: getFilesInToneDir("instrument"),
+		},
+		{
+			name: "signal",
+			files: getFilesInToneDir("signal"),
+		},
+		{
+			name: "source",
+			files: getFilesInToneDir("source"),
+		},
+	],
 	nodeResolve: true,
 	browsers: [
 		puppeteerLauncher({
@@ -38,4 +79,12 @@ export default {
 		}),
 	],
 	rootDir: resolve(__dirname, "../"),
+	testRunnerHtml: (testFramework) =>
+		`<!DOCTYPE html>
+			<html>
+			<body>
+				<script>window.TONE_SILENCE_LOGGING = true</script>
+				<script type="module" src="${testFramework}"></script>
+			</body>
+		</html>`,
 };
