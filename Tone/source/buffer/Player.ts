@@ -204,12 +204,12 @@ export class Player extends Source<PlayerOptions> {
 	/**
 	 * Displays the elapsed seconds since the player was started, taking into account playbackRate changes.
 	 * @example
-	 * const player = new Tone.Player().toDestination();
-	 * await player.load("https://tonejs.github.io/audio/berklee/gong_1.mp3");
-	 * player.start();
-	 * setInterval(() => {
-	 * console.log(player.progress);
-	 * }, 100)
+	 * const player = new Tone.Player("https://tonejs.github.io/audio/berklee/gong_1.mp3", () => {
+	 * 	player.start();
+	 * 	setInterval(() => {
+	 * 		console.log(player.progress);
+	 * 	}, 100);
+	 * }).toDestination();
 	 */
 	get progress(): Seconds {
 		const now = this.now();
