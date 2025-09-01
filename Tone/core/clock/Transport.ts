@@ -634,6 +634,7 @@ export class TransportClass
 					now
 				);
 				const time = now + remainingTick;
+				console.log("setting ticks", ticks);
 				this.emit("stop", time);
 				this._clock.setTicksAtTime(t, time);
 				// restart it with the new time

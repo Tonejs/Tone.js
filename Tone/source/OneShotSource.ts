@@ -182,6 +182,7 @@ export abstract class OneShotSource<
 			this._gainNode.gain.setValueAtTime(0, time);
 		}
 		this.context.clearTimeout(this._timeout);
+		console.log("scheduling end", this._stopTime);
 		this._timeout = this.context.setTimeout(() => {
 			// allow additional time for the exponential curve to fully decay
 			const additionalTail =

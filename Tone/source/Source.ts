@@ -337,6 +337,7 @@ export abstract class Source<
 								this.toSeconds(stateEvent.duration) -
 								startOffset;
 						}
+						console.log("start", time, duration);
 						this._start(
 							time,
 							this.toSeconds(stateEvent.offset) + startOffset,

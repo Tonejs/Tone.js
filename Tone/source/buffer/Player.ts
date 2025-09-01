@@ -266,6 +266,7 @@ export class Player extends Source<PlayerOptions> {
 	 * Internal start method
 	 */
 	protected _start(startTime?: Time, offset?: Time, duration?: Time): void {
+		console.log("start");
 		// if it's a loop the default offset is the loopStart point
 		if (this._loop) {
 			offset = defaultArg(offset, this._loopStart);
