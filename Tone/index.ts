@@ -8,8 +8,8 @@ import { Seconds } from "./core/type/Units.js";
 export { supported } from "./core/context/AudioContext.js";
 import type { TransportInstance } from "./core/clock/Transport.js";
 export type { TransportInstance } from "./core/clock/Transport.js";
-import type { DestinationClass } from "./core/context/Destination.js";
-export type { DestinationClass } from "./core/context/Destination.js";
+import type { DestinationInstance } from "./core/context/Destination.js";
+export type { DestinationInstance } from "./core/context/Destination.js";
 import type { ListenerInstance } from "./core/context/Listener.js";
 export type { ListenerInstance } from "./core/context/Listener.js";
 import type { DrawInstance } from "./core/util/Draw.js";
@@ -52,7 +52,7 @@ export function getTransport(): TransportInstance {
 
 /**
  * The Destination (output) belonging to the global Tone.js Context.
- * @see {@link DestinationClass}
+ * @see {@link DestinationInstance}
  * @category Core
  * @deprecated Use {@link getDestination} instead
  */
@@ -65,10 +65,10 @@ export const Master = getContext().destination;
 
 /**
  * The Destination (output) belonging to the global Tone.js Context.
- * @see {@link DestinationClass}
+ * @see {@link DestinationInstance}
  * @category Core
  */
-export function getDestination(): DestinationClass {
+export function getDestination(): DestinationInstance {
 	return getContext().destination;
 }
 

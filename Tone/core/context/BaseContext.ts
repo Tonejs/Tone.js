@@ -3,7 +3,7 @@ import { Seconds } from "../type/Units.js";
 import type { DrawInstance as Draw } from "../util/Draw.js";
 import { Emitter } from "../util/Emitter.js";
 import { AnyAudioContext } from "./AudioContext.js";
-import type { DestinationClass as Destination } from "./Destination.js";
+import type { DestinationInstance as Destination } from "./Destination.js";
 import type { ListenerInstance as Listener } from "./Listener.js";
 
 // these are either not used in Tone.js or deprecated and not implemented.

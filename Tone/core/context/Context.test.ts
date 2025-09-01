@@ -7,7 +7,7 @@ import { getContext } from "../Global.js";
 import { DrawInstance } from "../util/Draw.js";
 import { createAudioContext } from "./AudioContext.js";
 import { Context } from "./Context.js";
-import { DestinationClass } from "./Destination.js";
+import { DestinationInstance } from "./Destination.js";
 import { ListenerInstance } from "./Listener.js";
 import { connect } from "./ToneAudioNode.js";
 
@@ -19,7 +19,7 @@ describe("Context", () => {
 		const ctxDraw = context.draw;
 		const ctxTransport = context.transport;
 		const ctxListener = context.listener;
-		expect(context.destination).is.instanceOf(DestinationClass);
+		expect(context.destination).is.instanceOf(DestinationInstance);
 		expect(context.draw).is.instanceOf(DrawInstance);
 		expect(context.listener).is.instanceOf(ListenerInstance);
 		await context.close();

@@ -2,7 +2,7 @@ import { expect } from "chai";
 
 import { TransportInstance } from "./core/clock/Transport.js";
 import { Context } from "./core/context/Context.js";
-import { DestinationClass } from "./core/context/Destination.js";
+import { DestinationInstance } from "./core/context/Destination.js";
 import { DrawInstance } from "./core/util/Draw.js";
 import * as Tone from "./index.js";
 
@@ -15,14 +15,14 @@ describe("Tone", () => {
 	});
 
 	it("exports the global singletons", () => {
-		expect(Tone.Destination).to.be.an.instanceOf(DestinationClass);
+		expect(Tone.Destination).to.be.an.instanceOf(DestinationInstance);
 		expect(Tone.Draw).to.be.an.instanceOf(DrawInstance);
 		expect(Tone.Transport).to.be.an.instanceOf(TransportInstance);
 		expect(Tone.context).to.be.an.instanceOf(Context);
 	});
 
 	it("exports the global singleton getters", () => {
-		expect(Tone.getDestination()).to.be.an.instanceOf(DestinationClass);
+		expect(Tone.getDestination()).to.be.an.instanceOf(DestinationInstance);
 		expect(Tone.getDraw()).to.be.an.instanceOf(DrawInstance);
 		expect(Tone.getTransport()).to.be.an.instanceOf(TransportInstance);
 	});

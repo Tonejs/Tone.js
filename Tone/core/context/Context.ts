@@ -14,7 +14,7 @@ import {
 } from "./AudioContext.js";
 import { BaseContext, ContextLatencyHint } from "./BaseContext.js";
 import { closeContext, initializeContext } from "./ContextInitialization.js";
-import type { DestinationClass as Destination } from "./Destination.js";
+import type { DestinationInstance as Destination } from "./Destination.js";
 import type { ListenerInstance as Listener } from "./Listener.js";
 
 export interface ContextOptions {

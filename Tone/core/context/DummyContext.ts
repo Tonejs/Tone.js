@@ -3,7 +3,7 @@ import { Seconds } from "../type/Units.js";
 import type { DrawInstance as Draw } from "../util/Draw.js";
 import { AnyAudioContext } from "./AudioContext.js";
 import { BaseContext } from "./BaseContext.js";
-import type { DestinationClass as Destination } from "./Destination.js";
+import type { DestinationInstance as Destination } from "./Destination.js";
 import type { ListenerInstance as Listener } from "./Listener.js";
 
 export class DummyContext extends BaseContext {
