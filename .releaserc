@@ -10,12 +10,6 @@
 		"@semantic-release/commit-analyzer",
 		"@semantic-release/release-notes-generator",
 		[
-			"@semantic-release/exec",
-			{
-				"prepareCmd": "echo 'export const version: string = \"${nextRelease.version}\";' > Tone/version.ts"
-			}
-		],
-		[
 			"@semantic-release/npm",
 			{
 				"npmPublish": false
