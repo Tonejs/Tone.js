@@ -774,6 +774,27 @@ describe("Player", () => {
 			}, buffer.duration * 2);
 		});
 
+		it("loops between loopStart and loopEnd", async () => {
+			await Offline(() => {
+				const player = new Player(buffer);
+				player.loop = true;
+				player.loopStart = 0.1;
+				player.loopEnd = 0.9;
+				player.start(0);
+				return (time) => {
+					whenBetween(time, 0, 0.8, () => {
+						expect(player.progress).to.be.closeTo(time + 0.1, 0.01);
+					});
+					whenBetween(time, 0.8, 1.6, () => {
+						expect(player.progress).to.be.closeTo(time - 0.7, 0.01);
+					});
+					whenBetween(time, 1.6, 2.4, () => {
+						expect(player.progress).to.be.closeTo(time - 1.5, 0.01);
+					});
+				};
+			}, 2.4);
+		});
+
 		it("progress updates at the rate of the playbackRate", async () => {
 			await Offline(() => {
 				const player = new Player(buffer);

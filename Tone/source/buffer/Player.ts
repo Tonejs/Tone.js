@@ -191,7 +191,13 @@ export class Player extends Source<PlayerOptions> {
 		const progress =
 			this._progressTracker.getTicksAtTime(time) + seeksSinceStart;
 		if (this._loop) {
-			return progress % this._buffer.duration;
+			const loopEnd =
+				this.loopEnd === 0
+					? this.buffer.duration
+					: this.toSeconds(this.loopEnd);
+			const loopStart = this.toSeconds(this.loopStart);
+			const duration = loopEnd - loopStart;
+			return (progress % duration) + loopStart;
 		}
 
 		return progress;
