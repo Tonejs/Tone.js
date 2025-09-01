@@ -1,4 +1,5 @@
 import { expect } from "chai";
+
 import { BasicTests } from "../../../test/helper/Basic.js";
 import { Offline } from "../../../test/helper/Offline.js";
 import { OutputAudio } from "../../../test/helper/OutputAudio.js";
@@ -85,7 +86,7 @@ describe("LFO", () => {
 			expect(buffer.max()).to.be.lte(18);
 		});
 
-		it("initially outputs a signal at the center of it's phase", async () => {
+		it("initially outputs a signal at the center of its phase", async () => {
 			const buffer = await Offline(() => {
 				new LFO(100, 10, 20).toDestination();
 			});

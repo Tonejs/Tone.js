@@ -1,15 +1,15 @@
+import { Gain } from "../../core/context/Gain.js";
 import {
 	InputNode,
 	ToneAudioNode,
 	ToneAudioNodeOptions,
 } from "../../core/context/ToneAudioNode.js";
-import { Compressor, CompressorOptions } from "./Compressor.js";
+import { Frequency } from "../../core/type/Units.js";
 import { optionsFromArguments } from "../../core/util/Defaults.js";
 import { readOnly, RecursivePartial } from "../../core/util/Interface.js";
-import { Frequency } from "../../core/type/Units.js";
-import { MultibandSplit } from "../channel/MultibandSplit.js";
 import { Signal } from "../../signal/Signal.js";
-import { Gain } from "../../core/context/Gain.js";
+import { MultibandSplit } from "../channel/MultibandSplit.js";
+import { Compressor, CompressorOptions } from "./Compressor.js";
 
 export interface MultibandCompressorOptions extends ToneAudioNodeOptions {
 	mid: Omit<CompressorOptions, keyof ToneAudioNodeOptions>;

@@ -1,9 +1,10 @@
-import { LowpassCombFilter } from "./LowpassCombFilter.js";
+import { expect } from "chai";
+
 import { BasicTests } from "../../../test/helper/Basic.js";
 import { Offline } from "../../../test/helper/Offline.js";
 import { PassAudio } from "../../../test/helper/PassAudio.js";
 import { Oscillator } from "../../source/oscillator/Oscillator.js";
-import { expect } from "chai";
+import { LowpassCombFilter } from "./LowpassCombFilter.js";
 
 describe("LowpassCombFilter", () => {
 	BasicTests(LowpassCombFilter);

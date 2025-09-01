@@ -1,10 +1,11 @@
 import { expect } from "chai";
+
+import { Frequency } from "../../Tone/core/type/Units.js";
 import { Instrument } from "../../Tone/instrument/Instrument.js";
+import { Monophonic } from "../../Tone/instrument/Monophonic.js";
 import { connectTo } from "./Connect.js";
 import { Offline } from "./Offline.js";
 import { OutputAudio } from "./OutputAudio.js";
-import { Monophonic } from "../../Tone/instrument/Monophonic.js";
-import { Frequency } from "../../Tone/core/type/Units.js";
 
 function wait(time) {
 	return new Promise((done) => setTimeout(done, time));

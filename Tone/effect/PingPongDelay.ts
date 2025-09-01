@@ -1,12 +1,12 @@
+import { Delay } from "../core/context/Delay.js";
+import { NormalRange, Seconds, Time } from "../core/type/Units.js";
+import { optionsFromArguments } from "../core/util/Defaults.js";
+import { readOnly } from "../core/util/Interface.js";
+import { Signal } from "../signal/Signal.js";
 import {
 	StereoXFeedbackEffect,
 	StereoXFeedbackEffectOptions,
 } from "./StereoXFeedbackEffect.js";
-import { NormalRange, Seconds, Time } from "../core/type/Units.js";
-import { optionsFromArguments } from "../core/util/Defaults.js";
-import { Delay } from "../core/context/Delay.js";
-import { Signal } from "../signal/Signal.js";
-import { readOnly } from "../core/util/Interface.js";
 
 export interface PingPongDelayOptions extends StereoXFeedbackEffectOptions {
 	delayTime: Time;

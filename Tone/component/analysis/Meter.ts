@@ -1,9 +1,9 @@
 import { gainToDb } from "../../core/type/Conversions.js";
 import { NormalRange } from "../../core/type/Units.js";
-import { optionsFromArguments } from "../../core/util/Defaults.js";
-import { MeterBase, MeterBaseOptions } from "./MeterBase.js";
 import { warn } from "../../core/util/Debug.js";
+import { optionsFromArguments } from "../../core/util/Defaults.js";
 import { Analyser } from "./Analyser.js";
+import { MeterBase, MeterBaseOptions } from "./MeterBase.js";
 
 export interface MeterOptions extends MeterBaseOptions {
 	smoothing: NormalRange;
@@ -70,8 +70,8 @@ export class Meter extends MeterBase<MeterOptions> {
 					channels: options.channelCount,
 				});
 
-		(this.smoothing = options.smoothing),
-			(this.normalRange = options.normalRange);
+		this.smoothing = options.smoothing;
+		this.normalRange = options.normalRange;
 		this._rms = new Array(options.channelCount);
 		this._rms.fill(0);
 	}

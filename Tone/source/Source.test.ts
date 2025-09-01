@@ -1,4 +1,5 @@
 import { expect } from "chai";
+
 import { atTime, Offline } from "../../test/helper/Offline.js";
 import { ToneAudioBuffer } from "../core/context/ToneAudioBuffer.js";
 import { getContext } from "../core/Global.js";
@@ -55,7 +56,7 @@ describe("Source", () => {
 		source.dispose();
 	});
 
-	it("is initally stopped", () => {
+	it("is initially stopped", () => {
 		const source = new Oscillator();
 		expect(source.state).to.equal("stopped");
 		source.dispose();

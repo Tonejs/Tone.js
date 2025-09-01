@@ -1,6 +1,6 @@
-import { isUndef } from "./TypeCheck.js";
 import type { BaseContext } from "../context/BaseContext.js";
 import type { Time } from "../type/Units.js";
+import { isUndef } from "./TypeCheck.js";
 
 /**
  * Assert that the statement is true, otherwise invoke the error.

@@ -1,9 +1,10 @@
-import { Follower } from "./Follower.js";
+import { expect } from "chai";
+
 import { BasicTests } from "../../../test/helper/Basic.js";
 import { Offline } from "../../../test/helper/Offline.js";
-import { Signal } from "../../signal/Signal.js";
 import { PassAudio } from "../../../test/helper/PassAudio.js";
-import { expect } from "chai";
+import { Signal } from "../../signal/Signal.js";
+import { Follower } from "./Follower.js";
 
 describe("Follower", () => {
 	BasicTests(Follower);

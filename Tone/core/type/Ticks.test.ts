@@ -1,4 +1,5 @@
 import { expect } from "chai";
+
 import { BasicTests } from "../../../test/helper/Basic.js";
 import { atTime, Offline } from "../../../test/helper/Offline.js";
 import { getContext } from "../Global.js";
@@ -133,7 +134,7 @@ describe("TicksClass", () => {
 			});
 		});
 
-		it("can get the next subdivison when the transport is started", () => {
+		it("can get the next subdivision when the transport is started", () => {
 			return Offline((context) => {
 				const transport = context.transport;
 				transport.start();

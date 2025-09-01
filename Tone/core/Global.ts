@@ -4,9 +4,9 @@ import {
 	hasAudioContext,
 	theWindow,
 } from "./context/AudioContext.js";
+import { BaseContext } from "./context/BaseContext.js";
 import { Context } from "./context/Context.js";
 import { DummyContext } from "./context/DummyContext.js";
-import { BaseContext } from "./context/BaseContext.js";
 import { OfflineContext } from "./context/OfflineContext.js";
 import {
 	isAudioContext,

@@ -1,7 +1,8 @@
-import { BasicTests } from "../../test/helper/Basic.js";
-import { UserMedia } from "./UserMedia.js";
 import { expect } from "chai";
+
+import { BasicTests } from "../../test/helper/Basic.js";
 import { OfflineContext } from "../core/index.js";
+import { UserMedia } from "./UserMedia.js";
 
 describe("UserMedia", () => {
 	// run the common tests
@@ -99,8 +100,7 @@ describe("UserMedia", () => {
 				return extIn
 					.open("doesn't exist")
 					.then(() => {
-						// shouldn't call 'then'
-						throw new Error("shouldnt call 'then'");
+						throw new Error("shouldn't call 'then'");
 					})
 					.catch(() => {
 						extIn.dispose();

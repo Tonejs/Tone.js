@@ -1,8 +1,9 @@
+import array2d from "array2d";
+import plotly from "plotly.js-dist";
+
+import type { ToneAudioBuffer } from "../../../Tone/core/context/ToneAudioBuffer.js";
 import { analyze } from "./Spectrum.js";
 import { TestAudioBuffer } from "./TestAudioBuffer.js";
-import type { ToneAudioBuffer } from "../../../Tone/core/context/ToneAudioBuffer.js";
-import plotly from "plotly.js-dist";
-import array2d from "array2d";
 
 /**
  * Generate a 2d spectrogram image of the audio buffer

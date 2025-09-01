@@ -1,4 +1,7 @@
-import { ToneEvent } from "./ToneEvent.js";
+import {
+	ToneWithContext,
+	ToneWithContextOptions,
+} from "../core/context/ToneWithContext.js";
 import {
 	NormalRange,
 	Positive,
@@ -6,13 +9,10 @@ import {
 	Time,
 	TransportTime,
 } from "../core/type/Units.js";
-import {
-	ToneWithContext,
-	ToneWithContextOptions,
-} from "../core/context/ToneWithContext.js";
 import { optionsFromArguments } from "../core/util/Defaults.js";
 import { noOp } from "../core/util/Interface.js";
 import { BasicPlaybackState } from "../core/util/StateTimeline.js";
+import { ToneEvent } from "./ToneEvent.js";
 
 export interface LoopOptions extends ToneWithContextOptions {
 	callback: (time: Seconds) => void;

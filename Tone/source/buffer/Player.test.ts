@@ -1,4 +1,5 @@
 import { expect } from "chai";
+
 import { BasicTests } from "../../../test/helper/Basic.js";
 import { CompareToFile } from "../../../test/helper/CompareToFile.js";
 import { atTime, Offline, whenBetween } from "../../../test/helper/Offline.js";
@@ -426,6 +427,31 @@ describe("Player", () => {
 			expect(buff.isSilent()).to.be.true;
 		});
 
+		it("seeking updates stopped state", async () => {
+			await Offline(() => {
+				const player = new Player(buffer).toDestination();
+				player.start(0);
+				player.seek(buffer.duration * 0.75, 0.5);
+
+				return (time) => {
+					whenBetween(time, 0, 0.5, () => {
+						expect(player.state).to.equal("started");
+					});
+					whenBetween(time, 0.5, 0.5 + buffer.duration * 0.25, () => {
+						expect(player.state).to.equal("started");
+					});
+					whenBetween(
+						time,
+						0.5 + buffer.duration * 0.25,
+						Infinity,
+						() => {
+							expect(player.state).to.equal("stopped");
+						}
+					);
+				};
+			}, buffer.duration);
+		});
+
 		it("can seek to a position at the given time", async () => {
 			const buff = await Offline(() => {
 				const ramp = new Float32Array(
@@ -705,6 +731,217 @@ describe("Player", () => {
 				},
 				url: "./test/audio/sine.wav",
 			});
+		});
+	});
+
+	context("progress", () => {
+		it("can get the progress of the player", async () => {
+			await Offline(() => {
+				const player = new Player(buffer);
+				player.start(0);
+				return (time) => {
+					whenBetween(time, 0, buffer.duration, () => {
+						expect(player.progress).to.be.closeTo(time, 0.01);
+					});
+					whenBetween(time, buffer.duration, Infinity, () => {
+						expect(player.progress).to.equal(0);
+					});
+				};
+			}, buffer.duration * 1.1);
+		});
+
+		it("progress goes back to 0 when the player loops", async () => {
+			await Offline(() => {
+				const player = new Player(buffer);
+				player.loop = true;
+				player.start(0);
+				return (time) => {
+					whenBetween(time, 0, buffer.duration, () => {
+						expect(player.progress).to.be.closeTo(time, 0.01);
+					});
+					whenBetween(
+						time,
+						buffer.duration,
+						buffer.duration * 2,
+						() => {
+							expect(player.progress).to.be.closeTo(
+								time - buffer.duration,
+								0.01
+							);
+						}
+					);
+				};
+			}, buffer.duration * 2);
+		});
+
+		it("loops between loopStart and loopEnd", async () => {
+			await Offline(() => {
+				const player = new Player(buffer);
+				player.loop = true;
+				player.loopStart = 0.1;
+				player.loopEnd = 0.9;
+				player.start(0);
+				return (time) => {
+					whenBetween(time, 0, 0.8, () => {
+						expect(player.progress).to.be.closeTo(time + 0.1, 0.01);
+					});
+					whenBetween(time, 0.8, 1.6, () => {
+						expect(player.progress).to.be.closeTo(time - 0.7, 0.01);
+					});
+					whenBetween(time, 1.6, 2.4, () => {
+						expect(player.progress).to.be.closeTo(time - 1.5, 0.01);
+					});
+				};
+			}, 2.4);
+		});
+
+		it("progress updates at the rate of the playbackRate", async () => {
+			await Offline(() => {
+				const player = new Player(buffer);
+				player.playbackRate = 2;
+				player.start(0);
+				return (time) => {
+					whenBetween(time, 0, buffer.duration / 2, () => {
+						expect(player.progress).to.be.closeTo(time * 2, 0.01);
+					});
+					whenBetween(time, buffer.duration / 2, Infinity, () => {
+						expect(player.progress).to.be.equal(0);
+					});
+				};
+			}, buffer.duration);
+		});
+
+		it("playbackRate can be changed after start", async () => {
+			let playbackRateChanged = false;
+			await Offline(() => {
+				const player = new Player(buffer);
+				player.start(0);
+				return (time) => {
+					whenBetween(time, 0, buffer.duration * 0.5, () => {
+						expect(player.progress).to.be.closeTo(time, 0.01);
+					});
+					if (!playbackRateChanged && time > buffer.duration * 0.5) {
+						playbackRateChanged = true;
+						player.playbackRate = 2;
+					}
+					// after the playbackRate is changed, the progress should move half as fast
+					whenBetween(
+						time,
+						buffer.duration * 0.5,
+						buffer.duration * 0.75,
+						() => {
+							const timeAfterHalf = time - buffer.duration * 0.5;
+							expect(player.progress).to.be.closeTo(
+								buffer.duration * 0.5 + timeAfterHalf * 2,
+								0.01
+							);
+						}
+					);
+
+					whenBetween(time, buffer.duration * 0.75, Infinity, () => {
+						expect(player.progress).to.be.equal(0);
+					});
+				};
+			}, buffer.duration);
+		});
+
+		it("can start at an offset", async () => {
+			await Offline(() => {
+				const player = new Player(buffer);
+				player.start(0, buffer.duration / 2);
+				return (time) => {
+					whenBetween(time, 0.01, buffer.duration / 2, () => {
+						expect(player.progress).to.be.closeTo(
+							time + buffer.duration / 2,
+							0.01
+						);
+					});
+					whenBetween(time, buffer.duration / 2, Infinity, () => {
+						expect(player.progress).to.be.equal(0);
+					});
+				};
+			}, buffer.duration);
+		});
+
+		it("can seek to a new position", async () => {
+			await Offline(() => {
+				const player = new Player(buffer);
+				player.start(0);
+				player.seek(0, buffer.duration / 2);
+				return (time) => {
+					whenBetween(time, 0, buffer.duration * 0.5, () => {
+						expect(player.progress).to.be.closeTo(time, 0.01);
+					});
+					whenBetween(
+						time,
+						buffer.duration * 0.5,
+						buffer.duration * 1.5,
+						() => {
+							expect(player.progress).to.be.closeTo(
+								time - buffer.duration * 0.5,
+								0.01
+							);
+						}
+					);
+					whenBetween(time, buffer.duration * 1.5, Infinity, () => {
+						expect(player.progress).to.be.equal(0);
+					});
+				};
+			}, buffer.duration * 2);
+		});
+
+		it("can start and stop multiple times", async () => {
+			await Offline(() => {
+				const player = new Player(buffer);
+				player.start(0);
+				player.stop(0.1);
+				player.start(0.2, buffer.duration / 2);
+				player.stop(0.3);
+				return (time) => {
+					whenBetween(time, 0, 0.1, () => {
+						expect(player.progress).to.be.closeTo(time, 0.01);
+					});
+					whenBetween(time, 0.1, 0.2, () => {
+						expect(player.progress).to.equal(0);
+					});
+					whenBetween(time, 0.2, 0.3, () => {
+						expect(player.progress).to.be.closeTo(
+							time - 0.2 + buffer.duration / 2,
+							0.01
+						);
+					});
+					whenBetween(time, 0.3, 0.4, () => {
+						expect(player.progress).to.equal(0);
+					});
+				};
+			}, 0.4);
+		});
+
+		it("can seek multiple times", async () => {
+			await Offline(() => {
+				const player = new Player(buffer);
+				player.start(0);
+				player.seek(1, 0.5);
+				player.seek(0, 1);
+				player.seek(1.5, 1.5);
+				return (time) => {
+					whenBetween(time, 0, 0.5, () => {
+						expect(player.progress).to.be.closeTo(time, 0.01);
+					});
+					whenBetween(time, 0.5, 1, () => {
+						expect(player.progress).to.be.closeTo(time + 0.5, 0.01);
+					});
+					whenBetween(time, 1, 1.5, () => {
+						expect(player.progress).to.be.closeTo(time - 1, 0.01);
+					});
+					whenBetween(time, 1.5, buffer.duration, () => {
+						expect(player.progress).to.be.closeTo(time, 0.01);
+					});
+					whenBetween(time, buffer.duration, Infinity, () => {
+						expect(player.progress).to.equal(0);
+					});
+				};
+			}, 3);
 		});
 	});
 });

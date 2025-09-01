@@ -1,16 +1,16 @@
-import { AudioRange, Decibels } from "../../core/type/Units.js";
+import { Gain } from "../../core/context/Gain.js";
+import { Param } from "../../core/context/Param.js";
 import {
 	InputNode,
 	OutputNode,
 	ToneAudioNode,
 	ToneAudioNodeOptions,
 } from "../../core/context/ToneAudioNode.js";
+import { AudioRange, Decibels } from "../../core/type/Units.js";
 import { optionsFromArguments } from "../../core/util/Defaults.js";
-import { Solo } from "./Solo.js";
-import { PanVol } from "./PanVol.js";
-import { Param } from "../../core/context/Param.js";
 import { readOnly } from "../../core/util/Interface.js";
-import { Gain } from "../../core/context/Gain.js";
+import { PanVol } from "./PanVol.js";
+import { Solo } from "./Solo.js";
 
 export interface ChannelOptions extends ToneAudioNodeOptions {
 	pan: AudioRange;

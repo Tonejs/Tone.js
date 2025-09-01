@@ -1,10 +1,10 @@
 import { getContext } from "../Global.js";
 import { Tone } from "../Tone.js";
 import { Samples, Seconds } from "../type/Units.js";
+import { assert } from "../util/Debug.js";
 import { optionsFromArguments } from "../util/Defaults.js";
 import { noOp } from "../util/Interface.js";
 import { isArray, isNumber, isString } from "../util/TypeCheck.js";
-import { assert } from "../util/Debug.js";
 
 interface ToneAudioBufferOptions {
 	url?: string | AudioBuffer | ToneAudioBuffer;
@@ -103,7 +103,7 @@ export class ToneAudioBuffer extends Tone {
 			if (buffer.loaded) {
 				this._buffer = buffer.get();
 			} else {
-				// otherwise when it's loaded, invoke it's callback
+				// otherwise when its loaded, invoke it's callback
 				buffer.onload = () => {
 					this.set(buffer);
 					this.onload(this);

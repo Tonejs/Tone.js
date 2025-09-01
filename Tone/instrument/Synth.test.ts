@@ -1,4 +1,5 @@
 import { expect } from "chai";
+
 import { BasicTests } from "../../test/helper/Basic.js";
 import { CompareToFile } from "../../test/helper/CompareToFile.js";
 import { InstrumentTest } from "../../test/helper/InstrumentTests.js";
@@ -79,7 +80,7 @@ describe("Synth", () => {
 			simple.dispose();
 		});
 
-		it("can get does not include omited oscillator attributes", () => {
+		it("can get does not include omitted oscillator attributes", () => {
 			const simple = new Synth();
 			expect(simple.get().oscillator).to.not.have.key("frequency");
 			expect(simple.get().oscillator).to.not.have.key("detune");

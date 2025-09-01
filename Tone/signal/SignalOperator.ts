@@ -1,9 +1,9 @@
-import { optionsFromArguments } from "../core/util/Defaults.js";
 import {
 	InputNode,
 	ToneAudioNode,
 	ToneAudioNodeOptions,
 } from "../core/context/ToneAudioNode.js";
+import { optionsFromArguments } from "../core/util/Defaults.js";
 import { connectSignal } from "./Signal.js";
 
 export type SignalOperatorOptions = ToneAudioNodeOptions;

@@ -1,9 +1,10 @@
-import { AMSynth } from "./AMSynth.js";
-import { BasicTests } from "../../test/helper/Basic.js";
-import { InstrumentTest } from "../../test/helper/InstrumentTests.js";
-import { CompareToFile } from "../../test/helper/CompareToFile.js";
 import { expect } from "chai";
+
+import { BasicTests } from "../../test/helper/Basic.js";
+import { CompareToFile } from "../../test/helper/CompareToFile.js";
+import { InstrumentTest } from "../../test/helper/InstrumentTests.js";
 import { Offline } from "../../test/helper/Offline.js";
+import { AMSynth } from "./AMSynth.js";
 
 describe("AMSynth", () => {
 	BasicTests(AMSynth);

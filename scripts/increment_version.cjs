@@ -1,9 +1,8 @@
-/* eslint-disable no-console */
-/* eslint-disable @typescript-eslint/no-var-requires */
-const fs = require("fs");
+const { execSync } = require("node:child_process");
+const fs = require("node:fs");
+const { resolve } = require("node:path");
+
 const semver = require("semver");
-const { resolve } = require("path");
-const { execSync } = require("child_process");
 
 const tsVersion = execSync("npm show tone@next version").toString();
 const mainVersion = execSync("npm show tone version").toString();
@@ -31,7 +30,7 @@ packageObj.version = version;
 // only if it's travis, update the package.json
 if (process.env.GITHUB_CI) {
 	fs.writeFileSync(packageFile, JSON.stringify(packageObj, undefined, "  "));
-	
+
 	// write a version file
 	const versionFile = `export const version: string = ${JSON.stringify(version)};\n`;
 	fs.writeFileSync(resolve(__dirname, "../Tone/version.ts"), versionFile);

@@ -19,7 +19,6 @@ import {
 	isUndef,
 } from "../util/TypeCheck.js";
 import { BaseContext } from "./BaseContext.js";
-import type { TransportClass } from "../clock/Transport.js";
 
 /**
  * A unit which process audio
@@ -111,7 +110,7 @@ export abstract class ToneWithContext<
 
 	/**
 	 * Convert the incoming time to seconds.
-	 * This is calculated against the current {@link TransportClass} bpm
+	 * This is calculated against the current {@link TransportInstance} bpm
 	 * @example
 	 * const gain = new Tone.Gain();
 	 * setInterval(() => console.log(gain.toSeconds("4n")), 100);

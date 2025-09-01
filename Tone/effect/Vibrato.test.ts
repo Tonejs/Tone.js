@@ -1,9 +1,10 @@
-import { Vibrato } from "./Vibrato.js";
-import { BasicTests } from "../../test/helper/Basic.js";
-import { EffectTests } from "../../test/helper/EffectTests.js";
 import { expect } from "chai";
+
+import { BasicTests } from "../../test/helper/Basic.js";
 import { CompareToFile } from "../../test/helper/CompareToFile.js";
+import { EffectTests } from "../../test/helper/EffectTests.js";
 import { Oscillator } from "../source/oscillator/Oscillator.js";
+import { Vibrato } from "./Vibrato.js";
 
 describe("Vibrato", () => {
 	BasicTests(Vibrato);

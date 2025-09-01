@@ -128,7 +128,7 @@ export class TickParam<
 	}
 
 	exponentialRampToValueAtTime(value: UnitMap[TypeName], time: Time): this {
-		// aproximate it with multiple linear ramps
+		// approximate it with multiple linear ramps
 		time = this.toSeconds(time);
 		const computedVal = this._fromType(value);
 

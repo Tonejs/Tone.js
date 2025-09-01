@@ -6,11 +6,11 @@ import {
 	Seconds,
 	Time,
 } from "../core/type/Units.js";
+import { timeRange } from "../core/util/Decorator.js";
 import { optionsFromArguments } from "../core/util/Defaults.js";
 import { noOp } from "../core/util/Interface.js";
 import { Instrument, InstrumentOptions } from "../instrument/Instrument.js";
 import { Signal } from "../signal/Signal.js";
-import { timeRange } from "../core/util/Decorator.js";
 
 type onSilenceCallback = (instrument: Monophonic<any>) => void;
 

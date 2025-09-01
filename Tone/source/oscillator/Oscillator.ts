@@ -5,8 +5,10 @@ import {
 	Radians,
 	Time,
 } from "../../core/type/Units.js";
+import { assertRange } from "../../core/util/Debug.js";
 import { deepEquals, optionsFromArguments } from "../../core/util/Defaults.js";
 import { readOnly } from "../../core/util/Interface.js";
+import { clamp } from "../../core/util/Math.js";
 import { isDefined } from "../../core/util/TypeCheck.js";
 import { Signal } from "../../signal/Signal.js";
 import { Source } from "../Source.js";
@@ -18,8 +20,6 @@ import {
 	ToneOscillatorType,
 } from "./OscillatorInterface.js";
 import { ToneOscillatorNode } from "./ToneOscillatorNode.js";
-import { assertRange } from "../../core/util/Debug.js";
-import { clamp } from "../../core/util/Math.js";
 export {
 	ToneOscillatorOptions,
 	ToneOscillatorType,

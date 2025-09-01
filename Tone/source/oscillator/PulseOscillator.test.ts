@@ -1,4 +1,5 @@
 import { expect } from "chai";
+
 import { BasicTests } from "../../../test/helper/Basic.js";
 import { CompareToFile } from "../../../test/helper/CompareToFile.js";
 import { Offline } from "../../../test/helper/Offline.js";
@@ -112,7 +113,7 @@ describe("PulseOscillator", () => {
 	});
 
 	context("Types", () => {
-		it("reports it's type", () => {
+		it("reports its type", () => {
 			const osc = new PulseOscillator();
 			expect(osc.type).to.equal("pulse");
 			expect(osc.baseType).to.equal("pulse");

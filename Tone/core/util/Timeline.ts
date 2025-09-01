@@ -1,7 +1,7 @@
 import { Tone } from "../Tone.js";
 import { Seconds } from "../type/Units.js";
-import { optionsFromArguments } from "./Defaults.js";
 import { assert } from "./Debug.js";
+import { optionsFromArguments } from "./Defaults.js";
 import { EQ, GT, GTE, LT } from "./Math.js";
 
 type TimelineSearchParam = "ticks" | "time";
@@ -348,7 +348,7 @@ export class Timeline<GenericEvent extends TimelineEvent> extends Tone {
 
 	/**
 	 * Iterate over everything in the array between the startTime and endTime.
-	 * The timerange is inclusive of the startTime, but exclusive of the endTime.
+	 * The time range is inclusive of the startTime, but exclusive of the endTime.
 	 * range = [startTime, endTime).
 	 * @param  startTime The time to check if items are before
 	 * @param  endTime The end of the test interval.

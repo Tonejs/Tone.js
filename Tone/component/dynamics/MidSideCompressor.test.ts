@@ -1,7 +1,8 @@
-import { MidSideCompressor } from "./MidSideCompressor.js";
+import { expect } from "chai";
+
 import { BasicTests } from "../../../test/helper/Basic.js";
 import { PassAudio } from "../../../test/helper/PassAudio.js";
-import { expect } from "chai";
+import { MidSideCompressor } from "./MidSideCompressor.js";
 
 describe("MidSideCompressor", () => {
 	BasicTests(MidSideCompressor);

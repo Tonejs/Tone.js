@@ -11,12 +11,24 @@ on:
             - dev
             - main
 jobs:
+    test-conventional-commit:
+        name: Validate PR title
+        runs-on: ubuntu-latest
+        permissions:
+            pull-requests: read
+        steps:
+            - uses: amannn/action-semantic-pull-request@v6
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              # only on PRs
+              if: github.event_name == 'pull_request'
     run-tests:
         name: All tests
         permissions:
             contents: read
             id-token: write
         runs-on: ubuntu-latest
+        needs: [test-conventional-commit]
         env:
             BROWSER: chrome
             CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
@@ -26,7 +38,7 @@ jobs:
             - name: Setup Nodejs
               uses: actions/setup-node@v4
               with:
-                  node-version: 18.18.0
+                  node-version: 22.12.0
                   cache: "npm"
             - name: Install dependencies
               run: npm install
@@ -44,13 +56,14 @@ jobs:
             contents: read
             id-token: write
         runs-on: ubuntu-latest
+        needs: [test-conventional-commit]
         steps:
             - name: Check out Git repository
               uses: actions/checkout@v4
             - name: Setup Nodejs
               uses: actions/setup-node@v4
               with:
-                  node-version: 18.18.0
+                  node-version: 22.12.0
                   cache: "npm"
             - name: Install dependencies
               run: npm install
@@ -64,13 +77,14 @@ jobs:
             contents: read
             id-token: write
         runs-on: ubuntu-latest
+        needs: [test-conventional-commit]
         steps:
             - name: Check out Git repository
               uses: actions/checkout@v4
             - name: Setup Nodejs
               uses: actions/setup-node@v4
               with:
-                  node-version: 18.18.0
+                  node-version: 22.12.0
                   cache: "npm"
             - name: Install dependencies
               run: npm install
@@ -84,31 +98,35 @@ jobs:
             contents: read
             id-token: write
         runs-on: ubuntu-latest
+        needs: [test-conventional-commit]
         steps:
             - name: Check out Git repository
               uses: actions/checkout@v4
             - name: Setup Nodejs
               uses: actions/setup-node@v4
               with:
-                  node-version: 18.18.0
+                  node-version: 22.12.0
                   cache: "npm"
             - name: Install dependencies
               run: npm install
             - name: Linting
               run: npm run lint
+            - name: Spell check
+              run: npm run spellcheck
     test-readme:
         name: Ensure that examples in the README compile
         permissions:
             contents: read
             id-token: write
         runs-on: ubuntu-latest
+        needs: [test-conventional-commit]
         steps:
             - name: Check out Git repository
               uses: actions/checkout@v4
             - name: Setup Nodejs
               uses: actions/setup-node@v4
               with:
-                  node-version: 18.18.0
+                  node-version: 22.12.0
                   cache: "npm"
             - name: Install dependencies
               run: npm install
@@ -122,13 +140,14 @@ jobs:
             contents: read
             id-token: write
         runs-on: ubuntu-latest
+        needs: [test-conventional-commit]
         steps:
             - name: Check out Git repository
               uses: actions/checkout@v4
             - name: Setup Nodejs
               uses: actions/setup-node@v4
               with:
-                  node-version: 18.18.0
+                  node-version: 22.12.0
                   cache: "npm"
             - name: Install dependencies
               run: npm install
@@ -158,7 +177,7 @@ jobs:
             # Setup .npmrc file to publish to npm
             - uses: actions/setup-node@v4
               with:
-                  node-version: 18.18.0
+                  node-version: 22.12.0
                   registry-url: "https://registry.npmjs.org"
             - name: Install dependencies
               run: npm install

@@ -1,4 +1,5 @@
 import { expect } from "chai";
+
 import { ToneAudioBuffer } from "./ToneAudioBuffer.js";
 import { ToneAudioBuffers } from "./ToneAudioBuffers.js";
 
@@ -38,7 +39,7 @@ describe("ToneAudioBuffers", () => {
 		);
 	});
 
-	it("throws an error when it tries to get an object that doesnt exist", (done) => {
+	it("throws an error when it tries to get an object that doesn't exist", (done) => {
 		const buffer = new ToneAudioBuffers(
 			{
 				sine: testFile,

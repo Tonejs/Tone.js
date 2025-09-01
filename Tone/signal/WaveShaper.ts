@@ -1,7 +1,7 @@
 import { ToneAudioNodeOptions } from "../core/context/ToneAudioNode.js";
+import { assert } from "../core/util/Debug.js";
 import { optionsFromArguments } from "../core/util/Defaults.js";
 import { isArray, isFunction } from "../core/util/TypeCheck.js";
-import { assert } from "../core/util/Debug.js";
 import { Signal } from "./Signal.js";
 import { SignalOperator } from "./SignalOperator.js";
 

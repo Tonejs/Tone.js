@@ -1,9 +1,10 @@
-import { BasicTests } from "../../test/helper/Basic.js";
-import { InstrumentTest } from "../../test/helper/InstrumentTests.js";
-import { DuoSynth } from "./DuoSynth.js";
-import { CompareToFile } from "../../test/helper/CompareToFile.js";
 import { expect } from "chai";
+
+import { BasicTests } from "../../test/helper/Basic.js";
+import { CompareToFile } from "../../test/helper/CompareToFile.js";
+import { InstrumentTest } from "../../test/helper/InstrumentTests.js";
 import { MonophonicTest } from "../../test/helper/MonophonicTests.js";
+import { DuoSynth } from "./DuoSynth.js";
 
 describe("DuoSynth", () => {
 	BasicTests(DuoSynth);

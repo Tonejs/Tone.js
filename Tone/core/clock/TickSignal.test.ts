@@ -1,4 +1,5 @@
 import { expect } from "chai";
+
 import { BasicTests } from "../../../test/helper/Basic.js";
 import { Offline } from "../../../test/helper/Offline.js";
 import { TickSignal } from "./TickSignal.js";
@@ -152,12 +153,12 @@ describe("TickSignal", () => {
 		expect(tickSignal0.getTimeOfTick(3)).to.be.closeTo(3, 0.01);
 		tickSignal0.dispose();
 
-		const tickSigna1 = new TickSignal(2);
-		expect(tickSigna1.getTimeOfTick(0)).to.be.closeTo(0, 0.01);
-		expect(tickSigna1.getTimeOfTick(1)).to.be.closeTo(0.5, 0.01);
-		expect(tickSigna1.getTimeOfTick(2)).to.be.closeTo(1, 0.01);
-		expect(tickSigna1.getTimeOfTick(3)).to.be.closeTo(1.5, 0.01);
-		tickSigna1.dispose();
+		const tickSignal = new TickSignal(2);
+		expect(tickSignal.getTimeOfTick(0)).to.be.closeTo(0, 0.01);
+		expect(tickSignal.getTimeOfTick(1)).to.be.closeTo(0.5, 0.01);
+		expect(tickSignal.getTimeOfTick(2)).to.be.closeTo(1, 0.01);
+		expect(tickSignal.getTimeOfTick(3)).to.be.closeTo(1.5, 0.01);
+		tickSignal.dispose();
 	});
 
 	it("computes the time of a given tick when setValueAtTime is scheduled", () => {

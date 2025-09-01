@@ -1,10 +1,11 @@
-import { AutoPanner } from "./AutoPanner.js";
+import { expect } from "chai";
+
 import { BasicTests } from "../../test/helper/Basic.js";
+import { CompareToFile } from "../../test/helper/CompareToFile.js";
 import { EffectTests } from "../../test/helper/EffectTests.js";
 import { Offline } from "../../test/helper/Offline.js";
-import { expect } from "chai";
-import { CompareToFile } from "../../test/helper/CompareToFile.js";
 import { Oscillator } from "../source/oscillator/Oscillator.js";
+import { AutoPanner } from "./AutoPanner.js";
 
 describe("AutoPanner", () => {
 	BasicTests(AutoPanner);

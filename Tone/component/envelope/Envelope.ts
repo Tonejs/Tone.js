@@ -1,15 +1,15 @@
+import { OfflineContext } from "../../core/context/OfflineContext.js";
 import { InputNode, OutputNode } from "../../core/context/ToneAudioNode.js";
 import {
 	ToneAudioNode,
 	ToneAudioNodeOptions,
 } from "../../core/context/ToneAudioNode.js";
 import { NormalRange, Time } from "../../core/type/Units.js";
+import { assert } from "../../core/util/Debug.js";
+import { range, timeRange } from "../../core/util/Decorator.js";
 import { optionsFromArguments } from "../../core/util/Defaults.js";
 import { isArray, isObject, isString } from "../../core/util/TypeCheck.js";
 import { connectSignal, Signal } from "../../signal/Signal.js";
-import { OfflineContext } from "../../core/context/OfflineContext.js";
-import { assert } from "../../core/util/Debug.js";
-import { range, timeRange } from "../../core/util/Decorator.js";
 
 type BasicEnvelopeCurve = "linear" | "exponential";
 type InternalEnvelopeCurve = BasicEnvelopeCurve | number[];
@@ -57,7 +57,7 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 
 	/**
 	 * When triggerAttack is called, the attack time is the amount of
-	 * time it takes for the envelope to reach it's maximum value.
+	 * time it takes for the envelope to reach its maximum value.
 	 * ```
 	 *           /\
 	 *          /X \
@@ -77,7 +77,7 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 
 	/**
 	 * After the attack portion of the envelope, the value will fall
-	 * over the duration of the decay time to it's sustain value.
+	 * over the duration of the decay time to its sustain value.
 	 * ```
 	 *           /\
 	 *          / X\
@@ -116,7 +116,7 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 
 	/**
 	 * After triggerRelease is called, the envelope's
-	 * value will fall to it's miminum value over the
+	 * value will fall to its minimum value over the
 	 * duration of the release time.
 	 * ```
 	 *           /\
@@ -170,7 +170,7 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 
 	/**
 	 * @param attack The amount of time it takes for the envelope to go from
-	 *                        0 to it's maximum value.
+	 *                        0 to its maximum value.
 	 * @param decay	The period of time after the attack that it takes for the envelope
 	 *                      	to fall to the sustain value. Value must be greater than 0.
 	 * @param sustain	The percent of the maximum value that the envelope rests at until

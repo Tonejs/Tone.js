@@ -1,4 +1,3 @@
-import { readOnly } from "../../core/util/Interface.js";
 import { Param } from "../../core/context/Param.js";
 import {
 	InputNode,
@@ -8,6 +7,7 @@ import {
 } from "../../core/context/ToneAudioNode.js";
 import { AudioRange, Decibels } from "../../core/type/Units.js";
 import { optionsFromArguments } from "../../core/util/Defaults.js";
+import { readOnly } from "../../core/util/Interface.js";
 import { Panner } from "./Panner.js";
 import { Volume } from "./Volume.js";
 

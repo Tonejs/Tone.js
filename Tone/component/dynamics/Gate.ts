@@ -1,13 +1,13 @@
+import { Gain } from "../../core/context/Gain.js";
 import {
 	ToneAudioNode,
 	ToneAudioNodeOptions,
 } from "../../core/context/ToneAudioNode.js";
-import { Decibels, Time } from "../../core/type/Units.js";
-import { GreaterThan } from "../../signal/GreaterThan.js";
-import { Gain } from "../../core/context/Gain.js";
-import { Follower } from "../analysis/Follower.js";
-import { optionsFromArguments } from "../../core/util/Defaults.js";
 import { dbToGain, gainToDb } from "../../core/type/Conversions.js";
+import { Decibels, Time } from "../../core/type/Units.js";
+import { optionsFromArguments } from "../../core/util/Defaults.js";
+import { GreaterThan } from "../../signal/GreaterThan.js";
+import { Follower } from "../analysis/Follower.js";
 
 export interface GateOptions extends ToneAudioNodeOptions {
 	threshold: Decibels;
