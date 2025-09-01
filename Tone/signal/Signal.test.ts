@@ -664,7 +664,7 @@ describe("Signal", () => {
 					context,
 				}).toDestination();
 
-				// overriden with value of 3
+				// overridden with value of 3
 				connectSignal(sig, output);
 				expect(output.overridden).to.be.true;
 
