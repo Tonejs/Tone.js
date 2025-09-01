@@ -1,0 +1,37 @@
+name: Release
+
+on:
+    push:
+        branches:
+            - main
+            - dev
+
+jobs:
+    release:
+        name: Release
+        runs-on: ubuntu-latest
+        permissions:
+            contents: write
+            issues: write
+            pull-requests: write
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+              with:
+                  persist-credentials: false
+                  fetch-depth: 0
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "lts/*"
+
+            - name: Install dependencies
+              run: npm ci
+
+            - name: Release
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+              run: npx semantic-release
