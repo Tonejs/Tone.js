@@ -142,32 +142,8 @@ describe("Signal", () => {
 			expect(buffer.getValueAtTime(1)).to.be.closeTo(0, 0.001);
 		});
 
-		it("can disconnect from all the connected notes", async () => {
-			await ConstantOutput(async (context) => {
-				const output0 = new Signal(1).toDestination();
-				const output1 = new Signal(1).toDestination();
-				const sig = new Signal(0).connect(output0);
-				sig.connect(output1);
-				sig.disconnect();
-				sig.setValueAtTime(0, 0);
-				sig.linearRampToValueAtTime(0.5, 0.5);
-				sig.linearRampToValueAtTime(0, 1);
-			}, 0);
-		});
-
-		it("can disconnect from a specific node", async () => {
-			await ConstantOutput(async (context) => {
-				const output = new Signal(1).toDestination();
-				const sig = new Signal(0).connect(output);
-				sig.disconnect(output);
-				sig.setValueAtTime(0, 0);
-				sig.linearRampToValueAtTime(0.5, 0.5);
-				sig.linearRampToValueAtTime(0, 1);
-			}, 0);
-		});
-
 		it("can schedule multiple automations from a connected signal through a multiple nodes", async () => {
-			const buffer = await Offline(async () => {
+			const buffer = await Offline(() => {
 				const output = new Signal(0).toDestination();
 				const proxy = new Signal(0).connect(output);
 				const gain = new Gain(1).connect(proxy);
@@ -624,30 +600,81 @@ describe("Signal", () => {
 			}, 2);
 		});
 
-		it("does not disconnect if the inlet or outlet number are wrong", () => {
-			return ConstantOutput((context) => {
-				const sig = new Signal({
-					value: 3,
-					context,
-				});
-				const output = new Signal({
-					value: 2,
-					context,
-				}).toDestination();
+		it("can disconnect from all the connected notes", async () => {
+			await ConstantOutput(async (context) => {
+				// initially destination is 2
+				const output0 = new Signal(1).toDestination();
+				const output1 = new Signal(1).toDestination();
 
-				connectSignal(sig, output);
-				expect(output.overridden).to.be.true;
-				expect(output.value).to.equal(0);
+				// both should now equal 0
+				const sig = new Signal(0).connect(output0).connect(output1);
 
-				disconnectSignal(sig, output, 1, 0);
-				expect(output.overridden).to.be.true;
-				disconnectSignal(sig, output, 0, 1);
-				expect(output.overridden).to.be.true;
+				// disconnect from both
+				sig.disconnect();
 			}, 2);
 		});
 
+		it("can disconnect from a specific node", async () => {
+			await ConstantOutput(() => {
+				// initially destination is 1
+				const output = new Signal(1).toDestination();
+
+				// overwrites it with 0
+				const sig = new Signal(0).connect(output);
+
+				// disconnects the signal and goes back to 1
+				sig.disconnect(output);
+			}, 1);
+		});
+
+		it("disconnects every input when no input is passed in", async () => {
+			await ConstantOutput(() => {
+				// initially destination is 1
+				const output = new Signal(1).toDestination();
+
+				// overwrites it with 0
+				const sig = new Signal(0).connect(output, 0);
+
+				// disconnects the signal and goes back to 1
+				sig.disconnect(output);
+			}, 1);
+		});
+
+		it("disconnects every output when no output is passed in", async () => {
+			await ConstantOutput(() => {
+				// initially destination is 1
+				const output = new Signal(1).toDestination();
+
+				// overwrites it with 0
+				const sig = new Signal(0).connect(output, undefined, 0);
+
+				// disconnects the signal and goes back to 1
+				sig.disconnect(output);
+			}, 1);
+		});
+
 		it("disconnects everything if no destination is passed in", () => {
-			throw new Error("test not implemented");
+			return ConstantOutput((context) => {
+				const sig = new Signal({
+					value: 3,
+					context,
+				});
+				const output = new Signal({
+					value: 2,
+					context,
+				}).toDestination();
+
+				// overriden with value of 3
+				connectSignal(sig, output);
+				expect(output.overridden).to.be.true;
+
+				// disconnect goes back to 2
+				sig.disconnect();
+				expect(output.overridden).to.be.false;
+			}, 2);
+		});
+
+		it("can connect multiple times with no affect", () => {
 			return ConstantOutput((context) => {
 				const sig = new Signal({
 					value: 3,
@@ -660,12 +687,27 @@ describe("Signal", () => {
 
 				connectSignal(sig, output);
 				expect(output.overridden).to.be.true;
-				expect(output.value).to.equal(0);
 
-				disconnectSignal(sig, output, 1, 0);
-				expect(output.overridden).to.be.true;
-				disconnectSignal(sig, output, 0, 1);
-				expect(output.overridden).to.be.true;
+				// no affect when called again
+				connectSignal(sig, output);
+			}, 3);
+		});
+
+		it("disconnecting multiple times throws an error", () => {
+			return ConstantOutput((context) => {
+				const sig = new Signal({
+					value: 3,
+					context,
+				});
+				const output = new Signal({
+					value: 2,
+					context,
+				}).toDestination();
+
+				connectSignal(sig, output);
+
+				disconnectSignal(sig, output);
+				expect(() => disconnectSignal(sig, output)).to.throw(Error);
 			}, 2);
 		});
 	});

@@ -11,6 +11,7 @@ import { connect } from "../core/context/ToneAudioNode.js";
 import { Time, UnitMap, UnitName } from "../core/type/Units.js";
 import { isAudioParam } from "../core/util/AdvancedTypeCheck.js";
 import { optionsFromArguments } from "../core/util/Defaults.js";
+import { isUndef } from "../core/util/TypeCheck.js";
 import { ToneConstantSource } from "./ToneConstantSource.js";
 
 export interface SignalOptions<TypeName extends UnitName>
@@ -99,9 +100,13 @@ export class Signal<TypeName extends UnitName = "number">
 		return this;
 	}
 
-	disconnect(destination?: InputNode, outputNum = 0, inputNum = 0): this {
+	disconnect(
+		destination?: InputNode,
+		outputNum?: number,
+		inputNum?: number
+	): this {
 		// disconnect the signal
-		// disconnectSignal(this, destination, outputNum, inputNum);
+		disconnectSignal(this, destination, outputNum, inputNum);
 		return this;
 	}
 
@@ -321,35 +326,39 @@ export function disconnectSignal(
 		destination === undefined
 	) {
 		if (connectedSignals.has(signal)) {
-			const connection = connectedSignals
-				.get(signal)!
-				.find(
-					(conn) =>
-						(conn.destination === destination ||
-							destination === undefined) &&
-						conn.outputNum === (outputNum || 0) &&
-						conn.inputNum === (inputNum || 0)
-				);
-			if (connection) {
-				// restore the value
-				if (destination instanceof Signal) {
-					destination.overridden = false;
-				}
-				destination?.setValueAtTime(connection.previousValue, 0);
+			let connections = connectedSignals.get(signal)!;
 
-				// remove the connection from the stored array
-				connectedSignals.set(
-					signal,
-					connectedSignals
-						.get(signal)!
-						.filter((conn) => conn !== connection)
-				);
-
-				// if no destination was passed in, then remove all connections
-				if (destination === undefined) {
-					connectedSignals.delete(signal);
-				}
+			if (destination) {
+				connections = connections.filter((conn) => {
+					return (
+						conn.destination === destination &&
+						(isUndef(outputNum) || conn.outputNum === outputNum) &&
+						(isUndef(inputNum) || conn.inputNum === inputNum)
+					);
+				});
 			}
+
+			if (!connections.length) {
+				throw new Error("Not connected to destination node");
+			}
+
+			// restore the value
+			connections.forEach((connection) => {
+				if (connection.destination instanceof Signal) {
+					connection.destination.overridden = false;
+				}
+				connection.destination.setValueAtTime(
+					connection.previousValue,
+					0
+				);
+			});
+			// remove the connection from the stored array
+			connectedSignals.set(
+				signal,
+				connectedSignals
+					.get(signal)!
+					.filter((conn) => !connections.includes(conn))
+			);
 		}
 	}
 	disconnect(signal, destination, outputNum, inputNum);
