@@ -1,4 +1,4 @@
-import type { TransportClass as Transport } from "../clock/Transport.js";
+import type { TransportInstance as Transport } from "../clock/Transport.js";
 import { Seconds } from "../type/Units.js";
 import type { DrawClass as Draw } from "../util/Draw.js";
 import { AnyAudioContext } from "./AudioContext.js";

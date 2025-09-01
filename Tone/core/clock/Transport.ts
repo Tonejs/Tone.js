@@ -87,7 +87,7 @@ type TransportCallback = (time: Seconds) => void;
  * Tone.getTransport().start();
  * @category Core
  */
-export class TransportClass
+export class TransportInstance
 	extends ToneWithContext<TransportOptions>
 	implements Emitter<TransportEventNames>
 {
@@ -189,7 +189,7 @@ export class TransportClass
 	constructor(options?: Partial<TransportOptions>);
 	constructor() {
 		const options = optionsFromArguments(
-			TransportClass.getDefaults(),
+			TransportInstance.getDefaults(),
 			arguments
 		);
 		super(options);
@@ -808,14 +808,14 @@ export class TransportClass
 	emit!: (event: any, ...args: any[]) => this;
 }
 
-Emitter.mixin(TransportClass);
+Emitter.mixin(TransportInstance);
 
 //-------------------------------------
 // 	INITIALIZATION
 //-------------------------------------
 
 onContextInit((context) => {
-	context.transport = new TransportClass({ context });
+	context.transport = new TransportInstance({ context });
 });
 
 onContextClose((context) => {

@@ -6,8 +6,8 @@ import { getContext } from "./core/Global.js";
 export { start } from "./core/Global.js";
 import { Seconds } from "./core/type/Units.js";
 export { supported } from "./core/context/AudioContext.js";
-import type { TransportClass } from "./core/clock/Transport.js";
-export type { TransportClass } from "./core/clock/Transport.js";
+import type { TransportInstance } from "./core/clock/Transport.js";
+export type { TransportInstance } from "./core/clock/Transport.js";
 import type { DestinationClass } from "./core/context/Destination.js";
 export type { DestinationClass } from "./core/context/Destination.js";
 import type { ListenerInstance } from "./core/context/Listener.js";
@@ -35,7 +35,7 @@ export function immediate(): Seconds {
 
 /**
  * The Transport object belonging to the global Tone.js Context.
- * @see {@link TransportClass}
+ * @see {@link TransportInstance}
  * @category Core
  * @deprecated Use {@link getTransport} instead
  */
@@ -43,10 +43,10 @@ export const Transport = getContext().transport;
 
 /**
  * The Transport object belonging to the global Tone.js Context.
- * @see {@link TransportClass}
+ * @see {@link TransportInstance}
  * @category Core
  */
-export function getTransport(): TransportClass {
+export function getTransport(): TransportInstance {
 	return getContext().transport;
 }
 

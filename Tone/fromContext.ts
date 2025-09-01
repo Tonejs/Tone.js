@@ -1,5 +1,5 @@
 import * as Classes from "./classes.js";
-import { TransportClass } from "./core/clock/Transport.js";
+import { TransportInstance } from "./core/clock/Transport.js";
 import { Context } from "./core/context/Context.js";
 import { DestinationClass } from "./core/context/Destination.js";
 import { ListenerInstance } from "./core/context/Listener.js";
@@ -22,7 +22,7 @@ type ClassesWithoutSingletons = Omit<
  * to the same context and contains a singleton Transport and Destination node.
  */
 type ToneObject = {
-	Transport: TransportClass;
+	Transport: TransportInstance;
 	Destination: DestinationClass;
 	Listener: ListenerInstance;
 	Draw: DrawClass;

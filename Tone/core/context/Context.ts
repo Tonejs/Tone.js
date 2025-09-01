@@ -1,5 +1,5 @@
 import { Ticker, TickerClockSource } from "../clock/Ticker.js";
-import type { TransportClass as Transport } from "../clock/Transport.js";
+import type { TransportInstance as Transport } from "../clock/Transport.js";
 import { Seconds } from "../type/Units.js";
 import { isAudioContext } from "../util/AdvancedTypeCheck.js";
 import { assert } from "../util/Debug.js";

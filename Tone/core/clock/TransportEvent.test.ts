@@ -1,13 +1,13 @@
 import { expect } from "chai";
 
 import { Offline } from "../../../test/helper/Offline.js";
-import { TransportClass } from "./Transport.js";
+import { TransportInstance } from "./Transport.js";
 import { TransportEvent } from "./TransportEvent.js";
 
 describe("TransportEvent", () => {
 	it("can be created and disposed", () => {
 		return Offline((context) => {
-			const transport = new TransportClass({ context });
+			const transport = new TransportInstance({ context });
 			const event = new TransportEvent(transport, {
 				time: 0,
 			});
@@ -17,7 +17,7 @@ describe("TransportEvent", () => {
 
 	it("has a unique id", () => {
 		return Offline((context) => {
-			const transport = new TransportClass({ context });
+			const transport = new TransportInstance({ context });
 			const event = new TransportEvent(transport, {
 				time: 0,
 			});
@@ -29,7 +29,7 @@ describe("TransportEvent", () => {
 	it("can invoke the callback", async () => {
 		let wasInvoked = false;
 		await Offline((context) => {
-			const transport = new TransportClass({ context });
+			const transport = new TransportInstance({ context });
 			const event = new TransportEvent(transport, {
 				callback: (time) => {
 					expect(time).to.equal(100);

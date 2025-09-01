@@ -2,7 +2,7 @@ import { expect } from "chai";
 
 import { ConstantOutput } from "../../../test/helper/ConstantOutput.js";
 import { Offline } from "../../../test/helper/Offline.js";
-import { TransportClass } from "../clock/Transport.js";
+import { TransportInstance } from "../clock/Transport.js";
 import { getContext } from "../Global.js";
 import { DrawClass } from "../util/Draw.js";
 import { createAudioContext } from "./AudioContext.js";
@@ -214,7 +214,7 @@ describe("Context", () => {
 
 		it("is invoked in the offline context", () => {
 			return Offline((context) => {
-				const transport = new TransportClass({ context });
+				const transport = new TransportInstance({ context });
 				transport.context.setTimeout(() => {
 					expect(transport.now()).to.be.closeTo(0.01, 0.005);
 				}, 0.01);
