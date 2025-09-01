@@ -403,6 +403,8 @@ describe("Signal", () => {
 			}).to.throw(RangeError);
 			const signal = new Signal(1, "normalRange");
 			expect(signal.value).to.be.closeTo(1, 0.01);
+			expect(signal.minValue).to.be.equal(0);
+			expect(signal.maxValue).to.be.equal(1);
 			signal.dispose();
 		});
 
@@ -412,6 +414,8 @@ describe("Signal", () => {
 			}).to.throw(RangeError);
 			const signal = new Signal(-1, "audioRange");
 			expect(signal.value).to.be.closeTo(-1, 0.01);
+			expect(signal.minValue).to.be.equal(-1);
+			expect(signal.maxValue).to.be.equal(1);
 			signal.dispose();
 		});
 
@@ -421,6 +425,7 @@ describe("Signal", () => {
 			}).to.throw(RangeError);
 			const signal = new Signal(100, "positive");
 			expect(signal.value).to.be.closeTo(100, 0.01);
+			expect(signal.minValue).to.be.equal(0);
 			signal.dispose();
 		});
 	});
