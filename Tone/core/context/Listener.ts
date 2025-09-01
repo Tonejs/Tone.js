@@ -21,7 +21,7 @@ export interface ListenerOptions extends ToneAudioNodeOptions {
  * a first-person perspective. There is only one listener per audio context.
  * @category Core
  */
-export class ListenerClass extends ToneAudioNode<ListenerOptions> {
+export class ListenerInstance extends ToneAudioNode<ListenerOptions> {
 	readonly name: string = "Listener";
 
 	/**
@@ -109,7 +109,7 @@ export class ListenerClass extends ToneAudioNode<ListenerOptions> {
 //-------------------------------------
 
 onContextInit((context) => {
-	context.listener = new ListenerClass({ context });
+	context.listener = new ListenerInstance({ context });
 });
 
 onContextClose((context) => {

@@ -15,7 +15,7 @@ import {
 import { BaseContext, ContextLatencyHint } from "./BaseContext.js";
 import { closeContext, initializeContext } from "./ContextInitialization.js";
 import type { DestinationClass as Destination } from "./Destination.js";
-import type { ListenerClass as Listener } from "./Listener.js";
+import type { ListenerInstance as Listener } from "./Listener.js";
 
 export interface ContextOptions {
 	clockSource: TickerClockSource;
@@ -117,12 +117,16 @@ export class Context extends BaseContext {
 			// custom context provided, latencyHint unknown (unless explicitly provided in options)
 			this._latencyHint = arguments[0]?.latencyHint || "";
 		} else {
-			this._context = createAudioContext(options.sampleRate ? {
-				latencyHint: options.latencyHint,
-				sampleRate: options.sampleRate,
-			} : {
-				latencyHint: options.latencyHint,
-			});
+			this._context = createAudioContext(
+				options.sampleRate
+					? {
+							latencyHint: options.latencyHint,
+							sampleRate: options.sampleRate,
+						}
+					: {
+							latencyHint: options.latencyHint,
+						}
+			);
 			this._latencyHint = options.latencyHint;
 		}
 

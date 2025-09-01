@@ -2,7 +2,7 @@ import * as Classes from "./classes.js";
 import { TransportClass } from "./core/clock/Transport.js";
 import { Context } from "./core/context/Context.js";
 import { DestinationClass } from "./core/context/Destination.js";
-import { ListenerClass } from "./core/context/Listener.js";
+import { ListenerInstance } from "./core/context/Listener.js";
 import { FrequencyClass } from "./core/type/Frequency.js";
 import { MidiClass } from "./core/type/Midi.js";
 import { TicksClass } from "./core/type/Ticks.js";
@@ -24,7 +24,7 @@ type ClassesWithoutSingletons = Omit<
 type ToneObject = {
 	Transport: TransportClass;
 	Destination: DestinationClass;
-	Listener: ListenerClass;
+	Listener: ListenerInstance;
 	Draw: DrawClass;
 	context: Context;
 	now: () => number;

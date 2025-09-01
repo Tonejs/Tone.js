@@ -4,7 +4,7 @@ import type { DrawClass as Draw } from "../util/Draw.js";
 import { Emitter } from "../util/Emitter.js";
 import { AnyAudioContext } from "./AudioContext.js";
 import type { DestinationClass as Destination } from "./Destination.js";
-import type { ListenerClass as Listener } from "./Listener.js";
+import type { ListenerInstance as Listener } from "./Listener.js";
 
 // these are either not used in Tone.js or deprecated and not implemented.
 export type ExcludedFromBaseAudioContext =

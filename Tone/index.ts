@@ -10,8 +10,8 @@ import type { TransportClass } from "./core/clock/Transport.js";
 export type { TransportClass } from "./core/clock/Transport.js";
 import type { DestinationClass } from "./core/context/Destination.js";
 export type { DestinationClass } from "./core/context/Destination.js";
-import type { ListenerClass } from "./core/context/Listener.js";
-export type { ListenerClass } from "./core/context/Listener.js";
+import type { ListenerInstance } from "./core/context/Listener.js";
+export type { ListenerInstance } from "./core/context/Listener.js";
 import type { DrawClass } from "./core/util/Draw.js";
 export type { DrawClass } from "./core/util/Draw.js";
 
@@ -73,17 +73,17 @@ export function getDestination(): DestinationClass {
 }
 
 /**
- * The {@link ListenerClass} belonging to the global Tone.js Context.
+ * The {@link ListenerInstance} belonging to the global Tone.js Context.
  * @category Core
  * @deprecated Use {@link getListener} instead
  */
 export const Listener = getContext().listener;
 
 /**
- * The {@link ListenerClass} belonging to the global Tone.js Context.
+ * The {@link ListenerInstance} belonging to the global Tone.js Context.
  * @category Core
  */
-export function getListener(): ListenerClass {
+export function getListener(): ListenerInstance {
 	return getContext().listener;
 }
 
