@@ -12,8 +12,8 @@ import type { DestinationClass } from "./core/context/Destination.js";
 export type { DestinationClass } from "./core/context/Destination.js";
 import type { ListenerInstance } from "./core/context/Listener.js";
 export type { ListenerInstance } from "./core/context/Listener.js";
-import type { DrawClass } from "./core/util/Draw.js";
-export type { DrawClass } from "./core/util/Draw.js";
+import type { DrawInstance } from "./core/util/Draw.js";
+export type { DrawInstance } from "./core/util/Draw.js";
 
 /**
  * The current audio context time of the global {@link BaseContext}.
@@ -89,7 +89,7 @@ export function getListener(): ListenerInstance {
 
 /**
  * Draw is used to synchronize the draw frame with the Transport's callbacks.
- * @see {@link DrawClass}
+ * @see {@link DrawInstance}
  * @category Core
  * @deprecated Use {@link getDraw} instead
  */
@@ -98,10 +98,10 @@ export const Draw = getContext().draw;
 /**
  * Get the singleton attached to the global context.
  * Draw is used to synchronize the draw frame with the Transport's callbacks.
- * @see {@link DrawClass}
+ * @see {@link DrawInstance}
  * @category Core
  */
-export function getDraw(): DrawClass {
+export function getDraw(): DrawInstance {
 	return getContext().draw;
 }
 

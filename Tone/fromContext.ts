@@ -9,7 +9,7 @@ import { TicksClass } from "./core/type/Ticks.js";
 import { TimeClass } from "./core/type/Time.js";
 import { TransportTimeClass } from "./core/type/TransportTime.js";
 import { omitFromObject } from "./core/util/Defaults.js";
-import { DrawClass } from "./core/util/Draw.js";
+import { DrawInstance } from "./core/util/Draw.js";
 import { isDefined, isFunction } from "./core/util/TypeCheck.js";
 
 type ClassesWithoutSingletons = Omit<
@@ -25,7 +25,7 @@ type ToneObject = {
 	Transport: TransportInstance;
 	Destination: DestinationClass;
 	Listener: ListenerInstance;
-	Draw: DrawClass;
+	Draw: DrawInstance;
 	context: Context;
 	now: () => number;
 	immediate: () => number;

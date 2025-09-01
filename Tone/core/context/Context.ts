@@ -4,7 +4,7 @@ import { Seconds } from "../type/Units.js";
 import { isAudioContext } from "../util/AdvancedTypeCheck.js";
 import { assert } from "../util/Debug.js";
 import { optionsFromArguments } from "../util/Defaults.js";
-import type { DrawClass as Draw } from "../util/Draw.js";
+import type { DrawInstance as Draw } from "../util/Draw.js";
 import { Timeline } from "../util/Timeline.js";
 import { isDefined } from "../util/TypeCheck.js";
 import {

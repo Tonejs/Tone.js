@@ -4,7 +4,7 @@ import { ConstantOutput } from "../../../test/helper/ConstantOutput.js";
 import { Offline } from "../../../test/helper/Offline.js";
 import { TransportInstance } from "../clock/Transport.js";
 import { getContext } from "../Global.js";
-import { DrawClass } from "../util/Draw.js";
+import { DrawInstance } from "../util/Draw.js";
 import { createAudioContext } from "./AudioContext.js";
 import { Context } from "./Context.js";
 import { DestinationClass } from "./Destination.js";
@@ -20,7 +20,7 @@ describe("Context", () => {
 		const ctxTransport = context.transport;
 		const ctxListener = context.listener;
 		expect(context.destination).is.instanceOf(DestinationClass);
-		expect(context.draw).is.instanceOf(DrawClass);
+		expect(context.draw).is.instanceOf(DrawInstance);
 		expect(context.listener).is.instanceOf(ListenerInstance);
 		await context.close();
 		expect(ctxDest.disposed).to.be.true;
