@@ -2,7 +2,7 @@ import { BaseContext } from "../context/BaseContext.js";
 import { TicksClass } from "../type/Ticks.js";
 import { Seconds, Ticks, Time } from "../type/Units.js";
 import { GT, LT } from "../util/Math.js";
-import type { TransportClass as Transport } from "./Transport.js";
+import type { TransportInstance as Transport } from "./Transport.js";
 import { TransportEvent, TransportEventOptions } from "./TransportEvent.js";
 
 interface TransportRepeatEventOptions extends TransportEventOptions {

@@ -1,5 +1,6 @@
 import { expect } from "chai";
 
+import { Frequency } from "../../Tone/core/type/Units.js";
 import { Instrument } from "../../Tone/instrument/Instrument.js";
 import { Monophonic } from "../../Tone/instrument/Monophonic.js";
 import { connectTo } from "./Connect.js";
@@ -10,7 +11,13 @@ function wait(time) {
 	return new Promise((done) => setTimeout(done, time));
 }
 
-export function InstrumentTest(Constr, note, constrArg?, optionsIndex?): void {
+export function InstrumentTest(
+	Constr,
+	note?: Frequency,
+	constrArg?: any,
+	optionsIndex?: any,
+	noPortamento = false
+): void {
 	context("Instrument Tests", () => {
 		it("extends Tone.Instrument", () => {
 			const instance = new Constr(constrArg);
@@ -47,18 +54,17 @@ export function InstrumentTest(Constr, note, constrArg?, optionsIndex?): void {
 			});
 		});
 
-		it("is silent before being triggered", () => {
-			return Offline(() => {
+		it("is silent before being triggered", async () => {
+			const buffer = await Offline(() => {
 				const instance = new Constr(constrArg);
 				instance.toDestination();
-			}).then((buffer) => {
-				expect(buffer.isSilent()).to.be.true;
 			});
+			expect(buffer.isSilent()).to.be.true;
 		});
 
 		if (Constr.prototype.triggerRelease) {
-			it("can trigger release after attack", () => {
-				return Offline(() => {
+			it("can trigger release after attack", async () => {
+				const buffer = await Offline(() => {
 					const instance = new Constr(constrArg);
 					instance.toDestination();
 					if (note) {
@@ -67,17 +73,13 @@ export function InstrumentTest(Constr, note, constrArg?, optionsIndex?): void {
 						instance.triggerAttack(0.05);
 					}
 					instance.triggerRelease(0.1);
-				}, 1).then((buffer) => {
-					expect(buffer.getTimeOfFirstSound()).to.be.within(
-						0.05,
-						0.1
-					);
-				});
+				}, 1);
+				expect(buffer.getTimeOfFirstSound()).to.be.within(0.05, 0.1);
 			});
 
-			it("can trigger another attack before the release has ended", () => {
+			it("can trigger another attack before the release has ended", async () => {
 				// compute the end time
-				return Offline(() => {
+				const buffer = await Offline(() => {
 					const instance = new Constr(constrArg);
 					instance.toDestination();
 					if (note) {
@@ -86,37 +88,35 @@ export function InstrumentTest(Constr, note, constrArg?, optionsIndex?): void {
 						instance.triggerAttack(0.05);
 					}
 					instance.triggerRelease(0.1);
-				}, 1).then((buffer) => {
-					const bufferDuration = buffer.getTimeOfLastSound();
-					const secondTrigger = 0.15;
-					return Offline(
-						() => {
-							const instance = new Constr(constrArg);
-							instance.toDestination();
-							if (note) {
-								instance.triggerAttack(note, 0.05);
-							} else {
-								instance.triggerAttack(0.05);
-							}
-							instance.triggerRelease(0.1);
-							// star the note again before the last one has finished
-							if (note) {
-								instance.triggerAttack(note, secondTrigger);
-							} else {
-								instance.triggerAttack(secondTrigger);
-							}
-						},
-						bufferDuration + secondTrigger * 2
-					).then((resultingBuffer) => {
-						expect(resultingBuffer.getTimeOfLastSound()).to.be.gt(
-							bufferDuration
-						);
-					});
-				});
+				}, 1);
+				const bufferDuration = buffer.getTimeOfLastSound();
+				const secondTrigger = 0.15;
+				const resultingBuffer = await Offline(
+					() => {
+						const instance_1 = new Constr(constrArg);
+						instance_1.toDestination();
+						if (note) {
+							instance_1.triggerAttack(note, 0.05);
+						} else {
+							instance_1.triggerAttack(0.05);
+						}
+						instance_1.triggerRelease(0.1);
+						// star the note again before the last one has finished
+						if (note) {
+							instance_1.triggerAttack(note, secondTrigger);
+						} else {
+							instance_1.triggerAttack(secondTrigger);
+						}
+					},
+					bufferDuration + secondTrigger * 2
+				);
+				expect(resultingBuffer.getTimeOfLastSound()).to.be.gt(
+					bufferDuration
+				);
 			});
 
-			it("can combine triggerAttack and triggerRelease", () => {
-				return Offline(() => {
+			it("can combine triggerAttack and triggerRelease", async () => {
+				const buffer = await Offline(() => {
 					const instance = new Constr(constrArg);
 					instance.toDestination();
 					if (note) {
@@ -124,17 +124,13 @@ export function InstrumentTest(Constr, note, constrArg?, optionsIndex?): void {
 					} else {
 						instance.triggerAttackRelease(0.1, 0.05);
 					}
-				}, 0.2).then((buffer) => {
-					expect(buffer.getTimeOfFirstSound()).to.be.within(
-						0.05,
-						0.1
-					);
-				});
+				}, 0.2);
+				expect(buffer.getTimeOfFirstSound()).to.be.within(0.05, 0.1);
 			});
 		}
 
-		it("be scheduled to start in the future", () => {
-			return Offline(() => {
+		it("be scheduled to start in the future", async () => {
+			const buffer = await Offline(() => {
 				const instance = new Constr(constrArg);
 				instance.toDestination();
 				if (note) {
@@ -142,13 +138,12 @@ export function InstrumentTest(Constr, note, constrArg?, optionsIndex?): void {
 				} else {
 					instance.triggerAttack(0.1);
 				}
-			}, 0.2).then((buffer) => {
-				expect(buffer.getTimeOfFirstSound()).to.be.within(0.1, 0.15);
-			});
+			}, 0.2);
+			expect(buffer.getTimeOfFirstSound()).to.be.within(0.1, 0.15);
 		});
 
-		it("can sync triggerAttack to the Transport", () => {
-			return Offline(({ transport }) => {
+		it("can sync triggerAttack to the Transport", async () => {
+			const buffer = await Offline(({ transport }) => {
 				const instance = new Constr(constrArg);
 				instance.toDestination();
 				instance.sync();
@@ -158,13 +153,12 @@ export function InstrumentTest(Constr, note, constrArg?, optionsIndex?): void {
 					instance.triggerAttack(0.1);
 				}
 				transport.start(0.1);
-			}, 0.3).then((buffer) => {
-				expect(buffer.getTimeOfFirstSound()).to.be.within(0.19, 0.25);
-			});
+			}, 0.3);
+			expect(buffer.getTimeOfFirstSound()).to.be.within(0.19, 0.25);
 		});
 
-		it("can unsync triggerAttack to the Transport", () => {
-			return Offline(({ transport }) => {
+		it("can unsync triggerAttack to the Transport", async () => {
+			const buffer = await Offline(({ transport }) => {
 				const instance = new Constr(constrArg);
 				instance.toDestination();
 				instance.sync();
@@ -175,13 +169,12 @@ export function InstrumentTest(Constr, note, constrArg?, optionsIndex?): void {
 				}
 				instance.unsync();
 				transport.start(0.1);
-			}, 0.3).then((buffer) => {
-				expect(buffer.isSilent()).to.be.true;
-			});
+			}, 0.3);
+			expect(buffer.isSilent()).to.be.true;
 		});
 
-		it("can unsync and re-sync triggerAttack to the Transport", () => {
-			return Offline(async ({ transport }) => {
+		it("can unsync and re-sync triggerAttack to the Transport", async () => {
+			const buffer = await Offline(async ({ transport }) => {
 				const instance = new Constr(constrArg);
 				instance.toDestination();
 
@@ -203,13 +196,12 @@ export function InstrumentTest(Constr, note, constrArg?, optionsIndex?): void {
 					instance.triggerAttack(0.1);
 				}
 				transport.start(0.1);
-			}, 1).then((buffer) => {
-				expect(buffer.getTimeOfFirstSound()).to.be.within(0.19, 0.25);
-			});
+			}, 1);
+			expect(buffer.getTimeOfFirstSound()).to.be.within(0.19, 0.25);
 		});
 
-		it("calling sync and unsync multiple times has no effect", () => {
-			return Offline(({ transport }) => {
+		it("calling sync and unsync multiple times has no effect", async () => {
+			const buffer = await Offline(({ transport }) => {
 				const instance = new Constr(constrArg);
 				instance.toDestination();
 				instance.sync();
@@ -222,13 +214,12 @@ export function InstrumentTest(Constr, note, constrArg?, optionsIndex?): void {
 				instance.unsync();
 				instance.unsync();
 				transport.start(0.1);
-			}, 0.3).then((buffer) => {
-				expect(buffer.isSilent()).to.be.true;
-			});
+			}, 0.3);
+			expect(buffer.isSilent()).to.be.true;
 		});
 
-		it("can sync triggerAttackRelease to the Transport", () => {
-			return Offline(({ transport }) => {
+		it("can sync triggerAttackRelease to the Transport", async () => {
+			const buffer = await Offline(({ transport }) => {
 				const instance = new Constr(constrArg);
 				instance.toDestination();
 				instance.sync();
@@ -238,18 +229,17 @@ export function InstrumentTest(Constr, note, constrArg?, optionsIndex?): void {
 					instance.triggerAttackRelease(0.25, 0.1);
 				}
 				transport.start(0.1);
-			}, 1).then((buffer) => {
-				expect(buffer.getTimeOfFirstSound()).to.be.within(0.19, 0.25);
-				// test a sample enough in the future for the decay to die down
-				expect(buffer.getRmsAtTime(0.9)).to.be.closeTo(0, 0.1);
-			});
+			}, 1);
+			expect(buffer.getTimeOfFirstSound()).to.be.within(0.19, 0.25);
+			// test a sample enough in the future for the decay to die down
+			expect(buffer.getRmsAtTime(0.9)).to.be.closeTo(0, 0.1);
 		});
 
 		it("invokes onsilence", (done) => {
 			Offline(() => {
 				const instance = new Constr(constrArg);
 				if (instance instanceof Monophonic) {
-					instance.triggerAttackRelease(note, 0.1, 0);
+					instance.triggerAttackRelease(note!, 0.1, 0);
 					instance.onsilence = (voice) => {
 						expect(voice).to.equal(instance);
 						done();
@@ -260,16 +250,20 @@ export function InstrumentTest(Constr, note, constrArg?, optionsIndex?): void {
 			}, 3);
 		});
 
-		it("can do portamento glide between notes", () => {
-			return Offline(() => {
-				const instance = new Constr(constrArg);
-				if (instance instanceof Monophonic) {
-					instance.portamento = 0.5;
-					instance.triggerAttackRelease("C4", 0.2, 0);
-					expect(instance.getLevelAtTime(0.4)).to.be.greaterThan(0);
-					instance.triggerAttackRelease("C2", 0.2, 0.4);
-				}
-			}, 0.5);
-		});
+		if (!noPortamento) {
+			it("can do portamento glide between notes", () => {
+				return Offline(() => {
+					const instance = new Constr(constrArg);
+					if (instance instanceof Monophonic) {
+						instance.portamento = 0.5;
+						instance.triggerAttackRelease("C4", 0.2, 0);
+						expect(instance.getLevelAtTime(0.4)).to.be.greaterThan(
+							0
+						);
+						instance.triggerAttackRelease("C2", 0.2, 0.4);
+					}
+				}, 0.5);
+			});
+		}
 	});
 }

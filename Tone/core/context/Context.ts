@@ -1,10 +1,10 @@
 import { Ticker, TickerClockSource } from "../clock/Ticker.js";
-import type { TransportClass as Transport } from "../clock/Transport.js";
+import type { TransportInstance as Transport } from "../clock/Transport.js";
 import { Seconds } from "../type/Units.js";
 import { isAudioContext } from "../util/AdvancedTypeCheck.js";
 import { assert } from "../util/Debug.js";
 import { optionsFromArguments } from "../util/Defaults.js";
-import type { DrawClass as Draw } from "../util/Draw.js";
+import type { DrawInstance as Draw } from "../util/Draw.js";
 import { Timeline } from "../util/Timeline.js";
 import { isDefined } from "../util/TypeCheck.js";
 import {
@@ -14,8 +14,8 @@ import {
 } from "./AudioContext.js";
 import { BaseContext, ContextLatencyHint } from "./BaseContext.js";
 import { closeContext, initializeContext } from "./ContextInitialization.js";
-import type { DestinationClass as Destination } from "./Destination.js";
-import type { ListenerClass as Listener } from "./Listener.js";
+import type { DestinationInstance as Destination } from "./Destination.js";
+import type { ListenerInstance as Listener } from "./Listener.js";
 
 export interface ContextOptions {
 	clockSource: TickerClockSource;
@@ -117,12 +117,16 @@ export class Context extends BaseContext {
 			// custom context provided, latencyHint unknown (unless explicitly provided in options)
 			this._latencyHint = arguments[0]?.latencyHint || "";
 		} else {
-			this._context = createAudioContext(options.sampleRate ? {
-				latencyHint: options.latencyHint,
-				sampleRate: options.sampleRate,
-			} : {
-				latencyHint: options.latencyHint,
-			});
+			this._context = createAudioContext(
+				options.sampleRate
+					? {
+							latencyHint: options.latencyHint,
+							sampleRate: options.sampleRate,
+						}
+					: {
+							latencyHint: options.latencyHint,
+						}
+			);
 			this._latencyHint = options.latencyHint;
 		}
 

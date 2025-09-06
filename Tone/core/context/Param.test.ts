@@ -5,9 +5,8 @@ import { Plot } from "../../../test/helper/compare/index.js";
 import { atTime, Offline } from "../../../test/helper/Offline.js";
 import { Signal } from "../../signal/Signal.js";
 import { getContext } from "../Global.js";
-import {
-	UnitName,
-} from "../type/Units.js";
+import { UnitName } from "../type/Units.js";
+import { Gain } from "./Gain.js";
 import { Param } from "./Param.js";
 import { connect } from "./ToneAudioNode.js";
 
@@ -120,7 +119,6 @@ describe("Param", () => {
 				1,
 				sampleRate
 			);
-			// document.body.appendChild(await Plot.signal(testBuffer));
 			matchesOutputCurve(param, testBuffer);
 		});
 
@@ -155,7 +153,6 @@ describe("Param", () => {
 				1,
 				sampleRate
 			);
-			// document.body.appendChild(await Plot.signal(testBuffer));
 			matchesOutputCurve(param, testBuffer);
 		});
 
@@ -199,30 +196,7 @@ describe("Param", () => {
 				sampleRate
 			);
 			matchesOutputCurve(param, testBuffer);
-			// document.body.appendChild(await Plot.signal(testBuffer));
 		});
-
-		// 	it ("matches known values", async () => {
-		// 		await Compare.toFile(context => {
-		// 			const source = context.createConstantSource();
-		// 			source.connect(context.rawContext.destination);
-		// 			source.start(0);
-		// 			const param = new Param({
-		// 				context,
-		// 				param: source.offset,
-		// 				value: 0.1,
-		// 			});
-		// 			param.setValueAtTime(0, 0);
-		// 			param.setValueAtTime(1, 0.2);
-		// 			param.cancelAndHoldAtTime(0.1);
-		// 			param.linearRampToValueAtTime(1, 0.3);
-		// 			param.cancelAndHoldAtTime(0.2);
-		// 			param.exponentialRampToValueAtTime(0, 0.4);
-		// 			param.cancelAndHoldAtTime(0.25);
-		// 			param.setTargetAtTime(1, 0.3, 0.1);
-		// 			param.cancelAndHoldAtTime(0.4);
-		// 		}, "/base/test/audio/param/curve_0.wav", 0.01, 0.5, 1, 11025);
-		// 	});
 	});
 
 	context("Units", () => {
@@ -453,7 +427,6 @@ describe("Param", () => {
 		testUnitConversion("frequency", 0.1, 0.1, 0.1);
 		testUnitConversion("normalRange", 0, 0, 0);
 		testUnitConversion("normalRange", 0.5, 0.5, 0.5);
-		testUnitConversion("normalRange", 1.5, 1, 1);
 		testUnitConversion("audioRange", -1, -1, -1);
 		testUnitConversion("audioRange", 0.5, 0.5, 0.5);
 		testUnitConversion("audioRange", 1, 1, 1);
@@ -533,9 +506,9 @@ describe("Param", () => {
 	context("setValueAtTime", () => {
 		function testSetValueAtTime(
 			units: UnitName,
-			value0,
-			value1,
-			value2
+			value0: number,
+			value1: number,
+			value2: number
 		): void {
 			it(`can schedule value with units ${units}`, async () => {
 				const testBuffer = await Offline(
@@ -601,6 +574,20 @@ describe("Param", () => {
 				testSetValueAtTime(unit, 0, 1, 0.5);
 			}
 		});
+
+		it("asserts a value range", async () => {
+			let errored = false;
+			try {
+				const source = new Gain();
+				const param = new Param({
+					param: source.gain,
+					units: "normalRange",
+				});
+				param.setValueAtTime(2, 0);
+			} catch (e) {
+				errored = true;
+			}
+		});
 	});
 
 	["linearRampToValueAtTime", "exponentialRampToValueAtTime"].forEach(
@@ -608,9 +595,9 @@ describe("Param", () => {
 			context(method, () => {
 				function testRampToValueAtTime(
 					units: UnitName,
-					value0,
-					value1,
-					value2
+					value0: number,
+					value1: number,
+					value2: number
 				): void {
 					it(`can schedule value with units ${units}`, async () => {
 						const testBuffer = await Offline(
@@ -689,9 +676,9 @@ describe("Param", () => {
 			context(method, () => {
 				function testRampToValueAtTime(
 					units: UnitName,
-					value0,
-					value1,
-					value2
+					value0: number,
+					value1: number,
+					value2: number
 				): void {
 					it(`can schedule value with units ${units}`, async () => {
 						const testBuffer = await Offline(

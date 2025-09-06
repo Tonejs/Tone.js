@@ -30,7 +30,7 @@ interface DestinationOptions extends ToneAudioNodeOptions {
  * oscillator.toDestination();
  * @category Core
  */
-export class DestinationClass extends ToneAudioNode<DestinationOptions> {
+export class DestinationInstance extends ToneAudioNode<DestinationOptions> {
 	readonly name: string = "Destination";
 
 	input: Volume = new Volume({ context: this.context });
@@ -49,7 +49,7 @@ export class DestinationClass extends ToneAudioNode<DestinationOptions> {
 	constructor(options: Partial<DestinationOptions>);
 	constructor() {
 		const options = optionsFromArguments(
-			DestinationClass.getDefaults(),
+			DestinationInstance.getDefaults(),
 			arguments
 		);
 		super(options);
@@ -133,7 +133,7 @@ export class DestinationClass extends ToneAudioNode<DestinationOptions> {
 //-------------------------------------
 
 onContextInit((context) => {
-	context.destination = new DestinationClass({ context });
+	context.destination = new DestinationInstance({ context });
 });
 
 onContextClose((context) => {

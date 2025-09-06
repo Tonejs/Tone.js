@@ -26,6 +26,7 @@ export async function Offline(
 		sampleRate
 	);
 	setContext(offline);
+	let error: Error | null = null;
 	try {
 		let retFunction = callback(offline);
 		if (retFunction instanceof Promise) {
@@ -41,10 +42,13 @@ export async function Offline(
 			});
 		}
 	} catch (e) {
-		throw e;
+		error = e as Error;
 	} finally {
 		setContext(originalContext);
 		const buffer = await offline.render();
+		if (error) {
+			throw error;
+		}
 		return new TestAudioBuffer(buffer.get() as AudioBuffer);
 	}
 }

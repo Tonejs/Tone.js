@@ -61,13 +61,20 @@ describe("Sequence", () => {
 		});
 
 		it("loops by default with the loopEnd as the duration of the loop", async () => {
-			await Offline(() => {
-				const seq = new Sequence(noOp, [0, 1, 2, 3], "8n");
+			const values: number[] = [];
+			await Offline(({ transport }) => {
+				const seq = new Sequence(
+					(_, value) => {
+						values.push(value);
+					},
+					[0, 1, 2, 3],
+					"8n"
+				).start(0);
 				expect(seq.loop).to.be.true;
 				expect(seq.length).to.equal(4);
-				expect(seq.loopEnd).to.equal(4);
-				seq.dispose();
-			});
+				transport.start(0);
+			}, 2);
+			expect(values).to.deep.equal([0, 1, 2, 3, 0, 1, 2, 3]);
 		});
 	});
 

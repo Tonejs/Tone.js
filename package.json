@@ -92,7 +92,7 @@
 		"tinyglobby": "^0.2.14",
 		"tonal": "^6.0.1",
 		"ts-loader": "^9.5.1",
-		"typedoc": "^0.25.13",
+		"typedoc": "^0.28.12",
 		"typescript": "^5.4.5",
 		"typescript-eslint": "^8.31.0",
 		"ua-parser-js": "^0.7.31",

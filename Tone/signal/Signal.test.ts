@@ -4,7 +4,7 @@ import { BasicTests } from "../../test/helper/Basic.js";
 import { ConstantOutput } from "../../test/helper/ConstantOutput.js";
 import { Offline } from "../../test/helper/Offline.js";
 import { Gain } from "../core/context/Gain.js";
-import { Signal } from "./Signal.js";
+import { connectSignal, disconnectSignal, Signal } from "./Signal.js";
 
 describe("Signal", () => {
 	BasicTests(Signal);
@@ -142,32 +142,8 @@ describe("Signal", () => {
 			expect(buffer.getValueAtTime(1)).to.be.closeTo(0, 0.001);
 		});
 
-		it("can disconnect from all the connected notes", async () => {
-			await ConstantOutput(async (context) => {
-				const output0 = new Signal(1).toDestination();
-				const output1 = new Signal(1).toDestination();
-				const sig = new Signal(0).connect(output0);
-				sig.connect(output1);
-				sig.disconnect();
-				sig.setValueAtTime(0, 0);
-				sig.linearRampToValueAtTime(0.5, 0.5);
-				sig.linearRampToValueAtTime(0, 1);
-			}, 0);
-		});
-
-		it("can disconnect from a specific node", async () => {
-			await ConstantOutput(async (context) => {
-				const output = new Signal(1).toDestination();
-				const sig = new Signal(0).connect(output);
-				sig.disconnect(output);
-				sig.setValueAtTime(0, 0);
-				sig.linearRampToValueAtTime(0.5, 0.5);
-				sig.linearRampToValueAtTime(0, 1);
-			}, 0);
-		});
-
 		it("can schedule multiple automations from a connected signal through a multiple nodes", async () => {
-			const buffer = await Offline(async () => {
+			const buffer = await Offline(() => {
 				const output = new Signal(0).toDestination();
 				const proxy = new Signal(0).connect(output);
 				const gain = new Gain(1).connect(proxy);
@@ -427,6 +403,8 @@ describe("Signal", () => {
 			}).to.throw(RangeError);
 			const signal = new Signal(1, "normalRange");
 			expect(signal.value).to.be.closeTo(1, 0.01);
+			expect(signal.minValue).to.be.equal(0);
+			expect(signal.maxValue).to.be.equal(1);
 			signal.dispose();
 		});
 
@@ -436,6 +414,8 @@ describe("Signal", () => {
 			}).to.throw(RangeError);
 			const signal = new Signal(-1, "audioRange");
 			expect(signal.value).to.be.closeTo(-1, 0.01);
+			expect(signal.minValue).to.be.equal(-1);
+			expect(signal.maxValue).to.be.equal(1);
 			signal.dispose();
 		});
 
@@ -445,6 +425,7 @@ describe("Signal", () => {
 			}).to.throw(RangeError);
 			const signal = new Signal(100, "positive");
 			expect(signal.value).to.be.closeTo(100, 0.01);
+			expect(signal.minValue).to.be.equal(0);
 			signal.dispose();
 		});
 	});
@@ -508,6 +489,231 @@ describe("Signal", () => {
 				transport.bpm.value = 240;
 				transport.unsyncSignal(sig);
 			}, 5);
+		});
+	});
+
+	context("connectSignal/disconnectSignal", () => {
+		it("can connect a Signal to an AudioNode", () => {
+			return ConstantOutput((context) => {
+				const sig = new Signal({
+					value: 3,
+					context,
+				});
+				const gain = new Gain({
+					gain: 0.5,
+					context,
+				}).toDestination();
+				connectSignal(sig, gain);
+			}, 1.5);
+		});
+
+		it("can connect a Signal to a Param", () => {
+			return ConstantOutput((context) => {
+				const sig = new Signal({
+					value: 3,
+					context,
+				});
+				const scalar = new Signal({
+					value: 2,
+					context,
+				});
+				const gain = new Gain({
+					gain: 0.5,
+					context,
+				}).toDestination();
+				connectSignal(sig, gain);
+				connectSignal(scalar, gain.gain);
+				// gain of 0.5 is overridden
+				expect(gain.gain.value).to.equal(0);
+			}, 6);
+		});
+
+		it("can connect a Signal to a Signal", () => {
+			return ConstantOutput((context) => {
+				const sig = new Signal({
+					value: 3,
+					context,
+				});
+				const output = new Signal({
+					value: 0.5,
+					context,
+				}).toDestination();
+
+				connectSignal(sig, output);
+				expect(output.overridden).to.be.true;
+			}, 3);
+		});
+
+		it("can disconnect a Signal from an AudioNode", () => {
+			return ConstantOutput((context) => {
+				const sig = new Signal({
+					value: 3,
+					context,
+				});
+				const gain = new Gain({
+					gain: 0.5,
+					context,
+				}).toDestination();
+				connectSignal(sig, gain);
+				disconnectSignal(sig, gain);
+			}, 0);
+		});
+
+		it("can disconnect a Signal from a Param", () => {
+			return ConstantOutput((context) => {
+				const sig = new Signal({
+					value: 3,
+					context,
+				});
+				const scalar = new Signal({
+					value: 2,
+					context,
+				});
+				const gain = new Gain({
+					gain: 0.5,
+					context,
+				}).toDestination();
+				connectSignal(sig, gain);
+				connectSignal(scalar, gain.gain);
+				// gain of 0.5 is overridden
+				expect(gain.gain.value).to.equal(0);
+
+				disconnectSignal(scalar, gain.gain);
+				// the original value is restored
+				expect(gain.gain.value).to.equal(0.5);
+			}, 1.5);
+		});
+
+		it("can disconnect a Signal from a Signal", () => {
+			return ConstantOutput((context) => {
+				const sig = new Signal({
+					value: 3,
+					context,
+				});
+				const output = new Signal({
+					value: 2,
+					context,
+				}).toDestination();
+
+				connectSignal(sig, output);
+				expect(output.overridden).to.be.true;
+				expect(output.value).to.equal(0);
+
+				disconnectSignal(sig, output);
+				expect(output.value).to.equal(2);
+				expect(output.overridden).to.be.false;
+			}, 2);
+		});
+
+		it("can disconnect from all the connected notes", async () => {
+			await ConstantOutput(async (context) => {
+				// initially destination is 2
+				const output0 = new Signal(1).toDestination();
+				const output1 = new Signal(1).toDestination();
+
+				// both should now equal 0
+				const sig = new Signal(0).connect(output0).connect(output1);
+
+				// disconnect from both
+				sig.disconnect();
+			}, 2);
+		});
+
+		it("can disconnect from a specific node", async () => {
+			await ConstantOutput(() => {
+				// initially destination is 1
+				const output = new Signal(1).toDestination();
+
+				// overwrites it with 0
+				const sig = new Signal(0).connect(output);
+
+				// disconnects the signal and goes back to 1
+				sig.disconnect(output);
+			}, 1);
+		});
+
+		it("disconnects every input when no input is passed in", async () => {
+			await ConstantOutput(() => {
+				// initially destination is 1
+				const output = new Signal(1).toDestination();
+
+				// overwrites it with 0
+				const sig = new Signal(0).connect(output, 0);
+
+				// disconnects the signal and goes back to 1
+				sig.disconnect(output);
+			}, 1);
+		});
+
+		it("disconnects every output when no output is passed in", async () => {
+			await ConstantOutput(() => {
+				// initially destination is 1
+				const output = new Signal(1).toDestination();
+
+				// overwrites it with 0
+				const sig = new Signal(0).connect(output, undefined, 0);
+
+				// disconnects the signal and goes back to 1
+				sig.disconnect(output);
+			}, 1);
+		});
+
+		it("disconnects everything if no destination is passed in", () => {
+			return ConstantOutput((context) => {
+				const sig = new Signal({
+					value: 3,
+					context,
+				});
+				const output = new Signal({
+					value: 2,
+					context,
+				}).toDestination();
+
+				// overridden with value of 3
+				connectSignal(sig, output);
+				expect(output.overridden).to.be.true;
+
+				// disconnect goes back to 2
+				sig.disconnect();
+				expect(output.overridden).to.be.false;
+			}, 2);
+		});
+
+		it("can connect multiple times with no affect", () => {
+			return ConstantOutput((context) => {
+				const sig = new Signal({
+					value: 3,
+					context,
+				});
+				const output = new Signal({
+					value: 2,
+					context,
+				}).toDestination();
+
+				connectSignal(sig, output);
+				expect(output.overridden).to.be.true;
+
+				// no affect when called again
+				connectSignal(sig, output);
+			}, 3);
+		});
+
+		it("disconnecting multiple times throws an error", () => {
+			return ConstantOutput((context) => {
+				const sig = new Signal({
+					value: 3,
+					context,
+				});
+				const output = new Signal({
+					value: 2,
+					context,
+				}).toDestination();
+
+				connectSignal(sig, output);
+
+				disconnectSignal(sig, output);
+				expect(() => disconnectSignal(sig, output)).to.throw(Error);
+			}, 2);
 		});
 	});
 });

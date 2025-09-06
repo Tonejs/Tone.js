@@ -1,15 +1,15 @@
 import * as Classes from "./classes.js";
-import { TransportClass } from "./core/clock/Transport.js";
+import { TransportInstance } from "./core/clock/Transport.js";
 import { Context } from "./core/context/Context.js";
-import { DestinationClass } from "./core/context/Destination.js";
-import { ListenerClass } from "./core/context/Listener.js";
+import { DestinationInstance } from "./core/context/Destination.js";
+import { ListenerInstance } from "./core/context/Listener.js";
 import { FrequencyClass } from "./core/type/Frequency.js";
 import { MidiClass } from "./core/type/Midi.js";
 import { TicksClass } from "./core/type/Ticks.js";
 import { TimeClass } from "./core/type/Time.js";
 import { TransportTimeClass } from "./core/type/TransportTime.js";
 import { omitFromObject } from "./core/util/Defaults.js";
-import { DrawClass } from "./core/util/Draw.js";
+import { DrawInstance } from "./core/util/Draw.js";
 import { isDefined, isFunction } from "./core/util/TypeCheck.js";
 
 type ClassesWithoutSingletons = Omit<
@@ -22,10 +22,10 @@ type ClassesWithoutSingletons = Omit<
  * to the same context and contains a singleton Transport and Destination node.
  */
 type ToneObject = {
-	Transport: TransportClass;
-	Destination: DestinationClass;
-	Listener: ListenerClass;
-	Draw: DrawClass;
+	Transport: TransportInstance;
+	Destination: DestinationInstance;
+	Listener: ListenerInstance;
+	Draw: DrawInstance;
 	context: Context;
 	now: () => number;
 	immediate: () => number;
