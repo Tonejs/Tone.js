@@ -25,6 +25,9 @@ export type BaseAudioContextSubset = Omit<
 
 export type ContextLatencyHint = AudioContextLatencyCategory;
 
+/**
+ * Shared class for both Offline and Online Audio Context's
+ */
 export abstract class BaseContext
 	extends Emitter<"statechange" | "tick">
 	implements BaseAudioContextSubset
