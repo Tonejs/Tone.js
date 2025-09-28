@@ -395,21 +395,5 @@ describe("Source", () => {
 			expect(output.getValueAtTime(0.25)).to.be.closeTo(0.05, 0.01);
 			expect(output.getValueAtTime(0.3)).to.be.closeTo(0.1, 0.01);
 		});
-
-		it.only("can correctly sync to transport", async () => {
-			await Offline(({ transport }) => {
-				const source = new Player(rampBuffer).toDestination().sync();
-				source.start(2);
-				source.onstop = () => {
-					console.log("onstop", source.now());
-				};
-
-				transport.schedule((time) => {
-					console.log("SCHEDULE");
-					transport.seconds = 2;
-				}, 2.9);
-				transport.start(0);
-			}, 4);
-		});
 	});
 });

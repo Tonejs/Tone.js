@@ -217,7 +217,6 @@ export abstract class Source<
 			this.log("restart", computedTime);
 			this.restart(computedTime, offset, duration);
 		} else {
-			this.log("start", computedTime);
 			this._state.setStateAtTime("started", computedTime);
 			if (this._synced) {
 				// add the offset time to the event
@@ -337,7 +336,6 @@ export abstract class Source<
 								this.toSeconds(stateEvent.duration) -
 								startOffset;
 						}
-						console.log("start", time, duration);
 						this._start(
 							time,
 							this.toSeconds(stateEvent.offset) + startOffset,
