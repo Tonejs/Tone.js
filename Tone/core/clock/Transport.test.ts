@@ -241,6 +241,33 @@ describe("Transport", () => {
 			});
 		});
 
+		it("can schedule the current seconds position", () => {
+			return Offline((context) => {
+				const transport = new TransportInstance({ context });
+				transport.start();
+
+				let scheduled = false;
+
+				return (time) => {
+					if (time > 0.5 && !scheduled) {
+						scheduled = true;
+						transport.setSecondsAtTime(3, 0.5);
+					}
+
+					whenBetween(time, 0, 0.5, () => {
+						expect(transport.seconds).to.be.closeTo(time, 0.01);
+					});
+
+					whenBetween(time, 0.5, 1, () => {
+						expect(transport.seconds).to.be.closeTo(
+							2.5 + time,
+							0.01
+						);
+					});
+				};
+			}, 1);
+		});
+
 		it("can set the current position in BarsBeatsSixteenths", () => {
 			return Offline((context) => {
 				const transport = new TransportInstance({ context });
@@ -422,6 +449,36 @@ describe("Transport", () => {
 				});
 			}, 2.5);
 			expect(invocations).to.equal(2);
+		});
+
+		it("can schedule the ticks", () => {
+			return Offline((context) => {
+				const transport = new TransportInstance({ context });
+				transport.start();
+
+				let scheduled = false;
+
+				return (time) => {
+					if (time > 0.5 && !scheduled) {
+						scheduled = true;
+						transport.setTicksAtTime(0, 0.5);
+					}
+
+					whenBetween(time, 0, 0.5, () => {
+						expect(transport.ticks).to.be.closeTo(
+							transport.toTicks(time),
+							1
+						);
+					});
+
+					whenBetween(time, 0.5, 1, () => {
+						expect(transport.ticks).to.be.closeTo(
+							transport.toTicks(time - 0.5),
+							1
+						);
+					});
+				};
+			}, 1);
 		});
 	});
 

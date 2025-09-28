@@ -27,6 +27,7 @@ import {
 	TransportTime,
 } from "../type/Units.js";
 import { enterScheduledCallback } from "../util/Debug.js";
+import { assertUsedScheduleTime } from "../util/Debug.js";
 import { optionsFromArguments } from "../util/Defaults.js";
 import { Emitter } from "../util/Emitter.js";
 import { readOnly, writable } from "../util/Interface.js";
@@ -623,6 +624,7 @@ export class TransportInstance
 		return this._clock.ticks;
 	}
 	set ticks(t: Ticks) {
+		assertUsedScheduleTime();
 		if (this._clock.ticks !== t) {
 			const now = this.now();
 			// stop everything synced to the transport
@@ -634,7 +636,6 @@ export class TransportInstance
 					now
 				);
 				const time = now + remainingTick;
-				console.log("setting ticks", ticks);
 				this.emit("stop", time);
 				this._clock.setTicksAtTime(t, time);
 				// restart it with the new time
@@ -656,12 +657,32 @@ export class TransportInstance
 	}
 
 	/**
+	 * Set the Transport's {@link ticks} value at the given time
+	 * @param  ticks  The tick value to set
+	 * @param  time   The Context time at which to set the seconds value
+	 */
+	setTicksAtTime(ticks: Ticks, time: Time): this {
+		this._clock.setTicksAtTime(ticks, time);
+		return this;
+	}
+
+	/**
 	 * Return the elapsed seconds at the given time.
 	 * @param  time  When to get the elapsed seconds
 	 * @return  The number of elapsed seconds
 	 */
 	getSecondsAtTime(time: Time): Seconds {
 		return this._clock.getSecondsAtTime(time);
+	}
+
+	/**
+	 * Set the Transport's {@link seconds} value at the given time.
+	 * @param seconds The seconds value to set
+	 * @param time The Context time at which to set the seconds value
+	 */
+	setSecondsAtTime(seconds: Seconds, time: Time): this {
+		this.setTicksAtTime(this.toTicks(seconds), time);
+		return this;
 	}
 
 	/**
