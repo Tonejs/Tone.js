@@ -4,7 +4,7 @@ import {
 	ToneAudioNodeOptions,
 } from "../core/context/ToneAudioNode.js";
 import { optionsFromArguments } from "../core/util/Defaults.js";
-import { connectSignal } from "./Signal.js";
+import { connectSignal, disconnectSignal } from "./Signal.js";
 
 export type SignalOperatorOptions = ToneAudioNodeOptions;
 
@@ -23,8 +23,15 @@ export abstract class SignalOperator<
 		);
 	}
 
+	/** @inheritdoc */
 	connect(destination: InputNode, outputNum = 0, inputNum = 0): this {
 		connectSignal(this, destination, outputNum, inputNum);
+		return this;
+	}
+
+	/** @inheritdoc */
+	disconnect(destination: InputNode, outputNum = 0, inputNum = 0): this {
+		disconnectSignal(this, destination, outputNum, inputNum);
 		return this;
 	}
 }

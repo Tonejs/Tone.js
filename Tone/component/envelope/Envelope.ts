@@ -9,7 +9,11 @@ import { assert } from "../../core/util/Debug.js";
 import { range, timeRange } from "../../core/util/Decorator.js";
 import { optionsFromArguments } from "../../core/util/Defaults.js";
 import { isArray, isObject, isString } from "../../core/util/TypeCheck.js";
-import { connectSignal, Signal } from "../../signal/Signal.js";
+import {
+	connectSignal,
+	disconnectSignal,
+	Signal,
+} from "../../signal/Signal.js";
 
 type BasicEnvelopeCurve = "linear" | "exponential";
 type InternalEnvelopeCurve = BasicEnvelopeCurve | number[];
@@ -502,6 +506,16 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 	 */
 	connect(destination: InputNode, outputNumber = 0, inputNumber = 0): this {
 		connectSignal(this, destination, outputNumber, inputNumber);
+		return this;
+	}
+
+	/** @inheritdoc */
+	disconnect(
+		destination?: InputNode,
+		outputNumber = 0,
+		inputNumber = 0
+	): this {
+		disconnectSignal(this, destination, outputNumber, inputNumber);
 		return this;
 	}
 

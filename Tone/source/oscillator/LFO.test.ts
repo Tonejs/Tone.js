@@ -3,11 +3,13 @@ import { expect } from "chai";
 import { BasicTests } from "../../../test/helper/Basic.js";
 import { Offline } from "../../../test/helper/Offline.js";
 import { OutputAudio } from "../../../test/helper/OutputAudio.js";
+import { SignalConnectAndDisconnect } from "../../../test/helper/SignalTests.js";
 import { Signal } from "../../signal/Signal.js";
 import { LFO, LFOOptions } from "./LFO.js";
 
 describe("LFO", () => {
 	BasicTests(LFO);
+	SignalConnectAndDisconnect(LFO);
 
 	context("API", () => {
 		it("can get the current state", () => {

@@ -3,11 +3,13 @@ import { expect } from "chai";
 import { BasicTests } from "../../test/helper/Basic.js";
 import { ConstantOutput } from "../../test/helper/ConstantOutput.js";
 import { Offline } from "../../test/helper/Offline.js";
+import { SignalConnectAndDisconnect } from "../../test/helper/SignalTests.js";
 import { Gain } from "../core/context/Gain.js";
 import { connectSignal, disconnectSignal, Signal } from "./Signal.js";
 
 describe("Signal", () => {
 	BasicTests(Signal);
+	SignalConnectAndDisconnect(Signal);
 
 	context("Signal Rate Value", () => {
 		it("has 1 input and 1 output", () => {
@@ -605,7 +607,7 @@ describe("Signal", () => {
 			}, 2);
 		});
 
-		it("can disconnect from all the connected notes", async () => {
+		it("can disconnect from all the connected nodes", async () => {
 			await ConstantOutput(async (context) => {
 				// initially destination is 2
 				const output0 = new Signal(1).toDestination();
@@ -621,15 +623,17 @@ describe("Signal", () => {
 
 		it("can disconnect from a specific node", async () => {
 			await ConstantOutput(() => {
-				// initially destination is 1
-				const output = new Signal(1).toDestination();
+				// initially destination is 3
+				const output0 = new Signal(1).toDestination();
+				const output1 = new Signal(2).toDestination();
 
-				// overwrites it with 0
-				const sig = new Signal(0).connect(output);
+				const sig = new Signal(3);
+				sig.connect(output0);
+				sig.connect(output1);
 
-				// disconnects the signal and goes back to 1
-				sig.disconnect(output);
-			}, 1);
+				// output0 goes back to 1 after disconnecting
+				sig.disconnect(output0);
+			}, 4); // 1 + 3
 		});
 
 		it("disconnects every input when no input is passed in", async () => {
