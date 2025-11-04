@@ -303,7 +303,7 @@ describe("Transport", () => {
 			}, 0.2);
 		});
 
-		it("invokes the first callback time when the scheduled time is the same as the start time", async () => {
+		it("invokes the first callback time when the scheduled time is a non-integer tick time", async () => {
 			let wasCalled = false;
 			await Offline(({ transport }) => {
 				// choose a value which is not cleanly representable as ticks
