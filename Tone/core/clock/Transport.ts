@@ -68,23 +68,25 @@ type TransportCallback = (time: Seconds) => void;
 
 /**
  * Transport for timing musical events.
- * Supports tempo curves and time changes. Unlike browser-based timing (setInterval, requestAnimationFrame)
+ *
+ * Supports tempo curves and time changes.
+ *
+ * Unlike browser-based timing (setInterval, requestAnimationFrame),
  * Transport timing events pass in the exact time of the scheduled event
- * in the argument of the callback function. Pass that time value to the object
- * you're scheduling. <br><br>
+ * in the argument of the callback function.
+ *
  * A single transport is created for you when the library is initialized.
- * <br><br>
- * The transport emits the events: "start", "stop", "pause", and "loop" which are
- * called with the time of that event as the argument.
+ *
+ * The transport emits "start", "stop", "pause", and "loop" events.
  *
  * @example
  * const osc = new Tone.Oscillator().toDestination();
- * // repeated event every 8th note
+ * // Repeated event every 8th note.
  * Tone.getTransport().scheduleRepeat((time) => {
- * 	// use the callback time to schedule events
+ * 	// Use the callback time to schedule events.
  * 	osc.start(time).stop(time + 0.1);
  * }, "8n");
- * // transport must be started before it starts invoking events
+ * // Transport must be started before it starts invoking events.
  * Tone.getTransport().start();
  * @category Core
  */
@@ -276,14 +278,14 @@ export class TransportInstance
 	//-------------------------------------
 
 	/**
-	 * Schedule an event along the timeline.
-	 * @param callback The callback to be invoked at the time.
+	 * Schedule an event to be invoked at a specific time.
+	 * @param callback The callback to invoke at the given time.
 	 * @param time The time to invoke the callback at.
-	 * @return The id of the event which can be used for canceling the event.
+	 * @return The ID of the event, which can be used to cancel the event.
 	 * @example
-	 * // schedule an event on the 16th measure
+	 * // Schedule an event on the 16th measure.
 	 * Tone.getTransport().schedule((time) => {
-	 * 	// invoked on measure 16
+	 * 	// Invoked on measure 16.
 	 * 	console.log("measure 16!");
 	 * }, "16:0:0");
 	 */
@@ -299,17 +301,18 @@ export class TransportInstance
 	}
 
 	/**
-	 * Schedule a repeated event along the timeline. The event will fire
-	 * at the `interval` starting at the `startTime` and for the specified
-	 * `duration`.
-	 * @param  callback   The callback to invoke.
-	 * @param  interval   The duration between successive callbacks. Must be a positive number.
-	 * @param  startTime  When along the timeline the events should start being invoked.
-	 * @param  duration How long the event should repeat.
-	 * @return  The ID of the scheduled event. Use this to cancel the event.
+	 * Schedule a repeated event.
+	 *
+	 * The event will fire at the `interval` starting at the `startTime` and for the specified `duration`.
+	 *
+	 * @param callback The callback to invoke.
+	 * @param interval The duration between successive callbacks.
+	 * @param startTime When the event should start.
+	 * @param duration How long the event should repeat.
+	 * @return The ID of the scheduled event. Use this to cancel the event.
 	 * @example
 	 * const osc = new Tone.Oscillator().toDestination().start();
-	 * // a callback invoked every eighth note after the first measure
+	 * // A callback invoked every eighth note after the first measure.
 	 * Tone.getTransport().scheduleRepeat((time) => {
 	 * 	osc.start(time).stop(time + 0.1);
 	 * }, "8n", "1m");
@@ -420,7 +423,7 @@ export class TransportInstance
 	}
 
 	/**
-	 * Returns the playback state of the source, either "started", "stopped", or "paused"
+	 * The playback state of the transport, either "started", "stopped", or "paused".
 	 */
 	get state(): PlaybackState {
 		return this._clock.getStateAtTime(this.now());
@@ -428,10 +431,10 @@ export class TransportInstance
 
 	/**
 	 * Start the transport and all sources synced to the transport.
-	 * @param  time The time when the transport should start.
-	 * @param  offset The timeline offset to start the transport.
+	 * @param time The time when the transport should start.
+	 * @param offset The timeline offset to start the transport from.
 	 * @example
-	 * // start the transport in one second starting at beginning of the 5th measure.
+	 * // Start the transport in one second, beginning at the start of the 5th measure.
 	 * Tone.getTransport().start("+1", "4:0:0");
 	 */
 	start(time?: Time, offset?: TransportTime): this {
@@ -466,9 +469,11 @@ export class TransportInstance
 	}
 
 	/**
-	 * Toggle the current state of the transport. If it is
-	 * started, it will stop it, otherwise it will start the Transport.
-	 * @param  time The time of the event
+	 * Toggle the current state of the transport.
+	 *
+	 * If it is started, it will stop it. If it is stopped, it will start it.
+	 *
+	 * @param time The time of the event.
 	 */
 	toggle(time?: Time): this {
 		time = this.toSeconds(time);
