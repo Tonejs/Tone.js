@@ -625,25 +625,30 @@ export class TransportInstance
 	}
 	set ticks(t: Ticks) {
 		assertUsedScheduleTime();
-		if (this._clock.ticks !== t) {
-			const now = this.now();
-			// stop everything synced to the transport
-			if (this.state === "started") {
-				const ticks = this._clock.getTicksAtTime(now);
-				// schedule to start on the next tick, #573
-				const remainingTick = this._clock.frequency.getDurationOfTicks(
-					Math.ceil(ticks) - ticks,
-					now
-				);
-				const time = now + remainingTick;
-				this.emit("stop", time);
-				this._clock.setTicksAtTime(t, time);
-				// restart it with the new time
-				this.emit("start", time, this._clock.getSecondsAtTime(time));
-			} else {
-				this.emit("ticks", now);
-				this._clock.setTicksAtTime(t, now);
-			}
+
+		// "floor" ensures that any events scheduled on this tick will be called.
+		t = Math.floor(t);
+
+		if (this._clock.ticks === t) {
+			return;
+		}
+		const now = this.now();
+		// stop everything synced to the transport
+		if (this.state === "started") {
+			const ticks = this._clock.getTicksAtTime(now);
+			// schedule to start on the next tick, #573
+			const remainingTick = this._clock.frequency.getDurationOfTicks(
+				Math.ceil(ticks) - ticks,
+				now
+			);
+			const time = now + remainingTick;
+			this.emit("stop", time);
+			this._clock.setTicksAtTime(t, time);
+			// restart it with the new time
+			this.emit("start", time, this._clock.getSecondsAtTime(time));
+		} else {
+			this.emit("ticks", now);
+			this._clock.setTicksAtTime(t, now);
 		}
 	}
 

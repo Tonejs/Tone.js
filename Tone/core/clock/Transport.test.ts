@@ -302,6 +302,20 @@ describe("Transport", () => {
 				});
 			}, 0.2);
 		});
+
+		it("invokes the first callback time when the scheduled time is the same as the start time", async () => {
+			let wasCalled = false;
+			await Offline(({ transport }) => {
+				// choose a value which is not cleanly representable as ticks
+				const problemValue = Time(100, "i").toSeconds() + 0.01;
+				transport.seconds = problemValue;
+				transport.schedule(() => {
+					wasCalled = true;
+				}, problemValue);
+				transport.start();
+			}, 0.2);
+			expect(wasCalled).to.be.true;
+		});
 	});
 
 	context("state", () => {
