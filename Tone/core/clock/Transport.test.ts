@@ -316,6 +316,22 @@ describe("Transport", () => {
 			}, 0.2);
 			expect(wasCalled).to.be.true;
 		});
+
+		it("setting the same ticks value twice does not emit twice", async () => {
+			await Offline(({ transport }) => {
+				let callCount = 0;
+				transport.on("ticks", () => {
+					callCount++;
+				});
+				transport.ticks = 100;
+				expect(transport.ticks).to.equal(100);
+				expect(callCount).to.equal(1);
+
+				// set it to the same value again has no change
+				transport.ticks = 100;
+				expect(callCount).to.equal(1);
+			}, 0.1);
+		});
 	});
 
 	context("state", () => {
