@@ -1,4 +1,7 @@
-import { expect } from "chai";
+import { expect, use } from "chai";
+import sinon from "sinon";
+import sinonChai from "sinon-chai";
+use(sinonChai);
 
 import { BasicTests } from "../../../test/helper/Basic.js";
 import { CompareToFile } from "../../../test/helper/CompareToFile.js";
@@ -6,6 +9,7 @@ import { Offline } from "../../../test/helper/Offline.js";
 import { OscillatorTests } from "../../../test/helper/OscillatorTests.js";
 import { OutputAudio } from "../../../test/helper/OutputAudio.js";
 import { SourceTests } from "../../../test/helper/SourceTests.js";
+import { Signal } from "../../signal/Signal.js";
 import { Oscillator } from "./Oscillator.js";
 import { ToneOscillatorType } from "./OscillatorInterface.js";
 
@@ -14,6 +18,11 @@ describe("Oscillator", () => {
 	BasicTests(Oscillator);
 	SourceTests(Oscillator);
 	OscillatorTests(Oscillator);
+
+	const sandbox = sinon.createSandbox();
+	afterEach(() => {
+		sandbox.restore();
+	});
 
 	it("matches a file", () => {
 		return CompareToFile(
@@ -25,6 +34,24 @@ describe("Oscillator", () => {
 			"oscillator.wav",
 			0.1
 		);
+	});
+
+	it("cleans up connections after stopping", async () => {
+		const SignalPrototype = Signal.prototype;
+		const connectSpy = sandbox.spy(SignalPrototype, "connect");
+		const disconnectSpy = sandbox.spy(SignalPrototype, "disconnect");
+		await new Promise<void>((done) => {
+			const osc = new Oscillator({
+				onstop: () => done(),
+			}).toDestination();
+			osc.start().stop("+0.05");
+
+			// called with two connections: frequency and detune
+			expect(connectSpy).to.have.been.callCount(2);
+		});
+
+		// called with two disconnections: frequency and detune
+		expect(disconnectSpy).to.have.been.callCount(2);
 	});
 
 	context("Get/Set", () => {

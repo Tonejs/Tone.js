@@ -138,7 +138,13 @@ export class Oscillator
 		// new oscillator with previous values
 		const oscillator = new ToneOscillatorNode({
 			context: this.context,
-			onended: () => this.onstop(this),
+			onended: () => {
+				// Clean up connections fixes #1379
+				this.frequency.disconnect(oscillator.frequency);
+				this.detune.disconnect(oscillator.detune);
+				oscillator.disconnect();
+				this.onstop(this);
+			},
 		});
 		this._oscillator = oscillator;
 		if (this._wave) {
