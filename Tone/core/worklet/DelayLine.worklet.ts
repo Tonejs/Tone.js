@@ -5,7 +5,6 @@ const delayLine = /* javascript */ `
 	 * A multichannel buffer for use within an AudioWorkletProcessor as a delay line
 	 */
 	class DelayLine {
-		
 		constructor(size, channels) {
 			this.buffer = [];
 			this.writeHead = []
@@ -36,8 +35,13 @@ const delayLine = /* javascript */ `
 		 * @param channel number
 		 * @param delay number delay samples
 		 */
-		get(channel, delay) {
+		get(channel, delay, reverse = false) {
 			let readHead = this.writeHead[channel] - Math.floor(delay);
+
+			if (reverse) {
+				readHead = Math.floor(delay) * 2 - this.writeHead[channel];
+			}
+
 			if (readHead < 0) {
 				readHead += this.size;
 			}

@@ -32,7 +32,8 @@
 		"test:watch": "tsc && concurrently --raw \"tsc -w\" \"web-test-runner --config=./test/web-test-runner.config.js --watch ${npm_config_group:+--group ${npm_config_group}}\"",
 		"ts:build": "tsc --project ./scripts/tsconfig.build.json",
 		"watch": "tsc --watch",
-		"webpack:build": "webpack --env production=1 --config ./scripts/webpack.config.cjs"
+		"webpack:build": "webpack --env production=1 --config ./scripts/webpack.config.cjs",
+		"serve": "webpack --mode=development --config ./scripts/webpack.config.cjs --watch"
 	},
 	"repository": {
 		"type": "git",

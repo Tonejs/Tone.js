@@ -13,6 +13,7 @@ export * from "./Phaser.js";
 export * from "./PingPongDelay.js";
 export * from "./PitchShift.js";
 export * from "./Reverb.js";
+export * from "./ReverseDelay.js";
 export * from "./StereoWidener.js";
 export * from "./Tremolo.js";
 export * from "./Vibrato.js";

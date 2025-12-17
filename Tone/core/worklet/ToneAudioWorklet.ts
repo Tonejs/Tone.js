@@ -5,8 +5,9 @@ import {
 import { noOp } from "../util/Interface.js";
 import { getWorkletGlobalScope } from "./WorkletGlobalScope.js";
 
-export type ToneAudioWorkletOptions = ToneAudioNodeOptions;
-
+export interface ToneAudioWorkletOptions extends ToneAudioNodeOptions {
+	workletOptions?: Partial<AudioWorkletNodeOptions>
+};
 export abstract class ToneAudioWorklet<
 	Options extends ToneAudioWorkletOptions,
 > extends ToneAudioNode<Options> {
@@ -62,6 +63,13 @@ export abstract class ToneAudioWorklet<
 		let workletPromise = ToneAudioWorklet._workletPromises.get(
 			this.context
 		);
+
+		if (options.workletOptions) {
+			this.workletOptions = Object.assign({},
+				this.workletOptions,
+				options.workletOptions
+			);
+		}
 
 		if (workletPromise === undefined) {
 			workletPromise = this.context.addAudioWorkletModule(blobUrl);
