@@ -11,13 +11,14 @@ export const reverseDelayWorklet = /* javascript */ `
 			super(options);
 			this.delay = this.sampleRate * options.processorOptions.delayTime;
 			const channels = options.channelCount || 2;
-			this.delayLine = new DelayLine(this.delay * 2, channels);
+			this.delayLine = new DelayLine(Math.floor(this.delay) * 2, channels);
 		}
 
 		static get parameterDescriptors() {
 			return [{
 				name: "feedback",
-				defaultValue: 0.25,
+				defaultValue: 0.5,
+				minValue: 0,
 				maxValue: 0.9999,
 				automationRate: "k-rate"
 			}];

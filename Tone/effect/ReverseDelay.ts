@@ -1,9 +1,6 @@
-import { Delay } from "../core/context/Delay.js";
 import { Param } from "../core/context/Param.js";
-import { NormalRange, Time } from "../core/type/Units.js";
+import { NormalRange, Seconds, Time } from "../core/type/Units.js";
 import { optionsFromArguments } from "../core/util/Defaults.js";
-import { readOnly } from "../core/util/Interface.js";
-import { FeedbackEffect, FeedbackEffectOptions } from "./FeedbackEffect.js";
 import { EffectOptions } from "./Effect.js";
 import { workletName } from "./ReverseDelay.worklet.js";
 import { connectSeries } from "../core/context/ToneAudioNode.js";
@@ -15,75 +12,99 @@ import { Gain } from "../core/context/Gain.js";
 import { Effect } from "./Effect.js";
 
 export interface ReverseDelayOptions extends EffectOptions {
-	// delayTime: Time
+	delayTime: Time
+	feedback: NormalRange
 }
 
+/**
+ * TODO: Add description
+ */
 export class ReverseDelay extends Effect<ReverseDelayOptions> {
 	readonly name: string = "ReverseDelay";
 
-		private _reverseDelayWorklet: ReverseDelayWorklet
-	
-		// TODO: Figure out passing delayTime
-		/**
-		 * The delayTime of the FeedbackDelay.
-		 */
-		// readonly delayTime: Param<"time">;
-	
-		constructor(delayTime?: Time, feedback?: NormalRange);
-		constructor(options?: Partial<ReverseDelayOptions>);
-		constructor() {
-			const options = optionsFromArguments(
-				ReverseDelay.getDefaults(),
-				arguments,
-				// ["delayTime", "feedback"]
-			);
+	private _reverseDelayWorklet: ReverseDelayWorklet;
 
-			super(options);
+	constructor(delayTime?: Time, feedback?: NormalRange);
+	constructor(options?: Partial<ReverseDelayOptions>);
+	constructor() {
+		const options = optionsFromArguments(ReverseDelay.getDefaults(), arguments, [
+			"delayTime",
+			"feedback"
+		]);
 
-			this._reverseDelayWorklet = new ReverseDelayWorklet({
-				context: this.context,
-				// delayTime: options.delayTime
-			});
+		super(options);
+		this._reverseDelayWorklet = this._connectWorklet(options.delayTime, options.feedback);
+	}
 
-			this.connectEffect(this._reverseDelayWorklet);
-		}
+	_connectWorklet(delayTime: Time, feedback: NormalRange): ReverseDelayWorklet {
+		const worklet = new ReverseDelayWorklet({
+			context: this.context,
+			delayTime: this.toSeconds(delayTime),
+			feedback
+		});
 
+		this.connectEffect(worklet);
 
-		static getDefaults(): ReverseDelayOptions {
-			return Object.assign(Effect.getDefaults(), {
-				wet: .5,
-				delayTime: .5
-			});
-		}
-	
-		dispose(): this {
-			super.dispose();
-			this._reverseDelayWorklet.dispose();
-			return this;
-		}
+		return worklet;
+	}
+
+	get delayTime(): Time {
+		return this._reverseDelayWorklet.delayTime;
+	}
+
+	set delayTime(delayTime: Time) {
+		this._internalChannels.pop();
+		const prev = this._reverseDelayWorklet;
+		this._reverseDelayWorklet = this._connectWorklet(delayTime, this.feedback);
+		prev.dispose();
+	}
+
+	get feedback() {
+		return this._reverseDelayWorklet.feedback.value;
+	}
+
+	set feedback(feedback: NormalRange) {
+		this._reverseDelayWorklet.feedback.rampTo(feedback);
+	}
+
+	static getDefaults(): ReverseDelayOptions {
+		return Object.assign(Effect.getDefaults(), {
+			wet: .5,
+			delayTime: 1,
+			feedback: .5
+		});
+	}
+
+	dispose(): this {
+		super.dispose();
+		this._reverseDelayWorklet.dispose();
+		return this;
+	}
 }
 
 export interface ReverseDelayWorkletOptions extends ToneAudioWorkletOptions {
-	delayTime: Time
+	delayTime: Seconds;
 	feedback: NormalRange;
 }
 
+/**
+ * Internal class which creates an AudioWorklet to reverse the delay signal
+ */
 class ReverseDelayWorklet extends ToneAudioWorklet<ReverseDelayWorkletOptions> {
+	readonly name: string = "ReverseDelayWorklet";
+
 	readonly input: Gain;
 	readonly output: Gain;
-
-	/**
-	 * The amount of feedback of the delayed signal.
-	 */
+	readonly delayTime: Seconds;
 	readonly feedback: Param<"normalRange">;
 
+	constructor(delayTime?: Seconds, feedback?: NormalRange)
 	constructor(options?: Partial<ReverseDelayOptions>)
 	constructor() {
-		const options = optionsFromArguments(
-			ReverseDelayWorklet.getDefaults(),
-			arguments,
-			["delayTime", "feedback"],
-		);
+		const options = optionsFromArguments(ReverseDelayWorklet.getDefaults(), arguments, [
+			"delayTime",
+			"feedback"
+		]);
 
 		super({
 			...options, 
@@ -97,21 +118,16 @@ class ReverseDelayWorklet extends ToneAudioWorklet<ReverseDelayWorkletOptions> {
 		this.input = new Gain({ context: this.context });
 		this.output = new Gain({ context: this.context });
 
+		this.delayTime = options.delayTime
 		this.feedback = new Param<"normalRange">({
 			context: this.context,
 			value: options.feedback,
 			units: "normalRange",
 			param: this._dummyParam,
 			swappable: true,
+			minValue: 0,
+			maxValue: .9999
 		});
-
-		readOnly(
-			this,
-			[
-				"feedback",
-				"delayTime"
-			]
-		);
 	}
 
 	protected _audioWorkletName(): string {
@@ -124,14 +140,10 @@ class ReverseDelayWorklet extends ToneAudioWorklet<ReverseDelayWorkletOptions> {
 		this.feedback.setParam(feedback);
 	}
 
-	/**
-	 * The default parameters
-	 */
 	static getDefaults(): ReverseDelayWorkletOptions {
 		return Object.assign(ToneAudioWorklet.getDefaults(), {
-			// TODO: See if there are standard options across codebase
 			delayTime: 1,
-			feedback: .25,
+			feedback: .5,
 		});
 	}
 

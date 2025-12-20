@@ -43,34 +43,22 @@
 		</tone-example>
 
 		<script type="text/javascript">
-			// TODO:
-			// Add adjustable controls
-			// Figure out good settings
-			// Add explanation
-			const reverseDelay = new Tone.ReverseDelay({
-				delayTime: .5,
-				feedback: .5
-			}).toDestination();
+			// TODO: Add explanation
+			const reverseDelay = new Tone.ReverseDelay().toDestination();
 
-			const synth = new Tone.PolySynth(Tone.Synth, {
-				oscillator: {
-					partials: [0, 2, 3, 4],
-				},
-			}).connect(reverseDelay);
+			const synth = new Tone.Synth().connect(reverseDelay);
 
 			piano({
 				parent: document.querySelector("#content"),
 				polyphonic: true,
 				noteon: (note) => synth.triggerAttack(note.name),
-				noteoff: (note) => synth.triggerRelease(note.name),
+				noteoff: (note) => synth.triggerRelease()
 			});
 
-			document
-				.querySelector("tone-momentary-button")
-				.addEventListener("down", () => player.start());
-			document
-				.querySelector("tone-momentary-button")
-				.addEventListener("up", () => player.stop());;
+			ui({
+				tone: reverseDelay,
+				parent: document.querySelector("#content"),
+			});
 		</script>
 	</body>
 </html>
