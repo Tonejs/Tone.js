@@ -35,17 +35,32 @@ const delayLine = /* javascript */ `
 		 * @param channel number
 		 * @param delay number delay samples
 		 */
-		get(channel, delay, reverse = false) {
+		get(channel, delay) {
 			let readHead = this.writeHead[channel] - Math.floor(delay);
-
-			if (reverse) {
-				readHead = Math.floor(delay) * 2 - this.writeHead[channel];
-			}
 
 			if (readHead < 0) {
 				readHead += this.size;
 			}
 			return this.buffer[channel][readHead];
+		}
+
+		/**
+		 * Get the reverse recorded value of the channel given the delay
+		 * @param channel number
+		 * @param delay number delay samples
+		 */
+		getReverse(channel, delay) {
+			const readHead = delay * 2 - this.writeHead[channel];
+
+			// Gain function to reduce clicking when read is too close to write
+			let readWriteDifference = this.writeHead[channel] - readHead;
+			if (readWriteDifference < 0) {
+				readWriteDifference += this.size
+			}
+			const delayPct = readWriteDifference / this.size;
+			const gainFunction = 4 * delayPct * (1 - delayPct);
+
+			return this.buffer[channel][readHead] * gainFunction;
 		}
 	}
 `;

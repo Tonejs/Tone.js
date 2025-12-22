@@ -9,9 +9,9 @@ export const reverseDelayWorklet = /* javascript */ `
 	class ReverseDelayWorklet extends SingleIOProcessor {
 		constructor(options) {
 			super(options);
-			this.delay = this.sampleRate * options.processorOptions.delayTime;
+			this.delayTime = Math.floor(this.sampleRate * options.processorOptions.delayTime);
 			const channels = options.channelCount || 2;
-			this.delayLine = new DelayLine(Math.floor(this.delay) * 2, channels);
+			this.delayLine = new DelayLine(this.delayTime * 2, channels);
 		}
 
 		static get parameterDescriptors() {
@@ -25,9 +25,13 @@ export const reverseDelayWorklet = /* javascript */ `
 		}
 
 		generate(input, channel, parameters) {
-			const reversedSample = this.delayLine.get(channel, this.delay, true);
-			const delayedSample = this.delayLine.get(channel, this.delay);
+			const reversedSample = this.delayLine.getReverse(channel, this.delayTime);
+			const delayedSample = this.delayLine.get(channel, this.delayTime);
+
+			// Push the forward sample back on the line
 			this.delayLine.push(channel, input + delayedSample * parameters.feedback);
+
+			// Play the reversed sample
 			return reversedSample;
 		}
 	}

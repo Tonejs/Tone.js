@@ -114,11 +114,11 @@ class ReverseDelayWorklet extends ToneAudioWorklet<ReverseDelayWorkletOptions> {
 				}
 			}
 		});
-	
+
 		this.input = new Gain({ context: this.context });
 		this.output = new Gain({ context: this.context });
 
-		this.delayTime = options.delayTime
+		this.delayTime = options.delayTime;
 		this.feedback = new Param<"normalRange">({
 			context: this.context,
 			value: options.feedback,
