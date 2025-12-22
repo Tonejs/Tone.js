@@ -22,8 +22,16 @@ export interface ReverseDelayOptions extends EffectOptions {
 export class ReverseDelay extends Effect<ReverseDelayOptions> {
 	readonly name: string = "ReverseDelay";
 
+	/**
+	 * TODO: add description
+	 */
 	private _reverseDelayWorklet: ReverseDelayWorklet;
 
+	/**
+	 * TODO: update param descriptions
+	 * @param delayTime 
+	 * @param feedback // min, max, desc
+	 */
 	constructor(delayTime?: Time, feedback?: NormalRange);
 	constructor(options?: Partial<ReverseDelayOptions>);
 	constructor() {
@@ -31,8 +39,8 @@ export class ReverseDelay extends Effect<ReverseDelayOptions> {
 			"delayTime",
 			"feedback"
 		]);
-
 		super(options);
+
 		this._reverseDelayWorklet = this._connectWorklet(options.delayTime, options.feedback);
 	}
 
@@ -42,28 +50,35 @@ export class ReverseDelay extends Effect<ReverseDelayOptions> {
 			delayTime: this.toSeconds(delayTime),
 			feedback
 		});
-
 		this.connectEffect(worklet);
 
 		return worklet;
 	}
 
+	/**
+	 * TODO: add description
+	 */
 	get delayTime(): Time {
 		return this._reverseDelayWorklet.delayTime;
 	}
 
-	set delayTime(delayTime: Time) {
-		this._internalChannels.pop();
+	set delayTime(delayTime) {
 		const prev = this._reverseDelayWorklet;
 		this._reverseDelayWorklet = this._connectWorklet(delayTime, this.feedback);
-		prev.dispose();
+
+		// Prevent sudden stop when disposing previous worklet
+		prev.output.gain.linearRampTo(0, this.toSeconds(this.delayTime))
+		this.context.setTimeout(() => prev.dispose(), this.toSeconds(this.delayTime));
 	}
 
-	get feedback() {
+	/**
+	 * TODO: add description
+	 */
+	get feedback(): NormalRange {
 		return this._reverseDelayWorklet.feedback.value;
 	}
 
-	set feedback(feedback: NormalRange) {
+	set feedback(feedback) {
 		this._reverseDelayWorklet.feedback.rampTo(feedback);
 	}
 
@@ -95,10 +110,10 @@ class ReverseDelayWorklet extends ToneAudioWorklet<ReverseDelayWorkletOptions> {
 
 	readonly input: Gain;
 	readonly output: Gain;
+
 	readonly delayTime: Seconds;
 	readonly feedback: Param<"normalRange">;
 
-	constructor(delayTime?: Seconds, feedback?: NormalRange)
 	constructor(options?: Partial<ReverseDelayOptions>)
 	constructor() {
 		const options = optionsFromArguments(ReverseDelayWorklet.getDefaults(), arguments, [
@@ -130,6 +145,13 @@ class ReverseDelayWorklet extends ToneAudioWorklet<ReverseDelayWorkletOptions> {
 		});
 	}
 
+	static getDefaults(): ReverseDelayWorkletOptions {
+		return Object.assign(ToneAudioWorklet.getDefaults(), {
+			delayTime: 1,
+			feedback: .5,
+		});
+	}
+
 	protected _audioWorkletName(): string {
 		return workletName;
 	}
@@ -138,13 +160,6 @@ class ReverseDelayWorklet extends ToneAudioWorklet<ReverseDelayWorkletOptions> {
 		connectSeries(this.input, node, this.output)
 		const feedback = node.parameters.get("feedback") as AudioParam;
 		this.feedback.setParam(feedback);
-	}
-
-	static getDefaults(): ReverseDelayWorkletOptions {
-		return Object.assign(ToneAudioWorklet.getDefaults(), {
-			delayTime: 1,
-			feedback: .5,
-		});
 	}
 
 	dispose(): this {

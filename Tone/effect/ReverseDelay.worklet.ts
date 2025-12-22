@@ -7,6 +7,7 @@ export const workletName = "reverse-delay";
 
 export const reverseDelayWorklet = /* javascript */ `
 	class ReverseDelayWorklet extends SingleIOProcessor {
+
 		constructor(options) {
 			super(options);
 			this.delayTime = Math.floor(this.sampleRate * options.processorOptions.delayTime);
@@ -25,6 +26,10 @@ export const reverseDelayWorklet = /* javascript */ `
 		}
 
 		generate(input, channel, parameters) {
+			if (this.delayTime === 0) {
+				return 0;
+			}
+
 			const reversedSample = this.delayLine.getReverse(channel, this.delayTime);
 			const delayedSample = this.delayLine.get(channel, this.delayTime);
 

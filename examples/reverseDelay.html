@@ -29,21 +29,15 @@
 			<tone-loader></tone-loader>
 
 			<div slot="explanation">
-				
-				<br /><br />
-				<a
-					href="https://tonejs.github.io/docs/latest/classes/ReverseDelay"
-					>Tone.ReverseDelay</a
-				>
-				docs.
+				<!-- TODO: write explanation -->
+				<a href="https://tonejs.github.io/docs/latest/classes/ReverseDelay"
+					>Tone.ReverseDelay</a>
 			</div>
 
-			<div id="content">
-			</div>
+			<div id="content"></div>
 		</tone-example>
 
 		<script type="text/javascript">
-			// TODO: Add explanation
 			const reverseDelay = new Tone.ReverseDelay().toDestination();
 
 			const synth = new Tone.Synth().connect(reverseDelay);
@@ -52,7 +46,7 @@
 				parent: document.querySelector("#content"),
 				polyphonic: true,
 				noteon: (note) => synth.triggerAttack(note.name),
-				noteoff: (note) => synth.triggerRelease()
+				noteoff: (note) => synth.triggerRelease(),
 			});
 
 			ui({
