@@ -24,7 +24,7 @@ const delayLine = /* javascript */ `
 		 */
 		push(channel, value) {
 			this.writeHead[channel] += 1;
-			if (this.writeHead[channel] > this.size) {
+			if (this.writeHead[channel] >= this.size) {
 				this.writeHead[channel] = 0;
 			}
 			this.buffer[channel][this.writeHead[channel]] = value;
@@ -50,7 +50,11 @@ const delayLine = /* javascript */ `
 		 * @param delay number delay samples
 		 */
 		getReverse(channel, delay) {
-			const readHead = delay * 2 - this.writeHead[channel];
+			if (!this.size || !delay) {
+				return 0;
+			}
+
+			const readHead = delay * 2 - this.writeHead[channel] - 1;
 
 			// Gain function to reduce clicking when read is too close to write
 			let readWriteDifference = this.writeHead[channel] - readHead;

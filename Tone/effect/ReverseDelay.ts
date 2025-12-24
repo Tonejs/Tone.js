@@ -79,7 +79,7 @@ export class ReverseDelay extends Effect<ReverseDelayOptions> {
 	}
 
 	set feedback(feedback) {
-		this._reverseDelayWorklet.feedback.rampTo(feedback);
+		this._reverseDelayWorklet.set({ feedback });
 	}
 
 	static getDefaults(): ReverseDelayOptions {
