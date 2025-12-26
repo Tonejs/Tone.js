@@ -34,13 +34,6 @@ const defaults = {
 		],
 	},
 	devtool: "cheap-source-map",
-	devServer: {
-		static: {
-			directory: path.join(__dirname, "../build/"),
-		},
-		hot: true,
-		port: 9000,
-	}
 };
 
 // /////////////////////////////////////
@@ -87,7 +80,5 @@ module.exports = (env) => {
 		return production;
 	} else if (env.scratch) {
 		return scratch;
-	} else {
-		return defaults
 	}
 };
