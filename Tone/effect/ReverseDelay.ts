@@ -17,20 +17,26 @@ export interface ReverseDelayOptions extends EffectOptions {
 }
 
 /**
- * TODO: Add description
+ * A feedback delay effect that plays the echos in reverse.
+ * Algorithm and gain functino found in [this pdf](https://ccrma.stanford.edu/~jingjiez/portfolio/echoing-harmonics/pdfs/A%20Pitch%20Shifting%20Reverse%20Echo%20Audio%20Effect.pdf)
+ * 
+ * @example
+ * const reverse = new Tone.ReverseDelay(1.5, 0.75).toDestination();
+ * const synth = new Tone.Synth().connect(reverse);
+ * synth.triggerAttackRelease("C4", "2n");
+ * @category Effect
  */
 export class ReverseDelay extends Effect<ReverseDelayOptions> {
 	readonly name: string = "ReverseDelay";
 
 	/**
-	 * TODO: add description
+	 * The node that does the reverse delay effect.
 	 */
 	private _reverseDelayWorklet: ReverseDelayWorklet;
 
 	/**
-	 * TODO: update param descriptions
-	 * @param delayTime 
-	 * @param feedback // min, max, desc
+	 * @param delayTime The amount of time the incoming signal will be delayed and reversed.
+	 * @param feedback The amount of signal which is fed back through the delay.
 	 */
 	constructor(delayTime?: Time, feedback?: NormalRange);
 	constructor(options?: Partial<ReverseDelayOptions>);
@@ -56,7 +62,7 @@ export class ReverseDelay extends Effect<ReverseDelayOptions> {
 	}
 
 	/**
-	 * TODO: add description
+	 * The amount of time the incoming signal is delayed and reversed
 	 */
 	get delayTime(): Time {
 		return this._reverseDelayWorklet.delayTime;
@@ -72,7 +78,7 @@ export class ReverseDelay extends Effect<ReverseDelayOptions> {
 	}
 
 	/**
-	 * TODO: add description
+	 * The amount of signal which is fed back through the delay.
 	 */
 	get feedback(): NormalRange {
 		return this._reverseDelayWorklet.feedback.value;
