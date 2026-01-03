@@ -216,17 +216,26 @@ export class Sampler extends Instrument<SamplerOptions> {
 	 * @param  notes	The note to play, or an array of notes.
 	 * @param  time     When to play the note
 	 * @param  velocity The velocity to play the sample back.
+	 * @param  start    Optional start position within the sample (in seconds). 
+	 *                  Allows playing a portion of the sample without loop mode.
+	 * @param  end      Optional end position within the sample (in seconds).
+	 *                  If provided with start, plays only that portion of the sample.
 	 */
 	triggerAttack(
 		notes: Frequency | Frequency[],
 		time?: Time,
-		velocity: NormalRange = 1
+		velocity: NormalRange = 1,
+		start?: Time,
+		end?: Time
 	): this {
-		this.log("triggerAttack", notes, time, velocity);
+		this.log("triggerAttack", notes, time, velocity, start, end);
 		if (!Array.isArray(notes)) {
 			notes = [notes];
 		}
-        const offset = defaultArg(this._loopStart, 0);
+		// Use custom start position if provided, otherwise fall back to loopStart or 0
+        const offset = start !== undefined 
+			? this.toSeconds(start) 
+			: defaultArg(this._loopStart, 0);
 		notes.forEach((note) => {
 			const midiFloat = ftomf(
 				new FrequencyClass(this.context, note).toFrequency()
@@ -240,9 +249,20 @@ export class Sampler extends Instrument<SamplerOptions> {
 			const playbackRate = intervalToFrequencyRatio(
 				difference + remainder
 			);
-            const duration = this._loop 
-                ? undefined
-                : buffer.duration / playbackRate;
+			// Calculate duration: custom range, loop mode, or full buffer
+			let duration: number | undefined;
+			if (start !== undefined && end !== undefined) {
+				// Custom range: calculate duration from start to end, adjusted for playback rate
+				const startSeconds = this.toSeconds(start);
+				const endSeconds = this.toSeconds(end);
+				duration = (endSeconds - startSeconds) / playbackRate;
+			} else if (this._loop) {
+				// Loop mode: let it loop indefinitely
+				duration = undefined;
+			} else {
+				// Default: play entire buffer
+				duration = buffer.duration / playbackRate;
+			}
 			// play that note
 			const source = new ToneBufferSource({
 				url: buffer,
