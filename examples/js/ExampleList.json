@@ -16,7 +16,8 @@
 		"FatOscillator" : "jump",
 		"MetalSynth" : "bembe",
 		"Granular Synthesis" : "grainPlayer",
-		"Sampler" : "sampler"
+		"Sampler" : "sampler",
+		"Sampler Range" : "samplerRange"
 	},
 	"Effects" : {
 		"LFO Effects" : "lfoEffects",
