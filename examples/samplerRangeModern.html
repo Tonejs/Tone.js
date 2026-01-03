@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>Sampler Range Playback</title>
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1, maximum-scale=1"
+		/>
+		<link
+			href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,700|Roboto:400,500,700&display=swap"
+			rel="stylesheet"
+		/>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/2.4.3/webcomponents-bundle.js"></script>
+		<script src="../build/Tone.js"></script>
+		<script src="./js/tone-ui.js"></script>
+		<script src="./js/components.js"></script>
+	</head>
+	<body>
+		<style type="text/css">
+			:root {
+				--bg-dark: #1e1e1e;
+				--bg-panel: #2b2b2b;
+				--text-main: #e0e0e0;
+				--text-dim: #888888;
+				--accent-yellow: #ffca28;
+				--accent-teal: rgba(0, 150, 136, 0.3);
+				--accent-teal-border: #009688;
+				--waveform-gray: #555555;
+				--waveform-bg: #111111;
+			}
+
+			body {
+				background-color: var(--bg-dark);
+				color: var(--text-main);
+				font-family: "Roboto", sans-serif;
+				margin: 0;
+				padding: 20px;
+			}
+
+			/* Main Container */
+			.daw-container {
+				max-width: 950px;
+				margin: 0 auto;
+				background: var(--bg-panel);
+				padding: 20px;
+				border-radius: 6px;
+				box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+			}
+
+			h2 {
+				margin-top: 0;
+				font-size: 1.1rem;
+				color: var(--text-dim);
+				text-transform: uppercase;
+				letter-spacing: 1px;
+			}
+
+			/* Controls Grid */
+			.controls-grid {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+				gap: 15px;
+				margin-bottom: 20px;
+			}
+
+			.control-row {
+				display: flex;
+				align-items: center;
+				gap: 10px;
+				background: #333;
+				padding: 8px 12px;
+				border-radius: 4px;
+			}
+
+			label {
+				font-size: 0.75rem;
+				font-weight: 700;
+				color: var(--text-dim);
+				text-transform: uppercase;
+				min-width: 80px;
+			}
+
+			/* Sliders */
+			input[type="range"] {
+				flex: 1;
+				-webkit-appearance: none;
+				background: transparent;
+			}
+			input[type="range"]::-webkit-slider-runnable-track {
+				height: 4px;
+				background: #555;
+				border-radius: 2px;
+			}
+			input[type="range"]::-webkit-slider-thumb {
+				-webkit-appearance: none;
+				height: 14px;
+				width: 14px;
+				border-radius: 50%;
+				background: var(--accent-yellow);
+				margin-top: -5px;
+				cursor: pointer;
+			}
+
+			/* Inputs */
+			input[type="number"], select {
+				background: #222;
+				border: 1px solid #444;
+				color: var(--accent-yellow);
+				font-family: "Roboto Mono", monospace;
+				padding: 4px;
+				border-radius: 3px;
+				width: 70px;
+				text-align: right;
+			}
+
+			.value-display {
+				font-family: "Roboto Mono", monospace;
+				font-size: 0.85rem;
+				color: var(--accent-yellow);
+				min-width: 60px;
+				text-align: right;
+			}
+
+			/* Waveform Area */
+			#waveformContainer {
+				width: 100%;
+				height: 140px; /* Matched to original height feel */
+				background: var(--waveform-bg);
+				border: 1px solid #333;
+				border-radius: 4px;
+				overflow-x: auto;
+				overflow-y: hidden;
+				position: relative;
+				margin: 15px 0;
+				/* Custom Scrollbar */
+				scrollbar-width: thin;
+				scrollbar-color: #444 #222;
+			}
+			#waveformContainer::-webkit-scrollbar { height: 8px; }
+			#waveformContainer::-webkit-scrollbar-track { background: #222; }
+			#waveformContainer::-webkit-scrollbar-thumb { background: #444; border-radius: 4px; }
+
+			#waveform {
+				height: 120px; /* Space for ruler */
+				position: relative;
+				min-width: 100%;
+			}
+
+			/* Canvas Layering */
+			#waveform canvas {
+				position: absolute;
+				top: 0;
+				left: 0;
+				height: 100%;
+				display: block;
+			}
+			#waveformCanvas { z-index: 1; }
+			#envelopeCanvas { z-index: 2; pointer-events: none; }
+
+			/* Playhead */
+			#playhead {
+				position: absolute;
+				top: 0;
+				height: 100%;
+				width: 1px;
+				background: #fff;
+				z-index: 10;
+				display: none;
+				box-shadow: 0 0 4px rgba(255,255,255,0.8);
+				pointer-events: none;
+			}
+			#playhead::before {
+				content: '';
+				position: absolute;
+				top: 0; left: -4px;
+				border-left: 4px solid transparent;
+				border-right: 4px solid transparent;
+				border-top: 6px solid #fff;
+			}
+
+			/* Time Ruler */
+			#timeRuler {
+				height: 20px;
+				background: #1a1a1a;
+				border-top: 1px solid #333;
+				position: absolute;
+				bottom: 0;
+				left: 0;
+				z-index: 5;
+				font-family: "Roboto Mono", monospace;
+				font-size: 10px;
+				color: #666;
+				overflow: hidden;
+			}
+			.time-marker {
+				position: absolute;
+				top: 0;
+				height: 100%;
+				border-left: 1px solid #444;
+				padding-left: 3px;
+			}
+
+			/* Buttons */
+			.button-row {
+				display: flex;
+				gap: 10px;
+				margin-top: 20px;
+				flex-wrap: wrap;
+			}
+			button {
+				background: #444;
+				color: white;
+				border: none;
+				padding: 10px 18px;
+				border-radius: 4px;
+				cursor: pointer;
+				font-weight: bold;
+				text-transform: uppercase;
+				font-size: 0.75rem;
+				letter-spacing: 0.5px;
+				transition: background 0.2s;
+			}
+			button:hover:not(:disabled) { background: #555; }
+			button:disabled { opacity: 0.5; cursor: not-allowed; }
+			button.toggle-btn.active {
+				background: var(--accent-teal-border);
+				color: white;
+				box-shadow: 0 0 8px rgba(0, 150, 136, 0.4);
+			}
+
+			/* Zoom Toolbar */
+			.zoom-controls {
+				display: flex;
+				align-items: center;
+				gap: 10px;
+				margin-bottom: 5px;
+				background: #252525;
+				padding: 5px 10px;
+				border-radius: 4px 4px 0 0;
+			}
+			.zoom-controls button {
+				padding: 2px 10px;
+				font-size: 14px;
+				min-width: 30px;
+			}
+
+			#status {
+				margin-top: 10px;
+				font-family: "Roboto Mono", monospace;
+				font-size: 0.8rem;
+				color: #888;
+			}
+		</style>
+
+		<div class="daw-container">
+			<h2>Sampler Range & Loop</h2>
+
+			<!-- Zoom Toolbar -->
+			<div class="zoom-controls">
+				<label>Zoom</label>
+				<button id="zoomOutBtn">−</button>
+				<input type="range" id="zoomSlider" min="1" max="50" step="0.5" value="1" style="width: 100px;" />
+				<button id="zoomInBtn">+</button>
+				<span id="zoomDisplay" class="value-display" style="text-align: center; width: 50px;">1.0x</span>
+				<div style="flex:1"></div>
+				<button id="zoomFitBtn">Fit View</button>
+				<button id="zoomSelectionBtn" disabled>Zoom Selection</button>
+			</div>
+
+			<!-- Waveform Display -->
+			<div id="waveformContainer">
+				<div id="waveform">
+					<canvas id="waveformCanvas"></canvas>
+					<canvas id="envelopeCanvas"></canvas>
+					<div id="playhead"></div>
+				</div>
+				<div id="timeRuler"></div>
+			</div>
+
+			<!-- Controls -->
+			<div class="controls-grid">
+				<!-- File -->
+				<div class="control-row">
+					<label>File</label>
+					<input type="file" id="fileInput" accept=".wav,.mp3,.ogg,.flac" style="font-size: 0.8rem; color: #aaa;" />
+				</div>
+				<!-- Start -->
+				<div class="control-row">
+					<label>Start</label>
+					<input type="range" id="startSlider" min="0" max="10" step="0.01" value="0" />
+					<span class="value-display" id="startDisplay">0.00s</span>
+				</div>
+				<!-- End -->
+				<div class="control-row">
+					<label>End</label>
+					<input type="range" id="endSlider" min="0" max="10" step="0.01" value="1" />
+					<span class="value-display" id="endDisplay">1.00s</span>
+				</div>
+				<!-- Envelope -->
+				<div class="control-row">
+					<label>Att/Rel</label>
+					<input type="number" id="attackInput" min="0" step="0.01" value="0.01">
+					<input type="number" id="releaseInput" min="0" step="0.01" value="0.1">
+					<select id="curveSelect" style="width: auto;">
+						<option value="exponential" selected>Exp</option>
+						<option value="linear">Lin</option>
+					</select>
+				</div>
+			</div>
+
+			<!-- Buttons -->
+			<div class="button-row">
+				<button id="reverseBtn" class="toggle-btn">🔄 Reverse</button>
+				<button id="loopBtn" class="toggle-btn">🔁 Loop</button>
+				<div style="flex:1"></div>
+				<button id="playBtn" disabled>▶ Play Range</button>
+				<button id="playFullBtn" disabled>▶ Play Full</button>
+				<button id="stopBtn" disabled>⏹ Stop</button>
+			</div>
+
+			<div id="status">Upload a sample...</div>
+		</div>
+
+		<script type="text/javascript">
+			// State
+			let sampler = null;
+			let bufferDuration = 0;
+			let audioBuffer = null;
+			let zoomLevel = 1;
+			
+			let isReversed = false;
+			let isLooping = false;
+			let isPlaying = false;
+			let playbackStartTime = 0;
+			let playbackStartPos = 0;
+			let playbackEndPos = 0;
+			let animationFrameId = null;
+
+			// DOM Elements
+			const els = {
+				fileInput: document.getElementById('fileInput'),
+				startSlider: document.getElementById('startSlider'),
+				endSlider: document.getElementById('endSlider'),
+				startDisplay: document.getElementById('startDisplay'),
+				endDisplay: document.getElementById('endDisplay'),
+				attackInput: document.getElementById('attackInput'),
+				releaseInput: document.getElementById('releaseInput'),
+				curveSelect: document.getElementById('curveSelect'),
+				waveformContainer: document.getElementById('waveformContainer'),
+				waveformDiv: document.getElementById('waveform'),
+				waveformCanvas: document.getElementById('waveformCanvas'),
+				envelopeCanvas: document.getElementById('envelopeCanvas'),
+				playhead: document.getElementById('playhead'),
+				timeRuler: document.getElementById('timeRuler'),
+				status: document.getElementById('status'),
+				
+				playBtn: document.getElementById('playBtn'),
+				playFullBtn: document.getElementById('playFullBtn'),
+				stopBtn: document.getElementById('stopBtn'),
+				reverseBtn: document.getElementById('reverseBtn'),
+				loopBtn: document.getElementById('loopBtn'),
+				
+				zoomSlider: document.getElementById('zoomSlider'),
+				zoomDisplay: document.getElementById('zoomDisplay'),
+				zoomIn: document.getElementById('zoomInBtn'),
+				zoomOut: document.getElementById('zoomOutBtn'),
+				zoomFit: document.getElementById('zoomFitBtn'),
+				zoomSelection: document.getElementById('zoomSelectionBtn')
+			};
+
+			// 1. File Upload Logic
+			els.fileInput.addEventListener('change', async (e) => {
+				const file = e.target.files[0];
+				if (!file) return;
+
+				els.status.textContent = 'Loading sample...';
+
+				try {
+					const arrayBuffer = await file.arrayBuffer();
+					const ctx = Tone.getContext().rawContext;
+					audioBuffer = await ctx.decodeAudioData(arrayBuffer);
+					bufferDuration = audioBuffer.duration;
+
+					if (sampler) sampler.dispose();
+
+					sampler = new Tone.Sampler({
+						urls: { C4: new Tone.ToneAudioBuffer(audioBuffer) },
+						attack: parseFloat(els.attackInput.value),
+						release: parseFloat(els.releaseInput.value),
+						curve: els.curveSelect.value,
+						onload: () => {
+							els.status.textContent = `Loaded: ${file.name}`;
+							enableControls();
+						}
+					}).toDestination();
+
+					// Update Sliders
+					els.startSlider.max = bufferDuration;
+					els.endSlider.max = bufferDuration;
+					els.endSlider.value = bufferDuration;
+					updateDisplays();
+					
+					// Draw Waveform
+					drawWaveform(audioBuffer);
+
+				} catch (err) {
+					els.status.textContent = 'Error: ' + err.message;
+					console.error(err);
+				}
+			});
+
+			function enableControls() {
+				els.playBtn.disabled = false;
+				els.playFullBtn.disabled = false;
+				els.stopBtn.disabled = false;
+				els.zoomSelection.disabled = false;
+			}
+
+			// 2. Waveform Drawing Logic (Preserved shape/style)
+			function drawWaveform(buffer) {
+				if (!buffer) return;
+
+				const canvas = els.waveformCanvas;
+				const ctx = canvas.getContext('2d');
+				const dpr = window.devicePixelRatio || 1;
+				
+				const containerWidth = els.waveformContainer.offsetWidth;
+				const zoomedWidth = containerWidth * zoomLevel;
+				const height = 120; // Height inside waveform div
+
+				// Size Elements
+				els.waveformDiv.style.width = `${zoomedWidth}px`;
+				canvas.style.width = `${zoomedWidth}px`;
+				canvas.style.height = `${height}px`;
+				canvas.width = zoomedWidth * dpr;
+				canvas.height = height * dpr;
+				ctx.scale(dpr, dpr);
+
+				// Prepare drawing
+				const data = buffer.getChannelData(0);
+				const step = Math.ceil(data.length / zoomedWidth);
+				const amp = height / 2;
+
+				const startVal = parseFloat(els.startSlider.value);
+				const endVal = parseFloat(els.endSlider.value);
+				const pxPerSec = zoomedWidth / bufferDuration;
+				const startPx = startVal * pxPerSec;
+				const endPx = endVal * pxPerSec;
+				const widthPx = endPx - startPx;
+
+				// Clear
+				ctx.clearRect(0, 0, zoomedWidth, height);
+
+				// -- Layer 1: Background Teal (Loop Region) --
+				// This replicates the "inside range" background color
+				ctx.fillStyle = 'rgba(0, 150, 136, 0.25)';
+				ctx.fillRect(startPx, 0, widthPx, height);
+				
+				// -- Layer 2: Range Borders --
+				ctx.strokeStyle = '#009688';
+				ctx.lineWidth = 2;
+				ctx.beginPath();
+				ctx.moveTo(startPx, 0); ctx.lineTo(startPx, height);
+				ctx.moveTo(endPx, 0); ctx.lineTo(endPx, height);
+				ctx.stroke();
+
+				// Handles (Triangles)
+				drawHandle(ctx, startPx, true);
+				drawHandle(ctx, endPx, false);
+
+				// -- Layer 3: The Waveform --
+				// Function to draw the wave path based on audio data
+				const drawPath = () => {
+					ctx.beginPath();
+					for (let i = 0; i < zoomedWidth; i++) {
+						let min = 1.0;
+						let max = -1.0;
+						// Optimization for loops to avoid UI freezing
+						const sampleIdx = Math.floor(i * step);
+						const iterStep = Math.max(1, Math.floor(step/10));
+						
+						for (let j = 0; j < step; j += iterStep) {
+							const datum = data[sampleIdx + j];
+							if (datum < min) min = datum;
+							if (datum > max) max = datum;
+						}
+						// Draw vertical line for this pixel
+						ctx.lineTo(i, (1 + min) * amp);
+						ctx.lineTo(i, (1 + max) * amp);
+					}
+					ctx.stroke();
+				};
+
+				// A. Draw GRAY waveform everywhere (Outside range)
+				ctx.strokeStyle = '#555555'; // Gray inactive color
+				ctx.lineWidth = 1;
+				drawPath();
+
+				// B. Draw YELLOW waveform ONLY inside the range (Clipped)
+				ctx.save();
+				ctx.beginPath();
+				ctx.rect(startPx, 0, widthPx, height);
+				ctx.clip(); // Restrict drawing to range box
+				
+				ctx.strokeStyle = '#ffca28'; // Yellow active color
+				ctx.lineWidth = 1;
+				drawPath();
+				ctx.restore();
+
+				// Updates
+				drawRuler(zoomedWidth);
+				drawEnvelope(zoomedWidth, height);
+			}
+
+			function drawHandle(ctx, x, isLeft) {
+				ctx.fillStyle = '#bbb';
+				ctx.beginPath();
+				if(isLeft) {
+					ctx.moveTo(x, 0); ctx.lineTo(x+10, 0); ctx.lineTo(x, 10);
+				} else {
+					ctx.moveTo(x, 0); ctx.lineTo(x-10, 0); ctx.lineTo(x, 10);
+				}
+				ctx.fill();
+			}
+
+			// 3. Envelope Drawing (Overlay)
+			function drawEnvelope(width, height) {
+				const canvas = els.envelopeCanvas;
+				const ctx = canvas.getContext('2d');
+				const dpr = window.devicePixelRatio || 1;
+				
+				canvas.style.width = `${width}px`;
+				canvas.style.height = `${height}px`;
+				canvas.width = width * dpr;
+				canvas.height = height * dpr;
+				ctx.scale(dpr, dpr);
+				
+				if (!bufferDuration) return;
+
+				const start = parseFloat(els.startSlider.value);
+				const end = parseFloat(els.endSlider.value);
+				const attack = parseFloat(els.attackInput.value);
+				const release = parseFloat(els.releaseInput.value);
+
+				const pxPerSec = width / bufferDuration;
+				const startPx = start * pxPerSec;
+				const endPx = end * pxPerSec;
+				const attPx = attack * pxPerSec;
+				const relPx = release * pxPerSec;
+				
+				if (end <= start) return;
+
+				ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)';
+				ctx.lineWidth = 2;
+				ctx.beginPath();
+				
+				// Start bottom left
+				ctx.moveTo(startPx, height);
+				
+				const isExp = els.curveSelect.value === 'exponential';
+				
+				// Attack Curve
+				if (isExp) {
+					ctx.bezierCurveTo(startPx, height, startPx + attPx/2, 5, startPx + attPx, 5);
+				} else {
+					ctx.lineTo(startPx + attPx, 5);
+				}
+				
+				// Sustain
+				ctx.lineTo(endPx - relPx, 5);
+				
+				// Release Curve
+				if (isExp) {
+					ctx.bezierCurveTo(endPx - relPx/2, 5, endPx, height, endPx, height);
+				} else {
+					ctx.lineTo(endPx, height);
+				}
+				
+				ctx.stroke();
+			}
+
+			function drawRuler(width) {
+				els.timeRuler.innerHTML = '';
+				els.timeRuler.style.width = `${width}px`;
+				
+				if (!bufferDuration) return;
+				
+				const pxPerSec = width / bufferDuration;
+				let interval = 1;
+				if (pxPerSec > 150) interval = 0.5;
+				else if (pxPerSec < 20) interval = 5;
+
+				for (let t = 0; t <= bufferDuration; t += interval) {
+					const x = (t / bufferDuration) * width;
+					const m = document.createElement('div');
+					m.className = 'time-marker';
+					m.style.left = `${x}px`;
+					m.textContent = t.toFixed(1);
+					els.timeRuler.appendChild(m);
+				}
+			}
+
+			// 4. Zoom Logic (Original behavior)
+			function updateZoom(newZoom) {
+				zoomLevel = Math.max(1, Math.min(50, newZoom));
+				els.zoomSlider.value = zoomLevel;
+				els.zoomDisplay.textContent = `${zoomLevel.toFixed(1)}x`;
+				if (audioBuffer) drawWaveform(audioBuffer);
+			}
+
+			els.zoomSlider.addEventListener('input', () => updateZoom(parseFloat(els.zoomSlider.value)));
+			els.zoomIn.addEventListener('click', () => updateZoom(zoomLevel * 1.5));
+			els.zoomOut.addEventListener('click', () => updateZoom(zoomLevel / 1.5));
+			els.zoomFit.addEventListener('click', () => {
+				updateZoom(1);
+				els.waveformContainer.scrollLeft = 0;
+			});
+			els.zoomSelection.addEventListener('click', () => {
+				if(!bufferDuration) return;
+				const start = parseFloat(els.startSlider.value);
+				const end = parseFloat(els.endSlider.value);
+				const dur = end - start;
+				if(dur <= 0) return;
+				const newZoom = bufferDuration / dur;
+				updateZoom(newZoom);
+				setTimeout(() => {
+					const w = els.waveformContainer.offsetWidth * zoomLevel;
+					els.waveformContainer.scrollLeft = (start / bufferDuration) * w;
+				}, 10);
+			});
+			els.waveformContainer.addEventListener('wheel', (e) => {
+				if(e.ctrlKey || e.metaKey) {
+					e.preventDefault();
+					const delta = e.deltaY > 0 ? 0.9 : 1.1;
+					updateZoom(zoomLevel * delta);
+				}
+			}, {passive:false});
+
+
+			// 5. Update & Playback Logic
+			function updateDisplays() {
+				// Ensure start < end
+				let s = parseFloat(els.startSlider.value);
+				let e = parseFloat(els.endSlider.value);
+				if (s >= e) {
+					if (document.activeElement === els.startSlider) els.endSlider.value = s + 0.01;
+					else els.startSlider.value = e - 0.01;
+				}
+				
+				els.startDisplay.textContent = parseFloat(els.startSlider.value).toFixed(2) + 's';
+				els.endDisplay.textContent = parseFloat(els.endSlider.value).toFixed(2) + 's';
+				
+				if(audioBuffer) {
+					drawWaveform(audioBuffer); // Redraws masks
+				}
+			}
+
+			[els.startSlider, els.endSlider].forEach(el => el.addEventListener('input', updateDisplays));
+			[els.attackInput, els.releaseInput, els.curveSelect].forEach(el => el.addEventListener('input', () => {
+				if(sampler) {
+					sampler.attack = parseFloat(els.attackInput.value);
+					sampler.release = parseFloat(els.releaseInput.value);
+					sampler.curve = els.curveSelect.value;
+				}
+				drawEnvelope(els.waveformDiv.offsetWidth, 120);
+			}));
+
+
+			// --- PLAYBACK ---
+			
+			els.reverseBtn.addEventListener('click', () => {
+				isReversed = !isReversed;
+				els.reverseBtn.classList.toggle('active', isReversed);
+				if(sampler) sampler.reverse = isReversed;
+			});
+			els.loopBtn.addEventListener('click', () => {
+				isLooping = !isLooping;
+				els.loopBtn.classList.toggle('active', isLooping);
+				if(audioBuffer) drawWaveform(audioBuffer);
+			});
+
+			els.playBtn.addEventListener('click', async () => {
+				if (!sampler) return;
+				await Tone.start();
+				const start = parseFloat(els.startSlider.value);
+				const end = parseFloat(els.endSlider.value);
+				
+				// RESTORED ORIGINAL PLAY LINE:
+				// Passing 'start' and 'end' as originally requested. 
+				// Note: if audio stops abruptly on short loops, check Attack/Release settings vs Loop duration.
+				sampler.triggerAttack("C4", Tone.now(), 1, start, end);
+				
+				startPlayhead(start, end);
+				els.status.textContent = `Playing Range: ${start.toFixed(2)} - ${end.toFixed(2)}`;
+			});
+
+			els.playFullBtn.addEventListener('click', async () => {
+				if (!sampler) return;
+				await Tone.start();
+				// Full play usually triggers just the note
+				sampler.triggerAttack("C4", Tone.now(), 1);
+				
+				startPlayhead(0, bufferDuration);
+				els.status.textContent = 'Playing Full Sample';
+			});
+
+			els.stopBtn.addEventListener('click', () => {
+				if (!sampler) return;
+				// RESTORED ORIGINAL STOP LINE:
+				sampler.triggerRelease("C4", Tone.now());
+				stopPlayhead();
+				els.status.textContent = 'Stopped';
+			});
+
+			function startPlayhead(start, end) {
+				stopPlayhead();
+				isPlaying = true;
+				playbackStartTime = Tone.now();
+				playbackStartPos = start;
+				playbackEndPos = end;
+				els.playhead.style.display = 'block';
+				updatePlayhead();
+			}
+
+			function stopPlayhead() {
+				isPlaying = false;
+				if(animationFrameId) cancelAnimationFrame(animationFrameId);
+				els.playhead.style.display = 'none';
+			}
+
+			function updatePlayhead() {
+				if(!isPlaying || !bufferDuration) return;
+				
+				const elapsed = Tone.now() - playbackStartTime;
+				let currentPos;
+
+				if (isReversed) {
+					currentPos = playbackEndPos - elapsed;
+					if (currentPos < playbackStartPos) {
+						if (isLooping) {
+							playbackStartTime = Tone.now();
+							// Retriggering logic for loop visualization
+							// In real-world apps, sampler.loop would handle this, 
+							// but for this visualization we reset:
+							sampler.triggerAttack("C4", Tone.now(), 1, playbackStartPos, playbackEndPos);
+							currentPos = playbackEndPos;
+						} else {
+							stopPlayhead();
+							return;
+						}
+					}
+				} else {
+					currentPos = playbackStartPos + elapsed;
+					if (currentPos > playbackEndPos) {
+						if (isLooping) {
+							playbackStartTime = Tone.now();
+							sampler.triggerAttack("C4", Tone.now(), 1, playbackStartPos, playbackEndPos);
+							currentPos = playbackStartPos;
+						} else {
+							stopPlayhead();
+							return;
+						}
+					}
+				}
+
+				// Position Playhead
+				const containerWidth = els.waveformContainer.offsetWidth;
+				const zoomedWidth = containerWidth * zoomLevel;
+				const px = (currentPos / bufferDuration) * zoomedWidth;
+				
+				els.playhead.style.left = `${px}px`;
+
+				// Scroll Follow
+				const scrollLeft = els.waveformContainer.scrollLeft;
+				const visibleWidth = els.waveformContainer.offsetWidth;
+				if (px > scrollLeft + visibleWidth || px < scrollLeft) {
+					els.waveformContainer.scrollLeft = px - (visibleWidth / 2);
+				}
+
+				animationFrameId = requestAnimationFrame(updatePlayhead);
+			}
+
+		</script>
+	</body>
+</html>

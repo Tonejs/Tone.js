@@ -258,6 +258,9 @@ export class Sampler extends Instrument<SamplerOptions> {
 			let offset: number;
 			let duration: number | undefined;
 
+			// Get the release time in seconds for duration adjustment
+			const releaseSeconds = this.toSeconds(this.release);
+
 			if (this._reverse) {
 				// Reverse the buffer if not already reversed
 				if (!buffer.reverse) {
@@ -270,7 +273,9 @@ export class Sampler extends Instrument<SamplerOptions> {
 					const endSeconds = this.toSeconds(end);
 					// In reversed buffer: offset = buffer.duration - end (where we want to start from)
 					offset = buffer.duration - endSeconds;
-					duration = (endSeconds - startSeconds) / playbackRate;
+					// Subtract release time so fadeout completes exactly at 'start' position
+					const rangeDuration = (endSeconds - startSeconds) / playbackRate;
+					duration = Math.max(0, rangeDuration - releaseSeconds);
 				} else {
 					// No custom range, play from beginning of reversed buffer
 					offset = this.toSeconds(defaultArg(this._loopStart, 0));
@@ -289,7 +294,9 @@ export class Sampler extends Instrument<SamplerOptions> {
 				if (start !== undefined && end !== undefined) {
 					const startSeconds = this.toSeconds(start);
 					const endSeconds = this.toSeconds(end);
-					duration = (endSeconds - startSeconds) / playbackRate;
+					// Subtract release time so fadeout completes exactly at 'end' position
+					const rangeDuration = (endSeconds - startSeconds) / playbackRate;
+					duration = Math.max(0, rangeDuration - releaseSeconds);
 				} else if (this._loop) {
 					duration = undefined;
 				} else {
