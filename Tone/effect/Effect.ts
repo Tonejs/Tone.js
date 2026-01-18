@@ -34,7 +34,7 @@ export abstract class Effect<
 	wet: Signal<"normalRange"> = this._dryWet.fade;
 
 	/**
-	 * connect the effectSend to the input of hte effect
+	 * connect the effectSend to the input of the effect
 	 */
 	protected effectSend: Gain = new Gain({ context: this.context });
 
