@@ -87,5 +87,23 @@ describe("AutoPanner", () => {
 			expect(buffer.getValueAtTime(0)).to.be.closeTo(2, 0.1);
 			expect(buffer.getValueAtTime(0.05)).to.be.closeTo(2, 0.1);
 		});
+
+		/**
+		 * Width Tests
+		 */
+		it("can set the width", () => {
+			const autoPanner = new AutoPanner();
+			autoPanner.width = 0.5;
+			expect(autoPanner.width).to.be.closeTo(0.5, 0.01);
+			autoPanner.dispose();
+		});
+		
+		it("can pass width in the constructor", () => {
+			const autoPanner = new AutoPanner({
+				width: 0.3,
+			});
+			expect(autoPanner.width).to.be.closeTo(0.3, 0.01);
+			autoPanner.dispose();
+		});	
 	});
 });
