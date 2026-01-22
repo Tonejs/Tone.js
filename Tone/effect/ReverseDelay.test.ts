@@ -1,7 +1,9 @@
 import { expect } from "chai";
 
 import { BasicTests } from "../../test/helper/Basic.js";
+import { CompareToFile } from "../../test/helper/CompareToFile.js";
 import { EffectTests } from "../../test/helper/EffectTests.js";
+import { Oscillator } from "../source/oscillator/Oscillator.js";
 import { ReverseDelay } from "./ReverseDelay.js";
 
 describe("ReverseDelay", () => {
@@ -9,6 +11,20 @@ describe("ReverseDelay", () => {
 	EffectTests(ReverseDelay, 0.01);
 
 	context("API", () => {
+		it("matches a file", () => {
+			return CompareToFile(() => {
+				const delay = new ReverseDelay({
+					delayTime: 0.2,
+					feedback: 0.5,
+					wet: 0.5,
+				}).toDestination();
+				const osc = new Oscillator().connect(delay);
+				osc.start(0);
+				osc.volume.linearRampToValueAtTime(0, 0.1);
+				osc.volume.exponentialRampToValueAtTime(-Infinity, 0.2);
+			}, "reverseDelay.wav");
+		});
+
 		it("can pass in options in the constructor", () => {
 			const reverse = new ReverseDelay({
 				delayTime: 1.25,
