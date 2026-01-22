@@ -5,7 +5,7 @@ import { LFOEffect, LFOEffectOptions } from "./LFOEffect.js";
 
 export interface AutoPannerOptions extends LFOEffectOptions {
 	channelCount: number;
-	width: NormalRange; 
+	width: NormalRange;
 }
 
 /**
@@ -25,13 +25,13 @@ export class AutoPanner extends LFOEffect<AutoPannerOptions> {
 	/**
 	 * The filter node
 	 */
-	readonly _panner: Panner;
+	private readonly _panner: Panner;
 
-	private _width: NormalRange; 
+	private _width: NormalRange;
+
 	/**
 	 * @param frequency Rate of left-right oscillation.
 	 */
-
 	constructor(frequency?: Frequency);
 	constructor(options?: Partial<AutoPannerOptions>);
 	constructor() {
@@ -47,7 +47,7 @@ export class AutoPanner extends LFOEffect<AutoPannerOptions> {
 			channelCount: options.channelCount,
 		});
 
-		this._width = options.width; 
+		this._width = options.width;
 
 		// connections
 		this.connectEffect(this._panner);
@@ -58,7 +58,7 @@ export class AutoPanner extends LFOEffect<AutoPannerOptions> {
 	static getDefaults(): AutoPannerOptions {
 		return Object.assign(LFOEffect.getDefaults(), {
 			channelCount: 1,
-			width: 1, 
+			width: 1,
 		});
 	}
 
