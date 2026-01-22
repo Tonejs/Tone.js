@@ -54,7 +54,7 @@ export class ReverseDelay extends Effect<ReverseDelayOptions> {
 		);
 	}
 
-	_connectWorklet(
+	private _connectWorklet(
 		delayTime: Time,
 		feedback: NormalRange
 	): ReverseDelayWorklet {
