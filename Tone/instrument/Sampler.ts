@@ -37,6 +37,7 @@ export interface SamplerOptions extends InstrumentOptions {
     loop: boolean;
     loopEnd: number;
     loopStart: number;
+    reverse: boolean;
 }
 
 /**
@@ -92,6 +93,11 @@ export class Sampler extends Instrument<SamplerOptions> {
 	 * if 'loop' is true, the loop will end at this position
 	 */
 	private _loopEnd: Time;
+
+	/**
+	 * If the samples should be played in reverse
+	 */
+	private _reverse: boolean;
 
 	/**
 	 * The envelope applied to the beginning of the sample.
@@ -170,6 +176,7 @@ export class Sampler extends Instrument<SamplerOptions> {
         this._loop = options.loop;
         this._loopStart = options.loopStart;
         this._loopEnd = options.loopEnd;
+        this._reverse = options.reverse;
 
 		// invoke the callback if it's already loaded
 		if (this._buffers.loaded) {
@@ -190,6 +197,7 @@ export class Sampler extends Instrument<SamplerOptions> {
             loop: false,
             loopEnd: 0,
             loopStart: 0,
+            reverse: false,
 		});
 	}
 
@@ -216,17 +224,22 @@ export class Sampler extends Instrument<SamplerOptions> {
 	 * @param  notes	The note to play, or an array of notes.
 	 * @param  time     When to play the note
 	 * @param  velocity The velocity to play the sample back.
+	 * @param  start    Optional start position within the sample (in seconds). 
+	 *                  Allows playing a portion of the sample without loop mode.
+	 * @param  end      Optional end position within the sample (in seconds).
+	 *                  If provided with start, plays only that portion of the sample.
 	 */
 	triggerAttack(
 		notes: Frequency | Frequency[],
 		time?: Time,
-		velocity: NormalRange = 1
+		velocity: NormalRange = 1,
+		start?: Time,
+		end?: Time
 	): this {
-		this.log("triggerAttack", notes, time, velocity);
+		this.log("triggerAttack", notes, time, velocity, start, end);
 		if (!Array.isArray(notes)) {
 			notes = [notes];
 		}
-        const offset = defaultArg(this._loopStart, 0);
 		notes.forEach((note) => {
 			const midiFloat = ftomf(
 				new FrequencyClass(this.context, note).toFrequency()
@@ -240,9 +253,57 @@ export class Sampler extends Instrument<SamplerOptions> {
 			const playbackRate = intervalToFrequencyRatio(
 				difference + remainder
 			);
-            const duration = this._loop 
-                ? undefined
-                : buffer.duration / playbackRate;
+
+			// Calculate offset and duration based on reverse mode
+			let offset: number;
+			let duration: number | undefined;
+
+			// Get the release time in seconds for duration adjustment
+			const releaseSeconds = this.toSeconds(this.release);
+
+			if (this._reverse) {
+				// Reverse the buffer if not already reversed
+				if (!buffer.reverse) {
+					buffer.reverse = true;
+				}
+				// When reversed, start/end refer to the original (non-reversed) buffer positions
+				// We need to flip them: original "end" becomes the offset in reversed buffer
+				if (start !== undefined && end !== undefined) {
+					const startSeconds = this.toSeconds(start);
+					const endSeconds = this.toSeconds(end);
+					// In reversed buffer: offset = buffer.duration - end (where we want to start from)
+					offset = buffer.duration - endSeconds;
+					// Subtract release time so fadeout completes exactly at 'start' position
+					const rangeDuration = (endSeconds - startSeconds) / playbackRate;
+					duration = Math.max(0, rangeDuration - releaseSeconds);
+				} else {
+					// No custom range, play from beginning of reversed buffer
+					offset = this.toSeconds(defaultArg(this._loopStart, 0));
+					duration = this._loop ? undefined : buffer.duration / playbackRate;
+				}
+			} else {
+				// Ensure buffer is not reversed
+				if (buffer.reverse) {
+					buffer.reverse = false;
+				}
+				// Use custom start position if provided, otherwise fall back to loopStart or 0
+				offset = start !== undefined 
+					? this.toSeconds(start) 
+					: this.toSeconds(defaultArg(this._loopStart, 0));
+				// Calculate duration: custom range, loop mode, or full buffer
+				if (start !== undefined && end !== undefined) {
+					const startSeconds = this.toSeconds(start);
+					const endSeconds = this.toSeconds(end);
+					// Subtract release time so fadeout completes exactly at 'end' position
+					const rangeDuration = (endSeconds - startSeconds) / playbackRate;
+					duration = Math.max(0, rangeDuration - releaseSeconds);
+				} else if (this._loop) {
+					duration = undefined;
+				} else {
+					duration = buffer.duration / playbackRate;
+				}
+			}
+
 			// play that note
 			const source = new ToneBufferSource({
 				url: buffer,
@@ -483,6 +544,27 @@ export class Sampler extends Instrument<SamplerOptions> {
                 source.loop = loop;
             });
         });
+    }
+
+    /**
+     * If the samples should be played in reverse.
+     * When reverse is true and start/end are provided to triggerAttack,
+     * the sample will play backwards from end to start.
+     * @example
+     * const sampler = new Tone.Sampler({
+     *      urls: {  
+     *           A4: "https://tonejs.github.io/audio/berklee/femalevoice_aa_A4.mp3",  
+     *      },
+     * }).toDestination();
+     * sampler.reverse = true;
+     * // Play in reverse from 1.0s to 0.5s (in original time)
+     * sampler.triggerAttack("A4", Tone.now(), 1, 0.5, 1.0);
+     */
+    get reverse(): boolean {
+        return this._reverse;
+    }
+    set reverse(rev: boolean) {
+        this._reverse = rev;
     }
     
 	/**

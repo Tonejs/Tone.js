@@ -1,0 +1,932 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>Sampler Range Playback</title>
+
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1, maximum-scale=1"
+		/>
+		<link
+			rel="icon"
+			type="image/png"
+			sizes="174x174"
+			href="./favicon.png"
+		/>
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/2.4.3/webcomponents-bundle.js"></script>
+		<link
+			href="https://fonts.googleapis.com/css?family=Material+Icons&display=block"
+			rel="stylesheet"
+		/>
+		<script src="../build/Tone.js"></script>
+		<script src="./js/tone-ui.js"></script>
+		<script src="./js/components.js"></script>
+	</head>
+	<body>
+		<style type="text/css">
+			.controls {
+				display: flex;
+				flex-direction: column;
+				gap: 15px;
+				margin-top: 20px;
+			}
+			.control-row {
+				display: flex;
+				align-items: center;
+				gap: 15px;
+			}
+			.control-row label {
+				min-width: 120px;
+				font-weight: bold;
+			}
+			.control-row input[type="range"] {
+				flex: 1;
+				max-width: 300px;
+			}
+			.control-row input[type="number"] {
+				width: 80px;
+				padding: 5px;
+			}
+			.control-row input[type="file"] {
+				flex: 1;
+			}
+			.value-display {
+				min-width: 60px;
+				text-align: right;
+				font-family: monospace;
+			}
+			button {
+				padding: 10px 20px;
+				font-size: 16px;
+				cursor: pointer;
+				border: 2px solid #333;
+				background: #fff;
+				border-radius: 5px;
+				transition: all 0.2s;
+			}
+			button:hover {
+				background: #333;
+				color: #fff;
+			}
+			button:disabled {
+				opacity: 0.5;
+				cursor: not-allowed;
+			}
+			.toggle-btn.active {
+				background: #4CAF50;
+				color: white;
+				border-color: #4CAF50;
+			}
+			#waveformContainer {
+				width: 100%;
+				overflow-x: auto;
+				background: #222;
+				border-radius: 10px;
+				margin: 15px 0;
+			}
+			#waveform {
+				height: 120px;
+				background: #222;
+				position: relative;
+				min-width: 100%;
+			}
+			#waveform canvas {
+				height: 100%;
+				display: block;
+			}
+			#rangeOverlay {
+				position: absolute;
+				top: 0;
+				height: 100%;
+				background: rgba(76, 175, 80, 0.3);
+				pointer-events: none;
+				border-left: 2px solid #4CAF50;
+				border-right: 2px solid #4CAF50;
+				z-index: 3;
+			}
+			.range-overlay {
+				position: absolute;
+				top: 0;
+				height: 100%;
+				background: rgba(76, 175, 80, 0.3);
+				pointer-events: none;
+				border-left: 2px solid #4CAF50;
+				border-right: 2px solid #4CAF50;
+			}
+			.zoom-controls {
+				display: flex;
+				align-items: center;
+				gap: 10px;
+				margin-bottom: 5px;
+			}
+			.zoom-controls button {
+				padding: 5px 12px;
+				font-size: 18px;
+				min-width: 40px;
+			}
+			.zoom-controls span {
+				font-family: monospace;
+				min-width: 60px;
+				text-align: center;
+			}
+			#timeRuler {
+				height: 20px;
+				background: #333;
+				position: relative;
+				font-size: 10px;
+				color: #aaa;
+				overflow: hidden;
+			}
+			.time-marker {
+				position: absolute;
+				top: 0;
+				height: 100%;
+				border-left: 1px solid #555;
+				padding-left: 3px;
+				font-family: monospace;
+			}
+			#playhead {
+				position: absolute;
+				top: 0;
+				height: 100%;
+				width: 2px;
+				background: #ff5722;
+				pointer-events: none;
+				z-index: 10;
+				display: none;
+				box-shadow: 0 0 4px rgba(255, 87, 34, 0.8);
+			}
+			#playhead::before {
+				content: '';
+				position: absolute;
+				top: 0;
+				left: -4px;
+				width: 0;
+				height: 0;
+				border-left: 5px solid transparent;
+				border-right: 5px solid transparent;
+				border-top: 8px solid #ff5722;
+			}
+			#envelopeCanvas {
+				position: absolute;
+				top: 0;
+				left: 0;
+				height: 100%;
+				pointer-events: none;
+				z-index: 5;
+			}
+			.curve-select {
+				padding: 5px 10px;
+				font-size: 14px;
+				border: 2px solid #333;
+				border-radius: 5px;
+				background: #fff;
+				cursor: pointer;
+			}
+			#status {
+				padding: 10px;
+				background: #f5f5f5;
+				border-radius: 5px;
+				margin-top: 10px;
+				font-family: monospace;
+			}
+			.button-row {
+				display: flex;
+				gap: 10px;
+				flex-wrap: wrap;
+			}
+		</style>
+		<tone-example label="Sampler Range Playback">
+			<div slot="explanation">
+				This example demonstrates the extended
+				<a href="https://tonejs.github.io/docs/latest/classes/Sampler">Tone.Sampler</a>
+				with support for <strong>start/end range</strong> and <strong>reverse playback</strong>.
+				Upload a .wav or .mp3 file, adjust the start and end positions, 
+				toggle reverse mode, and play portions of your sample with envelope 
+				smoothing to prevent clicks.
+			</div>
+
+			<div id="content">
+				<div class="controls">
+					<!-- File Upload -->
+					<div class="control-row">
+						<label>Upload Sample:</label>
+						<input type="file" id="fileInput" accept=".wav,.mp3,.ogg,.flac" />
+					</div>
+
+					<!-- Zoom Controls -->
+					<div class="zoom-controls">
+						<label>Zoom:</label>
+						<button id="zoomOutBtn" title="Zoom Out">−</button>
+						<input type="range" id="zoomSlider" min="1" max="50" step="0.5" value="1" style="width: 150px;" />
+						<button id="zoomInBtn" title="Zoom In">+</button>
+						<span id="zoomDisplay">1.0x</span>
+						<button id="zoomFitBtn" title="Fit to View">Fit</button>
+						<button id="zoomSelectionBtn" title="Zoom to Selection" disabled>Zoom to Selection</button>
+						<button id="autoFitBtn" class="toggle-btn" title="Auto-fit selection to view">🔒 Auto-fit: OFF</button>
+					</div>
+
+					<!-- Waveform Display -->
+					<div id="waveformContainer">
+						<div id="waveform">
+							<canvas id="waveformCanvas"></canvas>
+							<canvas id="envelopeCanvas"></canvas>
+							<div id="rangeOverlay"></div>
+							<div id="playhead"></div>
+						</div>
+						<div id="timeRuler"></div>
+					</div>
+
+					<!-- Start Position -->
+					<div class="control-row">
+						<label>Start (sec):</label>
+						<input type="range" id="startSlider" min="0" max="10" step="0.01" value="0" />
+						<input type="number" id="startInput" min="0" step="0.01" value="0" />
+						<span class="value-display" id="startDisplay">0.00s</span>
+					</div>
+
+					<!-- End Position -->
+					<div class="control-row">
+						<label>End (sec):</label>
+						<input type="range" id="endSlider" min="0" max="10" step="0.01" value="1" />
+						<input type="number" id="endInput" min="0" step="0.01" value="1" />
+						<span class="value-display" id="endDisplay">1.00s</span>
+					</div>
+
+					<!-- Attack (Fade In) -->
+					<div class="control-row">
+						<label>Attack (sec):</label>
+						<input type="range" id="attackSlider" min="0" max="1" step="0.01" value="0.01" />
+						<span class="value-display" id="attackDisplay">0.01s</span>
+					</div>
+
+					<!-- Release (Fade Out) -->
+					<div class="control-row">
+						<label>Release (sec):</label>
+						<input type="range" id="releaseSlider" min="0" max="1" step="0.01" value="0.1" />
+						<span class="value-display" id="releaseDisplay">0.10s</span>
+					</div>
+
+					<!-- Curve Type -->
+					<div class="control-row">
+						<label>Envelope Curve:</label>
+						<select id="curveSelect" class="curve-select">
+							<option value="exponential" selected>Exponential</option>
+							<option value="linear">Linear</option>
+						</select>
+					</div>
+
+					<!-- Buttons -->
+					<div class="button-row">
+						<button id="reverseBtn" class="toggle-btn">🔄 Reverse: OFF</button>
+						<button id="loopBtn" class="toggle-btn">🔁 Loop: OFF</button>
+						<button id="playBtn" disabled>▶️ Play Range</button>
+						<button id="playFullBtn" disabled>▶️ Play Full</button>
+						<button id="stopBtn" disabled>⏹️ Stop</button>
+					</div>
+
+					<!-- Status -->
+					<div id="status">Upload a sample to begin...</div>
+				</div>
+			</div>
+		</tone-example>
+
+		<script type="text/javascript">
+			let sampler = null;
+			let bufferDuration = 0;
+			let audioBuffer = null;
+			let zoomLevel = 1;
+
+			// DOM Elements
+			const fileInput = document.getElementById('fileInput');
+			const startSlider = document.getElementById('startSlider');
+			const startInput = document.getElementById('startInput');
+			const endSlider = document.getElementById('endSlider');
+			const endInput = document.getElementById('endInput');
+			const attackSlider = document.getElementById('attackSlider');
+			const releaseSlider = document.getElementById('releaseSlider');
+			const startDisplay = document.getElementById('startDisplay');
+			const endDisplay = document.getElementById('endDisplay');
+			const attackDisplay = document.getElementById('attackDisplay');
+			const releaseDisplay = document.getElementById('releaseDisplay');
+			const reverseBtn = document.getElementById('reverseBtn');
+			const loopBtn = document.getElementById('loopBtn');
+			const playBtn = document.getElementById('playBtn');
+			const playFullBtn = document.getElementById('playFullBtn');
+			const stopBtn = document.getElementById('stopBtn');
+			const status = document.getElementById('status');
+			const waveformCanvas = document.getElementById('waveformCanvas');
+			const waveformContainer = document.getElementById('waveformContainer');
+			const waveformDiv = document.getElementById('waveform');
+			const rangeOverlay = document.getElementById('rangeOverlay');
+			const zoomSlider = document.getElementById('zoomSlider');
+			const zoomDisplay = document.getElementById('zoomDisplay');
+			const zoomInBtn = document.getElementById('zoomInBtn');
+			const zoomOutBtn = document.getElementById('zoomOutBtn');
+			const zoomFitBtn = document.getElementById('zoomFitBtn');
+			const zoomSelectionBtn = document.getElementById('zoomSelectionBtn');
+			const autoFitBtn = document.getElementById('autoFitBtn');
+			const timeRuler = document.getElementById('timeRuler');
+			const playhead = document.getElementById('playhead');
+			const envelopeCanvas = document.getElementById('envelopeCanvas');
+			const curveSelect = document.getElementById('curveSelect');
+
+			// State
+			let isReversed = false;
+			let isLooping = false;
+			let isPlaying = false;
+			let playbackStartTime = 0;
+			let playbackStartPos = 0;
+			let playbackEndPos = 0;
+			let animationFrameId = null;
+			let currentCurve = 'exponential';
+			let autoFitEnabled = false;
+
+			// File upload handler
+			fileInput.addEventListener('change', async (e) => {
+				const file = e.target.files[0];
+				if (!file) return;
+
+				status.textContent = 'Loading sample...';
+
+				try {
+					// Read file as ArrayBuffer
+					const arrayBuffer = await file.arrayBuffer();
+					
+					// Decode audio
+					const audioContext = Tone.getContext().rawContext;
+					audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+					bufferDuration = audioBuffer.duration;
+
+					// Create Tone.js buffer
+					const toneBuffer = new Tone.ToneAudioBuffer(audioBuffer);
+
+					// Dispose old sampler if exists
+					if (sampler) {
+						sampler.dispose();
+					}
+
+					// Create new sampler with the uploaded sample mapped to C4
+					sampler = new Tone.Sampler({
+						urls: { C4: toneBuffer },
+						attack: parseFloat(attackSlider.value),
+						release: parseFloat(releaseSlider.value),
+						curve: currentCurve,
+						onload: () => {
+							status.textContent = `Loaded: ${file.name} (${bufferDuration.toFixed(2)}s)`;
+							enableControls();
+						}
+					}).toDestination();
+
+					// Update slider ranges
+					startSlider.max = bufferDuration;
+					endSlider.max = bufferDuration;
+					startInput.max = bufferDuration;
+					endInput.max = bufferDuration;
+					endSlider.value = bufferDuration;
+					endInput.value = bufferDuration.toFixed(2);
+					updateEndDisplay();
+
+					// Draw waveform
+					drawWaveform(audioBuffer);
+					updateRangeOverlay();
+					zoomSelectionBtn.disabled = false;
+
+				} catch (err) {
+					status.textContent = `Error loading file: ${err.message}`;
+					console.error(err);
+				}
+			});
+
+			// Draw waveform with zoom support
+			function drawWaveform(buffer) {
+				const canvas = waveformCanvas;
+				const ctx = canvas.getContext('2d');
+				const dpr = window.devicePixelRatio || 1;
+				
+				// Calculate width based on zoom
+				const containerWidth = waveformContainer.offsetWidth;
+				const zoomedWidth = containerWidth * zoomLevel;
+				
+				// Update waveform div and canvas size
+				waveformDiv.style.width = `${zoomedWidth}px`;
+				canvas.style.width = `${zoomedWidth}px`;
+				canvas.width = zoomedWidth * dpr;
+				canvas.height = waveformDiv.offsetHeight * dpr;
+				ctx.scale(dpr, dpr);
+
+				const width = zoomedWidth;
+				const height = waveformDiv.offsetHeight;
+				const data = buffer.getChannelData(0);
+				const step = Math.ceil(data.length / width);
+				const amp = height / 2;
+
+				// Clear and draw background
+				ctx.fillStyle = '#222';
+				ctx.fillRect(0, 0, width, height);
+
+				// Draw center line
+				ctx.strokeStyle = '#444';
+				ctx.lineWidth = 1;
+				ctx.beginPath();
+				ctx.moveTo(0, amp);
+				ctx.lineTo(width, amp);
+				ctx.stroke();
+
+				// Draw waveform
+				ctx.beginPath();
+				ctx.moveTo(0, amp);
+				ctx.strokeStyle = '#4CAF50';
+				ctx.lineWidth = 1;
+
+				for (let i = 0; i < width; i++) {
+					let min = 1.0;
+					let max = -1.0;
+					const startSample = Math.floor(i * step);
+					const endSample = Math.min(startSample + step, data.length);
+					for (let j = startSample; j < endSample; j++) {
+						const datum = data[j];
+						if (datum < min) min = datum;
+						if (datum > max) max = datum;
+					}
+					ctx.lineTo(i, (1 + min) * amp);
+					ctx.lineTo(i, (1 + max) * amp);
+				}
+
+				ctx.stroke();
+				
+				// Draw time ruler
+				drawTimeRuler(zoomedWidth);
+				
+				// Draw envelope overlay
+				drawEnvelope(zoomedWidth, waveformDiv.offsetHeight);
+			}
+
+			// Draw envelope visualization
+			function drawEnvelope(width, height) {
+				const canvas = envelopeCanvas;
+				const ctx = canvas.getContext('2d');
+				const dpr = window.devicePixelRatio || 1;
+				
+				// Size the envelope canvas to match waveform
+				canvas.style.width = `${width}px`;
+				canvas.width = width * dpr;
+				canvas.height = height * dpr;
+				ctx.scale(dpr, dpr);
+				
+				if (bufferDuration === 0) return;
+				
+				const start = parseFloat(startSlider.value);
+				const end = parseFloat(endSlider.value);
+				const attack = parseFloat(attackSlider.value);
+				const release = parseFloat(releaseSlider.value);
+				const selectionDuration = end - start;
+				
+				if (selectionDuration <= 0) return;
+				
+				// Convert times to pixel positions
+				const pxPerSec = width / bufferDuration;
+				const startPx = start * pxPerSec;
+				const endPx = end * pxPerSec;
+				const attackPx = Math.min(attack * pxPerSec, endPx - startPx);
+				const releasePx = Math.min(release * pxPerSec, endPx - startPx - attackPx);
+				
+				ctx.clearRect(0, 0, width, height);
+				
+				// Draw envelope shape (inverted - shows what gets faded out)
+				ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+				
+				// Attack fade region (left side of selection)
+				if (attackPx > 0) {
+					ctx.beginPath();
+					ctx.moveTo(startPx, 0);
+					ctx.lineTo(startPx, height);
+					
+					if (currentCurve === 'exponential') {
+						// Exponential curve (fast rise)
+						const steps = 20;
+						for (let i = 0; i <= steps; i++) {
+							const t = i / steps;
+							// Exponential: starts slow, ends fast
+							const curve = 1 - Math.pow(1 - t, 3);
+							const x = startPx + (attackPx * t);
+							const fadeHeight = height * (1 - curve);
+							ctx.lineTo(x, fadeHeight);
+						}
+						for (let i = steps; i >= 0; i--) {
+							const t = i / steps;
+							const curve = 1 - Math.pow(1 - t, 3);
+							const x = startPx + (attackPx * t);
+							const fadeHeight = height - (height * (1 - curve));
+							ctx.lineTo(x, fadeHeight);
+						}
+					} else {
+						// Linear curve
+						ctx.lineTo(startPx + attackPx, 0);
+						ctx.lineTo(startPx + attackPx, height);
+					}
+					
+					ctx.closePath();
+					ctx.fill();
+				}
+				
+				// Release fade region (right side of selection)
+				if (releasePx > 0) {
+					const releaseStartPx = endPx - releasePx;
+					
+					ctx.beginPath();
+					ctx.moveTo(releaseStartPx, 0);
+					
+					if (currentCurve === 'exponential') {
+						// Exponential curve
+						const steps = 20;
+						for (let i = 0; i <= steps; i++) {
+							const t = i / steps;
+							// Exponential fade out
+							const curve = Math.pow(t, 3);
+							const x = releaseStartPx + (releasePx * t);
+							const fadeHeight = height * curve;
+							ctx.lineTo(x, fadeHeight);
+						}
+						ctx.lineTo(endPx, height);
+						for (let i = steps; i >= 0; i--) {
+							const t = i / steps;
+							const curve = Math.pow(t, 3);
+							const x = releaseStartPx + (releasePx * t);
+							const fadeHeight = height - (height * curve);
+							ctx.lineTo(x, fadeHeight);
+						}
+					} else {
+						// Linear curve
+						ctx.lineTo(endPx, 0);
+						ctx.lineTo(endPx, height);
+						ctx.lineTo(releaseStartPx, height);
+					}
+					
+					ctx.closePath();
+					ctx.fill();
+				}
+				
+				// Draw envelope line on top
+				ctx.strokeStyle = '#ff9800';
+				ctx.lineWidth = 2;
+				ctx.beginPath();
+				
+				// Start at bottom left of selection
+				ctx.moveTo(startPx, height / 2);
+				
+				// Attack curve
+				if (attackPx > 0) {
+					if (currentCurve === 'exponential') {
+						const steps = 20;
+						for (let i = 0; i <= steps; i++) {
+							const t = i / steps;
+							const curve = 1 - Math.pow(1 - t, 3);
+							const x = startPx + (attackPx * t);
+							const y = (height / 2) * (1 - curve) + 5;
+							ctx.lineTo(x, y);
+						}
+					} else {
+						ctx.lineTo(startPx + attackPx, 5);
+					}
+				} else {
+					ctx.lineTo(startPx, 5);
+				}
+				
+				// Sustain (flat top)
+				ctx.lineTo(endPx - releasePx, 5);
+				
+				// Release curve
+				if (releasePx > 0) {
+					const releaseStartPx = endPx - releasePx;
+					if (currentCurve === 'exponential') {
+						const steps = 20;
+						for (let i = 0; i <= steps; i++) {
+							const t = i / steps;
+							const curve = Math.pow(t, 3);
+							const x = releaseStartPx + (releasePx * t);
+							const y = 5 + (height / 2 - 5) * curve;
+							ctx.lineTo(x, y);
+						}
+					} else {
+						ctx.lineTo(endPx, height / 2);
+					}
+				} else {
+					ctx.lineTo(endPx, height / 2);
+				}
+				
+				ctx.stroke();
+			}
+
+			// Draw time ruler with markers
+			function drawTimeRuler(width) {
+				timeRuler.innerHTML = '';
+				timeRuler.style.width = `${width}px`;
+				
+				if (bufferDuration === 0) return;
+				
+				// Calculate appropriate interval based on zoom
+				const pixelsPerSecond = width / bufferDuration;
+				let interval = 1; // seconds
+				if (pixelsPerSecond > 200) interval = 0.1;
+				else if (pixelsPerSecond > 50) interval = 0.5;
+				else if (pixelsPerSecond < 20) interval = 5;
+				else if (pixelsPerSecond < 10) interval = 10;
+				
+				for (let t = 0; t <= bufferDuration; t += interval) {
+					const x = (t / bufferDuration) * width;
+					const marker = document.createElement('div');
+					marker.className = 'time-marker';
+					marker.style.left = `${x}px`;
+					marker.textContent = t.toFixed(interval < 1 ? 1 : 0) + 's';
+					timeRuler.appendChild(marker);
+				}
+			}
+
+			// Update range overlay on waveform
+			function updateRangeOverlay() {
+				if (bufferDuration === 0) return;
+				const start = parseFloat(startSlider.value);
+				const end = parseFloat(endSlider.value);
+				const containerWidth = waveformContainer.offsetWidth;
+				const zoomedWidth = containerWidth * zoomLevel;
+				
+				const leftPx = (start / bufferDuration) * zoomedWidth;
+				const widthPx = ((end - start) / bufferDuration) * zoomedWidth;
+				
+				rangeOverlay.style.left = `${leftPx}px`;
+				rangeOverlay.style.width = `${widthPx}px`;
+			}
+
+			// Slider/input sync functions
+			function updateStartDisplay() {
+				const val = parseFloat(startSlider.value).toFixed(2);
+				startDisplay.textContent = `${val}s`;
+				startInput.value = val;
+				// Ensure start < end
+				if (parseFloat(startSlider.value) >= parseFloat(endSlider.value)) {
+					endSlider.value = parseFloat(startSlider.value) + 0.01;
+					updateEndDisplay();
+				}
+				updateRangeOverlay();
+				if (audioBuffer) drawEnvelope(waveformContainer.offsetWidth * zoomLevel, waveformDiv.offsetHeight);
+				if (autoFitEnabled) fitToSelection();
+			}
+
+			function updateEndDisplay() {
+				const val = parseFloat(endSlider.value).toFixed(2);
+				endDisplay.textContent = `${val}s`;
+				endInput.value = val;
+				// Ensure end > start
+				if (parseFloat(endSlider.value) <= parseFloat(startSlider.value)) {
+					startSlider.value = parseFloat(endSlider.value) - 0.01;
+					updateStartDisplay();
+				}
+				updateRangeOverlay();
+				if (audioBuffer) drawEnvelope(waveformContainer.offsetWidth * zoomLevel, waveformDiv.offsetHeight);
+				if (autoFitEnabled) fitToSelection();
+			}
+
+			// Event listeners for sliders
+			startSlider.addEventListener('input', updateStartDisplay);
+			endSlider.addEventListener('input', updateEndDisplay);
+			startInput.addEventListener('change', () => {
+				startSlider.value = startInput.value;
+				updateStartDisplay();
+			});
+			endInput.addEventListener('change', () => {
+				endSlider.value = endInput.value;
+				updateEndDisplay();
+			});
+
+			attackSlider.addEventListener('input', () => {
+				const val = parseFloat(attackSlider.value).toFixed(2);
+				attackDisplay.textContent = `${val}s`;
+				if (sampler) sampler.attack = parseFloat(val);
+				if (audioBuffer) drawEnvelope(waveformContainer.offsetWidth * zoomLevel, waveformDiv.offsetHeight);
+			});
+
+			releaseSlider.addEventListener('input', () => {
+				const val = parseFloat(releaseSlider.value).toFixed(2);
+				releaseDisplay.textContent = `${val}s`;
+				if (sampler) sampler.release = parseFloat(val);
+				if (audioBuffer) drawEnvelope(waveformContainer.offsetWidth * zoomLevel, waveformDiv.offsetHeight);
+			});
+
+			curveSelect.addEventListener('change', () => {
+				currentCurve = curveSelect.value;
+				if (sampler) sampler.curve = currentCurve;
+				if (audioBuffer) drawEnvelope(waveformContainer.offsetWidth * zoomLevel, waveformDiv.offsetHeight);
+			});
+
+			// Toggle buttons
+			reverseBtn.addEventListener('click', () => {
+				isReversed = !isReversed;
+				reverseBtn.textContent = `🔄 Reverse: ${isReversed ? 'ON' : 'OFF'}`;
+				reverseBtn.classList.toggle('active', isReversed);
+				if (sampler) sampler.reverse = isReversed;
+			});
+
+			loopBtn.addEventListener('click', () => {
+				isLooping = !isLooping;
+				loopBtn.textContent = `🔁 Loop: ${isLooping ? 'ON' : 'OFF'}`;
+				loopBtn.classList.toggle('active', isLooping);
+				if (sampler) sampler.loop = isLooping;
+			});
+
+			// Play buttons
+			playBtn.addEventListener('click', async () => {
+				if (!sampler) return;
+				await Tone.start();
+				
+				const start = parseFloat(startSlider.value);
+				const end = parseFloat(endSlider.value);
+				
+				// Use the new start/end parameters in triggerAttack
+				sampler.triggerAttack("C4", Tone.now(), 1, start, end);
+				
+				// Start playhead animation
+				startPlayhead(start, end);
+				
+				status.textContent = `Playing range: ${start.toFixed(2)}s - ${end.toFixed(2)}s ${isReversed ? '(reversed)' : ''}`;
+			});
+
+			playFullBtn.addEventListener('click', async () => {
+				if (!sampler) return;
+				await Tone.start();
+				
+				// Play full sample without start/end constraints
+				sampler.triggerAttack("C4", Tone.now(), 1);
+				
+				// Start playhead animation for full sample
+				startPlayhead(0, bufferDuration);
+				
+				status.textContent = `Playing full sample ${isReversed ? '(reversed)' : ''}`;
+			});
+
+			stopBtn.addEventListener('click', () => {
+				if (!sampler) return;
+				sampler.triggerRelease("C4", Tone.now());
+				stopPlayhead();
+				status.textContent = 'Stopped';
+			});
+
+			// Playhead animation
+			function startPlayhead(startPos, endPos) {
+				stopPlayhead(); // Stop any existing animation
+				
+				isPlaying = true;
+				playbackStartTime = Tone.now();
+				playbackStartPos = startPos;
+				playbackEndPos = endPos;
+				
+				playhead.style.display = 'block';
+				updatePlayhead();
+			}
+
+			function stopPlayhead() {
+				isPlaying = false;
+				if (animationFrameId) {
+					cancelAnimationFrame(animationFrameId);
+					animationFrameId = null;
+				}
+				playhead.style.display = 'none';
+			}
+
+			function updatePlayhead() {
+				if (!isPlaying || bufferDuration === 0) return;
+				
+				const elapsed = Tone.now() - playbackStartTime;
+				const duration = playbackEndPos - playbackStartPos;
+				
+				let currentPos;
+				if (isReversed) {
+					// When reversed, playhead moves from end to start
+					currentPos = playbackEndPos - elapsed;
+					if (currentPos < playbackStartPos) {
+						if (isLooping) {
+							playbackStartTime = Tone.now();
+							currentPos = playbackEndPos;
+						} else {
+							stopPlayhead();
+							return;
+						}
+					}
+				} else {
+					// Normal playback: playhead moves from start to end
+					currentPos = playbackStartPos + elapsed;
+					if (currentPos > playbackEndPos) {
+						if (isLooping) {
+							playbackStartTime = Tone.now();
+							currentPos = playbackStartPos;
+						} else {
+							stopPlayhead();
+							return;
+						}
+					}
+				}
+				
+				// Calculate position in pixels
+				const containerWidth = waveformContainer.offsetWidth;
+				const zoomedWidth = containerWidth * zoomLevel;
+				const xPos = (currentPos / bufferDuration) * zoomedWidth;
+				
+				playhead.style.left = `${xPos}px`;
+				
+				// Auto-scroll to keep playhead visible
+				const scrollLeft = waveformContainer.scrollLeft;
+				const visibleWidth = waveformContainer.offsetWidth;
+				if (xPos < scrollLeft + 50 || xPos > scrollLeft + visibleWidth - 50) {
+					waveformContainer.scrollLeft = xPos - visibleWidth / 2;
+				}
+				
+				animationFrameId = requestAnimationFrame(updatePlayhead);
+			}
+
+			// Zoom controls
+			function updateZoom(newZoom) {
+				zoomLevel = Math.max(1, Math.min(50, newZoom));
+				zoomSlider.value = zoomLevel;
+				zoomDisplay.textContent = `${zoomLevel.toFixed(1)}x`;
+				if (audioBuffer) {
+					drawWaveform(audioBuffer);
+					updateRangeOverlay();
+				}
+			}
+
+			zoomSlider.addEventListener('input', () => {
+				updateZoom(parseFloat(zoomSlider.value));
+			});
+
+			zoomInBtn.addEventListener('click', () => {
+				updateZoom(zoomLevel * 1.5);
+			});
+
+			zoomOutBtn.addEventListener('click', () => {
+				updateZoom(zoomLevel / 1.5);
+			});
+
+			zoomFitBtn.addEventListener('click', () => {
+				updateZoom(1);
+				waveformContainer.scrollLeft = 0;
+			});
+
+			zoomSelectionBtn.addEventListener('click', () => {
+				fitToSelection();
+			});
+
+			// Fit selection to view (reusable function)
+			function fitToSelection() {
+				if (bufferDuration === 0) return;
+				const start = parseFloat(startSlider.value);
+				const end = parseFloat(endSlider.value);
+				const selectionDuration = end - start;
+				if (selectionDuration <= 0) return;
+				
+				// Calculate zoom to fit selection exactly in view
+				const newZoom = bufferDuration / selectionDuration;
+				updateZoom(Math.min(newZoom, 50));
+				
+				// Scroll so start aligns with left edge
+				setTimeout(() => {
+					const containerWidth = waveformContainer.offsetWidth;
+					const zoomedWidth = containerWidth * zoomLevel;
+					const scrollTo = (start / bufferDuration) * zoomedWidth;
+					waveformContainer.scrollLeft = scrollTo;
+				}, 50);
+			}
+
+			// Auto-fit toggle
+			autoFitBtn.addEventListener('click', () => {
+				autoFitEnabled = !autoFitEnabled;
+				autoFitBtn.textContent = `🔒 Auto-fit: ${autoFitEnabled ? 'ON' : 'OFF'}`;
+				autoFitBtn.classList.toggle('active', autoFitEnabled);
+				if (autoFitEnabled && audioBuffer) {
+					fitToSelection();
+				} else if (!autoFitEnabled && audioBuffer) {
+					// When deactivated, reset to full view with no scroll
+					updateZoom(1);
+					waveformContainer.scrollLeft = 0;
+				}
+			});
+
+			// Mouse wheel zoom
+			waveformContainer.addEventListener('wheel', (e) => {
+				if (e.ctrlKey || e.metaKey) {
+					e.preventDefault();
+					const delta = e.deltaY > 0 ? 0.9 : 1.1;
+					updateZoom(zoomLevel * delta);
+				}
+			}, { passive: false });
+
+			// Enable controls after loading
+			function enableControls() {
+				playBtn.disabled = false;
+				playFullBtn.disabled = false;
+				stopBtn.disabled = false;
+			}
+		</script>
+	</body>
+</html>
