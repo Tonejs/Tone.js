@@ -116,5 +116,8 @@
 		"semi": true,
 		"useTabs": true,
 		"singleQuote": false
+	},
+	"publishConfig": {
+		"provenance": true
 	}
 }

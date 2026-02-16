@@ -11,10 +11,6 @@ on:
             - dev
             - main
 
-permissions:
-    contents: read
-    id-token: write
-
 jobs:
     test-conventional-commit:
         name: Validate PR title
@@ -162,6 +158,9 @@ jobs:
               run: npm run test:integrations
     publish:
         runs-on: ubuntu-latest
+        permissions:
+            contents: read
+            id-token: write
         # make sure all the tests pass first
         needs:
             [
@@ -172,6 +171,7 @@ jobs:
                 test-readme,
                 test-integrations,
             ]
+
         # not on PRs
         if: github.event_name != 'pull_request'
         env:
