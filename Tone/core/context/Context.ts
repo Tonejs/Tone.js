@@ -40,7 +40,7 @@ export class Context extends BaseContext {
 	readonly name: string = "Context";
 
 	/**
-		 * A private reference to the BaseAudioContext.
+	 * A private reference to the BaseAudioContext.
 	 */
 	protected readonly _context: AnyAudioContext;
 
