@@ -117,8 +117,6 @@ export class Tremolo extends LFOStereoEffect<TremoloOptions> {
 
 	dispose(): this {
 		super.dispose();
-		this._lfoL.dispose();
-		this._lfoR.dispose();
 		this._amplitudeL.dispose();
 		this._amplitudeR.dispose();
 		this.depth.dispose();

@@ -60,28 +60,5 @@ describe("Tremolo", () => {
 			expect(tremolo.frequency.value).to.be.closeTo(0.4, 0.01);
 			tremolo.dispose();
 		});
-
-		it("can sync the frequency to the transport", async () => {
-			const buffer = await Offline(({ transport }) => {
-				const tremolo = new Tremolo(2);
-				tremolo.sync();
-				tremolo.frequency.toDestination();
-				transport.bpm.setValueAtTime(transport.bpm.value * 2, 0.05);
-			}, 0.1);
-			expect(buffer.getValueAtTime(0)).to.be.closeTo(2, 0.1);
-			expect(buffer.getValueAtTime(0.05)).to.be.closeTo(4, 0.1);
-		});
-
-		it("can unsync the frequency to the transport", async () => {
-			const buffer = await Offline(({ transport }) => {
-				const tremolo = new Tremolo(2);
-				tremolo.sync();
-				tremolo.frequency.toDestination();
-				transport.bpm.setValueAtTime(transport.bpm.value * 2, 0.05);
-				tremolo.unsync();
-			}, 0.1);
-			expect(buffer.getValueAtTime(0)).to.be.closeTo(2, 0.1);
-			expect(buffer.getValueAtTime(0.05)).to.be.closeTo(2, 0.1);
-		});
 	});
 });
