@@ -3,7 +3,6 @@ import { expect } from "chai";
 import { BasicTests } from "../../test/helper/Basic.js";
 import { CompareToFile } from "../../test/helper/CompareToFile.js";
 import { EffectTests } from "../../test/helper/EffectTests.js";
-import { Offline } from "../../test/helper/Offline.js";
 import { Oscillator } from "../source/index.js";
 import { Tremolo } from "./Tremolo.js";
 
