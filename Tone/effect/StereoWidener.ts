@@ -1,4 +1,3 @@
-import { connect } from "../core/context/ToneAudioNode.js";
 import { NormalRange } from "../core/type/Units.js";
 import { optionsFromArguments } from "../core/util/Defaults.js";
 import { readOnly } from "../core/util/Interface.js";
@@ -9,6 +8,7 @@ import {
 import { Multiply } from "../signal/Multiply.js";
 import { Signal } from "../signal/Signal.js";
 import { Subtract } from "../signal/Subtract.js";
+import { ToneConstantSource } from "../signal/ToneConstantSource.js";
 
 export interface StereoWidenerOptions extends MidSideEffectOptions {
 	width: NormalRange;
@@ -58,6 +58,11 @@ export class StereoWidener extends MidSideEffect<StereoWidenerOptions> {
 	private _sideMult: Multiply;
 
 	/**
+	 * A constant source to get the value of 1 for the subtract node
+	 */
+	private _constant: ToneConstantSource;
+
+	/**
 	 * @param width The stereo width. A width of 0 is mono and 1 is stereo. 0.5 is no change.
 	 */
 	constructor(width?: NormalRange);
@@ -90,7 +95,11 @@ export class StereoWidener extends MidSideEffect<StereoWidenerOptions> {
 
 		this._oneMinusWidth = new Subtract({ context: this.context });
 		this._oneMinusWidth.connect(this._twoTimesWidthMid);
-		connect(this.context.getConstant(1), this._oneMinusWidth);
+		this._constant = new ToneConstantSource({
+			context: this.context,
+			offset: 1,
+		}).start();
+		this._constant.connect(this._oneMinusWidth);
 		this.width.connect(this._oneMinusWidth.subtrahend);
 
 		this._sideMult = new Multiply({ context: this.context });
@@ -113,6 +122,7 @@ export class StereoWidener extends MidSideEffect<StereoWidenerOptions> {
 		this._twoTimesWidthMid.dispose();
 		this._twoTimesWidthSide.dispose();
 		this._oneMinusWidth.dispose();
+		this._constant.dispose();
 		return this;
 	}
 }
