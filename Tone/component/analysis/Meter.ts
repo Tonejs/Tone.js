@@ -1,4 +1,4 @@
-import { gainToDb } from "../../core/type/Conversions.js";
+import { dbToGain, gainToDb } from "../../core/type/Conversions.js";
 import { NormalRange } from "../../core/type/Units.js";
 import { warn } from "../../core/util/Debug.js";
 import { optionsFromArguments } from "../../core/util/Defaults.js";
@@ -94,6 +94,11 @@ export class Meter extends MeterBase<MeterOptions> {
 	}
 
 	/**
+	 * Below this threshold, stop smoothing.
+	 */
+	private minValue = dbToGain(-100);
+
+	/**
 	 * Get the current value of the incoming signal.
 	 * Output is in decibels when {@link normalRange} is `false`.
 	 * If {@link channels} = 1, then the output is a single number
@@ -106,18 +111,25 @@ export class Meter extends MeterBase<MeterOptions> {
 			this.channels === 1
 				? [aValues as Float32Array]
 				: (aValues as Float32Array[]);
-		const vals = channelValues.map((values, index) => {
+		const vals = channelValues.map((values, channel) => {
 			const totalSquared = values.reduce(
 				(total, current) => total + current * current,
 				0
 			);
 			const rms = Math.sqrt(totalSquared / values.length);
-			// the rms can only fall at the rate of the smoothing
-			// but can jump up instantly
-			this._rms[index] = Math.max(rms, this._rms[index] * this.smoothing);
+			if (rms < this.minValue) {
+				this._rms[channel] = 0;
+			} else {
+				// the rms can only fall at the rate of the smoothing
+				// but can jump up instantly
+				this._rms[channel] = Math.max(
+					rms,
+					this._rms[channel] * this.smoothing
+				);
+			}
 			return this.normalRange
-				? this._rms[index]
-				: gainToDb(this._rms[index]);
+				? this._rms[channel]
+				: gainToDb(this._rms[channel]);
 		});
 		if (this.channels === 1) {
 			return vals[0];

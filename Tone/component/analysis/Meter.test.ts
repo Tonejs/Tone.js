@@ -69,6 +69,20 @@ describe("Meter", () => {
 			}, 400);
 		});
 
+		it("returns 0 below a threshold", (done) => {
+			const meter = new Meter({
+				normalRange: true,
+			});
+			const osc = new Oscillator().connect(meter).start();
+			osc.volume.value = -101;
+			setTimeout(() => {
+				expect(meter.getValue()).to.equal(0);
+				meter.dispose();
+				osc.dispose();
+				done();
+			}, 400);
+		});
+
 		it("can get the values in normal range", (done) => {
 			const meter = new Meter({
 				normalRange: true,
