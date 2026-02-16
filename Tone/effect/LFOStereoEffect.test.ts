@@ -71,7 +71,7 @@ describe("LFOStereoEffect", () => {
 			expect(buffer.getValueAtTime(0.05)).to.be.closeTo(2, 0.1);
 		});
 
-		it("autostarts the LFO", () => {
+		it("autostart the LFO", () => {
 			const stereoEffect = new LFOStereoEffectTest({
 				frequency: 0.2,
 				autostart: true,
