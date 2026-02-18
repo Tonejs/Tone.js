@@ -159,7 +159,7 @@ jobs:
     publish:
         runs-on: ubuntu-latest
         permissions:
-            contents: read
+            contents: write
             id-token: write
         # make sure all the tests pass first
         needs:
@@ -192,7 +192,6 @@ jobs:
             - name: Publish @next
               # dev branch gets published with @next tag
               run: npm publish --tag next --provenance --access public
-              if: ${{ github.ref == 'refs/heads/dev' }}
             - name: Publish @latest
               # main branch gets published with @latest tag
               run: npm publish --provenance --access public
