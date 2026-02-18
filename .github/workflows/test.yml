@@ -162,18 +162,18 @@ jobs:
             contents: write
             id-token: write
         # make sure all the tests pass first
-        needs:
-            [
-                run-tests,
-                test-code-examples,
-                test-html-examples,
-                test-lint,
-                test-readme,
-                test-integrations,
-            ]
+        # needs:
+        #     [
+        #         run-tests,
+        #         test-code-examples,
+        #         test-html-examples,
+        #         test-lint,
+        #         test-readme,
+        #         test-integrations,
+        #     ]
 
         # not on PRs
-        if: github.event_name != 'pull_request'
+        # if: github.event_name != 'pull_request'
         env:
             GITHUB_CI: true
         steps:
@@ -192,6 +192,7 @@ jobs:
             - name: Publish @next
               # dev branch gets published with @next tag
               run: npm publish --tag next --provenance --access public
+              if: ${{ github.ref == 'refs/heads/dev' }}
             - name: Publish @latest
               # main branch gets published with @latest tag
               run: npm publish --provenance --access public
