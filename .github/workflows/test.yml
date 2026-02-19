@@ -10,6 +10,7 @@ on:
         branches:
             - dev
             - main
+
 jobs:
     test-conventional-commit:
         name: Validate PR title
@@ -157,6 +158,9 @@ jobs:
               run: npm run test:integrations
     publish:
         runs-on: ubuntu-latest
+        permissions:
+            contents: read
+            id-token: write
         # make sure all the tests pass first
         needs:
             [
@@ -167,10 +171,10 @@ jobs:
                 test-readme,
                 test-integrations,
             ]
+
         # not on PRs
         if: github.event_name != 'pull_request'
         env:
-            NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
             GITHUB_CI: true
         steps:
             - uses: actions/checkout@v4
@@ -187,9 +191,9 @@ jobs:
               run: npm run increment
             - name: Publish @next
               # dev branch gets published with @next tag
-              run: npm publish --tag next
+              run: npm publish --tag next --provenance --access public
               if: ${{ github.ref == 'refs/heads/dev' }}
             - name: Publish @latest
               # main branch gets published with @latest tag
-              run: npm publish
+              run: npm publish --provenance --access public
               if: ${{ github.ref == 'refs/heads/main' }}

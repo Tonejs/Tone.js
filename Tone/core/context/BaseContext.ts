@@ -129,6 +129,9 @@ export abstract class BaseContext
 
 	abstract clearInterval(_id: number): this;
 
+	/**
+	 * @deprecated use ToneConstantSource instead
+	 */
 	abstract getConstant(_val: number): AudioBufferSourceNode;
 
 	abstract get currentTime(): Seconds;

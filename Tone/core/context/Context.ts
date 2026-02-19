@@ -521,6 +521,7 @@ export class Context extends BaseContext {
 
 	/**
 	 * **Internal** Generate a looped buffer at some constant value.
+	 * @deprecated
 	 */
 	getConstant(val: number): AudioBufferSourceNode {
 		if (this._constants.has(val)) {
