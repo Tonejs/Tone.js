@@ -178,11 +178,13 @@ jobs:
             GITHUB_CI: true
         steps:
             - uses: actions/checkout@v5
-            # Setup .npmrc file to publish to npm
             - uses: actions/setup-node@v6
               with:
-                  node-version: 22.12.0
+                  node-version: 24
                   registry-url: "https://registry.npmjs.org"
+            # Need to unset this in order to use OICD
+            - name: Unset NODE_AUTH_TOKEN
+              run: unset NODE_AUTH_TOKEN
             - name: Install dependencies
               run: npm install
             - name: Build
