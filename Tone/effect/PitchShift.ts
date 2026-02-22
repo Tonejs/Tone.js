@@ -1,6 +1,5 @@
 import { CrossFade } from "../component/channel/CrossFade.js";
 import { Delay } from "../core/context/Delay.js";
-import { onContextRunning } from "../core/context/OnRunning.js";
 import { Param } from "../core/context/Param.js";
 import { intervalToFrequencyRatio } from "../core/type/Conversions.js";
 import { Interval, Seconds, Time } from "../core/type/Units.js";
@@ -84,11 +83,6 @@ export class PitchShift extends FeedbackEffect<PitchShiftOptions> {
 	private _windowSize;
 
 	/**
-	 * Clean up the onContextRunning listener.
-	 */
-	private _removeOnRunning?: () => void;
-
-	/**
 	 * @param pitch The interval to transpose the incoming signal by.
 	 */
 	constructor(pitch?: Interval);
@@ -157,7 +151,7 @@ export class PitchShift extends FeedbackEffect<PitchShiftOptions> {
 		this.windowSize = this._windowSize;
 
 		// start the LFOs at the same time
-		this._removeOnRunning = onContextRunning(this.context, () => {
+		this._onContextRunning(() => {
 			const now = this.immediate();
 			this._lfoA.start(now);
 			this._lfoB.start(now);
@@ -228,7 +222,6 @@ export class PitchShift extends FeedbackEffect<PitchShiftOptions> {
 		this._crossFade.dispose();
 		this._crossFadeLFO.dispose();
 		this._feedbackDelay.dispose();
-		this._removeOnRunning?.();
 		return this;
 	}
 }

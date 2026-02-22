@@ -1,4 +1,3 @@
-import { onContextRunning } from "../core/context/OnRunning.js";
 import { Param } from "../core/context/Param.js";
 import { connect } from "../core/context/ToneAudioNode.js";
 import { Seconds, Time, UnitMap, UnitName } from "../core/type/Units.js";
@@ -38,11 +37,6 @@ export class ToneConstantSource<
 	readonly offset: Param<TypeName>;
 
 	/**
-	 * Clean up the onContextRunning listener.
-	 */
-	private _removeOnRunning?: () => void;
-
-	/**
 	 * @param  offset   The offset value
 	 */
 	constructor(offset: UnitMap[TypeName]);
@@ -55,9 +49,7 @@ export class ToneConstantSource<
 		);
 		super(options);
 
-		this._removeOnRunning = onContextRunning(this.context, () =>
-			this._contextStarted()
-		);
+		this._onContextRunning(() => this._contextStarted());
 
 		this.offset = new Param({
 			context: this.context,
@@ -120,7 +112,6 @@ export class ToneConstantSource<
 		}
 		this._source?.disconnect();
 		this.offset.dispose();
-		this._removeOnRunning?.();
 		return this;
 	}
 }

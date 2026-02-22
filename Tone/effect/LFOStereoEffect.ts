@@ -1,4 +1,3 @@
-import { onContextRunning } from "../core/context/OnRunning.js";
 import { Frequency, Time } from "../core/type/Units.js";
 import { optionsFromArguments } from "../core/util/Defaults.js";
 import { readOnly } from "../core/util/Interface.js";
@@ -37,11 +36,6 @@ export abstract class LFOStereoEffect<
 	 */
 	readonly frequency: Signal<"frequency">;
 
-	/**
-	 * Clean up the onContextRunning listener.
-	 */
-	private _removeOnRunning?: () => void;
-
 	constructor(options?: Partial<LFOStereoEffectOptions>);
 	constructor() {
 		const options = optionsFromArguments(
@@ -72,9 +66,7 @@ export abstract class LFOStereoEffect<
 		readOnly(this, ["frequency"]);
 
 		if (options.autostart) {
-			this._removeOnRunning = onContextRunning(this.context, () =>
-				this.start(this.immediate())
-			);
+			this._onContextRunning(() => this.start(this.immediate()));
 		}
 	}
 
@@ -139,7 +131,6 @@ export abstract class LFOStereoEffect<
 		this._lfoL.dispose();
 		this._lfoR.dispose();
 		this.frequency.dispose();
-		this._removeOnRunning?.();
 		return this;
 	}
 }

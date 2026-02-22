@@ -1,5 +1,4 @@
 import { PhaseShiftAllpass } from "../component/filter/PhaseShiftAllpass.js";
-import { onContextRunning } from "../core/context/OnRunning.js";
 import { Frequency } from "../core/type/Units.js";
 import { optionsFromArguments } from "../core/util/Defaults.js";
 import { Effect, EffectOptions } from "../effect/Effect.js";
@@ -77,11 +76,6 @@ export class FrequencyShifter extends Effect<FrequencyShifterOptions> {
 	private _phaseShifter: PhaseShiftAllpass;
 
 	/**
-	 * Clean up the onContextRunning listener.
-	 */
-	private _removeOnRunning?: () => void;
-
-	/**
 	 * @param frequency The incoming signal is shifted by this frequency value.
 	 */
 	constructor(frequency?: Frequency);
@@ -137,7 +131,7 @@ export class FrequencyShifter extends Effect<FrequencyShifterOptions> {
 		this._add.connect(this.effectReturn);
 
 		// start the oscillators at the same time
-		this._removeOnRunning = onContextRunning(this.context, () => {
+		this._onContextRunning(() => {
 			const now = this.immediate();
 			this._sine.start(now);
 			this._cosine.start(now);
@@ -160,7 +154,6 @@ export class FrequencyShifter extends Effect<FrequencyShifterOptions> {
 		this._phaseShifter.dispose();
 		this._sine.dispose();
 		this._sineMultiply.dispose();
-		this._removeOnRunning?.();
 		return this;
 	}
 }

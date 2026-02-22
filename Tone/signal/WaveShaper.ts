@@ -1,4 +1,3 @@
-import { onContextRunning } from "../core/context/OnRunning.js";
 import { ToneAudioNodeOptions } from "../core/context/ToneAudioNode.js";
 import { assert } from "../core/util/Debug.js";
 import { optionsFromArguments } from "../core/util/Defaults.js";
@@ -46,11 +45,6 @@ export class WaveShaper extends SignalOperator<WaveShaperOptions> {
 	output = this._shaper;
 
 	/**
-	 * Clean up the onContextRunning listener.
-	 */
-	private _disposeOnRunning: () => void;
-
-	/**
 	 * @param mapping The function used to define the values.
 	 *                The mapping function should take two arguments:
 	 *                the first is the value at the current position
@@ -72,9 +66,9 @@ export class WaveShaper extends SignalOperator<WaveShaperOptions> {
 		);
 		super(options);
 
-		this._disposeOnRunning = onContextRunning(this.context, () =>
-			this.initCurve(options.mapping, options.length)
-		);
+		this._onContextRunning(() => {
+			this.initCurve(options.mapping, options.length);
+		});
 	}
 
 	static getDefaults(): WaveShaperOptions {
@@ -155,7 +149,6 @@ export class WaveShaper extends SignalOperator<WaveShaperOptions> {
 	dispose(): this {
 		super.dispose();
 		this._shaper.disconnect();
-		this._disposeOnRunning();
 		return this;
 	}
 }

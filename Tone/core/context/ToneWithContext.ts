@@ -19,6 +19,7 @@ import {
 	isUndef,
 } from "../util/TypeCheck.js";
 import { BaseContext } from "./BaseContext.js";
+import { onContextRunning } from "./OnRunning.js";
 
 /**
  * A unit which process audio
@@ -230,6 +231,29 @@ export abstract class ToneWithContext<
 				}
 			}
 		});
+		return this;
+	}
+
+	/**
+	 * Internal method which removes the onContextRunning callback.
+	 */
+	private _removeOnContextRunning?: () => void;
+
+	/**
+	 * Internal method which is called the first time the context is resumed.
+	 * Useful for setting up AudioNodes which should be running as soon
+	 * as the context is running, but should not be started until then.
+	 */
+	protected _onContextRunning(callback: () => void): void {
+		this._removeOnContextRunning = onContextRunning(this.context, callback);
+	}
+
+	/**
+	 * Dispose and disconnect
+	 */
+	dispose(): this {
+		super.dispose();
+		this._removeOnContextRunning?.();
 		return this;
 	}
 }

@@ -1,5 +1,4 @@
 import { Delay } from "../core/context/Delay.js";
-import { onContextRunning } from "../core/context/OnRunning.js";
 import { Param } from "../core/context/Param.js";
 import { Frequency, NormalRange, Seconds } from "../core/type/Units.js";
 import { optionsFromArguments } from "../core/util/Defaults.js";
@@ -42,11 +41,6 @@ export class Vibrato extends Effect<VibratoOptions> {
 	 */
 	readonly depth: Param<"normalRange">;
 
-	/*
-	 * Clean up the onContextRunning listener.
-	 */
-	private _disposeOnRunning: () => void;
-
 	/**
 	 * @param frequency The frequency of the vibrato.
 	 * @param depth The amount the pitch is modulated.
@@ -80,7 +74,7 @@ export class Vibrato extends Effect<VibratoOptions> {
 		readOnly(this, ["frequency", "depth"]);
 		this.effectSend.chain(this._delayNode, this.effectReturn);
 
-		this._disposeOnRunning = onContextRunning(this.context, () => {
+		this._onContextRunning(() => {
 			this._lfo.start();
 		});
 	}
@@ -110,7 +104,6 @@ export class Vibrato extends Effect<VibratoOptions> {
 		this._lfo.dispose();
 		this.frequency.dispose();
 		this.depth.dispose();
-		this._disposeOnRunning();
 		return this;
 	}
 }
