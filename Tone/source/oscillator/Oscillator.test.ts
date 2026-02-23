@@ -19,9 +19,8 @@ describe("Oscillator", () => {
 	SourceTests(Oscillator);
 	OscillatorTests(Oscillator);
 
-	const sandbox = sinon.createSandbox();
 	afterEach(() => {
-		sandbox.restore();
+		sinon.restore();
 	});
 
 	it("matches a file", () => {
@@ -38,8 +37,8 @@ describe("Oscillator", () => {
 
 	it("cleans up connections after stopping", async () => {
 		const SignalPrototype = Signal.prototype;
-		const connectSpy = sandbox.spy(SignalPrototype, "connect");
-		const disconnectSpy = sandbox.spy(SignalPrototype, "disconnect");
+		const connectSpy = sinon.spy(SignalPrototype, "connect");
+		const disconnectSpy = sinon.spy(SignalPrototype, "disconnect");
 		await new Promise<void>((done) => {
 			const osc = new Oscillator({
 				onstop: () => done(),

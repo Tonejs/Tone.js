@@ -8,9 +8,9 @@ import {
 } from "../core/context/ToneAudioNode.js";
 import { Decibels } from "../core/type/Units.js";
 import { assert } from "../core/util/Debug.js";
-import { optionsFromArguments } from "../core/util/Defaults.js";
+import { deepMerge, optionsFromArguments } from "../core/util/Defaults.js";
 import { readOnly } from "../core/util/Interface.js";
-import { isDefined, isNumber } from "../core/util/TypeCheck.js";
+import { isDefined, isNumber, isObject } from "../core/util/TypeCheck.js";
 
 export interface UserMediaOptions extends ToneAudioNodeOptions {
 	volume: Decibels;
@@ -104,23 +104,24 @@ export class UserMedia extends ToneAudioNode<UserMediaOptions> {
 	 *                   			  With no argument, the default stream is opened.
 	 * @return The promise is resolved when the stream is open.
 	 */
-	async open(labelOrIdOrConstraints?: string | number | object): Promise<this> {
+	async open(
+		labelOrIdOrConstraints?: string | number | MediaStreamConstraints
+	): Promise<this> {
 		assert(UserMedia.supported, "UserMedia is not supported");
 		// close the previous stream
 		if (this.state === "started") {
 			this.close();
 		}
-		let constraints = {
+		let constraints: MediaStreamConstraints = {
 			audio: {
 				echoCancellation: false,
 				sampleRate: this.context.sampleRate,
 				noiseSuppression: false,
-				mozNoiseSuppression: false,
 			},
 		};
-		if(typeof labelOrIdOrConstraints === "object") {
+		if (isObject(labelOrIdOrConstraints)) {
 			// if the user passed in a constraints object
-			constraints = Object.assign(constraints, labelOrIdOrConstraints);
+			constraints = deepMerge(constraints, labelOrIdOrConstraints);
 		} else {
 			// if the user passed in a label or id
 			const devices = await UserMedia.enumerateDevices();
@@ -129,14 +130,18 @@ export class UserMedia extends ToneAudioNode<UserMediaOptions> {
 			} else {
 				this._device = devices.find((device) => {
 					return (
-						device.label === labelOrIdOrConstraints || device.deviceId === labelOrIdOrConstraints
+						device.label === labelOrIdOrConstraints ||
+						device.deviceId === labelOrIdOrConstraints
 					);
 				});
 				// didn't find a matching device
 				if (!this._device && devices.length > 0) {
 					this._device = devices[0];
 				}
-				assert(isDefined(this._device), `No matching device ${labelOrIdOrConstraints}`);
+				assert(
+					isDefined(this._device),
+					`No matching device ${labelOrIdOrConstraints}`
+				);
 			}
 			// if there is a device, set the deviceId
 			if (this._device) {
