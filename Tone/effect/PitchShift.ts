@@ -1,13 +1,13 @@
-import { Interval, Seconds, Time } from "../core/type/Units.js";
-import { FeedbackEffect, FeedbackEffectOptions } from "./FeedbackEffect.js";
-import { optionsFromArguments } from "../core/util/Defaults.js";
-import { LFO } from "../source/oscillator/LFO.js";
-import { Delay } from "../core/context/Delay.js";
 import { CrossFade } from "../component/channel/CrossFade.js";
-import { Signal } from "../signal/Signal.js";
-import { readOnly } from "../core/util/Interface.js";
+import { Delay } from "../core/context/Delay.js";
 import { Param } from "../core/context/Param.js";
 import { intervalToFrequencyRatio } from "../core/type/Conversions.js";
+import { Interval, Seconds, Time } from "../core/type/Units.js";
+import { optionsFromArguments } from "../core/util/Defaults.js";
+import { readOnly } from "../core/util/Interface.js";
+import { Signal } from "../signal/Signal.js";
+import { LFO } from "../source/oscillator/LFO.js";
+import { FeedbackEffect, FeedbackEffectOptions } from "./FeedbackEffect.js";
 
 export interface PitchShiftOptions extends FeedbackEffectOptions {
 	pitch: Interval;
@@ -147,13 +147,16 @@ export class PitchShift extends FeedbackEffect<PitchShiftOptions> {
 		// route the input
 		this.effectSend.fan(this._delayA, this._delayB);
 		this._crossFade.chain(this._feedbackDelay, this.effectReturn);
-		// start the LFOs at the same time
-		const now = this.now();
-		this._lfoA.start(now);
-		this._lfoB.start(now);
-		this._crossFadeLFO.start(now);
 		// set the initial value
 		this.windowSize = this._windowSize;
+
+		// start the LFOs at the same time
+		this._onContextRunning(() => {
+			const now = this.immediate();
+			this._lfoA.start(now);
+			this._lfoB.start(now);
+			this._crossFadeLFO.start(now);
+		});
 	}
 
 	static getDefaults(): PitchShiftOptions {

@@ -2,11 +2,11 @@ import {
 	ToneAudioNode,
 	ToneAudioNodeOptions,
 } from "../../core/context/ToneAudioNode.js";
-import { Split } from "./Split.js";
+import { optionsFromArguments } from "../../core/util/Defaults.js";
 import { Add } from "../../signal/Add.js";
 import { Multiply } from "../../signal/Multiply.js";
 import { Subtract } from "../../signal/Subtract.js";
-import { optionsFromArguments } from "../../core/util/Defaults.js";
+import { Split } from "./Split.js";
 
 export type MidSideSplitOptions = ToneAudioNodeOptions;
 

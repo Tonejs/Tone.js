@@ -1,7 +1,10 @@
 import { Ticker, TickerClockSource } from "../clock/Ticker.js";
+import type { TransportInstance as Transport } from "../clock/Transport.js";
 import { Seconds } from "../type/Units.js";
 import { isAudioContext } from "../util/AdvancedTypeCheck.js";
+import { assert } from "../util/Debug.js";
 import { optionsFromArguments } from "../util/Defaults.js";
+import type { DrawInstance as Draw } from "../util/Draw.js";
 import { Timeline } from "../util/Timeline.js";
 import { isDefined } from "../util/TypeCheck.js";
 import {
@@ -9,13 +12,10 @@ import {
 	createAudioContext,
 	createAudioWorkletNode,
 } from "./AudioContext.js";
-import { closeContext, initializeContext } from "./ContextInitialization.js";
 import { BaseContext, ContextLatencyHint } from "./BaseContext.js";
-import { assert } from "../util/Debug.js";
-import type { DrawClass as Draw } from "../util/Draw.js";
-import type { DestinationClass as Destination } from "./Destination.js";
-import type { TransportClass as Transport } from "../clock/Transport.js";
-import type { ListenerClass as Listener } from "./Listener.js";
+import { closeContext, initializeContext } from "./ContextInitialization.js";
+import type { DestinationInstance as Destination } from "./Destination.js";
+import type { ListenerInstance as Listener } from "./Listener.js";
 
 export interface ContextOptions {
 	clockSource: TickerClockSource;
@@ -23,6 +23,7 @@ export interface ContextOptions {
 	lookAhead: Seconds;
 	updateInterval: Seconds;
 	context: AnyAudioContext;
+	sampleRate: number;
 }
 
 export interface ContextTimeoutEvent {
@@ -32,29 +33,29 @@ export interface ContextTimeoutEvent {
 }
 
 /**
- * Wrapper around the native AudioContext.
+ * Wraps the native AudioContext.
  * @category Core
  */
 export class Context extends BaseContext {
 	readonly name: string = "Context";
 
 	/**
-	 * private reference to the BaseAudioContext
+	 * A private reference to the BaseAudioContext.
 	 */
 	protected readonly _context: AnyAudioContext;
 
 	/**
-	 * A reliable callback method
+	 * A reliable callback method.
 	 */
 	private readonly _ticker: Ticker;
 
 	/**
-	 * The default latency hint
+	 * The default latency hint.
 	 */
 	private _latencyHint!: ContextLatencyHint | Seconds;
 
 	/**
-	 * An object containing all of the constants AudioBufferSourceNodes
+	 * An object containing all of the AudioBufferSourceNodes with constant values.
 	 */
 	private _constants = new Map<number, AudioBufferSourceNode>();
 
@@ -116,9 +117,16 @@ export class Context extends BaseContext {
 			// custom context provided, latencyHint unknown (unless explicitly provided in options)
 			this._latencyHint = arguments[0]?.latencyHint || "";
 		} else {
-			this._context = createAudioContext({
-				latencyHint: options.latencyHint,
-			});
+			this._context = createAudioContext(
+				options.sampleRate
+					? {
+							latencyHint: options.latencyHint,
+							sampleRate: options.sampleRate,
+						}
+					: {
+							latencyHint: options.latencyHint,
+						}
+			);
 			this._latencyHint = options.latencyHint;
 		}
 
@@ -346,9 +354,9 @@ export class Context extends BaseContext {
 	//--------------------------------------------
 
 	/**
-	 * Maps a module name to promise of the addModule method
+	 * A set of unsettled promises returned by the addModule method
 	 */
-	private _workletPromise: null | Promise<void> = null;
+	private _workletPromises = new Set<Promise<void>>();
 
 	/**
 	 * Create an audio worklet node from a name and options. The module
@@ -370,17 +378,21 @@ export class Context extends BaseContext {
 			isDefined(this.rawContext.audioWorklet),
 			"AudioWorkletNode is only available in a secure context (https or localhost)"
 		);
-		if (!this._workletPromise) {
-			this._workletPromise = this.rawContext.audioWorklet.addModule(url);
-		}
-		await this._workletPromise;
+		const workletPromise = this.rawContext.audioWorklet.addModule(url);
+
+		this._workletPromises.add(workletPromise);
+		workletPromise.finally(() =>
+			this._workletPromises.delete(workletPromise)
+		);
+
+		return workletPromise;
 	}
 
 	/**
 	 * Returns a promise which resolves when all of the worklets have been loaded on this context
 	 */
 	protected async workletsAreReady(): Promise<void> {
-		(await this._workletPromise) ? this._workletPromise : Promise.resolve();
+		await Promise.all(this._workletPromises);
 	}
 
 	//---------------------------
@@ -390,7 +402,7 @@ export class Context extends BaseContext {
 	/**
 	 * How often the interval callback is invoked.
 	 * This number corresponds to how responsive the scheduling
-	 * can be. Setting to 0 will result in the lowest practial interval
+	 * can be. Setting to 0 will result in the lowest practical interval
 	 * based on context properties. context.updateInterval + context.lookAhead
 	 * gives you the total latency between scheduling an event and hearing it.
 	 */
@@ -509,6 +521,7 @@ export class Context extends BaseContext {
 
 	/**
 	 * **Internal** Generate a looped buffer at some constant value.
+	 * @deprecated
 	 */
 	getConstant(val: number): AudioBufferSourceNode {
 		if (this._constants.has(val)) {
@@ -559,18 +572,22 @@ export class Context extends BaseContext {
 	private _timeoutLoop(): void {
 		const now = this.now();
 		this._timeouts.forEachBefore(now, (event) => {
-			// invoke the callback
-			event.callback();
-			this._timeouts.remove(event);
+			try {
+				event.callback();
+			} finally {
+				this._timeouts.remove(event);
+			}
 		});
 	}
 
 	/**
-	 * A setTimeout which is guaranteed by the clock source.
+	 * A `setTimeout` which is guaranteed by the clock source.
+	 *
 	 * Also runs in the offline context.
-	 * @param  fn       The callback to invoke
-	 * @param  timeout  The timeout in seconds
-	 * @returns ID to use when invoking Context.clearTimeout
+	 *
+	 * @param fn The callback to invoke.
+	 * @param timeout The timeout in seconds.
+	 * @returns ID to use when invoking {@link clearTimeout}.
 	 */
 	setTimeout(fn: (...args: any[]) => void, timeout: Seconds): number {
 		this._timeoutIds++;
@@ -584,8 +601,8 @@ export class Context extends BaseContext {
 	}
 
 	/**
-	 * Clears a previously scheduled timeout with Tone.context.setTimeout
-	 * @param  id  The ID returned from setTimeout
+	 * Clears a previously scheduled timeout with {@link setTimeout}.
+	 * @param id The ID returned from {@link setTimeout}.
 	 */
 	clearTimeout(id: number): this {
 		this._timeouts.forEach((event) => {
@@ -597,14 +614,18 @@ export class Context extends BaseContext {
 	}
 
 	/**
-	 * Clear the function scheduled by {@link setInterval}
+	 * Clear the function scheduled by {@link setInterval}.
+	 * @param id The ID returned from {@link setInterval}.
 	 */
 	clearInterval(id: number): this {
 		return this.clearTimeout(id);
 	}
 
 	/**
-	 * Adds a repeating event to the context's callback clock
+	 * Adds a repeating event to the context's callback clock.
+	 * @param fn The callback to invoke.
+	 * @param interval The timeout in seconds.
+	 * @returns ID to use when invoking {@link clearInterval}.
 	 */
 	setInterval(fn: (...args: any[]) => void, interval: Seconds): number {
 		const id = ++this._timeoutIds;

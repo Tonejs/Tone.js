@@ -1,7 +1,7 @@
+import { ToneAudioNode } from "../../core/context/ToneAudioNode.js";
 import { TimeClass } from "../../core/type/Time.js";
 import { PlaybackState } from "../../core/util/StateTimeline.js";
 import { TimelineValue } from "../../core/util/TimelineValue.js";
-import { ToneAudioNode } from "../../core/context/ToneAudioNode.js";
 import { Pow } from "../../signal/Pow.js";
 import { Signal } from "../../signal/Signal.js";
 import {
@@ -27,6 +27,7 @@ import {
 	TransportTime,
 } from "../type/Units.js";
 import { enterScheduledCallback } from "../util/Debug.js";
+import { assertUsedScheduleTime } from "../util/Debug.js";
 import { optionsFromArguments } from "../util/Defaults.js";
 import { Emitter } from "../util/Emitter.js";
 import { readOnly, writable } from "../util/Interface.js";
@@ -67,27 +68,29 @@ type TransportCallback = (time: Seconds) => void;
 
 /**
  * Transport for timing musical events.
- * Supports tempo curves and time changes. Unlike browser-based timing (setInterval, requestAnimationFrame)
+ *
+ * Supports tempo curves and time changes.
+ *
+ * Unlike browser-based timing (setInterval, requestAnimationFrame),
  * Transport timing events pass in the exact time of the scheduled event
- * in the argument of the callback function. Pass that time value to the object
- * you're scheduling. <br><br>
+ * in the argument of the callback function.
+ *
  * A single transport is created for you when the library is initialized.
- * <br><br>
- * The transport emits the events: "start", "stop", "pause", and "loop" which are
- * called with the time of that event as the argument.
+ *
+ * The transport emits "start", "stop", "pause", and "loop" events.
  *
  * @example
  * const osc = new Tone.Oscillator().toDestination();
- * // repeated event every 8th note
+ * // Repeated event every 8th note.
  * Tone.getTransport().scheduleRepeat((time) => {
- * 	// use the callback time to schedule events
+ * 	// Use the callback time to schedule events.
  * 	osc.start(time).stop(time + 0.1);
  * }, "8n");
- * // transport must be started before it starts invoking events
+ * // Transport must be started before it starts invoking events.
  * Tone.getTransport().start();
  * @category Core
  */
-export class TransportClass
+export class TransportInstance
 	extends ToneWithContext<TransportOptions>
 	implements Emitter<TransportEventNames>
 {
@@ -189,7 +192,7 @@ export class TransportClass
 	constructor(options?: Partial<TransportOptions>);
 	constructor() {
 		const options = optionsFromArguments(
-			TransportClass.getDefaults(),
+			TransportInstance.getDefaults(),
 			arguments
 		);
 		super(options);
@@ -275,14 +278,14 @@ export class TransportClass
 	//-------------------------------------
 
 	/**
-	 * Schedule an event along the timeline.
-	 * @param callback The callback to be invoked at the time.
+	 * Schedule an event to be invoked at a specific time.
+	 * @param callback The callback to invoke at the given time.
 	 * @param time The time to invoke the callback at.
-	 * @return The id of the event which can be used for canceling the event.
+	 * @return The ID of the event, which can be used to cancel the event.
 	 * @example
-	 * // schedule an event on the 16th measure
+	 * // Schedule an event on the 16th measure.
 	 * Tone.getTransport().schedule((time) => {
-	 * 	// invoked on measure 16
+	 * 	// Invoked on measure 16.
 	 * 	console.log("measure 16!");
 	 * }, "16:0:0");
 	 */
@@ -298,17 +301,18 @@ export class TransportClass
 	}
 
 	/**
-	 * Schedule a repeated event along the timeline. The event will fire
-	 * at the `interval` starting at the `startTime` and for the specified
-	 * `duration`.
-	 * @param  callback   The callback to invoke.
-	 * @param  interval   The duration between successive callbacks. Must be a positive number.
-	 * @param  startTime  When along the timeline the events should start being invoked.
-	 * @param  duration How long the event should repeat.
-	 * @return  The ID of the scheduled event. Use this to cancel the event.
+	 * Schedule a repeated event.
+	 *
+	 * The event will fire at the `interval` starting at the `startTime` and for the specified `duration`.
+	 *
+	 * @param callback The callback to invoke.
+	 * @param interval The duration between successive callbacks.
+	 * @param startTime When the event should start.
+	 * @param duration How long the event should repeat.
+	 * @return The ID of the scheduled event. Use this to cancel the event.
 	 * @example
 	 * const osc = new Tone.Oscillator().toDestination().start();
-	 * // a callback invoked every eighth note after the first measure
+	 * // A callback invoked every eighth note after the first measure.
 	 * Tone.getTransport().scheduleRepeat((time) => {
 	 * 	osc.start(time).stop(time + 0.1);
 	 * }, "8n", "1m");
@@ -419,7 +423,7 @@ export class TransportClass
 	}
 
 	/**
-	 * Returns the playback state of the source, either "started", "stopped", or "paused"
+	 * The playback state of the transport, either "started", "stopped", or "paused".
 	 */
 	get state(): PlaybackState {
 		return this._clock.getStateAtTime(this.now());
@@ -427,10 +431,10 @@ export class TransportClass
 
 	/**
 	 * Start the transport and all sources synced to the transport.
-	 * @param  time The time when the transport should start.
-	 * @param  offset The timeline offset to start the transport.
+	 * @param time The time when the transport should start.
+	 * @param offset The timeline offset to start the transport from.
 	 * @example
-	 * // start the transport in one second starting at beginning of the 5th measure.
+	 * // Start the transport in one second, beginning at the start of the 5th measure.
 	 * Tone.getTransport().start("+1", "4:0:0");
 	 */
 	start(time?: Time, offset?: TransportTime): this {
@@ -465,9 +469,11 @@ export class TransportClass
 	}
 
 	/**
-	 * Toggle the current state of the transport. If it is
-	 * started, it will stop it, otherwise it will start the Transport.
-	 * @param  time The time of the event
+	 * Toggle the current state of the transport.
+	 *
+	 * If it is started, it will stop it. If it is stopped, it will start it.
+	 *
+	 * @param time The time of the event.
 	 */
 	toggle(time?: Time): this {
 		time = this.toSeconds(time);
@@ -623,25 +629,31 @@ export class TransportClass
 		return this._clock.ticks;
 	}
 	set ticks(t: Ticks) {
-		if (this._clock.ticks !== t) {
-			const now = this.now();
-			// stop everything synced to the transport
-			if (this.state === "started") {
-				const ticks = this._clock.getTicksAtTime(now);
-				// schedule to start on the next tick, #573
-				const remainingTick = this._clock.frequency.getDurationOfTicks(
-					Math.ceil(ticks) - ticks,
-					now
-				);
-				const time = now + remainingTick;
-				this.emit("stop", time);
-				this._clock.setTicksAtTime(t, time);
-				// restart it with the new time
-				this.emit("start", time, this._clock.getSecondsAtTime(time));
-			} else {
-				this.emit("ticks", now);
-				this._clock.setTicksAtTime(t, now);
-			}
+		assertUsedScheduleTime();
+
+		// "floor" ensures that any events scheduled on this tick will be called.
+		t = Math.floor(t);
+
+		if (this._clock.ticks === t) {
+			return;
+		}
+		const now = this.now();
+		// stop everything synced to the transport
+		if (this.state === "started") {
+			const ticks = this._clock.getTicksAtTime(now);
+			// schedule to start on the next tick, #573
+			const remainingTick = this._clock.frequency.getDurationOfTicks(
+				Math.ceil(ticks) - ticks,
+				now
+			);
+			const time = now + remainingTick;
+			this.emit("stop", time);
+			this._clock.setTicksAtTime(t, time);
+			// restart it with the new time
+			this.emit("start", time, this._clock.getSecondsAtTime(time));
+		} else {
+			this.emit("ticks", now);
+			this._clock.setTicksAtTime(t, now);
 		}
 	}
 
@@ -655,12 +667,32 @@ export class TransportClass
 	}
 
 	/**
+	 * Set the Transport's {@link ticks} value at the given time
+	 * @param  ticks  The tick value to set
+	 * @param  time   The Context time at which to set the seconds value
+	 */
+	setTicksAtTime(ticks: Ticks, time: Time): this {
+		this._clock.setTicksAtTime(ticks, time);
+		return this;
+	}
+
+	/**
 	 * Return the elapsed seconds at the given time.
 	 * @param  time  When to get the elapsed seconds
 	 * @return  The number of elapsed seconds
 	 */
 	getSecondsAtTime(time: Time): Seconds {
 		return this._clock.getSecondsAtTime(time);
+	}
+
+	/**
+	 * Set the Transport's {@link seconds} value at the given time.
+	 * @param seconds The seconds value to set
+	 * @param time The Context time at which to set the seconds value
+	 */
+	setSecondsAtTime(seconds: Seconds, time: Time): this {
+		this.setTicksAtTime(this.toTicks(seconds), time);
+		return this;
 	}
 
 	/**
@@ -808,14 +840,14 @@ export class TransportClass
 	emit!: (event: any, ...args: any[]) => this;
 }
 
-Emitter.mixin(TransportClass);
+Emitter.mixin(TransportInstance);
 
 //-------------------------------------
 // 	INITIALIZATION
 //-------------------------------------
 
 onContextInit((context) => {
-	context.transport = new TransportClass({ context });
+	context.transport = new TransportInstance({ context });
 });
 
 onContextClose((context) => {

@@ -1,4 +1,5 @@
 import { expect } from "chai";
+
 import { BasicTests } from "../../test/helper/Basic.js";
 import { ConstantOutput } from "../../test/helper/ConstantOutput.js";
 import { Offline } from "../../test/helper/Offline.js";
@@ -70,8 +71,8 @@ describe("WaveShaper", () => {
 			}, -20);
 		});
 
-		it("maps the input through the waveshaping curve", () => {
-			return Offline(() => {
+		it("maps the input through the waveshaping curve", async () => {
+			const buffer = await Offline(() => {
 				const signal = new Signal(-1);
 				const waveshaper = new WaveShaper((input) => {
 					return input * 2;
@@ -80,10 +81,9 @@ describe("WaveShaper", () => {
 				waveshaper.toDestination();
 				signal.setValueAtTime(-1, 0);
 				signal.linearRampToValueAtTime(1, 1);
-			}, 1).then((buffer) => {
-				buffer.forEach((sample, time) => {
-					expect(sample).to.be.closeTo(2 * (time * 2 - 1), 0.005);
-				});
+			}, 1);
+			buffer.forEach((sample, time) => {
+				expect(sample).to.be.closeTo(2 * (time * 2 - 1), 0.005);
 			});
 		});
 	});

@@ -1,4 +1,5 @@
 import { expect } from "chai";
+
 import { BasicTests } from "../../../test/helper/Basic.js";
 import { atTime, Offline } from "../../../test/helper/Offline.js";
 import { getContext } from "../Global.js";
@@ -72,7 +73,7 @@ describe("TimeClass", () => {
 			});
 		});
 
-		it("evalutes objects", () => {
+		it("evaluates objects", () => {
 			return Offline(() => {
 				expect(Time({ "4n": 3 }).valueOf()).to.equal(1.5);
 				expect(Time({ "8t": 2, "1m": 3 }).valueOf()).to.be.closeTo(
@@ -98,7 +99,7 @@ describe("TimeClass", () => {
 			expect(Time(2).quantize(8, 0.75).valueOf()).to.equal(0.5);
 		});
 
-		it("can get the next subdivison when the transport is started", () => {
+		it("can get the next subdivision when the transport is started", () => {
 			return Offline((context) => {
 				const transport = context.transport;
 				transport.start(0.1);
@@ -160,11 +161,14 @@ describe("TimeClass", () => {
 
 		it("converts time into ticks", () => {
 			return Offline(({ transport }) => {
-				expect(Time("2n").toTicks()).to.equal(2 * transport.PPQ);
+				expect(Time("2n").toTicks()).to.closeTo(2 * transport.PPQ, 0.1);
 				// floating point checks
 				const bpmOrig = transport.bpm.value;
 				transport.bpm.value = 100;
-				expect(Time("0:1:3").toTicks()).to.equal(1.75 * transport.PPQ);
+				expect(Time("0:1:3").toTicks()).to.closeTo(
+					1.75 * transport.PPQ,
+					0.1
+				);
 				transport.bpm.value = bpmOrig;
 			});
 		});

@@ -9,12 +9,12 @@ import {
 	UnitName,
 } from "../type/Units.js";
 import { isAudioParam } from "../util/AdvancedTypeCheck.js";
+import { assert, assertRange } from "../util/Debug.js";
 import { optionsFromArguments } from "../util/Defaults.js";
+import { EQ } from "../util/Math.js";
 import { Timeline } from "../util/Timeline.js";
 import { isDefined } from "../util/TypeCheck.js";
 import { ToneWithContext, ToneWithContextOptions } from "./ToneWithContext.js";
-import { EQ } from "../util/Math.js";
-import { assert, assertRange } from "../util/Debug.js";
 
 export interface ParamOptions<TypeName extends UnitName>
 	extends ToneWithContextOptions {

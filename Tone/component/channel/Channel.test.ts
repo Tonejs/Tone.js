@@ -1,9 +1,10 @@
-import { Channel } from "./Channel.js";
+import { expect } from "chai";
+
 import { BasicTests } from "../../../test/helper/Basic.js";
+import { Offline } from "../../../test/helper/Offline.js";
 import { PassAudio } from "../../../test/helper/PassAudio.js";
 import { Signal } from "../../signal/Signal.js";
-import { Offline } from "../../../test/helper/Offline.js";
-import { expect } from "chai";
+import { Channel } from "./Channel.js";
 
 describe("Channel", () => {
 	BasicTests(Channel);
@@ -37,14 +38,13 @@ describe("Channel", () => {
 			});
 		});
 
-		it("can mute the input", () => {
-			return Offline(() => {
+		it("can mute the input", async () => {
+			const buffer = await Offline(() => {
 				const channel = new Channel(0).toDestination();
 				new Signal(1).connect(channel);
 				channel.mute = true;
-			}).then((buffer) => {
-				expect(buffer.isSilent()).to.be.true;
 			});
+			expect(buffer.isSilent()).to.be.true;
 		});
 
 		it("reports itself as muted when either muted or another channel is soloed", () => {

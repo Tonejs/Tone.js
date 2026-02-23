@@ -19,7 +19,7 @@ import {
 	isUndef,
 } from "../util/TypeCheck.js";
 import { BaseContext } from "./BaseContext.js";
-import type { TransportClass } from "../clock/Transport.js";
+import { onContextRunning } from "./OnRunning.js";
 
 /**
  * A unit which process audio
@@ -111,7 +111,7 @@ export abstract class ToneWithContext<
 
 	/**
 	 * Convert the incoming time to seconds.
-	 * This is calculated against the current {@link TransportClass} bpm
+	 * This is calculated against the current {@link TransportInstance} bpm
 	 * @example
 	 * const gain = new Tone.Gain();
 	 * setInterval(() => console.log(gain.toSeconds("4n")), 100);
@@ -231,6 +231,29 @@ export abstract class ToneWithContext<
 				}
 			}
 		});
+		return this;
+	}
+
+	/**
+	 * Internal method which removes the onContextRunning callback.
+	 */
+	private _removeOnContextRunning?: () => void;
+
+	/**
+	 * Internal method which is called the first time the context is resumed.
+	 * Useful for setting up AudioNodes which should be running as soon
+	 * as the context is running, but should not be started until then.
+	 */
+	protected _onContextRunning(callback: () => void): void {
+		this._removeOnContextRunning = onContextRunning(this.context, callback);
+	}
+
+	/**
+	 * Dispose and disconnect
+	 */
+	dispose(): this {
+		super.dispose();
+		this._removeOnContextRunning?.();
 		return this;
 	}
 }

@@ -1,4 +1,5 @@
 import { expect } from "chai";
+
 import { Emitter } from "./Emitter.js";
 
 describe("Emitter", () => {

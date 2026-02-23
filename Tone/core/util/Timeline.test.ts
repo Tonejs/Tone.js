@@ -1,4 +1,5 @@
 import { expect } from "chai";
+
 import { Timeline } from "./Timeline.js";
 
 interface StateTimelineEvent {
@@ -303,7 +304,7 @@ describe("Timeline", () => {
 		sched.dispose();
 	});
 
-	it("inforces increasing time", () => {
+	it("enforces increasing time", () => {
 		const sched = new Timeline({
 			increasing: true,
 		});

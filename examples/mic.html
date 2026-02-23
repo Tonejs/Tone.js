@@ -1,58 +1,69 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head>
-  <meta charset="utf-8">
-	<title>Microphone</title>
+	<head>
+		<meta charset="utf-8" />
+		<title>Microphone</title>
 
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-	<link rel="icon" type="image/png" sizes="174x174" href="./favicon.png">
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1, maximum-scale=1"
+		/>
+		<link
+			rel="icon"
+			type="image/png"
+			sizes="174x174"
+			href="./favicon.png"
+		/>
 
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/2.4.3/webcomponents-bundle.js"></script>
-	<link href="https://fonts.googleapis.com/css?family=Material+Icons&display=block" rel="stylesheet"/>
-	<script src="../build/Tone.js"></script>
-	<script src="./js/tone-ui.js"></script>
-	<script src="./js/components.js"></script>
-</head>
-<body>
-	<style type="text/css">
-		tone-oscilloscope {
-			width: 100%;
-			background-color: black;
-			height: 40px;
-			border-radius: 20px;
-			margin-bottom: 10px;
-		}
-	</style>
-	<tone-example label="Microphone">
-		<div slot="explanation">
-			If supported, Tone.UserMedia uses <code>getUserMedia</code> to open the user's microphone where it can then be processed with Tone.js. Only works on https domains.
-		</div>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/2.4.3/webcomponents-bundle.js"></script>
+		<link
+			href="https://fonts.googleapis.com/css?family=Material+Icons&display=block"
+			rel="stylesheet"
+		/>
+		<script src="../build/Tone.js"></script>
+		<script src="./js/tone-ui.js"></script>
+		<script src="./js/components.js"></script>
+	</head>
+	<body>
+		<style type="text/css">
+			tone-oscilloscope {
+				width: 100%;
+				background-color: black;
+				height: 40px;
+				border-radius: 20px;
+				margin-bottom: 10px;
+			}
+		</style>
+		<tone-example label="Microphone">
+			<div slot="explanation">
+				If supported, Tone.UserMedia uses <code>getUserMedia</code> to
+				open the user's microphone where it can then be processed with
+				Tone.js. Only works on https domains.
+			</div>
 
-		<div id="content">
-			<tone-mic-button></tone-mic-button>
-		</div>
-	</tone-example>
-	
-	<script type="text/javascript">
-		// you probably DONT want to connect the microphone
-		// directly to the master output because of feedback.
-		const mic = new Tone.UserMedia();
+			<div id="content">
+				<tone-mic-button></tone-mic-button>
+			</div>
+		</tone-example>
 
-		const micFFT = new Tone.FFT();
-		mic.connect(micFFT);
+		<script type="text/javascript">
+			// you probably DON'T want to connect the microphone
+			// directly to the master output because of feedback.
+			const mic = new Tone.UserMedia();
 
-		fft({
-			tone: micFFT,
-			parent: document.querySelector("#content")
-		});
+			const micFFT = new Tone.FFT();
+			mic.connect(micFFT);
 
-		// bind the interface
-		const micButton = document.querySelector("tone-mic-button");
-		micButton.supported = Tone.UserMedia.supported;
-		micButton.addEventListener("open", () => mic.open());
-		micButton.addEventListener("close", () => mic.close());
+			fft({
+				tone: micFFT,
+				parent: document.querySelector("#content"),
+			});
 
-	</script>
-
-</body>
+			// bind the interface
+			const micButton = document.querySelector("tone-mic-button");
+			micButton.supported = Tone.UserMedia.supported;
+			micButton.addEventListener("open", () => mic.open());
+			micButton.addEventListener("close", () => mic.close());
+		</script>
+	</body>
 </html>

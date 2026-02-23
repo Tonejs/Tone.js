@@ -1,4 +1,5 @@
 import { expect } from "chai";
+
 import { OfflineContext } from "./core/context/OfflineContext.js";
 import { fromContext } from "./fromContext.js";
 

@@ -1,6 +1,7 @@
-import { TestAudioBuffer } from "./TestAudioBuffer.js";
 import windowing from "fft-windowing";
 import ft from "fourier-transform";
+
+import { TestAudioBuffer } from "./TestAudioBuffer.js";
 
 /**
  * Return a spectrogram of the buffer

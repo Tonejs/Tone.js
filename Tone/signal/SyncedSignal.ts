@@ -1,4 +1,7 @@
-import { Signal, SignalOptions } from "./Signal.js";
+import "../core/clock/Transport.js";
+
+import { OutputNode } from "../core/context/ToneAudioNode.js";
+import { TransportTimeClass } from "../core/type/TransportTime.js";
 import {
 	NormalRange,
 	Seconds,
@@ -8,13 +11,11 @@ import {
 	UnitName,
 } from "../core/type/Units.js";
 import { optionsFromArguments } from "../core/util/Defaults.js";
-import { TransportTimeClass } from "../core/type/TransportTime.js";
+import { Signal, SignalOptions } from "./Signal.js";
 import { ToneConstantSource } from "./ToneConstantSource.js";
-import { OutputNode } from "../core/context/ToneAudioNode.js";
-import type { TransportClass } from "../core/clock/Transport.js";
 
 /**
- * Adds the ability to synchronize the signal to the {@link TransportClass}
+ * Adds the ability to synchronize the signal to the {@link TransportInstance}
  * @category Signal
  */
 export class SyncedSignal<

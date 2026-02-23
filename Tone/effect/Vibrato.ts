@@ -1,12 +1,12 @@
-import { Effect, EffectOptions } from "./Effect.js";
-import { ToneOscillatorType } from "../source/oscillator/OscillatorInterface.js";
+import { Delay } from "../core/context/Delay.js";
+import { Param } from "../core/context/Param.js";
 import { Frequency, NormalRange, Seconds } from "../core/type/Units.js";
 import { optionsFromArguments } from "../core/util/Defaults.js";
-import { LFO } from "../source/oscillator/LFO.js";
-import { Delay } from "../core/context/Delay.js";
-import { Signal } from "../signal/Signal.js";
-import { Param } from "../core/context/Param.js";
 import { readOnly } from "../core/util/Interface.js";
+import { Signal } from "../signal/Signal.js";
+import { LFO } from "../source/oscillator/LFO.js";
+import { ToneOscillatorType } from "../source/oscillator/OscillatorInterface.js";
+import { Effect, EffectOptions } from "./Effect.js";
 
 export interface VibratoOptions extends EffectOptions {
 	maxDelay: Seconds;
@@ -65,16 +65,18 @@ export class Vibrato extends Effect<VibratoOptions> {
 			min: 0,
 			max: options.maxDelay,
 			frequency: options.frequency,
-			phase: -90, // offse the phase so the resting position is in the center
-		})
-			.start()
-			.connect(this._delayNode.delayTime);
+			phase: -90, // offset the phase so the resting position is in the center
+		}).connect(this._delayNode.delayTime);
 		this.frequency = this._lfo.frequency;
 		this.depth = this._lfo.amplitude;
 
 		this.depth.value = options.depth;
 		readOnly(this, ["frequency", "depth"]);
 		this.effectSend.chain(this._delayNode, this.effectReturn);
+
+		this._onContextRunning(() => {
+			this._lfo.start();
+		});
 	}
 
 	static getDefaults(): VibratoOptions {

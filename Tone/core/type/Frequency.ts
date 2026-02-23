@@ -1,4 +1,3 @@
-/* eslint-disable key-spacing */
 import { getContext } from "../Global.js";
 import { intervalToFrequencyRatio, mtof } from "./Conversions.js";
 import { ftom, getA4, setA4 } from "./Conversions.js";

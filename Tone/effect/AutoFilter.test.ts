@@ -1,11 +1,12 @@
-import { AutoFilter } from "./AutoFilter.js";
-import { BasicTests } from "../../test/helper/Basic.js";
-import { EffectTests } from "../../test/helper/EffectTests.js";
-import { Note } from "tonal";
-import { Offline } from "../../test/helper/Offline.js";
 import { expect } from "chai";
+import { Note } from "tonal";
+
+import { BasicTests } from "../../test/helper/Basic.js";
 import { CompareToFile } from "../../test/helper/CompareToFile.js";
+import { EffectTests } from "../../test/helper/EffectTests.js";
+import { Offline } from "../../test/helper/Offline.js";
 import { Noise } from "../source/index.js";
+import { AutoFilter } from "./AutoFilter.js";
 
 describe("AutoFilter", () => {
 	BasicTests(AutoFilter);
@@ -86,30 +87,28 @@ describe("AutoFilter", () => {
 			autoFilter.dispose();
 		});
 
-		it("can sync the frequency to the transport", () => {
-			return Offline(({ transport }) => {
+		it("can sync the frequency to the transport", async () => {
+			const buffer = await Offline(({ transport }) => {
 				const autoFilter = new AutoFilter(2);
 				autoFilter.sync();
 				autoFilter.frequency.toDestination();
 				transport.bpm.setValueAtTime(transport.bpm.value * 2, 0.05);
 				// transport.start(0)
-			}, 0.1).then((buffer) => {
-				expect(buffer.getValueAtTime(0)).to.be.closeTo(2, 0.1);
-				expect(buffer.getValueAtTime(0.05)).to.be.closeTo(4, 0.1);
-			});
+			}, 0.1);
+			expect(buffer.getValueAtTime(0)).to.be.closeTo(2, 0.1);
+			expect(buffer.getValueAtTime(0.05)).to.be.closeTo(4, 0.1);
 		});
 
-		it("can unsync the frequency to the transport", () => {
-			return Offline(({ transport }) => {
+		it("can unsync the frequency to the transport", async () => {
+			const buffer = await Offline(({ transport }) => {
 				const autoFilter = new AutoFilter(2);
 				autoFilter.sync();
 				autoFilter.frequency.toDestination();
 				transport.bpm.setValueAtTime(transport.bpm.value * 2, 0.05);
 				autoFilter.unsync();
-			}, 0.1).then((buffer) => {
-				expect(buffer.getValueAtTime(0)).to.be.closeTo(2, 0.1);
-				expect(buffer.getValueAtTime(0.05)).to.be.closeTo(2, 0.1);
-			});
+			}, 0.1);
+			expect(buffer.getValueAtTime(0)).to.be.closeTo(2, 0.1);
+			expect(buffer.getValueAtTime(0.05)).to.be.closeTo(2, 0.1);
 		});
 	});
 });

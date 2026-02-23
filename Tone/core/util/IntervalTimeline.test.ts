@@ -1,4 +1,5 @@
 import { expect } from "chai";
+
 import { BasicTests } from "../../../test/helper/Basic.js";
 import { IntervalTimeline, IntervalTimelineEvent } from "./IntervalTimeline.js";
 
@@ -26,7 +27,7 @@ describe("IntervalTimeline", () => {
 			sched.dispose();
 		});
 
-		it("computes the lenght of the timeline correctly after adding events", () => {
+		it("computes the length of the timeline correctly after adding events", () => {
 			const sched = new IntervalTimeline();
 			sched.add({
 				duration: 0.2,

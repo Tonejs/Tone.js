@@ -18,7 +18,7 @@ export class MeterBase<
 	readonly name: string = "MeterBase";
 
 	/**
-	 * The signal to be analysed
+	 * The signal to be analyzed
 	 */
 	input: InputNode;
 

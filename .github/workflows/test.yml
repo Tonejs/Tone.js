@@ -10,13 +10,26 @@ on:
         branches:
             - dev
             - main
+
 jobs:
+    test-conventional-commit:
+        name: Validate PR title
+        runs-on: ubuntu-latest
+        permissions:
+            pull-requests: read
+        steps:
+            - uses: amannn/action-semantic-pull-request@v6
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              # only on PRs
+              if: github.event_name == 'pull_request'
     run-tests:
         name: All tests
         permissions:
             contents: read
             id-token: write
         runs-on: ubuntu-latest
+        needs: [test-conventional-commit]
         env:
             BROWSER: chrome
             CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
@@ -26,7 +39,7 @@ jobs:
             - name: Setup Nodejs
               uses: actions/setup-node@v4
               with:
-                  node-version: 18.18.0
+                  node-version: 22.12.0
                   cache: "npm"
             - name: Install dependencies
               run: npm install
@@ -44,13 +57,14 @@ jobs:
             contents: read
             id-token: write
         runs-on: ubuntu-latest
+        needs: [test-conventional-commit]
         steps:
             - name: Check out Git repository
               uses: actions/checkout@v4
             - name: Setup Nodejs
               uses: actions/setup-node@v4
               with:
-                  node-version: 18.18.0
+                  node-version: 22.12.0
                   cache: "npm"
             - name: Install dependencies
               run: npm install
@@ -64,13 +78,14 @@ jobs:
             contents: read
             id-token: write
         runs-on: ubuntu-latest
+        needs: [test-conventional-commit]
         steps:
             - name: Check out Git repository
               uses: actions/checkout@v4
             - name: Setup Nodejs
               uses: actions/setup-node@v4
               with:
-                  node-version: 18.18.0
+                  node-version: 22.12.0
                   cache: "npm"
             - name: Install dependencies
               run: npm install
@@ -84,31 +99,35 @@ jobs:
             contents: read
             id-token: write
         runs-on: ubuntu-latest
+        needs: [test-conventional-commit]
         steps:
             - name: Check out Git repository
               uses: actions/checkout@v4
             - name: Setup Nodejs
               uses: actions/setup-node@v4
               with:
-                  node-version: 18.18.0
+                  node-version: 22.12.0
                   cache: "npm"
             - name: Install dependencies
               run: npm install
             - name: Linting
               run: npm run lint
+            - name: Spell check
+              run: npm run spellcheck
     test-readme:
         name: Ensure that examples in the README compile
         permissions:
             contents: read
             id-token: write
         runs-on: ubuntu-latest
+        needs: [test-conventional-commit]
         steps:
             - name: Check out Git repository
               uses: actions/checkout@v4
             - name: Setup Nodejs
               uses: actions/setup-node@v4
               with:
-                  node-version: 18.18.0
+                  node-version: 22.12.0
                   cache: "npm"
             - name: Install dependencies
               run: npm install
@@ -122,13 +141,14 @@ jobs:
             contents: read
             id-token: write
         runs-on: ubuntu-latest
+        needs: [test-conventional-commit]
         steps:
             - name: Check out Git repository
               uses: actions/checkout@v4
             - name: Setup Nodejs
               uses: actions/setup-node@v4
               with:
-                  node-version: 18.18.0
+                  node-version: 22.12.0
                   cache: "npm"
             - name: Install dependencies
               run: npm install
@@ -138,6 +158,9 @@ jobs:
               run: npm run test:integrations
     publish:
         runs-on: ubuntu-latest
+        permissions:
+            contents: read
+            id-token: write
         # make sure all the tests pass first
         needs:
             [
@@ -151,15 +174,16 @@ jobs:
         # not on PRs
         if: github.event_name != 'pull_request'
         env:
-            NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
             GITHUB_CI: true
         steps:
-            - uses: actions/checkout@v4
-            # Setup .npmrc file to publish to npm
-            - uses: actions/setup-node@v4
+            - uses: actions/checkout@v5
+            - uses: actions/setup-node@v6
               with:
-                  node-version: 18.18.0
+                  node-version: 24
                   registry-url: "https://registry.npmjs.org"
+            # Need to unset this in order to use OICD
+            - name: Unset NODE_AUTH_TOKEN
+              run: unset NODE_AUTH_TOKEN
             - name: Install dependencies
               run: npm install
             - name: Build
@@ -168,9 +192,9 @@ jobs:
               run: npm run increment
             - name: Publish @next
               # dev branch gets published with @next tag
-              run: npm publish --tag next
+              run: npm publish --tag next --provenance --access public
               if: ${{ github.ref == 'refs/heads/dev' }}
             - name: Publish @latest
               # main branch gets published with @latest tag
-              run: npm publish
+              run: npm publish --provenance --access public
               if: ${{ github.ref == 'refs/heads/main' }}

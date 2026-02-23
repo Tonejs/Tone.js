@@ -1,19 +1,26 @@
 {
-	"name" : "Tone.js",
+	"name": "Tone.js",
 	"entryPoints": ["../Tone"],
-	"out":"../docs",
-	"defaultCategory" : "Global",
-	"categorizeByGroup" : true,
-	"categoryOrder" : ["Core", "Source", "Instrument", "Effect", "Component", "Signal"],
-	"navigation" : {
+	"out": "../docs",
+	"defaultCategory": "Global",
+	"categorizeByGroup": true,
+	"categoryOrder": [
+		"Core",
+		"Source",
+		"Instrument",
+		"Effect",
+		"Component",
+		"Signal"
+	],
+	"navigation": {
 		"includeCategories": true,
 		"includeFolders": false,
 		"includeGroups": true
 	},
 	"externalPattern": ["**/node_modules/**"],
-	"excludeProtected" : true,
-	"excludePrivate" : true,
+	"excludeProtected": true,
+	"excludePrivate": true,
 	"hideGenerator": true,
 	"includeVersion": false,
-	"excludeInternal": true,
+	"excludeInternal": true
 }

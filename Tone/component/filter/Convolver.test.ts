@@ -1,4 +1,5 @@
 import { expect } from "chai";
+
 import { BasicTests } from "../../../test/helper/Basic.js";
 import { ToneAudioBuffer } from "../../core/context/ToneAudioBuffer.js";
 import { Convolver } from "./Convolver.js";
@@ -41,19 +42,16 @@ describe("Convolver", () => {
 			});
 		});
 
-		it("load returns a Promise", (done) => {
+		it("load returns a Promise", async () => {
 			const convolver = new Convolver();
-			convolver.load(testFile).then(() => {
-				convolver.dispose();
-				done();
-			});
+			await convolver.load(testFile);
+			convolver.dispose();
 		});
 
-		it("load invokes the second callback", () => {
+		it("load invokes the second callback", async () => {
 			const convolver = new Convolver();
-			return convolver.load(testFile).then(() => {
-				convolver.dispose();
-			});
+			await convolver.load(testFile);
+			convolver.dispose();
 		});
 
 		it("can assign the buffer twice", () => {

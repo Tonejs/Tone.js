@@ -1,8 +1,8 @@
-import { TestAudioBuffer } from "./compare/index.js";
 import { OfflineContext } from "../../Tone/core/context/OfflineContext.js";
 import { getContext, setContext } from "../../Tone/core/Global.js";
 import { Seconds } from "../../Tone/core/type/Units.js";
 import { isArray, isFunction } from "../../Tone/core/util/TypeCheck.js";
+import { TestAudioBuffer } from "./compare/index.js";
 
 type ReturnFunction = (time: Seconds) => void;
 
@@ -26,6 +26,7 @@ export async function Offline(
 		sampleRate
 	);
 	setContext(offline);
+	let error: Error | null = null;
 	try {
 		let retFunction = callback(offline);
 		if (retFunction instanceof Promise) {
@@ -41,10 +42,13 @@ export async function Offline(
 			});
 		}
 	} catch (e) {
-		throw e;
+		error = e as Error;
 	} finally {
 		setContext(originalContext);
 		const buffer = await offline.render();
+		if (error) {
+			throw error;
+		}
 		return new TestAudioBuffer(buffer.get() as AudioBuffer);
 	}
 }

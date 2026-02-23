@@ -1,4 +1,5 @@
 import { expect } from "chai";
+
 import { BasicTests } from "../../test/helper/Basic.js";
 import { CompareToFile } from "../../test/helper/CompareToFile.js";
 import { EffectTests } from "../../test/helper/EffectTests.js";
@@ -41,17 +42,16 @@ describe("FrequencyShifter", () => {
 			shifter.dispose();
 		});
 
-		it("passes audio from input to output", () => {
-			return Offline(() => {
+		it("passes audio from input to output", async () => {
+			const buffer = await Offline(() => {
 				const osc = new Oscillator();
 				osc.start(0).stop(0.1);
 				const shifter = new FrequencyShifter(0.2).toDestination();
 				osc.connect(shifter);
-			}, 0.3).then((buffer) => {
-				expect(buffer.getRmsAtTime(0.05)).to.be.greaterThan(0);
-				expect(buffer.getRmsAtTime(0.1)).to.be.greaterThan(0);
-				expect(buffer.getRmsAtTime(0.2)).to.be.greaterThan(0);
-			});
+			}, 0.3);
+			expect(buffer.getRmsAtTime(0.05)).to.be.greaterThan(0);
+			expect(buffer.getRmsAtTime(0.1)).to.be.greaterThan(0);
+			expect(buffer.getRmsAtTime(0.2)).to.be.greaterThan(0);
 		});
 	});
 });

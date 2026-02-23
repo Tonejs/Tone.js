@@ -1,9 +1,10 @@
-import { BasicTests } from "../../test/helper/Basic.js";
-import { MonoSynth } from "./MonoSynth.js";
-import { InstrumentTest } from "../../test/helper/InstrumentTests.js";
-import { CompareToFile } from "../../test/helper/CompareToFile.js";
 import { expect } from "chai";
+
+import { BasicTests } from "../../test/helper/Basic.js";
+import { CompareToFile } from "../../test/helper/CompareToFile.js";
+import { InstrumentTest } from "../../test/helper/InstrumentTests.js";
 import { Offline } from "../../test/helper/Offline.js";
+import { MonoSynth } from "./MonoSynth.js";
 
 describe("MonoSynth", () => {
 	BasicTests(MonoSynth);
@@ -71,7 +72,7 @@ describe("MonoSynth", () => {
 		});
 
 		it("is silent after triggerAttack if sustain is 0", async () => {
-			return await Offline(() => {
+			const buffer = await Offline(() => {
 				const synth = new MonoSynth({
 					envelope: {
 						attack: 0.1,
@@ -80,9 +81,8 @@ describe("MonoSynth", () => {
 					},
 				}).toDestination();
 				synth.triggerAttack("C4", 0);
-			}, 0.5).then((buffer) => {
-				expect(buffer.getTimeOfLastSound()).to.be.closeTo(0.2, 0.01);
-			});
+			}, 0.5);
+			expect(buffer.getTimeOfLastSound()).to.be.closeTo(0.2, 0.01);
 		});
 	});
 });

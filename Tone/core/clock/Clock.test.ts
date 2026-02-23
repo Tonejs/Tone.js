@@ -1,4 +1,5 @@
 import { expect } from "chai";
+
 import { BasicTests } from "../../../test/helper/Basic.js";
 import { atTime, Offline, whenBetween } from "../../../test/helper/Offline.js";
 import { noOp } from "../util/Interface.js";
@@ -34,7 +35,7 @@ describe("Clock", () => {
 			expect(clock.frequency.value).to.equal(8);
 		});
 
-		it("can get and set it's values with the set/get", () => {
+		it("can get and set its values with the set/get", () => {
 			const clock = new Clock();
 			clock.set({
 				frequency: 2,
@@ -162,41 +163,38 @@ describe("Clock", () => {
 			clock.start(startTime);
 		});
 
-		it("can be scheduled to start in the future", () => {
-			let invokations = 0;
-			return Offline(() => {
+		it("can be scheduled to start in the future", async () => {
+			let invocations = 0;
+			await Offline(() => {
 				const clock = new Clock((time) => {
-					invokations++;
+					invocations++;
 				}, 2).start(0.1);
-			}, 0.4).then(() => {
-				expect(invokations).to.equal(1);
-			});
+			}, 0.4);
+			expect(invocations).to.equal(1);
 		});
 
-		it("invokes the right number of callbacks given the duration", () => {
-			let invokations = 0;
-			return Offline(() => {
+		it("invokes the right number of callbacks given the duration", async () => {
+			let invocations = 0;
+			await Offline(() => {
 				new Clock((time) => {
-					invokations++;
+					invocations++;
 				}, 10)
 					.start(0)
 					.stop(0.45);
-			}, 0.6).then(() => {
-				expect(invokations).to.equal(5);
-			});
+			}, 0.6);
+			expect(invocations).to.equal(5);
 		});
 
-		it("can schedule the frequency of the clock", () => {
-			let invokations = 0;
-			return Offline(() => {
+		it("can schedule the frequency of the clock", async () => {
+			let invocations = 0;
+			await Offline(() => {
 				const clock = new Clock((time, ticks) => {
-					invokations++;
+					invocations++;
 				}, 2);
 				clock.start(0).stop(1.01);
 				clock.frequency.setValueAtTime(4, 0.5);
-			}, 2).then(() => {
-				expect(invokations).to.equal(4);
-			});
+			}, 2);
+			expect(invocations).to.equal(4);
 		});
 	});
 

@@ -1,3 +1,4 @@
+import { Param } from "../../core/context/Param.js";
 import {
 	InputNode,
 	OutputNode,
@@ -6,9 +7,8 @@ import {
 } from "../../core/context/ToneAudioNode.js";
 import { Decibels } from "../../core/type/Units.js";
 import { optionsFromArguments } from "../../core/util/Defaults.js";
-import { Compressor } from "./Compressor.js";
-import { Param } from "../../core/context/Param.js";
 import { readOnly } from "../../core/util/Interface.js";
+import { Compressor } from "./Compressor.js";
 
 export interface LimiterOptions extends ToneAudioNodeOptions {
 	threshold: Decibels;
@@ -16,7 +16,7 @@ export interface LimiterOptions extends ToneAudioNodeOptions {
 
 /**
  * Limiter will limit the loudness of an incoming signal.
- * Under the hood it's composed of a {@link Compressor} with a fast attack
+ * Under the hood its composed of a {@link Compressor} with a fast attack
  * and release and max compression ratio.
  *
  * @example

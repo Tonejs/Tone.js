@@ -5,8 +5,9 @@ import {
 import { noOp } from "../util/Interface.js";
 import { getWorkletGlobalScope } from "./WorkletGlobalScope.js";
 
-export type ToneAudioWorkletOptions = ToneAudioNodeOptions;
-
+export interface ToneAudioWorkletOptions extends ToneAudioNodeOptions {
+	workletOptions?: Partial<AudioWorkletNodeOptions>
+};
 export abstract class ToneAudioWorklet<
 	Options extends ToneAudioWorkletOptions,
 > extends ToneAudioNode<Options> {
@@ -59,7 +60,24 @@ export abstract class ToneAudioWorklet<
 		this._dummyParam = this._dummyGain.gain;
 
 		// Register the processor
-		this.context.addAudioWorkletModule(blobUrl).then(() => {
+		let workletPromise = ToneAudioWorklet._workletPromises.get(
+			this.context
+		);
+
+		if (options.workletOptions) {
+			this.workletOptions = Object.assign({},
+				this.workletOptions,
+				options.workletOptions
+			);
+		}
+
+		if (workletPromise === undefined) {
+			workletPromise = this.context.addAudioWorkletModule(blobUrl);
+
+			ToneAudioWorklet._workletPromises.set(this.context, workletPromise);
+		}
+
+		workletPromise.then(() => {
 			// create the worklet when it's read
 			if (!this.disposed) {
 				this._worklet = this.context.createAudioWorkletNode(
@@ -72,6 +90,8 @@ export abstract class ToneAudioWorklet<
 			}
 		});
 	}
+
+	private static _workletPromises = new WeakMap<any, Promise<void>>();
 
 	dispose(): this {
 		super.dispose();

@@ -1,4 +1,5 @@
 import { expect } from "chai";
+
 import { StateTimeline } from "./StateTimeline.js";
 
 describe("StateTimeline", () => {
@@ -51,7 +52,7 @@ describe("StateTimeline", () => {
 		sched.dispose();
 	});
 
-	it("gets the last occurance of the state at or before the given time", () => {
+	it("gets the last occurrence of the state at or before the given time", () => {
 		const sched = new StateTimeline();
 		sched.setStateAtTime("started", 0);
 		sched.setStateAtTime("stopped", 1);
@@ -68,7 +69,7 @@ describe("StateTimeline", () => {
 		sched.dispose();
 	});
 
-	it("gets the next occurance of the state at or before the given time", () => {
+	it("gets the next occurrence of the state at or before the given time", () => {
 		const sched = new StateTimeline();
 		sched.setStateAtTime("started", 0);
 		sched.setStateAtTime("stopped", 1);

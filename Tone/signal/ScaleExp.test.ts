@@ -1,8 +1,9 @@
+import { expect } from "chai";
+
+import { BasicTests } from "../../test/helper/Basic.js";
 import { ConstantOutput } from "../../test/helper/ConstantOutput.js";
 import { ScaleExp } from "./ScaleExp.js";
-import { BasicTests } from "../../test/helper/Basic.js";
 import { Signal } from "./Signal.js";
-import { expect } from "chai";
 
 describe("ScaleExp", () => {
 	BasicTests(ScaleExp);

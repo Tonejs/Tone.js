@@ -1,6 +1,7 @@
-import { Volume } from "../component/channel/Volume.js";
 import "../core/context/Destination.js";
 import "../core/clock/Transport.js";
+
+import { Volume } from "../component/channel/Volume.js";
 import { Param } from "../core/context/Param.js";
 import {
 	OutputNode,
@@ -8,16 +9,16 @@ import {
 	ToneAudioNodeOptions,
 } from "../core/context/ToneAudioNode.js";
 import { Decibels, Seconds, Time } from "../core/type/Units.js";
+import { assert, assertContextRunning } from "../core/util/Debug.js";
 import { defaultArg } from "../core/util/Defaults.js";
 import { noOp, readOnly } from "../core/util/Interface.js";
+import { GT } from "../core/util/Math.js";
 import {
 	BasicPlaybackState,
 	StateTimeline,
 	StateTimelineEvent,
 } from "../core/util/StateTimeline.js";
 import { isDefined, isUndef } from "../core/util/TypeCheck.js";
-import { assert, assertContextRunning } from "../core/util/Debug.js";
-import { GT } from "../core/util/Math.js";
 
 type onStopCallback = (source: Source<any>) => void;
 
@@ -83,7 +84,7 @@ export abstract class Source<
 		offset?: Seconds;
 		/**
 		 * Either the buffer is explicitly scheduled to end using the stop method,
-		 * or it's implicitly ended when the buffer is over.
+		 * or its implicitly ended when the buffer is over.
 		 */
 		implicitEnd?: boolean;
 	}> = new StateTimeline("stopped");
@@ -216,7 +217,6 @@ export abstract class Source<
 			this.log("restart", computedTime);
 			this.restart(computedTime, offset, duration);
 		} else {
-			this.log("start", computedTime);
 			this._state.setStateAtTime("started", computedTime);
 			if (this._synced) {
 				// add the offset time to the event

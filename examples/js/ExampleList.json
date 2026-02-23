@@ -24,7 +24,8 @@
 		"Buses" : "buses",
 		"Reverb" : "reverb",
 		"Spatialization" : "spatialPanner",
-		"PitchShift" : "pitchShift"
+		"PitchShift" : "pitchShift",
+		"ReverseDelay" : "reverseDelay"
 	},
 	"Sequencing / Timing" : {
 		"Step Sequencer" : "stepSequencer",

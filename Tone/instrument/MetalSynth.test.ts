@@ -1,4 +1,5 @@
 import { expect } from "chai";
+
 import { BasicTests } from "../../test/helper/Basic.js";
 import { CompareToFile } from "../../test/helper/CompareToFile.js";
 import { InstrumentTest } from "../../test/helper/InstrumentTests.js";
@@ -8,7 +9,7 @@ import { MetalSynth } from "./MetalSynth.js";
 describe("MetalSynth", () => {
 	BasicTests(MetalSynth);
 
-	InstrumentTest(MetalSynth, "C2");
+	InstrumentTest(MetalSynth, "C2", undefined, undefined, true);
 	MonophonicTest(MetalSynth, "C4");
 
 	it("matches a file", () => {

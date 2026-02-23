@@ -1,8 +1,8 @@
-import { Effect, EffectOptions } from "./Effect.js";
 import { Positive } from "../core/type/Units.js";
+import { assert } from "../core/util/Debug.js";
 import { optionsFromArguments } from "../core/util/Defaults.js";
 import { WaveShaper } from "../signal/WaveShaper.js";
-import { assert } from "../core/util/Debug.js";
+import { Effect, EffectOptions } from "./Effect.js";
 
 export interface ChebyshevOptions extends EffectOptions {
 	order: Positive;

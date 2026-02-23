@@ -1,10 +1,11 @@
-import { Gate } from "./Gate.js";
+import { expect } from "chai";
+
 import { BasicTests } from "../../../test/helper/Basic.js";
+import { CompareToFile } from "../../../test/helper/CompareToFile.js";
 import { Offline } from "../../../test/helper/Offline.js";
 import { Signal } from "../../signal/Signal.js";
 import { Oscillator } from "../../source/oscillator/Oscillator.js";
-import { CompareToFile } from "../../../test/helper/CompareToFile.js";
-import { expect } from "chai";
+import { Gate } from "./Gate.js";
 
 describe("Gate", () => {
 	BasicTests(Gate);
@@ -46,28 +47,24 @@ describe("Gate", () => {
 			gate.dispose();
 		});
 
-		it("gates the incoming signal when below the threshold", () => {
-			return Offline(() => {
+		it("gates the incoming signal when below the threshold", async () => {
+			const buffer = await Offline(() => {
 				const gate = new Gate(-9);
 				const sig = new Signal(-12, "decibels");
 				sig.connect(gate);
 				gate.toDestination();
-			}).then((buffer) => {
-				expect(buffer.isSilent()).to.be.true;
 			});
+			expect(buffer.isSilent()).to.be.true;
 		});
 
-		it("passes the incoming signal when above the threshold", () => {
-			it("gates the incoming signal when below the threshold", () => {
-				return Offline(() => {
-					const gate = new Gate(-11);
-					const sig = new Signal(-10, "decibels");
-					sig.connect(gate);
-					gate.toDestination();
-				}).then((buffer) => {
-					expect(buffer.min()).to.be.above(0);
-				});
+		it("passes the incoming signal when above the threshold", async () => {
+			const buffer = await Offline(() => {
+				const gate = new Gate(-11);
+				const sig = new Signal(-10, "decibels");
+				sig.connect(gate);
+				gate.toDestination();
 			});
+			expect(buffer.min()).to.be.above(0);
 		});
 	});
 });

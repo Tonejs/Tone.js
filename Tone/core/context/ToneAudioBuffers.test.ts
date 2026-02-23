@@ -1,4 +1,5 @@
 import { expect } from "chai";
+
 import { ToneAudioBuffer } from "./ToneAudioBuffer.js";
 import { ToneAudioBuffers } from "./ToneAudioBuffers.js";
 
@@ -38,7 +39,7 @@ describe("ToneAudioBuffers", () => {
 		);
 	});
 
-	it("throws an error when it tries to get an object that doesnt exist", (done) => {
+	it("throws an error when it tries to get an object that doesn't exist", (done) => {
 		const buffer = new ToneAudioBuffers(
 			{
 				sine: testFile,
@@ -110,18 +111,16 @@ describe("ToneAudioBuffers", () => {
 		expect(buffer.loaded).to.be.false;
 	});
 
-	it("can load from a base url", (done) => {
+	it("can load from a base url", async () => {
 		const buffer = new ToneAudioBuffers(
 			{
 				hat: "hh.wav",
 			},
-			() => {
-				expect(buffer.get("hat")).to.be.instanceof(ToneAudioBuffer);
-				buffer.dispose();
-				done();
-			},
+			() => {},
 			"./test/audio/"
 		);
+		await ToneAudioBuffer.loaded();
+		expect(buffer.get("hat")).to.be.instanceof(ToneAudioBuffer);
 	});
 
 	it("can add a buffer", (done) => {
@@ -157,13 +156,11 @@ describe("ToneAudioBuffers", () => {
 		expect(buffer.get("name").get()).to.equal(buff.get());
 	});
 
-	it("can add an AudioBuffer", (done) => {
-		ToneAudioBuffer.load(testFile).then((buff) => {
-			const buffer = new ToneAudioBuffers();
-			buffer.add("name", buff);
-			expect(buffer.get("name").get()).to.equal(buff);
-			done();
-		});
+	it("can add an AudioBuffer", async () => {
+		const audioBuffer = await ToneAudioBuffer.load(testFile);
+		const buffer = new ToneAudioBuffers();
+		buffer.add("name", audioBuffer);
+		expect(buffer.get("name").get()).to.equal(audioBuffer);
 	});
 
 	it("can be constructed with ToneAudioBuffers", () => {

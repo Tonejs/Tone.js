@@ -1,10 +1,10 @@
+import type { TransportInstance as Transport } from "../clock/Transport.js";
 import { Seconds } from "../type/Units.js";
+import type { DrawInstance as Draw } from "../util/Draw.js";
 import { Emitter } from "../util/Emitter.js";
 import { AnyAudioContext } from "./AudioContext.js";
-import type { DrawClass as Draw } from "../util/Draw.js";
-import type { DestinationClass as Destination } from "./Destination.js";
-import type { TransportClass as Transport } from "../clock/Transport.js";
-import type { ListenerClass as Listener } from "./Listener.js";
+import type { DestinationInstance as Destination } from "./Destination.js";
+import type { ListenerInstance as Listener } from "./Listener.js";
 
 // these are either not used in Tone.js or deprecated and not implemented.
 export type ExcludedFromBaseAudioContext =
@@ -25,6 +25,9 @@ export type BaseAudioContextSubset = Omit<
 
 export type ContextLatencyHint = AudioContextLatencyCategory;
 
+/**
+ * Shared class for both Offline and Online Audio Context's
+ */
 export abstract class BaseContext
 	extends Emitter<"statechange" | "tick">
 	implements BaseAudioContextSubset
@@ -126,6 +129,9 @@ export abstract class BaseContext
 
 	abstract clearInterval(_id: number): this;
 
+	/**
+	 * @deprecated use ToneConstantSource instead
+	 */
 	abstract getConstant(_val: number): AudioBufferSourceNode;
 
 	abstract get currentTime(): Seconds;

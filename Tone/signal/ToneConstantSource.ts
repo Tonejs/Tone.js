@@ -1,5 +1,5 @@
-import { connect } from "../core/context/ToneAudioNode.js";
 import { Param } from "../core/context/Param.js";
+import { connect } from "../core/context/ToneAudioNode.js";
 import { Seconds, Time, UnitMap, UnitName } from "../core/type/Units.js";
 import { optionsFromArguments } from "../core/util/Defaults.js";
 import {
@@ -29,7 +29,7 @@ export class ToneConstantSource<
 	/**
 	 * The signal generator
 	 */
-	private _source = this.context.createConstantSource();
+	private _source?: ConstantSourceNode;
 
 	/**
 	 * The offset of the signal generator
@@ -49,12 +49,16 @@ export class ToneConstantSource<
 		);
 		super(options);
 
-		connect(this._source, this._gainNode);
+		this._onContextRunning(() => this._contextStarted());
 
 		this.offset = new Param({
 			context: this.context,
 			convert: options.convert,
-			param: this._source.offset,
+			param: !this._source
+				? // placeholder param until the context is started
+					this.context.createGain().gain
+				: this._source.offset,
+			swappable: !this._source,
 			units: options.units,
 			value: options.offset,
 			minValue: options.minValue,
@@ -71,6 +75,18 @@ export class ToneConstantSource<
 	}
 
 	/**
+	 * Once the context is started, kick off source.
+	 */
+	private _contextStarted() {
+		this._source = this.context.createConstantSource();
+		connect(this._source, this._gainNode);
+		this.offset?.setParam(this._source.offset);
+		if (this.state === "started") {
+			this._source.start(0);
+		}
+	}
+
+	/**
 	 * Start the source node at the given time
 	 * @param  time When to start the source
 	 */
@@ -78,12 +94,15 @@ export class ToneConstantSource<
 		const computedTime = this.toSeconds(time);
 		this.log("start", computedTime);
 		this._startGain(computedTime);
-		this._source.start(computedTime);
+		this._source?.start(computedTime);
 		return this;
 	}
 
 	protected _stopSource(time?: Seconds): void {
-		this._source.stop(time);
+		if (this.state === "stopped") {
+			return;
+		}
+		this._source?.stop(time);
 	}
 
 	dispose(): this {
@@ -91,7 +110,7 @@ export class ToneConstantSource<
 		if (this.state === "started") {
 			this.stop();
 		}
-		this._source.disconnect();
+		this._source?.disconnect();
 		this.offset.dispose();
 		return this;
 	}

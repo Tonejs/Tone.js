@@ -1,9 +1,10 @@
-import { JCReverb } from "./JCReverb.js";
-import { BasicTests } from "../../test/helper/Basic.js";
-import { EffectTests } from "../../test/helper/EffectTests.js";
 import { expect } from "chai";
+
+import { BasicTests } from "../../test/helper/Basic.js";
 import { CompareToFile } from "../../test/helper/CompareToFile.js";
+import { EffectTests } from "../../test/helper/EffectTests.js";
 import { Noise } from "../source/Noise.js";
+import { JCReverb } from "./JCReverb.js";
 
 describe("JCReverb", () => {
 	BasicTests(JCReverb);

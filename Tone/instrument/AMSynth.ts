@@ -1,6 +1,6 @@
-import { AudioToGain } from "../signal/AudioToGain.js";
-import { RecursivePartial } from "../core/util/Interface.js";
 import { optionsFromArguments } from "../core/util/Defaults.js";
+import { RecursivePartial } from "../core/util/Interface.js";
+import { AudioToGain } from "../signal/AudioToGain.js";
 import { ModulationSynth, ModulationSynthOptions } from "./ModulationSynth.js";
 
 export type AMSynthOptions = ModulationSynthOptions;

@@ -1,14 +1,14 @@
+import { Gain } from "../core/context/Gain.js";
+import { Param } from "../core/context/Param.js";
+import { connectSeries } from "../core/context/ToneAudioNode.js";
+import { Positive } from "../core/type/Units.js";
+import { optionsFromArguments } from "../core/util/Defaults.js";
 import {
 	ToneAudioWorklet,
 	ToneAudioWorkletOptions,
 } from "../core/worklet/ToneAudioWorklet.js";
-import { Effect, EffectOptions } from "./Effect.js";
-import { Positive } from "../core/type/Units.js";
-import { Gain } from "../core/context/Gain.js";
-import { optionsFromArguments } from "../core/util/Defaults.js";
-import { connectSeries } from "../core/context/ToneAudioNode.js";
-import { Param } from "../core/context/Param.js";
 import { workletName } from "./BitCrusher.worklet.js";
+import { Effect, EffectOptions } from "./Effect.js";
 
 export interface BitCrusherOptions extends EffectOptions {
 	bits: Positive;

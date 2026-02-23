@@ -1,13 +1,14 @@
 import { expect } from "chai";
+
 import { ConstantOutput } from "../../../test/helper/ConstantOutput.js";
 import { Offline } from "../../../test/helper/Offline.js";
-import { TransportClass } from "../clock/Transport.js";
+import { TransportInstance } from "../clock/Transport.js";
 import { getContext } from "../Global.js";
+import { DrawInstance } from "../util/Draw.js";
 import { createAudioContext } from "./AudioContext.js";
 import { Context } from "./Context.js";
-import { DestinationClass } from "./Destination.js";
-import { ListenerClass } from "./Listener.js";
-import { DrawClass } from "../util/Draw.js";
+import { DestinationInstance } from "./Destination.js";
+import { ListenerInstance } from "./Listener.js";
 import { connect } from "./ToneAudioNode.js";
 
 describe("Context", () => {
@@ -18,9 +19,9 @@ describe("Context", () => {
 		const ctxDraw = context.draw;
 		const ctxTransport = context.transport;
 		const ctxListener = context.listener;
-		expect(context.destination).is.instanceOf(DestinationClass);
-		expect(context.draw).is.instanceOf(DrawClass);
-		expect(context.listener).is.instanceOf(ListenerClass);
+		expect(context.destination).is.instanceOf(DestinationInstance);
+		expect(context.draw).is.instanceOf(DrawInstance);
+		expect(context.listener).is.instanceOf(ListenerInstance);
 		await context.close();
 		expect(ctxDest.disposed).to.be.true;
 		expect(ctxDraw.disposed).to.be.true;
@@ -73,11 +74,13 @@ describe("Context", () => {
 				latencyHint: "playback",
 				lookAhead: 0.2,
 				updateInterval: 0.1,
+				sampleRate: 32000,
 			});
 			expect(ctx.lookAhead).to.equal(0.2);
 			expect(ctx.updateInterval).to.equal(0.1);
 			expect(ctx.latencyHint).to.equal("playback");
 			expect(ctx.clockSource).to.equal("timeout");
+			expect(ctx.sampleRate).to.equal(32000);
 			ctx.dispose();
 			return ctx.close();
 		});
@@ -211,7 +214,7 @@ describe("Context", () => {
 
 		it("is invoked in the offline context", () => {
 			return Offline((context) => {
-				const transport = new TransportClass({ context });
+				const transport = new TransportInstance({ context });
 				transport.context.setTimeout(() => {
 					expect(transport.now()).to.be.closeTo(0.01, 0.005);
 				}, 0.01);
@@ -279,20 +282,19 @@ describe("Context", () => {
 			}, 0.01);
 		});
 
-		it("is invoked in the offline context", () => {
+		it("is invoked in the offline context", async () => {
 			let invocationCount = 0;
-			return Offline((context) => {
+			await Offline((context) => {
 				context.setInterval(() => {
 					invocationCount++;
 				}, 0.01);
-			}, 0.051).then(() => {
-				expect(invocationCount).to.equal(4);
-			});
+			}, 0.051);
+			expect(invocationCount).to.equal(4);
 		});
 
-		it("is invoked in with the right interval", () => {
+		it("is invoked with the right interval", async () => {
 			let numberOfInvocations = 0;
-			return Offline((context) => {
+			await Offline((context) => {
 				let intervalTime = context.now();
 				context.setInterval(() => {
 					expect(context.now() - intervalTime).to.be.closeTo(
@@ -302,9 +304,8 @@ describe("Context", () => {
 					intervalTime = context.now();
 					numberOfInvocations++;
 				}, 0.01);
-			}, 0.051).then(() => {
-				expect(numberOfInvocations).to.equal(4);
-			});
+			}, 0.051);
+			expect(numberOfInvocations).to.equal(4);
 		});
 	});
 

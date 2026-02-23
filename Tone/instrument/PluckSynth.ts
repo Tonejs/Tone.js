@@ -1,5 +1,5 @@
-import { Frequency, NormalRange, Time } from "../core/type/Units.js";
 import { LowpassCombFilter } from "../component/filter/LowpassCombFilter.js";
+import { Frequency, NormalRange, Time } from "../core/type/Units.js";
 import { deepMerge } from "../core/util/Defaults.js";
 import { optionsFromArguments } from "../core/util/Defaults.js";
 import { RecursivePartial } from "../core/util/Interface.js";

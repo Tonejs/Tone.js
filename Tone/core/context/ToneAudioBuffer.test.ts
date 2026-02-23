@@ -1,4 +1,5 @@
 import { expect } from "chai";
+
 import { getContext } from "../Global.js";
 import { ToneAudioBuffer } from "./ToneAudioBuffer.js";
 
@@ -192,16 +193,9 @@ describe("ToneAudioBuffer", () => {
 			expect(hadError).to.equal(true);
 		});
 
-		it("instance .load method returns Promise", (done) => {
-			const promise = new ToneAudioBuffer().load(testFile);
-			expect(promise).to.have.property("then");
-			promise.then((buff) => {
-				expect(buff).to.be.instanceOf(ToneAudioBuffer);
-				done();
-			});
-			promise.catch(() => {
-				throw new Error("shouldn't invoke this function");
-			});
+		it("instance .load method returns Promise", async () => {
+			const buffer = await new ToneAudioBuffer().load(testFile);
+			expect(buffer).to.be.instanceOf(ToneAudioBuffer);
 		});
 
 		it("invokes the error callback if the file is corrupt", (done) => {
@@ -275,7 +269,7 @@ describe("ToneAudioBuffer", () => {
 			buffer.dispose();
 		});
 
-		it("can convert from a multidimentional array", () => {
+		it("can convert from a multidimensional array", () => {
 			const buffer = new ToneAudioBuffer();
 			const arr = [
 				new Float32Array(0.5 * buffer.sampleRate),

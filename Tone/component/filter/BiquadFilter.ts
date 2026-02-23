@@ -1,11 +1,11 @@
+import { Param } from "../../core/context/Param.js";
 import {
 	ToneAudioNode,
 	ToneAudioNodeOptions,
 } from "../../core/context/ToneAudioNode.js";
 import { Cents, Frequency, GainFactor } from "../../core/type/Units.js";
-import { optionsFromArguments } from "../../core/util/Defaults.js";
-import { Param } from "../../core/context/Param.js";
 import { assert } from "../../core/util/Debug.js";
+import { optionsFromArguments } from "../../core/util/Defaults.js";
 
 export interface BiquadFilterOptions extends ToneAudioNodeOptions {
 	frequency: Frequency;

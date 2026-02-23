@@ -1,10 +1,10 @@
+import { theWindow } from "../../core/context/AudioContext.js";
+import { Gain } from "../../core/context/Gain.js";
 import {
 	ToneAudioNode,
 	ToneAudioNodeOptions,
 } from "../../core/context/ToneAudioNode.js";
-import { Gain } from "../../core/context/Gain.js";
 import { assert } from "../../core/util/Debug.js";
-import { theWindow } from "../../core/context/AudioContext.js";
 import { optionsFromArguments } from "../../core/util/Defaults.js";
 import { PlaybackState } from "../../core/util/StateTimeline.js";
 
@@ -121,7 +121,7 @@ export class Recorder extends ToneAudioNode<RecorderOptions> {
 
 			this._recorder.addEventListener("start", handleStart, false);
 		});
-		if(this.state === "stopped") {
+		if (this.state === "stopped") {
 			this._recorder.start();
 		} else {
 			this._recorder.resume();

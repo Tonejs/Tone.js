@@ -1,16 +1,16 @@
-import { EffectOptions } from "./Effect.js";
+import { CrossFade } from "../component/channel/CrossFade.js";
+import { Merge } from "../component/channel/Merge.js";
+import { Split } from "../component/channel/Split.js";
+import { Gain } from "../core/context/Gain.js";
 import {
 	connect,
 	connectSeries,
 	OutputNode,
 	ToneAudioNode,
 } from "../core/context/ToneAudioNode.js";
-import { CrossFade } from "../component/channel/CrossFade.js";
-import { Signal } from "../signal/Signal.js";
-import { Split } from "../component/channel/Split.js";
-import { Gain } from "../core/context/Gain.js";
-import { Merge } from "../component/channel/Merge.js";
 import { readOnly } from "../core/util/Interface.js";
+import { Signal } from "../signal/Signal.js";
+import { EffectOptions } from "./Effect.js";
 
 export type StereoEffectOptions = EffectOptions;
 

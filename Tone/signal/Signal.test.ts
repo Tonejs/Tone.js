@@ -1,14 +1,15 @@
 import { expect } from "chai";
+
 import { BasicTests } from "../../test/helper/Basic.js";
-import { connectFrom, connectTo } from "../../test/helper/Connect.js";
 import { ConstantOutput } from "../../test/helper/ConstantOutput.js";
 import { Offline } from "../../test/helper/Offline.js";
-import { Decibels, Frequency, Time } from "../core/type/Units.js";
+import { SignalConnectAndDisconnect } from "../../test/helper/SignalTests.js";
 import { Gain } from "../core/context/Gain.js";
-import { Signal } from "./Signal.js";
+import { connectSignal, disconnectSignal, Signal } from "./Signal.js";
 
 describe("Signal", () => {
 	BasicTests(Signal);
+	SignalConnectAndDisconnect(Signal);
 
 	context("Signal Rate Value", () => {
 		it("has 1 input and 1 output", () => {
@@ -143,29 +144,6 @@ describe("Signal", () => {
 			expect(buffer.getValueAtTime(1)).to.be.closeTo(0, 0.001);
 		});
 
-		it("can disconnect from all the connected notes", () => {
-			return ConstantOutput((context) => {
-				const output0 = new Signal(1).toDestination();
-				const output1 = new Signal(1).toDestination();
-				const sig = new Signal(0).connect(output0);
-				sig.connect(output1);
-				sig.disconnect();
-				sig.setValueAtTime(0, 0);
-				sig.linearRampToValueAtTime(0.5, 0.5);
-				sig.linearRampToValueAtTime(0, 1);
-			}, 0);
-		});
-
-		it("can disconnect from a specific node", () => {
-			return ConstantOutput((context) => {
-				const output = new Signal(1).toDestination();
-				const sig = new Signal(0).connect(output);
-				sig.disconnect(output);
-				sig.setValueAtTime(0, 0);
-				sig.linearRampToValueAtTime(0.5, 0.5);
-				sig.linearRampToValueAtTime(0, 1);
-			}, 0);
-		});
 		it("can schedule multiple automations from a connected signal through a multiple nodes", async () => {
 			const buffer = await Offline(() => {
 				const output = new Signal(0).toDestination();
@@ -192,6 +170,7 @@ describe("Signal", () => {
 				sig.cancelScheduledValues(0);
 			}, 1);
 		});
+
 		it("can cancel and hold a linear automation curve", async () => {
 			const buffer = await Offline(() => {
 				const sig = new Signal(0).toDestination();
@@ -204,188 +183,164 @@ describe("Signal", () => {
 			expect(buffer.getValueAtTime(0.75)).to.be.closeTo(1, 0.1);
 		});
 
-		it("can cancel and hold an exponential automation curve", () => {
-			return Offline(() => {
+		it("can cancel and hold an exponential automation curve", async () => {
+			const buffer = await Offline(() => {
 				const sig = new Signal(1).toDestination();
 				sig.exponentialRampTo(2, 1);
 				sig.cancelAndHoldAtTime(0.5);
-			}, 1).then((buffer) => {
-				expect(buffer.getValueAtTime(0)).to.be.closeTo(1, 0.1);
-				expect(buffer.getValueAtTime(0.25)).to.be.closeTo(1.2, 0.1);
-				expect(buffer.getValueAtTime(0.5)).to.be.closeTo(1.4, 0.1);
-				expect(buffer.getValueAtTime(0.75)).to.be.closeTo(1.4, 0.1);
-			});
+			}, 1);
+			expect(buffer.getValueAtTime(0)).to.be.closeTo(1, 0.1);
+			expect(buffer.getValueAtTime(0.25)).to.be.closeTo(1.2, 0.1);
+			expect(buffer.getValueAtTime(0.5)).to.be.closeTo(1.4, 0.1);
+			expect(buffer.getValueAtTime(0.75)).to.be.closeTo(1.4, 0.1);
 		});
 
-		it("can set a linear ramp from the current time", () => {
-			return Offline(() => {
+		it("can set a linear ramp from the current time", async () => {
+			const buffer = await Offline(() => {
 				const sig = new Signal(0).toDestination();
 				sig.linearRampTo(2, 0.3);
-			}, 0.5).then((buffer) => {
-				buffer.forEach((sample, time) => {
-					if (time > 0.3) {
-						expect(sample).to.be.closeTo(2, 0.02);
-					}
-				});
+			}, 0.5);
+			buffer.forEach((sample, time) => {
+				if (time > 0.3) {
+					expect(sample).to.be.closeTo(2, 0.02);
+				}
 			});
 		});
 
-		it("can set an linear ramp in the future", () => {
-			return Offline(() => {
+		it("can set an linear ramp in the future", async () => {
+			const buffer = await Offline(() => {
 				const sig = new Signal(1).toDestination();
 				sig.linearRampTo(50, 0.3, 0.2);
-			}, 0.7).then((buffer) => {
-				buffer.forEach((sample, time) => {
-					if (time >= 0.6) {
-						expect(sample).to.be.closeTo(50, 0.5);
-					} else if (time < 0.2) {
-						expect(sample).to.closeTo(1, 0.01);
-					}
-				});
+			}, 0.7);
+			buffer.forEach((sample, time) => {
+				if (time >= 0.6) {
+					expect(sample).to.be.closeTo(50, 0.5);
+				} else if (time < 0.2) {
+					expect(sample).to.closeTo(1, 0.01);
+				}
 			});
 		});
 
-		it("can set a exponential approach ramp from the current time", () => {
-			return Offline(() => {
+		it("can set a exponential approach ramp from the current time", async () => {
+			const buffer = await Offline(() => {
 				const sig = new Signal(0).toDestination();
 				sig.targetRampTo(1, 0.3);
-			}, 0.5).then((buffer) => {
-				expect(buffer.getValueAtTime(0)).to.be.below(0.0001);
-				expect(buffer.getValueAtTime(0.3)).to.be.closeTo(1, 0.02);
-			});
+			}, 0.5);
+			expect(buffer.getValueAtTime(0)).to.be.below(0.0001);
+			expect(buffer.getValueAtTime(0.3)).to.be.closeTo(1, 0.02);
 		});
 
-		it("can set an exponential approach ramp in the future", () => {
-			return Offline(() => {
+		it("can set an exponential approach ramp in the future", async () => {
+			const buffer = await Offline(() => {
 				const sig = new Signal(1).toDestination();
 				sig.targetRampTo(50, 0.3, 0.2);
-			}, 0.7).then((buffer) => {
-				expect(buffer.getValueAtTime(0)).to.be.closeTo(1, 0.0001);
-				expect(buffer.getValueAtTime(0.2)).to.be.closeTo(1, 0.0001);
-				expect(buffer.getValueAtTime(0.6)).to.be.closeTo(50, 0.5);
-			});
+			}, 0.7);
+			expect(buffer.getValueAtTime(0)).to.be.closeTo(1, 0.0001);
+			expect(buffer.getValueAtTime(0.2)).to.be.closeTo(1, 0.0001);
+			expect(buffer.getValueAtTime(0.6)).to.be.closeTo(50, 0.5);
 		});
-		it("can set an exponential ramp from the current time", () => {
-			return Offline(() => {
+
+		it("can set an exponential ramp from the current time", async () => {
+			const buffer = await Offline(() => {
 				const sig = new Signal(1).toDestination();
 				sig.exponentialRampTo(50, 0.4);
-			}, 0.6).then((buffer) => {
-				buffer.forEach((sample, time) => {
-					if (time >= 0.4) {
-						expect(sample).to.be.closeTo(50, 0.5);
-					} else if (time < 0.39) {
-						expect(sample).to.be.lessThan(50);
-					}
-				});
+			}, 0.6);
+			buffer.forEach((sample, time) => {
+				if (time >= 0.4) {
+					expect(sample).to.be.closeTo(50, 0.5);
+				} else if (time < 0.39) {
+					expect(sample).to.be.lessThan(50);
+				}
 			});
 		});
 
-		it("can set an exponential ramp in the future", () => {
-			return Offline(() => {
+		it("can set an exponential ramp in the future", async () => {
+			const buffer = await Offline(() => {
 				const sig = new Signal(1).toDestination();
 				sig.exponentialRampTo(50, 0.3, 0.2);
-			}, 0.8).then((buffer) => {
-				buffer.forEach((sample, time) => {
-					if (time >= 0.6) {
-						expect(sample).to.be.closeTo(50, 0.5);
-					} else if (time < 0.2) {
-						expect(sample).to.equal(1);
-					}
-				});
+			}, 0.8);
+			buffer.forEach((sample, time) => {
+				if (time >= 0.6) {
+					expect(sample).to.be.closeTo(50, 0.5);
+				} else if (time < 0.2) {
+					expect(sample).to.equal(1);
+				}
 			});
 		});
 
-		it("rampTo ramps from the current value", () => {
-			return Offline(() => {
+		it("rampTo ramps from the current value", async () => {
+			const buffer = await Offline(() => {
 				const sig = new Signal(3).toDestination();
 				sig.rampTo(0.2, 0.1);
-			}, 0.4).then((buffer) => {
-				buffer.forEach((sample, time) => {
-					if (time >= 0.1) {
-						expect(sample).to.be.closeTo(0.2, 0.1);
-					} else {
-						expect(sample).to.be.greaterThan(0.2);
-					}
-				});
+			}, 0.4);
+			buffer.forEach((sample, time) => {
+				if (time >= 0.1) {
+					expect(sample).to.be.closeTo(0.2, 0.1);
+				} else {
+					expect(sample).to.be.greaterThan(0.2);
+				}
 			});
 		});
 
-		it("rampTo ramps from the current value at a specific time", () => {
-			return Offline(() => {
+		it("rampTo ramps from the current value at a specific time", async () => {
+			const buffer = await Offline(() => {
 				const sig = new Signal(0).toDestination();
 				sig.rampTo(2, 0.1, 0.4);
-			}, 0.6).then((buffer) => {
-				buffer.forEach((sample, time) => {
-					if (time < 0.4) {
-						expect(sample).to.be.closeTo(0, 0.1);
-					} else if (time > 0.5) {
-						expect(sample).to.be.closeTo(2, 0.1);
-					}
-				});
+			}, 0.6);
+			buffer.forEach((sample, time) => {
+				if (time < 0.4) {
+					expect(sample).to.be.closeTo(0, 0.1);
+				} else if (time > 0.5) {
+					expect(sample).to.be.closeTo(2, 0.1);
+				}
 			});
 		});
 
-		it("can set a value curve", () => {
-			return Offline(() => {
+		it("can set a value curve", async () => {
+			const buffer = await Offline(() => {
 				const sig = new Signal(0).toDestination();
 				sig.setValueCurveAtTime([0, 1, 0.5, 0.2], 0, 1);
-			}, 1).then((buffer) => {
-				expect(buffer.getValueAtTime(0)).to.be.closeTo(0, 0.01);
-				expect(buffer.getValueAtTime(0.33 / 2)).to.be.closeTo(
-					0.5,
-					0.01
-				);
-				expect(buffer.getValueAtTime(0.33)).to.be.closeTo(1, 0.02);
-				expect(buffer.getValueAtTime(0.66)).to.be.closeTo(0.5, 0.02);
-				expect(buffer.getValueAtTime(0.99)).to.be.closeTo(0.2, 0.02);
-			});
+			}, 1);
+			expect(buffer.getValueAtTime(0)).to.be.closeTo(0, 0.01);
+			expect(buffer.getValueAtTime(0.33 / 2)).to.be.closeTo(0.5, 0.01);
+			expect(buffer.getValueAtTime(0.33)).to.be.closeTo(1, 0.02);
+			expect(buffer.getValueAtTime(0.66)).to.be.closeTo(0.5, 0.02);
+			expect(buffer.getValueAtTime(0.99)).to.be.closeTo(0.2, 0.02);
 		});
 
-		it("can set a value curve in the future", () => {
-			return Offline(() => {
+		it("can set a value curve in the future", async () => {
+			const buffer = await Offline(() => {
 				const sig = new Signal(0).toDestination();
 				sig.setValueCurveAtTime([0, 1, 0.5, 0.2], 0.5, 1);
-			}, 1.5).then((buffer) => {
-				expect(buffer.getValueAtTime(0 + 0.5)).to.be.closeTo(0, 0.01);
-				expect(buffer.getValueAtTime(0.33 / 2 + 0.5)).to.be.closeTo(
-					0.5,
-					0.01
-				);
-				expect(buffer.getValueAtTime(0.33 + 0.5)).to.be.closeTo(
-					1,
-					0.02
-				);
-				expect(buffer.getValueAtTime(0.66 + 0.5)).to.be.closeTo(
-					0.5,
-					0.02
-				);
-				expect(buffer.getValueAtTime(0.99 + 0.5)).to.be.closeTo(
-					0.2,
-					0.02
-				);
-			});
+			}, 1.5);
+			expect(buffer.getValueAtTime(0 + 0.5)).to.be.closeTo(0, 0.01);
+			expect(buffer.getValueAtTime(0.33 / 2 + 0.5)).to.be.closeTo(
+				0.5,
+				0.01
+			);
+			expect(buffer.getValueAtTime(0.33 + 0.5)).to.be.closeTo(1, 0.02);
+			expect(buffer.getValueAtTime(0.66 + 0.5)).to.be.closeTo(0.5, 0.02);
+			expect(buffer.getValueAtTime(0.99 + 0.5)).to.be.closeTo(0.2, 0.02);
 		});
 
-		it("can set an exponential approach", () => {
-			return Offline(() => {
+		it("can set an exponential approach", async () => {
+			const buffer = await Offline(() => {
 				const sig = new Signal(0).toDestination();
 				sig.exponentialApproachValueAtTime(2, 0.1, 0.5);
-			}, 1).then((buffer) => {
-				expect(buffer.getValueAtTime(0)).to.be.closeTo(0, 0.01);
-				expect(buffer.getValueAtTime(0.1)).to.be.closeTo(0, 0.01);
-				expect(buffer.getValueAtTime(0.4)).to.be.closeTo(1.9, 0.1);
-				expect(buffer.getValueAtTime(0.6)).to.be.closeTo(2, 0.01);
-			});
+			}, 1);
+			expect(buffer.getValueAtTime(0)).to.be.closeTo(0, 0.01);
+			expect(buffer.getValueAtTime(0.1)).to.be.closeTo(0, 0.01);
+			expect(buffer.getValueAtTime(0.4)).to.be.closeTo(1.9, 0.1);
+			expect(buffer.getValueAtTime(0.6)).to.be.closeTo(2, 0.01);
 		});
 
-		it("can set a target at time", () => {
-			return Offline(() => {
+		it("can set a target at time", async () => {
+			const buffer = await Offline(() => {
 				const sig = new Signal(0).toDestination();
 				sig.setTargetAtTime(2, 0.1, 0.1);
-			}, 1).then((buffer) => {
-				expect(buffer.getValueAtTime(0)).to.be.closeTo(0, 0.01);
-				expect(buffer.getValueAtTime(0.6)).to.be.closeTo(2, 0.1);
-			});
+			}, 1);
+			expect(buffer.getValueAtTime(0)).to.be.closeTo(0, 0.01);
+			expect(buffer.getValueAtTime(0.6)).to.be.closeTo(2, 0.1);
 		});
 	});
 
@@ -450,6 +405,8 @@ describe("Signal", () => {
 			}).to.throw(RangeError);
 			const signal = new Signal(1, "normalRange");
 			expect(signal.value).to.be.closeTo(1, 0.01);
+			expect(signal.minValue).to.be.equal(0);
+			expect(signal.maxValue).to.be.equal(1);
 			signal.dispose();
 		});
 
@@ -459,6 +416,8 @@ describe("Signal", () => {
 			}).to.throw(RangeError);
 			const signal = new Signal(-1, "audioRange");
 			expect(signal.value).to.be.closeTo(-1, 0.01);
+			expect(signal.minValue).to.be.equal(-1);
+			expect(signal.maxValue).to.be.equal(1);
 			signal.dispose();
 		});
 
@@ -468,6 +427,7 @@ describe("Signal", () => {
 			}).to.throw(RangeError);
 			const signal = new Signal(100, "positive");
 			expect(signal.value).to.be.closeTo(100, 0.01);
+			expect(signal.minValue).to.be.equal(0);
 			signal.dispose();
 		});
 	});
@@ -507,20 +467,19 @@ describe("Signal", () => {
 			}, 0);
 		});
 
-		it("can ramp along with the bpm", () => {
-			return Offline(({ transport }) => {
+		it("can ramp along with the bpm", async () => {
+			const buffer = await Offline(({ transport }) => {
 				transport.bpm.value = 120;
 				const sig = new Signal(2).toDestination();
 				transport.syncSignal(sig);
 				transport.bpm.rampTo(240, 0.5);
-			}).then((buffer) => {
-				buffer.forEach((sample, time) => {
-					if (time >= 0.5) {
-						expect(sample).to.be.closeTo(4, 0.04);
-					} else if (time < 0.4) {
-						expect(sample).to.be.within(1.95, 3);
-					}
-				});
+			});
+			buffer.forEach((sample, time) => {
+				if (time >= 0.5) {
+					expect(sample).to.be.closeTo(4, 0.04);
+				} else if (time < 0.4) {
+					expect(sample).to.be.within(1.95, 3);
+				}
 			});
 		});
 
@@ -532,6 +491,233 @@ describe("Signal", () => {
 				transport.bpm.value = 240;
 				transport.unsyncSignal(sig);
 			}, 5);
+		});
+	});
+
+	context("connectSignal/disconnectSignal", () => {
+		it("can connect a Signal to an AudioNode", () => {
+			return ConstantOutput((context) => {
+				const sig = new Signal({
+					value: 3,
+					context,
+				});
+				const gain = new Gain({
+					gain: 0.5,
+					context,
+				}).toDestination();
+				connectSignal(sig, gain);
+			}, 1.5);
+		});
+
+		it("can connect a Signal to a Param", () => {
+			return ConstantOutput((context) => {
+				const sig = new Signal({
+					value: 3,
+					context,
+				});
+				const scalar = new Signal({
+					value: 2,
+					context,
+				});
+				const gain = new Gain({
+					gain: 0.5,
+					context,
+				}).toDestination();
+				connectSignal(sig, gain);
+				connectSignal(scalar, gain.gain);
+				// gain of 0.5 is overridden
+				expect(gain.gain.value).to.equal(0);
+			}, 6);
+		});
+
+		it("can connect a Signal to a Signal", () => {
+			return ConstantOutput((context) => {
+				const sig = new Signal({
+					value: 3,
+					context,
+				});
+				const output = new Signal({
+					value: 0.5,
+					context,
+				}).toDestination();
+
+				connectSignal(sig, output);
+				expect(output.overridden).to.be.true;
+			}, 3);
+		});
+
+		it("can disconnect a Signal from an AudioNode", () => {
+			return ConstantOutput((context) => {
+				const sig = new Signal({
+					value: 3,
+					context,
+				});
+				const gain = new Gain({
+					gain: 0.5,
+					context,
+				}).toDestination();
+				connectSignal(sig, gain);
+				disconnectSignal(sig, gain);
+			}, 0);
+		});
+
+		it("can disconnect a Signal from a Param", () => {
+			return ConstantOutput((context) => {
+				const sig = new Signal({
+					value: 3,
+					context,
+				});
+				const scalar = new Signal({
+					value: 2,
+					context,
+				});
+				const gain = new Gain({
+					gain: 0.5,
+					context,
+				}).toDestination();
+				connectSignal(sig, gain);
+				connectSignal(scalar, gain.gain);
+				// gain of 0.5 is overridden
+				expect(gain.gain.value).to.equal(0);
+
+				disconnectSignal(scalar, gain.gain);
+				// the original value is restored
+				expect(gain.gain.value).to.equal(0.5);
+			}, 1.5);
+		});
+
+		it("can disconnect a Signal from a Signal", () => {
+			return ConstantOutput((context) => {
+				const sig = new Signal({
+					value: 3,
+					context,
+				});
+				const output = new Signal({
+					value: 2,
+					context,
+				}).toDestination();
+
+				connectSignal(sig, output);
+				expect(output.overridden).to.be.true;
+				expect(output.value).to.equal(0);
+
+				disconnectSignal(sig, output);
+				expect(output.value).to.equal(2);
+				expect(output.overridden).to.be.false;
+			}, 2);
+		});
+
+		it("can disconnect from all the connected nodes", async () => {
+			await ConstantOutput(async (context) => {
+				// initially destination is 2
+				const output0 = new Signal(1).toDestination();
+				const output1 = new Signal(1).toDestination();
+
+				// both should now equal 0
+				const sig = new Signal(0).connect(output0).connect(output1);
+
+				// disconnect from both
+				sig.disconnect();
+			}, 2);
+		});
+
+		it("can disconnect from a specific node", async () => {
+			await ConstantOutput(() => {
+				// initially destination is 3
+				const output0 = new Signal(1).toDestination();
+				const output1 = new Signal(2).toDestination();
+
+				const sig = new Signal(3);
+				sig.connect(output0);
+				sig.connect(output1);
+
+				// output0 goes back to 1 after disconnecting
+				sig.disconnect(output0);
+			}, 4); // 1 + 3
+		});
+
+		it("disconnects every input when no input is passed in", async () => {
+			await ConstantOutput(() => {
+				// initially destination is 1
+				const output = new Signal(1).toDestination();
+
+				// overwrites it with 0
+				const sig = new Signal(0).connect(output, 0);
+
+				// disconnects the signal and goes back to 1
+				sig.disconnect(output);
+			}, 1);
+		});
+
+		it("disconnects every output when no output is passed in", async () => {
+			await ConstantOutput(() => {
+				// initially destination is 1
+				const output = new Signal(1).toDestination();
+
+				// overwrites it with 0
+				const sig = new Signal(0).connect(output, undefined, 0);
+
+				// disconnects the signal and goes back to 1
+				sig.disconnect(output);
+			}, 1);
+		});
+
+		it("disconnects everything if no destination is passed in", () => {
+			return ConstantOutput((context) => {
+				const sig = new Signal({
+					value: 3,
+					context,
+				});
+				const output = new Signal({
+					value: 2,
+					context,
+				}).toDestination();
+
+				// overridden with value of 3
+				connectSignal(sig, output);
+				expect(output.overridden).to.be.true;
+
+				// disconnect goes back to 2
+				sig.disconnect();
+				expect(output.overridden).to.be.false;
+			}, 2);
+		});
+
+		it("can connect multiple times with no affect", () => {
+			return ConstantOutput((context) => {
+				const sig = new Signal({
+					value: 3,
+					context,
+				});
+				const output = new Signal({
+					value: 2,
+					context,
+				}).toDestination();
+
+				connectSignal(sig, output);
+				expect(output.overridden).to.be.true;
+
+				// no affect when called again
+				connectSignal(sig, output);
+			}, 3);
+		});
+
+		it("disconnecting multiple times throws an error", () => {
+			return ConstantOutput((context) => {
+				const sig = new Signal({
+					value: 3,
+					context,
+				});
+				const output = new Signal({
+					value: 2,
+					context,
+				}).toDestination();
+
+				connectSignal(sig, output);
+
+				disconnectSignal(sig, output);
+				expect(() => disconnectSignal(sig, output)).to.throw(Error);
+			}, 2);
 		});
 	});
 });

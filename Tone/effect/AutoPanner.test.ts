@@ -1,10 +1,11 @@
-import { AutoPanner } from "./AutoPanner.js";
+import { expect } from "chai";
+
 import { BasicTests } from "../../test/helper/Basic.js";
+import { CompareToFile } from "../../test/helper/CompareToFile.js";
 import { EffectTests } from "../../test/helper/EffectTests.js";
 import { Offline } from "../../test/helper/Offline.js";
-import { expect } from "chai";
-import { CompareToFile } from "../../test/helper/CompareToFile.js";
 import { Oscillator } from "../source/oscillator/Oscillator.js";
+import { AutoPanner } from "./AutoPanner.js";
 
 describe("AutoPanner", () => {
 	BasicTests(AutoPanner);
@@ -62,31 +63,29 @@ describe("AutoPanner", () => {
 			autoPanner.dispose();
 		});
 
-		it("can sync the frequency to the transport", () => {
-			return Offline(({ transport }) => {
+		it("can sync the frequency to the transport", async () => {
+			const buffer = await Offline(({ transport }) => {
 				const panner = new AutoPanner(2);
 				panner.sync();
 				panner.frequency.toDestination();
 				transport.bpm.setValueAtTime(transport.bpm.value * 2, 0.05);
 				// transport.start(0)
-			}, 0.1).then((buffer) => {
-				expect(buffer.getValueAtTime(0)).to.be.closeTo(2, 0.1);
-				expect(buffer.getValueAtTime(0.05)).to.be.closeTo(4, 0.1);
-			});
+			}, 0.1);
+			expect(buffer.getValueAtTime(0)).to.be.closeTo(2, 0.1);
+			expect(buffer.getValueAtTime(0.05)).to.be.closeTo(4, 0.1);
 		});
 
-		it("can unsync the frequency to the transport", () => {
-			return Offline(({ transport }) => {
+		it("can unsync the frequency to the transport", async () => {
+			const buffer = await Offline(({ transport }) => {
 				const panner = new AutoPanner(2);
 				panner.sync();
 				panner.frequency.toDestination();
 				transport.bpm.setValueAtTime(transport.bpm.value * 2, 0.05);
 				panner.unsync();
 				// transport.start(0)
-			}, 0.1).then((buffer) => {
-				expect(buffer.getValueAtTime(0)).to.be.closeTo(2, 0.1);
-				expect(buffer.getValueAtTime(0.05)).to.be.closeTo(2, 0.1);
-			});
+			}, 0.1);
+			expect(buffer.getValueAtTime(0)).to.be.closeTo(2, 0.1);
+			expect(buffer.getValueAtTime(0.05)).to.be.closeTo(2, 0.1);
 		});
 	});
 });

@@ -5,8 +5,10 @@ import {
 	Radians,
 	Time,
 } from "../../core/type/Units.js";
+import { assertRange } from "../../core/util/Debug.js";
 import { deepEquals, optionsFromArguments } from "../../core/util/Defaults.js";
 import { readOnly } from "../../core/util/Interface.js";
+import { clamp } from "../../core/util/Math.js";
 import { isDefined } from "../../core/util/TypeCheck.js";
 import { Signal } from "../../signal/Signal.js";
 import { Source } from "../Source.js";
@@ -18,8 +20,6 @@ import {
 	ToneOscillatorType,
 } from "./OscillatorInterface.js";
 import { ToneOscillatorNode } from "./ToneOscillatorNode.js";
-import { assertRange } from "../../core/util/Debug.js";
-import { clamp } from "../../core/util/Math.js";
 export {
 	ToneOscillatorOptions,
 	ToneOscillatorType,
@@ -138,7 +138,10 @@ export class Oscillator
 		// new oscillator with previous values
 		const oscillator = new ToneOscillatorNode({
 			context: this.context,
-			onended: () => this.onstop(this),
+			onended: () => {
+				this._cleanUpConnections(oscillator);
+				this.onstop(this);
+			},
 		});
 		this._oscillator = oscillator;
 		if (this._wave) {
@@ -153,6 +156,20 @@ export class Oscillator
 
 		// start the oscillator
 		this._oscillator.start(computedTime);
+	}
+
+	/**
+	 * Cleans up the connections to the oscillator for online contexts once it
+	 * has stopped.
+	 */
+	private _cleanUpConnections(oscillator: ToneOscillatorNode): void {
+		if (this.context.isOffline) {
+			return;
+		}
+		// Clean up connections fixes #1379
+		this.frequency.disconnect(oscillator.frequency);
+		this.detune.disconnect(oscillator.detune);
+		oscillator.disconnect();
 	}
 
 	/**
