@@ -9,7 +9,6 @@ import { optionsFromArguments } from "../../core/util/Defaults.js";
 import { readOnly } from "../../core/util/Interface.js";
 import { GainToAudio } from "../../signal/GainToAudio.js";
 import { Signal } from "../../signal/Signal.js";
-import { ToneConstantSource } from "../../signal/ToneConstantSource.js";
 
 interface CrossFadeOptions extends ToneAudioNodeOptions {
 	fade: NormalRange;
@@ -63,7 +62,7 @@ export class CrossFade extends ToneAudioNode<CrossFadeOptions> {
 	/**
 	 * The constant source which is used to control the panner
 	 */
-	private _constant: ToneConstantSource;
+	private _constant: ConstantSourceNode;
 
 	/**
 	 * The input which is at full level when fade = 0
@@ -120,10 +119,9 @@ export class CrossFade extends ToneAudioNode<CrossFadeOptions> {
 		});
 		readOnly(this, "fade");
 
-		this._constant = new ToneConstantSource({
-			context: this.context,
-			offset: 1,
-		}).start();
+		this._constant = this.context.createConstantSource();
+		this._constant.offset.value = 1;
+		this._constant.start(0);
 		this._constant.connect(this._panner);
 		this._panner.connect(this._split);
 		// this is necessary for standardized-audio-context
@@ -155,7 +153,7 @@ export class CrossFade extends ToneAudioNode<CrossFadeOptions> {
 		this._g2a.dispose();
 		this._panner.disconnect();
 		this._split.disconnect();
-		this._constant.dispose();
+		this._constant.disconnect();
 		return this;
 	}
 }
