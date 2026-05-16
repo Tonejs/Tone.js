@@ -5,6 +5,13 @@ import { getContext } from "../Global.js";
 import { Gain } from "./Gain.js";
 import { ToneWithContext } from "./ToneWithContext.js";
 
+/** Exposes {@link ToneWithContext._onContextRunning} for tests without `as any`. */
+class GainWithContextRunning extends Gain {
+	public triggerOnContextRunning(callback: () => void): void {
+		this._onContextRunning(callback);
+	}
+}
+
 describe("ToneWithContext", () => {
 	context("get", () => {
 		it("returns an object with all the default properties", () => {
@@ -58,9 +65,8 @@ describe("ToneWithContext", () => {
 		it("invokes the callback immediately for an offline context", () => {
 			return Offline(() => {
 				let callbackInvoked = false;
-				const gain = new Gain();
-				// Access protected method via subclass trick
-				(gain as any)._onContextRunning(() => {
+				const gain = new GainWithContextRunning();
+				gain.triggerOnContextRunning(() => {
 					callbackInvoked = true;
 				});
 				expect(callbackInvoked).to.equal(true);
@@ -70,8 +76,8 @@ describe("ToneWithContext", () => {
 
 		it("cleans up the listener on dispose", () => {
 			return Offline(() => {
-				const gain = new Gain();
-				(gain as any)._onContextRunning(() => {
+				const gain = new GainWithContextRunning();
+				gain.triggerOnContextRunning(() => {
 					// no-op
 				});
 				// Should not throw when disposing
