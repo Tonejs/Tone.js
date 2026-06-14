@@ -1,5 +1,6 @@
 import { createOfflineAudioContext } from "../context/AudioContext.js";
 import { Context } from "../context/Context.js";
+import { getContext, setContext } from "../Global.js";
 import { Seconds } from "../type/Units.js";
 import { isOfflineAudioContext } from "../util/AdvancedTypeCheck.js";
 import { ToneAudioBuffer } from "./ToneAudioBuffer.js";
@@ -83,8 +84,12 @@ export class OfflineContext extends Context {
 	private async _renderClock(asynchronous: boolean): Promise<void> {
 		let index = 0;
 		while (this._duration - this._currentTime >= 0) {
-			// invoke all the callbacks on that time
+			// temporarily set this offline context as the global default
+			// so that any nodes created inside tick callbacks use this context
+			const previousContext = getContext();
+			setContext(this);
 			this.emit("tick");
+			setContext(previousContext);
 
 			// increment the clock in block-sized chunks
 			this._currentTime += 128 / this.sampleRate;
