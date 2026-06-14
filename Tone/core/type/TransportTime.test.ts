@@ -131,6 +131,22 @@ describe("TransportTimeClass", () => {
 				});
 			}, 0.6);
 		});
+
+		it("returns transport time (not AudioContext time)", () => {
+			// Address #401
+			return Offline((context) => {
+				const transport = context.transport;
+				transport.start(0.1);
+				return atTime(0.69, () => {
+					expect(
+						new TransportTimeClass(context, "@4n").valueOf()
+					).to.be.closeTo(1.0, 0.01);
+					expect(
+						new TransportTimeClass(context, "@1m").valueOf()
+					).to.be.closeTo(2.0, 0.01);
+				});
+			}, 0.7);
+		});
 	});
 
 	context("Operators", () => {

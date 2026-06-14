@@ -1,7 +1,7 @@
 import { getContext } from "../Global.js";
 import { Seconds, Ticks } from "../type/Units.js";
 import { TimeClass } from "./Time.js";
-import { TimeBaseUnit, TimeValue } from "./TimeBase.js";
+import { TimeBaseUnit, TimeExpression, TimeValue } from "./TimeBase.js";
 
 /**
  * TransportTime is a time along the Transport's
@@ -20,6 +20,26 @@ export class TransportTimeClass<
 	 */
 	protected _now(): Type {
 		return this.context.transport.seconds as Type;
+	}
+
+	protected _getExpressions(): TimeExpression<Type> {
+		const expressions = super._getExpressions();
+		// Override the quantize ("@") handler so that it returns Transport time
+		// instead of AudioContext time.
+		expressions.quantize = {
+			method: (capture: string): Type => {
+				const quantTo = new TimeClass(this.context, capture).valueOf();
+				const nextSubdivisionAudioTime =
+					this.context.transport.nextSubdivision(quantTo);
+				return this._secondsToUnits(
+					this.context.transport.getSecondsAtTime(
+						nextSubdivisionAudioTime
+					)
+				);
+			},
+			regexp: /^@(.+)/,
+		};
+		return expressions;
 	}
 }
 

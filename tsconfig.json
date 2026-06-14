@@ -14,12 +14,11 @@
 		"skipLibCheck": true,
 		"moduleResolution": "Node16",
 		"strictPropertyInitialization": true,
-		"downlevelIteration": true,
 		"experimentalDecorators": true,
 		"lib": ["es6", "dom", "es2015"],
-		"baseUrl": "./",
+		"types": ["mocha", "node"],
 		"rootDir": "./"
 	},
 	"include": ["Tone/**/*.ts", "test/**/*.ts"],
-	"exclude": ["node_modules", "test/integration/**"]
+	"exclude": ["test/integration/**"]
 }
