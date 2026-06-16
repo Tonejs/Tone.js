@@ -177,7 +177,7 @@ export abstract class Source<
 	 * Compute the buffer offset to use when the source is started mid-playback.
 	 * @param explicitOffset The buffer-time offset the caller passed to `start()`
 	 * @param transportElapsed Seconds of Transport time that have elapsed since
-	 *   this source was scheduled to start — needs rate-scaling in subclasses.
+	 *   this source was scheduled to start.
 	 */
 	protected _getSyncedStartOffset(
 		explicitOffset: Seconds,
