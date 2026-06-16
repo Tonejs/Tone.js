@@ -174,6 +174,19 @@ export abstract class Source<
 	): void;
 
 	/**
+	 * Compute the buffer offset to use when the source is started mid-playback.
+	 * @param explicitOffset The buffer-time offset the caller passed to `start()`
+	 * @param transportElapsed Seconds of Transport time that have elapsed since
+	 *   this source was scheduled to start — needs rate-scaling in subclasses.
+	 */
+	protected _getSyncedStartOffset(
+		explicitOffset: Seconds,
+		transportElapsed: Seconds
+	): Seconds {
+		return explicitOffset + transportElapsed;
+	}
+
+	/**
 	 * Ensure that the scheduled time is not before the current time.
 	 * Should only be used when scheduled unsynced.
 	 */
@@ -338,7 +351,10 @@ export abstract class Source<
 						}
 						this._start(
 							time,
-							this.toSeconds(stateEvent.offset) + startOffset,
+							this._getSyncedStartOffset(
+								this.toSeconds(stateEvent.offset),
+								startOffset
+							),
 							duration
 						);
 					}
