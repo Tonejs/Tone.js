@@ -431,7 +431,7 @@ export class TickSource<
 			let nextTickTime = this.frequency.getTimeOfTick(firstTick);
 			// Advance past any ticks that land before the start of this window
 			// to avoid any tick that was already processed.
-			while (nextTickTime < maxStartTime) {
+			if (nextTickTime < maxStartTime) {
 				nextTickTime += this.frequency.getDurationOfTicks(
 					1,
 					nextTickTime
