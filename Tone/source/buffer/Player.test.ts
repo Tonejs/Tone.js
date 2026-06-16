@@ -620,7 +620,124 @@ describe("Player", () => {
 				// start halfway through
 				transport.start(0, 0.15);
 			}, 0.05);
-			expect(buff.getValueAtTime(0)).to.be.closeTo(0.5, 0.05);
+			// With playbackRate=0.5, transport position 0.15 maps to buffer position
+			// 0.15 * 0.5 = 0.075. The ramp value there is 0.075 / 0.3 = 0.25.
+			expect(buff.getValueAtTime(0)).to.be.closeTo(0.25, 0.03);
+		});
+
+		it("seeks to the correct buffer position when Transport starts at a non-zero offset with playbackRate != 1", async () => {
+			const buff = await Offline(({ transport }) => {
+				// Ramp 0 -> 1 over 0.4 s
+				const ramp = new Float32Array(
+					Math.floor(getContext().sampleRate * 0.4)
+				);
+				for (let i = 0; i < ramp.length; i++) {
+					ramp[i] = i / ramp.length;
+				}
+				const playerBuff = ToneAudioBuffer.fromArray(ramp);
+				const player = new Player(playerBuff).toDestination();
+				// Buffer plays at 2x speed: 1 transport-second advances 2 buffer-seconds
+				player.playbackRate = 2;
+				player.sync().start(0);
+				// Seek transport to 0.1 s. The player should start at buffer position
+				// 0.1 * 2 = 0.2, giving a ramp value of 0.2 / 0.4 = 0.5.
+				transport.start(0, 0.1);
+			}, 0.05);
+			expect(buff.getValueAtTime(0)).to.be.closeTo(0.5, 0.03);
+		});
+
+		it("explicit buffer-time offset is not scaled by playbackRate when synced", async () => {
+			const buff = await Offline(({ transport }) => {
+				const ramp = new Float32Array(
+					Math.floor(getContext().sampleRate * 0.3)
+				);
+				for (let i = 0; i < ramp.length; i++) {
+					ramp[i] = i / ramp.length;
+				}
+				const playerBuff = ToneAudioBuffer.fromArray(ramp);
+				const player = new Player(playerBuff).toDestination();
+				player.loop = true;
+				player.playbackRate = 2;
+				player.sync().start(0, 0.1);
+				transport.start(0);
+			}, 0.05);
+			expect(buff.getValueAtTime(0)).to.be.closeTo(1 / 3, 0.03);
+		});
+
+		it("combines explicit buffer-time offset with transport-elapsed time scaled by playbackRate", async () => {
+			const buff = await Offline(({ transport }) => {
+				const ramp = new Float32Array(
+					Math.floor(getContext().sampleRate * 0.3)
+				);
+				for (let i = 0; i < ramp.length; i++) {
+					ramp[i] = i / ramp.length;
+				}
+				const playerBuff = ToneAudioBuffer.fromArray(ramp);
+				const player = new Player(playerBuff).toDestination();
+				player.loop = true;
+				player.playbackRate = 2;
+				player.sync().start(0, 0.1);
+				transport.start(0, 0.05);
+			}, 0.05);
+			expect(buff.getValueAtTime(0)).to.be.closeTo(2 / 3, 0.03);
+		});
+
+		it("looping player wraps correctly when transport offset exceeds buffer duration (playbackRate=1)", async () => {
+			// buffer duration = 1s, transport seeks to 2.5s
+			// buffer offset = 2.5 * 1 = 2.5 → wrapped = 2.5 % 1 = 0.5
+			const buff = await Offline(({ transport }) => {
+				const ramp = new Float32Array(getContext().sampleRate); // 1 s
+				for (let i = 0; i < ramp.length; i++) {
+					ramp[i] = i / ramp.length;
+				}
+				const playerBuff = ToneAudioBuffer.fromArray(ramp);
+				const player = new Player(playerBuff).toDestination();
+				player.loop = true;
+				player.sync().start(0);
+				transport.start(0, 2.5);
+			}, 0.05);
+			expect(buff.getValueAtTime(0)).to.be.closeTo(0.5, 0.03);
+		});
+
+		it("looping player wraps correctly when transport offset exceeds buffer duration (playbackRate=2)", async () => {
+			// buffer duration = 1s, transport seeks to 1.25s, playbackRate=2
+			// buffer offset = 1.25 * 2 = 2.5 → wrapped = 2.5 % 1 = 0.5
+			const buff = await Offline(({ transport }) => {
+				const ramp = new Float32Array(getContext().sampleRate); // 1 s
+				for (let i = 0; i < ramp.length; i++) {
+					ramp[i] = i / ramp.length;
+				}
+				const playerBuff = ToneAudioBuffer.fromArray(ramp);
+				const player = new Player(playerBuff).toDestination();
+				player.loop = true;
+				player.playbackRate = 2;
+				player.sync().start(0);
+				transport.start(0, 1.25);
+			}, 0.05);
+			expect(buff.getValueAtTime(0)).to.be.closeTo(0.5, 0.03);
+		});
+
+		it("looping player with loopStart/loopEnd wraps correctly when transport offset exceeds loop duration (playbackRate=2)", async () => {
+			// buffer duration = 1s, loopStart=0.2, loopEnd=1.0, loopDuration=0.8
+			// transport seeks to 1.15s, playbackRate=2
+			// buffer offset = 1.15 * 2 = 2.3
+			// wrapped = ((2.3 - 0.2) % 0.8) + 0.2 = (2.1 % 0.8) + 0.2 = 0.5 + 0.2 = 0.7
+			// ramp value at 0.7 in a 1s ramp = 0.7
+			const buff = await Offline(({ transport }) => {
+				const ramp = new Float32Array(getContext().sampleRate); // 1 s
+				for (let i = 0; i < ramp.length; i++) {
+					ramp[i] = i / ramp.length;
+				}
+				const playerBuff = ToneAudioBuffer.fromArray(ramp);
+				const player = new Player(playerBuff).toDestination();
+				player.loop = true;
+				player.loopStart = 0.2;
+				player.loopEnd = 1.0;
+				player.playbackRate = 2;
+				player.sync().start(0);
+				transport.start(0, 1.15);
+			}, 0.05);
+			expect(buff.getValueAtTime(0)).to.be.closeTo(0.7, 0.03);
 		});
 
 		it("starts with an offset when synced and started after Transport is running", async () => {
