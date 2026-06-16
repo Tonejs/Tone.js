@@ -421,12 +421,21 @@ export class TickSource<
 				lastStateEvent.time
 			);
 			const diff = startTicks - ticksAtStart;
-			let offset = Math.ceil(diff) - diff;
-			// guard against floating point issues
-			offset = EQ(offset, 1) ? 0 : offset;
-			let nextTickTime = this.frequency.getTimeOfTick(
-				startTicks + offset
-			);
+			const offset = Math.ceil(diff) - diff;
+			// Guard against floating-point issues: when startTicks is just barely
+			// above an integer tick boundary (offset ≈ 1), snap back to that integer
+			const firstTick = EQ(offset, 1)
+				? Math.round(startTicks)
+				: startTicks + offset;
+			let nextTickTime = this.frequency.getTimeOfTick(firstTick);
+			// Advance past any ticks that land before the start of this window
+			// to avoid any tick that was already processed.
+			while (nextTickTime < maxStartTime) {
+				nextTickTime += this.frequency.getDurationOfTicks(
+					1,
+					nextTickTime
+				);
+			}
 			while (nextTickTime < endTime) {
 				try {
 					callback(

@@ -544,6 +544,65 @@ describe("TickSource", () => {
 			});
 			source.dispose();
 		});
+
+		it("does not fire duplicate ticks across consecutive windows at a tick boundary", () => {
+			// Reproduces the double-trigger bug from issues #1080/#1098/#1175.
+			// At 400 ticks/sec (equivalent to BPM=125, PPQ=192), tick 7680 falls
+			// at exactly t=19.2s.
+			const source = new TickSource(400);
+			source.start(0);
+
+			const firedTicks: number[] = [];
+			// Window 1 ends just above the tick-7680 boundary
+			source.forEachTickBetween(
+				19.19709750566994,
+				19.20000000000101,
+				(_, tick) => firedTicks.push(tick)
+			);
+			// Window 2 starts at exactly that same boundary
+			source.forEachTickBetween(
+				19.20000000000101,
+				19.202902494332076,
+				(_, tick) => firedTicks.push(tick)
+			);
+
+			const occurrences = firedTicks.filter((t) => t === 7680).length;
+			expect(occurrences).to.equal(
+				1,
+				`tick 7680 should fire exactly once, but fired ${occurrences} times`
+			);
+			source.dispose();
+		});
+
+		it("fires every tick exactly once across many consecutive windows", () => {
+			// At 2 Hz, ticks fall at 0, 0.5, 1.0, 1.5, 2.0.
+			// Window boundaries are placed just above each tick time (tick + eps)
+			// so every tick lands right at the end of one window and the start of the next.
+			const source = new TickSource(2);
+			source.start(0);
+
+			const tickCount = new Map<number, number>();
+			const record = (_: number, tick: number) => {
+				tickCount.set(tick, (tickCount.get(tick) ?? 0) + 1);
+			};
+
+			// Non-overlapping consecutive windows whose boundaries sit just above
+			// the tick times (0, 0.5, 1.0, 1.5, 2.0).
+			const eps = 1e-10;
+			source.forEachTickBetween(0, 0.5 + eps, record); // tick 0 (at 0.0) and tick 1 (at 0.5)
+			source.forEachTickBetween(0.5 + eps, 1.0 + eps, record); // tick 2 (at 1.0)
+			source.forEachTickBetween(1.0 + eps, 1.5 + eps, record); // tick 3 (at 1.5)
+			source.forEachTickBetween(1.5 + eps, 2.0 + eps, record); // tick 4 (at 2.0)
+			source.forEachTickBetween(2.0 + eps, 2.5, record); // tick 5 (at 2.5, not included)
+
+			for (const [tick, count] of tickCount) {
+				expect(count).to.equal(
+					1,
+					`tick ${tick} fired ${count} times instead of once`
+				);
+			}
+			source.dispose();
+		});
 	});
 
 	context("Seconds", () => {

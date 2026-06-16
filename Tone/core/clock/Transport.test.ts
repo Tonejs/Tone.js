@@ -75,6 +75,20 @@ describe("Transport", () => {
 			expect(invocations).to.equal(5);
 		});
 
+		it("does not double-fire events when looping many times", async () => {
+			let invocations = 0;
+			await Offline((context) => {
+				const transport = new TransportInstance({ context });
+				transport.schedule(() => {
+					invocations++;
+				}, 0);
+				transport.setLoopPoints(0, 1).start(0);
+				transport.loop = true;
+			}, 120.1);
+			// Should fire exactly 121 times: at t=0,1,2,...,120
+			expect(invocations).to.equal(121);
+		});
+
 		it("jumps to the loopStart after the loopEnd point", async () => {
 			let looped = false;
 			await Offline((context) => {
