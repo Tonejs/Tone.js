@@ -93,6 +93,10 @@ describe("Timeline", () => {
 			sched.remove({ time: 4 });
 		});
 		expect(sched.length).to.equal(1);
+		sched.add({ time: 1 });
+		sched.add({ time: 3 });
+		sched.remove({ time: 2 });
+		expect(sched.length).to.equal(3);
 		sched.dispose();
 	});
 
