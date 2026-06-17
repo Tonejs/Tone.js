@@ -90,19 +90,17 @@ export class FrequencyClass<Type extends number = Hertz> extends TimeClass<
 					s: string
 				): number {
 					const self = this as FrequencyClass<any>;
-					let total = 1;
+					let totalBeats = 0;
 					if (m && m !== "0") {
-						total *= self._beatsToUnits(
-							self._getTimeSignature() * parseFloat(m)
-						);
+						totalBeats += self._getTimeSignature() * parseFloat(m);
 					}
 					if (q && q !== "0") {
-						total *= self._beatsToUnits(parseFloat(q));
+						totalBeats += parseFloat(q);
 					}
 					if (s && s !== "0") {
-						total *= self._beatsToUnits(parseFloat(s) / 4);
+						totalBeats += parseFloat(s) / 4;
 					}
-					return total;
+					return self._beatsToUnits(totalBeats);
 				},
 			},
 		});

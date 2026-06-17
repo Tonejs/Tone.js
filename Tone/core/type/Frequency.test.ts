@@ -133,7 +133,11 @@ describe("FrequencyClass", () => {
 				transport.timeSignature = 4;
 				expect(Frequency("1:0").valueOf()).to.equal(0.5);
 				expect(Frequency("2:0:0").valueOf()).to.equal(0.25);
-				expect(Frequency("1:0:2").valueOf()).to.equal(2);
+				expect(Frequency("1:1").valueOf()).to.be.closeTo(0.4, 0.0001);
+				expect(Frequency("1:0:2").valueOf()).to.be.closeTo(
+					120 / (60 * 4.5),
+					0.0001
+				);
 			});
 		});
 
