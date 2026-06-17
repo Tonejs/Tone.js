@@ -9,9 +9,8 @@ import { DummyContext } from "./DummyContext.js";
 export const dummyContext: BaseContext = new DummyContext();
 
 /**
- * The global audio context storage. Shared between Global.ts (which adds
- * native-context wrapping) and context files (OfflineContext, ToneAudioBuffer)
- * that need access to the current context without creating a circular dependency.
+ * The global audio context which is getable and assignable through
+ * getContext and setContext
  */
 let globalContext: BaseContext = dummyContext;
 
