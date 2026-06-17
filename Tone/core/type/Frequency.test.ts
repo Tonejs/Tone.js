@@ -128,9 +128,13 @@ describe("FrequencyClass", () => {
 		});
 
 		it("evaluates transport time", () => {
-			expect(Frequency("1:0").valueOf()).to.equal(0.5);
-			expect(Frequency("1:4:0").valueOf()).to.equal(0.25);
-			// expect(Frequency("2:1:0").valueOf()).to.equal(0.25);
+			return Offline(({ transport }) => {
+				transport.bpm.value = 120;
+				transport.timeSignature = 4;
+				expect(Frequency("1:0").valueOf()).to.equal(0.5);
+				expect(Frequency("2:0:0").valueOf()).to.equal(0.25);
+				expect(Frequency("1:0:2").valueOf()).to.equal(2);
+			});
 		});
 
 		it("evaluates midi", () => {

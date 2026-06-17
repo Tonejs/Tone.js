@@ -118,7 +118,7 @@ export abstract class TimeBaseClass<
 				regexp: /^(\d+)m$/i,
 			},
 			n: {
-				method: (value, dot) => {
+				method: (value: string, dot: string) => {
 					const numericValue = parseInt(value, 10);
 					const scalar = dot === "." ? 1.5 : 1;
 					if (numericValue === 1) {
@@ -163,7 +163,7 @@ export abstract class TimeBaseClass<
 				regexp: /^(\d+)t$/i,
 			},
 			tr: {
-				method: (m, q, s) => {
+				method: (m: string, q: string, s: string) => {
 					let total = 0;
 					if (m && m !== "0") {
 						total += this._beatsToUnits(
