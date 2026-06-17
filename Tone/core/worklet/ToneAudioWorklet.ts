@@ -86,7 +86,7 @@ export abstract class ToneAudioWorklet<
 					this.workletOptions
 				);
 				this._worklet.onprocessorerror = (e) =>
-					this.onprocessorerror(e.message);
+					this.onprocessorerror((e as ErrorEvent).message);
 				this.onReady(this._worklet);
 			}
 		});
