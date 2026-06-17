@@ -1,0 +1,12 @@
+{
+	"name": "tone-rollup-test",
+	"type": "module",
+	"dependencies": {
+		"@rollup/plugin-node-resolve": "^15.2.3",
+		"tone": "file:../../..",
+		"rollup": "^4.18.0"
+	},
+	"scripts": {
+		"test": "rollup --config rollup.config.mjs"
+	}
+}
