@@ -8,6 +8,7 @@ import { noOp } from "../../core/util/Interface.js";
 import { Timeline } from "../../core/util/Timeline.js";
 import { isUndef } from "../../core/util/TypeCheck.js";
 import { ToneConstantSource } from "../../signal/ToneConstantSource.js";
+import { OneShotSource } from "../OneShotSource.js";
 import { Source, SourceOptions } from "../Source.js";
 import { ToneBufferSource } from "./ToneBufferSource.js";
 
@@ -231,12 +232,12 @@ export class Player extends Source<PlayerOptions> {
 	/**
 	 * Internal callback when the buffer is done playing.
 	 */
-	private _onSourceEnd(source: ToneBufferSource): void {
+	private _onSourceEnd(source: OneShotSource<any>): void {
 		// invoke the onstop function
 		this.onstop(this);
 
 		// delete the source from the active sources
-		this._activeSources.delete(source);
+		this._activeSources.delete(source as ToneBufferSource);
 		if (
 			this._activeSources.size === 0 &&
 			!this._synced &&
