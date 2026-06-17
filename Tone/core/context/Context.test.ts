@@ -221,6 +221,16 @@ describe("Context", () => {
 			}, 0.05);
 		});
 
+		it("can efficiently add and remove 10k timeouts", () => {
+			const ids: number[] = [];
+			for (let i = 0; i < 10_000; i++) {
+				ids.push(ctx.setTimeout(() => {}, i * 0.001));
+			}
+			for (const id of ids) {
+				ctx.clearTimeout(id);
+			}
+		}).timeout(100);
+
 		it("is robust against altering the timeline within the callback fn", (done) => {
 			let invokeCount = 0;
 			function checkDone(id: number) {
