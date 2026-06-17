@@ -8,7 +8,7 @@ import { AMSynth } from "./AMSynth.js";
 
 describe("AMSynth", () => {
 	BasicTests(AMSynth);
-	InstrumentTest(AMSynth, "C4");
+	InstrumentTest(AMSynth, "C4", undefined);
 
 	it("matches a file", () => {
 		return CompareToFile(

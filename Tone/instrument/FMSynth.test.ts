@@ -8,7 +8,7 @@ import { FMSynth } from "./FMSynth.js";
 
 describe("FMSynth", () => {
 	BasicTests(FMSynth);
-	InstrumentTest(FMSynth, "C4");
+	InstrumentTest(FMSynth, "C4", undefined);
 
 	it("matches a file", () => {
 		return CompareToFile(

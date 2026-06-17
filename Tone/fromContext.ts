@@ -34,8 +34,11 @@ type ToneObject = {
 /**
  * Bind the TimeBaseClass to the context
  */
-function bindTypeClass(context: Context, type) {
-	return (...args: unknown[]) => new type(context, ...args);
+function bindTypeClass<T extends new (context: Context, ...args: any[]) => any>(
+	context: Context,
+	type: T
+) {
+	return (...args: any[]) => new type(context, ...args);
 }
 
 /**
@@ -44,19 +47,23 @@ function bindTypeClass(context: Context, type) {
  */
 export function fromContext(context: Context): ToneObject {
 	const classesWithContext: Partial<ClassesWithoutSingletons> = {};
-	Object.keys(
-		omitFromObject(Classes, ["Transport", "Destination", "Draw"])
-	).map((key) => {
-		const cls = Classes[key];
+	const classesToOmit = ["Transport", "Destination", "Draw"];
+	(
+		Object.keys(Classes).filter(
+			(key) => !classesToOmit.includes(key)
+		) as Array<keyof ClassesWithoutSingletons>
+	).forEach((key) => {
+		const cls = (Classes as any)[key];
 		if (isDefined(cls) && isFunction(cls.getDefaults)) {
-			classesWithContext[key] = class ToneFromContextNode extends cls {
+			const boundCls = class ToneFromContextNode extends cls {
 				get defaultContext(): Context {
 					return context;
 				}
 			};
+			classesWithContext[key] = boundCls as any;
 		} else {
 			// otherwise just copy it over
-			classesWithContext[key] = Classes[key];
+			classesWithContext[key] = Classes[key] as any;
 		}
 	});
 

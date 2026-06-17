@@ -5,7 +5,7 @@ import { connectTo } from "./Connect.js";
 import { Offline } from "./Offline.js";
 import { OutputAudio } from "./OutputAudio.js";
 
-export function SourceTests(Constr, args?): void {
+export function SourceTests(Constr: any, args: any): void {
 	context("Source Tests", () => {
 		it("can connect the output", () => {
 			const instance = new Constr(args);

@@ -54,8 +54,8 @@ describe("Param", () => {
 
 	context("Scheduling Curves", () => {
 		const sampleRate = 11025;
-		function matchesOutputCurve(param, outBuffer): void {
-			outBuffer.toArray()[0].forEach((sample, index) => {
+		function matchesOutputCurve(param: any, outBuffer: any): void {
+			outBuffer.toArray()[0].forEach((sample: number, index: number) => {
 				try {
 					expect(
 						param.getValueAtTime(index / sampleRate)
@@ -277,7 +277,7 @@ describe("Param", () => {
 
 	context("apply", () => {
 		it("can apply a scheduled curve", async () => {
-			let sig;
+			let sig: any;
 			const buffer = await Offline((context) => {
 				const signal = new Signal();
 				sig = signal;
@@ -303,7 +303,7 @@ describe("Param", () => {
 		});
 
 		it("can apply a scheduled curve that starts with a setTargetAtTime", async () => {
-			let sig;
+			let sig: any;
 			const buffer = await Offline((context) => {
 				const signal = new Signal();
 				sig = signal;
@@ -324,7 +324,7 @@ describe("Param", () => {
 		});
 
 		it("can apply a scheduled curve that starts with a setTargetAtTime and then schedules other things", async () => {
-			let sig;
+			let sig: any;
 			const buffer = await Offline((context) => {
 				const signal = new Signal();
 				sig = signal;
@@ -433,7 +433,7 @@ describe("Param", () => {
 	});
 
 	context("min/maxValue", () => {
-		function testMinMaxValue(units: UnitName, min, max): void {
+		function testMinMaxValue(units: UnitName, min: any, max: any): void {
 			it(`has proper min/max for ${units}`, () => {
 				const source = audioContext.createConstantSource();
 				source.connect(audioContext.rawContext.destination);
@@ -611,8 +611,8 @@ describe("Param", () => {
 									units,
 								});
 								param.setValueAtTime(value0, 0);
-								param[method](value1, 0.01);
-								param[method](value2, 0.02);
+						(param as any)[method](value1, 0.01);
+						(param as any)[method](value2, 0.02);
 
 								expect(param.getValueAtTime(0)).to.be.closeTo(
 									value0,
@@ -692,8 +692,8 @@ describe("Param", () => {
 									units,
 									value: value0,
 								});
-								param[method](value1, 0.009, 0);
-								param[method](value2, 0.01, 0.01);
+								(param as any)[method](value1, 0.009, 0);
+								(param as any)[method](value2, 0.01, 0.01);
 
 								expect(param.getValueAtTime(0)).to.be.closeTo(
 									value0,

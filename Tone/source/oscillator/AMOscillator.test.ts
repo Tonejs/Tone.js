@@ -9,8 +9,8 @@ import { AMOscillator } from "./AMOscillator.js";
 describe("AMOscillator", () => {
 	// run the common tests
 	BasicTests(AMOscillator);
-	SourceTests(AMOscillator);
-	OscillatorTests(AMOscillator);
+	SourceTests(AMOscillator, undefined);
+	OscillatorTests(AMOscillator, undefined);
 
 	it("matches a file", () => {
 		return CompareToFile(

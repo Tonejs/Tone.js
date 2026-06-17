@@ -68,8 +68,8 @@ describe("Panner3D", () => {
 		const panner = new Panner3D();
 		for (const v in values) {
 			if (v in values) {
-				panner[v] = values[v];
-				expect(panner[v]).to.equal(values[v]);
+				(panner as any)[v] = (values as any)[v];
+				expect((panner as any)[v]).to.equal((values as any)[v]);
 			}
 		}
 		panner.dispose();

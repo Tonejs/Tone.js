@@ -125,7 +125,7 @@ describe("Context", () => {
 	});
 
 	context("clockSource", () => {
-		let ctx;
+		let ctx: Context;
 		beforeEach(() => {
 			ctx = new Context();
 			return ctx.resume();
@@ -168,7 +168,7 @@ describe("Context", () => {
 		});
 	});
 	context("setTimeout", () => {
-		let ctx;
+		let ctx: Context;
 		beforeEach(() => {
 			ctx = new Context();
 			return ctx.resume();
@@ -248,7 +248,7 @@ describe("Context", () => {
 	});
 
 	context("setInterval", () => {
-		let ctx;
+		let ctx: Context;
 		beforeEach(() => {
 			ctx = new Context();
 			return ctx.resume();
@@ -320,7 +320,7 @@ describe("Context", () => {
 	});
 
 	context("get/set", () => {
-		let ctx;
+		let ctx: Context;
 		beforeEach(() => {
 			ctx = new Context();
 			return ctx.resume();
@@ -356,7 +356,7 @@ describe("Context", () => {
 	});
 
 	context("Methods", () => {
-		let ctx;
+		let ctx: Context;
 		beforeEach(() => {
 			ctx = new Context();
 			return ctx.resume();

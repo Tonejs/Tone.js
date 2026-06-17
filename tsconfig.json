@@ -4,7 +4,7 @@
 		"strictNullChecks": true,
 		"target": "ES6",
 		"module": "Node16",
-		"noImplicitAny": false,
+		"noImplicitAny": true,
 		"importHelpers": true,
 		"noUnusedLocals": false,
 		"removeComments": false,

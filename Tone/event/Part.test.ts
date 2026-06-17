@@ -534,7 +534,7 @@ describe("Part", () => {
 		it("can be set to loop at a specific interval", async () => {
 			let invoked = false;
 			await Offline(({ transport }) => {
-				let lastCall;
+				let lastCall: number;
 				const part = new Part({
 					events: [0],
 					loop: true,
@@ -875,7 +875,7 @@ describe("Part", () => {
 		it("can adjust the playbackRate", async () => {
 			let invoked = false;
 			await Offline(({ transport }) => {
-				let lastCall;
+				let lastCall: number;
 				new Part({
 					events: [0, 0.5],
 					loop: true,
@@ -897,7 +897,7 @@ describe("Part", () => {
 		it("can adjust the playbackRate after starting", async () => {
 			let invoked = false;
 			await Offline(({ transport }) => {
-				let lastCall;
+				let lastCall: number;
 				const part = new Part({
 					events: [0, 0.25],
 					loop: true,

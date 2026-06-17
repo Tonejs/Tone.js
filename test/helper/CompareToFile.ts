@@ -38,7 +38,7 @@ async function getBuffersToCompare(
  * Compare the output of the callback to a pre-rendered file
  */
 export async function CompareToFile(
-	callback,
+	callback: any,
 	url: string,
 	threshold = 0.001,
 	RENDER_NEW = false,

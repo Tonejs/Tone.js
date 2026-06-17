@@ -51,7 +51,7 @@ export class FrequencyClass<Type extends number = Hertz> extends TimeClass<
 		return Object.assign({}, super._getExpressions(), {
 			midi: {
 				regexp: /^(\d+(?:\.\d+)?midi)/,
-				method(value): number {
+				method(value: any): number {
 					if (this.defaultUnits === "midi") {
 						return value;
 					} else {
@@ -61,19 +61,20 @@ export class FrequencyClass<Type extends number = Hertz> extends TimeClass<
 			},
 			note: {
 				regexp: /^([a-g]{1}(?:b|#|##|x|bb|###|#x|x#|bbb)?)(-?[0-9]+)/i,
-				method(pitch, octave): number {
-					const index = noteToScaleIndex[pitch.toLowerCase()];
+				method(pitch: string, octave: string): number {
+					const index =
+						noteToScaleIndex[pitch.toLowerCase()];
 					const noteNumber = index + (parseInt(octave, 10) + 1) * 12;
 					if (this.defaultUnits === "midi") {
 						return noteNumber;
 					} else {
-						return FrequencyClass.mtof(noteNumber);
+							return FrequencyClass.mtof(noteNumber as any);
 					}
 				},
 			},
 			tr: {
 				regexp: /^(\d+(?:\.\d+)?):(\d+(?:\.\d+)?):?(\d+(?:\.\d+)?)?/,
-				method(m, q, s): number {
+				method(m: string, q: string, s: string): number {
 					let total = 1;
 					if (m && m !== "0") {
 						total *= this._beatsToUnits(
@@ -233,7 +234,7 @@ export class FrequencyClass<Type extends number = Hertz> extends TimeClass<
  * Note to scale index.
  * @hidden
  */
-const noteToScaleIndex = {
+const noteToScaleIndex: Record<string, number> = {
 	cbbb: -3,
 	cbb: -2,
 	cb: -1,

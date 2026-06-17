@@ -7,7 +7,7 @@ import { MembraneSynth } from "./MembraneSynth.js";
 
 describe("MembraneSynth", () => {
 	BasicTests(MembraneSynth);
-	InstrumentTest(MembraneSynth, "C2");
+	InstrumentTest(MembraneSynth, "C2", undefined);
 
 	it("matches a file", () => {
 		return CompareToFile(

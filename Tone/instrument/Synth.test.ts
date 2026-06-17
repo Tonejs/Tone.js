@@ -10,8 +10,8 @@ import { Synth } from "./Synth.js";
 
 describe("Synth", () => {
 	BasicTests(Synth);
-	InstrumentTest(Synth, "C4");
-	MonophonicTest(Synth, "C4");
+	InstrumentTest(Synth, "C4", undefined);
+	MonophonicTest(Synth, "C4", undefined);
 
 	it("matches a file basic", () => {
 		return CompareToFile(

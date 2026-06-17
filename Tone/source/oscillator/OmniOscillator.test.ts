@@ -14,8 +14,8 @@ import { PWMOscillator } from "./PWMOscillator.js";
 describe("OmniOscillator", () => {
 	// run the common tests
 	BasicTests(OmniOscillator);
-	SourceTests(OmniOscillator);
-	OscillatorTests(OmniOscillator);
+	SourceTests(OmniOscillator, undefined);
+	OscillatorTests(OmniOscillator, undefined);
 
 	it("matches a file", () => {
 		return CompareToFile(
