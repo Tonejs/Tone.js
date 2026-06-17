@@ -43,7 +43,7 @@ export class SyncedSignal<
 	/**
 	 * Remember the callback value
 	 */
-	private _syncedCallback: () => void;
+	private _syncedCallback: (time: Seconds) => void;
 
 	/**
 	 * @param value Initial value of the signal

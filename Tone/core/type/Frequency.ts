@@ -2,7 +2,12 @@ import { getContext } from "../Global.js";
 import { intervalToFrequencyRatio, mtof } from "./Conversions.js";
 import { ftom, getA4, setA4 } from "./Conversions.js";
 import { TimeClass } from "./Time.js";
-import { TimeBaseUnit, TimeExpression, TimeValue } from "./TimeBase.js";
+import {
+	TimeBaseClass,
+	TimeBaseUnit,
+	TimeExpression,
+	TimeValue,
+} from "./TimeBase.js";
 import {
 	Frequency,
 	Hertz,
@@ -51,7 +56,7 @@ export class FrequencyClass<Type extends number = Hertz> extends TimeClass<
 		return Object.assign({}, super._getExpressions(), {
 			midi: {
 				regexp: /^(\d+(?:\.\d+)?midi)/,
-				method(value): number {
+				method(this: TimeBaseClass<any, any>, value): number {
 					if (this.defaultUnits === "midi") {
 						return value;
 					} else {
@@ -61,7 +66,7 @@ export class FrequencyClass<Type extends number = Hertz> extends TimeClass<
 			},
 			note: {
 				regexp: /^([a-g]{1}(?:b|#|##|x|bb|###|#x|x#|bbb)?)(-?[0-9]+)/i,
-				method(pitch, octave): number {
+				method(this: TimeBaseClass<any, any>, pitch, octave): number {
 					const index = noteToScaleIndex[pitch.toLowerCase()];
 					const noteNumber = index + (parseInt(octave, 10) + 1) * 12;
 					if (this.defaultUnits === "midi") {
@@ -73,18 +78,19 @@ export class FrequencyClass<Type extends number = Hertz> extends TimeClass<
 			},
 			tr: {
 				regexp: /^(\d+(?:\.\d+)?):(\d+(?:\.\d+)?):?(\d+(?:\.\d+)?)?/,
-				method(m, q, s): number {
+				method(this: TimeBaseClass<any, any>, m, q, s): number {
+					const self = this as FrequencyClass<any>;
 					let total = 1;
 					if (m && m !== "0") {
-						total *= this._beatsToUnits(
-							this._getTimeSignature() * parseFloat(m)
+						total *= self._beatsToUnits(
+							self._getTimeSignature() * parseFloat(m)
 						);
 					}
 					if (q && q !== "0") {
-						total *= this._beatsToUnits(parseFloat(q));
+						total *= self._beatsToUnits(parseFloat(q));
 					}
 					if (s && s !== "0") {
-						total *= this._beatsToUnits(parseFloat(s) / 4);
+						total *= self._beatsToUnits(parseFloat(s) / 4);
 					}
 					return total;
 				},

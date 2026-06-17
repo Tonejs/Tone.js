@@ -30,13 +30,21 @@ export type TimeBaseUnit =
 
 export interface TypeFunction {
 	regexp: RegExp;
-	method: (value: string, ...args: string[]) => number;
+	method: (
+		this: TimeBaseClass<any, any>,
+		value: string,
+		...args: string[]
+	) => number;
 }
 
 export interface TimeExpression<Type extends number> {
 	[key: string]: {
 		regexp: RegExp;
-		method: (value: string, ...args: string[]) => Type;
+		method: (
+			this: TimeBaseClass<any, any>,
+			value: string,
+			...args: string[]
+		) => Type;
 	};
 }
 
@@ -213,9 +221,12 @@ export abstract class TimeBaseClass<
 			const expr = this._expressions[this._units];
 			const matching = this._val.toString().trim().match(expr.regexp);
 			if (matching) {
-				return expr.method.apply(this, matching.slice(1));
+				return expr.method.apply(
+					this,
+					matching.slice(1) as [string, ...string[]]
+				);
 			} else {
-				return expr.method.call(this, this._val);
+				return expr.method.call(this, String(this._val));
 			}
 		} else if (isString(this._val)) {
 			return parseFloat(this._val) as Type;
