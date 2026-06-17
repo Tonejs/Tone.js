@@ -584,7 +584,7 @@ export class Context extends BaseContext {
 	 */
 	private _removeTimeoutEvent(event: ContextTimeoutEvent): void {
 		this._timeouts.remove(event);
-		// Skips the map deletion when with setInterval where the same id
+		// Skips the map deletion in setInterval case where the same id
 		// is reused for the next event.
 		if (this._timeoutMap.get(event.id) === event) {
 			this._timeoutMap.delete(event.id);
