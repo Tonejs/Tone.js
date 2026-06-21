@@ -30,7 +30,7 @@ describe("Meter", () => {
 			const meter = new Meter({
 				channelCount: 4,
 			});
-			expect((meter.getValue() as number[]).length).to.equal(4);
+			expect(meter.getValue().length).to.equal(4);
 			meter.dispose();
 		});
 
