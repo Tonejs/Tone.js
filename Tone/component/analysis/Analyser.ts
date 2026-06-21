@@ -56,7 +56,7 @@ export class Analyser<ChannelCount extends number = 1> extends ToneAudioNode<
 	/**
 	 * The buffer that the FFT data is written to
 	 */
-	private _buffers: Float32Array<ArrayBuffer>[] = [];
+	private _buffers: Float32Array[] = [];
 
 	/**
 	 * @param type The return type of the analysis, either "fft", or "waveform".
