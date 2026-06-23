@@ -241,7 +241,7 @@ export class TransportInstance
 	 * called on every tick
 	 * @param  tickTime clock relative tick time
 	 */
-	private _processTick(tickTime: Seconds, ticks: Ticks): void {
+	private _processTick(tickTime: Seconds, ticks: Ticks = 0): void {
 		// do the loop test
 		if (this._loop.get(tickTime)) {
 			if (ticks >= this._loopEnd) {

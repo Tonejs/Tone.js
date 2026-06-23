@@ -1,8 +1,8 @@
 import { createOfflineAudioContext } from "../context/AudioContext.js";
 import { Context } from "../context/Context.js";
-import { getContext, setContext } from "../Global.js";
 import { Seconds } from "../type/Units.js";
 import { isOfflineAudioContext } from "../util/AdvancedTypeCheck.js";
+import { getContext, setContext } from "./GlobalContext.js";
 import { ToneAudioBuffer } from "./ToneAudioBuffer.js";
 
 /**

@@ -5,10 +5,11 @@ import { optionsFromArguments } from "../../core/util/Defaults.js";
 import { Analyser } from "./Analyser.js";
 import { MeterBase, MeterBaseOptions } from "./MeterBase.js";
 
-export interface MeterOptions extends MeterBaseOptions {
+export interface MeterOptions<ChannelCount extends number>
+	extends MeterBaseOptions {
 	smoothing: NormalRange;
 	normalRange: boolean;
-	channelCount: number;
+	channelCount: ChannelCount;
 }
 
 /**
@@ -29,7 +30,10 @@ export interface MeterOptions extends MeterBaseOptions {
  * setInterval(() => console.log(meter.getValue()), 100);
  * @category Component
  */
-export class Meter extends MeterBase<MeterOptions> {
+export class Meter<ChannelCount extends number = 1> extends MeterBase<
+	MeterOptions<ChannelCount>,
+	ChannelCount
+> {
 	readonly name: string = "Meter";
 
 	/**
@@ -53,7 +57,7 @@ export class Meter extends MeterBase<MeterOptions> {
 	 * @param smoothing The amount of smoothing applied between frames.
 	 */
 	constructor(smoothing?: NormalRange);
-	constructor(options?: Partial<MeterOptions>);
+	constructor(options?: Partial<MeterOptions<ChannelCount>>);
 	constructor() {
 		const options = optionsFromArguments(Meter.getDefaults(), arguments, [
 			"smoothing",
@@ -67,7 +71,7 @@ export class Meter extends MeterBase<MeterOptions> {
 					context: this.context,
 					size: 256,
 					type: "waveform",
-					channels: options.channelCount,
+					channels: options.channelCount as ChannelCount,
 				});
 
 		this.smoothing = options.smoothing;
@@ -76,11 +80,11 @@ export class Meter extends MeterBase<MeterOptions> {
 		this._rms.fill(0);
 	}
 
-	static getDefaults(): MeterOptions {
+	static getDefaults(): MeterOptions<1> {
 		return Object.assign(MeterBase.getDefaults(), {
 			smoothing: 0.8,
 			normalRange: false,
-			channelCount: 1,
+			channelCount: 1 as const,
 		});
 	}
 
@@ -105,7 +109,7 @@ export class Meter extends MeterBase<MeterOptions> {
 	 * representing the value of the input signal. When {@link channels} > 1,
 	 * then each channel is returned as a value in a number array.
 	 */
-	getValue(): number | number[] {
+	getValue(): ChannelCount extends 1 ? number : number[] {
 		const aValues = this._analyser.getValue();
 		const channelValues =
 			this.channels === 1
@@ -132,16 +136,16 @@ export class Meter extends MeterBase<MeterOptions> {
 				: gainToDb(this._rms[channel]);
 		});
 		if (this.channels === 1) {
-			return vals[0];
+			return vals[0] as ChannelCount extends 1 ? number : number[];
 		} else {
-			return vals;
+			return vals as ChannelCount extends 1 ? number : number[];
 		}
 	}
 
 	/**
 	 * The number of channels of analysis.
 	 */
-	get channels(): number {
+	get channels(): ChannelCount {
 		return this._analyser.channels;
 	}
 

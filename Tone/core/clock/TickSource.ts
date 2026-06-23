@@ -444,7 +444,7 @@ export class TickSource<
 						Math.round(this.getTicksAtTime(nextTickTime))
 					);
 				} catch (e) {
-					error = e;
+					error = e as Error;
 					break;
 				}
 				nextTickTime += this.frequency.getDurationOfTicks(

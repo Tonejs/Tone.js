@@ -14,6 +14,7 @@ export type MeterBaseOptions = ToneAudioNodeOptions;
  */
 export class MeterBase<
 	Options extends MeterBaseOptions,
+	ChannelCount extends number,
 > extends ToneAudioNode<Options> {
 	readonly name: string = "MeterBase";
 
@@ -30,7 +31,7 @@ export class MeterBase<
 	/**
 	 * The analyser node for the incoming signal
 	 */
-	protected _analyser: Analyser;
+	protected _analyser: Analyser<ChannelCount>;
 
 	constructor(options?: Partial<MeterBaseOptions>);
 	constructor() {
@@ -39,7 +40,7 @@ export class MeterBase<
 		this.input =
 			this.output =
 			this._analyser =
-				new Analyser({
+				new Analyser<ChannelCount>({
 					context: this.context,
 					size: 256,
 					type: "waveform",

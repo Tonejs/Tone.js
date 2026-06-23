@@ -6,8 +6,8 @@ import { noOp } from "../util/Interface.js";
 import { getWorkletGlobalScope } from "./WorkletGlobalScope.js";
 
 export interface ToneAudioWorkletOptions extends ToneAudioNodeOptions {
-	workletOptions?: Partial<AudioWorkletNodeOptions>
-};
+	workletOptions?: Partial<AudioWorkletNodeOptions>;
+}
 export abstract class ToneAudioWorklet<
 	Options extends ToneAudioWorkletOptions,
 > extends ToneAudioNode<Options> {
@@ -65,7 +65,8 @@ export abstract class ToneAudioWorklet<
 		);
 
 		if (options.workletOptions) {
-			this.workletOptions = Object.assign({},
+			this.workletOptions = Object.assign(
+				{},
 				this.workletOptions,
 				options.workletOptions
 			);
@@ -84,8 +85,8 @@ export abstract class ToneAudioWorklet<
 					name,
 					this.workletOptions
 				);
-				this._worklet.onprocessorerror =
-					this.onprocessorerror.bind(this);
+				this._worklet.onprocessorerror = (e) =>
+					this.onprocessorerror((e as ErrorEvent).message);
 				this.onReady(this._worklet);
 			}
 		});

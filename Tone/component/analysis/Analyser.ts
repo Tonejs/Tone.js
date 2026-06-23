@@ -12,11 +12,12 @@ import { Split } from "../channel/Split.js";
 
 export type AnalyserType = "fft" | "waveform";
 
-export interface AnalyserOptions extends ToneAudioNodeOptions {
+export interface AnalyserOptions<ChannelCount extends number>
+	extends ToneAudioNodeOptions {
 	size: PowerOfTwo;
 	type: AnalyserType;
 	smoothing: NormalRange;
-	channels: number;
+	channels: ChannelCount;
 }
 
 /**
@@ -24,7 +25,9 @@ export interface AnalyserOptions extends ToneAudioNodeOptions {
  * Extracts FFT or Waveform data from the incoming signal.
  * @category Component
  */
-export class Analyser extends ToneAudioNode<AnalyserOptions> {
+export class Analyser<ChannelCount extends number = 1> extends ToneAudioNode<
+	AnalyserOptions<ChannelCount>
+> {
 	readonly name: string = "Analyser";
 
 	readonly input: InputNode;
@@ -60,7 +63,7 @@ export class Analyser extends ToneAudioNode<AnalyserOptions> {
 	 * @param size The size of the FFT. This must be a power of two in the range 16 to 16384.
 	 */
 	constructor(type?: AnalyserType, size?: number);
-	constructor(options?: Partial<AnalyserOptions>);
+	constructor(options?: Partial<AnalyserOptions<ChannelCount>>);
 	constructor() {
 		const options = optionsFromArguments(
 			Analyser.getDefaults(),
@@ -93,12 +96,12 @@ export class Analyser extends ToneAudioNode<AnalyserOptions> {
 		this.smoothing = options.smoothing;
 	}
 
-	static getDefaults(): AnalyserOptions {
+	static getDefaults(): AnalyserOptions<1> {
 		return Object.assign(ToneAudioNode.getDefaults(), {
 			size: 1024,
 			smoothing: 0.8,
 			type: "fft" as AnalyserType,
-			channels: 1,
+			channels: 1 as const,
 		});
 	}
 
@@ -108,7 +111,7 @@ export class Analyser extends ToneAudioNode<AnalyserOptions> {
 	 * return an array of Float32Arrays where each index in the array
 	 * represents the analysis done on a channel.
 	 */
-	getValue(): Float32Array | Float32Array[] {
+	getValue(): ChannelCount extends 1 ? Float32Array : Float32Array[] {
 		this._analyzers.forEach((analyser, index) => {
 			const buffer = this._buffers[index];
 			if (this._type === "fft") {
@@ -118,9 +121,13 @@ export class Analyser extends ToneAudioNode<AnalyserOptions> {
 			}
 		});
 		if (this.channels === 1) {
-			return this._buffers[0];
+			return this._buffers[0] as ChannelCount extends 1
+				? Float32Array
+				: Float32Array[];
 		} else {
-			return this._buffers;
+			return this._buffers as ChannelCount extends 1
+				? Float32Array
+				: Float32Array[];
 		}
 	}
 
@@ -141,8 +148,8 @@ export class Analyser extends ToneAudioNode<AnalyserOptions> {
 	 * The number of channels the analyser does the analysis on. Channel
 	 * separation is done using {@link Split}
 	 */
-	get channels(): number {
-		return this._analyzers.length;
+	get channels(): ChannelCount {
+		return this._analyzers.length as ChannelCount;
 	}
 
 	/**

@@ -6,7 +6,7 @@ import { Signal } from "../../Tone/signal/Signal.js";
 import { ConstantOutput } from "./ConstantOutput.js";
 
 interface ToneAudioNodeConstructor {
-	new (...args: unknown[]): ToneAudioNode;
+	new (...args: any[]): ToneAudioNode;
 }
 
 /**

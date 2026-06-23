@@ -71,7 +71,7 @@ describe("Analyser", () => {
 			size: 512,
 		});
 		expect(anl.getValue().length).to.equal(2);
-		expect((anl.getValue()[0] as Float32Array).length).to.equal(512);
+		expect(anl.getValue()[0].length).to.equal(512);
 		anl.dispose();
 	});
 });

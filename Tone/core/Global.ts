@@ -1,39 +1,18 @@
 import { version } from "../version.js";
-import {
-	AnyAudioContext,
-	hasAudioContext,
-	theWindow,
-} from "./context/AudioContext.js";
+import { AnyAudioContext, theWindow } from "./context/AudioContext.js";
 import { BaseContext } from "./context/BaseContext.js";
 import { Context } from "./context/Context.js";
-import { DummyContext } from "./context/DummyContext.js";
+import {
+	getContext,
+	setContext as _setContext,
+} from "./context/GlobalContext.js";
 import { OfflineContext } from "./context/OfflineContext.js";
 import {
 	isAudioContext,
 	isOfflineAudioContext,
 } from "./util/AdvancedTypeCheck.js";
 
-/**
- * This dummy context is used to avoid throwing immediate errors when importing in Node.js
- */
-const dummyContext = new DummyContext();
-
-/**
- * The global audio context which is getable and assignable through
- * getContext and setContext
- */
-let globalContext: BaseContext = dummyContext;
-
-/**
- * Returns the default system-wide {@link Context}
- * @category Core
- */
-export function getContext(): BaseContext {
-	if (globalContext === dummyContext && hasAudioContext) {
-		setContext(new Context());
-	}
-	return globalContext;
-}
+export { getContext };
 
 /**
  * Set the default audio context
@@ -46,15 +25,15 @@ export function setContext(
 	disposeOld = false
 ): void {
 	if (disposeOld) {
-		globalContext.dispose();
+		getContext().dispose();
 	}
 
 	if (isAudioContext(context)) {
-		globalContext = new Context(context);
+		_setContext(new Context(context));
 	} else if (isOfflineAudioContext(context)) {
-		globalContext = new OfflineContext(context);
+		_setContext(new OfflineContext(context));
 	} else {
-		globalContext = context;
+		_setContext(context);
 	}
 }
 
@@ -72,7 +51,7 @@ export function setContext(
  * @category Core
  */
 export function start(): Promise<void> {
-	return globalContext.resume();
+	return getContext().resume();
 }
 
 /**
