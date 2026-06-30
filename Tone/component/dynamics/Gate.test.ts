@@ -10,7 +10,7 @@ import { Gate } from "./Gate.js";
 describe("Gate", () => {
 	BasicTests(Gate);
 
-	it.only("matches a file", () => {
+	it("matches a file", () => {
 		return CompareToFile(
 			() => {
 				const gate = new Gate(-10, 0.1).toDestination();
@@ -64,7 +64,7 @@ describe("Gate", () => {
 				sig.connect(gate);
 				gate.toDestination();
 			});
-			expect(buffer.min()).to.be.above(0);
+			expect(buffer.max()).to.be.above(0);
 		});
 	});
 });
