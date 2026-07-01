@@ -47,23 +47,19 @@ function bindTypeClass<T extends new (context: Context, ...args: any[]) => any>(
  */
 export function fromContext(context: Context): ToneObject {
 	const classesWithContext: Partial<ClassesWithoutSingletons> = {};
-	const classesToOmit = ["Transport", "Destination", "Draw"];
-	(
-		Object.keys(Classes).filter(
-			(key) => !classesToOmit.includes(key)
-		) as Array<keyof ClassesWithoutSingletons>
-	).forEach((key) => {
-		const cls = (Classes as any)[key];
+	Object.keys(
+		omitFromObject(Classes, ["Transport", "Destination", "Draw"])
+	).map((key) => {
+		const cls = Classes[key];
 		if (isDefined(cls) && isFunction(cls.getDefaults)) {
-			const boundCls = class ToneFromContextNode extends cls {
+			classesWithContext[key] = class ToneFromContextNode extends cls {
 				get defaultContext(): Context {
 					return context;
 				}
 			};
-			classesWithContext[key] = boundCls as any;
 		} else {
 			// otherwise just copy it over
-			classesWithContext[key] = Classes[key] as any;
+			classesWithContext[key] = Classes[key];
 		}
 	});
 

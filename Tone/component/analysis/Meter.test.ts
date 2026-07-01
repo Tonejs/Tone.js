@@ -108,7 +108,7 @@ describe("Meter", () => {
 			osc0.volume.value = -6;
 			osc1.volume.value = -18;
 			setTimeout(() => {
-				const values = meter.getValue() as number[];
+				const values = meter.getValue();
 				expect(values).to.have.lengthOf(2);
 				expect(values[0]).to.be.closeTo(-9, 1);
 				expect(values[1]).to.be.closeTo(-21, 1);
