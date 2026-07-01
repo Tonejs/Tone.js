@@ -3,7 +3,7 @@ import { expect } from "chai";
 import { connectFrom } from "./Connect.js";
 import { Offline } from "./Offline.js";
 
-export function OscillatorTests(Constr: any, args: any): void {
+export function OscillatorTests(Constr: any, args?: any): void {
 	context("Oscillator Tests", () => {
 		it("can be created with an options object", () => {
 			const instance = new Constr({

@@ -9,7 +9,7 @@ import { Noise } from "./Noise.js";
 describe("Noise", () => {
 	// run the common tests
 	BasicTests(Noise);
-	SourceTests(Noise, undefined);
+	SourceTests(Noise);
 
 	it("matches a file", () => {
 		return CompareToFile(

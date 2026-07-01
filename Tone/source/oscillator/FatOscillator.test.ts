@@ -9,8 +9,8 @@ import { FatOscillator } from "./FatOscillator.js";
 describe("FatOscillator", () => {
 	// run the common tests
 	BasicTests(FatOscillator);
-	SourceTests(FatOscillator, undefined);
-	OscillatorTests(FatOscillator, undefined);
+	SourceTests(FatOscillator);
+	OscillatorTests(FatOscillator);
 
 	it("matches a file", () => {
 		return CompareToFile(

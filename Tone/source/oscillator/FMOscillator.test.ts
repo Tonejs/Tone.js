@@ -10,8 +10,8 @@ import { FMOscillator } from "./FMOscillator.js";
 describe("FMOscillator", () => {
 	// run the common tests
 	BasicTests(FMOscillator);
-	SourceTests(FMOscillator, undefined);
-	OscillatorTests(FMOscillator, undefined);
+	SourceTests(FMOscillator);
+	OscillatorTests(FMOscillator);
 
 	it("matches a file", () => {
 		return CompareToFile(

@@ -10,8 +10,8 @@ import { PulseOscillator } from "./PulseOscillator.js";
 describe("PulseOscillator", () => {
 	// run the common tests
 	BasicTests(PulseOscillator);
-	SourceTests(PulseOscillator, undefined);
-	OscillatorTests(PulseOscillator, undefined);
+	SourceTests(PulseOscillator);
+	OscillatorTests(PulseOscillator);
 
 	it("matches a file", () => {
 		return CompareToFile(

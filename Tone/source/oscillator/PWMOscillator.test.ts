@@ -10,8 +10,8 @@ import { PWMOscillator } from "./PWMOscillator.js";
 describe("PWMOscillator", () => {
 	// run the common tests
 	BasicTests(PWMOscillator);
-	SourceTests(PWMOscillator, undefined);
-	OscillatorTests(PWMOscillator, undefined);
+	SourceTests(PWMOscillator);
+	OscillatorTests(PWMOscillator);
 
 	it("matches a file", () => {
 		return CompareToFile(

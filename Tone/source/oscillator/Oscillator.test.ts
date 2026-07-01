@@ -16,8 +16,8 @@ import { ToneOscillatorType } from "./OscillatorInterface.js";
 describe("Oscillator", () => {
 	// run the common tests
 	BasicTests(Oscillator);
-	SourceTests(Oscillator, undefined);
-	OscillatorTests(Oscillator, undefined);
+	SourceTests(Oscillator);
+	OscillatorTests(Oscillator);
 
 	afterEach(() => {
 		sinon.restore();
