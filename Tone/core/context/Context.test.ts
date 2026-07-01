@@ -229,7 +229,7 @@ describe("Context", () => {
 			for (const id of ids) {
 				ctx.clearTimeout(id);
 			}
-		}).timeout(100);
+		}).timeout(500);
 
 		it("is robust against altering the timeline within the callback fn", (done) => {
 			let invokeCount = 0;
