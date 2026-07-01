@@ -184,7 +184,7 @@ describe("ToneConstantSource", () => {
 		});
 	});
 
-	context.only("Suspended AudioContext", () => {
+	context("Suspended AudioContext", () => {
 		it("does nothing when AudioContext returns to suspended", () => {
 			const context = new Context();
 			expect(context.state).to.equal("suspended");
