@@ -8,7 +8,7 @@ import { DuoSynth } from "./DuoSynth.js";
 
 describe("DuoSynth", () => {
 	BasicTests(DuoSynth);
-	MonophonicTest(DuoSynth, "C4", undefined);
+	MonophonicTest(DuoSynth, "C4");
 	InstrumentTest(DuoSynth, "C4", {
 		voice0: {
 			oscillator: {

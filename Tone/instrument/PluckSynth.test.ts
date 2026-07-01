@@ -7,7 +7,7 @@ import { PluckSynth } from "./PluckSynth.js";
 
 describe("PluckSynth", () => {
 	BasicTests(PluckSynth);
-	InstrumentTest(PluckSynth, "C3", undefined);
+	InstrumentTest(PluckSynth, "C3");
 
 	it("matches a file", () => {
 		return CompareToFile(

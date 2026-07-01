@@ -10,7 +10,7 @@ describe("MetalSynth", () => {
 	BasicTests(MetalSynth);
 
 	InstrumentTest(MetalSynth, "C2", undefined, undefined, true);
-	MonophonicTest(MetalSynth, "C4", undefined);
+	MonophonicTest(MetalSynth, "C4");
 
 	it("matches a file", () => {
 		return CompareToFile(

@@ -7,7 +7,7 @@ import { MembraneSynth } from "./MembraneSynth.js";
 
 describe("MembraneSynth", () => {
 	BasicTests(MembraneSynth);
-	InstrumentTest(MembraneSynth, "C2", undefined);
+	InstrumentTest(MembraneSynth, "C2");
 
 	it("matches a file", () => {
 		return CompareToFile(
@@ -81,13 +81,12 @@ describe("MembraneSynth", () => {
 
 		it("Finds correct maximum note frequency", () => {
 			const drumSynth = new MembraneSynth();
-			const hertz = 65.4; // C2 
+			const hertz = 65.4; // C2
 			drumSynth.octaves = 8;
-			const maxNote = hertz * Math.pow(2, drumSynth.octaves); 
-			expect(maxNote).to.equal(16742.4); // C2 + 8 octaves 
+			const maxNote = hertz * Math.pow(2, drumSynth.octaves);
+			expect(maxNote).to.equal(16742.4); // C2 + 8 octaves
 			drumSynth.dispose();
 		});
-
 
 		it("can be constructed with an options object", () => {
 			const drumSynth = new MembraneSynth({

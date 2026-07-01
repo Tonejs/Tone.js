@@ -8,7 +8,7 @@ import { MonoSynth } from "./MonoSynth.js";
 
 describe("MonoSynth", () => {
 	BasicTests(MonoSynth);
-	InstrumentTest(MonoSynth, "C4", undefined);
+	InstrumentTest(MonoSynth, "C4");
 
 	it("matches a file", () => {
 		return CompareToFile(

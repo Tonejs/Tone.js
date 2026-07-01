@@ -2,7 +2,7 @@ import { expect } from "chai";
 
 import { Offline } from "./Offline.js";
 
-export function MonophonicTest(Constr: any, note: any, constrArg: any): void {
+export function MonophonicTest(Constr: any, note: any, constrArg?: any): void {
 	context("Monophonic Tests", () => {
 		it("has an onsilence callback which is invoked after the release has finished", () => {
 			let wasInvoked = false;
