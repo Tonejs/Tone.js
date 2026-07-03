@@ -215,6 +215,44 @@ describe("ToneConstantSource", () => {
 			source.dispose();
 		});
 
+		it("schedules a future start when the audio context is resumed", async () => {
+			const context = new Context();
+			expect(context.state).to.equal("suspended");
+
+			const originalCreateConstantSource = context.createConstantSource;
+			const nativeSource = context.rawContext.createConstantSource();
+			const startTimes: number[] = [];
+			let source: ToneConstantSource | undefined;
+
+			context.createConstantSource = () =>
+				({
+					connect: () => nativeSource,
+					disconnect: () => {},
+					numberOfOutputs: 1,
+					offset: nativeSource.offset,
+					start: (time = 0) => {
+						startTimes.push(time);
+					},
+					stop: () => {},
+				}) as unknown as ConstantSourceNode;
+
+			try {
+				source = new ToneConstantSource({
+					context,
+				});
+
+				source.start(1);
+
+				await context.resume();
+
+				expect(startTimes).to.deep.equal([1]);
+			} finally {
+				context.createConstantSource = originalCreateConstantSource;
+				source?.dispose();
+				context.dispose();
+			}
+		});
+
 		it("context can be suspended again", async () => {
 			const context = new Context();
 			expect(context.state).to.equal("suspended");
