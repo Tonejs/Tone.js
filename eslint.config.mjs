@@ -3,6 +3,7 @@ import stylisticJs from "@stylistic/eslint-plugin-js";
 import stylisticTs from "@stylistic/eslint-plugin-ts";
 import html from "eslint-plugin-html";
 import jsdoc from "eslint-plugin-jsdoc";
+import noOnlyTests from "eslint-plugin-no-only-tests";
 import simpleImportSort from "eslint-plugin-simple-import-sort";
 import unusedImports from "eslint-plugin-unused-imports";
 import tseslint from "typescript-eslint";
@@ -17,11 +18,13 @@ const customConfig = {
 		html,
 		"simple-import-sort": simpleImportSort,
 		"unused-imports": unusedImports,
+		"no-only-tests": noOnlyTests,
 	},
 	rules: {
 		"@typescript-eslint/array-type": "off",
 		"@typescript-eslint/ban-ts-comment": "off",
 		"@typescript-eslint/ban-ts-ignore": "off",
+		"no-only-tests/no-only-tests": "error",
 		"jsdoc/check-alignment": 1,
 		"jsdoc/check-indentation": [
 			"error",
