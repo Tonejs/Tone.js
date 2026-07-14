@@ -63,7 +63,7 @@
 		"@types/sinon": "^21.0.0",
 		"@types/sinon-chai": "^4.0.0",
 		"@types/ua-parser-js": "^0.7.36",
-		"@web/dev-server-esbuild": "^1.0.2",
+		"@web/dev-server-esbuild": "^2.0.0",
 		"@web/dev-server-rollup": "^0.6.1",
 		"@web/test-runner": "^0.20.0",
 		"@web/test-runner-puppeteer": "^0.18.0",
