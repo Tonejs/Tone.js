@@ -1,6 +1,6 @@
 # Changelog
 
-## [15.5.28](https://github.com/Tonejs/Tone.js/compare/15.1.22...HEAD)
+## [15.5.29](https://github.com/Tonejs/Tone.js/compare/15.1.22...HEAD)
 
 ### Features
 
@@ -44,6 +44,7 @@
 
 ### Chores
 
+- updating to version 24 (#1465) (`22518d5`)
 - **deps:** Bump esbuild and @web/dev-server-esbuild (#1460) (`7220375`)
 - fixing release auth (#1464) (`5f62bc3`)
 - release uses bot (#1463) (`fd6c7e6`)
