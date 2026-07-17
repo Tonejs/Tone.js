@@ -47,6 +47,7 @@ jobs:
               run: npm install
 
             - name: Bump, Update Changelog, and Commit
+              if: github.event.workflow_run.head_branch != 'main'
               run: |
                   npm version patch --no-git-tag-version
                   npm run changelog
@@ -58,6 +59,7 @@ jobs:
                   git commit -m "release: bump to v$NEW_VERSION [skip ci]"
 
             - name: Push Changes
+              if: github.event.workflow_run.head_branch != 'main'
               run: |
                   git push origin HEAD:${{ github.event.workflow_run.head_branch }}
 
