@@ -1,11 +1,6 @@
 name: Release
 
 on:
-    pull_request:
-        types: [opened, reopened, synchronize]
-        branches:
-            - dev
-            - main
     workflow_run:
         workflows: ["Tests"]
         branches:
@@ -19,7 +14,7 @@ jobs:
         name: Bump version and update changelog
         runs-on: ubuntu-latest
         # Only run when Tests passed and the trigger was a push (i.e. a merged PR, not a PR open/sync)
-        # if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push'
+        if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push'
         permissions:
             contents: write
         steps:
@@ -65,75 +60,75 @@ jobs:
                   commit_user_name: "github-actions[bot]"
                   commit_user_email: "github-actions[bot]@users.noreply.github.com"
 
-    # publish:
-    #     name: Build and publish to npm
-    #     runs-on: ubuntu-latest
-    #     needs: [bump]
-    #     permissions:
-    #         contents: read
-    #         id-token: write
-    #     steps:
-    #         - name: Check out Git repository
-    #           uses: actions/checkout@v4
-    #           with:
-    #               ref: ${{ github.event.workflow_run.head_branch }}
+    publish:
+        name: Build and publish to npm
+        runs-on: ubuntu-latest
+        needs: [bump]
+        permissions:
+            contents: read
+            id-token: write
+        steps:
+            - name: Check out Git repository
+              uses: actions/checkout@v4
+              with:
+                  ref: ${{ github.event.workflow_run.head_branch }}
 
-    #         - name: Setup Node.js
-    #           uses: actions/setup-node@v4
-    #           with:
-    #               node-version: 22.12.0
-    #               registry-url: "https://registry.npmjs.org"
-    #               cache: "npm"
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 22.12.0
+                  registry-url: "https://registry.npmjs.org"
+                  cache: "npm"
 
-    #         - name: Install dependencies
-    #           run: npm install
+            - name: Install dependencies
+              run: npm install
 
-    #         - name: Write version to Tone/version.ts
-    #           run: npm run write_version
+            - name: Write version to Tone/version.ts
+              run: npm run write_version
 
-    #         - name: Build
-    #           run: npm run build
+            - name: Build
+              run: npm run build
 
-    #         # Need to unset this in order to use OIDC
-    #         - name: Unset NODE_AUTH_TOKEN
-    #           run: unset NODE_AUTH_TOKEN
+            # Need to unset this in order to use OIDC
+            - name: Unset NODE_AUTH_TOKEN
+              run: unset NODE_AUTH_TOKEN
 
-    #         - name: Publish @next
-    #           if: github.event.workflow_run.head_branch == 'dev'
-    #           run: npm publish --tag next --provenance --access public
+            - name: Publish @next
+              if: github.event.workflow_run.head_branch == 'dev'
+              run: npm publish --tag next --provenance --access public
 
-    #         - name: Publish @latest
-    #           if: github.event.workflow_run.head_branch == 'main'
-    #           run: npm publish --provenance --access public
+            - name: Publish @latest
+              if: github.event.workflow_run.head_branch == 'main'
+              run: npm publish --provenance --access public
 
-    # create-release:
-    #     name: Create GitHub Release
-    #     runs-on: ubuntu-latest
-    #     if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push' && github.event.workflow_run.head_branch == 'main'
-    #     needs: [publish]
-    #     permissions:
-    #         contents: write
-    #     steps:
-    #         - name: Check out Git repository
-    #           uses: actions/checkout@v4
-    #           with:
-    #               fetch-depth: 0
-    #               ref: main
+    create-release:
+        name: Create GitHub Release
+        runs-on: ubuntu-latest
+        if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push' && github.event.workflow_run.head_branch == 'main'
+        needs: [publish]
+        permissions:
+            contents: write
+        steps:
+            - name: Check out Git repository
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+                  ref: main
 
-    #         - name: Get version from package.json
-    #           id: version
-    #           run: echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
+            - name: Get version from package.json
+              id: version
+              run: echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
 
-    #         - name: Create and push tag
-    #           run: |
-    #               git config user.name "github-actions[bot]"
-    #               git config user.email "github-actions[bot]@users.noreply.github.com"
-    #               git tag v${{ steps.version.outputs.version }}
-    #               git push origin v${{ steps.version.outputs.version }}
+            - name: Create and push tag
+              run: |
+                  git config user.name "github-actions[bot]"
+                  git config user.email "github-actions[bot]@users.noreply.github.com"
+                  git tag v${{ steps.version.outputs.version }}
+                  git push origin v${{ steps.version.outputs.version }}
 
-    #         - name: Create GitHub Release
-    #           uses: softprops/action-gh-release@v2
-    #           with:
-    #               tag_name: v${{ steps.version.outputs.version }}
-    #               name: v${{ steps.version.outputs.version }}
-    #               generate_release_notes: true
+            - name: Create GitHub Release
+              uses: softprops/action-gh-release@v2
+              with:
+                  tag_name: v${{ steps.version.outputs.version }}
+                  name: v${{ steps.version.outputs.version }}
+                  generate_release_notes: true
