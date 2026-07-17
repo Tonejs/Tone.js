@@ -131,9 +131,8 @@ if (tags.length < 2) {
 }
 
 // Unreleased + the two most recent releases
-// Always diff against the dev branch tip for unreleased, regardless of checkout
 const releases = [
-	["dev", tags[0], versionLabel],
+	["HEAD", tags[0], versionLabel],
 	[tags[0], tags[1], tags[0]],
 ];
 
@@ -147,7 +146,7 @@ for (const [current, previous, displayName] of releases) {
 	);
 	const compareUrl = `${REPO_URL}/compare/${previous}...${current}`;
 
-	const date = current === "dev" ? null : await getTagDate(current);
+	const date = current === "HEAD" ? null : await getTagDate(current);
 	const heading = date
 		? `## [${displayName}](${compareUrl}) — ${date}`
 		: `## [${displayName}](${compareUrl})`;
