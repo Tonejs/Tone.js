@@ -1,6 +1,6 @@
 # Changelog
 
-## [15.5.29](https://github.com/Tonejs/Tone.js/compare/15.1.22...HEAD)
+## [15.5.30](https://github.com/Tonejs/Tone.js/compare/15.1.22...HEAD)
 
 ### Features
 
@@ -44,6 +44,7 @@
 
 ### Chores
 
+- putting skip comment in the body (#1466) (`c12e12a`)
 - updating to version 24 (#1465) (`22518d5`)
 - **deps:** Bump esbuild and @web/dev-server-esbuild (#1460) (`7220375`)
 - fixing release auth (#1464) (`5f62bc3`)
