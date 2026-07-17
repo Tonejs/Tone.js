@@ -38,11 +38,6 @@ jobs:
                   ref: ${{ github.event.workflow_run.head_branch }}
                   token: ${{ steps.generate-token.outputs.token }}
 
-            - name: Setup git user
-              run: |
-                  git config user.name "github-actions[bot]"
-                  git config user.email "github-actions[bot]@users.noreply.github.com"
-
             - name: Setup Node.js
               uses: actions/setup-node@v4
               with:
@@ -52,22 +47,23 @@ jobs:
             - name: Install dependencies
               run: npm install
 
-            - name: Bump, Update Changelog, and Commit
+            - name: Bump and Update Changelog
+              id: bump
               if: github.event.workflow_run.head_branch != 'main'
               run: |
                   npm version patch --no-git-tag-version
                   npm run changelog
-                  git add package.json package-lock.json CHANGELOG.md
-
-                  # Extract the new version to use in the commit message
                   NEW_VERSION=$(node -p "require('./package.json').version")
+                  echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
 
-                  git commit -m "release: bump to v$NEW_VERSION [skip ci]"
-
-            - name: Push Changes
+            - name: Commit and Push Changes
               if: github.event.workflow_run.head_branch != 'main'
-              run: |
-                  git push origin HEAD:$(git rev-parse --abbrev-ref HEAD)
+              uses: stefanzweifel/git-auto-commit-action@v5
+              with:
+                  commit_message: "release: bump to v${{ steps.bump.outputs.new_version }} [skip ci]"
+                  file_pattern: "package.json package-lock.json CHANGELOG.md"
+                  commit_user_name: "github-actions[bot]"
+                  commit_user_email: "github-actions[bot]@users.noreply.github.com"
 
     # publish:
     #     name: Build and publish to npm
