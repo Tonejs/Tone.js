@@ -96,6 +96,10 @@ function groupCommits(commits, parser) {
 	return groups;
 }
 
+function linkifyPRs(text) {
+	return text.replace(/#(\d+)/g, (_, n) => `[#${n}](${REPO_URL}/pull/${n})`);
+}
+
 function formatSection(groups) {
 	const lines = [];
 	for (const type of TYPE_ORDER) {
@@ -107,7 +111,10 @@ function formatSection(groups) {
 		for (const { scope, subject, hash, breaking } of groups[type]) {
 			const scopePart = scope ? `**${scope}:** ` : "";
 			const breakingMark = breaking ? " ⚠️ **BREAKING**" : "";
-			lines.push(`- ${scopePart}${subject}${breakingMark} (\`${hash}\`)`);
+			const linkedSubject = linkifyPRs(subject);
+			lines.push(
+				`- ${scopePart}${linkedSubject}${breakingMark} (\`${hash}\`)`
+			);
 		}
 		lines.push("");
 	}
