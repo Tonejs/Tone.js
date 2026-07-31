@@ -10,10 +10,10 @@ $ npm install
 $ npm run build
 ```
 
-Once this is done, you can start a local server with Python:
+Once this is done, you can start a local server with npx:
 
-```
-$ python -m SimpleHTTPServer 8000
+```bash
+npx http-server -e html -p 8000
 ```
 
 Then, from a browser visit http://localhost:8000/examples. (See also: [installation instructions on the wiki](https://github.com/Tonejs/Tone.js/wiki/Installation#newbie-macos-quickstart-to-get-examples-running))
