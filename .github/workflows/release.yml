@@ -9,6 +9,11 @@ on:
         types:
             - completed
 
+concurrency:
+    group: releases
+    cancel-in-progress: false
+    queue: max
+
 jobs:
     bump:
         name: Bump version and update changelog
