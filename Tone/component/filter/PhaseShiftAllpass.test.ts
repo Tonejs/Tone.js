@@ -26,7 +26,7 @@ describe("PhaseShiftAllpass", () => {
 
 		it("generates correct values with the phase shifted channel", () => {
 			return CompareToFile(
-				(context) => {
+				(context: any) => {
 					// create impulse with 5 samples offset
 					const constantNode = context.createConstantSource();
 					constantNode.start(0);
@@ -56,7 +56,7 @@ describe("PhaseShiftAllpass", () => {
 
 		it("generates correct values with the offset90 channel", () => {
 			return CompareToFile(
-				(context) => {
+				(context: any) => {
 					// create impulse with 5 samples offset
 					const constantNode = context.createConstantSource();
 					constantNode.start(0);

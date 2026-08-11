@@ -77,7 +77,7 @@ export class FrequencyClass<Type extends number = Hertz> extends TimeClass<
 					if (this.defaultUnits === "midi") {
 						return noteNumber;
 					} else {
-						return FrequencyClass.mtof(noteNumber);
+						return FrequencyClass.mtof(noteNumber as any);
 					}
 				},
 			},
@@ -247,7 +247,7 @@ export class FrequencyClass<Type extends number = Hertz> extends TimeClass<
  * Note to scale index.
  * @hidden
  */
-const noteToScaleIndex = {
+const noteToScaleIndex: Record<string, number> = {
 	cbbb: -3,
 	cbb: -2,
 	cb: -1,

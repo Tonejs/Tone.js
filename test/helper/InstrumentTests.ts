@@ -7,12 +7,12 @@ import { connectTo } from "./Connect.js";
 import { Offline } from "./Offline.js";
 import { OutputAudio } from "./OutputAudio.js";
 
-function wait(time) {
+function wait(time: any) {
 	return new Promise((done) => setTimeout(done, time));
 }
 
 export function InstrumentTest(
-	Constr,
+	Constr: any,
 	note?: Frequency,
 	constrArg?: any,
 	optionsIndex?: any,

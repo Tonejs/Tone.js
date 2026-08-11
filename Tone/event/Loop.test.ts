@@ -234,7 +234,7 @@ describe("Loop", () => {
 		it("loops for the specified interval", async () => {
 			let invoked = false;
 			await Offline(({ transport }) => {
-				let lastCall;
+				let lastCall: number;
 				new Loop({
 					interval: "8n",
 					callback: (time) => {
@@ -282,7 +282,7 @@ describe("Loop", () => {
 		it("can adjust the playbackRate", async () => {
 			let invoked = false;
 			await Offline(({ transport }) => {
-				let lastCall;
+				let lastCall: number;
 				const loop = new Loop({
 					playbackRate: 2,
 					interval: 0.5,

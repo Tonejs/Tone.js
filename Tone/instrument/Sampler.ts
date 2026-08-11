@@ -141,7 +141,8 @@ export class Sampler extends Instrument<SamplerOptions> {
 		);
 		super(options);
 
-		const urlMap = {};
+		const urlMap: { [key: number]: string | ToneAudioBuffer | AudioBuffer } =
+			{};
 		Object.keys(options.urls).forEach((note) => {
 			const noteNumber = parseInt(note, 10);
 			assert(
@@ -419,7 +420,7 @@ export class Sampler extends Instrument<SamplerOptions> {
     get loopStart(): Time {
         return this._loopStart;
     }
-    set loopStart(loopStart) {
+    set loopStart(loopStart: Time) {
         this._loopStart = loopStart;
         this._providedMidiNotes.forEach((midiNote) => {
             const buffer = this._buffers.get(midiNote);
@@ -441,7 +442,7 @@ export class Sampler extends Instrument<SamplerOptions> {
     get loopEnd(): Time {
         return this._loopEnd;
     }
-    set loopEnd(loopEnd) {
+    set loopEnd(loopEnd: Time) {
         this._loopEnd = loopEnd;
         this._providedMidiNotes.forEach((midiNote) => {
             const buffer = this._buffers.get(midiNote);
@@ -471,7 +472,7 @@ export class Sampler extends Instrument<SamplerOptions> {
     get loop(): boolean {
         return this._loop;
     }
-    set loop(loop) {
+    set loop(loop: boolean) {
         // if no change, do nothing
         if (this._loop === loop) {
             return;

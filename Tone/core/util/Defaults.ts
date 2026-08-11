@@ -43,18 +43,18 @@ export function deepMerge(target: any, ...sources: any[]): any {
 	const source = sources.shift();
 
 	if (isObject(target) && isObject(source)) {
-		for (const key in source) {
-			if (noCopy(key, source[key])) {
-				target[key] = source[key];
-			} else if (isObject(source[key])) {
-				if (!target[key]) {
-					Object.assign(target, { [key]: {} });
+		Object.keys(source).forEach((key) => {
+			if (noCopy(key, (source as any)[key])) {
+				(target as any)[key] = (source as any)[key];
+			} else if (isObject((source as any)[key])) {
+				if (!(target as any)[key]) {
+					(target as any)[key] = {};
 				}
-				deepMerge(target[key], source[key] as any);
+				deepMerge((target as any)[key], (source as any)[key]);
 			} else {
-				Object.assign(target, { [key]: source[key] as any });
+				(target as any)[key] = (source as any)[key];
 			}
-		}
+		});
 	}
 	// @ts-ignore
 	return deepMerge(target, ...sources);
@@ -141,10 +141,11 @@ export function omitFromObject<T extends object, O extends string[]>(
 	obj: T,
 	omit: O
 ): Omit<T, keyof O> {
+	const result: any = Object.assign({}, obj);
 	omit.forEach((prop) => {
-		if (Reflect.has(obj, prop)) {
-			delete obj[prop];
+		if (Reflect.has(result, prop)) {
+			delete result[prop];
 		}
 	});
-	return obj;
+	return result;
 }
