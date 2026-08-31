@@ -1001,6 +1001,38 @@ describe("Transport", () => {
 			expect(invocations).to.equal(3);
 		});
 
+		it("does not drop the transport's stop event when stop/start outrun the clock's tick loop (#1419)", async () => {
+			const stopEvents: number[] = [];
+			await Offline((context) => {
+				const transport = new TransportInstance({ context });
+				transport.on("stop", (time) => {
+					stopEvents.push(time);
+				});
+				const clock = (
+					transport as unknown as {
+						_clock: {
+							context: typeof context;
+							_boundLoop: () => void;
+						};
+					}
+				)._clock;
+				transport.start(0);
+				// Detach the clock's own loop from the context's "tick"
+				// event so its _lastUpdate genuinely falls behind,
+				// simulating the tick loop's cadence (default
+				// updateInterval=0.05s) outrunning a rapid
+				// Transport.stop()/Transport.start() cycle, as described
+				// in #1419.
+				clock.context.off("tick", clock._boundLoop);
+				return atTime(0.02, () => {
+					transport.stop(0.015);
+					transport.start(0.018);
+					clock.context.on("tick", clock._boundLoop);
+				});
+			}, 0.03);
+			expect(stopEvents).to.deep.equal([0.015]);
+		});
+
 		it("invokes start event with correct offset", async () => {
 			let wasCalled = false;
 			await Offline((context) => {

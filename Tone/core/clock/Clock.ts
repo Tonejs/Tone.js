@@ -133,6 +133,17 @@ export class Clock<TypeName extends "bpm" | "hertz" = "hertz">
 		const computedTime = this.toSeconds(time);
 		this.log("start", computedTime);
 		if (this._state.getValueAtTime(computedTime) !== "started") {
+			if (this._lastUpdate < computedTime && computedTime <= this.now()) {
+				// _lastUpdate has not yet caught up to this restart (e.g.
+				// rapid stop/start cycles outrunning the tick loop's
+				// cadence). Flush the state-transition events (e.g. a
+				// pending "stop") and tick callbacks still waiting in
+				// [_lastUpdate, computedTime) using the pre-restart
+				// TickSource state before it's reset below, so they aren't
+				// silently dropped, and so the next _loop() pass doesn't
+				// replay them using the post-restart state.
+				this._processRange(this._lastUpdate, computedTime);
+			}
 			this._state.setStateAtTime("started", computedTime);
 			this._tickSource.start(computedTime, offset);
 			if (computedTime < this._lastUpdate) {
@@ -267,9 +278,19 @@ export class Clock<TypeName extends "bpm" | "hertz" = "hertz">
 	private _loop(): void {
 		const startTime = this._lastUpdate;
 		const endTime = this.now();
-		this._lastUpdate = endTime;
 		this.log("loop", startTime, endTime);
+		this._processRange(startTime, endTime);
+	}
 
+	/**
+	 * Invoke the state-transition events (start/stop/pause) and tick
+	 * callbacks scheduled between startTime and endTime, and advance
+	 * _lastUpdate to endTime.
+	 * @param startTime The beginning of the range to process.
+	 * @param endTime The end of the range to process.
+	 */
+	private _processRange(startTime: number, endTime: number): void {
+		this._lastUpdate = endTime;
 		if (startTime !== endTime) {
 			// the state change events
 			this._state.forEachBetween(startTime, endTime, (e) => {

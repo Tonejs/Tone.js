@@ -354,6 +354,67 @@ describe("Clock", () => {
 				clock.start(0, 4);
 			});
 		});
+
+		it("does not replay stale pre-restart ticks when the loop update has fallen behind a restart (#1419)", () => {
+			const observedTicks: Array<number | undefined> = [];
+			return Offline(() => {
+				const clock = new Clock((time, ticks) => {
+					observedTicks.push(ticks);
+				}, 200);
+				const boundLoop = (
+					clock as unknown as { _boundLoop: () => void }
+				)._boundLoop;
+				clock.start(0);
+				// Detach the clock's own loop from the context's "tick" event
+				// so _lastUpdate genuinely never catches up, simulating the
+				// tick loop's cadence (default updateInterval=0.05s) falling
+				// behind a rapid stop/start cycle, as described in #1419.
+				clock.context.off("tick", boundLoop);
+				return atTime(0.02, (time) => {
+					clock.stop(time);
+					clock.start(time, 40);
+					// Reattach the loop: without a fix, it would replay ticks
+					// from [_lastUpdate, time) using the pre-restart TickSource
+					// state instead of the new offset.
+					clock.context.on("tick", boundLoop);
+				});
+			}, 0.03).then(() => {
+				expect(observedTicks).to.deep.equal([0, 1, 2, 3, 4, 40, 41]);
+			});
+		});
+
+		it("does not drop the pending stop event or pending ticks when stop and the following start happen at different times within the stale window (#1419)", () => {
+			const observedTicks: Array<number | undefined> = [];
+			const stopEvents: number[] = [];
+			return Offline(() => {
+				const clock = new Clock((time, ticks) => {
+					observedTicks.push(ticks);
+				}, 200);
+				const boundLoop = (
+					clock as unknown as { _boundLoop: () => void }
+				)._boundLoop;
+				clock.on("stop", (time) => {
+					stopEvents.push(time);
+				});
+				clock.start(0);
+				// Same staleness simulation as above, but this time stop() and
+				// the following start() are scheduled at two distinct times
+				// within the stale window, rather than the same instant.
+				clock.context.off("tick", boundLoop);
+				return atTime(0.025, () => {
+					clock.stop(0.015);
+					clock.start(0.02, 40);
+					clock.context.on("tick", boundLoop);
+				});
+			}, 0.03).then(() => {
+				// the "stop" event scheduled at 0.015 must still fire
+				expect(stopEvents).to.deep.equal([0.015]);
+				// ticks 0, 1, 2 (at 200Hz: 0, 0.005, 0.01) are still pending
+				// in [_lastUpdate, 0.015) and must still fire, followed by
+				// the post-restart ticks from offset 40
+				expect(observedTicks).to.deep.equal([0, 1, 2, 40, 41]);
+			});
+		});
 	});
 
 	context("Events", () => {
