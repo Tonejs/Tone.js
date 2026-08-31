@@ -38,4 +38,22 @@ describe("Listener", () => {
 				new ListenerInstance({ context: new NoListenerParamsContext() })
 		).to.not.throw();
 	});
+
+	it("can get() and set() on a context whose native AudioListener has no position/forward/up AudioParams (e.g. Firefox)", () => {
+		// get()/set() (inherited from ToneWithContext) duck-type each
+		// property via `this[attribute]`, which used to force the lazy
+		// getters above to construct -- and throw -- even on the exact
+		// context the previous test constructs the Listener on.
+		class NoListenerParamsContext extends DummyContext {
+			get rawContext(): AnyAudioContext {
+				return { listener: {} } as AnyAudioContext;
+			}
+		}
+
+		const listener = new ListenerInstance({
+			context: new NoListenerParamsContext(),
+		});
+		expect(() => listener.get()).to.not.throw();
+		expect(() => listener.set({ positionX: 1 })).to.not.throw();
+	});
 });

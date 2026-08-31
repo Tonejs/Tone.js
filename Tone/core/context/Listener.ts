@@ -1,3 +1,5 @@
+import { isAudioParam } from "../util/AdvancedTypeCheck.js";
+import { RecursivePartial } from "../util/Interface.js";
 import { onContextClose, onContextInit } from "./ContextInitialization.js";
 import { Param } from "./Param.js";
 import { ToneAudioNode, ToneAudioNodeOptions } from "./ToneAudioNode.js";
@@ -31,6 +33,17 @@ export class ListenerInstance extends ToneAudioNode<ListenerOptions> {
 	input: undefined;
 
 	/**
+	 * True if this context's native AudioListener implements the
+	 * position/forward/up AudioParams (see the comment on positionX below).
+	 * Computed once and used by get()/set() so that they can skip these nine
+	 * properties instead of forcing -- and throwing on -- the lazy getters.
+	 */
+	private readonly _hasPositionParams: boolean = isAudioParam(
+		this.context.rawContext.listener.positionX
+	);
+
+	private _positionX?: Param;
+	/**
 	 * The nine AudioListener params are constructed lazily, on first access,
 	 * instead of eagerly in the constructor. Some browsers (e.g. Firefox) don't
 	 * implement the AudioListener position/forward/up AudioParams, which makes
@@ -39,7 +52,6 @@ export class ListenerInstance extends ToneAudioNode<ListenerOptions> {
 	 * touch 3D spatialization can still use such a context as long as these
 	 * getters are never called.
 	 */
-	private _positionX?: Param;
 	get positionX(): Param {
 		if (!this._positionX) {
 			this._positionX = new Param({
@@ -136,6 +148,27 @@ export class ListenerInstance extends ToneAudioNode<ListenerOptions> {
 			});
 		}
 		return this._upZ;
+	}
+
+	/**
+	 * get()/set() (inherited from ToneWithContext) duck-type each property
+	 * via `this[attribute]`, which would force the lazy getters above to
+	 * construct on a context with no native position/forward/up AudioParams.
+	 * Skip them there: get() falls back to the static defaults and set() is
+	 * a no-op, since there is no underlying AudioParam to read or write.
+	 */
+	get(): ListenerOptions {
+		if (!this._hasPositionParams) {
+			return ListenerInstance.getDefaults();
+		}
+		return super.get();
+	}
+
+	set(props: RecursivePartial<ListenerOptions>): this {
+		if (!this._hasPositionParams) {
+			return this;
+		}
+		return super.set(props);
 	}
 
 	static getDefaults(): ListenerOptions {
