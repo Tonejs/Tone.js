@@ -1,6 +1,6 @@
 # Changelog
 
-## [15.5.36](https://github.com/Tonejs/Tone.js/compare/15.1.22...HEAD)
+## [15.5.37](https://github.com/Tonejs/Tone.js/compare/15.1.22...HEAD)
 
 ### Features
 
@@ -44,6 +44,7 @@
 
 ### Chores
 
+- **deps:** Bump brace-expansion ([#1485](https://github.com/Tonejs/Tone.js/pull/1485)) (`d8e056c`)
 - Adding PR links to the CHANGELOG.md ([#1478](https://github.com/Tonejs/Tone.js/pull/1478)) (`fe84ff9`)
 - putting skip comment in the body ([#1466](https://github.com/Tonejs/Tone.js/pull/1466)) (`c12e12a`)
 - updating to version 24 ([#1465](https://github.com/Tonejs/Tone.js/pull/1465)) (`22518d5`)
