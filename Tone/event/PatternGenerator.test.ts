@@ -99,5 +99,23 @@ describe("PatternGenerator", () => {
 				currentIndex = nextIndex;
 			}
 		});
+
+		it("never randomly walks outside of the range of values", () => {
+			[1, 2, 3, 4].forEach((numValues) => {
+				const pattern = PatternGenerator(numValues, "randomWalk");
+				for (let i = 0; i < 100; i++) {
+					expect(pattern.next().value)
+						.to.be.at.least(0)
+						.and.at.most(numValues - 1);
+				}
+			});
+		});
+
+		it("randomly walks in place when there is only one value", () => {
+			const pattern = PatternGenerator(1, "randomWalk");
+			expect(getArrayValues(pattern, 10)).to.deep.equal([
+				0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			]);
+		});
 	});
 });
