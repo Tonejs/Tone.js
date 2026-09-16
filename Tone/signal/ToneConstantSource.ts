@@ -81,8 +81,11 @@ export class ToneConstantSource<
 		this._source = this.context.createConstantSource();
 		connect(this._source, this._gainNode);
 		this.offset?.setParam(this._source.offset);
-		if (this.state === "started") {
-			this._source.start(0);
+		const isStarted = this._startTime !== -1;
+		const isStoppedBeforeStart =
+			this._stopTime !== -1 && this._stopTime < this._startTime;
+		if (isStarted && !isStoppedBeforeStart) {
+			this._source.start(this._startTime);
 		}
 	}
 
