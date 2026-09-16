@@ -368,7 +368,7 @@ export class Part<ValueType = any> extends ToneEvent<ValueType> {
 	 */
 	private _setAll(attr: string, value: any): void {
 		this._forEach((event) => {
-			event[attr] = value;
+			(event as any)[attr] = value;
 		});
 	}
 

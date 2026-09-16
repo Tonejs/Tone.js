@@ -8,7 +8,7 @@ export function connectTo(): Gain {
 	return new Gain();
 }
 
-export function ConnectTest(constr, ...args: any[]): void {
+export function ConnectTest(constr: any, ...args: any[]): void {
 	it("handles input and output connections", () => {
 		const instance = new constr(...args);
 		// test each of the input and outputs and connect

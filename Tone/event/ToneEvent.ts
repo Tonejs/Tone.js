@@ -202,8 +202,8 @@ export class ToneEvent<ValueType = any> extends ToneWithContext<
 					event.id = this.context.transport.scheduleRepeat(
 						this._tick.bind(this),
 						interval,
-						new TicksClass(this.context, startTick),
-						duration
+						new TicksClass(this.context, startTick) as any,
+						duration as any
 					);
 				} else {
 					event.id = this.context.transport.schedule(

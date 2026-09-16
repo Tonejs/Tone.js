@@ -116,8 +116,10 @@ export abstract class Instrument<
 	 * @param  timePosition What position the time argument appears in
 	 */
 	protected _syncMethod(method: string, timePosition: number): void {
-		const originalMethod = (this["_original_" + method] = this[method]);
-		this[method] = (...args: any[]) => {
+		const originalMethod = ((this as any)["_original_" + method] = (this as any)[
+			method
+		]);
+		(this as any)[method] = (...args: any[]) => {
 			const time = args[timePosition];
 			const id = this.context.transport.schedule((t) => {
 				args[timePosition] = t;

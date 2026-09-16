@@ -232,13 +232,13 @@ describe("ToneAudioBuffer", () => {
 
 		it("can reverse a buffer", (done) => {
 			const buffer = new ToneAudioBuffer(testFile, () => {
-				const buffArray = buffer.get() as AudioBuffer;
+				const buffArray = buffer.get() as any;
 				const lastSample = buffArray[buffArray.length - 1];
 				buffer.reverse = true;
-				expect((buffer.get() as AudioBuffer)[0]).to.equal(lastSample);
+				expect((buffer.get() as any)[0]).to.equal(lastSample);
 				// setting reverse again has no effect
 				buffer.reverse = true;
-				expect((buffer.get() as AudioBuffer)[0]).to.equal(lastSample);
+				expect((buffer.get() as any)[0]).to.equal(lastSample);
 				buffer.dispose();
 				done();
 			});
@@ -292,7 +292,7 @@ describe("ToneAudioBuffer", () => {
 			arr[0][0] = 0.5;
 			buffer.fromArray(arr);
 			expect(buffer.toArray(0)[0]).to.equal(0.5);
-			expect(buffer.toArray()[0][0]).to.equal(0.5);
+			expect((buffer.toArray() as any)[0][0]).to.equal(0.5);
 			// with a selected channel
 			expect(buffer.toArray(0)[0]).to.equal(0.5);
 			buffer.dispose();

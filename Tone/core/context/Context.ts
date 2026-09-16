@@ -560,9 +560,9 @@ export class Context extends BaseContext {
 		this._ticker.dispose();
 		this._timeouts.dispose();
 		this._timeoutMap.clear();
-		Object.keys(this._constants).map((val) =>
-			this._constants[val].disconnect()
-		);
+		this._constants.forEach((constant) => {
+			constant.disconnect();
+		});
 		this.close();
 		return this;
 	}

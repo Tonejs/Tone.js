@@ -292,18 +292,18 @@ export class Timeline<GenericEvent extends TimelineEvent> extends Tone {
 		let beginning = 0;
 		const len = this._timeline.length;
 		let end = len;
-		if (len > 0 && this._timeline[len - 1][param] <= time) {
+		if (len > 0 && (this._timeline[len - 1] as any)[param] <= time) {
 			return len - 1;
 		}
 		while (beginning < end) {
 			// calculate the midpoint for roughly equal partition
 			let midPoint = Math.floor(beginning + (end - beginning) / 2);
-			const event = this._timeline[midPoint];
-			const nextEvent = this._timeline[midPoint + 1];
+			const event = this._timeline[midPoint] as any;
+			const nextEvent = this._timeline[midPoint + 1] as any;
 			if (EQ(event[param], time)) {
 				// choose the last one that has the same time
 				for (let i = midPoint; i < this._timeline.length; i++) {
-					const testEvent = this._timeline[i];
+					const testEvent = this._timeline[i] as any;
 					if (EQ(testEvent[param], time)) {
 						midPoint = i;
 					} else {
