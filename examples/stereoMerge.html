@@ -1,0 +1,87 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>Stereo Merge</title>
+
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1, maximum-scale=1"
+		/>
+		<link
+			rel="icon"
+			type="image/png"
+			sizes="174x174"
+			href="./favicon.png"
+		/>
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/2.4.3/webcomponents-bundle.js"></script>
+		<link
+			href="https://fonts.googleapis.com/css?family=Material+Icons&display=block"
+			rel="stylesheet"
+		/>
+		<script src="../build/Tone.js"></script>
+		<script src="./js/tone-ui.js"></script>
+		<script src="./js/components.js"></script>
+	</head>
+	<body>
+		<tone-example label="Stereo Merge">
+			<div slot="explanation">
+				<a href="https://tonejs.github.io/docs/latest/classes/Merge"
+					>Tone.Merge</a
+				>
+				combines two mono signals into the left and right channels of
+				a single stereo signal. The channel is chosen by the
+				<code>inputNumber</code> argument of
+				
+					href="https://tonejs.github.io/docs/latest/classes/ToneAudioNode#connect"
+					>connect</a
+				>: <code>0</code> is left, <code>1</code> is right. Put on
+				headphones and toggle each oscillator separately to hear the
+				difference.
+			</div>
+
+			<div id="content">
+				<tone-play-toggle id="leftToggle" label="Left"></tone-play-toggle>
+				<tone-play-toggle
+					id="rightToggle"
+					label="Right"
+				></tone-play-toggle>
+			</div>
+		</tone-example>
+
+		<script type="text/javascript">
+			// the merge node combines two mono inputs into one stereo output
+			const merge = new Tone.Merge().toDestination();
+
+			// connect(destination, outputNumber, inputNumber)
+			// inputNumber 0 = left channel
+			const leftOsc = new Tone.Oscillator({
+				type: "sine",
+				frequency: "C4",
+				volume: -12,
+			}).connect(merge, 0, 0);
+
+			// inputNumber 1 = right channel
+			const rightOsc = new Tone.Oscillator({
+				type: "sawtooth",
+				frequency: "E4",
+				volume: -12,
+			}).connect(merge, 0, 1);
+
+			// bind the interface
+			document
+				.querySelector("#leftToggle")
+				.addEventListener("start", () => leftOsc.start());
+			document
+				.querySelector("#leftToggle")
+				.addEventListener("stop", () => leftOsc.stop());
+			document
+				.querySelector("#rightToggle")
+				.addEventListener("start", () => rightOsc.start());
+			document
+				.querySelector("#rightToggle")
+				.addEventListener("stop", () => rightOsc.stop());
+		</script>
+	</body>
+</html>
