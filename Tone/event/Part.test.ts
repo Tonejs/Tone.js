@@ -928,5 +928,40 @@ describe("Part", () => {
 			}).to.throw(Error);
 			part.dispose();
 		});
+
+		it("`toTicks()` with no argument matches the transport's actual current tick after a bpm change (#693)", async () => {
+			let actualTicks = 0;
+			let noArgTicks = 0;
+			await Offline(({ transport }) => {
+				transport.bpm.value = 120;
+				transport.start(0);
+				return atTime(0.5, () => {
+					transport.bpm.value = 40;
+					actualTicks = transport.getTicksAtTime(transport.now());
+					noArgTicks = transport.toTicks();
+				});
+			}, 0.6);
+			expect(noArgTicks).to.be.closeTo(actualTicks, 1);
+		});
+
+		// pre-existing issue, unrelated to tempo: restarting with no time arg while
+		// the transport is running can schedule on an already-passed tick (#693)
+		it.skip("does not delay a part's note when it is (re)started with no time arg while the transport is running", async () => {
+			let callTime: number | undefined;
+			await Offline(({ transport }) => {
+				const part = new Part(
+					(time) => {
+						callTime = time;
+					},
+					[0]
+				);
+				transport.bpm.value = 120;
+				transport.start(0);
+				return atTime(0.5, () => {
+					part.start();
+				});
+			}, 1);
+			expect(callTime).to.be.closeTo(0.5, 0.02);
+		});
 	});
 });

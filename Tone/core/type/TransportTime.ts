@@ -1,5 +1,6 @@
 import { getContext } from "../Global.js";
 import { Seconds, Ticks } from "../type/Units.js";
+import { isDefined } from "../util/TypeCheck.js";
 import { TimeClass } from "./Time.js";
 import { TimeBaseUnit, TimeExpression, TimeValue } from "./TimeBase.js";
 
@@ -20,6 +21,19 @@ export class TransportTimeClass<
 	 */
 	protected _now(): Type {
 		return this.context.transport.seconds as Type;
+	}
+
+	/**
+	 * Return the time in ticks.
+	 */
+	toTicks(): Ticks {
+		if (isDefined(this._val)) {
+			return super.toTicks();
+		}
+		// read the transport's actual current tick instead of re-deriving it
+		// from elapsed seconds at the current bpm, which ignores tempo changes
+		const transport = this.context.transport;
+		return transport.getTicksAtTime(transport.now());
 	}
 
 	protected _getExpressions(): TimeExpression<Type> {
