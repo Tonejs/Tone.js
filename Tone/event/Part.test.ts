@@ -944,9 +944,7 @@ describe("Part", () => {
 			expect(noArgTicks).to.be.closeTo(actualTicks, 1);
 		});
 
-		// pre-existing issue, unrelated to tempo: restarting with no time arg while
-		// the transport is running can schedule on an already-passed tick (#693)
-		it.skip("does not delay a part's note when it is (re)started with no time arg while the transport is running", async () => {
+		it("does not delay a part's note when it is (re)started with no time arg while the transport is running", async () => {
 			let callTime: number | undefined;
 			await Offline(({ transport }) => {
 				const part = new Part(

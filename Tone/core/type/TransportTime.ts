@@ -31,9 +31,11 @@ export class TransportTimeClass<
 			return super.toTicks();
 		}
 		// read the transport's actual current tick instead of re-deriving it
-		// from elapsed seconds at the current bpm, which ignores tempo changes
+		// from elapsed seconds at the current bpm, which ignores tempo changes.
+		// round up to the next tick since the current one may already be
+		// in the middle of being processed by the clock.
 		const transport = this.context.transport;
-		return transport.getTicksAtTime(transport.now());
+		return Math.ceil(transport.getTicksAtTime(transport.now()));
 	}
 
 	protected _getExpressions(): TimeExpression<Type> {
