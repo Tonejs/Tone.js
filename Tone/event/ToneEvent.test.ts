@@ -1,7 +1,7 @@
 import { expect } from "chai";
 
 import { BasicTests } from "../../test/helper/Basic.js";
-import { Offline, whenBetween } from "../../test/helper/Offline.js";
+import { atTime, Offline, whenBetween } from "../../test/helper/Offline.js";
 import { Time } from "../core/type/Time.js";
 import { noOp } from "../core/util/Interface.js";
 import { ToneEvent } from "./ToneEvent.js";
@@ -360,6 +360,30 @@ describe("ToneEvent", () => {
 					.stop(1.1);
 				transport.start(0.2).stop(0.5).start(0.8);
 			}, 2);
+		});
+
+		it("keeps a still-playing segment running until its own scheduled stop, even when a later restart is already queued (#864)", async () => {
+			const callTimes: number[] = [];
+			await Offline(({ transport }) => {
+				const note = new ToneEvent({
+					loop: true,
+					loopEnd: 0.1,
+					callback(time): void {
+						callTimes.push(time);
+					},
+				});
+				note.start(0);
+				transport.start(0);
+				return atTime(0.3, () => {
+					// queue a stop/restart ahead of the still-playing segment
+					note.stop(transport.seconds + 0.5);
+					note.start(transport.seconds + 0.8);
+				});
+			}, 1.5);
+			// the live segment should keep firing up to its own stop (~0.8),
+			// not be cut short by the later start() call scheduled at the same time
+			const notesBetween = callTimes.filter((t) => t > 0.35 && t < 0.75);
+			expect(notesBetween.length).to.be.greaterThan(2);
 		});
 
 		it("loops the correct amount of times when the event is started in the transport's past", async () => {
