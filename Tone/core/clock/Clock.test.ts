@@ -355,10 +355,10 @@ describe("Clock", () => {
 			});
 		});
 
-		it("does not replay stale pre-restart ticks when the loop update has fallen behind a restart (#1419)", () => {
+		it("does not replay stale pre-restart ticks when the loop update has fallen behind a restart (#1419)", async () => {
 			const observedTicks: Array<number | undefined> = [];
-			return Offline(() => {
-				const clock = new Clock((time, ticks) => {
+			await Offline(() => {
+				const clock = new Clock((_t, ticks) => {
 					observedTicks.push(ticks);
 				}, 200);
 				const boundLoop = (
@@ -378,16 +378,15 @@ describe("Clock", () => {
 					// state instead of the new offset.
 					clock.context.on("tick", boundLoop);
 				});
-			}, 0.03).then(() => {
-				expect(observedTicks).to.deep.equal([0, 1, 2, 3, 4, 40, 41]);
-			});
+			}, 0.03);
+			expect(observedTicks).to.deep.equal([0, 1, 2, 3, 4, 40, 41]);
 		});
 
-		it("does not drop the pending stop event or pending ticks when stop and the following start happen at different times within the stale window (#1419)", () => {
+		it("does not drop the pending stop event or pending ticks when stop and the following start happen at different times within the stale window (#1419)", async () => {
 			const observedTicks: Array<number | undefined> = [];
 			const stopEvents: number[] = [];
-			return Offline(() => {
-				const clock = new Clock((time, ticks) => {
+			await Offline(() => {
+				const clock = new Clock((_t, ticks) => {
 					observedTicks.push(ticks);
 				}, 200);
 				const boundLoop = (
@@ -406,14 +405,13 @@ describe("Clock", () => {
 					clock.start(0.02, 40);
 					clock.context.on("tick", boundLoop);
 				});
-			}, 0.03).then(() => {
-				// the "stop" event scheduled at 0.015 must still fire
-				expect(stopEvents).to.deep.equal([0.015]);
-				// ticks 0, 1, 2 (at 200Hz: 0, 0.005, 0.01) are still pending
-				// in [_lastUpdate, 0.015) and must still fire, followed by
-				// the post-restart ticks from offset 40
-				expect(observedTicks).to.deep.equal([0, 1, 2, 40, 41]);
-			});
+			}, 0.03);
+			// the "stop" event scheduled at 0.015 must still fire
+			expect(stopEvents).to.deep.equal([0.015]);
+			// ticks 0, 1, 2 (at 200Hz: 0, 0.005, 0.01) are still pending
+			// in [_lastUpdate, 0.015) and must still fire, followed by
+			// the post-restart ticks from offset 40
+			expect(observedTicks).to.deep.equal([0, 1, 2, 40, 41]);
 		});
 	});
 
