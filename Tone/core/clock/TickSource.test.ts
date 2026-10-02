@@ -76,6 +76,19 @@ describe("TickSource", () => {
 			}, 0.5);
 		});
 
+		it("reports the restart offset just after a stop and start at the same time", () => {
+			const source = new TickSource(3);
+			source.start(0);
+			source.stop(1);
+			source.start(1, 10);
+			expect(source.getTicksAtTime(1)).to.be.closeTo(10, 0.01);
+			// the first tick time of the restarted period is computed from the
+			// frequency integral and can land a rounding error after the start
+			expect(source.getTicksAtTime(1 + 1e-12)).to.be.closeTo(10, 0.01);
+			expect(source.getTicksAtTime(1.5)).to.be.closeTo(11.5, 0.01);
+			source.dispose();
+		});
+
 		it("ticks restart at 0 when started after stop", () => {
 			const source = new TickSource(3);
 			source.start(0).stop(1).start(2);

@@ -413,6 +413,35 @@ describe("Clock", () => {
 			// the post-restart ticks from offset 40
 			expect(observedTicks).to.deep.equal([0, 1, 2, 40, 41]);
 		});
+
+		it("emits the stop event when stop and the following start happen at the same time within the stale window", async () => {
+			const events: Array<[string, number]> = [];
+			let restartTime = 0;
+			await Offline(() => {
+				const clock = new Clock(noOp, 200);
+				const boundLoop = (
+					clock as unknown as { _boundLoop: () => void }
+				)._boundLoop;
+				clock.on("stop", (time) => events.push(["stop", time]));
+				clock.on("start", (time) => events.push(["start", time]));
+				clock.start(0);
+				// Same staleness simulation as above. stop() and start() are
+				// scheduled at the same instant, as happens when both default
+				// to now() within one task: `transport.stop(); transport.start()`
+				clock.context.off("tick", boundLoop);
+				return atTime(0.02, (time) => {
+					restartTime = time;
+					clock.stop(time);
+					clock.start(time, 40);
+					clock.context.on("tick", boundLoop);
+				});
+			}, 0.03);
+			expect(events).to.deep.equal([
+				["start", 0],
+				["stop", restartTime],
+				["start", restartTime],
+			]);
+		});
 	});
 
 	context("Events", () => {
