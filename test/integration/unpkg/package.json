@@ -1,7 +1,7 @@
 {
 	"name": "tone-unpkg-test",
 	"dependencies": {
-		"puppeteer": "^22.7.1",
+		"puppeteer": "^25.12.0",
 		"tone": "file:../../.."
 	},
 	"scripts": {

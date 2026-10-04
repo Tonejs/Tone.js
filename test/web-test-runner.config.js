@@ -3,7 +3,7 @@ import { fileURLToPath } from "node:url";
 
 import rollupCommonjs from "@rollup/plugin-commonjs";
 import { fromRollup } from "@web/dev-server-rollup";
-import { puppeteerLauncher } from "@web/test-runner-puppeteer";
+import { chromeLauncher } from "@web/test-runner-chrome";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const commonjs = fromRollup(rollupCommonjs);
@@ -53,7 +53,7 @@ export default {
 	],
 	nodeResolve: true,
 	browsers: [
-		puppeteerLauncher({
+		chromeLauncher({
 			launchOptions: {
 				headless: true,
 				args: [
