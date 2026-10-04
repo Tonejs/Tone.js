@@ -330,6 +330,37 @@ describe("Source", () => {
 			expect(output.getValueAtTime(0.5)).to.be.equal(0);
 		});
 
+		it("stops the playing source when the transport is stopped and restarted at the same time", async () => {
+			const output = await Offline(({ transport }) => {
+				const source = new Player(rampBuffer).toDestination();
+				source.sync().start(0);
+				const clock = (
+					transport as unknown as {
+						_clock: {
+							context: typeof transport.context;
+							_boundLoop: () => void;
+						};
+					}
+				)._clock;
+				transport.start(0);
+				// hold the clock loop back so that stop/start land ahead of
+				// _lastUpdate, as they do in a realtime context where both
+				// default to now() = currentTime + lookAhead
+				clock.context.off("tick", clock._boundLoop);
+				return atTime(0.2, (time) => {
+					transport.stop(time);
+					transport.start(time, 0.5);
+					clock.context.on("tick", clock._boundLoop);
+				});
+			}, 0.5);
+			// before the restart the ramp plays from 0
+			expect(output.getValueAtTime(0.1)).to.be.closeTo(0.1, 0.01);
+			// after the restart only the source started at offset 0.5 plays;
+			// if the first source were orphaned the two ramps would sum
+			expect(output.getValueAtTime(0.3)).to.be.closeTo(0.6, 0.01);
+			expect(output.getValueAtTime(0.4)).to.be.closeTo(0.7, 0.01);
+		});
+
 		it("gives the correct offset on time on start/stop events when started with an offset", async () => {
 			const output = await Offline(({ transport }) => {
 				const source = new Player(rampBuffer).toDestination();
