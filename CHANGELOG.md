@@ -1,6 +1,6 @@
 # Changelog
 
-## [15.5.54](https://github.com/Tonejs/Tone.js/compare/15.1.22...HEAD)
+## [15.5.55](https://github.com/Tonejs/Tone.js/compare/15.1.22...HEAD)
 
 ### Features
 
@@ -16,6 +16,7 @@
 
 ### Bug Fixes
 
+- clear pending ticks on stop when lastUpdated clock tick is behind `now()` ([#1514](https://github.com/Tonejs/Tone.js/pull/1514)) (`2586b2e`)
 - TickSource skips the boundary tick when started between integer ticks ([#1504](https://github.com/Tonejs/Tone.js/pull/1504)) (`3995e16`)
 - chromium issue on mac with waveform rendering ([#1497](https://github.com/Tonejs/Tone.js/pull/1497)) (`eaa580b`)
 - Timeline.forEachBetween skips events sharing the range start time ([#1506](https://github.com/Tonejs/Tone.js/pull/1506)) (`50c62ec`)
