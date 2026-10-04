@@ -10,7 +10,7 @@ import { TimeClass } from "./core/type/Time.js";
 import { TransportTimeClass } from "./core/type/TransportTime.js";
 import { omitFromObject } from "./core/util/Defaults.js";
 import { DrawInstance } from "./core/util/Draw.js";
-import { isDefined, isFunction } from "./core/util/TypeCheck.js";
+import { isFunction } from "./core/util/TypeCheck.js";
 
 type ClassesWithoutSingletons = Omit<
 	typeof Classes,
@@ -48,7 +48,7 @@ export function fromContext(context: Context): ToneObject {
 		omitFromObject(Classes, ["Transport", "Destination", "Draw"])
 	).map((key) => {
 		const cls = Classes[key];
-		if (isDefined(cls) && isFunction(cls.getDefaults)) {
+		if (isFunction(cls?.getDefaults)) {
 			classesWithContext[key] = class ToneFromContextNode extends cls {
 				get defaultContext(): Context {
 					return context;

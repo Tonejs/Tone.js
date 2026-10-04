@@ -201,7 +201,7 @@ export class UserMedia extends ToneAudioNode<UserMediaOptions> {
 	 * and "stopped" when the mic is closed.
 	 */
 	get state() {
-		return this._stream && this._stream.active ? "started" : "stopped";
+		return this._stream?.active ? "started" : "stopped";
 	}
 
 	/**
@@ -213,11 +213,7 @@ export class UserMedia extends ToneAudioNode<UserMediaOptions> {
 	 * device is not open.
 	 */
 	get deviceId(): string | undefined {
-		if (this._device) {
-			return this._device.deviceId;
-		} else {
-			return undefined;
-		}
+		return this._device?.deviceId;
 	}
 
 	/**
@@ -226,11 +222,7 @@ export class UserMedia extends ToneAudioNode<UserMediaOptions> {
 	 * Returns null  when the device is not open.
 	 */
 	get groupId(): string | undefined {
-		if (this._device) {
-			return this._device.groupId;
-		} else {
-			return undefined;
-		}
+		return this._device?.groupId;
 	}
 
 	/**
@@ -239,11 +231,7 @@ export class UserMedia extends ToneAudioNode<UserMediaOptions> {
 	 * because of permissions.
 	 */
 	get label(): string | undefined {
-		if (this._device) {
-			return this._device.label;
-		} else {
-			return undefined;
-		}
+		return this._device?.label;
 	}
 
 	/**
