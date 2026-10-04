@@ -1,3 +1,5 @@
+import { Clock } from "../../Tone/core/clock/Clock.js";
+import { TransportInstance } from "../../Tone/core/clock/Transport.js";
 import { OfflineContext } from "../../Tone/core/context/OfflineContext.js";
 import { getContext, setContext } from "../../Tone/core/Global.js";
 import { Seconds } from "../../Tone/core/type/Units.js";
@@ -74,6 +76,26 @@ export function atTime(
 		if (time >= when && !wasInvoked) {
 			callback(time);
 			wasInvoked = true;
+		}
+	};
+}
+
+/**
+ * Simulates the real-time condition where Clock._lastUpdate lags behind
+ * by temporarily detaching the clock loop from the context's "tick" event.
+ */
+export function holdClock(
+	target: TransportInstance | Clock<any>,
+	callback: (time: Seconds) => void
+): (time: Seconds) => void {
+	const clock = (target as any)._clock ?? target;
+	const boundLoop = clock._boundLoop;
+	clock.context.off("tick", boundLoop);
+	return (time) => {
+		try {
+			callback(time);
+		} finally {
+			clock.context.on("tick", boundLoop);
 		}
 	};
 }

@@ -1,6 +1,6 @@
 import { expect } from "chai";
 
-import { atTime, Offline } from "../../test/helper/Offline.js";
+import { atTime, holdClock, Offline } from "../../test/helper/Offline.js";
 import { ToneAudioBuffer } from "../core/context/ToneAudioBuffer.js";
 import { getContext } from "../core/Global.js";
 import { Player } from "./buffer/Player.js";
@@ -334,24 +334,14 @@ describe("Source", () => {
 			const output = await Offline(({ transport }) => {
 				const source = new Player(rampBuffer).toDestination();
 				source.sync().start(0);
-				const clock = (
-					transport as unknown as {
-						_clock: {
-							context: typeof transport.context;
-							_boundLoop: () => void;
-						};
-					}
-				)._clock;
 				transport.start(0);
-				// hold the clock loop back so that stop/start land ahead of
-				// _lastUpdate, as they do in a realtime context where both
-				// default to now() = currentTime + lookAhead
-				clock.context.off("tick", clock._boundLoop);
-				return atTime(0.2, (time) => {
-					transport.stop(time);
-					transport.start(time, 0.5);
-					clock.context.on("tick", clock._boundLoop);
-				});
+				return atTime(
+					0.2,
+					holdClock(transport, (time) => {
+						transport.stop(time);
+						transport.start(time, 0.5);
+					})
+				);
 			}, 0.5);
 			// before the restart the ramp plays from 0
 			expect(output.getValueAtTime(0.1)).to.be.closeTo(0.1, 0.01);
