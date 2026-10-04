@@ -1,6 +1,6 @@
 # Changelog
 
-## [15.5.49](https://github.com/Tonejs/Tone.js/compare/15.1.22...HEAD)
+## [15.5.50](https://github.com/Tonejs/Tone.js/compare/15.1.22...HEAD)
 
 ### Features
 
@@ -16,6 +16,7 @@
 
 ### Bug Fixes
 
+- chromium issue on mac with waveform rendering ([#1497](https://github.com/Tonejs/Tone.js/pull/1497)) (`eaa580b`)
 - Timeline.forEachBetween skips events sharing the range start time ([#1506](https://github.com/Tonejs/Tone.js/pull/1506)) (`50c62ec`)
 - Part start/stop issues ([#1496](https://github.com/Tonejs/Tone.js/pull/1496)) (`769fca5`)
 - Clock.start() flushes pending events/ticks before advancing a stale _lastUpdate ([#1487](https://github.com/Tonejs/Tone.js/pull/1487)) (`2e0b55e`)
