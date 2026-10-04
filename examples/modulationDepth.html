@@ -1,0 +1,135 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>Modulation Depth</title>
+
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1, maximum-scale=1"
+		/>
+		<link
+			rel="icon"
+			type="image/png"
+			sizes="174x174"
+			href="./favicon.png"
+		/>
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/2.4.3/webcomponents-bundle.js"></script>
+		<link
+			href="https://fonts.googleapis.com/css?family=Material+Icons&display=block"
+			rel="stylesheet"
+		/>
+		<script src="../build/Tone.js"></script>
+		<script src="./js/tone-ui.js"></script>
+		<script src="./js/components.js"></script>
+	</head>
+	<body>
+		<tone-example label="Modulation Depth">
+			<div slot="explanation">
+				<a href="https://tonejs.github.io/docs/latest/classes/LFO"
+					>Tone.LFO</a
+				>
+				and other signal sources output a raw range (usually -1 to 1).
+				On a hardware modular synth, the CV input on a filter is often
+				paired with an "amount" knob that scales the incoming signal
+				before it reaches the cutoff — without it, the raw voltage could
+				swing the filter far beyond a musically useful range. This
+				example builds that same attenuator explicitly with a
+				<a href="https://tonejs.github.io/docs/latest/classes/Gain"
+					>Tone.Gain</a
+				>
+				before connecting the LFO to the filter's frequency
+				<a href="https://tonejs.github.io/docs/latest/classes/Signal"
+					>Signal</a
+				>.
+			</div>
+			<div id="content">
+				<tone-play-toggle id="play"></tone-play-toggle>
+				<tone-slider
+					label="LFO Rate"
+					id="rate"
+					units="hz"
+					value="2"
+					step="0.1"
+					min="0.1"
+					max="10"
+				></tone-slider>
+				<tone-slider
+					label="Mod Depth"
+					id="depth"
+					units="hz"
+					value="800"
+					step="10"
+					min="0"
+					max="2000"
+				></tone-slider>
+				<tone-slider
+					label="Base Cutoff"
+					id="cutoff"
+					units="hz"
+					value="800"
+					step="10"
+					min="100"
+					max="4000"
+				></tone-slider>
+			</div>
+		</tone-example>
+
+		<script type="text/javascript">
+			// the audio signal: a bright oscillator through a lowpass filter
+			const filter = new Tone.Filter({
+				frequency: 800,
+				type: "lowpass",
+				Q: 2,
+			}).toDestination();
+
+			const osc = new Tone.Oscillator({
+				type: "sawtooth",
+				frequency: "C3",
+				volume: -10,
+			}).connect(filter);
+
+			// the raw modulation source: outputs -1 to 1
+			const lfo = new Tone.LFO({
+				frequency: 2,
+				min: -1,
+				max: 1,
+			}).start();
+
+			// the attenuator: scales the raw -1..1 range to +/- depth (Hz)
+			const depthGain = new Tone.Gain(800);
+			lfo.connect(depthGain);
+
+			// connect the scaled modulation signal to the filter's
+			// frequency Signal -- this ADDS to the base cutoff value
+			depthGain.connect(filter.frequency);
+
+			// bind the interface
+			document
+				.querySelector("#play")
+				.addEventListener("start", () => osc.start());
+			document
+				.querySelector("#play")
+				.addEventListener("stop", () => osc.stop());
+			document
+				.querySelector("#rate")
+				.addEventListener(
+					"input",
+					(e) => (lfo.frequency.value = parseFloat(e.target.value))
+				);
+			document
+				.querySelector("#depth")
+				.addEventListener(
+					"input",
+					(e) => (depthGain.gain.value = parseFloat(e.target.value))
+				);
+			document
+				.querySelector("#cutoff")
+				.addEventListener(
+					"input",
+					(e) => (filter.frequency.value = parseFloat(e.target.value))
+				);
+		</script>
+	</body>
+</html>
