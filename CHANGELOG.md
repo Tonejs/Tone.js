@@ -1,6 +1,6 @@
 # Changelog
 
-## [15.5.43](https://github.com/Tonejs/Tone.js/compare/15.1.22...HEAD)
+## [15.5.48](https://github.com/Tonejs/Tone.js/compare/15.1.22...HEAD)
 
 ### Features
 
@@ -16,6 +16,7 @@
 
 ### Bug Fixes
 
+- Part start/stop issues ([#1496](https://github.com/Tonejs/Tone.js/pull/1496)) (`769fca5`)
 - Clock.start() flushes pending events/ticks before advancing a stale _lastUpdate ([#1487](https://github.com/Tonejs/Tone.js/pull/1487)) (`2e0b55e`)
 - **test:** remove focused test modifiers ([#1453](https://github.com/Tonejs/Tone.js/pull/1453)) (`ac4cd10`)
 - Checking for circular dependencies ([#1447](https://github.com/Tonejs/Tone.js/pull/1447)) (`4847d58`)
@@ -36,6 +37,10 @@
 - Connect and disconnect using signalConnect / signalDisconnect (`797dae4`)
 - Signal disconnect ([#1373](https://github.com/Tonejs/Tone.js/pull/1373)) (`13df9b3`)
 - **ci:** only run semantic pull request on pull_request ([#1367](https://github.com/Tonejs/Tone.js/pull/1367)) (`4ff2e8d`)
+
+### Refactoring
+
+- use optional chaining to reduce branching ([#1512](https://github.com/Tonejs/Tone.js/pull/1512)) (`ad84530`)
 
 ### Documentation
 
