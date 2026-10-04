@@ -1,6 +1,6 @@
 # Changelog
 
-## [15.5.53](https://github.com/Tonejs/Tone.js/compare/15.1.22...HEAD)
+## [15.5.54](https://github.com/Tonejs/Tone.js/compare/15.1.22...HEAD)
 
 ### Features
 
