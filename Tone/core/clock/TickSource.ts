@@ -414,13 +414,13 @@ export class TickSource<
 		if (lastStateEvent?.state === "started") {
 			const origin = this.frequency.getTicksAtTime(lastStateEvent.time);
 			const endTicks = this.frequency.getTicksAtTime(endTime) - origin;
-			let tick = Math.ceil(
+			const tick = Math.ceil(
 				this.frequency.getTicksAtTime(
 					Math.max(lastStateEvent.time, startTime)
 				) - origin
 			);
-			for (; tick < endTicks; tick++) {
-				const time = this.frequency.getTimeOfTick(origin + tick);
+			for (let t = tick; t < endTicks; t++) {
+				const time = this.frequency.getTimeOfTick(origin + t);
 				try {
 					callback(time, Math.round(this.getTicksAtTime(time)));
 				} catch (e) {
