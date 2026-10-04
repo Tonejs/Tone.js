@@ -1,6 +1,6 @@
 # Changelog
 
-## [15.5.47](https://github.com/Tonejs/Tone.js/compare/15.1.22...HEAD)
+## [15.5.48](https://github.com/Tonejs/Tone.js/compare/15.1.22...HEAD)
 
 ### Features
 
@@ -37,6 +37,10 @@
 - Connect and disconnect using signalConnect / signalDisconnect (`797dae4`)
 - Signal disconnect ([#1373](https://github.com/Tonejs/Tone.js/pull/1373)) (`13df9b3`)
 - **ci:** only run semantic pull request on pull_request ([#1367](https://github.com/Tonejs/Tone.js/pull/1367)) (`4ff2e8d`)
+
+### Refactoring
+
+- use optional chaining to reduce branching ([#1512](https://github.com/Tonejs/Tone.js/pull/1512)) (`ad84530`)
 
 ### Documentation
 
