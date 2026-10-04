@@ -395,5 +395,31 @@ describe("Source", () => {
 			expect(output.getValueAtTime(0.25)).to.be.closeTo(0.05, 0.01);
 			expect(output.getValueAtTime(0.3)).to.be.closeTo(0.1, 0.01);
 		});
+
+		it("does not replay a clip synced at time 0 after stopping and restarting at a later offset (#1417)", async () => {
+			let onStopCount = 0;
+			await Offline(({ transport }) => {
+				const source = new Player(rampBuffer).toDestination();
+				source.onstop = () => {
+					onStopCount++;
+				};
+				// rampBuffer duration is 1s. Sync at time 0 with duration 0.2s.
+				// This clip only spans [0, 0.2]. At transport time 0.4, it is over.
+				source.sync().start(0, 0, 0.2);
+				transport.start(0, 0);
+
+				return [
+					atTime(0.25, () => {
+						transport.stop();
+					}),
+					atTime(0.3, () => {
+						// restart past the clip duration at offset 0.4
+						transport.start(0.3, 0.4);
+					}),
+				];
+			}, 0.5);
+
+			expect(onStopCount).to.equal(1);
+		});
 	});
 });

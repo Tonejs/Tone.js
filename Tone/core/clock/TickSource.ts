@@ -397,8 +397,7 @@ export class TickSource<
 		let lastStateEvent = this._state.get(startTime);
 		this._state.forEachBetween(startTime, endTime, (event) => {
 			if (
-				lastStateEvent &&
-				lastStateEvent.state === "started" &&
+				lastStateEvent?.state === "started" &&
 				event.state !== "started"
 			) {
 				this.forEachTickBetween(
@@ -412,7 +411,7 @@ export class TickSource<
 
 		let error: Error | null = null;
 
-		if (lastStateEvent && lastStateEvent.state === "started") {
+		if (lastStateEvent?.state === "started") {
 			const origin = this.frequency.getTicksAtTime(lastStateEvent.time);
 			const endTicks = this.frequency.getTicksAtTime(endTime) - origin;
 			let tick = Math.ceil(

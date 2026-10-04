@@ -97,10 +97,8 @@ export abstract class ToneAudioWorklet<
 	dispose(): this {
 		super.dispose();
 		this._dummyGain.disconnect();
-		if (this._worklet) {
-			this._worklet.port.postMessage("dispose");
-			this._worklet.disconnect();
-		}
+		this._worklet?.port.postMessage("dispose");
+		this._worklet?.disconnect();
 		return this;
 	}
 }

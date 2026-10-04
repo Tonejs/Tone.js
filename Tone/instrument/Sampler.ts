@@ -264,7 +264,7 @@ export class Sampler extends Instrument<SamplerOptions> {
 
 			// remove it when it's done
 			source.onended = () => {
-				if (this._activeSources && this._activeSources.has(midi)) {
+				if (this._activeSources?.has(midi)) {
 					const sources = this._activeSources.get(
 						midi
 					) as ToneBufferSource[];
