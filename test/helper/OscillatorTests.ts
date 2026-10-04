@@ -63,18 +63,7 @@ export function OscillatorTests(Constr, args?): void {
 		it("can generate a waveform", async () => {
 			const osc = new Constr();
 			const waveform = await osc.asArray();
-			// KNOWN ISSUE (macOS/Chromium): a native OscillatorNode engine bug
-			// leaks its raw, un-wrapped phase into a single sample when the
-			// frequency is modulated at audio-rate (e.g. FMOscillator).
-			// TODO: link Chromium/WebKit buganizer issue once filed.
-			let skippedKnownBadSample = false;
-			waveform.forEach((v: number) => {
-				if (!skippedKnownBadSample && (v < -1 || v > 1)) {
-					skippedKnownBadSample = true;
-					return;
-				}
-				expect(v).to.be.within(-1, 1);
-			});
+			waveform.forEach((v: number) => expect(v).to.be.within(-1, 1));
 			osc.dispose();
 		});
 
