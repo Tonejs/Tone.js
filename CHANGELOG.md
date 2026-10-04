@@ -1,6 +1,6 @@
 # Changelog
 
-## [15.5.48](https://github.com/Tonejs/Tone.js/compare/15.1.22...HEAD)
+## [15.5.49](https://github.com/Tonejs/Tone.js/compare/15.1.22...HEAD)
 
 ### Features
 
@@ -16,6 +16,7 @@
 
 ### Bug Fixes
 
+- Timeline.forEachBetween skips events sharing the range start time ([#1506](https://github.com/Tonejs/Tone.js/pull/1506)) (`50c62ec`)
 - Part start/stop issues ([#1496](https://github.com/Tonejs/Tone.js/pull/1496)) (`769fca5`)
 - Clock.start() flushes pending events/ticks before advancing a stale _lastUpdate ([#1487](https://github.com/Tonejs/Tone.js/pull/1487)) (`2e0b55e`)
 - **test:** remove focused test modifiers ([#1453](https://github.com/Tonejs/Tone.js/pull/1453)) (`ac4cd10`)
