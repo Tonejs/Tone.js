@@ -398,8 +398,7 @@ export class TickSource<
 		let lastStateEvent = this._state.get(startTime);
 		this._state.forEachBetween(startTime, endTime, (event) => {
 			if (
-				lastStateEvent &&
-				lastStateEvent.state === "started" &&
+				lastStateEvent?.state === "started" &&
 				event.state !== "started"
 			) {
 				this.forEachTickBetween(
@@ -413,7 +412,7 @@ export class TickSource<
 
 		let error: Error | null = null;
 
-		if (lastStateEvent && lastStateEvent.state === "started") {
+		if (lastStateEvent?.state === "started") {
 			const maxStartTime = Math.max(lastStateEvent.time, startTime);
 			// Figure out how far past the last whole-tick boundary maxStartTime
 			// sits, so we can compute the time of the next tick at or after it.
