@@ -1,4 +1,7 @@
-import { expect } from "chai";
+import { expect, use } from "chai";
+import sinon from "sinon";
+import sinonChai from "sinon-chai";
+use(sinonChai);
 
 import { BasicTests } from "../../test/helper/Basic.js";
 import { Offline, whenBetween } from "../../test/helper/Offline.js";
@@ -7,6 +10,10 @@ import { ToneConstantSource } from "./ToneConstantSource.js";
 
 describe("ToneConstantSource", () => {
 	BasicTests(ToneConstantSource);
+
+	afterEach(() => {
+		sinon.restore();
+	});
 
 	context("Constructor", () => {
 		it("can be constructed with an offset", () => {
@@ -210,6 +217,45 @@ describe("ToneConstantSource", () => {
 			source.start(0);
 
 			await context.resume();
+
+			context.dispose();
+			source.dispose();
+		});
+
+		it("schedules a future start when the audio context is resumed", async () => {
+			const startSpy = sinon.spy(ConstantSourceNode.prototype, "start");
+			const context = new Context();
+			expect(context.state).to.equal("suspended");
+
+			const source = new ToneConstantSource({
+				context,
+			});
+
+			source.start(1);
+
+			await context.resume();
+
+			expect(startSpy).to.have.been.calledOnceWith(1);
+
+			context.dispose();
+			source.dispose();
+		});
+
+		it("does not start if stopped before scheduled start time while suspended", async () => {
+			const startSpy = sinon.spy(ConstantSourceNode.prototype, "start");
+			const context = new Context();
+			expect(context.state).to.equal("suspended");
+
+			const source = new ToneConstantSource({
+				context,
+			});
+
+			source.start(2);
+			source.stop(1);
+
+			await context.resume();
+
+			expect(startSpy).to.not.have.been.called;
 
 			context.dispose();
 			source.dispose();
