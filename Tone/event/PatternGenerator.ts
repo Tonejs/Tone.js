@@ -138,6 +138,11 @@ function* randomWalk(numValues: number): IterableIterator<number> {
 	// randomly choose a starting index
 	let index = Math.floor(Math.random() * numValues);
 	while (true) {
+		// with a single value there is nowhere to step to
+		if (numValues === 1) {
+			yield index;
+			continue;
+		}
 		if (index === 0) {
 			index++; // at bottom, so force upward step
 		} else if (index === numValues - 1) {
