@@ -428,6 +428,38 @@ describe("Clock", () => {
 				["start", restartTime],
 			]);
 		});
+
+		it("invokes pending ticks and state events in time order", async () => {
+			const events: Array<[string, number]> = [];
+			let pauseTime = 0;
+			await Offline(() => {
+				const clock = new Clock((time, ticks) => {
+					events.push(["tick " + ticks, time]);
+				}, 200);
+				clock.on("pause", (time) => events.push(["pause", time]));
+				clock.on("start", (time) => events.push(["start", time]));
+				clock.start(0);
+				// ticks 0-4 (every 0.005s) and the pause are all pending in
+				// the same clock update; the ticks before the pause must be
+				// invoked before the pause event, not after it
+				return atTime(
+					0.022,
+					holdClock(clock, (time) => {
+						pauseTime = time;
+						clock.pause(time);
+					})
+				);
+			}, 0.03);
+			expect(events).to.deep.equal([
+				["start", 0],
+				["tick 0", 0],
+				["tick 1", 0.005],
+				["tick 2", 0.01],
+				["tick 3", 0.015],
+				["tick 4", 0.02],
+				["pause", pauseTime],
+			]);
+		});
 	});
 
 	context("Events", () => {
