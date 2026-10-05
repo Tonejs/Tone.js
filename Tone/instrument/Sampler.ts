@@ -116,6 +116,26 @@ export class Sampler extends Instrument<SamplerOptions> {
 	curve: ToneBufferSourceCurve;
 
 	/**
+	 * The urls passed in the constructor, kept so `get()` can report them back.
+	 */
+	private _urls: SamplesMap;
+
+	/**
+	 * The baseUrl passed in the constructor, kept so `get()` can report it back.
+	 */
+	private _baseUrl: string;
+
+	/**
+	 * The onload callback passed in the constructor, kept so `get()` can report it back.
+	 */
+	private _onload: () => void;
+
+	/**
+	 * The onerror callback passed in the constructor, kept so `get()` can report it back.
+	 */
+	private _onerror: (error: Error) => void;
+
+	/**
 	 * @param samples An object of samples mapping either Midi Note Numbers or
 	 * 			Scientific Pitch Notation to the url of that sample.
 	 * @param onload The callback to invoke when all of the samples are loaded.
@@ -167,6 +187,10 @@ export class Sampler extends Instrument<SamplerOptions> {
 		this.attack = options.attack;
 		this.release = options.release;
 		this.curve = options.curve;
+		this._urls = options.urls;
+		this._baseUrl = options.baseUrl;
+		this._onload = options.onload;
+		this._onerror = options.onerror;
         this._loop = options.loop;
         this._loopStart = options.loopStart;
         this._loopEnd = options.loopEnd;
@@ -190,6 +214,20 @@ export class Sampler extends Instrument<SamplerOptions> {
             loop: false,
             loopEnd: 0,
             loopStart: 0,
+		});
+	}
+
+	/**
+	 * urls, baseUrl, onload and onerror aren't stored as regular class
+	 * properties (unlike attack/release/curve), so the base implementation
+	 * can't find them via `Reflect.has` and they'd be silently missing here.
+	 */
+	get(): SamplerOptions {
+		return Object.assign(super.get(), {
+			urls: this._urls,
+			baseUrl: this._baseUrl,
+			onload: this._onload,
+			onerror: this._onerror,
 		});
 	}
 
