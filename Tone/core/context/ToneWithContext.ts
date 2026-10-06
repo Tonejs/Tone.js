@@ -154,8 +154,8 @@ export abstract class ToneWithContext<
 		const options = this.get();
 		// remove attributes from the prop that are not in the partial
 		Object.keys(options).forEach((name) => {
-			if (isUndef(props[name])) {
-				delete options[name];
+			if (isUndef((props as any)[name])) {
+				delete (options as any)[name];
 			}
 		});
 		return options;
@@ -171,16 +171,16 @@ export abstract class ToneWithContext<
 		const defaults = getDefaultsFromInstance(this) as Options;
 		Object.keys(defaults).forEach((attribute) => {
 			if (Reflect.has(this, attribute)) {
-				const member = this[attribute];
+				const member = (this as any)[attribute];
 				if (
 					isDefined(member) &&
 					isDefined(member.value) &&
 					isDefined(member.setValueAtTime)
 				) {
-					defaults[attribute] = member.value;
+					(defaults as any)[attribute] = member.value;
 				} else if (member instanceof ToneWithContext) {
-					defaults[attribute] = member._getPartialProperties(
-						defaults[attribute]
+					(defaults as any)[attribute] = member._getPartialProperties(
+						(defaults as any)[attribute]
 					);
 					// otherwise make sure it's a serializable type
 				} else if (
@@ -189,10 +189,10 @@ export abstract class ToneWithContext<
 					isString(member) ||
 					isBoolean(member)
 				) {
-					defaults[attribute] = member;
+					(defaults as any)[attribute] = member;
 				} else {
 					// remove all undefined and unserializable attributes
-					delete defaults[attribute];
+					delete (defaults as any)[attribute];
 				}
 			}
 		});
@@ -214,20 +214,30 @@ export abstract class ToneWithContext<
 	 */
 	set(props: RecursivePartial<Options>): this {
 		Object.keys(props).forEach((attribute) => {
-			if (Reflect.has(this, attribute) && isDefined(this[attribute])) {
+			if (
+				Reflect.has(this, attribute) &&
+				isDefined((this as any)[attribute])
+			) {
 				if (
-					this[attribute] &&
-					isDefined(this[attribute].value) &&
-					isDefined(this[attribute].setValueAtTime)
+					(this as any)[attribute] &&
+					isDefined((this as any)[attribute].value) &&
+					isDefined((this as any)[attribute].setValueAtTime)
 				) {
 					// small optimization
-					if (this[attribute].value !== props[attribute]) {
-						this[attribute].value = props[attribute];
+					if (
+						(this as any)[attribute].value !==
+						(props as any)[attribute]
+					) {
+						(this as any)[attribute].value = (props as any)[
+							attribute
+						];
 					}
-				} else if (this[attribute] instanceof ToneWithContext) {
-					this[attribute].set(props[attribute]);
+				} else if (
+					(this as any)[attribute] instanceof ToneWithContext
+				) {
+					(this as any)[attribute].set((props as any)[attribute]);
 				} else {
-					this[attribute] = props[attribute];
+					(this as any)[attribute] = (props as any)[attribute];
 				}
 			}
 		});

@@ -143,7 +143,7 @@ export class SyncedSignal<
 	}
 
 	setTargetAtTime(
-		value,
+		value: UnitMap[TypeName],
 		startTime: TransportTime,
 		timeConstant: number
 	): this {

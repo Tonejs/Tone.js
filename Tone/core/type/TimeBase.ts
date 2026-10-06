@@ -206,8 +206,8 @@ export abstract class TimeBaseClass<
 		} else if (isObject(this._val)) {
 			let total = 0;
 			for (const typeName in this._val) {
-				if (isDefined(this._val[typeName])) {
-					const quantity = this._val[typeName];
+				if (isDefined((this._val as any)[typeName])) {
+					const quantity = (this._val as any)[typeName];
 					const time =
 						// @ts-ignore
 						new this.constructor(this.context, typeName).valueOf() *

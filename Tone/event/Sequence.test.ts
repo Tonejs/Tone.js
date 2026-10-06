@@ -408,7 +408,7 @@ describe("Sequence", () => {
 		it("can adjust the playbackRate", async () => {
 			let invoked = false;
 			await Offline(({ transport }) => {
-				let lastCall;
+				let lastCall: number;
 				new Sequence({
 					events: [0, 1],
 					playbackRate: 2,
@@ -429,7 +429,7 @@ describe("Sequence", () => {
 		it("adjusts speed of subsequences", async () => {
 			let invoked = false;
 			await Offline(({ transport }) => {
-				let lastCall;
+				let lastCall: number;
 				new Sequence({
 					events: [
 						[0, 1],
@@ -453,7 +453,7 @@ describe("Sequence", () => {
 		it("can adjust the playbackRate after starting", async () => {
 			let invoked = false;
 			await Offline(({ transport }) => {
-				let lastCall;
+				let lastCall: number;
 				const seq = new Sequence({
 					events: [0, 1],
 					playbackRate: 1,

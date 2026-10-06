@@ -5,7 +5,7 @@ import { connectFrom, connectTo } from "./Connect.js";
 import { Offline } from "./Offline.js";
 import { PassAudio } from "./PassAudio.js";
 
-export function EffectTests(Constr, args?, before?): void {
+export function EffectTests(Constr: any, args?: any, before?: any): void {
 	context("Effect Tests", () => {
 		it("has an input and output", () => {
 			const instance = new Constr(args);

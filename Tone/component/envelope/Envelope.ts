@@ -242,7 +242,8 @@ export class Envelope extends ToneAudioNode<EnvelopeOptions> {
 			// look up the name in the curves array
 			let curveName: EnvelopeCurveName;
 			for (curveName in EnvelopeCurves) {
-				if (EnvelopeCurves[curveName][direction] === curve) {
+				const curveDef = EnvelopeCurves[curveName];
+				if (isObject(curveDef) && (curveDef as any)[direction] === curve) {
 					return curveName;
 				}
 			}

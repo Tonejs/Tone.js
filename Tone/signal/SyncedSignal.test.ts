@@ -72,7 +72,7 @@ describe("SyncedSignal", () => {
 		});
 
 		it("can get exponential ramp value in the future", async () => {
-			let sched;
+			let sched: SyncedSignal;
 			const buffer = await Offline(({ transport }) => {
 				sched = new SyncedSignal(0.5).toDestination();
 				sched.setValueAtTime(0.5, 0);
@@ -89,7 +89,7 @@ describe("SyncedSignal", () => {
 		});
 
 		it("can get exponential approach in the future", async () => {
-			let sched;
+			let sched: SyncedSignal;
 			const buffer = await Offline(({ transport }) => {
 				sched = new SyncedSignal(0.5).toDestination();
 				sched.setValueAtTime(0.5, 0);
@@ -105,7 +105,7 @@ describe("SyncedSignal", () => {
 		});
 
 		it("can loop the signal when the Transport loops", async () => {
-			let sched;
+			let sched: SyncedSignal;
 			const buffer = await Offline(({ transport }) => {
 				sched = new SyncedSignal(1).toDestination();
 				transport.setLoopPoints(0, 1);
@@ -121,10 +121,10 @@ describe("SyncedSignal", () => {
 		});
 
 		it("can get set a curve in the future", async () => {
-			let sched;
+			let sched: SyncedSignal;
 			const buffer = await Offline(({ transport }) => {
 				sched = new SyncedSignal(0).toDestination();
-				sched.setValueCurveAtTime([0, 1, 0.2, 0.8, 0], 0, 1);
+				sched.setValueCurveAtTime([0, 1, 0.2, 0.8, 0], 0, 1, 1);
 				transport.start(0.2);
 			}, 1);
 			buffer.forEach((sample, time) => {
@@ -136,7 +136,7 @@ describe("SyncedSignal", () => {
 		});
 
 		it("can scale a curve value", async () => {
-			let sched;
+			let sched: SyncedSignal;
 			const buffer = await Offline(({ transport }) => {
 				sched = new SyncedSignal(1).toDestination();
 				sched.setValueCurveAtTime([0, 1, 0], 0, 1, 0.5);
@@ -148,7 +148,7 @@ describe("SyncedSignal", () => {
 		});
 
 		it("can schedule a linear ramp between two times", async () => {
-			let sched;
+			let sched: SyncedSignal;
 			const buffer = await Offline(({ transport }) => {
 				sched = new SyncedSignal(0).toDestination();
 				sched.linearRampTo(1, 1, 1);
@@ -162,7 +162,7 @@ describe("SyncedSignal", () => {
 		});
 
 		it("can get exponential ramp value between two times", async () => {
-			let sched;
+			let sched: SyncedSignal;
 			const buffer = await Offline(({ transport }) => {
 				sched = new SyncedSignal(1).toDestination();
 				sched.exponentialRampTo(3, 1, 1);
@@ -176,7 +176,7 @@ describe("SyncedSignal", () => {
 		});
 
 		it("can cancel and hold a scheduled value", async () => {
-			let sched;
+			let sched: SyncedSignal;
 			const buffer = await Offline(({ transport }) => {
 				sched = new SyncedSignal(0).toDestination();
 				sched.setValueAtTime(0, 0);
@@ -191,7 +191,7 @@ describe("SyncedSignal", () => {
 		});
 
 		it("can cancel a scheduled value", async () => {
-			let sched;
+			let sched: SyncedSignal;
 			const buffer = await Offline(({ transport }) => {
 				sched = new SyncedSignal(0).toDestination();
 				sched.setValueAtTime(0, 0);
@@ -207,7 +207,7 @@ describe("SyncedSignal", () => {
 		});
 
 		it("can automate values with different units", async () => {
-			let sched;
+			let sched: SyncedSignal<any>;
 			const buffer = await Offline(({ transport }) => {
 				sched = new SyncedSignal(-10, "decibels").toDestination();
 				sched.setValueAtTime(-5, 0);

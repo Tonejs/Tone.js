@@ -167,7 +167,7 @@ export class Sequence<ValueType = any> extends ToneEvent<ValueType> {
 		return new Proxy(array, {
 			get: (target: any[], property: PropertyKey): any => {
 				// property is index in this case
-				return target[property];
+				return (target as any)[property];
 			},
 			set: (
 				target: any[],
@@ -176,12 +176,12 @@ export class Sequence<ValueType = any> extends ToneEvent<ValueType> {
 			): boolean => {
 				if (isString(property) && isFinite(parseInt(property, 10))) {
 					if (isArray(value)) {
-						target[property] = this._createSequence(value);
+						(target as any)[property] = this._createSequence(value);
 					} else {
-						target[property] = value;
+						(target as any)[property] = value;
 					}
 				} else {
-					target[property] = value;
+					(target as any)[property] = value;
 				}
 				this._eventsUpdated();
 				// return true to accept the changes

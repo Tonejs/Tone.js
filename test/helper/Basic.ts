@@ -17,7 +17,7 @@ import { ConnectTest } from "./Connect.js";
 
 export const testAudioContext = new OfflineContext(1, 1, 11025);
 
-export function BasicTests(Constr, ...args: any[]): void {
+export function BasicTests(Constr: any, ...args: any[]): void {
 	context("Basic", () => {
 		before(() => {
 			return getContext().resume();
@@ -30,17 +30,23 @@ export function BasicTests(Constr, ...args: any[]): void {
 			expect(instance.disposed).to.equal(true);
 			// also check all of its attributes to see if they also have the right context
 			for (const member in instance) {
-				if (instance[member] instanceof Tone && member !== "context") {
+				if (
+					(instance as any)[member] instanceof Tone &&
+					member !== "context"
+				) {
 					expect(
-						instance[member].disposed,
+						(instance as any)[member].disposed,
 						`member ${member}`
 					).to.equal(true);
 				}
 			}
 			// check that all callback functions are assigned to noOp
 			for (const member in instance) {
-				if (isFunction(instance[member]) && member.startsWith("on")) {
-					expect(instance[member]).to.equal(noOp);
+				if (
+					isFunction((instance as any)[member]) &&
+					member.startsWith("on")
+				) {
+					expect((instance as any)[member]).to.equal(noOp);
 				}
 			}
 		});
@@ -64,9 +70,9 @@ export function BasicTests(Constr, ...args: any[]): void {
 				expect(instance.context).to.equal(testAudioContext);
 				// also check all of its attributes to see if they also have the right context
 				for (const member in instance) {
-					if (instance[member] instanceof ToneWithContext) {
+					if ((instance as any)[member] instanceof ToneWithContext) {
 						expect(
-							instance[member].context,
+							(instance as any)[member].context,
 							`member: ${member}`
 						).to.equal(testAudioContext);
 					}
@@ -90,7 +96,7 @@ export function BasicTests(Constr, ...args: any[]): void {
 	it("exports its class name", () => {
 		// find the constructor
 		for (const className in Classes) {
-			if (Classes[className] === Constr) {
+			if ((Classes as any)[className] === Constr) {
 				const instance = new Constr(...args);
 				expect(instance.toString()).to.equal(className);
 				instance.dispose();

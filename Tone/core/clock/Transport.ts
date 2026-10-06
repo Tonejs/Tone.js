@@ -158,7 +158,12 @@ export class TransportInstance
 	/**
 	 * All the events in an object to keep track by ID
 	 */
-	private _scheduledEvents = {};
+	private _scheduledEvents: {
+		[key: string]: {
+			event: TransportEvent;
+			timeline: Timeline<TransportEvent>;
+		};
+	} = {};
 
 	/**
 	 * The scheduled events.
@@ -536,7 +541,7 @@ export class TransportInstance
 	get loop(): boolean {
 		return this._loop.get(this.now());
 	}
-	set loop(loop) {
+	set loop(loop: boolean) {
 		this._loop.set(loop, this.now());
 	}
 

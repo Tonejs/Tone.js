@@ -242,7 +242,7 @@ describe("ToneEvent", () => {
 
 		it("can be set to loop at a specific interval", async () => {
 			await Offline(({ transport }) => {
-				let lastCall;
+				let lastCall: number;
 				new ToneEvent({
 					callback(time): void {
 						if (lastCall) {
@@ -259,7 +259,7 @@ describe("ToneEvent", () => {
 
 		it("can adjust the loop duration after starting", () => {
 			return Offline(({ transport }) => {
-				let lastCall;
+				let lastCall: number;
 				const note = new ToneEvent({
 					loop: true,
 					loopEnd: 0.5,
@@ -440,7 +440,7 @@ describe("ToneEvent", () => {
 	context("playbackRate and humanize", () => {
 		it("can adjust the playbackRate", async () => {
 			await Offline(({ transport }) => {
-				let lastCall;
+				let lastCall: number;
 				new ToneEvent({
 					loop: true,
 					loopEnd: 0.5,
@@ -458,7 +458,7 @@ describe("ToneEvent", () => {
 
 		it("can adjust the playbackRate after starting", async () => {
 			await Offline(({ transport }) => {
-				let lastCall;
+				let lastCall: number;
 				const note = new ToneEvent({
 					loop: true,
 					loopEnd: 0.25,
@@ -478,7 +478,7 @@ describe("ToneEvent", () => {
 
 		it("can humanize the callback by some amount", async () => {
 			await Offline(({ transport }) => {
-				let lastCall;
+				let lastCall: number;
 				const note = new ToneEvent({
 					humanize: 0.05,
 					loop: true,

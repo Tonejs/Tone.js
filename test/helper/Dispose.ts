@@ -1,4 +1,4 @@
-export function isDisposed(instance): void {
+export function isDisposed(instance: any): void {
 	for (const prop in instance) {
 		if (instance.hasOwnProperty(prop)) {
 			const member = instance[prop];

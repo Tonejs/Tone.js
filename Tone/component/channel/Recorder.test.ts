@@ -35,10 +35,11 @@ describe("Recorder", () => {
 				context: testContext,
 			});
 			for (const member in rec) {
-				if (rec[member] instanceof ToneWithContext) {
-					expect(rec[member].context, `member: ${member}`).to.equal(
-						testContext
-					);
+				if ((rec as any)[member] instanceof ToneWithContext) {
+					expect(
+						(rec as any)[member].context,
+						`member: ${member}`
+					).to.equal(testContext);
 				}
 			}
 			testContext.dispose();
@@ -47,7 +48,7 @@ describe("Recorder", () => {
 		});
 	});
 
-	function wait(time) {
+	function wait(time: number) {
 		return new Promise((done) => setTimeout(done, time));
 	}
 
