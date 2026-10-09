@@ -129,6 +129,22 @@ describe("ToneConstantSource", () => {
 			expect(buffer.getValueAtTime(0.2)).to.equal(0);
 		});
 
+		it("stops the native ConstantSourceNode once stop() takes effect", async () => {
+			const source = new ToneConstantSource().start();
+			// @ts-ignore
+			const native: ConstantSourceNode = source._source;
+			let stopCalls = 0;
+			const stop = native.stop.bind(native);
+			native.stop = (when?: number) => {
+				stopCalls++;
+				stop(when);
+			};
+			source.stop();
+			await new Promise((done) => setTimeout(done, 300));
+			expect(stopCalls).to.equal(1);
+			source.dispose();
+		});
+
 		it("clamps start time to the currentTime", () => {
 			const source = new ToneConstantSource();
 			source.start(0);
