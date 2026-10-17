@@ -1,0 +1,13 @@
+{
+	"compilerOptions": {
+		"target": "es2020",
+		"module": "Node16",
+		"moduleResolution": "Node16",
+		"lib": ["es2020"],
+		"types": ["audioworklet"],
+		"strict": true,
+		"noImplicitAny": false,
+		"skipLibCheck": true
+	},
+	"include": ["../Tone/**/*.worklet.ts"]
+}

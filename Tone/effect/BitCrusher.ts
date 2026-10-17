@@ -7,8 +7,10 @@ import {
 	ToneAudioWorklet,
 	ToneAudioWorkletOptions,
 } from "../core/worklet/ToneAudioWorklet.js";
-import { workletName } from "./BitCrusher.worklet.js";
+import { audioWorklet } from "./BitCrusher.worklet.code.js";
 import { Effect, EffectOptions } from "./Effect.js";
+
+const workletName = "bit-crusher";
 
 export interface BitCrusherOptions extends EffectOptions {
 	bits: Positive;
@@ -121,7 +123,11 @@ class BitCrusherWorklet extends ToneAudioWorklet<BitCrusherWorkletOptions> {
 		return workletName;
 	}
 
-	onReady(node: AudioWorkletNode) {
+	protected _audioWorkletCode(): string {
+		return audioWorklet;
+	}
+
+	protected _onReady(node: AudioWorkletNode): void {
 		connectSeries(this.input, node, this.output);
 		const bits = node.parameters.get("bits") as AudioParam;
 		this.bits.setParam(bits);

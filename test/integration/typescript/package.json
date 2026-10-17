@@ -6,6 +6,6 @@
 		"typescript": "^5.4.5"
 	},
 	"scripts": {
-		"test": "tsc ./test.ts --noEmit --lib dom"
+		"test": "tsc ./test.ts --noEmit --lib dom --types node"
 	}
 }

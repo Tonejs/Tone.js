@@ -30,15 +30,15 @@ describe("ReverseDelay", () => {
 				delayTime: 1.25,
 				feedback: 0.75,
 			});
-			expect(reverse.delayTime).to.equal(1.25);
-			expect(reverse.feedback).to.equal(0.75);
+			expect(reverse.delayTime.value).to.equal(1.25);
+			expect(reverse.feedback.value).to.equal(0.75);
 			reverse.dispose();
 		});
 
 		it("can get/set the options", () => {
 			const reverse = new ReverseDelay(1.25, 0.75);
-			expect(reverse.delayTime).to.equal(1.25);
-			expect(reverse.feedback).to.equal(0.75);
+			expect(reverse.delayTime.value).to.equal(1.25);
+			expect(reverse.feedback.value).to.equal(0.75);
 			reverse.set({
 				delayTime: "2n",
 				feedback: 0.5,
@@ -46,6 +46,19 @@ describe("ReverseDelay", () => {
 
 			expect(reverse.get().delayTime).to.be.closeTo(1, 0.01);
 			expect(reverse.get().feedback).to.be.closeTo(0.5, 0.01);
+			reverse.dispose();
+		});
+
+		it("can set the delayTime and feedback params directly", () => {
+			const reverse = new ReverseDelay({
+				maxDelay: 3,
+			});
+			reverse.delayTime.value = 0.5;
+			expect(reverse.delayTime.value).to.be.closeTo(0.5, 0.001);
+			reverse.delayTime.value = "4n";
+			expect(reverse.delayTime.value).to.be.closeTo(0.5, 0.001);
+			reverse.feedback.value = 0.8;
+			expect(reverse.feedback.value).to.be.closeTo(0.8, 0.001);
 			reverse.dispose();
 		});
 	});

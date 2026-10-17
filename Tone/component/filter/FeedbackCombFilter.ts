@@ -9,7 +9,9 @@ import { NormalRange, Time } from "../../core/type/Units.js";
 import { optionsFromArguments } from "../../core/util/Defaults.js";
 import { readOnly, RecursivePartial } from "../../core/util/Interface.js";
 import { ToneAudioWorklet } from "../../core/worklet/ToneAudioWorklet.js";
-import { workletName } from "./FeedbackCombFilter.worklet.js";
+import { audioWorklet } from "./FeedbackCombFilter.worklet.code.js";
+
+const workletName = "feedback-comb-filter";
 
 export interface FeedbackCombFilterOptions extends ToneAudioNodeOptions {
 	delayTime: Time;
@@ -83,6 +85,10 @@ export class FeedbackCombFilter extends ToneAudioWorklet<FeedbackCombFilterOptio
 		return workletName;
 	}
 
+	protected _audioWorkletCode(): string {
+		return audioWorklet;
+	}
+
 	/**
 	 * The default parameters
 	 */
@@ -93,7 +99,7 @@ export class FeedbackCombFilter extends ToneAudioWorklet<FeedbackCombFilterOptio
 		});
 	}
 
-	onReady(node: AudioWorkletNode) {
+	protected _onReady(node: AudioWorkletNode): void {
 		connectSeries(this.input, node, this.output);
 		const delayTime = node.parameters.get("delayTime") as AudioParam;
 		this.delayTime.setParam(delayTime);
