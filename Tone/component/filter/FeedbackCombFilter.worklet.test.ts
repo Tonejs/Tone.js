@@ -1,7 +1,10 @@
-import { expect } from "chai";
+import { expect, use } from "chai";
+import chaiAlmost from "chai-almost";
 
 import { testGenerate } from "../../../test/helper/AudioWorklet.js";
 import { FeedbackCombFilterWorklet } from "./FeedbackCombFilter.worklet.js";
+
+use(chaiAlmost());
 
 describe("FeedbackCombFilterWorklet", () => {
 	it("delays an impulse by the specified delay time with zero feedback", () => {
@@ -27,9 +30,7 @@ describe("FeedbackCombFilterWorklet", () => {
 			feedback: 0.5,
 		});
 
-		for (let i = 0; i < expected.length; i++) {
-			expect(output[i]).to.be.closeTo(expected[i], 1e-6);
-		}
+		expect(output).to.deep.almost(expected);
 	});
 
 	it("uses default parameters when none are specified", () => {

@@ -1,7 +1,10 @@
-import { expect } from "chai";
+import { expect, use } from "chai";
+import chaiAlmost from "chai-almost";
 
 import { testGenerate } from "../../../test/helper/AudioWorklet.js";
 import { SingleIOProcessor } from "./SingleIOProcessor.worklet.js";
+
+use(chaiAlmost());
 
 class MockProcessor extends SingleIOProcessor {
 	generate(
@@ -36,9 +39,7 @@ describe("SingleIOProcessor", () => {
 		});
 
 		expect(keepAlive).to.equal(true);
-		for (let i = 0; i < 128; i++) {
-			expect(outputChannel[i]).to.be.closeTo(1.5, 1e-6);
-		}
+		expect(outputChannel).to.deep.almost(new Float32Array(128).fill(1.5));
 	});
 
 	it("processes a full block via process() with a-rate parameters", () => {

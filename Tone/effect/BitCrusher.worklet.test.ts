@@ -1,7 +1,10 @@
-import { expect } from "chai";
+import { expect, use } from "chai";
+import chaiAlmost from "chai-almost";
 
 import { testGenerate } from "../../test/helper/AudioWorklet.js";
 import { BitCrusherWorklet } from "./BitCrusher.worklet.js";
+
+use(chaiAlmost());
 
 describe("BitCrusherWorklet", () => {
 	it("quantizes input samples with bits = 2", () => {
@@ -30,9 +33,7 @@ describe("BitCrusherWorklet", () => {
 		const output = testGenerate(crusher, inputs);
 
 		// With default bits = 12 (step = 1/2048), values should be very close to original
-		for (let i = 0; i < inputs.length; i++) {
-			expect(output[i]).to.be.closeTo(inputs[i], 1 / 2048);
-		}
+		expect(output).to.deep.almost(inputs, 1 / 2048);
 	});
 
 	it("quantizes input samples with scheduled parameter values per sample", () => {
