@@ -7,7 +7,9 @@ import { globSync } from "tinyglobby";
 
 import { execPromise, ROOT_DIR } from "./utils.mjs";
 
-const htmlFiles = globSync(resolve(ROOT_DIR, "examples/*.html"), { absolute: true });
+const htmlFiles = globSync(resolve(ROOT_DIR, "examples/*.html"), {
+	absolute: true,
+});
 
 async function createFixtureFiles(files) {
 	const createExampleString = (str) => `
@@ -34,7 +36,7 @@ ${str}
 		if (!script || !script.textContent) {
 			console.warn("Could not get script contents: %s", file);
 			continue;
-		};
+		}
 
 		data[`${name}.ts`] = createExampleString(script.textContent);
 	}
@@ -47,7 +49,7 @@ async function main() {
 
 	try {
 		await execPromise(
-			`tsc --noEmit --target es5 --lib dom,ES2015 ${fixtures.path}/*.ts`
+			`tsc --noEmit --lib dom,ES2015 ${fixtures.path}/*.ts --types node`
 		);
 	} catch (error) {
 		if (error instanceof Error && error?.stdout) {

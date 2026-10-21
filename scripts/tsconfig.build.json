@@ -2,8 +2,7 @@
 	"compilerOptions": {
 		"sourceMap": true,
 		"declaration": true,
-		"noUnusedLocals": true,
-		"rootDir": "../Tone"
+		"noUnusedLocals": true
 	},
 	"extends": "../tsconfig.json",
 	"include": [
@@ -12,6 +11,7 @@
 	"exclude": [
 		"../node_modules",
 		"../Tone/**/*.test.ts",
-		"../test/**/*.ts"
+		"../test/**/*.ts",
+		"../Tone/**/*.worklet.ts"
 	]
 }

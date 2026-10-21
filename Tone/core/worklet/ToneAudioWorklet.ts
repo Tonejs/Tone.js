@@ -3,7 +3,6 @@ import {
 	ToneAudioNodeOptions,
 } from "../context/ToneAudioNode.js";
 import { noOp } from "../util/Interface.js";
-import { getWorkletGlobalScope } from "./WorkletGlobalScope.js";
 
 export interface ToneAudioWorkletOptions extends ToneAudioNodeOptions {
 	workletOptions?: Partial<AudioWorkletNodeOptions>;
@@ -39,9 +38,15 @@ export abstract class ToneAudioWorklet<
 	protected abstract _audioWorkletName(): string;
 
 	/**
+	 * The compiled AudioWorkletProcessor code which registers `_audioWorkletName()`,
+	 * see the corresponding `*.worklet.ts`/`*.worklet.generated.ts` files
+	 */
+	protected abstract _audioWorkletCode(): string;
+
+	/**
 	 * Invoked when the module is loaded and the node is created
 	 */
-	protected abstract onReady(node: AudioWorkletNode): void;
+	protected abstract _onReady(node: AudioWorkletNode): void;
 
 	/**
 	 * Callback which is invoked when there is an error in the processing
@@ -51,18 +56,10 @@ export abstract class ToneAudioWorklet<
 	constructor(options: Options) {
 		super(options);
 
-		const blobUrl = URL.createObjectURL(
-			new Blob([getWorkletGlobalScope()], { type: "text/javascript" })
-		);
 		const name = this._audioWorkletName();
 
 		this._dummyGain = this.context.createGain();
 		this._dummyParam = this._dummyGain.gain;
-
-		// Register the processor
-		let workletPromise = ToneAudioWorklet._workletPromises.get(
-			this.context
-		);
 
 		if (options.workletOptions) {
 			this.workletOptions = Object.assign(
@@ -72,27 +69,48 @@ export abstract class ToneAudioWorklet<
 			);
 		}
 
-		if (workletPromise === undefined) {
-			workletPromise = this.context.addAudioWorkletModule(blobUrl);
+		// each distinct processor only needs to be registered once per context
+		let contextWorklets = ToneAudioWorklet._workletPromises.get(
+			this.context
+		);
+		if (!contextWorklets) {
+			contextWorklets = new Map();
+			ToneAudioWorklet._workletPromises.set(
+				this.context,
+				contextWorklets
+			);
+		}
 
-			ToneAudioWorklet._workletPromises.set(this.context, workletPromise);
+		let workletPromise = contextWorklets.get(name);
+		if (!workletPromise) {
+			const blobUrl = URL.createObjectURL(
+				new Blob([this._audioWorkletCode()], {
+					type: "text/javascript",
+				})
+			);
+			workletPromise = this.context.addAudioWorkletModule(blobUrl);
+			contextWorklets.set(name, workletPromise);
 		}
 
 		workletPromise.then(() => {
-			// create the worklet when it's read
-			if (!this.disposed) {
-				this._worklet = this.context.createAudioWorkletNode(
-					name,
-					this.workletOptions
-				);
-				this._worklet.onprocessorerror = (e) =>
-					this.onprocessorerror((e as ErrorEvent).message);
-				this.onReady(this._worklet);
+			if (this.disposed) {
+				return;
 			}
+			// create the worklet when it's read
+			this._worklet = this.context.createAudioWorkletNode(
+				name,
+				this.workletOptions
+			);
+			this._worklet.onprocessorerror = (e) =>
+				this.onprocessorerror((e as ErrorEvent).message);
+			this._onReady(this._worklet);
 		});
 	}
 
-	private static _workletPromises = new WeakMap<any, Promise<void>>();
+	private static _workletPromises = new WeakMap<
+		any,
+		Map<string, Promise<void>>
+	>();
 
 	dispose(): this {
 		super.dispose();

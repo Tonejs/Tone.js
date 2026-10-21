@@ -1,7 +1,6 @@
 import { expect, use } from "chai";
 import sinon from "sinon";
 import sinonChai from "sinon-chai";
-use(sinonChai);
 
 import { BasicTests } from "../../../test/helper/Basic.js";
 import { CompareToFile } from "../../../test/helper/CompareToFile.js";
@@ -12,6 +11,8 @@ import { SourceTests } from "../../../test/helper/SourceTests.js";
 import { Signal } from "../../signal/Signal.js";
 import { Oscillator } from "./Oscillator.js";
 import { ToneOscillatorType } from "./OscillatorInterface.js";
+
+use(sinonChai);
 
 describe("Oscillator", () => {
 	// run the common tests

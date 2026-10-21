@@ -36,7 +36,7 @@ async function main() {
 	const fixtures = await createFixtureFiles(scripts);
 
 	await execPromise(
-		`tsc --noEmit --target es5 --lib dom,ES2015 ${fixtures.path}/*.ts`
+		`tsc --noEmit --lib dom,ES2015 ${fixtures.path}/*.ts --types node`
 	);
 
 	await fixtures.rm();

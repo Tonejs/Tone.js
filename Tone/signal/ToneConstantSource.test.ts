@@ -1,12 +1,13 @@
 import { expect, use } from "chai";
 import sinon from "sinon";
 import sinonChai from "sinon-chai";
-use(sinonChai);
 
 import { BasicTests } from "../../test/helper/Basic.js";
 import { Offline, whenBetween } from "../../test/helper/Offline.js";
 import { Context } from "../core/context/Context.js";
 import { ToneConstantSource } from "./ToneConstantSource.js";
+
+use(sinonChai);
 
 describe("ToneConstantSource", () => {
 	BasicTests(ToneConstantSource);

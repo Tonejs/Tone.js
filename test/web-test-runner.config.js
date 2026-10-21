@@ -83,7 +83,25 @@ export default {
 		`<!DOCTYPE html>
 			<html>
 			<body>
-				<script>window.TONE_SILENCE_LOGGING = true</script>
+				<script>
+					window.TONE_SILENCE_LOGGING = true;
+					if (typeof window.AudioWorkletProcessor === "undefined") {
+						window.AudioWorkletProcessor = class {
+							port = {
+								postMessage() {},
+								onmessage: null,
+								addEventListener() {},
+								removeEventListener() {},
+							};
+						};
+					}
+					if (typeof window.registerProcessor === "undefined") {
+						window.registerProcessor = () => {};
+					}
+					if (typeof window.sampleRate === "undefined") {
+						window.sampleRate = 44100;
+					}
+				</script>
 				<script type="module" src="${testFramework}"></script>
 			</body>
 		</html>`,
