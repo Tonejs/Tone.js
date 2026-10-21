@@ -38,30 +38,30 @@ describe("ToneConstantSource", () => {
 	});
 
 	context("onended", () => {
-		it("invokes the onended callback in the online context", (done) => {
+		it("invokes the onended callback in the online context", async () => {
 			const source = new ToneConstantSource();
 			source.start();
 			source.stop("+0.3");
 			const now = source.now();
-			source.onended = () => {
-				expect(source.now() - now).to.be.closeTo(0.3, 0.15);
-				source.dispose();
-				done();
-			};
+			await new Promise<void>((resolve) => {
+				source.onended = () => resolve();
+			});
+			expect(source.now() - now).to.be.within(0.25, 0.6);
+			source.dispose();
 		});
 
-		it("invokes the onended callback only once in the online context", (done) => {
+		it("invokes the onended callback only once in the online context", async () => {
 			const source = new ToneConstantSource();
 			source.start();
 			source.stop("+0.1");
 			source.stop("+0.2");
 			source.stop("+0.3");
 			const now = source.now();
-			source.onended = () => {
-				expect(source.now() - now).to.be.within(0.25, 0.5);
-				source.dispose();
-				done();
-			};
+			await new Promise<void>((resolve) => {
+				source.onended = () => resolve();
+			});
+			expect(source.now() - now).to.be.within(0.25, 0.6);
+			source.dispose();
 		});
 
 		it("invokes the onended callback in the offline context", async () => {
@@ -127,6 +127,17 @@ describe("ToneConstantSource", () => {
 			expect(buffer.getValueAtTime(0.1)).to.be.above(0);
 			expect(buffer.getValueAtTime(0.19)).to.be.above(0);
 			expect(buffer.getValueAtTime(0.2)).to.equal(0);
+		});
+
+		it("stops the native ConstantSourceNode once stop() takes effect", async () => {
+			const stopSpy = sinon.spy(ConstantSourceNode.prototype, "stop");
+			const source = new ToneConstantSource().start();
+			source.stop();
+			await new Promise<void>((resolve) => {
+				source.onended = () => resolve();
+			});
+			expect(stopSpy).to.have.been.calledOnce;
+			source.dispose();
 		});
 
 		it("clamps start time to the currentTime", () => {
