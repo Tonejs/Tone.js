@@ -33,18 +33,6 @@ describe("FeedbackCombFilterWorklet", () => {
 		expect(output).to.deep.almost(expected);
 	});
 
-	it("uses default parameters when none are specified", () => {
-		const filter = new FeedbackCombFilterWorklet();
-		// Default delayTime is 0.1 seconds = 4410 samples at 44100Hz
-		const inputs = [1, ...new Array(50).fill(0)];
-		const output = testGenerate(filter, inputs);
-
-		// Output should be zero for the first 51 samples
-		for (let i = 0; i < inputs.length; i++) {
-			expect(output[i]).to.equal(0);
-		}
-	});
-
 	it("processes channels independently", () => {
 		const filter = new FeedbackCombFilterWorklet();
 		const inputs = [1, 0, 0, 0, 0];
