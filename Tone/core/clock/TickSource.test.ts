@@ -76,6 +76,19 @@ describe("TickSource", () => {
 			}, 0.5);
 		});
 
+		it("reports the restart offset just after a stop and start at the same time", () => {
+			const source = new TickSource(3);
+			source.start(0);
+			source.stop(1);
+			source.start(1, 10);
+			expect(source.getTicksAtTime(1)).to.be.closeTo(10, 0.01);
+			// the first tick time of the restarted period is computed from the
+			// frequency integral and can land a rounding error after the start
+			expect(source.getTicksAtTime(1 + 1e-12)).to.be.closeTo(10, 0.01);
+			expect(source.getTicksAtTime(1.5)).to.be.closeTo(11.5, 0.01);
+			source.dispose();
+		});
+
 		it("ticks restart at 0 when started after stop", () => {
 			const source = new TickSource(3);
 			source.start(0).stop(1).start(2);
@@ -595,6 +608,50 @@ describe("TickSource", () => {
 			source.forEachTickBetween(1.5 + eps, 2.0 + eps, record); // tick 4 (at 2.0)
 			source.forEachTickBetween(2.0 + eps, 2.5, record); // tick 5 (at 2.5, not included)
 
+			for (const [tick, count] of tickCount) {
+				expect(count).to.equal(
+					1,
+					`tick ${tick} fired ${count} times instead of once`
+				);
+			}
+			source.dispose();
+		});
+
+		it("does not skip the boundary tick when started between ticks (#1500)", () => {
+			const block = 128 / 48000;
+			const source = new TickSource(384);
+			const start = 2 * block + 0.12;
+			source.start(start);
+			const fired: number[] = [];
+			const boundary = (2 + 70) * block + 0.1;
+			source.forEachTickBetween(start, boundary, (_, tick) =>
+				fired.push(tick)
+			);
+			source.forEachTickBetween(boundary, boundary + 0.05, (_, tick) =>
+				fired.push(tick)
+			);
+			expect(fired).to.include(
+				64,
+				"tick 64 at the window boundary was skipped"
+			);
+			source.dispose();
+		});
+
+		it("does not fire a tick twice when started more than half a tick past an integer tick (#1500)", () => {
+			const source = new TickSource(2);
+			const start = 0.35;
+			source.start(start);
+			const tickCount = new Map<number, number>();
+			const record = (_: number, tick: number) => {
+				tickCount.set(tick, (tickCount.get(tick) ?? 0) + 1);
+			};
+			const eps = 1e-10;
+			let windowStart = start;
+			for (let n = 1; n <= 8; n++) {
+				const windowEnd = start + n * 0.5 + eps;
+				source.forEachTickBetween(windowStart, windowEnd, record);
+				windowStart = windowEnd;
+			}
 			for (const [tick, count] of tickCount) {
 				expect(count).to.equal(
 					1,

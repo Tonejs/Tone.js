@@ -217,7 +217,7 @@ export class TickParam<
 	getTimeOfTick(tick: Ticks): Seconds {
 		const before = this._events.get(tick, "ticks");
 		const after = this._events.getAfter(tick, "ticks");
-		if (before && before.ticks === tick) {
+		if (before?.ticks === tick) {
 			return before.time;
 		} else if (
 			before &&

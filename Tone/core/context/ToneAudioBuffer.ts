@@ -87,11 +87,7 @@ export class ToneAudioBuffer extends Tone {
 	 * The sample rate of the AudioBuffer
 	 */
 	get sampleRate(): number {
-		if (this._buffer) {
-			return this._buffer.sampleRate;
-		} else {
-			return getContext().sampleRate;
-		}
+		return this._buffer?.sampleRate ?? getContext().sampleRate;
 	}
 
 	/**
@@ -233,11 +229,7 @@ export class ToneAudioBuffer extends Tone {
 	 * @return The audio as a TypedArray
 	 */
 	getChannelData(channel: number): Float32Array {
-		if (this._buffer) {
-			return this._buffer.getChannelData(channel);
-		} else {
-			return new Float32Array(0);
-		}
+		return this._buffer?.getChannelData(channel) ?? new Float32Array(0);
 	}
 
 	/**
@@ -292,33 +284,21 @@ export class ToneAudioBuffer extends Tone {
 	 * The duration of the buffer in seconds.
 	 */
 	get duration(): Seconds {
-		if (this._buffer) {
-			return this._buffer.duration;
-		} else {
-			return 0;
-		}
+		return this._buffer?.duration ?? 0;
 	}
 
 	/**
 	 * The length of the buffer in samples
 	 */
 	get length(): Samples {
-		if (this._buffer) {
-			return this._buffer.length;
-		} else {
-			return 0;
-		}
+		return this._buffer?.length ?? 0;
 	}
 
 	/**
 	 * The number of discrete audio channels. Returns 0 if no buffer is loaded.
 	 */
 	get numberOfChannels(): number {
-		if (this._buffer) {
-			return this._buffer.numberOfChannels;
-		} else {
-			return 0;
-		}
+		return this._buffer?.numberOfChannels ?? 0;
 	}
 
 	/**

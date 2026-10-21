@@ -167,6 +167,12 @@ export class Clock<TypeName extends "bpm" | "hertz" = "hertz">
 	stop(time?: Time): this {
 		const computedTime = this.toSeconds(time);
 		this.log("stop", computedTime);
+		if (this._lastUpdate < computedTime && computedTime <= this.now()) {
+			// Deliver the ticks still pending before the stop against the
+			// events scheduled so far, so they aren't replayed against events
+			// scheduled for the next run between stop() and start().
+			this._processRange(this._lastUpdate, computedTime);
+		}
 		this._state.cancel(computedTime);
 		this._state.setStateAtTime("stopped", computedTime);
 		this._tickSource.stop(computedTime);

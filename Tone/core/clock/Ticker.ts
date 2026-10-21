@@ -123,8 +123,8 @@ export class Ticker {
 		if (this._timeout) {
 			clearTimeout(this._timeout);
 		}
+		this._worker?.terminate();
 		if (this._worker) {
-			this._worker.terminate();
 			this._worker.onmessage = null;
 		}
 	}

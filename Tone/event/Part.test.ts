@@ -928,5 +928,59 @@ describe("Part", () => {
 			}).to.throw(Error);
 			part.dispose();
 		});
+
+		it("`toTicks()` with no argument matches the transport's actual current tick after a bpm change (#693)", async () => {
+			let actualTicks = 0;
+			let noArgTicks = 0;
+			await Offline(({ transport }) => {
+				transport.bpm.value = 120;
+				transport.start(0);
+				return atTime(0.5, () => {
+					transport.bpm.value = 40;
+					actualTicks = transport.getTicksAtTime(transport.now());
+					noArgTicks = transport.toTicks();
+				});
+			}, 0.6);
+			expect(noArgTicks).to.be.closeTo(actualTicks, 1);
+		});
+
+		it("does not delay a part's note when it is (re)started with no time arg while the transport is running", async () => {
+			let callTime: number | undefined;
+			await Offline(({ transport }) => {
+				const part = new Part(
+					(time) => {
+						callTime = time;
+					},
+					[0]
+				);
+				transport.bpm.value = 120;
+				transport.start(0);
+				return atTime(0.5, () => {
+					part.start();
+				});
+			}, 1);
+			expect(callTime).to.be.closeTo(0.5, 0.02);
+		});
+
+		it("does not leave an orphaned repeat after stopping a phase-shifted note before its first occurrence", async () => {
+			// a note's own repeat is phase-shifted from the part's start tick;
+			// stopping before a phase-shifted note's first occurrence used to miss
+			// that boundary, leaving an orphaned repeat that could later collide
+			// with a subsequent restart (#864)
+			const calls: number[] = [];
+			await Offline(({ transport }) => {
+				const part = new Part((time) => calls.push(time), [0, 0.5]);
+				part.loop = true;
+				part.loopEnd = 1;
+				transport.bpm.value = 120;
+				transport.start(0);
+				part.start(0);
+				// stop before the note at 0.5s into the loop ever gets to fire
+				part.stop(0.1);
+				// restart partway through the next cycle
+				part.start(200 / 384);
+			}, 2);
+			expect(calls.length).to.equal(4);
+		});
 	});
 });

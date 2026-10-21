@@ -192,9 +192,7 @@ export class Noise extends Source<NoiseOptions> {
 	 */
 	dispose(): this {
 		super.dispose();
-		if (this._source) {
-			this._source.disconnect();
-		}
+		this._source?.disconnect();
 		return this;
 	}
 }

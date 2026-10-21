@@ -387,20 +387,32 @@ export class Timeline<GenericEvent extends TimelineEvent> extends Tone {
 		endTime: number,
 		callback: (event: GenericEvent) => void
 	): this {
+		// _search compares times with an epsilon, so do the same here
 		let lowerBound = this._search(startTime);
 		let upperBound = this._search(endTime);
-		if (lowerBound !== -1 && upperBound !== -1) {
-			if (this._timeline[lowerBound].time !== startTime) {
-				lowerBound += 1;
+		if (lowerBound === -1) {
+			// every event is after the start time
+			lowerBound = 0;
+		} else if (EQ(this._timeline[lowerBound].time, startTime)) {
+			// _search returns the last event at the start time,
+			// include every event at the start time
+			while (
+				lowerBound > 0 &&
+				EQ(this._timeline[lowerBound - 1].time, startTime)
+			) {
+				lowerBound -= 1;
 			}
-			// exclusive of the end time
-			if (this._timeline[upperBound].time === endTime) {
-				upperBound -= 1;
-			}
-			this._iterate(callback, lowerBound, upperBound);
-		} else if (lowerBound === -1) {
-			this._iterate(callback, 0, upperBound);
+		} else {
+			lowerBound += 1;
 		}
+		// exclusive of the end time
+		while (
+			upperBound >= 0 &&
+			EQ(this._timeline[upperBound].time, endTime)
+		) {
+			upperBound -= 1;
+		}
+		this._iterate(callback, lowerBound, upperBound);
 		return this;
 	}
 

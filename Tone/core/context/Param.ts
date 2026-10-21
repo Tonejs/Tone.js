@@ -618,7 +618,7 @@ export class Param<TypeName extends UnitName = "number">
 		param.setValueAtTime(this.getValueAtTime(now) as number, now);
 		// if the previous event was a curve, then set the rest of it
 		const previousEvent = this._events.get(now);
-		if (previousEvent && previousEvent.type === "setTargetAtTime") {
+		if (previousEvent?.type === "setTargetAtTime") {
 			// approx it until the next event with linear ramps
 			const nextEvent = this._events.getAfter(previousEvent.time);
 			// or for 2 seconds if there is no event

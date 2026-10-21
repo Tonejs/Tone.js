@@ -1,7 +1,12 @@
 import { expect } from "chai";
 
 import { BasicTests } from "../../test/helper/Basic.js";
-import { Offline, whenBetween } from "../../test/helper/Offline.js";
+import {
+	atTime,
+	holdClock,
+	Offline,
+	whenBetween,
+} from "../../test/helper/Offline.js";
 import { Time } from "../core/type/Time.js";
 import { noOp } from "../core/util/Interface.js";
 import { Loop } from "./Loop.js";
@@ -217,6 +222,29 @@ describe("Loop", () => {
 	});
 
 	context("Looping", () => {
+		it("starts a Loop created between stop() and start() with the new run (#1502)", async () => {
+			const beats: number[] = [];
+			let restartTime = 0;
+			await Offline((context) => {
+				const transport = context.transport;
+				transport.start(0);
+				return atTime(
+					0.02,
+					holdClock(transport, (time) => {
+						transport.stop(time);
+						new Loop({
+							context,
+							callback: (t) => beats.push(t),
+							interval: "4i",
+						}).start(0);
+						restartTime = time + 0.005;
+						transport.start(restartTime);
+					})
+				);
+			}, 0.05);
+			expect(beats[0]).to.be.at.least(restartTime);
+		});
+
 		it("loops", async () => {
 			let callCount = 0;
 			await Offline(({ transport }) => {

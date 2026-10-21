@@ -348,6 +348,9 @@ export abstract class Source<
 							duration =
 								this.toSeconds(stateEvent.duration) -
 								startOffset;
+							if (duration <= 0) {
+								return;
+							}
 						}
 						this._start(
 							time,

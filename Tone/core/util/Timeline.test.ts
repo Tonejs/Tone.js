@@ -604,5 +604,61 @@ describe("Timeline", () => {
 			expect(count).to.equal(0);
 			sched.dispose();
 		});
+
+		it("includes every event at the start time and excludes every event at the end time", () => {
+			const sched = new Timeline<{ time: number; id: string }>();
+			sched.add({ time: 0.1, id: "a" });
+			sched.add({ time: 0.2, id: "b" });
+			sched.add({ time: 0.2, id: "c" });
+			sched.add({ time: 0.3, id: "d" });
+			sched.add({ time: 0.3, id: "e" });
+			const visited = (start: number, end: number): string[] => {
+				const ids: string[] = [];
+				sched.forEachBetween(start, end, (event) => ids.push(event.id));
+				return ids;
+			};
+			expect(visited(0.1, 0.2)).to.deep.equal(["a"]);
+			expect(visited(0.2, 0.3)).to.deep.equal(["b", "c"]);
+			expect(visited(0.3, 0.4)).to.deep.equal(["d", "e"]);
+			expect(visited(0.15, 0.25)).to.deep.equal(["b", "c"]);
+			sched.dispose();
+		});
+
+		it("visits an event added at the boundary after the previous range was iterated", () => {
+			// two consecutive ranges [0.1, 0.2) and [0.2, 0.4); an event at 0.2
+			// is added between the two iterations, after another event at 0.2
+			const sched = new Timeline<{ time: number; id: string }>();
+			sched.add({ time: 0.1, id: "a" });
+			sched.add({ time: 0.2, id: "b" });
+			const ids: string[] = [];
+			sched.forEachBetween(0.1, 0.2, (event) => ids.push(event.id));
+			sched.add({ time: 0.2, id: "c" });
+			sched.forEachBetween(0.2, 0.4, (event) => ids.push(event.id));
+			expect(ids).to.deep.equal(["a", "b", "c"]);
+			sched.dispose();
+		});
+
+		it("includes events within rounding error of the start time", () => {
+			// _search compares times with an epsilon; the range bounds must too
+			const sched = new Timeline<{ time: number; id: string }>();
+			sched.add({ time: 0.1, id: "a" });
+			sched.add({ time: 0.2, id: "b" });
+			sched.add({ time: 0.2 + 1e-12, id: "c" });
+			const ids: string[] = [];
+			sched.forEachBetween(0.2, 0.3, (event) => ids.push(event.id));
+			expect(ids).to.deep.equal(["b", "c"]);
+			sched.dispose();
+		});
+
+		it("excludes the end time when the start time is before the first event", () => {
+			const sched = new Timeline<{ time: number; id: string }>();
+			sched.add({ time: 0.1, id: "a" });
+			sched.add({ time: 0.2, id: "b" });
+			sched.add({ time: 0.2, id: "c" });
+			const ids: string[] = [];
+			sched.forEachBetween(0, 0.2, (event) => ids.push(event.id));
+			expect(ids).to.deep.equal(["a"]);
+			sched.dispose();
+		});
 	});
 });

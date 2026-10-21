@@ -515,7 +515,7 @@ export class Player extends Source<PlayerOptions> {
 
 		// cancel the stop event since it's at a different time now
 		const stopEvent = this._state.getNextState("stopped", now);
-		if (stopEvent && stopEvent.implicitEnd) {
+		if (stopEvent?.implicitEnd) {
 			this._state.cancel(stopEvent.time);
 			this._activeSources.forEach((source) => source.cancelStop());
 

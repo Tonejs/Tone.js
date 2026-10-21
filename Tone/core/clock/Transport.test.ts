@@ -4,7 +4,12 @@ import "../context/Destination.js";
 import { expect } from "chai";
 
 import { warns } from "../../../test/helper/Basic.js";
-import { atTime, Offline, whenBetween } from "../../../test/helper/Offline.js";
+import {
+	atTime,
+	holdClock,
+	Offline,
+	whenBetween,
+} from "../../../test/helper/Offline.js";
 import { Synth } from "../../instrument/Synth.js";
 import { Signal } from "../../signal/Signal.js";
 import { Time } from "../type/Time.js";
@@ -1008,29 +1013,38 @@ describe("Transport", () => {
 				transport.on("stop", (time) => {
 					stopEvents.push(time);
 				});
-				const clock = (
-					transport as unknown as {
-						_clock: {
-							context: typeof context;
-							_boundLoop: () => void;
-						};
-					}
-				)._clock;
 				transport.start(0);
-				// Detach the clock's own loop from the context's "tick"
-				// event so its _lastUpdate genuinely falls behind,
-				// simulating the tick loop's cadence (default
-				// updateInterval=0.05s) outrunning a rapid
-				// Transport.stop()/Transport.start() cycle, as described
-				// in #1419.
-				clock.context.off("tick", clock._boundLoop);
-				return atTime(0.02, () => {
-					transport.stop(0.015);
-					transport.start(0.018);
-					clock.context.on("tick", clock._boundLoop);
-				});
+				return atTime(
+					0.02,
+					holdClock(transport, () => {
+						transport.stop(0.015);
+						transport.start(0.018);
+					})
+				);
 			}, 0.03);
 			expect(stopEvents).to.deep.equal([0.015]);
+		});
+
+		it("does not fire an event scheduled after stop() from the previous run (#1502)", async () => {
+			const invocations: number[] = [];
+			let restartTime = 0;
+			await Offline((context) => {
+				const transport = new TransportInstance({ context });
+				transport.start(0);
+				return atTime(
+					0.02,
+					holdClock(transport, (time) => {
+						transport.stop(time);
+						// For the next run, at a position the previous run passed
+						// between its last processed tick and the stop.
+						transport.schedule((t) => invocations.push(t), "5i");
+						restartTime = time + 0.005;
+						transport.start(restartTime);
+					})
+				);
+			}, 0.05);
+			expect(invocations).to.have.length(1);
+			expect(invocations[0]).to.be.at.least(restartTime);
 		});
 
 		it("invokes start event with correct offset", async () => {

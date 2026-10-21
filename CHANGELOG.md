@@ -1,6 +1,6 @@
 # Changelog
 
-## [15.5.43](https://github.com/Tonejs/Tone.js/compare/15.1.22...HEAD)
+## [15.5.57](https://github.com/Tonejs/Tone.js/compare/15.1.22...HEAD)
 
 ### Features
 
@@ -16,6 +16,13 @@
 
 ### Bug Fixes
 
+- **PatternGenerator:** keep randomWalk within the value range ([#1484](https://github.com/Tonejs/Tone.js/pull/1484)) (`023f6e4`)
+- **ToneConstantSource:** preserve delayed start time ([#1458](https://github.com/Tonejs/Tone.js/pull/1458)) (`46ba41e`)
+- clear pending ticks on stop when lastUpdated clock tick is behind `now()` ([#1514](https://github.com/Tonejs/Tone.js/pull/1514)) (`2586b2e`)
+- TickSource skips the boundary tick when started between integer ticks ([#1504](https://github.com/Tonejs/Tone.js/pull/1504)) (`3995e16`)
+- chromium issue on mac with waveform rendering ([#1497](https://github.com/Tonejs/Tone.js/pull/1497)) (`eaa580b`)
+- Timeline.forEachBetween skips events sharing the range start time ([#1506](https://github.com/Tonejs/Tone.js/pull/1506)) (`50c62ec`)
+- Part start/stop issues ([#1496](https://github.com/Tonejs/Tone.js/pull/1496)) (`769fca5`)
 - Clock.start() flushes pending events/ticks before advancing a stale _lastUpdate ([#1487](https://github.com/Tonejs/Tone.js/pull/1487)) (`2e0b55e`)
 - **test:** remove focused test modifiers ([#1453](https://github.com/Tonejs/Tone.js/pull/1453)) (`ac4cd10`)
 - Checking for circular dependencies ([#1447](https://github.com/Tonejs/Tone.js/pull/1447)) (`4847d58`)
@@ -36,6 +43,10 @@
 - Connect and disconnect using signalConnect / signalDisconnect (`797dae4`)
 - Signal disconnect ([#1373](https://github.com/Tonejs/Tone.js/pull/1373)) (`13df9b3`)
 - **ci:** only run semantic pull request on pull_request ([#1367](https://github.com/Tonejs/Tone.js/pull/1367)) (`4ff2e8d`)
+
+### Refactoring
+
+- use optional chaining to reduce branching ([#1512](https://github.com/Tonejs/Tone.js/pull/1512)) (`ad84530`)
 
 ### Documentation
 
