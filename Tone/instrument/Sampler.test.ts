@@ -88,6 +88,27 @@ describe("Sampler", () => {
 			expect(buffer.isSilent()).to.be.false;
 		});
 
+		it("get() reports back the urls, baseUrl, onload and onerror it was constructed with", () => {
+			const onload = () => {};
+			const onerror = () => {};
+			const sampler = new Sampler({
+				urls: {
+					69: A4_buffer,
+				},
+				baseUrl: "./test/audio/",
+				onload,
+				onerror,
+			});
+			const options = sampler.get();
+			expect(options.urls).to.deep.equal({
+				69: A4_buffer,
+			});
+			expect(options.baseUrl).to.equal("./test/audio/");
+			expect(options.onload).to.equal(onload);
+			expect(options.onerror).to.equal(onerror);
+			sampler.dispose();
+		});
+
 		it("throws an error if there are no available notes to play", () => {
 			expect(() => {
 				const sampler = new Sampler();
