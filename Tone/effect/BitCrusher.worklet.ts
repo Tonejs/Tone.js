@@ -3,7 +3,6 @@
 import { SingleIOProcessor } from "../core/worklet/SingleIOProcessor.worklet.js";
 import { AudioParamDescriptor } from "../core/worklet/ToneAudioWorkletProcessor.worklet.js";
 
-// NOTE: keep this in sync with the `workletName` constant in BitCrusher.ts
 export class BitCrusherWorklet extends SingleIOProcessor {
 	static get parameterDescriptors(): AudioParamDescriptor[] {
 		return [
