@@ -20,6 +20,7 @@ interface AudioWorkletGlobalScopeEnvironment {
 const workletScope =
 	globalThis as unknown as AudioWorkletGlobalScopeEnvironment;
 
+/* node:coverage disable */
 // Ensure AudioWorklet globals exist at runtime in Node and browser test environments
 if (isUndef(workletScope.AudioWorkletProcessor)) {
 	class MockMessagePort {
@@ -64,6 +65,7 @@ if (isUndef(workletScope.registerProcessor)) {
 if (isUndef(workletScope.sampleRate)) {
 	workletScope.sampleRate = 44100;
 }
+/* node:coverage enable */
 
 export type ParameterValues = Record<string, number | number[]>;
 
