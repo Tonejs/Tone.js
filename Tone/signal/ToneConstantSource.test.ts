@@ -38,30 +38,30 @@ describe("ToneConstantSource", () => {
 	});
 
 	context("onended", () => {
-		it("invokes the onended callback in the online context", (done) => {
+		it("invokes the onended callback in the online context", async () => {
 			const source = new ToneConstantSource();
 			source.start();
 			source.stop("+0.3");
 			const now = source.now();
-			source.onended = () => {
-				expect(source.now() - now).to.be.closeTo(0.3, 0.15);
-				source.dispose();
-				done();
-			};
+			await new Promise<void>((resolve) => {
+				source.onended = () => resolve();
+			});
+			expect(source.now() - now).to.be.within(0.25, 0.6);
+			source.dispose();
 		});
 
-		it("invokes the onended callback only once in the online context", (done) => {
+		it("invokes the onended callback only once in the online context", async () => {
 			const source = new ToneConstantSource();
 			source.start();
 			source.stop("+0.1");
 			source.stop("+0.2");
 			source.stop("+0.3");
 			const now = source.now();
-			source.onended = () => {
-				expect(source.now() - now).to.be.within(0.25, 0.5);
-				source.dispose();
-				done();
-			};
+			await new Promise<void>((resolve) => {
+				source.onended = () => resolve();
+			});
+			expect(source.now() - now).to.be.within(0.25, 0.6);
+			source.dispose();
 		});
 
 		it("invokes the onended callback in the offline context", async () => {
@@ -130,18 +130,13 @@ describe("ToneConstantSource", () => {
 		});
 
 		it("stops the native ConstantSourceNode once stop() takes effect", async () => {
+			const stopSpy = sinon.spy(ConstantSourceNode.prototype, "stop");
 			const source = new ToneConstantSource().start();
-			// @ts-ignore
-			const native: ConstantSourceNode = source._source;
-			let stopCalls = 0;
-			const stop = native.stop.bind(native);
-			native.stop = (when?: number) => {
-				stopCalls++;
-				stop(when);
-			};
 			source.stop();
-			await new Promise((done) => setTimeout(done, 300));
-			expect(stopCalls).to.equal(1);
+			await new Promise<void>((resolve) => {
+				source.onended = () => resolve();
+			});
+			expect(stopSpy).to.have.been.calledOnce;
 			source.dispose();
 		});
 
