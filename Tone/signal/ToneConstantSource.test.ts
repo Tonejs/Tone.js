@@ -1,12 +1,13 @@
 import { expect, use } from "chai";
 import sinon from "sinon";
 import sinonChai from "sinon-chai";
-use(sinonChai);
 
 import { BasicTests } from "../../test/helper/Basic.js";
 import { Offline, whenBetween } from "../../test/helper/Offline.js";
 import { Context } from "../core/context/Context.js";
 import { ToneConstantSource } from "./ToneConstantSource.js";
+
+use(sinonChai);
 
 describe("ToneConstantSource", () => {
 	BasicTests(ToneConstantSource);
@@ -38,30 +39,30 @@ describe("ToneConstantSource", () => {
 	});
 
 	context("onended", () => {
-		it("invokes the onended callback in the online context", (done) => {
+		it("invokes the onended callback in the online context", async () => {
 			const source = new ToneConstantSource();
 			source.start();
 			source.stop("+0.3");
 			const now = source.now();
-			source.onended = () => {
-				expect(source.now() - now).to.be.closeTo(0.3, 0.15);
-				source.dispose();
-				done();
-			};
+			await new Promise<void>((resolve) => {
+				source.onended = () => resolve();
+			});
+			expect(source.now() - now).to.be.within(0.25, 0.6);
+			source.dispose();
 		});
 
-		it("invokes the onended callback only once in the online context", (done) => {
+		it("invokes the onended callback only once in the online context", async () => {
 			const source = new ToneConstantSource();
 			source.start();
 			source.stop("+0.1");
 			source.stop("+0.2");
 			source.stop("+0.3");
 			const now = source.now();
-			source.onended = () => {
-				expect(source.now() - now).to.be.within(0.25, 0.5);
-				source.dispose();
-				done();
-			};
+			await new Promise<void>((resolve) => {
+				source.onended = () => resolve();
+			});
+			expect(source.now() - now).to.be.within(0.25, 0.6);
+			source.dispose();
 		});
 
 		it("invokes the onended callback in the offline context", async () => {

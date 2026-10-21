@@ -1,12 +1,13 @@
 import { expect, use } from "chai";
 import sinon from "sinon";
 import sinonChai from "sinon-chai";
-use(sinonChai);
 
 import { BasicTests } from "../../test/helper/Basic.js";
 import { Context } from "../core/context/Context.js";
 import { OfflineContext } from "../core/context/OfflineContext.js";
 import { UserMedia } from "./UserMedia.js";
+
+use(sinonChai);
 
 describe("UserMedia", () => {
 	// run the common tests

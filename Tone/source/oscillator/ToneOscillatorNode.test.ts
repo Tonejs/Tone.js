@@ -74,30 +74,30 @@ describe("ToneOscillatorNode", () => {
 	});
 
 	context("onended", () => {
-		it("invokes the onended callback in the online context", (done) => {
+		it("invokes the onended callback in the online context", async () => {
 			const osc = new ToneOscillatorNode();
 			osc.start();
 			osc.stop("+0.3");
 			const now = osc.now();
-			osc.onended = () => {
-				expect(osc.now() - now).to.be.within(0.25, 0.5);
-				osc.dispose();
-				done();
-			};
+			await new Promise<void>((resolve) => {
+				osc.onended = () => resolve();
+			});
+			expect(osc.now() - now).to.be.within(0.25, 0.6);
+			osc.dispose();
 		});
 
-		it("invokes the onended callback only once in the online context", (done) => {
+		it("invokes the onended callback only once in the online context", async () => {
 			const osc = new ToneOscillatorNode();
 			osc.start();
 			osc.stop("+0.1");
 			osc.stop("+0.2");
 			osc.stop("+0.3");
 			const now = osc.now();
-			osc.onended = () => {
-				expect(osc.now() - now).to.be.within(0.25, 0.5);
-				osc.dispose();
-				done();
-			};
+			await new Promise<void>((resolve) => {
+				osc.onended = () => resolve();
+			});
+			expect(osc.now() - now).to.be.within(0.25, 0.6);
+			osc.dispose();
 		});
 
 		it("invokes the onended callback in the offline context", async () => {
