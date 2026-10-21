@@ -1,6 +1,6 @@
 # Changelog
 
-## [15.5.57](https://github.com/Tonejs/Tone.js/compare/15.1.22...HEAD)
+## [15.5.58](https://github.com/Tonejs/Tone.js/compare/15.1.22...HEAD)
 
 ### Features
 
@@ -16,6 +16,9 @@
 
 ### Bug Fixes
 
+- changelog import ([#1527](https://github.com/Tonejs/Tone.js/pull/1527)) (`97cfc4d`)
+- stop the native node once stop() takes effect ([#1522](https://github.com/Tonejs/Tone.js/pull/1522)) (`61aa95f`)
+- Sampler.get() returns urls, baseUrl, onload and onerror ([#1508](https://github.com/Tonejs/Tone.js/pull/1508)) (`3ccb8ad`)
 - **PatternGenerator:** keep randomWalk within the value range ([#1484](https://github.com/Tonejs/Tone.js/pull/1484)) (`023f6e4`)
 - **ToneConstantSource:** preserve delayed start time ([#1458](https://github.com/Tonejs/Tone.js/pull/1458)) (`46ba41e`)
 - clear pending ticks on stop when lastUpdated clock tick is behind `now()` ([#1514](https://github.com/Tonejs/Tone.js/pull/1514)) (`2586b2e`)
@@ -56,6 +59,7 @@
 
 ### Chores
 
+- **deps:** Bump @simple-git/argv-parser and simple-git ([#1519](https://github.com/Tonejs/Tone.js/pull/1519)) (`59f486c`)
 - **deps:** Bump serialize-javascript and mocha ([#1494](https://github.com/Tonejs/Tone.js/pull/1494)) (`2610ef9`)
 - **deps:** Bump brace-expansion ([#1485](https://github.com/Tonejs/Tone.js/pull/1485)) (`d8e056c`)
 - Adding PR links to the CHANGELOG.md ([#1478](https://github.com/Tonejs/Tone.js/pull/1478)) (`fe84ff9`)
