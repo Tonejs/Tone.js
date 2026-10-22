@@ -1,6 +1,6 @@
 # Changelog
 
-## [15.5.59](https://github.com/Tonejs/Tone.js/compare/15.1.22...HEAD)
+## [15.5.60](https://github.com/Tonejs/Tone.js/compare/15.1.22...HEAD)
 
 ### Features
 
@@ -16,6 +16,7 @@
 
 ### Bug Fixes
 
+- Clock delivers state events and tick callbacks in time order ([#1515](https://github.com/Tonejs/Tone.js/pull/1515)) (`1dd7eaa`)
 - changelog import ([#1527](https://github.com/Tonejs/Tone.js/pull/1527)) (`97cfc4d`)
 - stop the native node once stop() takes effect ([#1522](https://github.com/Tonejs/Tone.js/pull/1522)) (`61aa95f`)
 - Sampler.get() returns urls, baseUrl, onload and onerror ([#1508](https://github.com/Tonejs/Tone.js/pull/1508)) (`3ccb8ad`)
