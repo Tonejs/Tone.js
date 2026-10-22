@@ -9,6 +9,7 @@ import { Offline } from "../../../test/helper/Offline.js";
 import { OscillatorTests } from "../../../test/helper/OscillatorTests.js";
 import { OutputAudio } from "../../../test/helper/OutputAudio.js";
 import { SourceTests } from "../../../test/helper/SourceTests.js";
+import { OfflineContext } from "../../core/context/OfflineContext.js";
 import { Signal } from "../../signal/Signal.js";
 import { Oscillator } from "./Oscillator.js";
 import { ToneOscillatorType } from "./OscillatorInterface.js";
@@ -111,13 +112,102 @@ describe("Oscillator", () => {
 				}
 			});
 		});
+	});
+
+	context("Periodic Wave Cache", () => {
+		beforeEach(() => {
+			// @ts-ignore
+			Oscillator._periodicWaveCache = [];
+		});
 
 		it("can go past the cache max size of 100", () => {
 			const osc = new Oscillator();
 			for (let i = 0; i < 110; i++) {
 				osc.phase = i;
 			}
+			// @ts-ignore
+			expect(Oscillator._periodicWaveCache.length).to.equal(100);
 			osc.dispose();
+		});
+
+		it("caches periodic waves by sample rate", () => {
+			const createWave = sinon.spy(
+				OfflineContext.prototype,
+				"createPeriodicWave"
+			);
+			const context44k = new OfflineContext(1, 0.01, 44100);
+			const context48k = new OfflineContext(1, 0.01, 48000);
+
+			const osc1 = new Oscillator({
+				context: context44k,
+				phase: 90,
+			});
+			const osc2 = new Oscillator({
+				context: context44k,
+				phase: 90,
+			});
+			expect(createWave).to.have.been.calledOnce;
+
+			const osc3 = new Oscillator({
+				context: context48k,
+				phase: 90,
+			});
+			expect(createWave).to.have.been.calledTwice;
+
+			const osc4 = new Oscillator({
+				context: context48k,
+				phase: 90,
+			});
+			expect(createWave).to.have.been.calledTwice;
+
+			osc1.dispose();
+			osc2.dispose();
+			osc3.dispose();
+			osc4.dispose();
+			context44k.dispose();
+			context48k.dispose();
+		});
+
+		it("caches custom waveforms by sample rate", () => {
+			const createWave = sinon.spy(
+				OfflineContext.prototype,
+				"createPeriodicWave"
+			);
+			const context44k = new OfflineContext(1, 0.01, 44100);
+			const context48k = new OfflineContext(1, 0.01, 48000);
+
+			const osc1 = new Oscillator({
+				context: context44k,
+				partials: [1, 2, 3],
+				type: "custom",
+			});
+			const osc2 = new Oscillator({
+				context: context44k,
+				partials: [1, 2, 3],
+				type: "custom",
+			});
+			expect(createWave).to.have.been.calledOnce;
+
+			const osc3 = new Oscillator({
+				context: context48k,
+				partials: [1, 2, 3],
+				type: "custom",
+			});
+			expect(createWave).to.have.been.calledTwice;
+
+			const osc4 = new Oscillator({
+				context: context48k,
+				partials: [1, 2, 3],
+				type: "custom",
+			});
+			expect(createWave).to.have.been.calledTwice;
+
+			osc1.dispose();
+			osc2.dispose();
+			osc3.dispose();
+			osc4.dispose();
+			context44k.dispose();
+			context48k.dispose();
 		});
 	});
 
