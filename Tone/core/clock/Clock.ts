@@ -7,7 +7,12 @@ import { assertContextRunning } from "../util/Debug.js";
 import { optionsFromArguments } from "../util/Defaults.js";
 import { Emitter } from "../util/Emitter.js";
 import { noOp, readOnly } from "../util/Interface.js";
-import { PlaybackState, StateTimeline } from "../util/StateTimeline.js";
+import { GT } from "../util/Math.js";
+import {
+	PlaybackState,
+	StateTimeline,
+	StateTimelineEvent,
+} from "../util/StateTimeline.js";
 import { TickSignal } from "./TickSignal.js";
 import { TickSource } from "./TickSource.js";
 
@@ -290,39 +295,62 @@ export class Clock<TypeName extends "bpm" | "hertz" = "hertz">
 
 	/**
 	 * Invoke the state-transition events (start/stop/pause) and tick
-	 * callbacks scheduled between startTime and endTime, and advance
-	 * _lastUpdate to endTime.
+	 * callbacks scheduled between startTime and endTime in time order,
+	 * and advance _lastUpdate to endTime.
 	 * @param startTime The beginning of the range to process.
 	 * @param endTime The end of the range to process.
 	 */
 	private _processRange(startTime: number, endTime: number): void {
 		this._lastUpdate = endTime;
 		if (startTime !== endTime) {
-			// the state change events
+			// the state change events, interleaved with the tick callbacks
+			// so that e.g. a tick just before a pause is delivered before
+			// the pause event, not after it
+			const stateEvents: StateTimelineEvent[] = [];
 			this._state.forEachBetween(startTime, endTime, (e) => {
-				switch (e.state) {
-					case "started":
-						const offset = this._tickSource.getTicksAtTime(e.time);
-						this.emit("start", e.time, offset);
-						break;
-					case "stopped":
-						if (e.time !== 0) {
-							this.emit("stop", e.time);
-						}
-						break;
-					case "paused":
-						this.emit("pause", e.time);
-						break;
-				}
+				stateEvents.push(e);
 			});
-			// the tick callbacks
+			let nextStateEvent = 0;
+			const emitStateEventsUpTo = (time: Seconds) => {
+				// a callback may have disposed the clock
+				while (
+					!this.disposed &&
+					nextStateEvent < stateEvents.length &&
+					!GT(stateEvents[nextStateEvent].time, time)
+				) {
+					this._emitStateEvent(stateEvents[nextStateEvent]);
+					nextStateEvent++;
+				}
+			};
 			this._tickSource.forEachTickBetween(
 				startTime,
 				endTime,
 				(time, ticks) => {
+					emitStateEventsUpTo(time);
 					this.callback(time, ticks);
 				}
 			);
+			emitStateEventsUpTo(endTime);
+		}
+	}
+
+	/**
+	 * Emit the event corresponding to a state change
+	 */
+	private _emitStateEvent(event: StateTimelineEvent): void {
+		switch (event.state) {
+			case "started":
+				const offset = this._tickSource.getTicksAtTime(event.time);
+				this.emit("start", event.time, offset);
+				break;
+			case "stopped":
+				if (event.time !== 0) {
+					this.emit("stop", event.time);
+				}
+				break;
+			case "paused":
+				this.emit("pause", event.time);
+				break;
 		}
 	}
 
