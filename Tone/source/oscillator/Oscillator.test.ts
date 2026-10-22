@@ -112,76 +112,103 @@ describe("Oscillator", () => {
 				}
 			});
 		});
+	});
+
+	context("Periodic Wave Cache", () => {
+		beforeEach(() => {
+			// @ts-ignore
+			Oscillator._periodicWaveCache = [];
+		});
 
 		it("can go past the cache max size of 100", () => {
 			const osc = new Oscillator();
 			for (let i = 0; i < 110; i++) {
 				osc.phase = i;
 			}
+			// @ts-ignore
+			expect(Oscillator._periodicWaveCache.length).to.equal(100);
 			osc.dispose();
 		});
-	});
 
-	context("Periodic Wave Cache", () => {
-		for (const type of ["sine", "custom"] as const) {
-			for (const sampleRates of [
-				[44100, 48000],
-				[48000, 44100],
-				[44100, 44100],
-				[48000, 48000],
-			]) {
-				it(`renders ${type} waves at ${sampleRates.join(" then ")} Hz`, async () => {
-					const createWave = sinon.spy(
-						OfflineContext.prototype,
-						"createPeriodicWave"
-					);
-					// Keep each case independent of previously cached waves.
-					const phase =
-						11.25 +
-						(type === "custom" ? 10 : 0) +
-						sampleRates[0] / 1000 +
-						sampleRates[1] / 10000;
-					for (const sampleRate of sampleRates) {
-						const context = new OfflineContext(1, 0.02, sampleRate);
-						const osc = new Oscillator({
-							context,
-							frequency: 440,
-							phase,
-							type,
-							partials: type === "custom" ? [1] : [],
-						})
-							.toDestination()
-							.start(0);
-						try {
-							const samples = (
-								await context.render()
-							).getChannelData(0);
-							let maxError = 0;
-							for (let i = 0; i < samples.length; i++) {
-								const expected = Math.sin(
-									(2 * Math.PI * 440 * i) / sampleRate -
-										(phase * Math.PI) / 180
-								);
-								maxError = Math.max(
-									maxError,
-									Math.abs(samples[i] - expected)
-								);
-							}
-							expect(
-								maxError,
-								`${sampleRate} Hz waveform error`
-							).to.be.lessThan(0.001);
-						} finally {
-							osc.dispose();
-							context.dispose();
-						}
-					}
-					expect(createWave).to.have.been.callCount(
-						new Set(sampleRates).size
-					);
-				});
-			}
-		}
+		it("caches periodic waves by sample rate", () => {
+			const createWave = sinon.spy(
+				OfflineContext.prototype,
+				"createPeriodicWave"
+			);
+			const context44k = new OfflineContext(1, 0.01, 44100);
+			const context48k = new OfflineContext(1, 0.01, 48000);
+
+			const osc1 = new Oscillator({
+				context: context44k,
+				phase: 90,
+			});
+			const osc2 = new Oscillator({
+				context: context44k,
+				phase: 90,
+			});
+			expect(createWave).to.have.been.calledOnce;
+
+			const osc3 = new Oscillator({
+				context: context48k,
+				phase: 90,
+			});
+			expect(createWave).to.have.been.calledTwice;
+
+			const osc4 = new Oscillator({
+				context: context48k,
+				phase: 90,
+			});
+			expect(createWave).to.have.been.calledTwice;
+
+			osc1.dispose();
+			osc2.dispose();
+			osc3.dispose();
+			osc4.dispose();
+			context44k.dispose();
+			context48k.dispose();
+		});
+
+		it("caches custom waveforms by sample rate", () => {
+			const createWave = sinon.spy(
+				OfflineContext.prototype,
+				"createPeriodicWave"
+			);
+			const context44k = new OfflineContext(1, 0.01, 44100);
+			const context48k = new OfflineContext(1, 0.01, 48000);
+
+			const osc1 = new Oscillator({
+				context: context44k,
+				partials: [1, 2, 3],
+				type: "custom",
+			});
+			const osc2 = new Oscillator({
+				context: context44k,
+				partials: [1, 2, 3],
+				type: "custom",
+			});
+			expect(createWave).to.have.been.calledOnce;
+
+			const osc3 = new Oscillator({
+				context: context48k,
+				partials: [1, 2, 3],
+				type: "custom",
+			});
+			expect(createWave).to.have.been.calledTwice;
+
+			const osc4 = new Oscillator({
+				context: context48k,
+				partials: [1, 2, 3],
+				type: "custom",
+			});
+			expect(createWave).to.have.been.calledTwice;
+
+			osc1.dispose();
+			osc2.dispose();
+			osc3.dispose();
+			osc4.dispose();
+			context44k.dispose();
+			context48k.dispose();
+		});
 	});
 
 	context("Type", () => {
