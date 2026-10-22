@@ -1,6 +1,6 @@
 # Changelog
 
-## [15.5.60](https://github.com/Tonejs/Tone.js/compare/15.1.22...HEAD)
+## [15.5.61](https://github.com/Tonejs/Tone.js/compare/15.1.22...HEAD)
 
 ### Features
 
@@ -16,6 +16,7 @@
 
 ### Bug Fixes
 
+- **Oscillator:** cache periodic waves by sample rate ([#1528](https://github.com/Tonejs/Tone.js/pull/1528)) (`c10c498`)
 - Clock delivers state events and tick callbacks in time order ([#1515](https://github.com/Tonejs/Tone.js/pull/1515)) (`1dd7eaa`)
 - changelog import ([#1527](https://github.com/Tonejs/Tone.js/pull/1527)) (`97cfc4d`)
 - stop the native node once stop() takes effect ([#1522](https://github.com/Tonejs/Tone.js/pull/1522)) (`61aa95f`)
