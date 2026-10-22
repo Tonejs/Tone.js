@@ -9,6 +9,7 @@ import { Offline } from "../../../test/helper/Offline.js";
 import { OscillatorTests } from "../../../test/helper/OscillatorTests.js";
 import { OutputAudio } from "../../../test/helper/OutputAudio.js";
 import { SourceTests } from "../../../test/helper/SourceTests.js";
+import { OfflineContext } from "../../core/context/OfflineContext.js";
 import { Signal } from "../../signal/Signal.js";
 import { Oscillator } from "./Oscillator.js";
 import { ToneOscillatorType } from "./OscillatorInterface.js";
@@ -119,6 +120,68 @@ describe("Oscillator", () => {
 			}
 			osc.dispose();
 		});
+	});
+
+	context("Periodic Wave Cache", () => {
+		for (const type of ["sine", "custom"] as const) {
+			for (const sampleRates of [
+				[44100, 48000],
+				[48000, 44100],
+				[44100, 44100],
+				[48000, 48000],
+			]) {
+				it(`renders ${type} waves at ${sampleRates.join(" then ")} Hz`, async () => {
+					const createWave = sinon.spy(
+						OfflineContext.prototype,
+						"createPeriodicWave"
+					);
+					// Keep each case independent of previously cached waves.
+					const phase =
+						11.25 +
+						(type === "custom" ? 10 : 0) +
+						sampleRates[0] / 1000 +
+						sampleRates[1] / 10000;
+					for (const sampleRate of sampleRates) {
+						const context = new OfflineContext(1, 0.02, sampleRate);
+						const osc = new Oscillator({
+							context,
+							frequency: 440,
+							phase,
+							type,
+							partials: type === "custom" ? [1] : [],
+						})
+							.toDestination()
+							.start(0);
+						try {
+							const samples = (
+								await context.render()
+							).getChannelData(0);
+							let maxError = 0;
+							for (let i = 0; i < samples.length; i++) {
+								const expected = Math.sin(
+									(2 * Math.PI * 440 * i) / sampleRate -
+										(phase * Math.PI) / 180
+								);
+								maxError = Math.max(
+									maxError,
+									Math.abs(samples[i] - expected)
+								);
+							}
+							expect(
+								maxError,
+								`${sampleRate} Hz waveform error`
+							).to.be.lessThan(0.001);
+						} finally {
+							osc.dispose();
+							context.dispose();
+						}
+					}
+					expect(createWave).to.have.been.callCount(
+						new Set(sampleRates).size
+					);
+				});
+			}
+		}
 	});
 
 	context("Type", () => {
