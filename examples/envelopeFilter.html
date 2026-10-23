@@ -1,0 +1,127 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>Envelope Filter</title>
+
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1, maximum-scale=1"
+		/>
+		<link
+			rel="icon"
+			type="image/png"
+			sizes="174x174"
+			href="./favicon.png"
+		/>
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/2.4.3/webcomponents-bundle.js"></script>
+		<link
+			href="https://fonts.googleapis.com/css?family=Material+Icons&display=block"
+			rel="stylesheet"
+		/>
+		<script src="../build/Tone.js"></script>
+		<script src="./js/tone-ui.js"></script>
+		<script src="./js/components.js"></script>
+	</head>
+	<body>
+		<tone-example label="Envelope Filter">
+			<div slot="explanation">
+				Unlike
+				<a
+					href="https://tonejs.github.io/docs/latest/classes/AmplitudeEnvelope"
+					>Tone.AmplitudeEnvelope</a
+				>, which has an audio input and applies the envelope directly to
+				a signal passing through it,
+				<a href="https://tonejs.github.io/docs/latest/classes/Envelope"
+					>Tone.Envelope</a
+				>
+				has no audio input — it only outputs a control value from 0 to
+				1. That makes it useful as a one-shot modulation source: here
+				it's scaled through a
+				<a href="https://tonejs.github.io/docs/latest/classes/Gain"
+					>Tone.Gain</a
+				>
+				and connected to a filter's cutoff frequency, so each trigger
+				sweeps the filter open and closed — a classic "envelope filter"
+				or "auto-wah" effect.
+			</div>
+
+			<div id="content">
+				<tone-momentary-button></tone-momentary-button>
+				<tone-slider
+					label="Sweep Amount"
+					id="amount"
+					units="hz"
+					value="2000"
+					step="50"
+					min="0"
+					max="4000"
+				></tone-slider>
+				<tone-slider
+					label="Base Cutoff"
+					id="cutoff"
+					units="hz"
+					value="200"
+					step="10"
+					min="50"
+					max="1000"
+				></tone-slider>
+			</div>
+		</tone-example>
+
+		<script type="text/javascript">
+			// the audio signal: a static tone through a lowpass filter
+			const filter = new Tone.Filter({
+				frequency: 200,
+				type: "lowpass",
+				Q: 3,
+			}).toDestination();
+
+			const osc = new Tone.Oscillator({
+				type: "sawtooth",
+				frequency: "C2",
+				volume: -10,
+			})
+				.connect(filter)
+				.start();
+
+			// Tone.Envelope has no audio input/output -- it only outputs
+			// a control signal from 0 to 1
+			const env = new Tone.Envelope({
+				attack: 0.02,
+				decay: 0.3,
+				sustain: 0,
+				release: 0.4,
+			});
+
+			// scale the 0-1 envelope output to a useful frequency sweep range
+			const sweepAmount = new Tone.Gain(2000);
+			env.connect(sweepAmount);
+
+			// connect the scaled sweep to the filter's frequency Signal --
+			// this ADDS to the base cutoff set below
+			sweepAmount.connect(filter.frequency);
+
+			// bind the interface
+			document
+				.querySelector("tone-momentary-button")
+				.addEventListener("down", () => env.triggerAttack());
+			document
+				.querySelector("tone-momentary-button")
+				.addEventListener("up", () => env.triggerRelease());
+			document
+				.querySelector("#amount")
+				.addEventListener(
+					"input",
+					(e) => (sweepAmount.gain.value = parseFloat(e.target.value))
+				);
+			document
+				.querySelector("#cutoff")
+				.addEventListener(
+					"input",
+					(e) => (filter.frequency.value = parseFloat(e.target.value))
+				);
+		</script>
+	</body>
+</html>
