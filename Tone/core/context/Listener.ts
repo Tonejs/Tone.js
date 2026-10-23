@@ -1,3 +1,5 @@
+import { isAudioParam } from "../util/AdvancedTypeCheck.js";
+import { RecursivePartial } from "../util/Interface.js";
 import { onContextClose, onContextInit } from "./ContextInitialization.js";
 import { Param } from "./Param.js";
 import { ToneAudioNode, ToneAudioNodeOptions } from "./ToneAudioNode.js";
@@ -30,50 +32,144 @@ export class ListenerInstance extends ToneAudioNode<ListenerOptions> {
 	output: undefined;
 	input: undefined;
 
-	readonly positionX: Param = new Param({
-		context: this.context,
-		param: this.context.rawContext.listener.positionX,
-	});
+	/**
+	 * True if this context's native AudioListener implements the
+	 * position/forward/up AudioParams (see the comment on positionX below).
+	 * Computed once and used by get()/set() so that they can skip these nine
+	 * properties instead of forcing -- and throwing on -- the lazy getters.
+	 */
+	private readonly _hasPositionParams: boolean = isAudioParam(
+		this.context.rawContext.listener.positionX
+	);
 
-	readonly positionY: Param = new Param({
-		context: this.context,
-		param: this.context.rawContext.listener.positionY,
-	});
+	private _positionX?: Param;
+	/**
+	 * The nine AudioListener params are constructed lazily, on first access,
+	 * instead of eagerly in the constructor. Some browsers (e.g. Firefox) don't
+	 * implement the AudioListener position/forward/up AudioParams, which makes
+	 * wrapping them in a Param throw immediately when a consumer passes in
+	 * their own native AudioContext via Tone.setContext(). Apps that never
+	 * touch 3D spatialization can still use such a context as long as these
+	 * getters are never called.
+	 */
+	get positionX(): Param {
+		if (!this._positionX) {
+			this._positionX = new Param({
+				context: this.context,
+				param: this.context.rawContext.listener.positionX,
+			});
+		}
+		return this._positionX;
+	}
 
-	readonly positionZ: Param = new Param({
-		context: this.context,
-		param: this.context.rawContext.listener.positionZ,
-	});
+	private _positionY?: Param;
+	get positionY(): Param {
+		if (!this._positionY) {
+			this._positionY = new Param({
+				context: this.context,
+				param: this.context.rawContext.listener.positionY,
+			});
+		}
+		return this._positionY;
+	}
 
-	readonly forwardX: Param = new Param({
-		context: this.context,
-		param: this.context.rawContext.listener.forwardX,
-	});
+	private _positionZ?: Param;
+	get positionZ(): Param {
+		if (!this._positionZ) {
+			this._positionZ = new Param({
+				context: this.context,
+				param: this.context.rawContext.listener.positionZ,
+			});
+		}
+		return this._positionZ;
+	}
 
-	readonly forwardY: Param = new Param({
-		context: this.context,
-		param: this.context.rawContext.listener.forwardY,
-	});
+	private _forwardX?: Param;
+	get forwardX(): Param {
+		if (!this._forwardX) {
+			this._forwardX = new Param({
+				context: this.context,
+				param: this.context.rawContext.listener.forwardX,
+			});
+		}
+		return this._forwardX;
+	}
 
-	readonly forwardZ: Param = new Param({
-		context: this.context,
-		param: this.context.rawContext.listener.forwardZ,
-	});
+	private _forwardY?: Param;
+	get forwardY(): Param {
+		if (!this._forwardY) {
+			this._forwardY = new Param({
+				context: this.context,
+				param: this.context.rawContext.listener.forwardY,
+			});
+		}
+		return this._forwardY;
+	}
 
-	readonly upX: Param = new Param({
-		context: this.context,
-		param: this.context.rawContext.listener.upX,
-	});
+	private _forwardZ?: Param;
+	get forwardZ(): Param {
+		if (!this._forwardZ) {
+			this._forwardZ = new Param({
+				context: this.context,
+				param: this.context.rawContext.listener.forwardZ,
+			});
+		}
+		return this._forwardZ;
+	}
 
-	readonly upY: Param = new Param({
-		context: this.context,
-		param: this.context.rawContext.listener.upY,
-	});
+	private _upX?: Param;
+	get upX(): Param {
+		if (!this._upX) {
+			this._upX = new Param({
+				context: this.context,
+				param: this.context.rawContext.listener.upX,
+			});
+		}
+		return this._upX;
+	}
 
-	readonly upZ: Param = new Param({
-		context: this.context,
-		param: this.context.rawContext.listener.upZ,
-	});
+	private _upY?: Param;
+	get upY(): Param {
+		if (!this._upY) {
+			this._upY = new Param({
+				context: this.context,
+				param: this.context.rawContext.listener.upY,
+			});
+		}
+		return this._upY;
+	}
+
+	private _upZ?: Param;
+	get upZ(): Param {
+		if (!this._upZ) {
+			this._upZ = new Param({
+				context: this.context,
+				param: this.context.rawContext.listener.upZ,
+			});
+		}
+		return this._upZ;
+	}
+
+	/**
+	 * get()/set() (inherited from ToneWithContext) duck-type each property
+	 * via `this[attribute]`, which would force the lazy getters above to
+	 * construct on a context with no native position/forward/up AudioParams.
+	 * Skip them there: get() falls back to the static defaults and set() is
+	 * a no-op, since there is no underlying AudioParam to read or write.
+	 */
+	get(): ListenerOptions {
+		if (!this._hasPositionParams) {
+			return ListenerInstance.getDefaults();
+		}
+		return super.get();
+	}
+
+	set(props: RecursivePartial<ListenerOptions>): this {
+		if (!this._hasPositionParams) {
+			return this;
+		}
+		return super.set(props);
+	}
 
 	static getDefaults(): ListenerOptions {
 		return Object.assign(ToneAudioNode.getDefaults(), {
@@ -91,15 +187,15 @@ export class ListenerInstance extends ToneAudioNode<ListenerOptions> {
 
 	dispose(): this {
 		super.dispose();
-		this.positionX.dispose();
-		this.positionY.dispose();
-		this.positionZ.dispose();
-		this.forwardX.dispose();
-		this.forwardY.dispose();
-		this.forwardZ.dispose();
-		this.upX.dispose();
-		this.upY.dispose();
-		this.upZ.dispose();
+		this._positionX?.dispose();
+		this._positionY?.dispose();
+		this._positionZ?.dispose();
+		this._forwardX?.dispose();
+		this._forwardY?.dispose();
+		this._forwardZ?.dispose();
+		this._upX?.dispose();
+		this._upY?.dispose();
+		this._upZ?.dispose();
 		return this;
 	}
 }
