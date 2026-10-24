@@ -160,6 +160,25 @@ describe("Sampler", () => {
 			);
 		});
 
+		it("invokes onload when triggerAttack runs before the buffer loads", async () => {
+			let loaded = false;
+			const sampler = new Sampler({
+				onload(): void {
+					loaded = true;
+				},
+				urls: {
+					A4: "./test/audio/sine.wav",
+				},
+			});
+			expect(() => {
+				sampler.triggerAttack("A4");
+			}).throws(Error, /not loaded/);
+			await ToneAudioBuffer.loaded();
+			expect(loaded).to.be.true;
+			expect(sampler.loaded).to.be.true;
+			sampler.dispose();
+		});
+
 		it("can pass in a callback and baseUrl", (done) => {
 			const sampler = new Sampler(
 				{
