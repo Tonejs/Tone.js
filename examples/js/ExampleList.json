@@ -25,7 +25,8 @@
 		"Reverb" : "reverb",
 		"Spatialization" : "spatialPanner",
 		"PitchShift" : "pitchShift",
-		"ReverseDelay" : "reverseDelay"
+		"ReverseDelay" : "reverseDelay",
+		"RingModulator" : "ringModulator"
 	},
 	"Sequencing / Timing" : {
 		"Step Sequencer" : "stepSequencer",
