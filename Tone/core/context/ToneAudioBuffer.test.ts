@@ -103,6 +103,29 @@ describe("ToneAudioBuffer", () => {
 			});
 		});
 
+		it("preserves the onload of an unloaded buffer it wraps", async () => {
+			let originalCalled = false;
+			const inner = new ToneAudioBuffer({
+				onload(): void {
+					originalCalled = true;
+				},
+				url: testFile,
+			});
+			let outerCalled = false;
+			const outer = new ToneAudioBuffer({
+				onload(): void {
+					outerCalled = true;
+				},
+				url: inner,
+			});
+			await ToneAudioBuffer.loaded();
+			expect(originalCalled).to.equal(true);
+			expect(outerCalled).to.equal(true);
+			expect(outer.get()).to.equal(inner.get());
+			inner.dispose();
+			outer.dispose();
+		});
+
 		it("takes Tone.ToneAudioBuffer in the set method", (done) => {
 			const buffer = new ToneAudioBuffer({
 				url: testFile,
