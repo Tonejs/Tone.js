@@ -3,33 +3,9 @@
 	<head>
 		<meta charset="utf-8" />
 		<title>FatOscillator</title>
-
-		<meta
-			name="viewport"
-			content="width=device-width, initial-scale=1, maximum-scale=1"
-		/>
-		<link
-			rel="icon"
-			type="image/png"
-			sizes="174x174"
-			href="./favicon.png"
-		/>
-
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/2.4.3/webcomponents-bundle.js"></script>
-		<link
-			href="https://fonts.googleapis.com/css?family=Material+Icons&display=block"
-			rel="stylesheet"
-		/>
-		<script src="../build/Tone.js"></script>
 		<script src="./js/tone-ui.js"></script>
-		<script src="./js/components.js"></script>
 	</head>
 	<body>
-		<style type="text/css">
-			tone-play-toggle {
-				margin-bottom: 10px;
-			}
-		</style>
 		<tone-example label="Supersaw">
 			<div slot="explanation">
 				<a
@@ -56,9 +32,7 @@
 				<a href="https://tonejs.github.io/Midi/">@tonejs/midi</a>
 			</div>
 
-			<div id="content">
-				<tone-play-toggle></tone-play-toggle>
-			</div>
+			<tone-play-toggle></tone-play-toggle>
 		</tone-example>
 
 		<script type="text/javascript">
@@ -289,17 +263,10 @@
 
 			Tone.Transport.bpm.value = 132;
 
-			drawer().add({
-				tone: synth,
-			});
+			drawer().add(synth);
 
 			// bind the interface
-			document
-				.querySelector("tone-play-toggle")
-				.addEventListener("start", () => Tone.Transport.start());
-			document
-				.querySelector("tone-play-toggle")
-				.addEventListener("stop", () => Tone.Transport.stop());
+			bind("tone-play-toggle", Tone.Transport);
 		</script>
 	</body>
 </html>

@@ -123,5 +123,8 @@
 	},
 	"publishConfig": {
 		"provenance": true
-	}
+	},
+	"workspaces": [
+		"examples/ui"
+	]
 }

@@ -3,26 +3,7 @@
 	<head>
 		<meta charset="utf-8" />
 		<title>Envelope</title>
-
-		<meta
-			name="viewport"
-			content="width=device-width, initial-scale=1, maximum-scale=1"
-		/>
-		<link
-			rel="icon"
-			type="image/png"
-			sizes="174x174"
-			href="./favicon.png"
-		/>
-
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/2.4.3/webcomponents-bundle.js"></script>
-		<link
-			href="https://fonts.googleapis.com/css?family=Material+Icons&display=block"
-			rel="stylesheet"
-		/>
-		<script src="../build/Tone.js"></script>
 		<script src="./js/tone-ui.js"></script>
-		<script src="./js/components.js"></script>
 	</head>
 	<body>
 		<style type="text/css">
@@ -31,12 +12,8 @@
 				margin: 5px auto;
 				width: 300px !important;
 			}
-
-			tone-trigger {
-				margin-bottom: 10px;
-			}
 		</style>
-		<tone-example label="Envelope">
+		<tone-example>
 			<div slot="explanation">
 				Envelopes ramp amplitude, frequency or any other parameter over
 				time.
@@ -56,12 +33,10 @@
 				/>
 			</div>
 
-			<div id="content">
-				<tone-momentary-button></tone-momentary-button>
-			</div>
+			<tone-momentary-button></tone-momentary-button>
 		</tone-example>
 
-		<script type="text/javascript">
+		<script data-tone-code>
 			const env = new Tone.AmplitudeEnvelope({
 				attack: 0.11,
 				decay: 0.21,
@@ -78,23 +53,11 @@
 			})
 				.connect(env)
 				.start();
+		</script>
 
-			// bind the interface
-			drawer()
-				.add({
-					tone: env,
-					name: "Envelope",
-				})
-				.add({
-					tone: osc,
-				});
-
-			document
-				.querySelector("tone-momentary-button")
-				.addEventListener("down", (e) => env.triggerAttack());
-			document
-				.querySelector("tone-momentary-button")
-				.addEventListener("up", (e) => env.triggerRelease());
+		<script>
+			drawer().add(env, { name: "Envelope" }).add(osc);
+			bind("tone-momentary-button", env);
 		</script>
 	</body>
 </html>

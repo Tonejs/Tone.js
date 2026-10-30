@@ -1,0 +1,19 @@
+{
+	"compilerOptions": {
+		"target": "ES2021",
+		"module": "ESNext",
+		"moduleResolution": "bundler",
+		"lib": ["ES2021", "DOM", "DOM.Iterable"],
+		"experimentalDecorators": true,
+		"useDefineForClassFields": false,
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"strict": false,
+		"noEmit": true,
+		"paths": {
+			"tone": ["../../Tone/index.ts"]
+		}
+	},
+	"include": ["*.ts", "controls", "inspector", "page", "piano", "vis"],
+	"exclude": ["globals.d.ts"]
+}
