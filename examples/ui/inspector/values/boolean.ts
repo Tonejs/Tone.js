@@ -13,15 +13,20 @@ export class ToneBooleanValue extends ToneValue<boolean> {
 		ToneValue.styles,
 		css`
 			input {
+				flex: none;
 				margin: 0px;
+				padding: 0px;
 				box-sizing: border-box;
-				border: 2px solid #ddd;
-				background-color: #ddd;
-				width: 16px;
-				height: 16px;
+				border: 1px solid #888;
+				background-color: white;
+				width: 12px;
+				min-width: 0px;
+				height: 12px;
+				cursor: pointer;
 			}
 			input:checked {
-				background-color: black;
+				background-color: #444;
+				box-shadow: inset 0 0 0 2px white;
 			}
 		`,
 	];

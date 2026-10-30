@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="utf-8" />
 		<title>MetalSynth</title>
-		<script src="./js/tone-ui.js"></script>
+		<script src="./tone-ui.js"></script>
 	</head>
 	<body>
 		<tone-example label="Bembe">
@@ -77,7 +77,7 @@
 		<script>
 			drawer().add(conga, { name: "Conga" }).add(bell, { name: "Bell" });
 
-			bind("tone-play-toggle", Tone.Transport);
+			bind("tone-play-toggle", Tone.getTransport());
 		</script>
 	</body>
 </html>

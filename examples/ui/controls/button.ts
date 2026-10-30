@@ -1,5 +1,5 @@
 import { css, html, LitElement, PropertyValues } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 import { start } from "tone";
 
 import { Bindable } from "../bind";
@@ -9,8 +9,8 @@ export const buttonHeight = css`30px`;
 
 @customElement("tone-button")
 export class ToneButton extends LitElement implements Bindable<() => void> {
-	@property({ type: Boolean })
-	pressed = false;
+	@state()
+	private _pressed = false;
 
 	@property({ type: Boolean })
 	disabled = false;
@@ -70,10 +70,10 @@ export class ToneButton extends LitElement implements Bindable<() => void> {
 		});
 	}
 
-	protected override updated(changed: PropertyValues<this>) {
-		if (changed.has("pressed")) {
+	protected override updated(changed: PropertyValues) {
+		if (changed.has("_pressed")) {
 			this.dispatchEvent(
-				new CustomEvent(this.pressed ? "down" : "up", {
+				new CustomEvent(this._pressed ? "down" : "up", {
 					composed: true,
 				})
 			);
@@ -85,23 +85,23 @@ export class ToneButton extends LitElement implements Bindable<() => void> {
 		if (e.type === "touchstart") {
 			e.preventDefault();
 		}
-		this.pressed = true;
+		this._pressed = true;
 	}
 
 	private _release() {
-		this.pressed = false;
+		this._pressed = false;
 	}
 
 	private _keydown(e: KeyboardEvent) {
 		start();
 		if (e.key === " " || e.key === "Enter") {
-			this.pressed = true;
+			this._pressed = true;
 		}
 	}
 
 	private _keyup(e: KeyboardEvent) {
 		if (e.key === " " || e.key === "Enter") {
-			this.pressed = false;
+			this._pressed = false;
 		}
 	}
 
@@ -117,7 +117,7 @@ export class ToneButton extends LitElement implements Bindable<() => void> {
 				@mouseup=${this._release}
 				@touchend=${this._release}
 				aria-label="Trigger"
-				aria-pressed=${this.pressed ? "true" : "false"}
+				aria-pressed=${this._pressed ? "true" : "false"}
 			>
 				<slot></slot>
 			</button>

@@ -1,16 +1,14 @@
-import Color from "color";
 import { css, html, PropertyValues } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { styleMap } from "lit/directives/style-map.js";
 import { Meter } from "tone";
 
-import { defaultParent } from "../bind";
 import { AnimationController } from "./animation";
 import { createVis, VisBase } from "./vis-base";
 
 @customElement("tone-meter-vis")
 export class ToneMeterVis extends VisBase<Meter> {
-	override height = 40;
+	protected override height = 40;
 
 	@state()
 	private _meterLevels: number[] = [];
@@ -48,10 +46,12 @@ export class ToneMeterVis extends VisBase<Meter> {
 		}
 	}
 
+	/**
+	 * Gray which turns yellow as the level rises
+	 */
 	private _levelColor(val: number): string {
-		return Color("#aaa")
-			.mix(Color("rgb(209, 196, 15)"), Math.pow(val, 0.5))
-			.hex();
+		const yellow = (Math.pow(val, 0.5) * 100).toFixed(1);
+		return `color-mix(in srgb, #aaa, rgb(209, 196, 15) ${yellow}%)`;
 	}
 
 	protected override render() {
@@ -79,12 +79,8 @@ export class ToneMeterVis extends VisBase<Meter> {
 /**
  * Draw the level of each channel going into the Meter
  */
-export function meter(
-	tone: Meter,
-	options: { height?: number } = {},
-	parent: HTMLElement = defaultParent()
-): ToneMeterVis {
-	return createVis("tone-meter-vis", tone, options, parent);
+export function meter(tone: Meter): ToneMeterVis {
+	return createVis("tone-meter-vis", tone);
 }
 
 declare global {

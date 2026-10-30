@@ -1,11 +1,11 @@
 import { css, html, LitElement } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { customElement, state } from "lit/decorators.js";
 import { loaded, ToneAudioBuffer } from "tone";
 
 @customElement("tone-loader")
 export class ToneLoader extends LitElement {
-	@property({ type: Boolean })
-	loading = false;
+	@state()
+	private _loading = false;
 
 	@state()
 	private _dots = 0;
@@ -44,10 +44,10 @@ export class ToneLoader extends LitElement {
 		window.addEventListener(
 			"load",
 			() => {
-				this.loading = ToneAudioBuffer.downloads.length > 0;
-				if (this.loading) {
+				this._loading = ToneAudioBuffer.downloads.length > 0;
+				if (this._loading) {
 					loaded().then(() => {
-						this.loading = false;
+						this._loading = false;
 					});
 					this._dotLoop();
 				}
@@ -57,7 +57,7 @@ export class ToneLoader extends LitElement {
 	}
 
 	private _dotLoop() {
-		if (this.loading) {
+		if (this._loading) {
 			this._dots = (this._dots + 1) % 4;
 			setTimeout(() => this._dotLoop(), 500);
 		}
@@ -65,7 +65,7 @@ export class ToneLoader extends LitElement {
 
 	protected override render() {
 		return html`
-			<div id="container" ?loading=${this.loading}>
+			<div id="container" ?loading=${this._loading}>
 				<div id="text">loading${".".repeat(this._dots)}</div>
 			</div>
 		`;

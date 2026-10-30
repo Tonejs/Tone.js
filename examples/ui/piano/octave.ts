@@ -60,7 +60,7 @@ export class ToneKeyboardOctave extends LitElement {
 	}
 
 	getNoteByTouchId(id: number): ToneKeyboardNote | undefined {
-		return Array.from(this._notes).find((n) => n.touchid === id && n.note);
+		return Array.from(this._notes).find((n) => n.touchId === id && n.note);
 	}
 
 	private _getNote(midi: number): ToneKeyboardNote {

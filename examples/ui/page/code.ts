@@ -7,7 +7,7 @@ import { css, html, LitElement } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 
-import { contentFont, icons, orange } from "../styles";
+import { blue, font, icons, monoFont, orange, purple } from "../styles";
 
 hljs.registerLanguage("javascript", javascript);
 
@@ -49,27 +49,33 @@ export class ToneCode extends LitElement {
 				overflow-x: auto;
 				background-color: #f5f5f5;
 				border-radius: 4px;
+				font-family: ${monoFont};
 				font-size: 13px;
 				line-height: 1.5;
 				tab-size: 4;
 			}
 			md-icon-button {
 				position: absolute;
-				top: 4px;
-				right: 4px;
+				top: 6px;
+				right: 6px;
 				--md-icon-button-icon-color: #888;
+				--md-icon-button-icon-size: 16px;
+				--md-icon-button-state-layer-width: 28px;
+				--md-icon-button-state-layer-height: 28px;
+				width: 28px;
+				height: 28px;
 			}
 			#copied {
 				position: absolute;
-				top: 16px;
-				right: 48px;
-				font-family: ${contentFont};
+				top: 12px;
+				right: 38px;
+				font-family: ${font};
 				font-size: 12px;
 				color: #888;
 			}
 			.hljs-keyword,
 			.hljs-built_in {
-				color: #7f33ed;
+				color: ${purple};
 			}
 			.hljs-string,
 			.hljs-number,
@@ -82,7 +88,7 @@ export class ToneCode extends LitElement {
 			}
 			.hljs-title,
 			.hljs-property {
-				color: #1565c0;
+				color: ${blue};
 			}
 		`,
 	];

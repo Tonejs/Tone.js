@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="utf-8" />
 		<title>Quantization</title>
-		<script src="./js/tone-ui.js"></script>
+		<script src="./tone-ui.js"></script>
 	</head>
 	<body>
 		<style>
@@ -55,9 +55,9 @@
 
 			function loop() {
 				requestAnimationFrame(loop);
-				// @ts-ignore
-				const [bar, beat, sixteenth] =
-					Tone.Transport.position.split(":");
+				const [bar, beat, sixteenth] = String(
+					Tone.Transport.position
+				).split(":");
 				document.querySelector("#progress").textContent = `
 				bar: ${bar}, beat: ${beat}, sixteenth: ${sixteenth}
 			`;

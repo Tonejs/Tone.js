@@ -9,7 +9,7 @@ import { Bindable } from "../bind";
 /**
  * A Param or Signal, or a callback which receives the slider value
  */
-export type SliderTarget = { value: number } | ((value: number) => void);
+type SliderTarget = { value: number } | ((value: number) => void);
 
 @customElement("tone-slider")
 export class ToneSlider extends LitElement implements Bindable<SliderTarget> {

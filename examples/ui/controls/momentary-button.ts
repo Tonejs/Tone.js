@@ -1,7 +1,7 @@
 import "./button";
 
 import { css, html, LitElement } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, state } from "lit/decorators.js";
 
 import { Bindable, Startable, Triggerable } from "../bind";
 
@@ -10,8 +10,8 @@ export class ToneMomentaryButton
 	extends LitElement
 	implements Bindable<Startable | Triggerable>
 {
-	@property({ type: Boolean })
-	triggered = false;
+	@state()
+	private _triggered = false;
 
 	static override styles = css`
 		:host {
@@ -76,9 +76,9 @@ export class ToneMomentaryButton
 	protected override render() {
 		return html`
 			<tone-button
-				?triggered=${this.triggered}
-				@down=${() => (this.triggered = true)}
-				@up=${() => (this.triggered = false)}
+				?triggered=${this._triggered}
+				@down=${() => (this._triggered = true)}
+				@up=${() => (this._triggered = false)}
 			>
 				<div id="ring">
 					<div id="circle"></div>

@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="utf-8" />
 		<title>Mixer</title>
-		<script src="./js/tone-ui.js"></script>
+		<script src="./tone-ui.js"></script>
 	</head>
 	<body>
 		<tone-example label="Channel">
@@ -54,7 +54,7 @@
 			channels.forEach((channel, i) =>
 				ui(channel, { name: `Guitar ${i}` })
 			);
-			bind("tone-play-toggle", Tone.Transport);
+			bind("tone-play-toggle", Tone.getTransport());
 		</script>
 	</body>
 </html>

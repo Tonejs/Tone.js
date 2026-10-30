@@ -30,10 +30,9 @@ export class ToneDrawerElement extends LitElement {
 	/**
 	 * Create a folder with the given name
 	 */
-	folder(name: string, { open = true } = {}): ToneFolderElement {
+	folder(name: string): ToneFolderElement {
 		const element = document.createElement("tone-folder");
 		element.name = name;
-		element.open = open;
 		this.appendChild(element);
 		return element;
 	}

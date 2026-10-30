@@ -1,13 +1,12 @@
 import { customElement } from "lit/decorators.js";
 import { Waveform } from "tone";
 
-import { defaultParent } from "../bind";
 import { AnimationController } from "./animation";
 import { createVis, VisBase } from "./vis-base";
 
 @customElement("tone-waveform-vis")
 export class ToneWaveformVis extends VisBase<Waveform> {
-	override height = 40;
+	protected override height = 40;
 
 	constructor() {
 		super();
@@ -22,12 +21,8 @@ export class ToneWaveformVis extends VisBase<Waveform> {
 /**
  * Draw the waveform of the signal going into the Waveform
  */
-export function waveform(
-	tone: Waveform,
-	options: { height?: number } = {},
-	parent: HTMLElement = defaultParent()
-): ToneWaveformVis {
-	return createVis("tone-waveform-vis", tone, options, parent);
+export function waveform(tone: Waveform): ToneWaveformVis {
+	return createVis("tone-waveform-vis", tone);
 }
 
 declare global {

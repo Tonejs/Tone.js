@@ -59,11 +59,13 @@ ${str}
 async function main() {
 	const fixtures = await createFixtureFiles(htmlFiles);
 
+	let failed = false;
 	try {
 		await execPromise(`tsc -p ${fixtures.path}`);
 	} catch (error) {
 		if (error instanceof Error && error?.stdout) {
 			console.warn(error.stdout);
+			failed = true;
 		} else {
 			throw Error("Unexpected", { cause: error });
 		}
@@ -71,7 +73,12 @@ async function main() {
 
 	await fixtures.rm();
 
-	console.log(`Successfully tested ${htmlFiles.length} examples.`);
+	if (failed) {
+		console.warn("The examples have type errors.");
+		process.exitCode = 1;
+	} else {
+		console.log(`Successfully tested ${htmlFiles.length} examples.`);
+	}
 }
 
 main();

@@ -2,12 +2,13 @@ import "./keyboard";
 import "./midi-in";
 
 import { css, html, LitElement } from "lit";
-import { customElement, query } from "lit/decorators.js";
+import { customElement, query, state } from "lit/decorators.js";
+import { classMap } from "lit/directives/class-map.js";
 
 import { Bindable, defaultParent } from "../bind";
 import { ToneKeyboard } from "./keyboard";
 
-export interface NoteEvent {
+interface NoteEvent {
 	name: string;
 	midi: number;
 	velocity: number;
@@ -16,29 +17,25 @@ export interface NoteEvent {
 /**
  * An instrument, polyphonic instruments are released by note
  */
-export interface PianoInstrument {
+interface PianoInstrument {
 	triggerAttack(note: string, time?: number, velocity?: number): unknown;
 	triggerRelease(noteOrTime?: string | number): unknown;
 	releaseAll?(): unknown;
 }
 
-/**
- * An instrument or callbacks for each note event
- */
-export type PianoTarget =
-	| PianoInstrument
-	| {
-			noteon(note: NoteEvent): void;
-			noteoff(note: NoteEvent): void;
-	  };
-
 @customElement("tone-piano")
-export class TonePiano extends LitElement implements Bindable<PianoTarget> {
+export class TonePiano extends LitElement implements Bindable<PianoInstrument> {
 	@query("#container")
 	private _container: HTMLDivElement;
 
 	@query("tone-keyboard")
 	private _keyboard: ToneKeyboard;
+
+	/**
+	 * The keyboard is hidden until it has its number of octaves
+	 */
+	@state()
+	private _sized = false;
 
 	static override styles = css`
 		:host {
@@ -46,7 +43,6 @@ export class TonePiano extends LitElement implements Bindable<PianoTarget> {
 		}
 
 		#container {
-			background-color: var(--color-light-gray);
 			position: relative;
 			padding: 5px;
 			display: block;
@@ -55,6 +51,10 @@ export class TonePiano extends LitElement implements Bindable<PianoTarget> {
 		tone-keyboard {
 			display: block;
 			clear: both;
+		}
+
+		tone-keyboard:not(.sized) {
+			visibility: hidden;
 		}
 
 		tone-midi-in {
@@ -69,41 +69,37 @@ export class TonePiano extends LitElement implements Bindable<PianoTarget> {
 	/**
 	 * Play the instrument with the keyboard
 	 */
-	bind(target: PianoTarget) {
-		const { noteon, noteoff } =
-			"noteon" in target ? target : this._instrumentCallbacks(target);
+	bind(instrument: PianoInstrument) {
+		const polyphonic = "releaseAll" in instrument;
 		this.addEventListener("noteon", (e: CustomEvent<NoteEvent>) =>
-			noteon(e.detail)
+			instrument.triggerAttack(
+				e.detail.name,
+				undefined,
+				e.detail.velocity
+			)
 		);
 		this.addEventListener("noteoff", (e: CustomEvent<NoteEvent>) =>
-			noteoff(e.detail)
+			polyphonic
+				? instrument.triggerRelease(e.detail.name)
+				: instrument.triggerRelease()
 		);
 	}
 
-	private _instrumentCallbacks(instrument: PianoInstrument) {
-		const polyphonic = "releaseAll" in instrument;
-		return {
-			noteon: (note: NoteEvent) =>
-				instrument.triggerAttack(note.name, undefined, note.velocity),
-			noteoff: (note: NoteEvent) =>
-				polyphonic
-					? instrument.triggerRelease(note.name)
-					: instrument.triggerRelease(),
-		};
-	}
+	/**
+	 * Sizes the keyboard to the piano's width. The first callback comes
+	 * after layout but before the first paint, so the keyboard is never
+	 * shown with the wrong number of octaves.
+	 */
+	private _resizeObserver = new ResizeObserver(() => this._resize());
 
 	override connectedCallback() {
 		super.connectedCallback();
-		window.addEventListener("resize", this._resize);
+		this._resizeObserver.observe(this);
 	}
 
 	override disconnectedCallback() {
 		super.disconnectedCallback();
-		window.removeEventListener("resize", this._resize);
-	}
-
-	protected override firstUpdated() {
-		setTimeout(() => this._resize(), 100);
+		this._resizeObserver.disconnect();
 	}
 
 	private _clamp(v: number, floor: number, ceil: number) {
@@ -120,18 +116,24 @@ export class TonePiano extends LitElement implements Bindable<PianoTarget> {
 		return ((v - inMin) / (inMax - inMin)) * (outMax - outMin) + outMin;
 	}
 
-	private _resize = () => {
+	private _resize() {
+		if (!this._container) {
+			return;
+		}
 		const width = this._container.clientWidth;
 		const octaves = this._clamp(Math.floor(width / 100) - 1, 1, 8);
-		this._keyboard.rootoctave = Math.ceil(this._scale(octaves, 1, 8, 5, 1));
+		this._keyboard.rootOctave = Math.ceil(this._scale(octaves, 1, 8, 5, 1));
 		this._keyboard.octaves = octaves;
-	};
+		this._sized = true;
+	}
 
 	protected override render() {
 		return html`
 			<div id="container">
 				<tone-midi-in></tone-midi-in>
-				<tone-keyboard></tone-keyboard>
+				<tone-keyboard
+					class=${classMap({ sized: this._sized })}
+				></tone-keyboard>
 			</div>
 		`;
 	}
@@ -140,13 +142,10 @@ export class TonePiano extends LitElement implements Bindable<PianoTarget> {
 /**
  * Create a piano keyboard which plays the instrument
  */
-export function piano(
-	instrument: PianoTarget,
-	parent: HTMLElement = defaultParent()
-): TonePiano {
+export function piano(instrument: PianoInstrument): TonePiano {
 	const element = document.createElement("tone-piano");
 	element.bind(instrument);
-	parent.appendChild(element);
+	defaultParent().appendChild(element);
 	return element;
 }
 

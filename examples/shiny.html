@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="utf-8" />
 		<title>Play Along</title>
-		<script src="./js/tone-ui.js"></script>
+		<script src="./tone-ui.js"></script>
 	</head>
 	<body>
 		<tone-example>
@@ -259,7 +259,7 @@
 				up: () => synth.triggerRelease(),
 			});
 
-			bind("tone-play-toggle", Tone.Transport);
+			bind("tone-play-toggle", Tone.getTransport());
 		</script>
 	</body>
 </html>

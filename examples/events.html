@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="utf-8" />
 		<title>Events</title>
-		<script src="./js/tone-ui.js"></script>
+		<script src="./tone-ui.js"></script>
 	</head>
 	<body>
 		<tone-example>
@@ -150,7 +150,7 @@
 				.add(bass, { name: "Bass" })
 				.add(keys, { name: "Keys" });
 
-			bind("tone-play-toggle", Tone.Transport);
+			bind("tone-play-toggle", Tone.getTransport());
 		</script>
 	</body>
 </html>

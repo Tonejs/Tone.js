@@ -1,13 +1,12 @@
 import { customElement } from "lit/decorators.js";
 import { FFT } from "tone";
 
-import { defaultParent } from "../bind";
 import { AnimationController } from "./animation";
 import { createVis, VisBase } from "./vis-base";
 
 @customElement("tone-fft-vis")
 export class ToneFFTVis extends VisBase<FFT> {
-	override height = 40;
+	protected override height = 40;
 
 	constructor() {
 		super();
@@ -22,12 +21,8 @@ export class ToneFFTVis extends VisBase<FFT> {
 /**
  * Draw the frequency spectrum of the FFT
  */
-export function fft(
-	tone: FFT,
-	options: { height?: number } = {},
-	parent: HTMLElement = defaultParent()
-): ToneFFTVis {
-	return createVis("tone-fft-vis", tone, options, parent);
+export function fft(tone: FFT): ToneFFTVis {
+	return createVis("tone-fft-vis", tone);
 }
 
 declare global {

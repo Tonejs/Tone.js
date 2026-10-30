@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="utf-8" />
 		<title>Phasing</title>
-		<script src="./js/tone-ui.js"></script>
+		<script src="./tone-ui.js"></script>
 	</head>
 	<body>
 		<style type="text/css">
@@ -145,7 +145,7 @@
 		</script>
 
 		<script>
-			bind("tone-play-toggle", Tone.Transport);
+			bind("tone-play-toggle", Tone.getTransport());
 
 			// update the width of the fill bars to reflect the left and right progress
 			function progressToWidth(progress) {

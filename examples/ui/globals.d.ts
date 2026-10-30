@@ -7,7 +7,6 @@ type Node = ToneModule.ToneAudioNode;
 
 interface NodeOptions {
 	name?: string;
-	open?: boolean;
 }
 
 interface Folder extends HTMLElement {
@@ -15,28 +14,13 @@ interface Folder extends HTMLElement {
 }
 
 interface Drawer extends Folder {
-	folder(name: string, options?: { open?: boolean }): Folder;
+	folder(name: string): Folder;
 }
 
-interface NoteEvent {
-	name: string;
-	midi: number;
-	velocity: number;
+interface PianoInstrument {
+	triggerAttack(note: string, time?: number, velocity?: number): unknown;
+	triggerRelease(noteOrTime?: string | number): unknown;
 }
-
-type PianoTarget =
-	| {
-			triggerAttack(
-				note: string,
-				time?: number,
-				velocity?: number
-			): unknown;
-			triggerRelease(noteOrTime?: string | number): unknown;
-	  }
-	| {
-			noteon(note: NoteEvent): void;
-			noteoff(note: NoteEvent): void;
-	  };
 
 interface SliderPadPosition {
 	x: number;
@@ -68,31 +52,15 @@ type BindTarget =
 			up?(position: SliderPadPosition): void;
 	  }
 	// tone-piano
-	| PianoTarget;
+	| PianoInstrument;
 
 declare global {
 	const Tone: typeof ToneModule;
 	function bind(selector: string | Element, target: BindTarget): Element;
-	function ui(
-		tone: Node,
-		options?: NodeOptions,
-		parent?: HTMLElement
-	): HTMLElement;
+	function ui(tone: Node, options?: NodeOptions): HTMLElement;
 	function drawer(): Drawer;
-	function piano(instrument: PianoTarget, parent?: HTMLElement): HTMLElement;
-	function meter(
-		tone: ToneModule.Meter<number>,
-		options?: { height?: number },
-		parent?: HTMLElement
-	): HTMLElement;
-	function fft(
-		tone: ToneModule.FFT,
-		options?: { height?: number },
-		parent?: HTMLElement
-	): HTMLElement;
-	function waveform(
-		tone: ToneModule.Waveform,
-		options?: { height?: number },
-		parent?: HTMLElement
-	): HTMLElement;
+	function piano(instrument: PianoInstrument): HTMLElement;
+	function meter(tone: ToneModule.Meter<number>): HTMLElement;
+	function fft(tone: ToneModule.FFT): HTMLElement;
+	function waveform(tone: ToneModule.Waveform): HTMLElement;
 }

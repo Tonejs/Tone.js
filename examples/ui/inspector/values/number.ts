@@ -1,18 +1,69 @@
-import { html } from "lit";
+import { css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { classMap } from "lit/directives/class-map.js";
 import { live } from "lit/directives/live.js";
 
+import { blue, green, orange, purple } from "../../styles";
+import { DisplayUnit, isNotation } from "../units";
 import { ToneValue } from "./value";
 
 @customElement("tone-number")
-export class ToneNumberValue extends ToneValue<number> {
+export class ToneNumberValue extends ToneValue<number | string> {
 	@property({ type: Number })
-	value = 0;
+	value: number | string = 0;
+
+	/**
+	 * Shown after the value, which is displayed multiplied by its scale
+	 */
+	@property({ attribute: false })
+	unit: DisplayUnit | undefined;
 
 	private _alt = false;
 	private _shift = false;
 	private _dragging = false;
 	private _dragstartValue: number;
+
+	static override styles = [
+		ToneValue.styles,
+		css`
+			/* a few kinds of values are colored, the rest are black */
+			input.time {
+				color: ${purple};
+			}
+			input.frequency {
+				color: ${blue};
+			}
+			input.decibels {
+				color: ${orange};
+			}
+			input.normalRange {
+				color: ${green};
+			}
+			#unit {
+				padding-left: 4px;
+				color: #888;
+				white-space: nowrap;
+			}
+		`,
+	];
+
+	private get _scale(): number {
+		return this.unit?.scale ?? 1;
+	}
+
+	/**
+	 * The value in the displayed unit
+	 */
+	private get _displayValue(): number {
+		return Number(this.value) * this._scale;
+	}
+
+	/**
+	 * Set the value from one in the displayed unit
+	 */
+	private _dispatchDisplayValue(value: number) {
+		this.dispatchValue(value / this._scale);
+	}
 
 	override connectedCallback() {
 		super.connectedCallback();
@@ -39,7 +90,7 @@ export class ToneNumberValue extends ToneValue<number> {
 			// find the relative change
 			const box = this.getBoundingClientRect();
 			const yDiff = box.top + (box.bottom - box.top) / 2 - e.clientY;
-			this.dispatchValue(
+			this._dispatchDisplayValue(
 				this._dragstartValue +
 					Math.floor(yDiff / 10) * this._stepMultiplier()
 			);
@@ -60,9 +111,13 @@ export class ToneNumberValue extends ToneValue<number> {
 	}
 
 	private _onchange(e: Event) {
-		const value = parseFloat((e.target as HTMLInputElement).value);
-		if (isFinite(value)) {
-			this.dispatchValue(value);
+		const text = (e.target as HTMLInputElement).value.trim();
+		const value = Number(text);
+		if (text !== "" && isFinite(value)) {
+			this._dispatchDisplayValue(value);
+		} else if (this.unit && isNotation(this.unit.units, text)) {
+			// e.g. "4n" for a time or "C4" for a frequency, which Tone converts
+			this.dispatchValue(text);
 		} else {
 			this.requestUpdate();
 		}
@@ -77,17 +132,19 @@ export class ToneNumberValue extends ToneValue<number> {
 		}
 		if (direction) {
 			e.preventDefault();
-			this.dispatchValue(this.value + direction * this._stepMultiplier());
+			this._dispatchDisplayValue(
+				this._displayValue + direction * this._stepMultiplier()
+			);
 		}
 	}
 
 	private _dragstart() {
 		this._dragging = true;
-		this._dragstartValue = this.value;
+		this._dragstartValue = this._displayValue;
 		window.addEventListener(
 			"mouseup",
 			() => {
-				if (this._dragstartValue !== this.value) {
+				if (this._dragstartValue !== this._displayValue) {
 					this.dispatchValue(this.value);
 				}
 				this._dragging = false;
@@ -101,14 +158,20 @@ export class ToneNumberValue extends ToneValue<number> {
 			<div id="container">
 				<label for="number">${this.name}</label>
 				<input
-					class="focus-outline"
+					class=${classMap({
+						"focus-outline": true,
+						[this.unit?.units ?? ""]: !!this.unit,
+					})}
 					@mousedown=${this._dragstart}
 					@keydown=${this._onkeydown}
 					@change=${this._onchange}
 					id="number"
 					type="text"
-					.value=${live(String(this._beautifyValue(this.value)))}
+					.value=${live(
+						String(this._beautifyValue(this._displayValue))
+					)}
 				/>
+				<span id="unit">${this.unit?.suffix}</span>
 			</div>
 		`;
 	}

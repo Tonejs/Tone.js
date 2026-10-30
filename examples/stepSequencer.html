@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="utf-8" />
 		<title>Step Sequencer</title>
-		<script src="./js/tone-ui.js"></script>
+		<script src="./tone-ui.js"></script>
 	</head>
 	<body>
 		<tone-example>
@@ -42,7 +42,7 @@
 		</script>
 
 		<script>
-			bind("tone-play-toggle", Tone.Transport);
+			bind("tone-play-toggle", Tone.getTransport());
 			bind("tone-slider", Tone.Transport.bpm);
 			bind("tone-step-sequencer", (time, row) =>
 				keys.player(String(row)).start(time, 0, "16t")

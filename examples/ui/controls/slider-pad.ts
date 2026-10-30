@@ -1,10 +1,10 @@
 import { css, html, LitElement, PropertyValues } from "lit";
-import { customElement, property, query } from "lit/decorators.js";
+import { customElement, query, state } from "lit/decorators.js";
 import { styleMap } from "lit/directives/style-map.js";
 
 import { Bindable } from "../bind";
 
-export interface SliderPadPosition {
+interface SliderPadPosition {
 	x: number;
 	y: number;
 }
@@ -12,7 +12,7 @@ export interface SliderPadPosition {
 /**
  * Callbacks for pressing, dragging and releasing the puck
  */
-export interface SliderPadTarget {
+interface SliderPadTarget {
 	down?(position: SliderPadPosition): void;
 	move?(position: SliderPadPosition): void;
 	up?(position: SliderPadPosition): void;
@@ -23,14 +23,14 @@ export class ToneSliderPad
 	extends LitElement
 	implements Bindable<SliderPadTarget>
 {
-	@property({ type: Number })
-	xPosition = 0.5;
+	@state()
+	private _x = 0.5;
 
-	@property({ type: Number })
-	yPosition = 0.5;
+	@state()
+	private _y = 0.5;
 
-	@property({ type: Boolean })
-	pressed = false;
+	@state()
+	private _pressed = false;
 
 	@query(".square")
 	private _container: HTMLDivElement;
@@ -84,9 +84,9 @@ export class ToneSliderPad
 		}
 	}
 
-	protected override updated(changed: PropertyValues<this>) {
-		if (changed.has("pressed") && changed.get("pressed") !== undefined) {
-			this._dispatch(this.pressed ? "down" : "up");
+	protected override updated(changed: PropertyValues) {
+		if (changed.has("_pressed") && changed.get("_pressed") !== undefined) {
+			this._dispatch(this._pressed ? "down" : "up");
 		}
 	}
 
@@ -95,16 +95,16 @@ export class ToneSliderPad
 			new CustomEvent<SliderPadPosition>(name, {
 				composed: true,
 				detail: {
-					x: this.xPosition,
-					y: this.yPosition,
+					x: this._x,
+					y: this._y,
 				},
 			})
 		);
 	}
 
 	private _updatePosition(e: MouseEvent) {
-		this.xPosition = this._clamp(e.offsetX / this._container.offsetWidth);
-		this.yPosition = this._clamp(e.offsetY / this._container.offsetHeight);
+		this._x = this._clamp(e.offsetX / this._container.offsetWidth);
+		this._y = this._clamp(e.offsetY / this._container.offsetHeight);
 		this._dispatch("move");
 	}
 
@@ -116,16 +116,16 @@ export class ToneSliderPad
 
 	private _mousedown(e: MouseEvent) {
 		this._updatePosition(e);
-		this.pressed = true;
+		this._pressed = true;
 	}
 
 	private _mouseup(e: MouseEvent) {
 		this._updatePosition(e);
-		this.pressed = false;
+		this._pressed = false;
 	}
 
 	private _mouseleave() {
-		this.pressed = false;
+		this._pressed = false;
 	}
 
 	private _clamp(value: number) {
@@ -134,8 +134,8 @@ export class ToneSliderPad
 
 	protected override render() {
 		const puckStyle = {
-			left: `${(this.xPosition * 100).toFixed(2)}%`,
-			top: `${(this.yPosition * 100).toFixed(2)}%`,
+			left: `${(this._x * 100).toFixed(2)}%`,
+			top: `${(this._y * 100).toFixed(2)}%`,
 		};
 		return html`
 			<div

@@ -24,8 +24,6 @@ export class ToneMidiIn extends LitElement {
 			position: relative;
 		}
 		label {
-			font-family: var(--label-font-family);
-			font-size: var(--label-font-size);
 			margin-right: 5px;
 			font-size: 0.7em;
 		}
@@ -42,7 +40,7 @@ export class ToneMidiIn extends LitElement {
 			display: inline-block;
 		}
 		#light.connected {
-			background-color: var(--color-gray);
+			background-color: #aaa;
 		}
 
 		#light.connected.flash {

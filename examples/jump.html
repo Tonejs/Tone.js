@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="utf-8" />
 		<title>FatOscillator</title>
-		<script src="./js/tone-ui.js"></script>
+		<script src="./tone-ui.js"></script>
 	</head>
 	<body>
 		<tone-example label="Supersaw">
@@ -266,7 +266,7 @@
 			drawer().add(synth);
 
 			// bind the interface
-			bind("tone-play-toggle", Tone.Transport);
+			bind("tone-play-toggle", Tone.getTransport());
 		</script>
 	</body>
 </html>

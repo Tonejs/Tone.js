@@ -10,7 +10,7 @@ import { ToneKeyboardOctave } from "./octave";
 @customElement("tone-keyboard")
 export class ToneKeyboard extends LitElement {
 	@property({ type: Number })
-	rootoctave = 4;
+	rootOctave = 4;
 
 	@property({ type: Number })
 	octaves = 4;
@@ -67,9 +67,9 @@ export class ToneKeyboard extends LitElement {
 				) as ToneKeyboardNote | undefined;
 				if (note && note.note && activeNote.note !== note.note) {
 					activeNote.active = false;
-					activeNote.touchid = -1;
+					activeNote.touchId = -1;
 					note.active = true;
-					note.touchid = e.identifier;
+					note.touchId = e.identifier;
 				}
 			}
 		});
@@ -80,7 +80,7 @@ export class ToneKeyboard extends LitElement {
 			const activeNote = this._getNoteByTouchId(e.identifier);
 			if (activeNote && activeNote.active) {
 				activeNote.active = false;
-				activeNote.touchid = -1;
+				activeNote.touchId = -1;
 			}
 		});
 	}
@@ -96,7 +96,7 @@ export class ToneKeyboard extends LitElement {
 	protected override render() {
 		const octaves = Array.from(
 			{ length: this.octaves },
-			(_, i) => i + this.rootoctave
+			(_, i) => i + this.rootOctave
 		);
 		return html`
 			<div

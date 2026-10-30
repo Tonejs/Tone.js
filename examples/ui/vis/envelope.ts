@@ -3,6 +3,7 @@ import { customElement } from "lit/decorators.js";
 import { styleMap } from "lit/directives/style-map.js";
 import { Envelope } from "tone";
 
+import { monoFont } from "../styles";
 import { VisBase } from "./vis-base";
 
 @customElement("tone-envelope-vis")
@@ -13,7 +14,8 @@ export class ToneEnvelopeVis extends VisBase<Envelope> {
 			#timeline {
 				margin-top: -10px;
 				font-size: 10px;
-				font-family: monospace;
+				font-family: ${monoFont};
+				color: #999;
 				position: relative;
 				height: 20px;
 			}

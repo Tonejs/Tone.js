@@ -1,7 +1,7 @@
 import "@material/web/icon/icon.js";
 
 import { css, html, LitElement, PropertyValues } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { customElement, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { getContext, getDestination, start } from "tone";
 
@@ -9,8 +9,8 @@ import { icons } from "../styles";
 
 @customElement("tone-mute")
 export class ToneMuteButton extends LitElement {
-	@property({ type: Boolean })
-	muted = false;
+	@state()
+	private _muted = false;
 
 	@state()
 	private _suspended = getContext().state === "suspended";
@@ -23,7 +23,6 @@ export class ToneMuteButton extends LitElement {
 			}
 
 			button {
-				--webkit-appearance: none;
 				appearance: none;
 				border: none;
 				background-color: transparent;
@@ -33,7 +32,6 @@ export class ToneMuteButton extends LitElement {
 			md-icon {
 				cursor: pointer;
 				color: black;
-				z-index: 100000;
 			}
 			md-icon.muted {
 				color: #ff4800;
@@ -51,9 +49,9 @@ export class ToneMuteButton extends LitElement {
 		getContext().off("statechange", this._onStateChange);
 	}
 
-	protected override updated(changed: PropertyValues<this>) {
-		if (changed.has("muted")) {
-			getDestination().mute = this.muted;
+	protected override updated(changed: PropertyValues) {
+		if (changed.has("_muted")) {
+			getDestination().mute = this._muted;
 		}
 	}
 
@@ -65,12 +63,12 @@ export class ToneMuteButton extends LitElement {
 		if (this._suspended) {
 			await start();
 		} else {
-			this.muted = !this.muted;
+			this._muted = !this._muted;
 		}
 	}
 
 	protected override render() {
-		const silent = this.muted || this._suspended;
+		const silent = this._muted || this._suspended;
 		return html`
 			<button aria-label="mute" @click=${this._clicked}>
 				<md-icon class=${classMap({ muted: silent })}>

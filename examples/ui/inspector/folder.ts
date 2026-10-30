@@ -1,10 +1,8 @@
-import "@material/web/icon/icon.js";
-
 import { css, html, LitElement } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 import { ToneAudioNode } from "tone";
 
-import { icons, plainSummary, titleFont } from "../styles";
+import { disclosure, font } from "../styles";
 import { ToneAudioNodeElementOptions, ui } from "./audio-node";
 import { HeightController } from "./height";
 
@@ -14,24 +12,20 @@ import { HeightController } from "./height";
 @customElement("tone-folder")
 export class ToneFolderElement extends LitElement {
 	/**
-	 * If it is open or collapsed
-	 */
-	@property({ type: Boolean })
-	open = true;
-
-	/**
 	 * The name of the folder
 	 */
 	@property({ type: String })
 	name: string;
 
+	@state()
+	private _open = true;
+
 	static override styles = [
-		icons,
-		plainSummary,
+		disclosure,
 		css`
 			:host {
 				display: block;
-				font-family: ${titleFont};
+				font-family: ${font};
 				margin-bottom: 10px;
 			}
 			summary {
@@ -39,13 +33,9 @@ export class ToneFolderElement extends LitElement {
 				font-size: 1.1em;
 				border-bottom: 1px solid black;
 				position: sticky;
-				top: 0px;
+				top: var(--sticky-offset, 0px);
 				z-index: 3;
 				background-color: white;
-			}
-			summary md-icon {
-				--md-icon-size: 20px;
-				vertical-align: middle;
 			}
 			#contents {
 				margin-left: 5px;
@@ -70,19 +60,15 @@ export class ToneFolderElement extends LitElement {
 	}
 
 	private _toggle(e: Event) {
-		this.open = (e.target as HTMLDetailsElement).open;
+		this._open = (e.target as HTMLDetailsElement).open;
 	}
 
 	protected override render() {
 		return html`
-			<details ?open=${this.open} @toggle=${this._toggle}>
+			<details ?open=${this._open} @toggle=${this._toggle}>
 				<summary>
-					<md-icon>
-						${this.open
-							? "keyboard_arrow_down"
-							: "keyboard_arrow_right"}
-					</md-icon>
 					<span>${this.name}</span>
+					<span class="chevron"></span>
 				</summary>
 				<div id="contents">
 					<slot></slot>

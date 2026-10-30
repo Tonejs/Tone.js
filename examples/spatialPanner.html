@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="utf-8" />
 		<title>Panner3d</title>
-		<script src="./js/tone-ui.js"></script>
+		<script src="./tone-ui.js"></script>
 	</head>
 	<body>
 		<tone-example label="3D Panning">
@@ -94,7 +94,7 @@
 		</script>
 
 		<script>
-			bind("tone-play-toggle", Tone.Transport);
+			bind("tone-play-toggle", Tone.getTransport());
 			bind("#xSlider", Tone.Listener.positionX);
 			bind("#zSlider", Tone.Listener.positionZ);
 			bind("#rotation", setRotation);

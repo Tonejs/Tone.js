@@ -2,7 +2,7 @@ import "@material/web/icon/icon.js";
 import "./button";
 
 import { css, html, LitElement } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 
 import { Bindable, Startable } from "../bind";
 import { icons } from "../styles";
@@ -10,8 +10,8 @@ import { buttonHeight } from "./button";
 
 @customElement("tone-play-toggle")
 export class TonePlayToggle extends LitElement implements Bindable<Startable> {
-	@property({ type: Boolean })
-	started = false;
+	@state()
+	private _started = false;
 
 	@property({ type: Boolean })
 	disabled = false;
@@ -44,10 +44,10 @@ export class TonePlayToggle extends LitElement implements Bindable<Startable> {
 		if (this.disabled) {
 			return;
 		}
-		this.started = !this.started;
+		this._started = !this._started;
 		e.stopPropagation();
 		this.dispatchEvent(
-			new CustomEvent(this.started ? "start" : "stop", {
+			new CustomEvent(this._started ? "start" : "stop", {
 				composed: true,
 			})
 		);
@@ -58,10 +58,10 @@ export class TonePlayToggle extends LitElement implements Bindable<Startable> {
 			<tone-button
 				?disabled=${this.disabled}
 				@click=${this._clicked}
-				title=${this.started ? "Stop" : "Start"}
-				aria-label=${this.started ? "Stop" : "Start"}
+				title=${this._started ? "Stop" : "Start"}
+				aria-label=${this._started ? "Stop" : "Start"}
 			>
-				<md-icon>${!this.started ? "play_arrow" : "stop"}</md-icon>
+				<md-icon>${!this._started ? "play_arrow" : "stop"}</md-icon>
 			</tone-button>
 		`;
 	}

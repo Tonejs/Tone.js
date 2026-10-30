@@ -4,7 +4,7 @@
 		<meta charset="utf-8" />
 		<title>VISUALIZING ENVELOPES</title>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.0.0/p5.js"></script>
-		<script src="./js/tone-ui.js"></script>
+		<script src="./tone-ui.js"></script>
 	</head>
 	<body>
 		<tone-example label="Tone with p5.js">
@@ -194,7 +194,7 @@
 			Tone.Transport.loop = true;
 
 			// bind the interface
-			bind("tone-play-toggle", Tone.Transport);
+			bind("tone-play-toggle", Tone.getTransport());
 
 			const controls = drawer();
 

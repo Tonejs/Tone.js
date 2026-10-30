@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="utf-8" />
 		<title>DAW</title>
-		<script src="./js/tone-ui.js"></script>
+		<script src="./tone-ui.js"></script>
 		<style type="text/css">
 			#tracks {
 				position: relative;
@@ -72,7 +72,7 @@
 		</script>
 
 		<script>
-			bind("tone-play-toggle", Tone.Transport);
+			bind("tone-play-toggle", Tone.getTransport());
 
 			// keep the play head on track
 			setInterval(() => {

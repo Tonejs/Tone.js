@@ -12,12 +12,11 @@ export class ToneArrayValue extends ToneValue<number[]> {
 	static override styles = [
 		ToneValue.styles,
 		css`
-			#container {
-				display: flex;
-			}
-			label,
 			#bars {
 				flex: 1;
+				/* the row centers its items, the bars fill its height */
+				align-self: stretch;
+				min-height: 24px;
 			}
 			label[disabled] {
 				color: lightgray;

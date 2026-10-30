@@ -1,11 +1,8 @@
 import "./buffer";
 import "./compressor";
 import "./envelope";
-import "./fft";
 import "./filter";
-import "./meter";
 import "./oscillator";
-import "./waveform";
 
 import { html, nothing, TemplateResult } from "lit";
 import { Filter, ToneAudioNode } from "tone";
@@ -43,12 +40,6 @@ export function renderVis(
 			.tone=${tone}
 			.values=${values}
 		></tone-filter-vis>`;
-	} else if (name === "Meter") {
-		return html`<tone-meter-vis .tone=${tone}></tone-meter-vis>`;
-	} else if (name === "Waveform") {
-		return html`<tone-waveform-vis .tone=${tone}></tone-waveform-vis>`;
-	} else if (name === "FFT") {
-		return html`<tone-fft-vis .tone=${tone}></tone-fft-vis>`;
 	} else if (Reflect.has(tone, "buffer")) {
 		return html`<tone-buffer-vis
 			.tone=${tone}

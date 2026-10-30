@@ -1,5 +1,5 @@
-import { css, html, LitElement, PropertyValues } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { css, html, LitElement } from "lit";
+import { customElement, state } from "lit/decorators.js";
 import { styleMap } from "lit/directives/style-map.js";
 import { getDraw, getTransport, Sequence } from "tone";
 
@@ -9,28 +9,28 @@ import { focusOutline, lightOrange, orange } from "../styles";
 /**
  * Invoked for each filled cell at the time it should be played
  */
-export type StepSequencerCallback = (time: number, row: number) => void;
+type StepSequencerCallback = (time: number, row: number) => void;
 
 @customElement("tone-step-sequencer")
 export class ToneStepSequencer
 	extends LitElement
 	implements Bindable<StepSequencerCallback>
 {
-	@property({ type: Number })
-	columns = 16;
+	private readonly _columns = 16;
 
-	@property({ type: Number })
-	rows = 4;
-
-	@property({ type: String })
-	subdivision = "8n";
+	private readonly _rows = 4;
 
 	@state()
 	private _highlighted = -1;
 
 	private _sequencer: Sequence<number>;
 
-	private _matrix: boolean[][] = [];
+	/**
+	 * If each cell is filled, by column then row
+	 */
+	private _matrix = this._indexArray(this._columns).map(() =>
+		this._indexArray(this._rows).map(() => false)
+	);
 
 	private _started = false;
 
@@ -86,28 +86,18 @@ export class ToneStepSequencer
 		super.connectedCallback();
 		getTransport().on("start", this._onStart);
 		getTransport().on("stop", this._onStop);
+		this._sequencer = new Sequence(
+			this._tick.bind(this),
+			this._indexArray(this._columns),
+			"8n"
+		).start(0);
 	}
 
 	override disconnectedCallback() {
 		super.disconnectedCallback();
 		getTransport().off("start", this._onStart);
 		getTransport().off("stop", this._onStop);
-	}
-
-	protected override willUpdate(changed: PropertyValues<this>) {
-		if (changed.has("columns") || changed.has("subdivision")) {
-			this._sequencer?.dispose();
-			this._sequencer = new Sequence(
-				this._tick.bind(this),
-				this._indexArray(this.columns),
-				this.subdivision
-			).start(0);
-		}
-		if (changed.has("columns") || changed.has("rows")) {
-			this._matrix = this._indexArray(this.columns).map(() =>
-				this._indexArray(this.rows).map(() => false)
-			);
-		}
+		this._sequencer.dispose();
 	}
 
 	private _onStart = () => {
@@ -135,7 +125,7 @@ export class ToneStepSequencer
 					new CustomEvent("trigger", {
 						detail: {
 							time,
-							row: this.rows - row - 1,
+							row: this._rows - row - 1,
 						},
 						composed: true,
 					})
@@ -158,7 +148,7 @@ export class ToneStepSequencer
 	protected override render() {
 		const containerStyle = {
 			height: "auto",
-			aspectRatio: `${this.columns} / ${this.rows}`,
+			aspectRatio: `${this._columns} / ${this._rows}`,
 		};
 		return html`
 			<div id="container" style=${styleMap(containerStyle)}>

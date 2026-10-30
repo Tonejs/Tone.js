@@ -11,17 +11,11 @@ export class ToneKeyboardNote extends LitElement {
 	@property({ type: String })
 	color = "#eee";
 
-	@property({ type: String })
-	activecolor = "white";
-
 	@property({ type: Boolean })
 	active = false;
 
 	@property({ type: Number })
-	velocity: number;
-
-	@property({ type: Number })
-	touchid = -1;
+	touchId = -1;
 
 	@query("button")
 	private _button: HTMLButtonElement;
@@ -43,9 +37,7 @@ export class ToneKeyboardNote extends LitElement {
 		}
 
 		button {
-			border: none;
-			-webkit-appearance: none;
-			--key-margin: 2px;
+			appearance: none;
 			width: 100%;
 			height: 100%;
 			border: 2px solid white;
@@ -57,6 +49,7 @@ export class ToneKeyboardNote extends LitElement {
 			font-size: 0px;
 			border-radius: 2px;
 		}
+		/* overrides the key color of the inline style */
 		button[active] {
 			background-color: #666 !important;
 			transition-duration: 0s;
@@ -70,7 +63,7 @@ export class ToneKeyboardNote extends LitElement {
 		if (changed.has("active") && changed.get("active") !== undefined) {
 			const eventName = this.active ? "noteon" : "noteoff";
 			if (!this.active) {
-				this.touchid = -1;
+				this.touchId = -1;
 			}
 			this.dispatchEvent(
 				new CustomEvent(eventName, {
@@ -111,7 +104,7 @@ export class ToneKeyboardNote extends LitElement {
 
 	private _touchstart(e: TouchEvent) {
 		e.preventDefault();
-		this.touchid = e.touches[0].identifier;
+		this.touchId = e.touches[0].identifier;
 		this.active = true;
 	}
 
@@ -125,9 +118,7 @@ export class ToneKeyboardNote extends LitElement {
 
 	protected override render() {
 		const show = this.note !== 0;
-		const buttonStyle = {
-			backgroundColor: this.active ? this.activecolor : this.color,
-		};
+		const buttonStyle = { backgroundColor: this.color };
 		return html`
 			<div id="container" ?show=${show}>
 				${show

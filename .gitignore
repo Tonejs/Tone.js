@@ -35,3 +35,8 @@ docs
 tone.d.ts
 examples/scratch.ts
 test/integration/*/package-lock.json
+# built from examples/ui
+examples/tone-ui.js
+
+# Claude Code
+.claude/

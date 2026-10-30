@@ -1,6 +1,8 @@
 import { css, html, LitElement } from "lit";
 import { customElement, query, state } from "lit/decorators.js";
 
+import { font, lightGray } from "../styles";
+
 /**
  * Map of group name to a map of example name to example url
  */
@@ -23,7 +25,7 @@ export class ToneSidebar extends LitElement {
 	static override styles = css`
 		:host {
 			display: block;
-			background-color: var(--light-gray, #ececec);
+			background-color: ${lightGray};
 		}
 
 		ul,
@@ -31,18 +33,21 @@ export class ToneSidebar extends LitElement {
 			padding: 5px 10px;
 			text-align: left;
 			list-style-type: none;
-			font-family: sans-serif;
+			font-family: ${font};
 			width: 100%;
 		}
 		ul:last-child {
 			padding-bottom: 20px;
 		}
 		ul span {
+			text-align: left;
 			text-transform: uppercase;
 			border-bottom: 1px solid #616161;
 			margin-bottom: 10px;
-			width: 100%;
+			/* the line stops at the list's padding instead of overflowing the other side */
+			width: calc(100% - 20px);
 			display: block;
+			font-size: 0.8em;
 			color: #616161;
 		}
 
@@ -54,14 +59,14 @@ export class ToneSidebar extends LitElement {
 		}
 
 		li[selected] {
-			border-top-left-radius: 4px;
-			border-bottom-left-radius: 4px;
+			border-top-left-radius: 99999px;
+			border-bottom-left-radius: 99999px;
 			background-color: white;
 		}
 	`;
 
 	protected override async firstUpdated() {
-		const response = await fetch("./js/ExampleList.json");
+		const response = await fetch("./ExampleList.json");
 		if (response.ok) {
 			this._examples = await response.json();
 			this._loading = false;

@@ -3,6 +3,8 @@ import { property, query } from "lit/decorators.js";
 import { styleMap } from "lit/directives/style-map.js";
 import { ToneAudioNode } from "tone";
 
+import { defaultParent } from "../bind";
+
 /**
  * Base class for visualizations which draw a curve of a Tone.js node
  */
@@ -21,8 +23,10 @@ export abstract class VisBase<
 	})
 	values: object;
 
-	@property({ type: Number })
-	height = 100;
+	/**
+	 * The height of the canvas in pixels
+	 */
+	protected height = 100;
 
 	@query("canvas")
 	protected canvas: HTMLCanvasElement;
@@ -134,21 +138,16 @@ export abstract class VisBase<
 }
 
 /**
- * Create a visualization element for the node
+ * Create a visualization element for the node on the example page
  */
 export function createVis<K extends keyof HTMLElementTagNameMap>(
 	tagName: K,
-	tone: ToneAudioNode,
-	{ height }: { height?: number },
-	parent: HTMLElement
+	tone: ToneAudioNode
 ): HTMLElementTagNameMap[K] {
 	const element = document.createElement(
 		tagName
 	) as HTMLElementTagNameMap[K] & VisBase;
 	element.tone = tone;
-	if (height) {
-		element.height = height;
-	}
-	parent.appendChild(element);
+	defaultParent().appendChild(element);
 	return element;
 }
