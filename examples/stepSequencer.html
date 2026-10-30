@@ -10,7 +10,7 @@
 			<div slot="explanation">
 				<a
 					href="https://tonejs.github.io/docs/latest/functions/getTransport.html"
-					>Tone.Transport</a
+					>Tone.getTransport()</a
 				>
 				is the application-wide timekeeper. Its clock source enables
 				sample-accurate scheduling as well as tempo-curves and
@@ -43,7 +43,7 @@
 
 		<script>
 			bind("tone-play-toggle", Tone.getTransport());
-			bind("tone-slider", Tone.Transport.bpm);
+			bind("tone-slider", Tone.getTransport().bpm);
 			bind("tone-step-sequencer", (time, row) =>
 				keys.player(String(row)).start(time, 0, "16t")
 			);

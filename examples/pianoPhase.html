@@ -54,8 +54,8 @@
 
 		<script data-tone-code>
 			// set the bpm and time signature first
-			Tone.Transport.timeSignature = [6, 4];
-			Tone.Transport.bpm.value = 180;
+			Tone.getTransport().timeSignature = [6, 4];
+			Tone.getTransport().bpm.value = 180;
 
 			// L/R channel merging
 			const merge = new Tone.Merge();
@@ -65,7 +65,7 @@
 				wet: 0.3,
 			});
 
-			merge.chain(reverb, Tone.Destination);
+			merge.chain(reverb, Tone.getDestination());
 
 			// left and right synthesizers
 			const synthL = new Tone.Synth({

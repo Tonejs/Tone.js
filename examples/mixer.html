@@ -39,7 +39,7 @@
 
 			// create a meter on the destination node
 			const toneMeter = new Tone.Meter({ channelCount: 2 });
-			Tone.Destination.chain(toneMeter);
+			Tone.getDestination().chain(toneMeter);
 
 			const channels = [
 				makeChannel("comping1", 1),

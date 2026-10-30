@@ -8,13 +8,13 @@
 	<body>
 		<tone-example label="3D Panning">
 			<div slot="explanation">
-				Tone.Panner3D and Tone.Listener work together to create 3D
+				Tone.Panner3D and Tone.getListener() work together to create 3D
 				audio. Connect your synths and sources to Panner3D and then to
 				the master output, anything you connect to the panner will be
 				spatialized according the position of the panner relative to the
 				position of the listener. This example synchronizes the position
-				of the camera with Tone.Listener and the position of each of the
-				spheres with a track.
+				of the camera with Tone.getListener() and the position of each
+				of the spheres with a track.
 				<br /><br />
 				Note: the 3D panning effect is more effective with headphones.
 			</div>
@@ -87,16 +87,16 @@
 
 			// rotate the listener around the y axis
 			function setRotation(angle) {
-				Tone.Listener.forwardX.value = Math.sin(angle);
-				Tone.Listener.forwardY.value = 0;
-				Tone.Listener.forwardZ.value = -Math.cos(angle);
+				Tone.getListener().forwardX.value = Math.sin(angle);
+				Tone.getListener().forwardY.value = 0;
+				Tone.getListener().forwardZ.value = -Math.cos(angle);
 			}
 		</script>
 
 		<script>
 			bind("tone-play-toggle", Tone.getTransport());
-			bind("#xSlider", Tone.Listener.positionX);
-			bind("#zSlider", Tone.Listener.positionZ);
+			bind("#xSlider", Tone.getListener().positionX);
+			bind("#zSlider", Tone.getListener().positionZ);
 			bind("#rotation", setRotation);
 		</script>
 	</body>

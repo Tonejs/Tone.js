@@ -1,6 +1,7 @@
 import { css, html, LitElement, PropertyValues } from "lit";
 import { customElement, query, state } from "lit/decorators.js";
 import { styleMap } from "lit/directives/style-map.js";
+import { isDefined } from "tone";
 
 import { Bindable } from "../bind";
 
@@ -85,7 +86,7 @@ export class ToneSliderPad
 	}
 
 	protected override updated(changed: PropertyValues) {
-		if (changed.has("_pressed") && changed.get("_pressed") !== undefined) {
+		if (changed.has("_pressed") && isDefined(changed.get("_pressed"))) {
 			this._dispatch(this._pressed ? "down" : "up");
 		}
 	}

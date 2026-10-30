@@ -31,7 +31,7 @@
 			<div slot="explanation">
 				Audio scheduling and rendering visuals should always be kept
 				separate. Instead of triggering visuals from within a scheduled
-				event callback, schedule a 'deferred' callback using Tone.Draw
+				event callback, schedule a 'deferred' callback using Tone.getDraw()
 				which will be invoked on an animation frame at the exact moment
 				of the scheduled event.
 				<br /><br />
@@ -62,8 +62,8 @@
 				(time, note) => {
 					synth.triggerAttackRelease(note, "16n", time);
 
-					// Draw.schedule takes a callback and a time to invoke the callback
-					Tone.Draw.schedule(() => {
+					// getDraw().schedule takes a callback and a time to invoke the callback
+					Tone.getDraw().schedule(() => {
 						// the callback synced to the animation frame at the given time
 						const noteElement = document.querySelector("#" + note);
 						noteElement.classList.add("active");

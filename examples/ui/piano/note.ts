@@ -1,7 +1,7 @@
 import { css, html, LitElement, nothing, PropertyValues } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
 import { styleMap } from "lit/directives/style-map.js";
-import { Midi } from "tone";
+import { isDefined, Midi } from "tone";
 
 @customElement("tone-keyboard-note")
 export class ToneKeyboardNote extends LitElement {
@@ -60,7 +60,7 @@ export class ToneKeyboardNote extends LitElement {
 	`;
 
 	protected override updated(changed: PropertyValues<this>) {
-		if (changed.has("active") && changed.get("active") !== undefined) {
+		if (changed.has("active") && isDefined(changed.get("active"))) {
 			const eventName = this.active ? "noteon" : "noteoff";
 			if (!this.active) {
 				this.touchId = -1;

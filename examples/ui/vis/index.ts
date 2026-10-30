@@ -5,7 +5,13 @@ import "./filter";
 import "./oscillator";
 
 import { html, nothing, TemplateResult } from "lit";
-import { Filter, ToneAudioNode } from "tone";
+import {
+	Compressor,
+	Envelope,
+	Filter,
+	OnePoleFilter,
+	ToneAudioNode,
+} from "tone";
 
 /**
  * Render the visualization which matches the type of node, if there is one.
@@ -15,26 +21,26 @@ export function renderVis(
 	tone: ToneAudioNode,
 	values: object
 ): TemplateResult | typeof nothing {
-	const name = tone.toString();
-	if (name.includes("Envelope")) {
+	if (tone instanceof Envelope) {
 		return html`<tone-envelope-vis
 			.tone=${tone}
 			.values=${values}
 		></tone-envelope-vis>`;
-	} else if (name.includes("Oscillator")) {
+	} else if (tone.toString().includes("Oscillator")) {
+		// the oscillator types do not share a base class
 		return html`<tone-oscillator-vis
 			.tone=${tone}
 			.values=${values}
 		></tone-oscillator-vis>`;
-	} else if (name === "Compressor") {
+	} else if (tone instanceof Compressor) {
 		return html`<tone-compressor-vis
 			.tone=${tone}
 			.values=${values}
 		></tone-compressor-vis>`;
 	} else if (
-		(name === "Filter" || name === "OnePoleFilter") &&
+		tone instanceof OnePoleFilter ||
 		// the response is meaningless when the frequency is driven by a signal
-		!(tone instanceof Filter && tone.frequency.overridden)
+		(tone instanceof Filter && !tone.frequency.overridden)
 	) {
 		return html`<tone-filter-vis
 			.tone=${tone}

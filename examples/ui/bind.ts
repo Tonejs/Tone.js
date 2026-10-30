@@ -1,3 +1,5 @@
+import { isString } from "tone";
+
 /**
  * An element which can drive a Tone.js object
  */
@@ -27,10 +29,9 @@ export interface Triggerable {
  * starts and stops its target and a tone-slider sets its target's value.
  */
 export function bind<T>(selector: string | Element, target: T): Element {
-	const element =
-		typeof selector === "string"
-			? document.querySelector(selector)
-			: selector;
+	const element = isString(selector)
+		? document.querySelector(selector)
+		: selector;
 	if (!element || !("bind" in element)) {
 		throw new Error(`No bindable element matches "${selector}"`);
 	}

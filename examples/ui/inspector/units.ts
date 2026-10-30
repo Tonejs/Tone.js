@@ -1,4 +1,4 @@
-import { FrequencyClass, getContext, TimeClass } from "tone";
+import { FrequencyClass, getContext, Param, Signal, TimeClass } from "tone";
 
 /**
  * How a value is displayed: the unit after it and the factor
@@ -98,8 +98,8 @@ export function displayUnit(
 	param: unknown
 ): DisplayUnit | undefined {
 	const units =
-		param !== null && typeof param === "object" && "units" in param
-			? (param.units as string)
+		param instanceof Param || param instanceof Signal
+			? param.units
 			: OPTION_UNITS[name];
 	return Object.prototype.hasOwnProperty.call(DISPLAY_UNITS, units)
 		? { units, ...DISPLAY_UNITS[units] }

@@ -3,6 +3,7 @@ import "@material/web/slider/slider.js";
 import type { MdSlider } from "@material/web/slider/slider.js";
 import { css, html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { isFunction } from "tone";
 
 import { Bindable } from "../bind";
 
@@ -76,7 +77,7 @@ export class ToneSlider extends LitElement implements Bindable<SliderTarget> {
 	 * target also sets the slider's starting value.
 	 */
 	bind(target: SliderTarget) {
-		if (typeof target === "function") {
+		if (isFunction(target)) {
 			this.addEventListener("input", () => target(this.value));
 		} else {
 			this.value = target.value;

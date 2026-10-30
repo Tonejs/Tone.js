@@ -7,7 +7,17 @@ import { css, html, LitElement } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { live } from "lit/directives/live.js";
-import { Param, PolySynth, Signal, ToneAudioNode } from "tone";
+import {
+	isArray,
+	isBoolean,
+	isNumber,
+	isObject,
+	isString,
+	Param,
+	PolySynth,
+	Signal,
+	ToneAudioNode,
+} from "tone";
 
 import { defaultParent, placeControls } from "../bind";
 import { disclosure, font, lightOrange } from "../styles";
@@ -146,7 +156,7 @@ export class ToneAudioNodeElement extends LitElement {
 	) {
 		const onValue = (e: CustomEvent<unknown>) =>
 			this._setValue(path, e.detail);
-		if (typeof value === "number") {
+		if (isNumber(value)) {
 			return html`<tone-number
 				class="value"
 				name=${name}
@@ -154,28 +164,28 @@ export class ToneAudioNodeElement extends LitElement {
 				.value=${live(value)}
 				@value=${onValue}
 			></tone-number>`;
-		} else if (typeof value === "string") {
+		} else if (isString(value)) {
 			return html`<tone-string
 				class="value"
 				name=${name}
 				.value=${live(value)}
 				@value=${onValue}
 			></tone-string>`;
-		} else if (typeof value === "boolean") {
+		} else if (isBoolean(value)) {
 			return html`<tone-boolean
 				class="value"
 				name=${name}
 				.value=${live(value)}
 				@value=${onValue}
 			></tone-boolean>`;
-		} else if (Array.isArray(value)) {
+		} else if (isArray(value)) {
 			return html`<tone-array
 				class="value"
 				name=${name}
 				.value=${live(value)}
 				@value=${onValue}
 			></tone-array>`;
-		} else if (value && typeof value === "object") {
+		} else if (isObject(value)) {
 			const open =
 				this._toggled.get(path.join(".")) ??
 				path.length <= this.openDepth;
@@ -210,8 +220,6 @@ export class ToneAudioNodeElement extends LitElement {
 				? Reflect.get(this.tone, "_dummyVoice")
 				: this.tone;
 		const node = path.reduce((obj, prop) => obj?.[prop], root);
-		const isObject = (v: unknown) =>
-			v !== null && typeof v === "object" && !Array.isArray(v);
 		// values driven by a connected signal can't be set
 		const isOverridden = (name: string) => {
 			const param = node?.[name];

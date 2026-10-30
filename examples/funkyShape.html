@@ -189,9 +189,9 @@
 			).start(0);
 
 			// TRANSPORT
-			Tone.Transport.loopStart = 0;
-			Tone.Transport.loopEnd = "1:0";
-			Tone.Transport.loop = true;
+			Tone.getTransport().loopStart = 0;
+			Tone.getTransport().loopEnd = "1:0";
+			Tone.getTransport().loop = true;
 
 			// bind the interface
 			bind("tone-play-toggle", Tone.getTransport());

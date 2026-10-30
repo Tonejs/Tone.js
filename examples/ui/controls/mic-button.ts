@@ -3,7 +3,7 @@ import "./button";
 
 import { css, html, LitElement, PropertyValues } from "lit";
 import { customElement, state } from "lit/decorators.js";
-import { UserMedia } from "tone";
+import { isDefined, UserMedia } from "tone";
 
 import { Bindable } from "../bind";
 import { icons } from "../styles";
@@ -38,7 +38,7 @@ export class ToneMicButton extends LitElement implements Bindable<UserMedia> {
 	}
 
 	protected override updated(changed: PropertyValues) {
-		if (changed.has("_open") && changed.get("_open") !== undefined) {
+		if (changed.has("_open") && isDefined(changed.get("_open"))) {
 			this.dispatchEvent(new CustomEvent(this._open ? "open" : "close"));
 		}
 	}

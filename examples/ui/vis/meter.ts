@@ -1,7 +1,7 @@
 import { css, html, PropertyValues } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { styleMap } from "lit/directives/style-map.js";
-import { Meter } from "tone";
+import { isArray, Meter } from "tone";
 
 import { AnimationController } from "./animation";
 import { createVis, VisBase } from "./vis-base";
@@ -35,7 +35,7 @@ export class ToneMeterVis extends VisBase<Meter> {
 		new AnimationController(this, () => {
 			if (this.tone) {
 				const values = this.tone.getValue();
-				this._meterLevels = Array.isArray(values) ? values : [values];
+				this._meterLevels = isArray(values) ? values : [values];
 			}
 		});
 	}

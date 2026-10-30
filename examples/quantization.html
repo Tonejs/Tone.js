@@ -56,7 +56,7 @@
 			function loop() {
 				requestAnimationFrame(loop);
 				const [bar, beat, sixteenth] = String(
-					Tone.Transport.position
+					Tone.getTransport().position
 				).split(":");
 				document.querySelector("#progress").textContent = `
 				bar: ${bar}, beat: ${beat}, sixteenth: ${sixteenth}
@@ -68,12 +68,12 @@
 			const buttons = document.querySelectorAll("tone-button");
 			bind("tone-play-toggle", {
 				start() {
-					Tone.Transport.start();
+					Tone.getTransport().start();
 					// enable all of the buttons if it's playing
 					buttons.forEach((el) => (el.disabled = false));
 				},
 				stop() {
-					Tone.Transport.stop();
+					Tone.getTransport().stop();
 					buttons.forEach((el) => (el.disabled = true));
 				},
 			});
