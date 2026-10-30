@@ -4,7 +4,7 @@ If you're looking for ideas for where to get started, consider jumping in on any
 
 ### Examples
 
-To contribute examples, please follow the current style of the examples. Add your example's title and file name to `examples/js/ExampleList.json` for it to appear in the examples list on the index page.
+To contribute examples, please follow the current style of the examples. Add your example's title and file name to `examples/ExampleList.json` for it to appear in the examples list on the index page.
 
 ### Docs
 

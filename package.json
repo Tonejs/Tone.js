@@ -18,11 +18,11 @@
 		"build": "npm run remove && npm run ts:build && npm run webpack:build",
 		"changelog": "node scripts/changelog.mjs",
 		"docs:json": "typedoc --options \"./scripts/typedoc.json\" --json \"./docs/tone.json\"",
-		"lint": "tsc --noEmit && eslint ./Tone",
-		"lint:fix": "tsc --noEmit && eslint ./Tone ./test --fix",
-		"pretty": "prettier ./Tone ./test -w",
+		"lint": "tsc --noEmit && tsc -p ./examples/ui && eslint ./Tone ./examples/ui",
+		"lint:fix": "tsc --noEmit && tsc -p ./examples/ui && eslint ./Tone ./test ./examples/ui --fix",
+		"pretty": "prettier ./Tone ./test ./examples/ui -w",
 		"scratch": "webpack serve --env scratch=1 --mode=development --config ./scripts/webpack.config.cjs",
-		"spellcheck": "cspell --config ./scripts/cspell.json ./Tone ./test/**/*.ts ./examples/**/*.html",
+		"spellcheck": "cspell --config ./scripts/cspell.json ./Tone ./test/**/*.ts ./examples/**/*.html \"./examples/ui/**/*.ts\"",
 		"test": "tsc && web-test-runner --config=./test/web-test-runner.config.js --coverage ${npm_config_group:+--group ${npm_config_group}}",
 		"test:examples": "node ./test/scripts/test_examples.mjs",
 		"test:html": "node ./test/scripts/test_html.mjs",
@@ -123,5 +123,8 @@
 	},
 	"publishConfig": {
 		"provenance": true
-	}
+	},
+	"workspaces": [
+		"examples/ui"
+	]
 }
