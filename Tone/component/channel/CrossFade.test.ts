@@ -1,3 +1,5 @@
+import { expect } from "chai";
+
 import { BasicTests } from "../../../test/helper/Basic.js";
 import { connectFrom, connectTo } from "../../../test/helper/Connect.js";
 import { ConstantOutput } from "../../../test/helper/ConstantOutput.js";
@@ -62,6 +64,22 @@ describe("CrossFade", () => {
 				2.12,
 				0.01
 			);
+		});
+	});
+
+	context("Online", () => {
+		it("passes input a as soon as it is created in a running context", async () => {
+			const crossFade = new CrossFade(0);
+			const signal = new Signal(1).connect(crossFade.a);
+			const analyser = crossFade.context.createAnalyser();
+			crossFade.connect(analyser);
+			// well within the context's lookAhead
+			await new Promise((resolve) => setTimeout(resolve, 50));
+			const samples = new Float32Array(analyser.fftSize);
+			analyser.getFloatTimeDomainData(samples);
+			expect(Math.max(...samples)).to.be.closeTo(1, 0.01);
+			signal.dispose();
+			crossFade.dispose();
 		});
 	});
 });
