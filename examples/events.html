@@ -3,29 +3,10 @@
 	<head>
 		<meta charset="utf-8" />
 		<title>Events</title>
-
-		<meta
-			name="viewport"
-			content="width=device-width, initial-scale=1, maximum-scale=1"
-		/>
-		<link
-			rel="icon"
-			type="image/png"
-			sizes="174x174"
-			href="./favicon.png"
-		/>
-
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/2.4.3/webcomponents-bundle.js"></script>
-		<link
-			href="https://fonts.googleapis.com/css?family=Material+Icons&display=block"
-			rel="stylesheet"
-		/>
-		<script src="../build/Tone.js"></script>
-		<script src="./js/tone-ui.js"></script>
-		<script src="./js/components.js"></script>
+		<script src="./tone-ui.js"></script>
 	</head>
 	<body>
-		<tone-example label="Events">
+		<tone-example>
 			<div slot="explanation">
 				Tone's Event classes (<a
 					href="https://tonejs.github.io/docs/latest/classes/ToneEvent"
@@ -60,12 +41,10 @@
 				before Tone.js 14.x)
 			</div>
 
-			<div id="content">
-				<tone-play-toggle></tone-play-toggle>
-			</div>
+			<tone-play-toggle></tone-play-toggle>
 		</tone-example>
 
-		<script type="text/javascript">
+		<script data-tone-code>
 			/**
 			 * KICK
 			 */
@@ -75,7 +54,7 @@
 					attack: 0.02,
 					decay: 0.8,
 				},
-				octaves: 10,
+				octaves: 4,
 				pitchDecay: 0.01,
 			}).toDestination();
 
@@ -161,37 +140,17 @@
 			bassPart.probability = 0.9;
 
 			// set the transport
-			Tone.Transport.bpm.value = 90;
+			Tone.getTransport().bpm.value = 90;
+		</script>
 
+		<script>
 			drawer()
-				.add({
-					name: "Kick",
-					tone: kick,
-					open: false,
-				})
-				.add({
-					name: "Snare",
-					tone: snare,
-					open: false,
-				})
-				.add({
-					name: "Bass",
-					tone: bass,
-					open: false,
-				})
-				.add({
-					name: "Keys",
-					tone: keys,
-					open: false,
-				});
+				.add(kick, { name: "Kick" })
+				.add(snare, { name: "Snare" })
+				.add(bass, { name: "Bass" })
+				.add(keys, { name: "Keys" });
 
-			// bind the interface
-			document
-				.querySelector("tone-play-toggle")
-				.addEventListener("start", (e) => Tone.Transport.start());
-			document
-				.querySelector("tone-play-toggle")
-				.addEventListener("stop", (e) => Tone.Transport.stop());
+			bind("tone-play-toggle", Tone.getTransport());
 		</script>
 	</body>
 </html>

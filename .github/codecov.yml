@@ -4,3 +4,6 @@ coverage:
       default:
         target: auto
         threshold: 1%
+ignore:
+  # the UI of the examples is not part of the library
+  - "examples/**"

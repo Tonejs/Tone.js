@@ -79,6 +79,14 @@ export default {
 		}),
 	],
 	rootDir: resolve(__dirname, "../"),
+	coverageConfig: {
+		// the defaults, and the UI of the examples which is not part of the library
+		exclude: [
+			"**/node_modules/**/*",
+			"**/web_modules/**/*",
+			"**/examples/**/*",
+		],
+	},
 	testRunnerHtml: (testFramework) =>
 		`<!DOCTYPE html>
 			<html>

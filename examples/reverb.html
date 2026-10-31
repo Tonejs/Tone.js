@@ -3,34 +3,10 @@
 	<head>
 		<meta charset="utf-8" />
 		<title>Reverb</title>
-
-		<meta
-			name="viewport"
-			content="width=device-width, initial-scale=1, maximum-scale=1"
-		/>
-		<link
-			rel="icon"
-			type="image/png"
-			sizes="174x174"
-			href="./favicon.png"
-		/>
-
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/2.4.3/webcomponents-bundle.js"></script>
-		<link
-			href="https://fonts.googleapis.com/css?family=Material+Icons&display=block"
-			rel="stylesheet"
-		/>
-		<script src="../build/Tone.js"></script>
-		<script src="./js/tone-ui.js"></script>
-		<script src="./js/components.js"></script>
+		<script src="./tone-ui.js"></script>
 	</head>
 	<body>
-		<style>
-			tone-play-toggle {
-				margin-bottom: 10px;
-			}
-		</style>
-		<tone-example label="Reverb">
+		<tone-example>
 			<div slot="explanation">
 				<a href="https://tonejs.github.io/docs/latest/classes/Reverb"
 					>Tone.Reverb</a
@@ -42,12 +18,10 @@
 				generated.
 			</div>
 
-			<div id="content">
-				<tone-play-toggle></tone-play-toggle>
-			</div>
+			<tone-play-toggle></tone-play-toggle>
 		</tone-example>
 
-		<script type="text/javascript">
+		<script data-tone-code>
 			const reverb = new Tone.Reverb().toDestination();
 
 			const player = new Tone.Player({
@@ -55,19 +29,11 @@
 				loop: true,
 				volume: 6,
 			}).connect(reverb);
+		</script>
 
-			ui({
-				parent: document.querySelector("#content"),
-				tone: reverb,
-			});
-
-			// bind the interface
-			document
-				.querySelector("tone-play-toggle")
-				.addEventListener("start", () => player.start());
-			document
-				.querySelector("tone-play-toggle")
-				.addEventListener("stop", () => player.stop());
+		<script>
+			ui(reverb);
+			bind("tone-play-toggle", player);
 		</script>
 	</body>
 </html>

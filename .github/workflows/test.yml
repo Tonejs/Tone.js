@@ -91,6 +91,8 @@ jobs:
               run: npm install
             - name: Build
               run: npm run build
+            - name: Build the examples UI
+              run: npm run build -w examples/ui
             - name: Code example tests
               run: npm run test:html
     test-lint:
