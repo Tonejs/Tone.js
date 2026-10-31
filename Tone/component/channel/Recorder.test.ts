@@ -1,6 +1,7 @@
 import { expect } from "chai";
 
 import { connectFrom } from "../../../test/helper/Connect.js";
+import { wait } from "../../../test/helper/Wait.js";
 import { Context } from "../../core/context/Context.js";
 import { ToneWithContext } from "../../core/context/ToneWithContext.js";
 import { Synth } from "../../instrument/Synth.js";
@@ -46,10 +47,6 @@ describe("Recorder", () => {
 			return testContext.close();
 		});
 	});
-
-	function wait(time) {
-		return new Promise((done) => setTimeout(done, time));
-	}
 
 	context("start/stop/pause", () => {
 		it("can be started", () => {

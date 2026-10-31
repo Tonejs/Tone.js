@@ -98,7 +98,7 @@ export class StereoWidener extends MidSideEffect<StereoWidenerOptions> {
 		this._constant = new ToneConstantSource({
 			context: this.context,
 			offset: 1,
-		}).start();
+		}).start(0);
 		this._constant.connect(this._oneMinusWidth);
 		this.width.connect(this._oneMinusWidth.subtrahend);
 
