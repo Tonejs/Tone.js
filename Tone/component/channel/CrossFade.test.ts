@@ -1,7 +1,5 @@
 import { expect } from "chai";
 
-import { expect } from "chai";
-
 import { BasicTests } from "../../../test/helper/Basic.js";
 import { connectFrom, connectTo } from "../../../test/helper/Connect.js";
 import { ConstantOutput } from "../../../test/helper/ConstantOutput.js";
@@ -70,19 +68,17 @@ describe("CrossFade", () => {
 		});
 	});
 
-	context("Online", () => {
-		it("passes input a before the context's lookAhead has passed", async () => {
-			const crossFade = new CrossFade(0);
-			const signal = new Signal(1).connect(crossFade.a);
-			const analyser = crossFade.context.createAnalyser();
-			crossFade.connect(analyser);
-			// a start which waited for the lookAhead would still be silent here
-			await wait((crossFade.context.lookAhead / 2) * 1000);
-			const samples = new Float32Array(analyser.fftSize);
-			analyser.getFloatTimeDomainData(samples);
-			expect(Math.max(...samples)).to.be.closeTo(1, 0.01);
-			signal.dispose();
-			crossFade.dispose();
-		});
+	it("passes input a before the context's lookAhead has passed", async () => {
+		const crossFade = new CrossFade(0);
+		const signal = new Signal(1).connect(crossFade.a);
+		const analyser = crossFade.context.createAnalyser();
+		crossFade.connect(analyser);
+		// a start which waited for the lookAhead would still be silent here
+		await wait((crossFade.context.lookAhead / 2) * 1000);
+		const samples = new Float32Array(analyser.fftSize);
+		analyser.getFloatTimeDomainData(samples);
+		expect(Math.max(...samples)).to.be.closeTo(1, 0.01);
+		signal.dispose();
+		crossFade.dispose();
 	});
 });
