@@ -261,8 +261,11 @@ export abstract class AbstractParam<TypeName extends UnitName> {
 	): this;
 
 	/**
-	 * The current value of the parameter. Setting this value
-	 * is equivalent to setValueAtTime(value, context.currentTime)
+	 * The parameter value at the current scheduling time. Setting this value
+	 * cancels automation from the assignment time onward and inserts the new value.
+	 * Audio parameters use the frozen currentTime while a real-time context is
+	 * suspended; otherwise assignment uses now(), including the lookAhead.
+	 * Clock frequency and tempo parameters always retain the scheduling lookAhead.
 	 */
 	abstract value: UnitMap[TypeName];
 

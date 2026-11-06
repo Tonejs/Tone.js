@@ -74,6 +74,18 @@ export class TickParam<
 		});
 	}
 
+	/** @inheritdoc */
+	get value(): UnitMap[TypeName] {
+		return super.value;
+	}
+	set value(value: UnitMap[TypeName]) {
+		// Clock callbacks have already been dispatched through the lookAhead.
+		// Keep tempo changes at that scheduling time, even while suspended.
+		const now = this.now();
+		this.cancelScheduledValues(now);
+		this.setValueAtTime(value, now);
+	}
+
 	setTargetAtTime(
 		value: UnitMap[TypeName],
 		time: Time,
