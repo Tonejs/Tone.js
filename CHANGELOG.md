@@ -1,9 +1,10 @@
 # Changelog
 
-## [15.5.66](https://github.com/Tonejs/Tone.js/compare/15.1.22...HEAD)
+## [15.5.67](https://github.com/Tonejs/Tone.js/compare/15.1.22...HEAD)
 
 ### Features
 
+- Updated Readme ([#1538](https://github.com/Tonejs/Tone.js/pull/1538)) (`6cbc596`)
 - **examples:** Rewritten examples ui ([#1534](https://github.com/Tonejs/Tone.js/pull/1534)) (`2993f08`)
 - Analyzer template to infer channel count from constructor ([#1451](https://github.com/Tonejs/Tone.js/pull/1451)) (`0e670e3`)
 - typescript "strict" ([#1446](https://github.com/Tonejs/Tone.js/pull/1446)) (`a3cf2f8`)
