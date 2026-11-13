@@ -36,7 +36,7 @@ async function main() {
 	const fixtures = await createFixtureFiles(scripts);
 
 	await execPromise(
-		`tsc --noEmit --target es5 --lib dom,ES2015 ${fixtures.path}/*.ts`
+		`tsc --noEmit --target es2022 --module es2022 --moduleResolution node --lib dom,ES2022 ${fixtures.path}/*.ts`
 	);
 
 	await fixtures.rm();

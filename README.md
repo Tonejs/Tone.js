@@ -4,8 +4,8 @@
 
 Tone.js is a Web Audio framework for creating interactive music in the browser. The architecture of Tone.js aims to be familiar to both musicians and audio programmers creating web-based audio applications. On the high-level, Tone offers common DAW (digital audio workstation) features like a global transport for synchronizing and scheduling events as well as prebuilt synths and effects. Additionally, Tone provides high-performance building blocks to create your own synthesizers, effects, and complex control signals.
 
--   [API](https://tonejs.github.io/docs/)
--   [Examples](https://tonejs.github.io/examples/)
+- [API](https://tonejs.github.io/docs/)
+- [Examples](https://tonejs.github.io/examples/)
 
 # Installation
 
@@ -20,12 +20,6 @@ Add Tone.js to a project using the JavaScript `import` syntax:
 
 ```js
 import * as Tone from "tone";
-```
-
-Tone.js is also hosted at unpkg.com. It can be added directly within an HTML document, as long as it precedes any project scripts. [See the example here](https://github.com/Tonejs/Tone.js/blob/master/examples/simpleHtml.html) for more details.
-
-```html
-<script src="http://unpkg.com/tone"></script>
 ```
 
 # Hello Tone
@@ -156,9 +150,8 @@ Sound generation is not limited to synthesized sounds. You can also load a sampl
 const player = new Tone.Player(
 	"https://tonejs.github.io/audio/berklee/gong_1.mp3"
 ).toDestination();
-Tone.loaded().then(() => {
-	player.start();
-});
+await Tone.loaded();
+player.start();
 ```
 
 `Tone.loaded()` returns a promise which resolves when _all_ audio files are loaded. It's a helpful shorthand instead of waiting on each individual audio buffer's `onload` event to resolve.
@@ -180,10 +173,8 @@ const sampler = new Tone.Sampler({
 	release: 1,
 	baseUrl: "https://tonejs.github.io/audio/salamander/",
 }).toDestination();
-
-Tone.loaded().then(() => {
-	sampler.triggerAttackRelease(["Eb4", "G4", "Bb4"], 4);
-});
+await Tone.loaded();
+sampler.triggerAttackRelease(["Eb4", "G4", "Bb4"], 4);
 ```
 
 # Effects
@@ -241,10 +232,6 @@ osc.start().stop("+3");
 
 Tone.js creates an AudioContext when it loads and shims it for maximum browser compatibility using [standardized-audio-context](https://github.com/chrisguttandin/standardized-audio-context). The AudioContext can be accessed at `Tone.getContext`. Or set your own AudioContext using `Tone.setContext(audioContext)`.
 
-# MIDI
-
-To use MIDI files, you'll first need to convert them into a JSON format which Tone.js can understand using [Midi](https://tonejs.github.io/Midi/).
-
 # Performance
 
 Tone.js makes extensive use of the native Web Audio Nodes such as the GainNode and WaveShaperNode for all signal processing, which enables Tone.js to work well on both desktop and mobile browsers.
@@ -261,9 +248,9 @@ There are many ways to contribute to Tone.js. Check out [this wiki](https://gith
 
 # References and Inspiration
 
--   [Many of Chris Wilson's Repositories](https://github.com/cwilso)
--   [Many of Mohayonao's Repositories](https://github.com/mohayonao)
--   [The Spec](http://webaudio.github.io/web-audio-api/)
--   [Sound on Sound - Synth Secrets](http://www.soundonsound.com/sos/may99/articles/synthsec.htm)
--   [Miller Puckette - Theory and Techniques of Electronic Music](http://msp.ucsd.edu/techniques.htm)
--   [standardized-audio-context](https://github.com/chrisguttandin/standardized-audio-context)
+- [Many of Chris Wilson's Repositories](https://github.com/cwilso)
+- [Many of Mohayonao's Repositories](https://github.com/mohayonao)
+- [The Spec](http://webaudio.github.io/web-audio-api/)
+- [Sound on Sound - Synth Secrets](http://www.soundonsound.com/sos/may99/articles/synthsec.htm)
+- [Miller Puckette - Theory and Techniques of Electronic Music](http://msp.ucsd.edu/techniques.htm)
+- [standardized-audio-context](https://github.com/chrisguttandin/standardized-audio-context)
