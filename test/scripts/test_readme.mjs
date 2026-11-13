@@ -18,11 +18,29 @@ async function findScripts() {
 
 async function createFixtureFiles(scripts) {
 	const createExampleString = (str) => `
-import * as Tone from "${ROOT_DIR}"
+import * as Tone from "tone";
 ${str}
 `;
 
-	const data = {};
+	const data = {
+		"tsconfig.json": JSON.stringify({
+			compilerOptions: {
+				target: "ES2022",
+				module: "ESNext",
+				moduleResolution: "bundler",
+				lib: ["ES2022", "DOM", "DOM.Iterable"],
+				experimentalDecorators: true,
+				useDefineForClassFields: false,
+				esModuleInterop: true,
+				skipLibCheck: true,
+				noEmit: true,
+				paths: {
+					tone: [resolve(ROOT_DIR, "Tone/index.ts")],
+				},
+			},
+			include: ["*.ts"],
+		}),
+	};
 
 	for (const [i, e] of Object.entries(scripts)) {
 		data[`${i}.ts`] = createExampleString(e.textContent);
@@ -35,9 +53,7 @@ async function main() {
 	const scripts = await findScripts();
 	const fixtures = await createFixtureFiles(scripts);
 
-	await execPromise(
-		`tsc --noEmit --target es2022 --module es2022 --moduleResolution node --lib dom,ES2022 ${fixtures.path}/*.ts`
-	);
+	await execPromise(`tsc -p ${fixtures.path}`);
 
 	await fixtures.rm();
 

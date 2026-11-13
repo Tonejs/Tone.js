@@ -23,12 +23,16 @@ ${str}
 	const data = {
 		"tsconfig.json": JSON.stringify({
 			compilerOptions: {
-				target: "es5",
-				lib: ["dom", "es2015"],
+				target: "ES2022",
+				module: "ESNext",
+				moduleResolution: "bundler",
+				lib: ["ES2022", "DOM", "DOM.Iterable"],
+				experimentalDecorators: true,
+				useDefineForClassFields: false,
+				esModuleInterop: true,
 				noEmit: true,
 				skipLibCheck: true,
-				moduleResolution: "node",
-				paths: { tone: [ROOT_DIR] },
+				paths: { tone: [resolve(ROOT_DIR, "Tone/index.ts")] },
 			},
 			include: ["*.ts", resolve(ROOT_DIR, "examples/ui/globals.d.ts")],
 		}),

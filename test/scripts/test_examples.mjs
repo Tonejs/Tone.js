@@ -1,56 +1,79 @@
-import { createFixture } from "fs-fixture";
+import { readFile } from "node:fs/promises";
+import { resolve } from "node:path";
 
-import toneJson from "../../docs/tone.json" with { type: "json" };
+import { createFixture } from "fs-fixture";
+import { glob } from "tinyglobby";
+import ts from "typescript";
+
 import { execPromise, ROOT_DIR } from "./utils.mjs";
 
 /**
- * Get all of the examples
+ * Get all of the @example blocks from the TypeScript source files
  */
-function findExamples(obj) {
-	const examples = [];
+async function findExamples() {
+	const files = await glob(resolve(ROOT_DIR, "Tone/**/*.ts"), {
+		absolute: true,
+		ignore: ["**/*.test.ts"],
+	});
+	const examples = new Set();
 
-	function traverse(node) {
-		if (node.comment && node.comment.blockTags) {
-			node.comment.blockTags.forEach((tag) => {
-				if (tag.tag === "@example") {
-					tag.content.forEach((example) => {
-						examples.push(
-							example.text.trim().replace(/^```ts\n|```$/g, "")
-						);
-					});
-				}
-			});
-		}
+	for (const file of files) {
+		const source = await readFile(file, "utf-8");
+		const sourceFile = ts.createSourceFile(
+			file,
+			source,
+			ts.ScriptTarget.Latest,
+			true
+		);
 
-		["children", "getSignature", "setSignature", "signatures"].forEach(
-			(prop) => {
-				if (prop in node) {
-					if (Array.isArray(node[prop])) {
-						node[prop].forEach((child) => traverse(child));
-					} else {
-						traverse(node[prop]);
-					}
+		function visit(node) {
+			for (const tag of ts.getJSDocTags(node)) {
+				if (
+					tag.tagName.text === "example" &&
+					typeof tag.comment === "string"
+				) {
+					examples.add(
+						tag.comment.trim().replace(/^```ts\n|```$/g, "")
+					);
 				}
 			}
-		);
+			ts.forEachChild(node, visit);
+		}
+
+		visit(sourceFile);
 	}
 
-	traverse(obj);
-
-	// filter any repeats
-	return [...new Set(examples)];
+	return [...examples];
 }
 
 async function createFixtureFiles(examples) {
 	const createExampleString = (str) => `
-import * as Tone from "${ROOT_DIR}"
+import * as Tone from "tone";
 function main(){
 	${str}
 }
 main();
 `;
 
-	const data = {};
+	const data = {
+		"tsconfig.json": JSON.stringify({
+			compilerOptions: {
+				target: "ES2022",
+				module: "ESNext",
+				moduleResolution: "bundler",
+				lib: ["ES2022", "DOM", "DOM.Iterable"],
+				experimentalDecorators: true,
+				useDefineForClassFields: false,
+				esModuleInterop: true,
+				skipLibCheck: true,
+				noEmit: true,
+				paths: {
+					tone: [resolve(ROOT_DIR, "Tone/index.ts")],
+				},
+			},
+			include: ["*.ts"],
+		}),
+	};
 
 	for (const [i, e] of Object.entries(examples)) {
 		data[`${i}.ts`] = createExampleString(e);
@@ -63,12 +86,10 @@ main();
  * Run the string through the typescript compiler
  */
 async function main() {
-	const examples = findExamples(toneJson);
+	const examples = await findExamples();
 	const fixtures = await createFixtureFiles(examples);
 
-	await execPromise(
-		`tsc --noEmit --target es5 --lib dom,ES2015 ${fixtures.path}/*.ts`
-	);
+	await execPromise(`tsc -p ${fixtures.path}`);
 
 	await fixtures.rm();
 
