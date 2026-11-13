@@ -8,7 +8,7 @@ import {
 	UnitMap,
 	UnitName,
 } from "../type/Units.js";
-import { isAudioParam } from "../util/AdvancedTypeCheck.js";
+import { isAudioContext, isAudioParam } from "../util/AdvancedTypeCheck.js";
 import { assert, assertRange } from "../util/Debug.js";
 import { optionsFromArguments } from "../util/Defaults.js";
 import { EQ } from "../util/Math.js";
@@ -169,8 +169,15 @@ export class Param<TypeName extends UnitName = "number">
 		return this.getValueAtTime(now);
 	}
 	set value(value) {
-		this.cancelScheduledValues(this.now());
-		this.setValueAtTime(value, this.now());
+		// Direct changes replace automation from the frozen time onward,
+		// including the lookAhead window, while real-time audio is suspended.
+		const now =
+			this.context.state === "suspended" &&
+			isAudioContext(this.context.rawContext)
+				? this.immediate()
+				: this.now();
+		this.cancelScheduledValues(now);
+		this.setValueAtTime(value, now);
 	}
 
 	get minValue(): number {

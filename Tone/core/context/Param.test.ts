@@ -6,7 +6,10 @@ import { atTime, Offline } from "../../../test/helper/Offline.js";
 import { Signal } from "../../signal/Signal.js";
 import { getContext } from "../Global.js";
 import { UnitName } from "../type/Units.js";
+import { createAudioContext } from "./AudioContext.js";
+import { Context } from "./Context.js";
 import { Gain } from "./Gain.js";
+import { OfflineContext } from "./OfflineContext.js";
 import { Param } from "./Param.js";
 import { connect } from "./ToneAudioNode.js";
 
@@ -16,6 +19,86 @@ describe("Param", () => {
 	BasicTests(Param, {
 		context: testAudioContext,
 		param: testAudioContext.createOscillator().frequency,
+	});
+
+	context("value", () => {
+		for (const [name, create] of [
+			["native", () => new AudioContext()],
+			["standardized", createAudioContext],
+		] as const) {
+			for (const resumeFirst of [false, true]) {
+				it(`sets a ${name} parameter at the frozen time after ${resumeFirst ? "playing" : "creation"}`, async () => {
+					const ac = create();
+					const context = new Context({
+						context: ac,
+						lookAhead: 0.2,
+					});
+					const param = new Param({
+						context,
+						param: ac.createGain().gain,
+					});
+					try {
+						if (resumeFirst) {
+							await context.resume();
+							await new Promise<void>((resolve) =>
+								setTimeout(resolve, 50)
+							);
+						}
+						await ac.suspend();
+						const frozen = context.immediate();
+						if (resumeFirst) {
+							expect(frozen).to.be.greaterThan(0);
+						}
+						param.setValueAtTime(0.5, frozen + 0.1);
+						param.value = 0;
+						expect(param.getValueAtTime(frozen)).to.equal(0);
+						expect(param.getValueAtTime(frozen + 0.1)).to.equal(0);
+						expect(param.getValueAtTime(frozen + 0.2)).to.equal(0);
+						expect(context.now()).to.equal(frozen + 0.2);
+						expect(context.lookAhead).to.equal(0.2);
+					} finally {
+						param.dispose();
+						context.dispose();
+						await context.close();
+					}
+				});
+			}
+
+			it(`retains running lookAhead for a ${name} parameter`, async () => {
+				const ac = create();
+				const context = new Context({ context: ac, lookAhead: 0.2 });
+				const param = new Param({
+					context,
+					param: ac.createGain().gain,
+				});
+				try {
+					await context.resume();
+					param.value = 0;
+					expect(param.getValueAtTime(context.immediate())).to.equal(
+						1
+					);
+					expect(param.getValueAtTime(context.now() + 1)).to.equal(0);
+				} finally {
+					param.dispose();
+					context.dispose();
+					await context.close();
+				}
+			});
+		}
+
+		it("retains an explicitly configured offline lookAhead", () => {
+			const context = new OfflineContext(1, 0.1, 44100);
+			context.lookAhead = 0.2;
+			const param = new Param({
+				context,
+				param: context.createGain().gain,
+			});
+			param.value = 0;
+			expect(param.getValueAtTime(0)).to.equal(1);
+			expect(param.getValueAtTime(0.2)).to.equal(0);
+			param.dispose();
+			context.dispose();
+		});
 	});
 
 	context("constructor", () => {
