@@ -9,7 +9,7 @@ import { MetalSynth } from "./MetalSynth.js";
 describe("MetalSynth", () => {
 	BasicTests(MetalSynth);
 
-	InstrumentTest(MetalSynth, "C2");
+	InstrumentTest(MetalSynth, "C2", undefined, undefined, true);
 	MonophonicTest(MetalSynth, "C4");
 
 	it("matches a file", () => {

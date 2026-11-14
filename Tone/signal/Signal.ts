@@ -1,6 +1,7 @@
 import { AbstractParam } from "../core/context/AbstractParam.js";
 import { Param } from "../core/context/Param.js";
 import {
+	disconnect,
 	InputNode,
 	OutputNode,
 	ToneAudioNode,
@@ -10,6 +11,7 @@ import { connect } from "../core/context/ToneAudioNode.js";
 import { Time, UnitMap, UnitName } from "../core/type/Units.js";
 import { isAudioParam } from "../core/util/AdvancedTypeCheck.js";
 import { optionsFromArguments } from "../core/util/Defaults.js";
+import { isUndef } from "../core/util/TypeCheck.js";
 import { ToneConstantSource } from "./ToneConstantSource.js";
 
 export interface SignalOptions<TypeName extends UnitName>
@@ -83,7 +85,7 @@ export class Signal<TypeName extends UnitName = "number">
 		this._constantSource.start(0);
 		this.input = this._param = this._constantSource.offset;
 	}
-
+	/** @inheritdoc */
 	static getDefaults(): SignalOptions<any> {
 		return Object.assign(ToneAudioNode.getDefaults(), {
 			convert: true,
@@ -91,13 +93,23 @@ export class Signal<TypeName extends UnitName = "number">
 			value: 0,
 		});
 	}
-
+	/** @inheritdoc */
 	connect(destination: InputNode, outputNum = 0, inputNum = 0): this {
 		// start it only when connected to something
 		connectSignal(this, destination, outputNum, inputNum);
 		return this;
 	}
-
+	/** @inheritdoc */
+	disconnect(
+		destination?: InputNode,
+		outputNum?: number,
+		inputNum?: number
+	): this {
+		// disconnect the signal
+		disconnectSignal(this, destination, outputNum, inputNum);
+		return this;
+	}
+	/** @inheritdoc */
 	dispose(): this {
 		super.dispose();
 		this._param.dispose();
@@ -111,25 +123,31 @@ export class Signal<TypeName extends UnitName = "number">
 	// all docs are generated from AbstractParam.ts
 	//-------------------------------------
 
+	/** @inheritdoc */
 	setValueAtTime(value: UnitMap[TypeName], time: Time): this {
 		this._param.setValueAtTime(value, time);
 		return this;
 	}
+	/** @inheritdoc */
 	getValueAtTime(time: Time): UnitMap[TypeName] {
 		return this._param.getValueAtTime(time);
 	}
+	/** @inheritdoc */
 	setRampPoint(time: Time): this {
 		this._param.setRampPoint(time);
 		return this;
 	}
+	/** @inheritdoc */
 	linearRampToValueAtTime(value: UnitMap[TypeName], time: Time): this {
 		this._param.linearRampToValueAtTime(value, time);
 		return this;
 	}
+	/** @inheritdoc */
 	exponentialRampToValueAtTime(value: UnitMap[TypeName], time: Time): this {
 		this._param.exponentialRampToValueAtTime(value, time);
 		return this;
 	}
+	/** @inheritdoc */
 	exponentialRampTo(
 		value: UnitMap[TypeName],
 		rampTime: Time,
@@ -138,6 +156,7 @@ export class Signal<TypeName extends UnitName = "number">
 		this._param.exponentialRampTo(value, rampTime, startTime);
 		return this;
 	}
+	/** @inheritdoc */
 	linearRampTo(
 		value: UnitMap[TypeName],
 		rampTime: Time,
@@ -146,6 +165,7 @@ export class Signal<TypeName extends UnitName = "number">
 		this._param.linearRampTo(value, rampTime, startTime);
 		return this;
 	}
+	/** @inheritdoc */
 	targetRampTo(
 		value: UnitMap[TypeName],
 		rampTime: Time,
@@ -154,6 +174,7 @@ export class Signal<TypeName extends UnitName = "number">
 		this._param.targetRampTo(value, rampTime, startTime);
 		return this;
 	}
+	/** @inheritdoc */
 	exponentialApproachValueAtTime(
 		value: UnitMap[TypeName],
 		time: Time,
@@ -162,6 +183,7 @@ export class Signal<TypeName extends UnitName = "number">
 		this._param.exponentialApproachValueAtTime(value, time, rampTime);
 		return this;
 	}
+	/** @inheritdoc */
 	setTargetAtTime(
 		value: UnitMap[TypeName],
 		startTime: Time,
@@ -170,6 +192,7 @@ export class Signal<TypeName extends UnitName = "number">
 		this._param.setTargetAtTime(value, startTime, timeConstant);
 		return this;
 	}
+	/** @inheritdoc */
 	setValueCurveAtTime(
 		values: UnitMap[TypeName][],
 		startTime: Time,
@@ -179,44 +202,47 @@ export class Signal<TypeName extends UnitName = "number">
 		this._param.setValueCurveAtTime(values, startTime, duration, scaling);
 		return this;
 	}
+	/** @inheritdoc */
 	cancelScheduledValues(time: Time): this {
 		this._param.cancelScheduledValues(time);
 		return this;
 	}
+	/** @inheritdoc */
 	cancelAndHoldAtTime(time: Time): this {
 		this._param.cancelAndHoldAtTime(time);
 		return this;
 	}
+	/** @inheritdoc */
 	rampTo(value: UnitMap[TypeName], rampTime: Time, startTime?: Time): this {
 		this._param.rampTo(value, rampTime, startTime);
 		return this;
 	}
-
+	/** @inheritdoc */
 	get value(): UnitMap[TypeName] {
 		return this._param.value;
 	}
 	set value(value: UnitMap[TypeName]) {
 		this._param.value = value;
 	}
-
+	/** @inheritdoc */
 	get convert(): boolean {
 		return this._param.convert;
 	}
 	set convert(convert: boolean) {
 		this._param.convert = convert;
 	}
-
+	/** @inheritdoc */
 	get units(): UnitName {
 		return this._param.units;
 	}
-
+	/** @inheritdoc */
 	get overridden(): boolean {
 		return this._param.overridden;
 	}
 	set overridden(overridden: boolean) {
 		this._param.overridden = overridden;
 	}
-
+	/** @inheritdoc */
 	get maxValue(): number {
 		return this._param.maxValue;
 	}
@@ -232,6 +258,22 @@ export class Signal<TypeName extends UnitName = "number">
 		return this;
 	}
 }
+
+/**
+ * Keep track of connected signals so they can be disconnected and restored to their previous value
+ */
+const connectedSignals = new WeakMap<
+	OutputNode,
+	Array<{
+		destination: Param | AudioParam | Signal;
+		outputNum: number;
+		inputNum: number;
+		/**
+		 * The value before overriding
+		 */
+		previousValue: number;
+	}>
+>();
 
 /**
  * When connecting from a signal, it's necessary to zero out the node destination
@@ -254,14 +296,87 @@ export function connectSignal(
 		isAudioParam(destination) ||
 		(destination instanceof Signal && destination.override)
 	) {
+		const previousValue = destination.value;
 		// cancel changes
 		destination.cancelScheduledValues(0);
 		// reset the value
 		destination.setValueAtTime(0, 0);
 		// mark the value as overridden
-		if (destination instanceof Signal) {
+		if (destination instanceof Signal || destination instanceof Param) {
 			destination.overridden = true;
 		}
+		// store the connection
+		if (!connectedSignals.has(signal)) {
+			connectedSignals.set(signal, []);
+		}
+		connectedSignals.get(signal)?.push({
+			destination,
+			outputNum: outputNum || 0,
+			inputNum: inputNum || 0,
+			previousValue,
+		});
 	}
 	connect(signal, destination, outputNum, inputNum);
+}
+
+/**
+ * Disconnect a signal connection and restore the value of the destination if
+ * it was a signal that was overridden by the connection.
+ * @param signal
+ * @param destination
+ * @param outputNum
+ * @param inputNum
+ */
+export function disconnectSignal(
+	signal: OutputNode,
+	destination?: InputNode,
+	outputNum?: number,
+	inputNum?: number
+): void {
+	if (
+		destination instanceof Param ||
+		isAudioParam(destination) ||
+		(destination instanceof Signal && destination.override) ||
+		destination === undefined
+	) {
+		if (connectedSignals.has(signal)) {
+			let connections = connectedSignals.get(signal)!;
+
+			if (destination) {
+				connections = connections.filter((conn) => {
+					return (
+						conn.destination === destination &&
+						(isUndef(outputNum) || conn.outputNum === outputNum) &&
+						(isUndef(inputNum) || conn.inputNum === inputNum)
+					);
+				});
+			}
+
+			if (!connections.length) {
+				throw new Error("Not connected to destination node");
+			}
+
+			// restore the value
+			connections.forEach((connection) => {
+				if (
+					connection.destination instanceof Signal ||
+					connection.destination instanceof Param
+				) {
+					connection.destination.overridden = false;
+				}
+				connection.destination.setValueAtTime(
+					connection.previousValue,
+					0
+				);
+			});
+			// remove the connection from the stored array
+			connectedSignals.set(
+				signal,
+				connectedSignals
+					.get(signal)!
+					.filter((conn) => !connections.includes(conn))
+			);
+		}
+	}
+	disconnect(signal, destination, outputNum, inputNum);
 }

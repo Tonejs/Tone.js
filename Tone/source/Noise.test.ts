@@ -31,6 +31,12 @@ describe("Noise", () => {
 			noise.dispose();
 		});
 
+		it("can be disposed while started", () => {
+			const noise = new Noise().toDestination();
+			noise.start();
+			noise.dispose();
+		});
+
 		it("can set the playbackRate in the constructor", () => {
 			const noise = new Noise({
 				playbackRate: 2,

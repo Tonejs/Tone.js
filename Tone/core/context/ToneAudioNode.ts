@@ -374,7 +374,7 @@ export function disconnect(
 ): void {
 	// resolve the destination node
 	if (isDefined(dstNode)) {
-		while (dstNode instanceof ToneAudioNode) {
+		while (dstNode instanceof ToneAudioNode || dstNode instanceof Param) {
 			dstNode = dstNode.input;
 		}
 	}

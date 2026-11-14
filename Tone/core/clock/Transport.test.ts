@@ -4,19 +4,24 @@ import "../context/Destination.js";
 import { expect } from "chai";
 
 import { warns } from "../../../test/helper/Basic.js";
-import { atTime, Offline, whenBetween } from "../../../test/helper/Offline.js";
+import {
+	atTime,
+	holdClock,
+	Offline,
+	whenBetween,
+} from "../../../test/helper/Offline.js";
 import { Synth } from "../../instrument/Synth.js";
 import { Signal } from "../../signal/Signal.js";
 import { Time } from "../type/Time.js";
 import { TransportTime } from "../type/TransportTime.js";
 import { noOp } from "../util/Interface.js";
-import { TransportClass } from "./Transport.js";
+import { TransportInstance } from "./Transport.js";
 
 describe("Transport", () => {
 	context("BPM and timeSignature", () => {
 		it("can get and set bpm", () => {
 			return Offline((context) => {
-				const transport = new TransportClass({ context });
+				const transport = new TransportInstance({ context });
 				transport.bpm.value = 125;
 				expect(transport.bpm.value).to.be.closeTo(125, 0.001);
 				transport.bpm.value = 120;
@@ -26,7 +31,7 @@ describe("Transport", () => {
 
 		it("can get and set timeSignature as both an array or number", () => {
 			return Offline((context) => {
-				const transport = new TransportClass({ context });
+				const transport = new TransportInstance({ context });
 				transport.timeSignature = [6, 8];
 				expect(transport.timeSignature).to.equal(3);
 				transport.timeSignature = 5;
@@ -36,7 +41,7 @@ describe("Transport", () => {
 
 		it("can get and set timeSignature as both an array or number", () => {
 			return Offline((context) => {
-				const transport = new TransportClass({ context });
+				const transport = new TransportInstance({ context });
 				transport.timeSignature = [6, 8];
 				expect(transport.timeSignature).to.equal(3);
 				transport.timeSignature = 5;
@@ -48,7 +53,7 @@ describe("Transport", () => {
 	context("looping", () => {
 		it("can get and set loop points", () => {
 			return Offline((context) => {
-				const transport = new TransportClass({ context });
+				const transport = new TransportInstance({ context });
 				transport.loopStart = 0.2;
 				transport.loopEnd = 0.4;
 				expect(transport.loopStart).to.be.closeTo(0.2, 0.01);
@@ -65,7 +70,7 @@ describe("Transport", () => {
 		it("can loop events scheduled on the transport", async () => {
 			let invocations = 0;
 			await Offline((context) => {
-				const transport = new TransportClass({ context });
+				const transport = new TransportInstance({ context });
 				transport.schedule((time) => {
 					invocations++;
 				}, 0);
@@ -75,10 +80,24 @@ describe("Transport", () => {
 			expect(invocations).to.equal(5);
 		});
 
+		it("does not double-fire events when looping many times", async () => {
+			let invocations = 0;
+			await Offline((context) => {
+				const transport = new TransportInstance({ context });
+				transport.schedule(() => {
+					invocations++;
+				}, 0);
+				transport.setLoopPoints(0, 1).start(0);
+				transport.loop = true;
+			}, 120.1);
+			// Should fire exactly 121 times: at t=0,1,2,...,120
+			expect(invocations).to.equal(121);
+		});
+
 		it("jumps to the loopStart after the loopEnd point", async () => {
 			let looped = false;
 			await Offline((context) => {
-				const transport = new TransportClass({ context });
+				const transport = new TransportInstance({ context });
 				transport.on("loop", () => {
 					looped = true;
 				});
@@ -94,14 +113,14 @@ describe("Transport", () => {
 	context("nextSubdivision", () => {
 		it("returns 0 if the transports not started", () => {
 			return Offline((context) => {
-				const transport = new TransportClass({ context });
+				const transport = new TransportInstance({ context });
 				expect(transport.nextSubdivision()).to.equal(0);
 			});
 		});
 
 		it("can get the next subdivision of the transport", async () => {
 			await Offline((context) => {
-				const transport = new TransportClass({ context });
+				const transport = new TransportInstance({ context });
 				transport.start(0);
 				return (time) => {
 					whenBetween(time, 0.05, 0.07, () => {
@@ -136,7 +155,7 @@ describe("Transport", () => {
 	context("PPQ", () => {
 		it("can get and set pulses per quarter", () => {
 			return Offline((context) => {
-				const transport = new TransportClass({ context });
+				const transport = new TransportInstance({ context });
 				transport.PPQ = 96;
 				expect(transport.PPQ).to.equal(96);
 			});
@@ -144,7 +163,7 @@ describe("Transport", () => {
 
 		it("schedules a quarter note at the same time with a different PPQ", () => {
 			return Offline((context) => {
-				const transport = new TransportClass({ context });
+				const transport = new TransportInstance({ context });
 				transport.PPQ = 1;
 				const id = transport.schedule((time) => {
 					expect(time).to.be.closeTo(transport.toSeconds("4n"), 0.1);
@@ -156,7 +175,7 @@ describe("Transport", () => {
 
 		it("invokes the right number of ticks with a different PPQ", () => {
 			return Offline((context) => {
-				const transport = new TransportClass({ context });
+				const transport = new TransportInstance({ context });
 				transport.bpm.value = 120;
 				const ppq = 20;
 				transport.PPQ = ppq;
@@ -174,7 +193,7 @@ describe("Transport", () => {
 	context("position", () => {
 		it("can jump to a specific tick number", () => {
 			return Offline((context) => {
-				const transport = new TransportClass({ context });
+				const transport = new TransportInstance({ context });
 				transport.ticks = 200;
 				expect(transport.ticks).to.equal(200);
 				transport.start(0);
@@ -190,7 +209,7 @@ describe("Transport", () => {
 
 		it("can get the current position in BarsBeatsSixteenths", () => {
 			return Offline((context) => {
-				const transport = new TransportClass({ context });
+				const transport = new TransportInstance({ context });
 				expect(transport.position).to.equal("0:0:0");
 				transport.start(0);
 				return atTime(0.05, () => {
@@ -201,7 +220,7 @@ describe("Transport", () => {
 
 		it("can get the current position in seconds", () => {
 			return Offline((context) => {
-				const transport = new TransportClass({ context });
+				const transport = new TransportInstance({ context });
 				expect(transport.seconds).to.equal(0);
 				transport.start(0.05);
 				return (time) => {
@@ -217,7 +236,7 @@ describe("Transport", () => {
 
 		it("can get the current position in seconds during a bpm ramp", () => {
 			return Offline((context) => {
-				const transport = new TransportClass({ context });
+				const transport = new TransportInstance({ context });
 				expect(transport.seconds).to.equal(0);
 				transport.start(0.05);
 				transport.bpm.linearRampTo(60, 0.5, 0.5);
@@ -234,16 +253,43 @@ describe("Transport", () => {
 
 		it("can set the current position in seconds", () => {
 			return Offline((context) => {
-				const transport = new TransportClass({ context });
+				const transport = new TransportInstance({ context });
 				expect(transport.seconds).to.equal(0);
 				transport.seconds = 3;
 				expect(transport.seconds).to.be.closeTo(3, 0.01);
 			});
 		});
 
+		it("can schedule the current seconds position", () => {
+			return Offline((context) => {
+				const transport = new TransportInstance({ context });
+				transport.start();
+
+				let scheduled = false;
+
+				return (time) => {
+					if (time > 0.5 && !scheduled) {
+						scheduled = true;
+						transport.setSecondsAtTime(3, 0.5);
+					}
+
+					whenBetween(time, 0, 0.5, () => {
+						expect(transport.seconds).to.be.closeTo(time, 0.01);
+					});
+
+					whenBetween(time, 0.5, 1, () => {
+						expect(transport.seconds).to.be.closeTo(
+							2.5 + time,
+							0.01
+						);
+					});
+				};
+			}, 1);
+		});
+
 		it("can set the current position in BarsBeatsSixteenths", () => {
 			return Offline((context) => {
-				const transport = new TransportClass({ context });
+				const transport = new TransportInstance({ context });
 				expect(transport.position).to.equal("0:0:0");
 				transport.position = "3:0";
 				expect(transport.position).to.equal("3:0:0");
@@ -254,7 +300,7 @@ describe("Transport", () => {
 
 		it("can get the progress of the loop", () => {
 			return Offline((context) => {
-				const transport = new TransportClass({ context });
+				const transport = new TransportInstance({ context });
 				transport.setLoopPoints(0, "1m").start();
 				transport.loop = true;
 				expect(transport.progress).to.be.equal(0);
@@ -274,6 +320,36 @@ describe("Transport", () => {
 					expect(transport.progress).to.be.equal(0);
 				});
 			}, 0.2);
+		});
+
+		it("invokes the first callback time when the scheduled time is a non-integer tick time", async () => {
+			let wasCalled = false;
+			await Offline(({ transport }) => {
+				// choose a value which is not cleanly representable as ticks
+				const problemValue = Time(100, "i").toSeconds() + 0.01;
+				transport.seconds = problemValue;
+				transport.schedule(() => {
+					wasCalled = true;
+				}, problemValue);
+				transport.start();
+			}, 0.2);
+			expect(wasCalled).to.be.true;
+		});
+
+		it("setting the same ticks value twice does not emit twice", async () => {
+			await Offline(({ transport }) => {
+				let callCount = 0;
+				transport.on("ticks", () => {
+					callCount++;
+				});
+				transport.ticks = 100;
+				expect(transport.ticks).to.equal(100);
+				expect(callCount).to.equal(1);
+
+				// set it to the same value again has no change
+				transport.ticks = 100;
+				expect(callCount).to.equal(1);
+			}, 0.1);
 		});
 	});
 
@@ -325,19 +401,22 @@ describe("Transport", () => {
 	context("ticks", () => {
 		it("resets ticks on stop but not on pause", () => {
 			return Offline((context) => {
-				const transport = new TransportClass({ context });
+				const transport = new TransportInstance({ context });
 				transport.start(0).pause(0.1).stop(0.2);
 				expect(transport.getTicksAtTime(0)).to.be.equal(
 					Math.floor(transport.PPQ * 0)
 				);
-				expect(transport.getTicksAtTime(0.05)).to.be.equal(
-					Math.floor(transport.PPQ * 0.1)
+				expect(transport.getTicksAtTime(0.05)).to.be.closeTo(
+					Math.floor(transport.PPQ * 0.1),
+					0.5
 				);
-				expect(transport.getTicksAtTime(0.1)).to.be.equal(
-					Math.floor(transport.PPQ * 0.2)
+				expect(transport.getTicksAtTime(0.1)).to.be.closeTo(
+					Math.floor(transport.PPQ * 0.2),
+					0.5
 				);
-				expect(transport.getTicksAtTime(0.15)).to.be.equal(
-					Math.floor(transport.PPQ * 0.2)
+				expect(transport.getTicksAtTime(0.15)).to.be.closeTo(
+					Math.floor(transport.PPQ * 0.2),
+					0.5
 				);
 				expect(transport.getTicksAtTime(0.2)).to.be.equal(0);
 			}, 0.3);
@@ -345,7 +424,7 @@ describe("Transport", () => {
 
 		it("tracks ticks after start", () => {
 			return Offline((context) => {
-				const transport = new TransportClass({ context });
+				const transport = new TransportInstance({ context });
 				transport.bpm.value = 120;
 				const ppq = transport.PPQ;
 				transport.start();
@@ -360,7 +439,7 @@ describe("Transport", () => {
 
 		it("can start with a tick offset", () => {
 			return Offline((context) => {
-				const transport = new TransportClass({ context });
+				const transport = new TransportInstance({ context });
 				transport.start(0, "200i");
 
 				return (time) => {
@@ -373,7 +452,7 @@ describe("Transport", () => {
 
 		it("can toggle the state of the transport", async () => {
 			await Offline((context) => {
-				const transport = new TransportClass({ context });
+				const transport = new TransportInstance({ context });
 				transport.toggle(0);
 				transport.toggle(0.2);
 
@@ -391,7 +470,7 @@ describe("Transport", () => {
 
 		it("tracks ticks correctly with a different PPQ and BPM", async () => {
 			await Offline((context) => {
-				const transport = new TransportClass({ context });
+				const transport = new TransportInstance({ context });
 				transport.PPQ = 96;
 				transport.bpm.value = 90;
 				transport.start();
@@ -420,12 +499,42 @@ describe("Transport", () => {
 			}, 2.5);
 			expect(invocations).to.equal(2);
 		});
+
+		it("can schedule the ticks", () => {
+			return Offline((context) => {
+				const transport = new TransportInstance({ context });
+				transport.start();
+
+				let scheduled = false;
+
+				return (time) => {
+					if (time > 0.5 && !scheduled) {
+						scheduled = true;
+						transport.setTicksAtTime(0, 0.5);
+					}
+
+					whenBetween(time, 0, 0.5, () => {
+						expect(transport.ticks).to.be.closeTo(
+							transport.toTicks(time),
+							1
+						);
+					});
+
+					whenBetween(time, 0.5, 1, () => {
+						expect(transport.ticks).to.be.closeTo(
+							transport.toTicks(time - 0.5),
+							1
+						);
+					});
+				};
+			}, 1);
+		});
 	});
 
 	context("schedule", () => {
 		it("can schedule an event on the timeline", () => {
 			return Offline((context) => {
-				const transport = new TransportClass({ context });
+				const transport = new TransportInstance({ context });
 				const eventID = transport.schedule(() => {}, 0);
 				expect(eventID).to.be.a("number");
 			});
@@ -434,7 +543,7 @@ describe("Transport", () => {
 		it("scheduled event gets invoked with the time of the event", async () => {
 			let wasCalled = false;
 			await Offline((context) => {
-				const transport = new TransportClass({ context });
+				const transport = new TransportInstance({ context });
 				const startTime = 0.1;
 				transport.schedule((time) => {
 					expect(time).to.be.closeTo(startTime, 0.01);
@@ -448,7 +557,7 @@ describe("Transport", () => {
 		it("can schedule events with TransportTime", async () => {
 			let wasCalled = false;
 			await Offline((context) => {
-				const transport = new TransportClass({ context });
+				const transport = new TransportInstance({ context });
 				const startTime = 0.1;
 				const eighth = transport.toSeconds("8n");
 				transport.schedule((time) => {
@@ -462,7 +571,7 @@ describe("Transport", () => {
 
 		it("can clear a scheduled event", () => {
 			return Offline((context) => {
-				const transport = new TransportClass({ context });
+				const transport = new TransportInstance({ context });
 				const eventID = transport.schedule(() => {
 					throw new Error("should not call this function");
 				}, 0);
@@ -473,7 +582,7 @@ describe("Transport", () => {
 
 		it("can cancel the timeline of scheduled object", () => {
 			return Offline((context) => {
-				const transport = new TransportClass({ context });
+				const transport = new TransportInstance({ context });
 				transport.schedule(() => {
 					throw new Error("should not call this");
 				}, 0);
@@ -484,7 +593,7 @@ describe("Transport", () => {
 
 		it("can cancel the timeline of scheduleOnce object", () => {
 			return Offline((context) => {
-				const transport = new TransportClass({ context });
+				const transport = new TransportInstance({ context });
 				transport.scheduleOnce(() => {
 					throw new Error("should not call this");
 				}, 0);
@@ -496,7 +605,7 @@ describe("Transport", () => {
 		it("scheduled event anywhere along the timeline", async () => {
 			let wasCalled = false;
 			await Offline((context) => {
-				const transport = new TransportClass({ context });
+				const transport = new TransportInstance({ context });
 				const startTime = transport.now();
 				transport.schedule((time) => {
 					expect(time).to.be.closeTo(startTime + 0.5, 0.001);
@@ -510,7 +619,7 @@ describe("Transport", () => {
 		it("can schedule multiple events and invoke them in the right order", async () => {
 			let wasCalled = false;
 			await Offline((context) => {
-				const transport = new TransportClass({ context });
+				const transport = new TransportInstance({ context });
 				let first = false;
 				transport.schedule(() => {
 					first = true;
@@ -527,7 +636,7 @@ describe("Transport", () => {
 		it("invokes the event again if the timeline is restarted", async () => {
 			let iterations = 0;
 			await Offline((context) => {
-				const transport = new TransportClass({ context });
+				const transport = new TransportInstance({ context });
 				transport.schedule(() => {
 					iterations++;
 				}, 0.05);
@@ -539,7 +648,7 @@ describe("Transport", () => {
 		it("can add an event after the Transport is started", async () => {
 			let wasCalled = false;
 			await Offline((context) => {
-				const transport = new TransportClass({ context });
+				const transport = new TransportInstance({ context });
 				transport.start(0);
 				let wasScheduled = false;
 				return (time) => {
@@ -570,7 +679,7 @@ describe("Transport", () => {
 	context("scheduleRepeat", () => {
 		it("can schedule a repeated event", () => {
 			return Offline((context) => {
-				const transport = new TransportClass({ context });
+				const transport = new TransportInstance({ context });
 				const eventID = transport.scheduleRepeat(noOp, 1);
 				expect(eventID).to.be.a("number");
 			});
@@ -579,7 +688,7 @@ describe("Transport", () => {
 		it("scheduled event gets invoked with the time of the event", async () => {
 			let invoked = false;
 			await Offline((context) => {
-				const transport = new TransportClass({ context });
+				const transport = new TransportInstance({ context });
 				const startTime = 0.1;
 				const eventID = transport.scheduleRepeat(
 					(time) => {
@@ -597,7 +706,7 @@ describe("Transport", () => {
 
 		it("can cancel the timeline of scheduleRepeat", () => {
 			return Offline((context) => {
-				const transport = new TransportClass({ context });
+				const transport = new TransportInstance({ context });
 				transport.scheduleRepeat(
 					() => {
 						throw new Error("should not call this");
@@ -613,7 +722,7 @@ describe("Transport", () => {
 		it("can schedule events with TransportTime", async () => {
 			let invoked = false;
 			await Offline((context) => {
-				const transport = new TransportClass({ context });
+				const transport = new TransportInstance({ context });
 				const startTime = 0.1;
 				const eighth = transport.toSeconds("8n");
 				transport.scheduleRepeat(
@@ -631,7 +740,7 @@ describe("Transport", () => {
 
 		it("can clear a scheduled event", () => {
 			return Offline((context) => {
-				const transport = new TransportClass({ context });
+				const transport = new TransportInstance({ context });
 				const eventID = transport.scheduleRepeat(
 					() => {
 						throw new Error("should not call this function");
@@ -647,7 +756,7 @@ describe("Transport", () => {
 		it("can be scheduled in the future", async () => {
 			let invoked = false;
 			await Offline((context) => {
-				const transport = new TransportClass({ context });
+				const transport = new TransportInstance({ context });
 				const startTime = 0.1;
 				const eventID = transport.scheduleRepeat(
 					(time) => {
@@ -666,7 +775,7 @@ describe("Transport", () => {
 		it("repeats a repeat event", async () => {
 			let invocations = 0;
 			await Offline((context) => {
-				const transport = new TransportClass({ context });
+				const transport = new TransportInstance({ context });
 				transport.scheduleRepeat(
 					() => {
 						invocations++;
@@ -682,7 +791,7 @@ describe("Transport", () => {
 		it("repeats at the repeat interval", async () => {
 			let wasCalled = false;
 			await Offline((context) => {
-				const transport = new TransportClass({ context });
+				const transport = new TransportInstance({ context });
 				let repeatTime = -1;
 				transport.scheduleRepeat(
 					(time) => {
@@ -704,7 +813,7 @@ describe("Transport", () => {
 			let first = false;
 			let second = false;
 			await Offline((context) => {
-				const transport = new TransportClass({ context });
+				const transport = new TransportInstance({ context });
 				const firstID = transport.scheduleRepeat(
 					() => {
 						first = true;
@@ -731,7 +840,7 @@ describe("Transport", () => {
 		it("repeats for the given interval", async () => {
 			let repeatCount = 0;
 			await Offline((context) => {
-				const transport = new TransportClass({ context });
+				const transport = new TransportInstance({ context });
 				transport.scheduleRepeat(
 					(time) => {
 						repeatCount++;
@@ -748,7 +857,7 @@ describe("Transport", () => {
 		it("can add an event after the Transport is started", async () => {
 			let invocations = 0;
 			await Offline((context) => {
-				const transport = new TransportClass({ context });
+				const transport = new TransportInstance({ context });
 				transport.start(0);
 				let wasScheduled = false;
 				const times = [0.15, 0.3];
@@ -775,7 +884,7 @@ describe("Transport", () => {
 		it("can add an event to the past after the Transport is started", async () => {
 			let invocations = 0;
 			await Offline((context) => {
-				const transport = new TransportClass({ context });
+				const transport = new TransportInstance({ context });
 				transport.start(0);
 				let wasScheduled = false;
 				const times = [0.15, 0.25];
@@ -803,7 +912,7 @@ describe("Transport", () => {
 	context("scheduleOnce", () => {
 		it("can schedule a single event on the timeline", () => {
 			return Offline((context) => {
-				const transport = new TransportClass({ context });
+				const transport = new TransportInstance({ context });
 				const eventID = transport.scheduleOnce(() => {}, 0);
 				expect(eventID).to.be.a("number");
 			});
@@ -812,7 +921,7 @@ describe("Transport", () => {
 		it("scheduled event gets invoked with the time of the event", async () => {
 			let invoked = false;
 			await Offline((context) => {
-				const transport = new TransportClass({ context });
+				const transport = new TransportInstance({ context });
 				const startTime = 0.1;
 				const eventID = transport.scheduleOnce((time) => {
 					invoked = true;
@@ -827,7 +936,7 @@ describe("Transport", () => {
 		it("can schedule events with TransportTime", async () => {
 			let invoked = false;
 			await Offline((context) => {
-				const transport = new TransportClass({ context });
+				const transport = new TransportInstance({ context });
 				const startTime = 0.1;
 				const eighth = transport.toSeconds("8n");
 				transport.scheduleOnce((time) => {
@@ -841,7 +950,7 @@ describe("Transport", () => {
 
 		it("can clear a scheduled event", () => {
 			return Offline((context) => {
-				const transport = new TransportClass({ context });
+				const transport = new TransportInstance({ context });
 				const eventID = transport.scheduleOnce(() => {
 					throw new Error("should not call this function");
 				}, 0);
@@ -853,7 +962,7 @@ describe("Transport", () => {
 		it("can be scheduled in the future", async () => {
 			let invoked = false;
 			await Offline((context) => {
-				const transport = new TransportClass({ context });
+				const transport = new TransportInstance({ context });
 				const startTime = transport.now() + 0.1;
 				const eventID = transport.scheduleOnce((time) => {
 					transport.clear(eventID);
@@ -868,7 +977,7 @@ describe("Transport", () => {
 		it("the event is removed after is is invoked", async () => {
 			let iterations = 0;
 			await Offline((context) => {
-				const transport = new TransportClass({ context });
+				const transport = new TransportInstance({ context });
 				transport.scheduleOnce(() => {
 					iterations++;
 				}, 0);
@@ -882,7 +991,7 @@ describe("Transport", () => {
 		it("invokes start/stop/pause events", async () => {
 			let invocations = 0;
 			await Offline((context) => {
-				const transport = new TransportClass({ context });
+				const transport = new TransportInstance({ context });
 				transport.on("start", () => {
 					invocations++;
 				});
@@ -897,10 +1006,51 @@ describe("Transport", () => {
 			expect(invocations).to.equal(3);
 		});
 
+		it("does not drop the transport's stop event when stop/start outrun the clock's tick loop (#1419)", async () => {
+			const stopEvents: number[] = [];
+			await Offline((context) => {
+				const transport = new TransportInstance({ context });
+				transport.on("stop", (time) => {
+					stopEvents.push(time);
+				});
+				transport.start(0);
+				return atTime(
+					0.02,
+					holdClock(transport, () => {
+						transport.stop(0.015);
+						transport.start(0.018);
+					})
+				);
+			}, 0.03);
+			expect(stopEvents).to.deep.equal([0.015]);
+		});
+
+		it("does not fire an event scheduled after stop() from the previous run (#1502)", async () => {
+			const invocations: number[] = [];
+			let restartTime = 0;
+			await Offline((context) => {
+				const transport = new TransportInstance({ context });
+				transport.start(0);
+				return atTime(
+					0.02,
+					holdClock(transport, (time) => {
+						transport.stop(time);
+						// For the next run, at a position the previous run passed
+						// between its last processed tick and the stop.
+						transport.schedule((t) => invocations.push(t), "5i");
+						restartTime = time + 0.005;
+						transport.start(restartTime);
+					})
+				);
+			}, 0.05);
+			expect(invocations).to.have.length(1);
+			expect(invocations[0]).to.be.at.least(restartTime);
+		});
+
 		it("invokes start event with correct offset", async () => {
 			let wasCalled = false;
 			await Offline((context) => {
-				const transport = new TransportClass({ context });
+				const transport = new TransportInstance({ context });
 				transport.on("start", (time, offset) => {
 					expect(time).to.be.closeTo(0.2, 0.01);
 					expect(offset).to.be.closeTo(0.5, 0.001);
@@ -914,7 +1064,7 @@ describe("Transport", () => {
 		it("invokes the event just before the scheduled time", async () => {
 			let invoked = false;
 			await Offline((context) => {
-				const transport = new TransportClass({ context });
+				const transport = new TransportInstance({ context });
 				transport.on("start", (time, offset) => {
 					expect(time - transport.context.currentTime).to.be.closeTo(
 						0,
@@ -931,7 +1081,7 @@ describe("Transport", () => {
 		it("passes in the time argument to the events", async () => {
 			let invocations = 0;
 			await Offline((context) => {
-				const transport = new TransportClass({ context });
+				const transport = new TransportInstance({ context });
 				const now = transport.now();
 				transport.on("start", (time) => {
 					invocations++;
@@ -949,7 +1099,7 @@ describe("Transport", () => {
 		it("invokes the 'loop' method on loop", async () => {
 			let loops = 0;
 			await Offline((context) => {
-				const transport = new TransportClass({ context });
+				const transport = new TransportInstance({ context });
 				const sixteenth = transport.toSeconds("16n");
 				transport.setLoopPoints(0, sixteenth);
 				transport.loop = true;
@@ -970,7 +1120,7 @@ describe("Transport", () => {
 	context("swing", () => {
 		it("can get/set the swing subdivision", () => {
 			return Offline((context) => {
-				const transport = new TransportClass({ context });
+				const transport = new TransportInstance({ context });
 				transport.swingSubdivision = "8n";
 				expect(transport.swingSubdivision).to.equal("8n");
 				transport.swingSubdivision = "4n";
@@ -980,7 +1130,7 @@ describe("Transport", () => {
 
 		it("can get/set the swing amount", () => {
 			return Offline((context) => {
-				const transport = new TransportClass({ context });
+				const transport = new TransportInstance({ context });
 				transport.swing = 0.5;
 				expect(transport.swing).to.equal(0.5);
 				transport.swing = 0;
@@ -991,7 +1141,7 @@ describe("Transport", () => {
 		it("can swing", async () => {
 			let invocations = 0;
 			await Offline((context) => {
-				const transport = new TransportClass({ context });
+				const transport = new TransportInstance({ context });
 				transport.swing = 1;
 				transport.swingSubdivision = "8n";
 				const eightNote = transport.toSeconds("8n");

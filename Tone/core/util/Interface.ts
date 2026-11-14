@@ -6,7 +6,10 @@ export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 /**
  * Make the property not writable using `defineProperty`. Internal use only.
  */
-export function readOnly(target: object, property: string | string[]): void {
+export function readOnly<T extends object>(
+	target: T,
+	property: keyof T | (keyof T)[]
+): void {
 	if (isArray(property)) {
 		property.forEach((str) => readOnly(target, str));
 	} else {
@@ -20,7 +23,10 @@ export function readOnly(target: object, property: string | string[]): void {
 /**
  * Make an attribute writeable. Internal use only.
  */
-export function writable(target: object, property: string | string[]): void {
+export function writable<T extends object>(
+	target: T,
+	property: keyof T | (keyof T)[]
+): void {
 	if (isArray(property)) {
 		property.forEach((str) => writable(target, str));
 	} else {

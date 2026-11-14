@@ -1,13 +1,12 @@
 import { Gain } from "../core/context/Gain.js";
-import { Degrees, Frequency, NormalRange, Time } from "../core/type/Units.js";
+import { Degrees, Frequency, NormalRange } from "../core/type/Units.js";
 import { optionsFromArguments } from "../core/util/Defaults.js";
 import { readOnly } from "../core/util/Interface.js";
 import { Signal } from "../signal/Signal.js";
-import { LFO } from "../source/oscillator/LFO.js";
 import { ToneOscillatorType } from "../source/oscillator/OscillatorInterface.js";
-import { StereoEffect, StereoEffectOptions } from "./StereoEffect.js";
+import { LFOStereoEffect, LFOStereoEffectOptions } from "./LFOStereoEffect.js";
 
-export interface TremoloOptions extends StereoEffectOptions {
+export interface TremoloOptions extends LFOStereoEffectOptions {
 	frequency: Frequency;
 	type: ToneOscillatorType;
 	depth: NormalRange;
@@ -26,18 +25,8 @@ export interface TremoloOptions extends StereoEffectOptions {
  *
  * @category Effect
  */
-export class Tremolo extends StereoEffect<TremoloOptions> {
+export class Tremolo extends LFOStereoEffect<TremoloOptions> {
 	readonly name: string = "Tremolo";
-
-	/**
-	 * The tremolo LFO in the left channel
-	 */
-	private _lfoL: LFO;
-
-	/**
-	 * The tremolo LFO in the left channel
-	 */
-	private _lfoR: LFO;
 
 	/**
 	 * Where the gain is multiplied
@@ -48,11 +37,6 @@ export class Tremolo extends StereoEffect<TremoloOptions> {
 	 * Where the gain is multiplied
 	 */
 	private _amplitudeR: Gain;
-
-	/**
-	 * The frequency of the tremolo.
-	 */
-	readonly frequency: Signal<"frequency">;
 
 	/**
 	 * The depth of the effect. A depth of 0, has no effect
@@ -74,25 +58,16 @@ export class Tremolo extends StereoEffect<TremoloOptions> {
 		]);
 		super(options);
 
-		this._lfoL = new LFO({
-			context: this.context,
-			type: options.type,
-			min: 1,
-			max: 0,
-		});
-		this._lfoR = new LFO({
-			context: this.context,
-			type: options.type,
-			min: 1,
-			max: 0,
-		});
+		// invert the lfo min/max so it moves from full gain to 0 gain
+		this._lfoL.min = 1;
+		this._lfoL.max = 0;
+		this._lfoR.min = 1;
+		this._lfoR.max = 0;
+		this.type = options.type;
+
 		this._amplitudeL = new Gain({ context: this.context });
 		this._amplitudeR = new Gain({ context: this.context });
-		this.frequency = new Signal({
-			context: this.context,
-			value: options.frequency,
-			units: "frequency",
-		});
+
 		this.depth = new Signal({
 			context: this.context,
 			value: options.depth,
@@ -104,56 +79,17 @@ export class Tremolo extends StereoEffect<TremoloOptions> {
 		this.connectEffectRight(this._amplitudeR);
 		this._lfoL.connect(this._amplitudeL.gain);
 		this._lfoR.connect(this._amplitudeR.gain);
-		this.frequency.fan(this._lfoL.frequency, this._lfoR.frequency);
 		this.depth.fan(this._lfoR.amplitude, this._lfoL.amplitude);
 		this.spread = options.spread;
 	}
 
 	static getDefaults(): TremoloOptions {
-		return Object.assign(StereoEffect.getDefaults(), {
+		return Object.assign(LFOStereoEffect.getDefaults(), {
 			frequency: 10,
 			type: "sine" as const,
 			depth: 0.5,
 			spread: 180,
 		});
-	}
-
-	/**
-	 * Start the tremolo.
-	 */
-	start(time?: Time): this {
-		this._lfoL.start(time);
-		this._lfoR.start(time);
-		return this;
-	}
-
-	/**
-	 * Stop the tremolo.
-	 */
-	stop(time?: Time): this {
-		this._lfoL.stop(time);
-		this._lfoR.stop(time);
-		return this;
-	}
-
-	/**
-	 * Sync the effect to the transport.
-	 */
-	sync(): this {
-		this._lfoL.sync();
-		this._lfoR.sync();
-		this.context.transport.syncSignal(this.frequency);
-		return this;
-	}
-
-	/**
-	 * Unsync the filter from the transport
-	 */
-	unsync(): this {
-		this._lfoL.unsync();
-		this._lfoR.unsync();
-		this.context.transport.unsyncSignal(this.frequency);
-		return this;
 	}
 
 	/**
@@ -181,11 +117,8 @@ export class Tremolo extends StereoEffect<TremoloOptions> {
 
 	dispose(): this {
 		super.dispose();
-		this._lfoL.dispose();
-		this._lfoR.dispose();
 		this._amplitudeL.dispose();
 		this._amplitudeR.dispose();
-		this.frequency.dispose();
 		this.depth.dispose();
 		return this;
 	}

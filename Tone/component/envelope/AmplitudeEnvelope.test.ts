@@ -2,7 +2,6 @@ import { expect } from "chai";
 
 import { BasicTests } from "../../../test/helper/Basic.js";
 import { CompareToFile } from "../../../test/helper/CompareToFile.js";
-import { connectFrom, connectTo } from "../../../test/helper/Connect.js";
 import { Offline } from "../../../test/helper/Offline.js";
 import { Signal } from "../../signal/Signal.js";
 import { Oscillator } from "../../source/oscillator/Oscillator.js";

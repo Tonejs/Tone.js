@@ -1,25 +1,30 @@
 // @ts-check
-import tseslint from "typescript-eslint";
 import stylisticJs from "@stylistic/eslint-plugin-js";
 import stylisticTs from "@stylistic/eslint-plugin-ts";
-import jsdoc from "eslint-plugin-jsdoc";
 import html from "eslint-plugin-html";
+import jsdoc from "eslint-plugin-jsdoc";
+import noOnlyTests from "eslint-plugin-no-only-tests";
 import simpleImportSort from "eslint-plugin-simple-import-sort";
+import unusedImports from "eslint-plugin-unused-imports";
+import tseslint from "typescript-eslint";
 
 /** @type {import("typescript-eslint").ConfigWithExtends} */
 const customConfig = {
-	files: ["**/*.js", "**/*.ts", "**/*.html", "eslint.config.mjs"],
+	files: ["**/*.js", "**/*.cjs", "**/*.mjs", "**/*.ts", "**/*.html"],
 	plugins: {
 		"@stylistic/js": stylisticJs,
 		"@stylistic/ts": stylisticTs,
 		jsdoc,
 		html,
 		"simple-import-sort": simpleImportSort,
+		"unused-imports": unusedImports,
+		"no-only-tests": noOnlyTests,
 	},
 	rules: {
 		"@typescript-eslint/array-type": "off",
 		"@typescript-eslint/ban-ts-comment": "off",
 		"@typescript-eslint/ban-ts-ignore": "off",
+		"no-only-tests/no-only-tests": "error",
 		"jsdoc/check-alignment": 1,
 		"jsdoc/check-indentation": [
 			"error",
@@ -35,8 +40,6 @@ const customConfig = {
 		eqeqeq: ["error"],
 		"@typescript-eslint/explicit-function-return-type": "off",
 		"@typescript-eslint/explicit-member-accessibility": "off",
-		// requires eslint flat compat
-		// "file-extension-in-import-ts/file-extension-in-import-ts": "error",
 		"@stylistic/js/linebreak-style": ["error", "unix"],
 		"no-cond-assign": ["error", "always"],
 		"no-console": [
@@ -88,6 +91,16 @@ const customConfig = {
 				},
 			},
 		],
+		"unused-imports/no-unused-imports": "error",
+		"unused-imports/no-unused-vars": [
+			"warn",
+			{
+				vars: "all",
+				varsIgnorePattern: "^_",
+				args: "after-used",
+				argsIgnorePattern: "^_",
+			},
+		],
 	},
 };
 
@@ -98,10 +111,11 @@ export default tseslint.config(
 		files: ["**/*.test.ts", "./test/**/*.ts"],
 		rules: {
 			"@typescript-eslint/no-unused-expressions": "off",
+			"unused-imports/no-unused-vars": "off",
 		},
 	},
 	{
-		files: ["**/*.cjs"],
+		files: ["**/*.cjs", "**/*.mjs"],
 		rules: {
 			"no-console": "off",
 			"@typescript-eslint/no-require-imports": "off",

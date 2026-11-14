@@ -1,4 +1,5 @@
-import type { TransportClass } from "../core/clock/Transport.js";
+import "../core/clock/Transport.js";
+
 import { OutputNode } from "../core/context/ToneAudioNode.js";
 import { TransportTimeClass } from "../core/type/TransportTime.js";
 import {
@@ -14,7 +15,7 @@ import { Signal, SignalOptions } from "./Signal.js";
 import { ToneConstantSource } from "./ToneConstantSource.js";
 
 /**
- * Adds the ability to synchronize the signal to the {@link TransportClass}
+ * Adds the ability to synchronize the signal to the {@link TransportInstance}
  * @category Signal
  */
 export class SyncedSignal<
@@ -42,7 +43,7 @@ export class SyncedSignal<
 	/**
 	 * Remember the callback value
 	 */
-	private _syncedCallback: () => void;
+	private _syncedCallback: (time: Seconds) => void;
 
 	/**
 	 * @param value Initial value of the signal

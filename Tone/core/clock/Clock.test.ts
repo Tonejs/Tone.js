@@ -1,7 +1,12 @@
 import { expect } from "chai";
 
 import { BasicTests } from "../../../test/helper/Basic.js";
-import { atTime, Offline, whenBetween } from "../../../test/helper/Offline.js";
+import {
+	atTime,
+	holdClock,
+	Offline,
+	whenBetween,
+} from "../../../test/helper/Offline.js";
 import { noOp } from "../util/Interface.js";
 import { Clock } from "./Clock.js";
 
@@ -353,6 +358,107 @@ describe("Clock", () => {
 				expect(clock.ticks).to.equal(0);
 				clock.start(0, 4);
 			});
+		});
+
+		it("does not replay stale pre-restart ticks when the loop update has fallen behind a restart (#1419)", async () => {
+			const observedTicks: Array<number | undefined> = [];
+			await Offline(() => {
+				const clock = new Clock((_t, ticks) => {
+					observedTicks.push(ticks);
+				}, 200);
+				clock.start(0);
+				return atTime(
+					0.02,
+					holdClock(clock, (time) => {
+						clock.stop(time);
+						clock.start(time, 40);
+					})
+				);
+			}, 0.03);
+			expect(observedTicks).to.deep.equal([0, 1, 2, 3, 4, 40, 41]);
+		});
+
+		it("does not drop the pending stop event or pending ticks when stop and the following start happen at different times within the stale window (#1419)", async () => {
+			const observedTicks: Array<number | undefined> = [];
+			const stopEvents: number[] = [];
+			await Offline(() => {
+				const clock = new Clock((_t, ticks) => {
+					observedTicks.push(ticks);
+				}, 200);
+				clock.on("stop", (time) => {
+					stopEvents.push(time);
+				});
+				clock.start(0);
+				return atTime(
+					0.025,
+					holdClock(clock, () => {
+						clock.stop(0.015);
+						clock.start(0.02, 40);
+					})
+				);
+			}, 0.03);
+			// the "stop" event scheduled at 0.015 must still fire
+			expect(stopEvents).to.deep.equal([0.015]);
+			// ticks 0, 1, 2 (at 200Hz: 0, 0.005, 0.01) are still pending
+			// in [_lastUpdate, 0.015) and must still fire, followed by
+			// the post-restart ticks from offset 40
+			expect(observedTicks).to.deep.equal([0, 1, 2, 40, 41]);
+		});
+
+		it("emits the stop event when stop and the following start happen at the same time within the stale window", async () => {
+			const events: Array<[string, number]> = [];
+			let restartTime = 0;
+			await Offline(() => {
+				const clock = new Clock(noOp, 200);
+				clock.on("stop", (time) => events.push(["stop", time]));
+				clock.on("start", (time) => events.push(["start", time]));
+				clock.start(0);
+				return atTime(
+					0.02,
+					holdClock(clock, (time) => {
+						restartTime = time;
+						clock.stop(time);
+						clock.start(time, 40);
+					})
+				);
+			}, 0.03);
+			expect(events).to.deep.equal([
+				["start", 0],
+				["stop", restartTime],
+				["start", restartTime],
+			]);
+		});
+
+		it("invokes pending ticks and state events in time order", async () => {
+			const events: Array<[string, number]> = [];
+			let pauseTime = 0;
+			await Offline(() => {
+				const clock = new Clock((time, ticks) => {
+					events.push(["tick " + ticks, time]);
+				}, 200);
+				clock.on("pause", (time) => events.push(["pause", time]));
+				clock.on("start", (time) => events.push(["start", time]));
+				clock.start(0);
+				// ticks 0-4 (every 0.005s) and the pause are all pending in
+				// the same clock update; the ticks before the pause must be
+				// invoked before the pause event, not after it
+				return atTime(
+					0.022,
+					holdClock(clock, (time) => {
+						pauseTime = time;
+						clock.pause(time);
+					})
+				);
+			}, 0.03);
+			expect(events).to.deep.equal([
+				["start", 0],
+				["tick 0", 0],
+				["tick 1", 0.005],
+				["tick 2", 0.01],
+				["tick 3", 0.015],
+				["tick 4", 0.02],
+				["pause", pauseTime],
+			]);
 		});
 	});
 

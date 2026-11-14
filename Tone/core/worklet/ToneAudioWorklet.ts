@@ -5,8 +5,9 @@ import {
 import { noOp } from "../util/Interface.js";
 import { getWorkletGlobalScope } from "./WorkletGlobalScope.js";
 
-export type ToneAudioWorkletOptions = ToneAudioNodeOptions;
-
+export interface ToneAudioWorkletOptions extends ToneAudioNodeOptions {
+	workletOptions?: Partial<AudioWorkletNodeOptions>;
+}
 export abstract class ToneAudioWorklet<
 	Options extends ToneAudioWorkletOptions,
 > extends ToneAudioNode<Options> {
@@ -63,6 +64,14 @@ export abstract class ToneAudioWorklet<
 			this.context
 		);
 
+		if (options.workletOptions) {
+			this.workletOptions = Object.assign(
+				{},
+				this.workletOptions,
+				options.workletOptions
+			);
+		}
+
 		if (workletPromise === undefined) {
 			workletPromise = this.context.addAudioWorkletModule(blobUrl);
 
@@ -76,8 +85,8 @@ export abstract class ToneAudioWorklet<
 					name,
 					this.workletOptions
 				);
-				this._worklet.onprocessorerror =
-					this.onprocessorerror.bind(this);
+				this._worklet.onprocessorerror = (e) =>
+					this.onprocessorerror((e as ErrorEvent).message);
 				this.onReady(this._worklet);
 			}
 		});
@@ -88,10 +97,8 @@ export abstract class ToneAudioWorklet<
 	dispose(): this {
 		super.dispose();
 		this._dummyGain.disconnect();
-		if (this._worklet) {
-			this._worklet.port.postMessage("dispose");
-			this._worklet.disconnect();
-		}
+		this._worklet?.port.postMessage("dispose");
+		this._worklet?.disconnect();
 		return this;
 	}
 }

@@ -131,9 +131,11 @@ export class FrequencyShifter extends Effect<FrequencyShifterOptions> {
 		this._add.connect(this.effectReturn);
 
 		// start the oscillators at the same time
-		const now = this.immediate();
-		this._sine.start(now);
-		this._cosine.start(now);
+		this._onContextRunning(() => {
+			const now = this.immediate();
+			this._sine.start(now);
+			this._cosine.start(now);
+		});
 	}
 
 	static getDefaults(): FrequencyShifterOptions {

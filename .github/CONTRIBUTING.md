@@ -4,7 +4,7 @@ If you're looking for ideas for where to get started, consider jumping in on any
 
 ### Examples
 
-To contribute examples, please follow the current style of the examples. Add your example's title and file name to `examples/js/ExampleList.json` for it to appear in the examples list on the index page.
+To contribute examples, please follow the current style of the examples. Add your example's title and file name to `examples/ExampleList.json` for it to appear in the examples list on the index page.
 
 ### Docs
 
@@ -28,7 +28,7 @@ Tone.js has an extensive [test suite](https://github.com/Tonejs/Tone.js/wiki/Tes
 
 Along with more unit tests, it'd also be great to have more tests which run in the online context and generate music to help find bugs by ear that the automated tests might not illuminate. [Audiokit](http://audiokit.io/tests/), for example, has a great suite of aural tests.
 
-You can also take a look at Tone.js' [code coverage](https://coveralls.io/github/Tonejs/Tone.js) to get an idea of where more tests might be helpful.
+You can also take a look at Tone.js' [code coverage](https://codecov.io/gh/Tonejs/Tone.js) to get an idea of where more tests might be helpful.
 
 ### Synths/Effects
 

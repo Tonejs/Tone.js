@@ -16,6 +16,7 @@ import {
 } from "../core/type/Units.js";
 import { defaultArg, optionsFromArguments } from "../core/util/Defaults.js";
 import { noOp } from "../core/util/Interface.js";
+import { clamp } from "../core/util/Math.js";
 import {
 	BasicPlaybackState,
 	StateTimeline,
@@ -185,11 +186,15 @@ export class ToneEvent<ValueType = any> extends ToneWithContext<
 					if (isNumber(this._loop)) {
 						duration = this._loop * this._getLoopDuration();
 					}
-					const nextEvent = this._state.getAfter(startTick);
+					// look up the next boundary in the same (unshifted) frame as
+					// event.time; startOffset can push startTick past it entirely,
+					// in which case this segment shouldn't schedule anything
+					const nextEvent = this._state.getAfter(event.time);
 					if (nextEvent !== null) {
-						duration = Math.min(
-							duration,
-							nextEvent.time - startTick
+						duration = clamp(
+							nextEvent.time - startTick,
+							0,
+							duration
 						);
 					}
 					if (duration !== Infinity) {

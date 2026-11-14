@@ -3,36 +3,13 @@
 	<head>
 		<meta charset="utf-8" />
 		<title>DAW</title>
-
-		<meta
-			name="viewport"
-			content="width=device-width, initial-scale=1, maximum-scale=1"
-		/>
-		<link
-			rel="icon"
-			type="image/png"
-			sizes="174x174"
-			href="./favicon.png"
-		/>
-
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/2.4.3/webcomponents-bundle.js"></script>
-		<link
-			href="https://fonts.googleapis.com/css?family=Material+Icons&display=block"
-			rel="stylesheet"
-		/>
-		<script src="../build/Tone.js"></script>
-		<script src="./js/tone-ui.js"></script>
-		<script src="./js/components.js"></script>
+		<script src="./tone-ui.js"></script>
 		<style type="text/css">
-			tone-play-toggle {
-				margin-bottom: 10px;
-			}
 			#tracks {
 				position: relative;
 				width: calc(100% - 10px);
 				margin-left: 10px;
 			}
-
 			#progress {
 				width: 1px;
 				height: 100%;
@@ -47,8 +24,7 @@
 		</style>
 	</head>
 	<body>
-		<tone-example label="DAW">
-			<tone-loader></tone-loader>
+		<tone-example>
 			<div slot="explanation">
 				This beat is composed of 3 independent Players each with a
 				different loop length, synced to the Transport to start at
@@ -56,23 +32,19 @@
 				synchronized to the position and offset of the Transport.
 			</div>
 
-			<div id="content">
-				<tone-play-toggle></tone-play-toggle>
-				<div id="tracks">
-					<div id="progress"></div>
-					<img
-						src="https://tonejs.github.io/audio/loop/drum_loop.png"
-					/>
-				</div>
+			<tone-play-toggle></tone-play-toggle>
+			<div id="tracks">
+				<div id="progress"></div>
+				<img src="https://tonejs.github.io/audio/loop/drum_loop.png" />
 			</div>
 		</tone-example>
 
-		<script type="text/javascript">
+		<script data-tone-code>
 			// set the transport
-			Tone.Transport.bpm.value = 108;
-			Tone.Transport.loop = true;
-			Tone.Transport.loopStart = "4m";
-			Tone.Transport.loopEnd = "8m";
+			Tone.getTransport().bpm.value = 108;
+			Tone.getTransport().loop = true;
+			Tone.getTransport().loopStart = "4m";
+			Tone.getTransport().loopEnd = "8m";
 
 			const kick = new Tone.Player({
 				url: "https://tonejs.github.io/audio/loop/kick.mp3",
@@ -97,19 +69,15 @@
 				.toDestination()
 				.sync()
 				.start("3:3", "4n"); // start with an offset
+		</script>
 
-			// connect the UI with the components
-			document
-				.querySelector("tone-play-toggle")
-				.addEventListener("start", () => Tone.Transport.start());
-			document
-				.querySelector("tone-play-toggle")
-				.addEventListener("stop", () => Tone.Transport.stop());
+		<script>
+			bind("tone-play-toggle", Tone.getTransport());
 
 			// keep the play head on track
 			setInterval(() => {
 				// scale it between 0-1
-				const progress = (Tone.Transport.progress + 1) / 2;
+				const progress = (Tone.getTransport().progress + 1) / 2;
 				document.querySelector("#progress").style =
 					`left: ${progress * 100}%`;
 			}, 16);

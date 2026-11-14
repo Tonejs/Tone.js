@@ -1,7 +1,11 @@
-import { expect } from "chai";
+import { expect, use } from "chai";
+import sinon from "sinon";
+import sinonChai from "sinon-chai";
+use(sinonChai);
 
 import { BasicTests } from "../../test/helper/Basic.js";
-import { OfflineContext } from "../core/index.js";
+import { Context } from "../core/context/Context.js";
+import { OfflineContext } from "../core/context/OfflineContext.js";
 import { UserMedia } from "./UserMedia.js";
 
 describe("UserMedia", () => {
@@ -37,139 +41,154 @@ describe("UserMedia", () => {
 		});
 	});
 
-	context("Opening and closing", function () {
-		// long timeout to give testers time to allow the microphone
-		this.timeout(100000);
+	context("Opening and closing", () => {
+		beforeEach(() => {
+			const mockTrack = { stop: sinon.stub() };
+			const mockStream = {
+				active: true,
+				getAudioTracks: () => [mockTrack],
+			} as unknown as MediaStream;
+			const mockMediaStreamSource = {
+				connect: sinon.stub(),
+				disconnect: sinon.stub(),
+				numberOfOutputs: 1,
+			} as unknown as MediaStreamAudioSourceNode;
+			sinon.stub(UserMedia, "enumerateDevices").resolves([
+				{
+					deviceId: "default",
+					groupId: "default",
+					label: "Default Device",
+				},
+				{
+					deviceId: "other",
+					groupId: "default",
+					label: "Other Device",
+				},
+			] as MediaDeviceInfo[]);
+			sinon
+				.stub(navigator.mediaDevices, "getUserMedia")
+				.resolves(mockStream);
+			sinon
+				.stub(Context.prototype, "createMediaStreamSource")
+				.returns(mockMediaStreamSource);
+		});
 
-		let HAS_USER_MEDIA_INPUTS = false;
+		afterEach(() => {
+			sinon.restore();
+		});
 
-		before(() => {
-			return UserMedia.enumerateDevices().then((devices) => {
-				HAS_USER_MEDIA_INPUTS = devices.length > 0;
+		it("open returns a promise", async () => {
+			const extIn = new UserMedia();
+			const promise = extIn.open();
+			expect(promise).to.be.instanceOf(Promise);
+			await promise;
+			extIn.dispose();
+		});
+
+		it("can open an input", async () => {
+			const extIn = new UserMedia();
+			await extIn.open();
+			extIn.dispose();
+		});
+
+		it("can open an input by name", async () => {
+			const extIn = new UserMedia();
+			const devices = await UserMedia.enumerateDevices();
+			const name = devices[0].deviceId;
+
+			await extIn.open(name);
+
+			expect(extIn.deviceId).to.equal(name);
+			expect(navigator.mediaDevices.getUserMedia).to.have.been.calledWith(
+				sinon.match.hasNested("audio.deviceId", name)
+			);
+			extIn.dispose();
+		});
+
+		it("can open an input by index", async () => {
+			const extIn = new UserMedia();
+
+			await extIn.open(0);
+
+			expect(navigator.mediaDevices.getUserMedia).to.have.been.calledWith(
+				sinon.match.hasNested("audio.deviceId", "default")
+			);
+			extIn.dispose();
+		});
+
+		it("can pass in additional constraints", async () => {
+			const extIn = new UserMedia();
+			await extIn.open({
+				preferCurrentTab: true,
 			});
+			expect(navigator.mediaDevices.getUserMedia).to.have.been.calledWith(
+				sinon.match.hasNested("preferCurrentTab", true)
+			);
+			extIn.dispose();
 		});
 
-		it("open returns a promise", () => {
-			if (HAS_USER_MEDIA_INPUTS) {
-				const extIn = new UserMedia();
-				const promise = extIn.open();
-				expect(promise).to.have.property("then");
-				return promise.then(() => {
-					extIn.dispose();
-				});
+		it("throws an error if it cant find the device name", async () => {
+			const extIn = new UserMedia();
+			try {
+				await extIn.open("doesn't exist");
+				throw new Error("shouldn't reach here");
+			} catch {
+				extIn.dispose();
 			}
 		});
 
-		it("can open an input", () => {
-			if (HAS_USER_MEDIA_INPUTS) {
-				const extIn = new UserMedia();
-				return extIn.open().then(() => {
-					extIn.dispose();
-				});
-			}
+		it("is 'started' after media is open and 'stopped' otherwise", async () => {
+			const extIn = new UserMedia();
+			expect(extIn.state).to.equal("stopped");
+
+			await extIn.open();
+
+			expect(extIn.state).to.equal("started");
+			extIn.dispose();
 		});
 
-		it("can open an input by name", () => {
-			if (HAS_USER_MEDIA_INPUTS) {
-				const extIn = new UserMedia();
-				let name: string;
-				return UserMedia.enumerateDevices()
-					.then((devices) => {
-						name = devices[0].deviceId;
-						return extIn.open(name);
-					})
-					.then(() => {
-						expect(extIn.deviceId).to.equal(name);
-						extIn.dispose();
-					});
-			}
+		it("has a label, group and device id when open", async () => {
+			const extIn = new UserMedia();
+			expect(extIn.deviceId).to.be.undefined;
+			expect(extIn.groupId).to.be.undefined;
+			expect(extIn.label).to.be.undefined;
+
+			await extIn.open();
+
+			expect(extIn.deviceId).to.be.a("string");
+			expect(extIn.groupId).to.be.a("string");
+			expect(extIn.label).to.be.a("string");
+			extIn.dispose();
 		});
 
-		it("can open an input by index", () => {
-			if (HAS_USER_MEDIA_INPUTS) {
-				const extIn = new UserMedia();
-				return extIn.open(0).then(() => {
-					extIn.dispose();
-				});
-			}
+		it("can reopen an input", async () => {
+			const extIn = new UserMedia();
+			await extIn.open();
+			extIn.close();
+			await extIn.open();
+			extIn.dispose();
 		});
 
-		it("throws an error if it cant find the device name", () => {
-			if (HAS_USER_MEDIA_INPUTS) {
-				const extIn = new UserMedia();
-				return extIn
-					.open("doesn't exist")
-					.then(() => {
-						throw new Error("shouldn't call 'then'");
-					})
-					.catch(() => {
-						extIn.dispose();
-					});
-			}
+		it("can close an input", async () => {
+			const extIn = new UserMedia();
+			await extIn.open();
+			extIn.close();
+			extIn.dispose();
 		});
 
-		it("is 'started' after media is open and 'stopped' otherwise", () => {
-			if (HAS_USER_MEDIA_INPUTS) {
-				const extIn = new UserMedia();
-				expect(extIn.state).to.equal("stopped");
-				return extIn.open().then(() => {
-					expect(extIn.state).to.equal("started");
-					extIn.dispose();
-				});
-			}
+		it("can enumerate devices", async () => {
+			const devices = await UserMedia.enumerateDevices();
+			expect(devices).to.be.instanceOf(Array);
 		});
 
-		it("has a label, group and device id when open", () => {
-			if (HAS_USER_MEDIA_INPUTS) {
-				const extIn = new UserMedia();
-				return extIn.open().then(() => {
-					expect(extIn.deviceId).to.be.a("string");
-					expect(extIn.groupId).to.be.a("string");
-					expect(extIn.label).to.be.a("string");
-					extIn.dispose();
-				});
-			}
-		});
-
-		it("can reopen an input", () => {
-			if (HAS_USER_MEDIA_INPUTS) {
-				const extIn = new UserMedia();
-				return extIn
-					.open()
-					.then(() => {
-						return extIn.open();
-					})
-					.then(() => {
-						extIn.dispose();
-					});
-			}
-		});
-
-		it("can close an input", () => {
-			if (HAS_USER_MEDIA_INPUTS) {
-				const extIn = new UserMedia();
-				return extIn.open().then(() => {
-					extIn.close();
-					extIn.dispose();
-				});
-			}
-		});
-
-		it("can enumerate devices", () => {
-			return UserMedia.enumerateDevices().then((devices) => {
-				expect(devices).to.be.instanceOf(Array);
-			});
-		});
-
-		it("doesn't work in OfflineContext", (done) => {
-			if (HAS_USER_MEDIA_INPUTS) {
-				const context = new OfflineContext(2, 2, 44100);
-				const extIn = new UserMedia({ context });
-				extIn.open().catch(() => {
-					done();
-				});
-			} else {
-				done();
+		it("doesn't work in OfflineContext", async () => {
+			const context = new OfflineContext(2, 2, 44100);
+			const extIn = new UserMedia({ context });
+			try {
+				await extIn.open();
+				throw new Error("shouldn't reach here");
+			} catch {
+				// expected to throw in OfflineContext
 			}
 		});
 	});

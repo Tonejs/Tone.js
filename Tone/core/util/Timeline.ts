@@ -115,7 +115,7 @@ export class Timeline<GenericEvent extends TimelineEvent> extends Tone {
 	 * @returns {Timeline} this
 	 */
 	remove(event: GenericEvent): this {
-		const index = this._timeline.indexOf(event);
+		const index = this._indexOf(event);
 		if (index !== -1) {
 			this._timeline.splice(index, 1);
 		}
@@ -240,12 +240,40 @@ export class Timeline<GenericEvent extends TimelineEvent> extends Tone {
 	 * @return The event right before the given event
 	 */
 	previousEvent(event: GenericEvent): GenericEvent | null {
-		const index = this._timeline.indexOf(event);
+		const index = this._indexOf(event);
 		if (index > 0) {
 			return this._timeline[index - 1];
 		} else {
 			return null;
 		}
+	}
+
+	/**
+	 * Return the index of the given event in the timeline. -1 if it is not found.
+	 */
+	private _indexOf(event: GenericEvent): number {
+		// Use _search since internally implemented with binary search.
+		const index = this._search(event.time);
+		if (index === -1) {
+			return -1;
+		}
+		// There may be multiple events with the same time, so find the exact event
+		// Search forward and backward for events with the same time
+		for (let i = index; i < this._timeline.length; i++) {
+			if (this._timeline[i] === event) {
+				return i;
+			} else if (this._timeline[i].time !== event.time) {
+				break;
+			}
+		}
+		for (let j = index - 1; j >= 0; j--) {
+			if (this._timeline[j] === event) {
+				return j;
+			} else if (this._timeline[j].time !== event.time) {
+				break;
+			}
+		}
+		return -1;
 	}
 
 	/**
@@ -359,20 +387,32 @@ export class Timeline<GenericEvent extends TimelineEvent> extends Tone {
 		endTime: number,
 		callback: (event: GenericEvent) => void
 	): this {
+		// _search compares times with an epsilon, so do the same here
 		let lowerBound = this._search(startTime);
 		let upperBound = this._search(endTime);
-		if (lowerBound !== -1 && upperBound !== -1) {
-			if (this._timeline[lowerBound].time !== startTime) {
-				lowerBound += 1;
+		if (lowerBound === -1) {
+			// every event is after the start time
+			lowerBound = 0;
+		} else if (EQ(this._timeline[lowerBound].time, startTime)) {
+			// _search returns the last event at the start time,
+			// include every event at the start time
+			while (
+				lowerBound > 0 &&
+				EQ(this._timeline[lowerBound - 1].time, startTime)
+			) {
+				lowerBound -= 1;
 			}
-			// exclusive of the end time
-			if (this._timeline[upperBound].time === endTime) {
-				upperBound -= 1;
-			}
-			this._iterate(callback, lowerBound, upperBound);
-		} else if (lowerBound === -1) {
-			this._iterate(callback, 0, upperBound);
+		} else {
+			lowerBound += 1;
 		}
+		// exclusive of the end time
+		while (
+			upperBound >= 0 &&
+			EQ(this._timeline[upperBound].time, endTime)
+		) {
+			upperBound -= 1;
+		}
+		this._iterate(callback, lowerBound, upperBound);
 		return this;
 	}
 

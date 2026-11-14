@@ -5,7 +5,6 @@ import {
 import { Seconds, Ticks, Time } from "../type/Units.js";
 import { optionsFromArguments } from "../util/Defaults.js";
 import { readOnly } from "../util/Interface.js";
-import { EQ } from "../util/Math.js";
 import {
 	PlaybackState,
 	StateTimeline,
@@ -398,8 +397,7 @@ export class TickSource<
 		let lastStateEvent = this._state.get(startTime);
 		this._state.forEachBetween(startTime, endTime, (event) => {
 			if (
-				lastStateEvent &&
-				lastStateEvent.state === "started" &&
+				lastStateEvent?.state === "started" &&
 				event.state !== "started"
 			) {
 				this.forEachTickBetween(
@@ -413,34 +411,25 @@ export class TickSource<
 
 		let error: Error | null = null;
 
-		if (lastStateEvent && lastStateEvent.state === "started") {
-			const maxStartTime = Math.max(lastStateEvent.time, startTime);
-			// figure out the difference between the frequency ticks and the
-			const startTicks = this.frequency.getTicksAtTime(maxStartTime);
-			const ticksAtStart = this.frequency.getTicksAtTime(
-				lastStateEvent.time
+		if (lastStateEvent?.state === "started") {
+			const origin = this.frequency.getTicksAtTime(lastStateEvent.time);
+			const endTicks = this.frequency.getTicksAtTime(endTime) - origin;
+			const tick = Math.ceil(
+				this.frequency.getTicksAtTime(
+					Math.max(lastStateEvent.time, startTime)
+				) - origin
 			);
-			const diff = startTicks - ticksAtStart;
-			let offset = Math.ceil(diff) - diff;
-			// guard against floating point issues
-			offset = EQ(offset, 1) ? 0 : offset;
-			let nextTickTime = this.frequency.getTimeOfTick(
-				startTicks + offset
-			);
-			while (nextTickTime < endTime) {
+			for (let t = tick; t < endTicks; t++) {
+				const time = this.frequency.getTimeOfTick(origin + t);
 				try {
-					callback(
-						nextTickTime,
-						Math.round(this.getTicksAtTime(nextTickTime))
-					);
+					callback(time, Math.round(this.getTicksAtTime(time)));
 				} catch (e) {
-					error = e;
+					error = e as Error;
 					break;
 				}
-				nextTickTime += this.frequency.getDurationOfTicks(
-					1,
-					nextTickTime
-				);
+				if (this.disposed) {
+					break;
+				}
 			}
 		}
 

@@ -1,3 +1,5 @@
+import "../clock/Transport.js";
+
 import { expect } from "chai";
 
 import { TestAudioBuffer } from "../../../test/helper/compare/TestAudioBuffer.js";
@@ -57,5 +59,23 @@ describe("Offline", () => {
 		}, 0.1);
 		const testBuff = new TestAudioBuffer(buffer.get() as AudioBuffer);
 		expect(testBuff.getTimeOfFirstSound()).to.be.closeTo(0.05, 0.0001);
+	});
+
+	it("nodes created in transport scheduleRepeat callbacks use the offline context", async () => {
+		// Addresses #781
+		// When transport callbacks fire during offline rendering, any nodes
+		// created inside them must use the offline context.
+		const buffer = await Offline(
+			({ transport }) => {
+				transport.scheduleRepeat((time) => {
+					new ToneOscillatorNode().toDestination().start(time);
+				}, 0.1);
+				transport.start(0);
+			},
+			0.5,
+			1
+		);
+		const testBuff = new TestAudioBuffer(buffer.get() as AudioBuffer);
+		expect(testBuff.isSilent()).to.equal(false);
 	});
 });

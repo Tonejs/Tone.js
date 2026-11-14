@@ -3,10 +3,9 @@ import { optionsFromArguments } from "../core/util/Defaults.js";
 import { readOnly } from "../core/util/Interface.js";
 import { Signal } from "../signal/Signal.js";
 import { LFO } from "../source/oscillator/LFO.js";
-import { StereoEffect, StereoEffectOptions } from "./StereoEffect.js";
+import { LFOStereoEffect, LFOStereoEffectOptions } from "./LFOStereoEffect.js";
 
-export interface PhaserOptions extends StereoEffectOptions {
-	frequency: Frequency;
+export interface PhaserOptions extends LFOStereoEffectOptions {
 	octaves: Positive;
 	stages: Positive;
 	Q: Positive;
@@ -28,18 +27,8 @@ export interface PhaserOptions extends StereoEffectOptions {
  * synth.triggerAttackRelease("E3", "2n");
  * @category Effect
  */
-export class Phaser extends StereoEffect<PhaserOptions> {
+export class Phaser extends LFOStereoEffect<PhaserOptions> {
 	readonly name: string = "Phaser";
-
-	/**
-	 * the lfo which controls the frequency on the left side
-	 */
-	private _lfoL: LFO;
-
-	/**
-	 * the lfo which controls the frequency on the right side
-	 */
-	private _lfoR: LFO;
 
 	/**
 	 * the base modulation frequency
@@ -67,11 +56,6 @@ export class Phaser extends StereoEffect<PhaserOptions> {
 	private _filtersR: BiquadFilterNode[];
 
 	/**
-	 * the frequency of the effect
-	 */
-	readonly frequency: Signal<"frequency">;
-
-	/**
 	 * @param frequency The speed of the phasing.
 	 * @param octaves The octaves of the effect.
 	 * @param baseFrequency The base frequency of the filters.
@@ -90,19 +74,8 @@ export class Phaser extends StereoEffect<PhaserOptions> {
 		]);
 		super(options);
 
-		this._lfoL = new LFO({
-			context: this.context,
-			frequency: options.frequency,
-			min: 0,
-			max: 1,
-		});
-		this._lfoR = new LFO({
-			context: this.context,
-			frequency: options.frequency,
-			min: 0,
-			max: 1,
-			phase: 180,
-		});
+		this._lfoR.phase = 180;
+
 		this._baseFrequency = this.toFrequency(options.baseFrequency);
 		this._octaves = options.octaves;
 		this.Q = new Signal({
@@ -113,30 +86,24 @@ export class Phaser extends StereoEffect<PhaserOptions> {
 		this._filtersL = this._makeFilters(options.stages, this._lfoL);
 		this._filtersR = this._makeFilters(options.stages, this._lfoR);
 
-		this.frequency = this._lfoL.frequency;
-		this.frequency.value = options.frequency;
-
 		// connect them up
 		this.connectEffectLeft(...this._filtersL);
 		this.connectEffectRight(...this._filtersR);
-		// control the frequency with one LFO
-		this._lfoL.frequency.connect(this._lfoR.frequency);
+
 		// set the options
 		this.baseFrequency = options.baseFrequency;
 		this.octaves = options.octaves;
-		// start the lfo
-		this._lfoL.start();
-		this._lfoR.start();
-		readOnly(this, ["frequency", "Q"]);
+		readOnly(this, ["Q"]);
 	}
 
 	static getDefaults(): PhaserOptions {
-		return Object.assign(StereoEffect.getDefaults(), {
+		return Object.assign(LFOStereoEffect.getDefaults(), {
 			frequency: 0.5,
 			octaves: 3,
 			stages: 10,
 			Q: 10,
 			baseFrequency: 350,
+			autostart: true,
 		});
 	}
 
@@ -185,11 +152,8 @@ export class Phaser extends StereoEffect<PhaserOptions> {
 	dispose(): this {
 		super.dispose();
 		this.Q.dispose();
-		this._lfoL.dispose();
-		this._lfoR.dispose();
 		this._filtersL.forEach((f) => f.disconnect());
 		this._filtersR.forEach((f) => f.disconnect());
-		this.frequency.dispose();
 		return this;
 	}
 }

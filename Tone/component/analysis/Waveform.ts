@@ -13,7 +13,7 @@ export interface WaveformOptions extends MeterBaseOptions {
  * Get the current waveform data of the connected audio source.
  * @category Component
  */
-export class Waveform extends MeterBase<WaveformOptions> {
+export class Waveform extends MeterBase<WaveformOptions, 1> {
 	readonly name: string = "Waveform";
 
 	/**
@@ -44,7 +44,7 @@ export class Waveform extends MeterBase<WaveformOptions> {
 	 * represents a sample in the waveform.
 	 */
 	getValue(): Float32Array {
-		return this._analyser.getValue() as Float32Array;
+		return this._analyser.getValue();
 	}
 
 	/**

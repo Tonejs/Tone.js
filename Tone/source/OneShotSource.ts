@@ -217,7 +217,7 @@ export abstract class OneShotSource<
 	/**
 	 * Get the playback state at the given time
 	 */
-	getStateAtTime = function (time: Time): BasicPlaybackState {
+	getStateAtTime = (time: Time): BasicPlaybackState => {
 		const computedTime = this.toSeconds(time);
 		if (
 			this._startTime !== -1 &&

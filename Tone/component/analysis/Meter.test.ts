@@ -2,10 +2,8 @@ import { expect } from "chai";
 
 import { BasicTests, warns } from "../../../test/helper/Basic.js";
 import { PassAudio } from "../../../test/helper/PassAudio.js";
-import { Signal } from "../../signal/Signal.js";
 import { Oscillator } from "../../source/oscillator/Oscillator.js";
 import { Merge } from "../channel/Merge.js";
-import { Panner } from "../channel/Panner.js";
 import { Meter } from "./Meter.js";
 
 describe("Meter", () => {
@@ -32,7 +30,7 @@ describe("Meter", () => {
 			const meter = new Meter({
 				channelCount: 4,
 			});
-			expect((meter.getValue() as number[]).length).to.equal(4);
+			expect(meter.getValue().length).to.equal(4);
 			meter.dispose();
 		});
 
@@ -65,6 +63,20 @@ describe("Meter", () => {
 			osc.volume.value = -6;
 			setTimeout(() => {
 				expect(meter.getValue()).to.be.closeTo(-9, 1);
+				meter.dispose();
+				osc.dispose();
+				done();
+			}, 400);
+		});
+
+		it("returns 0 below a threshold", (done) => {
+			const meter = new Meter({
+				normalRange: true,
+			});
+			const osc = new Oscillator().connect(meter).start();
+			osc.volume.value = -101;
+			setTimeout(() => {
+				expect(meter.getValue()).to.equal(0);
 				meter.dispose();
 				osc.dispose();
 				done();

@@ -3,10 +3,12 @@ import { expect } from "chai";
 import { BasicTests } from "../../../test/helper/Basic.js";
 import { connectTo } from "../../../test/helper/Connect.js";
 import { Offline } from "../../../test/helper/Offline.js";
+import { SignalConnectAndDisconnect } from "../../../test/helper/SignalTests.js";
 import { Envelope, EnvelopeCurve } from "./Envelope.js";
 
 describe("Envelope", () => {
 	BasicTests(Envelope);
+	SignalConnectAndDisconnect(Envelope);
 
 	context("Envelope", () => {
 		it("has an output connections", () => {

@@ -1,5 +1,4 @@
 import { Gain } from "../../Tone/core/context/Gain.js";
-import { ToneAudioNode } from "../../Tone/core/context/ToneAudioNode.js";
 
 export function connectFrom(): Gain {
 	return new Gain();

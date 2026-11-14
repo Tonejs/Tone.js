@@ -1,0 +1,142 @@
+name: Release
+
+on:
+    workflow_run:
+        workflows: ["Tests"]
+        branches:
+            - dev
+            - main
+        types:
+            - completed
+
+concurrency:
+    group: releases
+    cancel-in-progress: false
+    queue: max
+
+jobs:
+    bump:
+        name: Bump version and update changelog
+        runs-on: ubuntu-latest
+        # Only run when Tests passed and the trigger was a push (i.e. a merged PR, not a PR open/sync)
+        if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push'
+        permissions:
+            contents: write
+        steps:
+            - name: Generate GitHub App Token
+              id: generate-token
+              uses: actions/create-github-app-token@v2
+              with:
+                  app-id: ${{ secrets.BYPASS_APP_ID }}
+                  private-key: ${{ secrets.BYPASS_APP_PRIVATE_KEY }}
+
+            - name: Check out Git repository
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+                  fetch-tags: true
+                  ref: ${{ github.event.workflow_run.head_branch }}
+                  token: ${{ steps.generate-token.outputs.token }}
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 24
+                  cache: "npm"
+
+            - name: Install dependencies
+              run: npm install
+
+            - name: Bump and Update Changelog
+              id: bump
+              if: github.event.workflow_run.head_branch != 'main'
+              run: |
+                  npm version patch --no-git-tag-version
+                  npm run changelog
+                  NEW_VERSION=$(node -p "require('./package.json').version")
+                  echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+
+            - name: Commit and Push Changes
+              if: github.event.workflow_run.head_branch != 'main'
+              uses: stefanzweifel/git-auto-commit-action@v5
+              with:
+                  commit_message: |
+                      v${{ steps.bump.outputs.new_version }}
+
+                      [skip ci]
+                  file_pattern: "package.json package-lock.json CHANGELOG.md"
+                  commit_user_name: "github-actions[bot]"
+                  commit_user_email: "github-actions[bot]@users.noreply.github.com"
+
+    publish:
+        name: Build and publish to npm
+        runs-on: ubuntu-latest
+        needs: [bump]
+        permissions:
+            contents: read
+            id-token: write
+        steps:
+            - name: Check out Git repository
+              uses: actions/checkout@v4
+              with:
+                  ref: ${{ github.event.workflow_run.head_branch }}
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 24
+                  registry-url: "https://registry.npmjs.org"
+                  cache: "npm"
+
+            - name: Install dependencies
+              run: npm install
+
+            - name: Write version to Tone/version.ts
+              run: npm run write_version
+
+            - name: Build
+              run: npm run build
+
+            # Need to unset this in order to use OIDC
+            - name: Unset NODE_AUTH_TOKEN
+              run: unset NODE_AUTH_TOKEN
+
+            - name: Publish @next
+              if: github.event.workflow_run.head_branch == 'dev'
+              run: npm publish --tag next --provenance --access public
+
+            - name: Publish @latest
+              if: github.event.workflow_run.head_branch == 'main'
+              run: npm publish --provenance --access public
+
+    create-release:
+        name: Create GitHub Release
+        runs-on: ubuntu-latest
+        if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push' && github.event.workflow_run.head_branch == 'main'
+        needs: [publish]
+        permissions:
+            contents: write
+        steps:
+            - name: Check out Git repository
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+                  ref: main
+
+            - name: Get version from package.json
+              id: version
+              run: echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
+
+            - name: Create and push tag
+              run: |
+                  git config user.name "github-actions[bot]"
+                  git config user.email "github-actions[bot]@users.noreply.github.com"
+                  git tag v${{ steps.version.outputs.version }}
+                  git push origin v${{ steps.version.outputs.version }}
+
+            - name: Create GitHub Release
+              uses: softprops/action-gh-release@v2
+              with:
+                  tag_name: v${{ steps.version.outputs.version }}
+                  name: v${{ steps.version.outputs.version }}
+                  generate_release_notes: true

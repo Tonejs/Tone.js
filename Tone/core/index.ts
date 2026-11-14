@@ -1,10 +1,7 @@
 export * from "./clock/Clock.js";
-// export * from "./clock/Transport";
-
 export * from "./context/BaseContext.js";
 export * from "./context/Context.js";
 export * from "./context/Delay.js";
-// export * from "./context/Destination";
 export * from "./context/Gain.js";
 export * from "./context/Offline.js";
 export * from "./context/OfflineContext.js";

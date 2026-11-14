@@ -19,8 +19,9 @@ export interface ListenerOptions extends ToneAudioNodeOptions {
  * with {@link Panner3D} makes up the Web Audio API's 3D panning system. Panner3D allows you
  * to place sounds in 3D and Listener allows you to navigate the 3D sound environment from
  * a first-person perspective. There is only one listener per audio context.
+ * @category Core
  */
-export class ListenerClass extends ToneAudioNode<ListenerOptions> {
+export class ListenerInstance extends ToneAudioNode<ListenerOptions> {
 	readonly name: string = "Listener";
 
 	/**
@@ -108,7 +109,7 @@ export class ListenerClass extends ToneAudioNode<ListenerOptions> {
 //-------------------------------------
 
 onContextInit((context) => {
-	context.listener = new ListenerClass({ context });
+	context.listener = new ListenerInstance({ context });
 });
 
 onContextClose((context) => {

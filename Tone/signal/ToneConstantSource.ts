@@ -32,6 +32,11 @@ export class ToneConstantSource<
 	private _source?: ConstantSourceNode;
 
 	/**
+	 * Whether the native source was started, so it can be stopped
+	 */
+	private _sourceStarted = false;
+
+	/**
 	 * The offset of the signal generator
 	 */
 	readonly offset: Param<TypeName>;
@@ -49,24 +54,16 @@ export class ToneConstantSource<
 		);
 		super(options);
 
-		const isSuspended =
-			!this.context.isOffline && this.context.state !== "running";
-
-		if (!isSuspended) {
-			this._source = this.context.createConstantSource();
-			connect(this._source, this._gainNode);
-		} else {
-			this.context.on("statechange", this._contextStarted);
-		}
+		this._onContextRunning(() => this._contextStarted());
 
 		this.offset = new Param({
 			context: this.context,
 			convert: options.convert,
-			param: isSuspended
+			param: !this._source
 				? // placeholder param until the context is started
 					this.context.createGain().gain
-				: this._source?.offset,
-			swappable: isSuspended,
+				: this._source.offset,
+			swappable: !this._source,
 			units: options.units,
 			value: options.offset,
 			minValue: options.minValue,
@@ -85,17 +82,18 @@ export class ToneConstantSource<
 	/**
 	 * Once the context is started, kick off source.
 	 */
-	private readonly _contextStarted = (state: AudioContextState) => {
-		if (state !== "running") {
-			return;
-		}
+	private _contextStarted() {
 		this._source = this.context.createConstantSource();
 		connect(this._source, this._gainNode);
-		this.offset.setParam(this._source.offset);
-		if (this.state === "started") {
-			this._source.start(0);
+		this.offset?.setParam(this._source.offset);
+		const isStarted = this._startTime !== -1;
+		const isStoppedBeforeStart =
+			this._stopTime !== -1 && this._stopTime < this._startTime;
+		if (isStarted && !isStoppedBeforeStart) {
+			this._source.start(this._startTime);
+			this._sourceStarted = true;
 		}
-	};
+	}
 
 	/**
 	 * Start the source node at the given time
@@ -105,15 +103,19 @@ export class ToneConstantSource<
 		const computedTime = this.toSeconds(time);
 		this.log("start", computedTime);
 		this._startGain(computedTime);
-		this._source?.start(computedTime);
+		if (this._source) {
+			this._source.start(computedTime);
+			this._sourceStarted = true;
+		}
 		return this;
 	}
 
 	protected _stopSource(time?: Seconds): void {
-		if (this.state === "stopped") {
-			return;
+		// state is already "stopped" here: OneShotSource defers this call
+		// until after _stopTime, so check the native node instead
+		if (this._sourceStarted) {
+			this._source?.stop(time);
 		}
-		this._source?.stop(time);
 	}
 
 	dispose(): this {
@@ -123,7 +125,6 @@ export class ToneConstantSource<
 		}
 		this._source?.disconnect();
 		this.offset.dispose();
-		this.context.off("statechange", this._contextStarted);
 		return this;
 	}
 }

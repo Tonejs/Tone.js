@@ -1,10 +1,10 @@
 import { Ticker, TickerClockSource } from "../clock/Ticker.js";
-import type { TransportClass as Transport } from "../clock/Transport.js";
+import type { TransportInstance as Transport } from "../clock/Transport.js";
 import { Seconds } from "../type/Units.js";
 import { isAudioContext } from "../util/AdvancedTypeCheck.js";
 import { assert } from "../util/Debug.js";
 import { optionsFromArguments } from "../util/Defaults.js";
-import type { DrawClass as Draw } from "../util/Draw.js";
+import type { DrawInstance as Draw } from "../util/Draw.js";
 import { Timeline } from "../util/Timeline.js";
 import { isDefined } from "../util/TypeCheck.js";
 import {
@@ -14,8 +14,8 @@ import {
 } from "./AudioContext.js";
 import { BaseContext, ContextLatencyHint } from "./BaseContext.js";
 import { closeContext, initializeContext } from "./ContextInitialization.js";
-import type { DestinationClass as Destination } from "./Destination.js";
-import type { ListenerClass as Listener } from "./Listener.js";
+import type { DestinationInstance as Destination } from "./Destination.js";
+import type { ListenerInstance as Listener } from "./Listener.js";
 
 export interface ContextOptions {
 	clockSource: TickerClockSource;
@@ -23,6 +23,7 @@ export interface ContextOptions {
 	lookAhead: Seconds;
 	updateInterval: Seconds;
 	context: AnyAudioContext;
+	sampleRate: number;
 }
 
 export interface ContextTimeoutEvent {
@@ -32,29 +33,29 @@ export interface ContextTimeoutEvent {
 }
 
 /**
- * Wrapper around the native AudioContext.
+ * Wraps the native AudioContext.
  * @category Core
  */
 export class Context extends BaseContext {
 	readonly name: string = "Context";
 
 	/**
-	 * private reference to the BaseAudioContext
+	 * A private reference to the BaseAudioContext.
 	 */
 	protected readonly _context: AnyAudioContext;
 
 	/**
-	 * A reliable callback method
+	 * A reliable callback method.
 	 */
 	private readonly _ticker: Ticker;
 
 	/**
-	 * The default latency hint
+	 * The default latency hint.
 	 */
 	private _latencyHint!: ContextLatencyHint | Seconds;
 
 	/**
-	 * An object containing all of the constants AudioBufferSourceNodes
+	 * An object containing all of the AudioBufferSourceNodes with constant values.
 	 */
 	private _constants = new Map<number, AudioBufferSourceNode>();
 
@@ -62,6 +63,11 @@ export class Context extends BaseContext {
 	 * All of the setTimeout events.
 	 */
 	private _timeouts: Timeline<ContextTimeoutEvent> = new Timeline();
+
+	/**
+	 * A Map from timeout ID to event for O(1) lookup in clearTimeout.
+	 */
+	private _timeoutMap = new Map<number, ContextTimeoutEvent>();
 
 	/**
 	 * The timeout id counter
@@ -116,9 +122,16 @@ export class Context extends BaseContext {
 			// custom context provided, latencyHint unknown (unless explicitly provided in options)
 			this._latencyHint = arguments[0]?.latencyHint || "";
 		} else {
-			this._context = createAudioContext({
-				latencyHint: options.latencyHint,
-			});
+			this._context = createAudioContext(
+				options.sampleRate
+					? {
+							latencyHint: options.latencyHint,
+							sampleRate: options.sampleRate,
+						}
+					: {
+							latencyHint: options.latencyHint,
+						}
+			);
 			this._latencyHint = options.latencyHint;
 		}
 
@@ -513,6 +526,7 @@ export class Context extends BaseContext {
 
 	/**
 	 * **Internal** Generate a looped buffer at some constant value.
+	 * @deprecated
 	 */
 	getConstant(val: number): AudioBufferSourceNode {
 		if (this._constants.has(val)) {
@@ -545,6 +559,7 @@ export class Context extends BaseContext {
 		super.dispose();
 		this._ticker.dispose();
 		this._timeouts.dispose();
+		this._timeoutMap.clear();
 		Object.keys(this._constants).map((val) =>
 			this._constants[val].disconnect()
 		);
@@ -557,6 +572,26 @@ export class Context extends BaseContext {
 	//---------------------------
 
 	/**
+	 * Add a timeout event to the timeline and map.
+	 */
+	private _addTimeoutEvent(event: ContextTimeoutEvent): void {
+		this._timeouts.add(event);
+		this._timeoutMap.set(event.id, event);
+	}
+
+	/**
+	 * Remove a timeout event from the timeline and map.
+	 */
+	private _removeTimeoutEvent(event: ContextTimeoutEvent): void {
+		this._timeouts.remove(event);
+		// Skips the map deletion in setInterval case where the same id
+		// is reused for the next event.
+		if (this._timeoutMap.get(event.id) === event) {
+			this._timeoutMap.delete(event.id);
+		}
+	}
+
+	/**
 	 * The private loop which keeps track of the context scheduled timeouts
 	 * Is invoked from the clock source
 	 */
@@ -566,22 +601,24 @@ export class Context extends BaseContext {
 			try {
 				event.callback();
 			} finally {
-				this._timeouts.remove(event);
+				this._removeTimeoutEvent(event);
 			}
 		});
 	}
 
 	/**
-	 * A setTimeout which is guaranteed by the clock source.
+	 * A `setTimeout` which is guaranteed by the clock source.
+	 *
 	 * Also runs in the offline context.
-	 * @param  fn       The callback to invoke
-	 * @param  timeout  The timeout in seconds
-	 * @returns ID to use when invoking Context.clearTimeout
+	 *
+	 * @param fn The callback to invoke.
+	 * @param timeout The timeout in seconds.
+	 * @returns ID to use when invoking {@link clearTimeout}.
 	 */
 	setTimeout(fn: (...args: any[]) => void, timeout: Seconds): number {
 		this._timeoutIds++;
 		const now = this.now();
-		this._timeouts.add({
+		this._addTimeoutEvent({
 			callback: fn,
 			id: this._timeoutIds,
 			time: now + timeout,
@@ -590,33 +627,36 @@ export class Context extends BaseContext {
 	}
 
 	/**
-	 * Clears a previously scheduled timeout with Tone.context.setTimeout
-	 * @param  id  The ID returned from setTimeout
+	 * Clears a previously scheduled timeout with {@link setTimeout}.
+	 * @param id The ID returned from {@link setTimeout}.
 	 */
 	clearTimeout(id: number): this {
-		this._timeouts.forEach((event) => {
-			if (event.id === id) {
-				this._timeouts.remove(event);
-			}
-		});
+		const event = this._timeoutMap.get(id);
+		if (event) {
+			this._removeTimeoutEvent(event);
+		}
 		return this;
 	}
 
 	/**
-	 * Clear the function scheduled by {@link setInterval}
+	 * Clear the function scheduled by {@link setInterval}.
+	 * @param id The ID returned from {@link setInterval}.
 	 */
 	clearInterval(id: number): this {
 		return this.clearTimeout(id);
 	}
 
 	/**
-	 * Adds a repeating event to the context's callback clock
+	 * Adds a repeating event to the context's callback clock.
+	 * @param fn The callback to invoke.
+	 * @param interval The timeout in seconds.
+	 * @returns ID to use when invoking {@link clearInterval}.
 	 */
 	setInterval(fn: (...args: any[]) => void, interval: Seconds): number {
 		const id = ++this._timeoutIds;
 		const intervalFn = () => {
 			const now = this.now();
-			this._timeouts.add({
+			this._addTimeoutEvent({
 				callback: () => {
 					// invoke the callback
 					fn();

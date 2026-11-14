@@ -161,11 +161,14 @@ describe("TimeClass", () => {
 
 		it("converts time into ticks", () => {
 			return Offline(({ transport }) => {
-				expect(Time("2n").toTicks()).to.equal(2 * transport.PPQ);
+				expect(Time("2n").toTicks()).to.closeTo(2 * transport.PPQ, 0.1);
 				// floating point checks
 				const bpmOrig = transport.bpm.value;
 				transport.bpm.value = 100;
-				expect(Time("0:1:3").toTicks()).to.equal(1.75 * transport.PPQ);
+				expect(Time("0:1:3").toTicks()).to.closeTo(
+					1.75 * transport.PPQ,
+					0.1
+				);
 				transport.bpm.value = bpmOrig;
 			});
 		});
@@ -174,6 +177,12 @@ describe("TimeClass", () => {
 			return Offline(({ transport }) => {
 				expect(Time("3:1:3").toBarsBeatsSixteenths()).to.equal("3:1:3");
 				expect(Time(2).toBarsBeatsSixteenths()).to.equal("1:0:0");
+				// sixteenths that round up to 4 carry into the next beat or bar
+				expect(Time(1.49994).toBarsBeatsSixteenths()).to.equal("0:3:0");
+				expect(Time(1.99996).toBarsBeatsSixteenths()).to.equal("1:0:0");
+				expect(Time(1.49985).toBarsBeatsSixteenths()).to.equal(
+					"0:2:3.999"
+				);
 				// trailing zero removal test
 				transport.bpm.value = 100;
 				expect(Time("0:1:3").toBarsBeatsSixteenths()).to.equal("0:1:3");

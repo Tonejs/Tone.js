@@ -1,7 +1,7 @@
 // import APITest from "helper/APITest";
 import { expect } from "chai";
 
-import { connectFrom, connectTo } from "./Connect.js";
+import { connectTo } from "./Connect.js";
 import { Offline } from "./Offline.js";
 import { OutputAudio } from "./OutputAudio.js";
 

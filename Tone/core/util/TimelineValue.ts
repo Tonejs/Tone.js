@@ -48,10 +48,6 @@ export class TimelineValue<Type> extends Tone {
 	 */
 	get(time: Seconds): Type {
 		const event = this._timeline.get(time);
-		if (event) {
-			return event.value;
-		} else {
-			return this._initialValue;
-		}
+		return event?.value ?? this._initialValue;
 	}
 }

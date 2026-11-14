@@ -66,15 +66,17 @@ export class Vibrato extends Effect<VibratoOptions> {
 			max: options.maxDelay,
 			frequency: options.frequency,
 			phase: -90, // offset the phase so the resting position is in the center
-		})
-			.start()
-			.connect(this._delayNode.delayTime);
+		}).connect(this._delayNode.delayTime);
 		this.frequency = this._lfo.frequency;
 		this.depth = this._lfo.amplitude;
 
 		this.depth.value = options.depth;
 		readOnly(this, ["frequency", "depth"]);
 		this.effectSend.chain(this._delayNode, this.effectReturn);
+
+		this._onContextRunning(() => {
+			this._lfo.start();
+		});
 	}
 
 	static getDefaults(): VibratoOptions {

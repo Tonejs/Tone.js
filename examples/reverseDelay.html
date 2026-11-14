@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>Reverse Delay</title>
+		<script src="./tone-ui.js"></script>
+	</head>
+	<body>
+		<tone-example>
+			<div slot="explanation">
+				The
+				<a
+					href="https://tonejs.github.io/docs/latest/classes/ReverseDelay"
+					>Tone.ReverseDelay</a
+				>
+				is a feedback delay where the echoes are played in reverse. If
+				the delayTime is 1 second, each second will play the input from
+				the previous second in reverse, and the reversed signal will
+				repeat and fade like a feedback delay.
+			</div>
+		</tone-example>
+
+		<script data-tone-code>
+			const reverseDelay = new Tone.ReverseDelay().toDestination();
+
+			const synth = new Tone.Synth().connect(reverseDelay);
+		</script>
+
+		<script>
+			piano(synth);
+			ui(reverseDelay);
+		</script>
+	</body>
+</html>

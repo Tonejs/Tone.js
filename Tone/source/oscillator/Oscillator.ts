@@ -138,7 +138,10 @@ export class Oscillator
 		// new oscillator with previous values
 		const oscillator = new ToneOscillatorNode({
 			context: this.context,
-			onended: () => this.onstop(this),
+			onended: () => {
+				this._cleanUpConnections(oscillator);
+				this.onstop(this);
+			},
 		});
 		this._oscillator = oscillator;
 		if (this._wave) {
@@ -153,6 +156,20 @@ export class Oscillator
 
 		// start the oscillator
 		this._oscillator.start(computedTime);
+	}
+
+	/**
+	 * Cleans up the connections to the oscillator for online contexts once it
+	 * has stopped.
+	 */
+	private _cleanUpConnections(oscillator: ToneOscillatorNode): void {
+		if (this.context.isOffline) {
+			return;
+		}
+		// Clean up connections fixes #1379
+		this.frequency.disconnect(oscillator.frequency);
+		this.detune.disconnect(oscillator.detune);
+		oscillator.disconnect();
 	}
 
 	/**
@@ -213,6 +230,7 @@ export class Oscillator
 		phase: number;
 		type: string;
 		partialCount: number;
+		sampleRate: number;
 		real: Float32Array;
 		imag: Float32Array;
 		wave: PeriodicWave;
@@ -235,6 +253,7 @@ export class Oscillator
 			const oscProps = Oscillator._periodicWaveCache.find(
 				(description) => {
 					return (
+						description.sampleRate === this.context.sampleRate &&
 						description.phase === this._phase &&
 						deepEquals(description.partials, this._partials)
 					);
@@ -245,6 +264,7 @@ export class Oscillator
 			const oscProps = Oscillator._periodicWaveCache.find(
 				(description) => {
 					return (
+						description.sampleRate === this.context.sampleRate &&
 						description.type === this._type &&
 						description.phase === this._phase
 					);
@@ -298,6 +318,7 @@ export class Oscillator
 					partialCount: this._partialCount,
 					partials: this._partials,
 					phase: this._phase,
+					sampleRate: this.context.sampleRate,
 					real,
 					type: this._type,
 					wave: this._wave,

@@ -1,20 +1,31 @@
 import { expect } from "chai";
 
-import { DrawClass } from "./Draw.js";
+import { DrawInstance } from "./Draw.js";
 
 describe("Draw", () => {
+	const originalRAF = window.requestAnimationFrame;
+	before(async () => {
+		window.requestAnimationFrame = (callback) => {
+			return setTimeout(callback, 10);
+		};
+	});
+
+	after(() => {
+		window.requestAnimationFrame = originalRAF;
+	});
+
 	it("can schedule a callback at a AudioContext time", (done) => {
-		const draw = new DrawClass();
+		const draw = new DrawInstance();
 		const scheduledTime = draw.now() + 0.2;
 		draw.schedule(() => {
-			done();
 			expect(draw.context.currentTime).to.be.closeTo(scheduledTime, 0.05);
 			draw.dispose();
+			done();
 		}, scheduledTime);
 	});
 
 	it("can schedule multiple callbacks", (done) => {
-		const draw = new DrawClass();
+		const draw = new DrawInstance();
 		let callbackCount = 0;
 		const firstEvent = draw.now() + 0.1;
 		draw.schedule(() => {
@@ -39,7 +50,7 @@ describe("Draw", () => {
 	});
 
 	it("can cancel scheduled events", (done) => {
-		const draw = new DrawClass();
+		const draw = new DrawInstance();
 		let callbackCount = 0;
 		draw.schedule(() => {
 			callbackCount++;

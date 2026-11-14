@@ -68,6 +68,7 @@ describe("MidiClass", () => {
 
 		it("can convert from Midi", () => {
 			expect(Midi(Midi(2)).valueOf()).to.equal(2);
+			expect(Midi(60, "midi").valueOf()).to.equal(60);
 			expect(Midi(Midi("64n")).valueOf()).to.equal(24);
 			expect(Midi(Midi(64, "n")).valueOf()).to.equal(24);
 		});

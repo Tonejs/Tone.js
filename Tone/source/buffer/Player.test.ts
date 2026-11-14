@@ -427,6 +427,31 @@ describe("Player", () => {
 			expect(buff.isSilent()).to.be.true;
 		});
 
+		it("seeking updates stopped state", async () => {
+			await Offline(() => {
+				const player = new Player(buffer).toDestination();
+				player.start(0);
+				player.seek(buffer.duration * 0.75, 0.5);
+
+				return (time) => {
+					whenBetween(time, 0, 0.5, () => {
+						expect(player.state).to.equal("started");
+					});
+					whenBetween(time, 0.5, 0.5 + buffer.duration * 0.25, () => {
+						expect(player.state).to.equal("started");
+					});
+					whenBetween(
+						time,
+						0.5 + buffer.duration * 0.25,
+						Infinity,
+						() => {
+							expect(player.state).to.equal("stopped");
+						}
+					);
+				};
+			}, buffer.duration);
+		});
+
 		it("can seek to a position at the given time", async () => {
 			const buff = await Offline(() => {
 				const ramp = new Float32Array(
@@ -595,7 +620,124 @@ describe("Player", () => {
 				// start halfway through
 				transport.start(0, 0.15);
 			}, 0.05);
-			expect(buff.getValueAtTime(0)).to.be.closeTo(0.5, 0.05);
+			// With playbackRate=0.5, transport position 0.15 maps to buffer position
+			// 0.15 * 0.5 = 0.075. The ramp value there is 0.075 / 0.3 = 0.25.
+			expect(buff.getValueAtTime(0)).to.be.closeTo(0.25, 0.03);
+		});
+
+		it("seeks to the correct buffer position when Transport starts at a non-zero offset with playbackRate != 1", async () => {
+			const buff = await Offline(({ transport }) => {
+				// Ramp 0 -> 1 over 0.4 s
+				const ramp = new Float32Array(
+					Math.floor(getContext().sampleRate * 0.4)
+				);
+				for (let i = 0; i < ramp.length; i++) {
+					ramp[i] = i / ramp.length;
+				}
+				const playerBuff = ToneAudioBuffer.fromArray(ramp);
+				const player = new Player(playerBuff).toDestination();
+				// Buffer plays at 2x speed: 1 transport-second advances 2 buffer-seconds
+				player.playbackRate = 2;
+				player.sync().start(0);
+				// Seek transport to 0.1 s. The player should start at buffer position
+				// 0.1 * 2 = 0.2, giving a ramp value of 0.2 / 0.4 = 0.5.
+				transport.start(0, 0.1);
+			}, 0.05);
+			expect(buff.getValueAtTime(0)).to.be.closeTo(0.5, 0.03);
+		});
+
+		it("explicit buffer-time offset is not scaled by playbackRate when synced", async () => {
+			const buff = await Offline(({ transport }) => {
+				const ramp = new Float32Array(
+					Math.floor(getContext().sampleRate * 0.3)
+				);
+				for (let i = 0; i < ramp.length; i++) {
+					ramp[i] = i / ramp.length;
+				}
+				const playerBuff = ToneAudioBuffer.fromArray(ramp);
+				const player = new Player(playerBuff).toDestination();
+				player.loop = true;
+				player.playbackRate = 2;
+				player.sync().start(0, 0.1);
+				transport.start(0);
+			}, 0.05);
+			expect(buff.getValueAtTime(0)).to.be.closeTo(1 / 3, 0.03);
+		});
+
+		it("combines explicit buffer-time offset with transport-elapsed time scaled by playbackRate", async () => {
+			const buff = await Offline(({ transport }) => {
+				const ramp = new Float32Array(
+					Math.floor(getContext().sampleRate * 0.3)
+				);
+				for (let i = 0; i < ramp.length; i++) {
+					ramp[i] = i / ramp.length;
+				}
+				const playerBuff = ToneAudioBuffer.fromArray(ramp);
+				const player = new Player(playerBuff).toDestination();
+				player.loop = true;
+				player.playbackRate = 2;
+				player.sync().start(0, 0.1);
+				transport.start(0, 0.05);
+			}, 0.05);
+			expect(buff.getValueAtTime(0)).to.be.closeTo(2 / 3, 0.03);
+		});
+
+		it("looping player wraps correctly when transport offset exceeds buffer duration (playbackRate=1)", async () => {
+			// buffer duration = 1s, transport seeks to 2.5s
+			// buffer offset = 2.5 * 1 = 2.5 → wrapped = 2.5 % 1 = 0.5
+			const buff = await Offline(({ transport }) => {
+				const ramp = new Float32Array(getContext().sampleRate); // 1 s
+				for (let i = 0; i < ramp.length; i++) {
+					ramp[i] = i / ramp.length;
+				}
+				const playerBuff = ToneAudioBuffer.fromArray(ramp);
+				const player = new Player(playerBuff).toDestination();
+				player.loop = true;
+				player.sync().start(0);
+				transport.start(0, 2.5);
+			}, 0.05);
+			expect(buff.getValueAtTime(0)).to.be.closeTo(0.5, 0.03);
+		});
+
+		it("looping player wraps correctly when transport offset exceeds buffer duration (playbackRate=2)", async () => {
+			// buffer duration = 1s, transport seeks to 1.25s, playbackRate=2
+			// buffer offset = 1.25 * 2 = 2.5 → wrapped = 2.5 % 1 = 0.5
+			const buff = await Offline(({ transport }) => {
+				const ramp = new Float32Array(getContext().sampleRate); // 1 s
+				for (let i = 0; i < ramp.length; i++) {
+					ramp[i] = i / ramp.length;
+				}
+				const playerBuff = ToneAudioBuffer.fromArray(ramp);
+				const player = new Player(playerBuff).toDestination();
+				player.loop = true;
+				player.playbackRate = 2;
+				player.sync().start(0);
+				transport.start(0, 1.25);
+			}, 0.05);
+			expect(buff.getValueAtTime(0)).to.be.closeTo(0.5, 0.03);
+		});
+
+		it("looping player with loopStart/loopEnd wraps correctly when transport offset exceeds loop duration (playbackRate=2)", async () => {
+			// buffer duration = 1s, loopStart=0.2, loopEnd=1.0, loopDuration=0.8
+			// transport seeks to 1.15s, playbackRate=2
+			// buffer offset = 1.15 * 2 = 2.3
+			// wrapped = ((2.3 - 0.2) % 0.8) + 0.2 = (2.1 % 0.8) + 0.2 = 0.5 + 0.2 = 0.7
+			// ramp value at 0.7 in a 1s ramp = 0.7
+			const buff = await Offline(({ transport }) => {
+				const ramp = new Float32Array(getContext().sampleRate); // 1 s
+				for (let i = 0; i < ramp.length; i++) {
+					ramp[i] = i / ramp.length;
+				}
+				const playerBuff = ToneAudioBuffer.fromArray(ramp);
+				const player = new Player(playerBuff).toDestination();
+				player.loop = true;
+				player.loopStart = 0.2;
+				player.loopEnd = 1.0;
+				player.playbackRate = 2;
+				player.sync().start(0);
+				transport.start(0, 1.15);
+			}, 0.05);
+			expect(buff.getValueAtTime(0)).to.be.closeTo(0.7, 0.03);
 		});
 
 		it("starts with an offset when synced and started after Transport is running", async () => {
@@ -706,6 +848,217 @@ describe("Player", () => {
 				},
 				url: "./test/audio/sine.wav",
 			});
+		});
+	});
+
+	context("progress", () => {
+		it("can get the progress of the player", async () => {
+			await Offline(() => {
+				const player = new Player(buffer);
+				player.start(0);
+				return (time) => {
+					whenBetween(time, 0, buffer.duration, () => {
+						expect(player.progress).to.be.closeTo(time, 0.01);
+					});
+					whenBetween(time, buffer.duration, Infinity, () => {
+						expect(player.progress).to.equal(0);
+					});
+				};
+			}, buffer.duration * 1.1);
+		});
+
+		it("progress goes back to 0 when the player loops", async () => {
+			await Offline(() => {
+				const player = new Player(buffer);
+				player.loop = true;
+				player.start(0);
+				return (time) => {
+					whenBetween(time, 0, buffer.duration, () => {
+						expect(player.progress).to.be.closeTo(time, 0.01);
+					});
+					whenBetween(
+						time,
+						buffer.duration,
+						buffer.duration * 2,
+						() => {
+							expect(player.progress).to.be.closeTo(
+								time - buffer.duration,
+								0.01
+							);
+						}
+					);
+				};
+			}, buffer.duration * 2);
+		});
+
+		it("loops between loopStart and loopEnd", async () => {
+			await Offline(() => {
+				const player = new Player(buffer);
+				player.loop = true;
+				player.loopStart = 0.1;
+				player.loopEnd = 0.9;
+				player.start(0);
+				return (time) => {
+					whenBetween(time, 0, 0.8, () => {
+						expect(player.progress).to.be.closeTo(time + 0.1, 0.01);
+					});
+					whenBetween(time, 0.8, 1.6, () => {
+						expect(player.progress).to.be.closeTo(time - 0.7, 0.01);
+					});
+					whenBetween(time, 1.6, 2.4, () => {
+						expect(player.progress).to.be.closeTo(time - 1.5, 0.01);
+					});
+				};
+			}, 2.4);
+		});
+
+		it("progress updates at the rate of the playbackRate", async () => {
+			await Offline(() => {
+				const player = new Player(buffer);
+				player.playbackRate = 2;
+				player.start(0);
+				return (time) => {
+					whenBetween(time, 0, buffer.duration / 2, () => {
+						expect(player.progress).to.be.closeTo(time * 2, 0.01);
+					});
+					whenBetween(time, buffer.duration / 2, Infinity, () => {
+						expect(player.progress).to.be.equal(0);
+					});
+				};
+			}, buffer.duration);
+		});
+
+		it("playbackRate can be changed after start", async () => {
+			let playbackRateChanged = false;
+			await Offline(() => {
+				const player = new Player(buffer);
+				player.start(0);
+				return (time) => {
+					whenBetween(time, 0, buffer.duration * 0.5, () => {
+						expect(player.progress).to.be.closeTo(time, 0.01);
+					});
+					if (!playbackRateChanged && time > buffer.duration * 0.5) {
+						playbackRateChanged = true;
+						player.playbackRate = 2;
+					}
+					// after the playbackRate is changed, the progress should move half as fast
+					whenBetween(
+						time,
+						buffer.duration * 0.5,
+						buffer.duration * 0.75,
+						() => {
+							const timeAfterHalf = time - buffer.duration * 0.5;
+							expect(player.progress).to.be.closeTo(
+								buffer.duration * 0.5 + timeAfterHalf * 2,
+								0.01
+							);
+						}
+					);
+
+					whenBetween(time, buffer.duration * 0.75, Infinity, () => {
+						expect(player.progress).to.be.equal(0);
+					});
+				};
+			}, buffer.duration);
+		});
+
+		it("can start at an offset", async () => {
+			await Offline(() => {
+				const player = new Player(buffer);
+				player.start(0, buffer.duration / 2);
+				return (time) => {
+					whenBetween(time, 0.01, buffer.duration / 2, () => {
+						expect(player.progress).to.be.closeTo(
+							time + buffer.duration / 2,
+							0.01
+						);
+					});
+					whenBetween(time, buffer.duration / 2, Infinity, () => {
+						expect(player.progress).to.be.equal(0);
+					});
+				};
+			}, buffer.duration);
+		});
+
+		it("can seek to a new position", async () => {
+			await Offline(() => {
+				const player = new Player(buffer);
+				player.start(0);
+				player.seek(0, buffer.duration / 2);
+				return (time) => {
+					whenBetween(time, 0, buffer.duration * 0.5, () => {
+						expect(player.progress).to.be.closeTo(time, 0.01);
+					});
+					whenBetween(
+						time,
+						buffer.duration * 0.5,
+						buffer.duration * 1.5,
+						() => {
+							expect(player.progress).to.be.closeTo(
+								time - buffer.duration * 0.5,
+								0.01
+							);
+						}
+					);
+					whenBetween(time, buffer.duration * 1.5, Infinity, () => {
+						expect(player.progress).to.be.equal(0);
+					});
+				};
+			}, buffer.duration * 2);
+		});
+
+		it("can start and stop multiple times", async () => {
+			await Offline(() => {
+				const player = new Player(buffer);
+				player.start(0);
+				player.stop(0.1);
+				player.start(0.2, buffer.duration / 2);
+				player.stop(0.3);
+				return (time) => {
+					whenBetween(time, 0, 0.1, () => {
+						expect(player.progress).to.be.closeTo(time, 0.01);
+					});
+					whenBetween(time, 0.1, 0.2, () => {
+						expect(player.progress).to.equal(0);
+					});
+					whenBetween(time, 0.2, 0.3, () => {
+						expect(player.progress).to.be.closeTo(
+							time - 0.2 + buffer.duration / 2,
+							0.01
+						);
+					});
+					whenBetween(time, 0.3, 0.4, () => {
+						expect(player.progress).to.equal(0);
+					});
+				};
+			}, 0.4);
+		});
+
+		it("can seek multiple times", async () => {
+			await Offline(() => {
+				const player = new Player(buffer);
+				player.start(0);
+				player.seek(1, 0.5);
+				player.seek(0, 1);
+				player.seek(1.5, 1.5);
+				return (time) => {
+					whenBetween(time, 0, 0.5, () => {
+						expect(player.progress).to.be.closeTo(time, 0.01);
+					});
+					whenBetween(time, 0.5, 1, () => {
+						expect(player.progress).to.be.closeTo(time + 0.5, 0.01);
+					});
+					whenBetween(time, 1, 1.5, () => {
+						expect(player.progress).to.be.closeTo(time - 1, 0.01);
+					});
+					whenBetween(time, 1.5, buffer.duration, () => {
+						expect(player.progress).to.be.closeTo(time, 0.01);
+					});
+					whenBetween(time, buffer.duration, Infinity, () => {
+						expect(player.progress).to.equal(0);
+					});
+				};
+			}, 3);
 		});
 	});
 });

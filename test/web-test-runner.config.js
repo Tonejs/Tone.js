@@ -1,18 +1,59 @@
+import { resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+
 import rollupCommonjs from "@rollup/plugin-commonjs";
-import { esbuildPlugin } from "@web/dev-server-esbuild";
 import { fromRollup } from "@web/dev-server-rollup";
-import { puppeteerLauncher } from "@web/test-runner-puppeteer";
-import { resolve } from "path";
-import { fileURLToPath } from "url";
+import { chromeLauncher } from "@web/test-runner-chrome";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const commonjs = fromRollup(rollupCommonjs);
 
+const BUILD_DIR = resolve(__dirname, "../build/esm");
+
+function getFilesInToneDir(dir) {
+	return [
+		resolve(BUILD_DIR, "Tone", dir, "**/*.test.js"),
+		resolve(BUILD_DIR, "Tone", dir, "*.test.js"),
+	];
+}
+
 export default {
-	files: ["./build/*/Tone/**/*.test.js", "./build/*/Tone/*.test.js"],
+	groups: [
+		{
+			name: "core",
+			files: [
+				...getFilesInToneDir("core"),
+				resolve(BUILD_DIR, "Tone/*.test.js"),
+			],
+		},
+		{
+			name: "component",
+			files: getFilesInToneDir("component"),
+		},
+		{
+			name: "effect",
+			files: getFilesInToneDir("effect"),
+		},
+		{
+			name: "event",
+			files: getFilesInToneDir("event"),
+		},
+		{
+			name: "instrument",
+			files: getFilesInToneDir("instrument"),
+		},
+		{
+			name: "signal",
+			files: getFilesInToneDir("signal"),
+		},
+		{
+			name: "source",
+			files: getFilesInToneDir("source"),
+		},
+	],
 	nodeResolve: true,
 	browsers: [
-		puppeteerLauncher({
+		chromeLauncher({
 			launchOptions: {
 				headless: true,
 				args: [
@@ -38,4 +79,20 @@ export default {
 		}),
 	],
 	rootDir: resolve(__dirname, "../"),
+	coverageConfig: {
+		// the defaults, and the UI of the examples which is not part of the library
+		exclude: [
+			"**/node_modules/**/*",
+			"**/web_modules/**/*",
+			"**/examples/**/*",
+		],
+	},
+	testRunnerHtml: (testFramework) =>
+		`<!DOCTYPE html>
+			<html>
+			<body>
+				<script>window.TONE_SILENCE_LOGGING = true</script>
+				<script type="module" src="${testFramework}"></script>
+			</body>
+		</html>`,
 };

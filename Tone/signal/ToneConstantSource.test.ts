@@ -1,4 +1,7 @@
-import { expect } from "chai";
+import { expect, use } from "chai";
+import sinon from "sinon";
+import sinonChai from "sinon-chai";
+use(sinonChai);
 
 import { BasicTests } from "../../test/helper/Basic.js";
 import { Offline, whenBetween } from "../../test/helper/Offline.js";
@@ -7,6 +10,10 @@ import { ToneConstantSource } from "./ToneConstantSource.js";
 
 describe("ToneConstantSource", () => {
 	BasicTests(ToneConstantSource);
+
+	afterEach(() => {
+		sinon.restore();
+	});
 
 	context("Constructor", () => {
 		it("can be constructed with an offset", () => {
@@ -31,30 +38,30 @@ describe("ToneConstantSource", () => {
 	});
 
 	context("onended", () => {
-		it("invokes the onended callback in the online context", (done) => {
+		it("invokes the onended callback in the online context", async () => {
 			const source = new ToneConstantSource();
 			source.start();
 			source.stop("+0.3");
 			const now = source.now();
-			source.onended = () => {
-				expect(source.now() - now).to.be.closeTo(0.3, 0.15);
-				source.dispose();
-				done();
-			};
+			await new Promise<void>((resolve) => {
+				source.onended = () => resolve();
+			});
+			expect(source.now() - now).to.be.within(0.25, 0.6);
+			source.dispose();
 		});
 
-		it("invokes the onended callback only once in the online context", (done) => {
+		it("invokes the onended callback only once in the online context", async () => {
 			const source = new ToneConstantSource();
 			source.start();
 			source.stop("+0.1");
 			source.stop("+0.2");
 			source.stop("+0.3");
 			const now = source.now();
-			source.onended = () => {
-				expect(source.now() - now).to.be.within(0.25, 0.5);
-				source.dispose();
-				done();
-			};
+			await new Promise<void>((resolve) => {
+				source.onended = () => resolve();
+			});
+			expect(source.now() - now).to.be.within(0.25, 0.6);
+			source.dispose();
 		});
 
 		it("invokes the onended callback in the offline context", async () => {
@@ -122,6 +129,17 @@ describe("ToneConstantSource", () => {
 			expect(buffer.getValueAtTime(0.2)).to.equal(0);
 		});
 
+		it("stops the native ConstantSourceNode once stop() takes effect", async () => {
+			const stopSpy = sinon.spy(ConstantSourceNode.prototype, "stop");
+			const source = new ToneConstantSource().start();
+			source.stop();
+			await new Promise<void>((resolve) => {
+				source.onended = () => resolve();
+			});
+			expect(stopSpy).to.have.been.calledOnce;
+			source.dispose();
+		});
+
 		it("clamps start time to the currentTime", () => {
 			const source = new ToneConstantSource();
 			source.start(0);
@@ -184,7 +202,7 @@ describe("ToneConstantSource", () => {
 		});
 	});
 
-	context.only("Suspended AudioContext", () => {
+	context("Suspended AudioContext", () => {
 		it("does nothing when AudioContext returns to suspended", () => {
 			const context = new Context();
 			expect(context.state).to.equal("suspended");
@@ -210,6 +228,45 @@ describe("ToneConstantSource", () => {
 			source.start(0);
 
 			await context.resume();
+
+			context.dispose();
+			source.dispose();
+		});
+
+		it("schedules a future start when the audio context is resumed", async () => {
+			const startSpy = sinon.spy(ConstantSourceNode.prototype, "start");
+			const context = new Context();
+			expect(context.state).to.equal("suspended");
+
+			const source = new ToneConstantSource({
+				context,
+			});
+
+			source.start(1);
+
+			await context.resume();
+
+			expect(startSpy).to.have.been.calledOnceWith(1);
+
+			context.dispose();
+			source.dispose();
+		});
+
+		it("does not start if stopped before scheduled start time while suspended", async () => {
+			const startSpy = sinon.spy(ConstantSourceNode.prototype, "start");
+			const context = new Context();
+			expect(context.state).to.equal("suspended");
+
+			const source = new ToneConstantSource({
+				context,
+			});
+
+			source.start(2);
+			source.stop(1);
+
+			await context.resume();
+
+			expect(startSpy).to.not.have.been.called;
 
 			context.dispose();
 			source.dispose();

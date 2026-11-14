@@ -38,11 +38,7 @@ export class StateTimeline<
 	 */
 	getValueAtTime(time: Seconds): PlaybackState {
 		const event = this.get(time);
-		if (event !== null) {
-			return event.state;
-		} else {
-			return this._initial;
-		}
+		return event?.state ?? this._initial;
 	}
 
 	/**
