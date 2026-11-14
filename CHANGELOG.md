@@ -1,6 +1,6 @@
 # Changelog
 
-## [15.5.70](https://github.com/Tonejs/Tone.js/compare/15.1.22...HEAD)
+## [15.5.71](https://github.com/Tonejs/Tone.js/compare/15.1.22...HEAD)
 
 ### Features
 
@@ -18,6 +18,7 @@
 
 ### Bug Fixes
 
+- **Time:** carry sixteenths that round up to 4 into the next beat ([#1540](https://github.com/Tonejs/Tone.js/pull/1540)) (`7e1389f`)
 - Setting Constant Source Nodes to 0 ([#1535](https://github.com/Tonejs/Tone.js/pull/1535)) (`72efcb5`)
 - keep a buffer's onload when it is wrapped before it loads ([#1529](https://github.com/Tonejs/Tone.js/pull/1529)) (`feb1375`)
 - **Oscillator:** cache periodic waves by sample rate ([#1528](https://github.com/Tonejs/Tone.js/pull/1528)) (`c10c498`)
