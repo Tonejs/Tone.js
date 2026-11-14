@@ -170,11 +170,9 @@ export class Param<TypeName extends UnitName = "number">
 	}
 	set value(value) {
 		// Direct changes replace automation from the frozen time onward,
-		// including the lookAhead window, while real-time audio is suspended.
+		// including the lookAhead window, while audio is suspended.
 		const now =
-			!this.context.isOffline && this.context.state === "suspended"
-				? this.immediate()
-				: this.now();
+			this.context.state === "suspended" ? this.immediate() : this.now();
 		this.cancelScheduledValues(now);
 		this.setValueAtTime(value, now);
 	}

@@ -9,7 +9,6 @@ import { getContext } from "../Global.js";
 import { UnitName } from "../type/Units.js";
 import { Context } from "./Context.js";
 import { Gain } from "./Gain.js";
-import { OfflineContext } from "./OfflineContext.js";
 import { Param } from "./Param.js";
 import { connect } from "./ToneAudioNode.js";
 
@@ -80,20 +79,6 @@ describe("Param", () => {
 			param.dispose();
 			context.dispose();
 			await context.close();
-		});
-
-		it("retains an explicitly configured offline lookAhead", () => {
-			const context = new OfflineContext(1, 0.1, 44100);
-			context.lookAhead = 0.2;
-			const param = new Param({
-				context,
-				param: context.createGain().gain,
-			});
-			param.value = 0;
-			expect(param.getValueAtTime(0)).to.equal(1);
-			expect(param.getValueAtTime(0.2)).to.equal(0);
-			param.dispose();
-			context.dispose();
 		});
 	});
 
