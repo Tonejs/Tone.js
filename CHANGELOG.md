@@ -1,6 +1,6 @@
 # Changelog
 
-## [15.5.67](https://github.com/Tonejs/Tone.js/compare/15.1.22...HEAD)
+## [15.5.68](https://github.com/Tonejs/Tone.js/compare/15.1.22...HEAD)
 
 ### Features
 
@@ -65,6 +65,7 @@
 
 ### Chores
 
+- Updating examples testers ([#1539](https://github.com/Tonejs/Tone.js/pull/1539)) (`917514f`)
 - **deps:** Bump @simple-git/argv-parser and simple-git ([#1519](https://github.com/Tonejs/Tone.js/pull/1519)) (`59f486c`)
 - **deps:** Bump serialize-javascript and mocha ([#1494](https://github.com/Tonejs/Tone.js/pull/1494)) (`2610ef9`)
 - **deps:** Bump brace-expansion ([#1485](https://github.com/Tonejs/Tone.js/pull/1485)) (`d8e056c`)
