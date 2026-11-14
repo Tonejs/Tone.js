@@ -8,7 +8,7 @@ import {
 	UnitMap,
 	UnitName,
 } from "../type/Units.js";
-import { isAudioContext, isAudioParam } from "../util/AdvancedTypeCheck.js";
+import { isAudioParam } from "../util/AdvancedTypeCheck.js";
 import { assert, assertRange } from "../util/Debug.js";
 import { optionsFromArguments } from "../util/Defaults.js";
 import { EQ } from "../util/Math.js";
@@ -172,8 +172,7 @@ export class Param<TypeName extends UnitName = "number">
 		// Direct changes replace automation from the frozen time onward,
 		// including the lookAhead window, while real-time audio is suspended.
 		const now =
-			this.context.state === "suspended" &&
-			isAudioContext(this.context.rawContext)
+			!this.context.isOffline && this.context.state === "suspended"
 				? this.immediate()
 				: this.now();
 		this.cancelScheduledValues(now);

@@ -79,8 +79,8 @@ export class TickParam<
 		return super.value;
 	}
 	set value(value: UnitMap[TypeName]) {
-		// Clock callbacks have already been dispatched through the lookAhead.
-		// Keep tempo changes at that scheduling time, even while suspended.
+		// Unlike Param.value, always use now() (with lookAhead)
+		// even when the context is suspended
 		const now = this.now();
 		this.cancelScheduledValues(now);
 		this.setValueAtTime(value, now);
