@@ -16,6 +16,10 @@ import { addHeadElements } from "./head";
 
 addHeadElements();
 
+if ("audioSession" in navigator) {
+	(navigator.audioSession as { type: string }).type = "playback";
+}
+
 export { Tone };
 export { bind } from "./bind";
 export { ui } from "./inspector/audio-node";
