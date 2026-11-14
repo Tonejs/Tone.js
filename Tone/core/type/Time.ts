@@ -129,6 +129,11 @@ export class TimeClass<
 		const quarterTime = this._beatsToUnits(1);
 		let quarters = this.valueOf() / quarterTime;
 		quarters = parseFloat(quarters.toFixed(4));
+		// sixteenths are rounded to 3 decimals below, so a value that rounds up
+		// to 4 sixteenths is really the start of the next beat
+		if (parseFloat(((quarters % 1) * 4).toFixed(3)) >= 4) {
+			quarters = Math.ceil(quarters);
+		}
 		const measures = Math.floor(quarters / this._getTimeSignature());
 		let sixteenths = (quarters % 1) * 4;
 		quarters = Math.floor(quarters) % this._getTimeSignature();
