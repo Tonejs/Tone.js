@@ -80,34 +80,24 @@ describe("Recorder", () => {
 		});
 
 		it("resolves start after resuming a paused recording", async () => {
-			const testContext = new Context();
-			const rec = new Recorder({ context: testContext });
-			const synth = new Synth({ context: testContext }).connect(rec);
-			try {
-				await testContext.resume();
-				synth.triggerAttack("C3");
-				await rec.start();
-				rec.pause();
-				await wait(100);
-				expect(rec.state).to.equal("paused");
+			const rec = new Recorder();
+			const synth = new Synth().connect(rec);
+			synth.triggerAttack("C3");
+			await rec.start();
+			expect(rec.state).to.equal("started");
+			await wait(100);
+			rec.pause();
+			expect(rec.state).to.equal("paused");
+			await wait(100);
 
-				const resumed = await Promise.race([
-					rec.start().then(() => true),
-					wait(1000).then(() => false),
-				]);
-				expect(rec.state).to.equal("started");
-				expect(resumed, "start() should resolve on resume").to.equal(
-					true
-				);
-			} finally {
-				if (rec.state !== "stopped") {
-					await rec.stop();
-				}
-				rec.dispose();
-				synth.dispose();
-				testContext.dispose();
-				await testContext.close();
-			}
+			const resumed = await Promise.race([
+				rec.start().then(() => true),
+				wait(1000).then(() => false),
+			]);
+			expect(rec.state).to.equal("started");
+			expect(resumed, "start() should resolve on resume").to.equal(true);
+			rec.dispose();
+			synth.dispose();
 		});
 
 		it("can be stopped after starting", async () => {
