@@ -28,8 +28,10 @@ export * from "./envelope/Envelope.js";
 export * from "./envelope/FrequencyEnvelope.js";
 export * from "./filter/BiquadFilter.js";
 export * from "./filter/Convolver.js";
+export * from "./filter/DCFilter.js";
 export * from "./filter/EQ3.js";
 export * from "./filter/FeedbackCombFilter.js";
 export * from "./filter/Filter.js";
 export * from "./filter/LowpassCombFilter.js";
 export * from "./filter/OnePoleFilter.js";
+

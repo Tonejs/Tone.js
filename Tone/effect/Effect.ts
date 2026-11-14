@@ -1,6 +1,7 @@
 import { CrossFade } from "../component/channel/CrossFade.js";
 import { Gain } from "../core/context/Gain.js";
 import {
+	OutputNode,
 	ToneAudioNode,
 	ToneAudioNodeOptions,
 } from "../core/context/ToneAudioNode.js";
@@ -73,10 +74,10 @@ export abstract class Effect<
 	/**
 	 * chains the effect in between the effectSend and effectReturn
 	 */
-	protected connectEffect(effect: ToneAudioNode | AudioNode): this {
+	protected connectEffect(...effects: OutputNode[]): this {
 		// add it to the internal channels
-		this._internalChannels.push(effect);
-		this.effectSend.chain(effect, this.effectReturn);
+		this._internalChannels.push(...effects);
+		this.effectSend.chain(...effects, this.effectReturn);
 		return this;
 	}
 

@@ -1,3 +1,4 @@
+import { DCFilter } from "../component/filter/DCFilter.js";
 import { Positive } from "../core/type/Units.js";
 import { assert } from "../core/util/Debug.js";
 import { optionsFromArguments } from "../core/util/Defaults.js";
@@ -32,6 +33,11 @@ export class Chebyshev extends Effect<ChebyshevOptions> {
 	private _shaper: WaveShaper;
 
 	/**
+	 * Filter out any DC offset introduced by even orders
+	 */
+	private _dcFilter: DCFilter;
+
+	/**
 	 * holds onto the order of the filter
 	 */
 	private _order: number;
@@ -53,9 +59,12 @@ export class Chebyshev extends Effect<ChebyshevOptions> {
 			context: this.context,
 			length: 4096,
 		});
+		this._dcFilter = new DCFilter({
+			context: this.context,
+		});
 		this._order = options.order;
 
-		this.connectEffect(this._shaper);
+		this.connectEffect(this._shaper, this._dcFilter);
 		this.order = options.order;
 		this.oversample = options.oversample;
 	}
@@ -128,6 +137,7 @@ export class Chebyshev extends Effect<ChebyshevOptions> {
 	dispose(): this {
 		super.dispose();
 		this._shaper.dispose();
+		this._dcFilter.dispose();
 		return this;
 	}
 }

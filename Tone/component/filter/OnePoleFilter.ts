@@ -5,6 +5,7 @@ import {
 } from "../../core/context/ToneAudioNode.js";
 import { Frequency } from "../../core/type/Units.js";
 import { optionsFromArguments } from "../../core/util/Defaults.js";
+import { getFrequencyResponse } from "./FrequencyResponse.js";
 
 export type OnePoleFilterType = "highpass" | "lowpass";
 
@@ -129,16 +130,7 @@ export class OnePoleFilter extends ToneAudioNode<OnePoleFilterOptions> {
 	 * @return The frequency response curve between 20-20kHz
 	 */
 	getFrequencyResponse(len = 128): Float32Array {
-		const freqValues = new Float32Array(len);
-		for (let i = 0; i < len; i++) {
-			const norm = Math.pow(i / len, 2);
-			const freq = norm * (20000 - 20) + 20;
-			freqValues[i] = freq;
-		}
-		const magValues = new Float32Array(len);
-		const phaseValues = new Float32Array(len);
-		this._filter.getFrequencyResponse(freqValues, magValues, phaseValues);
-		return magValues;
+		return getFrequencyResponse(this._filter, len);
 	}
 
 	dispose(): this {
