@@ -36,7 +36,7 @@ export class Zero extends SignalOperator<ToneAudioNodeOptions> {
 		this._constant = this.output = new ToneConstantSource({
 			context: this.context,
 			offset: 0,
-		}).start();
+		}).start(0);
 	}
 
 	/**

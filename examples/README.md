@@ -1,23 +1,20 @@
-These examples use web components (e.g. `<tone-example>`) which are defined in the [Tonejs/ui](https://github.com/Tonejs/ui) repository.
+The examples use web components (e.g. `<tone-example>`) and helpers like `ui()` and `bind()` from `tone-ui.js`, which is built from the source in [ui/](./ui).
 
 ### Running examples locally
 
 Check out the repository, and from the root run:
 
-```
-$ npm install
-...
-$ npm run build
-```
-
-Once this is done, you can start a local server with npx:
-
 ```bash
-npx http-server -e html -p 8000
+npm install
+npm run watch -w examples/ui
 ```
 
-Then, from a browser visit http://localhost:8000/examples. (See also: [installation instructions on the wiki](https://github.com/Tonejs/Tone.js/wiki/Installation#newbie-macos-quickstart-to-get-examples-running))
+This builds `tone-ui.js`, rebuilds it on every change to the UI or to Tone.js, and serves the examples at http://localhost:8000.
+
+To build `tone-ui.js` once without serving the examples, run `npm run build -w examples/ui`.
 
 ### Adding examples
 
-To contribute examples, please follow the current style of the examples. Add your example's title and file name to `js/ExampleList.json` file for it to appear in the examples list on the index page. (cf. [CONTRIBUTING.md](https://github.com/Tonejs/Tone.js/blob/dev/.github/CONTRIBUTING.md))
+To contribute examples, please follow the current style of the examples. Add your example's title and file name to `ExampleList.json` for it to appear in the examples list. (cf. [CONTRIBUTING.md](https://github.com/Tonejs/Tone.js/blob/dev/.github/CONTRIBUTING.md))
+
+The Tone.js code of an example goes in a `<script data-tone-code>` block, which the page also displays. The code which connects it to the page's controls goes in a separate `<script>` after it. `npm run test:html` typechecks the scripts of all of the examples.

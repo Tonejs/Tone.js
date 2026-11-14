@@ -1,43 +1,45 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head>
-  <meta charset="utf-8">
-	<title>Quantization</title>
+	<head>
+		<meta charset="utf-8" />
+		<title>Quantization</title>
+		<script src="./tone-ui.js"></script>
+	</head>
+	<body>
+		<style>
+			#buttons {
+				display: flex;
+				margin: 10px 0;
+			}
+			#buttons tone-button {
+				flex-grow: 1;
+				margin: 5px;
+			}
+			#progress {
+				margin: 10px;
+				color: #8c8c8c;
+			}
+		</style>
+		<tone-example>
+			<div slot="explanation">
+				Using the "@" symbol,
+				<a
+					href="https://github.com/Tonejs/Tone.js/wiki/Time"
+					target="_blank"
+					>Time</a
+				>
+				expressions can be
+				<a
+					href="https://en.wikipedia.org/wiki/Quantization_(music)"
+					target="_blank"
+					>quantized</a
+				>
+				(aligned to a subdivision). In this example, a note's start time
+				is aligned to the given subdivision.
+				<br /><br />
+				The Transport must be started
+			</div>
 
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-	<link rel="icon" type="image/png" sizes="174x174" href="./favicon.png">
-
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/2.4.3/webcomponents-bundle.js"></script>
-	<link href="https://fonts.googleapis.com/css?family=Material+Icons&display=block" rel="stylesheet"/>
-	<script src="../build/Tone.js"></script>
-	<script src="./js/tone-ui.js"></script>
-	<script src="./js/components.js"></script>
-</head>
-<body>
-	<style>
-		#buttons {
-			display: flex;
-			margin: 10px 0;
-		}
-		#buttons tone-button {
-			flex-grow: 1;
-			margin: 5px;
-		}
-		#progress {
-			margin: 10px;
-			color: #8c8c8c;
-		}
-	</style>
-	<tone-example label="Quantization">
-		<div slot="explanation">
-			Using the "@" symbol, <a href="https://github.com/Tonejs/Tone.js/wiki/Time" target="_blank">Time</a> 
-			expressions can be <a href="https://en.wikipedia.org/wiki/Quantization_(music)" target="_blank">quantized</a> 
-			(aligned to a subdivision). In this example, a note's start time is aligned to the given subdivision. 
-			<br><br>
-			The Transport must be started
-		</div>
-
-		<div id="content">
 			<div id="progress"></div>
 			<tone-play-toggle></tone-play-toggle>
 			<div id="buttons">
@@ -46,47 +48,47 @@
 				<tone-button disabled id="at2n" label="@2n">@2n</tone-button>
 				<tone-button disabled id="at1m" label="@1m">@1m</tone-button>
 			</div>
-		</div>
-	</tone-example>
+		</tone-example>
 
-	<script type="text/javascript">
-		const polySynth = new Tone.PolySynth(Tone.Synth).toDestination();
+		<script type="text/javascript">
+			const polySynth = new Tone.PolySynth(Tone.Synth).toDestination();
 
-		function loop() {
-			requestAnimationFrame(loop);
-			// @ts-ignore
-			const [bar, beat, sixteenth] = Tone.Transport.position.split(":");
-			document.querySelector("#progress").textContent = `
+			function loop() {
+				requestAnimationFrame(loop);
+				const [bar, beat, sixteenth] = String(
+					Tone.getTransport().position
+				).split(":");
+				document.querySelector("#progress").textContent = `
 				bar: ${bar}, beat: ${beat}, sixteenth: ${sixteenth}
 			`;
-		}
-		loop();
+			}
+			loop();
 
-		// bind the interface
-		document.querySelector("tone-play-toggle").addEventListener("start", e => {
-			Tone.Transport.start();
-			// enable all of the buttons if it's playing
-			// @ts-ignore		
-			Array.from(document.querySelectorAll("tone-button")).forEach(el => el.disabled = false);
-		});
-		document.querySelector("tone-play-toggle").addEventListener("stop", () => {
-			Tone.Transport.stop();
-			// disable all of the buttons if it's not playing
-			// @ts-ignore		
-			Array.from(document.querySelectorAll("tone-button")).forEach(el => el.disabled = true);
-		});
-		document.querySelector("#at8n").addEventListener("click", e => {
-			polySynth.triggerAttackRelease("B4", "8n", "@8n");
-		});
-		document.querySelector("#at4n").addEventListener("click", e => {
-			polySynth.triggerAttackRelease("E4", "8n", "@4n");
-		});
-		document.querySelector("#at2n").addEventListener("click", e => {
-			polySynth.triggerAttackRelease("G3", "8n", "@2n");
-		});
-		document.querySelector("#at1m").addEventListener("click", e => {
-			polySynth.triggerAttackRelease("C2", "8n", "@1m");
-		});
-	</script>
-</body>
+			// bind the interface
+			const buttons = document.querySelectorAll("tone-button");
+			bind("tone-play-toggle", {
+				start() {
+					Tone.getTransport().start();
+					// enable all of the buttons if it's playing
+					buttons.forEach((el) => (el.disabled = false));
+				},
+				stop() {
+					Tone.getTransport().stop();
+					buttons.forEach((el) => (el.disabled = true));
+				},
+			});
+			bind("#at8n", () =>
+				polySynth.triggerAttackRelease("B4", "8n", "@8n")
+			);
+			bind("#at4n", () =>
+				polySynth.triggerAttackRelease("E4", "8n", "@4n")
+			);
+			bind("#at2n", () =>
+				polySynth.triggerAttackRelease("G3", "8n", "@2n")
+			);
+			bind("#at1m", () =>
+				polySynth.triggerAttackRelease("C2", "8n", "@1m")
+			);
+		</script>
+	</body>
 </html>
