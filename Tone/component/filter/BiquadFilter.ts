@@ -6,6 +6,7 @@ import {
 import { Cents, Frequency, GainFactor } from "../../core/type/Units.js";
 import { assert } from "../../core/util/Debug.js";
 import { optionsFromArguments } from "../../core/util/Defaults.js";
+import { getFrequencyResponse } from "./FrequencyResponse.js";
 
 export interface BiquadFilterOptions extends ToneAudioNodeOptions {
 	frequency: Frequency;
@@ -142,23 +143,13 @@ export class BiquadFilter extends ToneAudioNode<BiquadFilterOptions> {
 	 * @return The frequency response curve between 20-20kHz
 	 */
 	getFrequencyResponse(len = 128): Float32Array {
-		// start with all 1s
-		const freqValues = new Float32Array(len);
-		for (let i = 0; i < len; i++) {
-			const norm = Math.pow(i / len, 2);
-			const freq = norm * (20000 - 20) + 20;
-			freqValues[i] = freq;
-		}
-		const magValues = new Float32Array(len);
-		const phaseValues = new Float32Array(len);
 		// clone the filter to remove any connections which may be changing the value
 		const filterClone = this.context.createBiquadFilter();
 		filterClone.type = this.type;
 		filterClone.Q.value = this.Q.value;
 		filterClone.frequency.value = this.frequency.value as number;
 		filterClone.gain.value = this.gain.value as number;
-		filterClone.getFrequencyResponse(freqValues, magValues, phaseValues);
-		return magValues;
+		return getFrequencyResponse(filterClone, len);
 	}
 
 	dispose(): this {
