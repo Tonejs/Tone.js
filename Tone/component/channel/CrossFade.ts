@@ -123,7 +123,7 @@ export class CrossFade extends ToneAudioNode<CrossFadeOptions> {
 		this._constant = new ToneConstantSource({
 			context: this.context,
 			offset: 1,
-		}).start();
+		}).start(0);
 		this._constant.connect(this._panner);
 		this._panner.connect(this._split);
 		// this is necessary for standardized-audio-context

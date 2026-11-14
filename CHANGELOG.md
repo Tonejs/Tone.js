@@ -1,9 +1,11 @@
 # Changelog
 
-## [15.5.57](https://github.com/Tonejs/Tone.js/compare/15.1.22...HEAD)
+## [15.5.72](https://github.com/Tonejs/Tone.js/compare/15.1.22...HEAD)
 
 ### Features
 
+- Updated Readme ([#1538](https://github.com/Tonejs/Tone.js/pull/1538)) (`6cbc596`)
+- **examples:** Rewritten examples ui ([#1534](https://github.com/Tonejs/Tone.js/pull/1534)) (`2993f08`)
 - Analyzer template to infer channel count from constructor ([#1451](https://github.com/Tonejs/Tone.js/pull/1451)) (`0e670e3`)
 - typescript "strict" ([#1446](https://github.com/Tonejs/Tone.js/pull/1446)) (`a3cf2f8`)
 - option to use usermedia constraints ([#1330](https://github.com/Tonejs/Tone.js/pull/1330)) (`e112093`)
@@ -16,6 +18,15 @@
 
 ### Bug Fixes
 
+- **recorder:** resolve start promise when resuming ([#1532](https://github.com/Tonejs/Tone.js/pull/1532)) (`6869419`)
+- **Time:** carry sixteenths that round up to 4 into the next beat ([#1540](https://github.com/Tonejs/Tone.js/pull/1540)) (`7e1389f`)
+- Setting Constant Source Nodes to 0 ([#1535](https://github.com/Tonejs/Tone.js/pull/1535)) (`72efcb5`)
+- keep a buffer's onload when it is wrapped before it loads ([#1529](https://github.com/Tonejs/Tone.js/pull/1529)) (`feb1375`)
+- **Oscillator:** cache periodic waves by sample rate ([#1528](https://github.com/Tonejs/Tone.js/pull/1528)) (`c10c498`)
+- Clock delivers state events and tick callbacks in time order ([#1515](https://github.com/Tonejs/Tone.js/pull/1515)) (`1dd7eaa`)
+- changelog import ([#1527](https://github.com/Tonejs/Tone.js/pull/1527)) (`97cfc4d`)
+- stop the native node once stop() takes effect ([#1522](https://github.com/Tonejs/Tone.js/pull/1522)) (`61aa95f`)
+- Sampler.get() returns urls, baseUrl, onload and onerror ([#1508](https://github.com/Tonejs/Tone.js/pull/1508)) (`3ccb8ad`)
 - **PatternGenerator:** keep randomWalk within the value range ([#1484](https://github.com/Tonejs/Tone.js/pull/1484)) (`023f6e4`)
 - **ToneConstantSource:** preserve delayed start time ([#1458](https://github.com/Tonejs/Tone.js/pull/1458)) (`46ba41e`)
 - clear pending ticks on stop when lastUpdated clock tick is behind `now()` ([#1514](https://github.com/Tonejs/Tone.js/pull/1514)) (`2586b2e`)
@@ -56,6 +67,8 @@
 
 ### Chores
 
+- Updating examples testers ([#1539](https://github.com/Tonejs/Tone.js/pull/1539)) (`917514f`)
+- **deps:** Bump @simple-git/argv-parser and simple-git ([#1519](https://github.com/Tonejs/Tone.js/pull/1519)) (`59f486c`)
 - **deps:** Bump serialize-javascript and mocha ([#1494](https://github.com/Tonejs/Tone.js/pull/1494)) (`2610ef9`)
 - **deps:** Bump brace-expansion ([#1485](https://github.com/Tonejs/Tone.js/pull/1485)) (`d8e056c`)
 - Adding PR links to the CHANGELOG.md ([#1478](https://github.com/Tonejs/Tone.js/pull/1478)) (`fe84ff9`)

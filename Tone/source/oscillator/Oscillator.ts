@@ -230,6 +230,7 @@ export class Oscillator
 		phase: number;
 		type: string;
 		partialCount: number;
+		sampleRate: number;
 		real: Float32Array;
 		imag: Float32Array;
 		wave: PeriodicWave;
@@ -252,6 +253,7 @@ export class Oscillator
 			const oscProps = Oscillator._periodicWaveCache.find(
 				(description) => {
 					return (
+						description.sampleRate === this.context.sampleRate &&
 						description.phase === this._phase &&
 						deepEquals(description.partials, this._partials)
 					);
@@ -262,6 +264,7 @@ export class Oscillator
 			const oscProps = Oscillator._periodicWaveCache.find(
 				(description) => {
 					return (
+						description.sampleRate === this.context.sampleRate &&
 						description.type === this._type &&
 						description.phase === this._phase
 					);
@@ -315,6 +318,7 @@ export class Oscillator
 					partialCount: this._partialCount,
 					partials: this._partials,
 					phase: this._phase,
+					sampleRate: this.context.sampleRate,
 					real,
 					type: this._type,
 					wave: this._wave,

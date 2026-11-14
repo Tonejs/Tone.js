@@ -3,6 +3,7 @@ import { expect } from "chai";
 import { atTime, holdClock, Offline } from "../../test/helper/Offline.js";
 import { ToneAudioBuffer } from "../core/context/ToneAudioBuffer.js";
 import { getContext } from "../core/Global.js";
+import { noOp } from "../core/util/Interface.js";
 import { Player } from "./buffer/Player.js";
 import { Oscillator } from "./oscillator/Oscillator.js";
 
@@ -349,6 +350,55 @@ describe("Source", () => {
 			// if the first source were orphaned the two ramps would sum
 			expect(output.getValueAtTime(0.3)).to.be.closeTo(0.6, 0.01);
 			expect(output.getValueAtTime(0.4)).to.be.closeTo(0.7, 0.01);
+		});
+
+		it("stops a source whose start was pending in the same clock update as a pause (#1289)", async () => {
+			const output = await Offline(({ transport }) => {
+				const source = new Player(rampBuffer).toDestination();
+				source.sync().start(0.5);
+				transport.start(0);
+				// the clip's start tick at 0.5 and the pause at ~0.52 are
+				// processed in the same clock update
+				return atTime(
+					0.52,
+					holdClock(transport, (time) => {
+						transport.pause(time);
+					})
+				);
+			}, 1);
+			expect(output.getValueAtTime(0.7)).to.equal(0);
+			expect(output.getValueAtTime(0.9)).to.equal(0);
+		});
+
+		it("stops a source whose start was pending in the same clock update as a stop (#1289)", async () => {
+			const output = await Offline(({ transport }) => {
+				const source = new Player(rampBuffer).toDestination();
+				source.sync().start(0.5);
+				transport.start(0);
+				return atTime(
+					0.52,
+					holdClock(transport, (time) => {
+						transport.stop(time);
+					})
+				);
+			}, 1);
+			expect(output.getValueAtTime(0.7)).to.equal(0);
+			expect(output.getValueAtTime(0.9)).to.equal(0);
+		});
+
+		it("stops a source whose start was pending in the same clock update as a stop scheduled ahead of time", async () => {
+			const output = await Offline(({ transport }) => {
+				const source = new Player(rampBuffer).toDestination();
+				source.sync().start(0.5);
+				transport.start(0);
+				// stop scheduled in advance; the start tick at 0.5 and the
+				// stop at 0.52 are both pending when the clock catches up
+				transport.stop(0.52);
+				return atTime(0.55, holdClock(transport, noOp));
+			}, 1);
+			expect(output.getValueAtTime(0.51)).to.be.closeTo(0.01, 0.005);
+			expect(output.getValueAtTime(0.7)).to.equal(0);
+			expect(output.getValueAtTime(0.9)).to.equal(0);
 		});
 
 		it("gives the correct offset on time on start/stop events when started with an offset", async () => {

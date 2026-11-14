@@ -99,8 +99,11 @@ export class ToneAudioBuffer extends Tone {
 			if (buffer.loaded) {
 				this._buffer = buffer.get();
 			} else {
-				// otherwise when its loaded, invoke it's callback
+				// Chain so a wrapper does not replace the buffer's own onload.
+				// An early note constructs that wrapper before the fetch finishes.
+				const previousOnload = buffer.onload;
 				buffer.onload = () => {
+					previousOnload.call(buffer, buffer);
 					this.set(buffer);
 					this.onload(this);
 				};

@@ -6,10 +6,7 @@ import { Monophonic } from "../../Tone/instrument/Monophonic.js";
 import { connectTo } from "./Connect.js";
 import { Offline } from "./Offline.js";
 import { OutputAudio } from "./OutputAudio.js";
-
-function wait(time) {
-	return new Promise((done) => setTimeout(done, time));
-}
+import { wait } from "./Wait.js";
 
 export function InstrumentTest(
 	Constr,

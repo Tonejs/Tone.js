@@ -32,6 +32,11 @@ export class ToneConstantSource<
 	private _source?: ConstantSourceNode;
 
 	/**
+	 * Whether the native source was started, so it can be stopped
+	 */
+	private _sourceStarted = false;
+
+	/**
 	 * The offset of the signal generator
 	 */
 	readonly offset: Param<TypeName>;
@@ -86,6 +91,7 @@ export class ToneConstantSource<
 			this._stopTime !== -1 && this._stopTime < this._startTime;
 		if (isStarted && !isStoppedBeforeStart) {
 			this._source.start(this._startTime);
+			this._sourceStarted = true;
 		}
 	}
 
@@ -97,15 +103,19 @@ export class ToneConstantSource<
 		const computedTime = this.toSeconds(time);
 		this.log("start", computedTime);
 		this._startGain(computedTime);
-		this._source?.start(computedTime);
+		if (this._source) {
+			this._source.start(computedTime);
+			this._sourceStarted = true;
+		}
 		return this;
 	}
 
 	protected _stopSource(time?: Seconds): void {
-		if (this.state === "stopped") {
-			return;
+		// state is already "stopped" here: OneShotSource defers this call
+		// until after _stopTime, so check the native node instead
+		if (this._sourceStarted) {
+			this._source?.stop(time);
 		}
-		this._source?.stop(time);
 	}
 
 	dispose(): this {

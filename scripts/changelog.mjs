@@ -15,7 +15,7 @@ import { writeFileSync } from "fs";
 import { createRequire } from "module";
 import { dirname, resolve } from "path";
 import { rcompare as semverRcompare, valid as semverValid } from "semver";
-import simpleGit from "simple-git";
+import { simpleGit } from "simple-git";
 import { fileURLToPath } from "url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
