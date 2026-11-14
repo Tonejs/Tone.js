@@ -1,3 +1,4 @@
+import { DCFilter } from "../component/filter/DCFilter.js";
 import { FeedbackCombFilter } from "../component/filter/FeedbackCombFilter.js";
 import { NormalRange } from "../core/type/Units.js";
 import { optionsFromArguments } from "../core/util/Defaults.js";
@@ -68,6 +69,12 @@ export class JCReverb extends StereoEffect<JCReverbOptions> {
 	private _feedbackCombFilters: FeedbackCombFilter[] = [];
 
 	/**
+	 * Filter out any DC offset on the left and right channels
+	 */
+	private _dcFilterL: DCFilter;
+	private _dcFilterR: DCFilter;
+
+	/**
 	 * @param roomSize Correlated to the decay time.
 	 */
 	constructor(roomSize?: NormalRange);
@@ -99,6 +106,9 @@ export class JCReverb extends StereoEffect<JCReverbOptions> {
 			return allpass;
 		});
 
+		this._dcFilterL = new DCFilter({ context: this.context });
+		this._dcFilterR = new DCFilter({ context: this.context });
+
 		// and the comb filters
 		this._feedbackCombFilters = combFilterDelayTimes.map(
 			(delayTime, index) => {
@@ -109,9 +119,17 @@ export class JCReverb extends StereoEffect<JCReverbOptions> {
 				this._scaleRoomSize.connect(fbcf.resonance);
 				fbcf.resonance.value = combFilterResonances[index];
 				if (index < combFilterDelayTimes.length / 2) {
-					this.connectEffectLeft(...this._allpassFilters, fbcf);
+					this.connectEffectLeft(
+						...this._allpassFilters,
+						fbcf,
+						this._dcFilterL
+					);
 				} else {
-					this.connectEffectRight(...this._allpassFilters, fbcf);
+					this.connectEffectRight(
+						...this._allpassFilters,
+						fbcf,
+						this._dcFilterR
+					);
 				}
 				return fbcf;
 			}
@@ -132,6 +150,8 @@ export class JCReverb extends StereoEffect<JCReverbOptions> {
 		super.dispose();
 		this._allpassFilters.forEach((apf) => apf.disconnect());
 		this._feedbackCombFilters.forEach((fbcf) => fbcf.dispose());
+		this._dcFilterL.dispose();
+		this._dcFilterR.dispose();
 		this.roomSize.dispose();
 		this._scaleRoomSize.dispose();
 		return this;

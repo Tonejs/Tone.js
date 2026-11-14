@@ -1,3 +1,4 @@
+import { DCFilter } from "../component/filter/DCFilter.js";
 import { LowpassCombFilter } from "../component/filter/LowpassCombFilter.js";
 import { Frequency, NormalRange } from "../core/type/Units.js";
 import { optionsFromArguments } from "../core/util/Defaults.js";
@@ -65,6 +66,12 @@ export class Freeverb extends StereoEffect<FreeverbOptions> {
 	private _allpassFiltersR: BiquadFilterNode[] = [];
 
 	/**
+	 * Filter out any DC offset on the left and right channels
+	 */
+	private _dcFilterL: DCFilter;
+	private _dcFilterR: DCFilter;
+
+	/**
 	 * @param roomSize Correlated to the decay time.
 	 * @param dampening The cutoff frequency of a lowpass filter as part of the reverb.
 	 */
@@ -100,6 +107,9 @@ export class Freeverb extends StereoEffect<FreeverbOptions> {
 			return allpassR;
 		});
 
+		this._dcFilterL = new DCFilter({ context: this.context });
+		this._dcFilterR = new DCFilter({ context: this.context });
+
 		// make the comb filters
 		this._combFilters = combFilterTunings.map((delayTime, index) => {
 			const lfpf = new LowpassCombFilter({
@@ -108,9 +118,17 @@ export class Freeverb extends StereoEffect<FreeverbOptions> {
 				delayTime,
 			});
 			if (index < combFilterTunings.length / 2) {
-				this.connectEffectLeft(lfpf, ...this._allpassFiltersL);
+				this.connectEffectLeft(
+					lfpf,
+					...this._allpassFiltersL,
+					this._dcFilterL
+				);
 			} else {
-				this.connectEffectRight(lfpf, ...this._allpassFiltersR);
+				this.connectEffectRight(
+					lfpf,
+					...this._allpassFiltersR,
+					this._dcFilterR
+				);
 			}
 			this.roomSize.connect(lfpf.resonance);
 			return lfpf;
@@ -142,6 +160,8 @@ export class Freeverb extends StereoEffect<FreeverbOptions> {
 		this._allpassFiltersL.forEach((al) => al.disconnect());
 		this._allpassFiltersR.forEach((ar) => ar.disconnect());
 		this._combFilters.forEach((cf) => cf.dispose());
+		this._dcFilterL.dispose();
+		this._dcFilterR.dispose();
 		this.roomSize.dispose();
 		return this;
 	}
