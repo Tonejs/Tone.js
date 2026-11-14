@@ -212,6 +212,10 @@ describe("TicksClass", () => {
 				expect(
 					Ticks(4 * transport.PPQ).toBarsBeatsSixteenths()
 				).to.equal("1:0:0");
+				// a fractional tick just before a beat, as the transport position can be
+				expect(
+					Ticks(3 * transport.PPQ - 0.02).toBarsBeatsSixteenths()
+				).to.equal("0:3:0");
 			});
 		});
 	});
