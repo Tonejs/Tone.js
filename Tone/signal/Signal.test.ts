@@ -1,9 +1,9 @@
+import { BasicTests } from "@tone/test/helper/Basic.js";
+import { ConstantOutput } from "@tone/test/helper/ConstantOutput.js";
+import { Offline } from "@tone/test/helper/Offline.js";
+import { SignalConnectAndDisconnect } from "@tone/test/helper/SignalTests.js";
 import { expect } from "chai";
 
-import { BasicTests } from "../../test/helper/Basic.js";
-import { ConstantOutput } from "../../test/helper/ConstantOutput.js";
-import { Offline } from "../../test/helper/Offline.js";
-import { SignalConnectAndDisconnect } from "../../test/helper/SignalTests.js";
 import { Gain } from "../core/context/Gain.js";
 import { connectSignal, disconnectSignal, Signal } from "./Signal.js";
 

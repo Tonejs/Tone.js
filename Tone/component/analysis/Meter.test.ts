@@ -1,7 +1,7 @@
+import { BasicTests, warns } from "@tone/test/helper/Basic.js";
+import { PassAudio } from "@tone/test/helper/PassAudio.js";
 import { expect } from "chai";
 
-import { BasicTests, warns } from "../../../test/helper/Basic.js";
-import { PassAudio } from "../../../test/helper/PassAudio.js";
 import { Oscillator } from "../../source/oscillator/Oscillator.js";
 import { Merge } from "../channel/Merge.js";
 import { Meter } from "./Meter.js";

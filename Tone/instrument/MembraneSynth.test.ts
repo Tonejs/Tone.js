@@ -1,8 +1,8 @@
+import { BasicTests } from "@tone/test/helper/Basic.js";
+import { CompareToFile } from "@tone/test/helper/CompareToFile.js";
+import { InstrumentTest } from "@tone/test/helper/InstrumentTests.js";
 import { expect } from "chai";
 
-import { BasicTests } from "../../test/helper/Basic.js";
-import { CompareToFile } from "../../test/helper/CompareToFile.js";
-import { InstrumentTest } from "../../test/helper/InstrumentTests.js";
 import { MembraneSynth } from "./MembraneSynth.js";
 
 describe("MembraneSynth", () => {
@@ -81,13 +81,12 @@ describe("MembraneSynth", () => {
 
 		it("Finds correct maximum note frequency", () => {
 			const drumSynth = new MembraneSynth();
-			const hertz = 65.4; // C2 
+			const hertz = 65.4; // C2
 			drumSynth.octaves = 8;
-			const maxNote = hertz * Math.pow(2, drumSynth.octaves); 
-			expect(maxNote).to.equal(16742.4); // C2 + 8 octaves 
+			const maxNote = hertz * Math.pow(2, drumSynth.octaves);
+			expect(maxNote).to.equal(16742.4); // C2 + 8 octaves
 			drumSynth.dispose();
 		});
-
 
 		it("can be constructed with an options object", () => {
 			const drumSynth = new MembraneSynth({

@@ -1,9 +1,9 @@
+import { BasicTests } from "@tone/test/helper/Basic.js";
+import { Offline } from "@tone/test/helper/Offline.js";
+import { OutputAudio } from "@tone/test/helper/OutputAudio.js";
+import { SignalConnectAndDisconnect } from "@tone/test/helper/SignalTests.js";
 import { expect } from "chai";
 
-import { BasicTests } from "../../../test/helper/Basic.js";
-import { Offline } from "../../../test/helper/Offline.js";
-import { OutputAudio } from "../../../test/helper/OutputAudio.js";
-import { SignalConnectAndDisconnect } from "../../../test/helper/SignalTests.js";
 import { Signal } from "../../signal/Signal.js";
 import { LFO, LFOOptions } from "./LFO.js";
 

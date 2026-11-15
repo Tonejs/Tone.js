@@ -1,5 +1,6 @@
-import { BasicTests } from "../../test/helper/Basic.js";
-import { SignalConnectAndDisconnect } from "../../test/helper/SignalTests.js";
+import { BasicTests } from "@tone/test/helper/Basic.js";
+import { SignalConnectAndDisconnect } from "@tone/test/helper/SignalTests.js";
+
 import { Signal } from "./Signal.js";
 import { SignalOperator, SignalOperatorOptions } from "./SignalOperator.js";
 

@@ -1,7 +1,7 @@
+import { BasicTests } from "@tone/test/helper/Basic.js";
+import { ConstantOutput } from "@tone/test/helper/ConstantOutput.js";
 import { expect } from "chai";
 
-import { BasicTests } from "../../../test/helper/Basic.js";
-import { ConstantOutput } from "../../../test/helper/ConstantOutput.js";
 import { Signal } from "../../signal/Signal.js";
 import { Solo } from "./Solo.js";
 

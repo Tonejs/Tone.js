@@ -1,9 +1,9 @@
+import { BasicTests } from "@tone/test/helper/Basic.js";
+import { connectTo } from "@tone/test/helper/Connect.js";
+import { Offline } from "@tone/test/helper/Offline.js";
+import { SignalConnectAndDisconnect } from "@tone/test/helper/SignalTests.js";
 import { expect } from "chai";
 
-import { BasicTests } from "../../../test/helper/Basic.js";
-import { connectTo } from "../../../test/helper/Connect.js";
-import { Offline } from "../../../test/helper/Offline.js";
-import { SignalConnectAndDisconnect } from "../../../test/helper/SignalTests.js";
 import { Envelope, EnvelopeCurve } from "./Envelope.js";
 
 describe("Envelope", () => {

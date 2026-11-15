@@ -1,9 +1,9 @@
+import { BasicTests } from "@tone/test/helper/Basic.js";
+import { CompareToFile } from "@tone/test/helper/CompareToFile.js";
+import { EffectTests } from "@tone/test/helper/EffectTests.js";
+import { Offline } from "@tone/test/helper/Offline.js";
 import { expect } from "chai";
 
-import { BasicTests } from "../../test/helper/Basic.js";
-import { CompareToFile } from "../../test/helper/CompareToFile.js";
-import { EffectTests } from "../../test/helper/EffectTests.js";
-import { Offline } from "../../test/helper/Offline.js";
 import { Oscillator } from "../source/index.js";
 import { Chorus } from "./Chorus.js";
 

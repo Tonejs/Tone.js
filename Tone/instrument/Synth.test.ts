@@ -1,10 +1,10 @@
+import { BasicTests } from "@tone/test/helper/Basic.js";
+import { CompareToFile } from "@tone/test/helper/CompareToFile.js";
+import { InstrumentTest } from "@tone/test/helper/InstrumentTests.js";
+import { MonophonicTest } from "@tone/test/helper/MonophonicTests.js";
+import { Offline } from "@tone/test/helper/Offline.js";
 import { expect } from "chai";
 
-import { BasicTests } from "../../test/helper/Basic.js";
-import { CompareToFile } from "../../test/helper/CompareToFile.js";
-import { InstrumentTest } from "../../test/helper/InstrumentTests.js";
-import { MonophonicTest } from "../../test/helper/MonophonicTests.js";
-import { Offline } from "../../test/helper/Offline.js";
 import { Frequency } from "../core/type/Frequency.js";
 import { Synth } from "./Synth.js";
 

@@ -1,7 +1,7 @@
+import { BasicTests } from "@tone/test/helper/Basic.js";
+import { atTime, Offline } from "@tone/test/helper/Offline.js";
 import { expect } from "chai";
 
-import { BasicTests } from "../../../test/helper/Basic.js";
-import { atTime, Offline } from "../../../test/helper/Offline.js";
 import { getContext } from "../Global.js";
 import { Frequency } from "./Frequency.js";
 import { Ticks, TicksClass } from "./Ticks.js";

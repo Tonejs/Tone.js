@@ -1,8 +1,8 @@
+import { BasicTests } from "@tone/test/helper/Basic.js";
+import { Offline } from "@tone/test/helper/Offline.js";
+import { StereoSignal } from "@tone/test/helper/StereoSignal.js";
 import { expect } from "chai";
 
-import { BasicTests } from "../../../test/helper/Basic.js";
-import { Offline } from "../../../test/helper/Offline.js";
-import { StereoSignal } from "../../../test/helper/StereoSignal.js";
 import { Signal } from "../../signal/Signal.js";
 import { Mono } from "./Mono.js";
 

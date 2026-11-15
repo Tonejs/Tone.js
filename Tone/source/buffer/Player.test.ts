@@ -1,9 +1,9 @@
+import { BasicTests } from "@tone/test/helper/Basic.js";
+import { CompareToFile } from "@tone/test/helper/CompareToFile.js";
+import { atTime, Offline, whenBetween } from "@tone/test/helper/Offline.js";
+import { SourceTests } from "@tone/test/helper/SourceTests.js";
 import { expect } from "chai";
 
-import { BasicTests } from "../../../test/helper/Basic.js";
-import { CompareToFile } from "../../../test/helper/CompareToFile.js";
-import { atTime, Offline, whenBetween } from "../../../test/helper/Offline.js";
-import { SourceTests } from "../../../test/helper/SourceTests.js";
 import { ToneAudioBuffer } from "../../core/context/ToneAudioBuffer.js";
 import { getContext } from "../../core/Global.js";
 import { Player } from "./Player.js";

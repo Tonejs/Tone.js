@@ -1,7 +1,7 @@
+import { ConstantOutput } from "@tone/test/helper/ConstantOutput.js";
+import { Offline } from "@tone/test/helper/Offline.js";
 import { expect } from "chai";
 
-import { ConstantOutput } from "../../../test/helper/ConstantOutput.js";
-import { Offline } from "../../../test/helper/Offline.js";
 import { TransportInstance } from "../clock/Transport.js";
 import { getContext } from "../Global.js";
 import { DrawInstance } from "../util/Draw.js";

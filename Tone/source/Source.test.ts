@@ -1,6 +1,6 @@
+import { atTime, holdClock, Offline } from "@tone/test/helper/Offline.js";
 import { expect } from "chai";
 
-import { atTime, holdClock, Offline } from "../../test/helper/Offline.js";
 import { ToneAudioBuffer } from "../core/context/ToneAudioBuffer.js";
 import { getContext } from "../core/Global.js";
 import { noOp } from "../core/util/Interface.js";
