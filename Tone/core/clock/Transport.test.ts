@@ -108,6 +108,24 @@ describe("Transport", () => {
 			}, 0.4);
 			expect(looped).to.equal(true);
 		});
+
+		it("loops at loopEnd when it converts to just over a whole tick", async () => {
+			// at 67 bpm, "1:2:0" converts to 1152.0000000000002 ticks
+			let invokedAtLoopEnd = false;
+			let loops = 0;
+			await Offline(({ transport }) => {
+				transport.bpm.value = 67;
+				transport.loop = true;
+				transport.loopEnd = "1:2:0";
+				transport.on("loop", () => loops++);
+				transport.schedule(() => {
+					invokedAtLoopEnd = true;
+				}, "1:2:0");
+				transport.start(0);
+			}, 5.5);
+			expect(loops).to.equal(1);
+			expect(invokedAtLoopEnd).to.equal(false);
+		});
 	});
 
 	context("nextSubdivision", () => {
