@@ -351,6 +351,34 @@ describe("Transport", () => {
 				expect(callCount).to.equal(1);
 			}, 0.1);
 		});
+
+		it("setting seconds or position on a tick boundary lands on that tick", async () => {
+			await Offline(({ transport }) => {
+				transport.bpm.value = 90;
+				// 7 eighth-note triplets is 448 ticks, but in seconds it
+				// converts back to 447.99999999999994 ticks
+				const seconds = Time("8t").toSeconds() * 7;
+				transport.seconds = seconds;
+				expect(transport.ticks).to.equal(448);
+				transport.ticks = 0;
+				transport.position = seconds;
+				expect(transport.ticks).to.equal(448);
+			}, 0.1);
+		});
+
+		it("invokes an event scheduled on the tick boundary it seeks to", async () => {
+			let wasCalled = false;
+			await Offline(({ transport }) => {
+				transport.bpm.value = 90;
+				const seconds = Time("8t").toSeconds() * 7;
+				transport.seconds = seconds;
+				transport.schedule(() => {
+					wasCalled = true;
+				}, seconds);
+				transport.start();
+			}, 0.2);
+			expect(wasCalled).to.be.true;
+		});
 	});
 
 	context("state", () => {
