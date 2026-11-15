@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>Ring Modulator</title>
+		<script src="./tone-ui.js"></script>
+	</head>
+	<body>
+		<tone-example>
+			<div slot="explanation">
+				The
+				<a
+					href="https://tonejs.github.io/docs/latest/classes/RingModulator"
+					>Tone.RingModulator</a
+				>
+				multiplies the input by a carrier oscillator. Instead of the
+				notes you play, you hear the sum and difference of each note's
+				frequency and the carrier's frequency, which gives a metallic,
+				bell-like sound. Change the carrier frequency and type to hear
+				how the sound changes.
+			</div>
+		</tone-example>
+
+		<script data-tone-code>
+			const ringModulator = new Tone.RingModulator().toDestination();
+
+			const synth = new Tone.Synth().connect(ringModulator);
+		</script>
+
+		<script>
+			piano(synth);
+			ui(ringModulator);
+		</script>
+	</body>
+</html>
