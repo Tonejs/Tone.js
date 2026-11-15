@@ -1,0 +1,52 @@
+{
+	"name": "@tone/test",
+	"version": "0.1.0",
+	"description": "Tests and test helpers for Tone.js",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"examples": "node ./scripts/test_examples.mjs",
+		"html": "node ./scripts/test_html.mjs",
+		"integrations": "zx ./scripts/test_integrations.mjs",
+		"readme": "node ./scripts/test_readme.mjs",
+		"test": "tsc -p .. && web-test-runner --config=./web-test-runner.config.js --coverage ${npm_config_group:+--group ${npm_config_group}}",
+		"watch": "tsc -p .. && concurrently --raw \"tsc -p .. -w\" \"web-test-runner --config=./web-test-runner.config.js --watch ${npm_config_group:+--group ${npm_config_group}}\""
+	},
+	"dependencies": {
+		"array2d": "^0.0.5",
+		"audiobuffer-to-wav": "^1.0.0",
+		"chai": "^5.1.0",
+		"fft-windowing": "^0.1.4",
+		"fourier-transform": "^1.1.2",
+		"fs-fixture": "^2.7.1",
+		"jsdom": "^26.1.0",
+		"marked": "^15.0.12",
+		"mocha": "^12.0.1",
+		"plotly.js-dist": "^2.32.0",
+		"puppeteer": "^25.12.0",
+		"sinon": "^21.0.0",
+		"sinon-chai": "^4.0.1",
+		"teoria": "^2.5.0",
+		"tinyglobby": "^0.2.14",
+		"tonal": "^6.0.1",
+		"ua-parser-js": "^0.7.31",
+		"yargs": "^17.3.0",
+		"zx": "^8.0.2"
+	},
+	"devDependencies": {
+		"@rollup/plugin-commonjs": "^26.0.3",
+		"@types/chai": "^4.3.0",
+		"@types/mocha": "^5.2.6",
+		"@types/sinon": "^21.0.0",
+		"@types/sinon-chai": "^4.0.0",
+		"@types/ua-parser-js": "^0.7.36",
+		"@web/dev-server-esbuild": "^2.0.0",
+		"@web/dev-server-rollup": "^1.0.0",
+		"@web/test-runner": "^1.0.0",
+		"@web/test-runner-chrome": "^1.0.1",
+		"codecov": "^3.8.3",
+		"concurrently": "^8.2.2",
+		"http-server": "^13.0.2",
+		"typescript": "^5.4.5"
+	}
+}

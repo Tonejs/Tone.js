@@ -1,8 +1,8 @@
+import { BasicTests } from "@tone/test/helper/Basic.js";
+import { CompareToFile } from "@tone/test/helper/CompareToFile.js";
+import { InstrumentTest } from "@tone/test/helper/InstrumentTests.js";
 import { expect } from "chai";
 
-import { BasicTests } from "../../test/helper/Basic.js";
-import { CompareToFile } from "../../test/helper/CompareToFile.js";
-import { InstrumentTest } from "../../test/helper/InstrumentTests.js";
 import { PluckSynth } from "./PluckSynth.js";
 
 describe("PluckSynth", () => {

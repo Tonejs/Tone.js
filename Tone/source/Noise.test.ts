@@ -1,9 +1,9 @@
+import { BasicTests } from "@tone/test/helper/Basic.js";
+import { CompareToFile } from "@tone/test/helper/CompareToFile.js";
+import { OutputAudio } from "@tone/test/helper/OutputAudio.js";
+import { SourceTests } from "@tone/test/helper/SourceTests.js";
 import { expect } from "chai";
 
-import { BasicTests } from "../../test/helper/Basic.js";
-import { CompareToFile } from "../../test/helper/CompareToFile.js";
-import { OutputAudio } from "../../test/helper/OutputAudio.js";
-import { SourceTests } from "../../test/helper/SourceTests.js";
 import { Noise } from "./Noise.js";
 
 describe("Noise", () => {

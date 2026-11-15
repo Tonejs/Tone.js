@@ -1,6 +1,7 @@
-import { BasicTests } from "../../../test/helper/Basic.js";
-import { connectFrom, connectTo } from "../../../test/helper/Connect.js";
-import { PassAudio } from "../../../test/helper/PassAudio.js";
+import { BasicTests } from "@tone/test/helper/Basic.js";
+import { connectFrom, connectTo } from "@tone/test/helper/Connect.js";
+import { PassAudio } from "@tone/test/helper/PassAudio.js";
+
 import { MidSideMerge } from "./MidSideMerge.js";
 
 describe("MidSideMerge", () => {

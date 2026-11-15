@@ -1,10 +1,10 @@
+import { BasicTests } from "@tone/test/helper/Basic.js";
+import { CompareToFile } from "@tone/test/helper/CompareToFile.js";
+import { connectFrom } from "@tone/test/helper/Connect.js";
+import { OscillatorTests } from "@tone/test/helper/OscillatorTests.js";
+import { SourceTests } from "@tone/test/helper/SourceTests.js";
 import { expect } from "chai";
 
-import { BasicTests } from "../../../test/helper/Basic.js";
-import { CompareToFile } from "../../../test/helper/CompareToFile.js";
-import { connectFrom } from "../../../test/helper/Connect.js";
-import { OscillatorTests } from "../../../test/helper/OscillatorTests.js";
-import { SourceTests } from "../../../test/helper/SourceTests.js";
 import { FMOscillator } from "./FMOscillator.js";
 
 describe("FMOscillator", () => {

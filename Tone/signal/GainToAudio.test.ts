@@ -1,5 +1,6 @@
-import { BasicTests } from "../../test/helper/Basic.js";
-import { ConstantOutput } from "../../test/helper/ConstantOutput.js";
+import { BasicTests } from "@tone/test/helper/Basic.js";
+import { ConstantOutput } from "@tone/test/helper/ConstantOutput.js";
+
 import { GainToAudio } from "./GainToAudio.js";
 import { Signal } from "./Signal.js";
 import { Zero } from "./Zero.js";

@@ -1,9 +1,9 @@
+import { BasicTests } from "@tone/test/helper/Basic.js";
+import { CompareToFile } from "@tone/test/helper/CompareToFile.js";
+import { OscillatorTests } from "@tone/test/helper/OscillatorTests.js";
+import { SourceTests } from "@tone/test/helper/SourceTests.js";
 import { expect } from "chai";
 
-import { BasicTests } from "../../../test/helper/Basic.js";
-import { CompareToFile } from "../../../test/helper/CompareToFile.js";
-import { OscillatorTests } from "../../../test/helper/OscillatorTests.js";
-import { SourceTests } from "../../../test/helper/SourceTests.js";
 import { AMOscillator } from "./AMOscillator.js";
 
 describe("AMOscillator", () => {

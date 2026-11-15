@@ -1,7 +1,7 @@
+import { Offline } from "@tone/test/helper/Offline.js";
+import { PassAudio } from "@tone/test/helper/PassAudio.js";
 import { expect } from "chai";
 
-import { Offline } from "../../../test/helper/Offline.js";
-import { PassAudio } from "../../../test/helper/PassAudio.js";
 import { Split } from "../../component/channel/Split.js";
 import { Merge } from "../../component/index.js";
 import { Oscillator } from "../../source/index.js";

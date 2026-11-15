@@ -1,6 +1,7 @@
-import { BasicTests } from "../../test/helper/Basic.js";
-import { connectFrom, connectTo } from "../../test/helper/Connect.js";
-import { ConstantOutput } from "../../test/helper/ConstantOutput.js";
+import { BasicTests } from "@tone/test/helper/Basic.js";
+import { connectFrom, connectTo } from "@tone/test/helper/Connect.js";
+import { ConstantOutput } from "@tone/test/helper/ConstantOutput.js";
+
 import { Signal } from "./Signal.js";
 import { Subtract } from "./Subtract.js";
 

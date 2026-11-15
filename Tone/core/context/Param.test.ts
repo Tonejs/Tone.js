@@ -1,8 +1,8 @@
+import { BasicTests, testAudioContext } from "@tone/test/helper/Basic.js";
+import { Plot } from "@tone/test/helper/compare/index.js";
+import { atTime, Offline } from "@tone/test/helper/Offline.js";
 import { expect } from "chai";
 
-import { BasicTests, testAudioContext } from "../../../test/helper/Basic.js";
-import { Plot } from "../../../test/helper/compare/index.js";
-import { atTime, Offline } from "../../../test/helper/Offline.js";
 import { Signal } from "../../signal/Signal.js";
 import { getContext } from "../Global.js";
 import { UnitName } from "../type/Units.js";

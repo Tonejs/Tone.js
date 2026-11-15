@@ -74,12 +74,21 @@ export default {
 		},
 	},
 	plugins: [
+		{
+			name: "resolve-tone-test",
+			resolveImport({ source }) {
+				if (source.startsWith("@tone/test/")) {
+					return source.replace("@tone/test/", "/build/esm/test/");
+				}
+			},
+		},
 		commonjs({
 			include: ["**/node_modules/**/*"],
 		}),
 	],
 	rootDir: resolve(__dirname, "../"),
 	coverageConfig: {
+		reportDir: resolve(__dirname, "../coverage"),
 		// the defaults, and the UI of the examples which is not part of the library
 		exclude: [
 			"**/node_modules/**/*",

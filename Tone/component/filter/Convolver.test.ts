@@ -1,6 +1,6 @@
+import { BasicTests } from "@tone/test/helper/Basic.js";
 import { expect } from "chai";
 
-import { BasicTests } from "../../../test/helper/Basic.js";
 import { ToneAudioBuffer } from "../../core/context/ToneAudioBuffer.js";
 import { Convolver } from "./Convolver.js";
 

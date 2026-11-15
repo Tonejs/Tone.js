@@ -1,9 +1,9 @@
+import { BasicTests, warns } from "@tone/test/helper/Basic.js";
+import { CompareToFile } from "@tone/test/helper/CompareToFile.js";
+import { atTime, Offline } from "@tone/test/helper/Offline.js";
+import { OutputAudio } from "@tone/test/helper/OutputAudio.js";
 import { expect } from "chai";
 
-import { BasicTests, warns } from "../../test/helper/Basic.js";
-import { CompareToFile } from "../../test/helper/CompareToFile.js";
-import { atTime, Offline } from "../../test/helper/Offline.js";
-import { OutputAudio } from "../../test/helper/OutputAudio.js";
 import { FMSynth } from "./FMSynth.js";
 import { MembraneSynth } from "./MembraneSynth.js";
 import { MetalSynth } from "./MetalSynth.js";

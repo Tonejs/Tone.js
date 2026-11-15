@@ -1,6 +1,6 @@
+import { Offline } from "@tone/test/helper/Offline.js";
 import { expect } from "chai";
 
-import { Offline } from "../../../test/helper/Offline.js";
 import { TransportInstance } from "./Transport.js";
 import { TransportRepeatEvent } from "./TransportRepeatEvent.js";
 

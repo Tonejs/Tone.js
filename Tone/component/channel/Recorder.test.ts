@@ -1,7 +1,7 @@
+import { connectFrom } from "@tone/test/helper/Connect.js";
+import { wait } from "@tone/test/helper/Wait.js";
 import { expect } from "chai";
 
-import { connectFrom } from "../../../test/helper/Connect.js";
-import { wait } from "../../../test/helper/Wait.js";
 import { Context } from "../../core/context/Context.js";
 import { ToneWithContext } from "../../core/context/ToneWithContext.js";
 import { Synth } from "../../instrument/Synth.js";

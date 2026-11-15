@@ -1,13 +1,10 @@
+import { BasicTests } from "@tone/test/helper/Basic.js";
+import { connectFrom, connectTo } from "@tone/test/helper/Connect.js";
+import { ConstantOutput } from "@tone/test/helper/ConstantOutput.js";
 import { expect } from "chai";
 
-import { BasicTests } from "../../test/helper/Basic.js";
-import { connectFrom, connectTo } from "../../test/helper/Connect.js";
-// import Test from "../../test/helper/Test";
-import { ConstantOutput } from "../../test/helper/ConstantOutput.js";
 import { Multiply } from "./Multiply.js";
-// import Multiply from "Multiply";
 import { Signal } from "./Signal.js";
-// import Oscillator from "../source/Oscillator";
 
 describe("Multiply", () => {
 	BasicTests(Multiply);

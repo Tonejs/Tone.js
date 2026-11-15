@@ -1,8 +1,8 @@
+import { BasicTests } from "@tone/test/helper/Basic.js";
+import { CompareToFile } from "@tone/test/helper/CompareToFile.js";
+import { EffectTests } from "@tone/test/helper/EffectTests.js";
 import { expect } from "chai";
 
-import { BasicTests } from "../../test/helper/Basic.js";
-import { CompareToFile } from "../../test/helper/CompareToFile.js";
-import { EffectTests } from "../../test/helper/EffectTests.js";
 import { Synth } from "../instrument/Synth.js";
 import { AutoWah } from "./AutoWah.js";
 

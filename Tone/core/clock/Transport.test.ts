@@ -1,15 +1,15 @@
 // importing for side affects
 import "../context/Destination.js";
 
-import { expect } from "chai";
-
-import { warns } from "../../../test/helper/Basic.js";
+import { warns } from "@tone/test/helper/Basic.js";
 import {
 	atTime,
 	holdClock,
 	Offline,
 	whenBetween,
-} from "../../../test/helper/Offline.js";
+} from "@tone/test/helper/Offline.js";
+import { expect } from "chai";
+
 import { Synth } from "../../instrument/Synth.js";
 import { Signal } from "../../signal/Signal.js";
 import { Time } from "../type/Time.js";
