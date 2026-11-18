@@ -79,6 +79,27 @@ describe("Recorder", () => {
 			rec.dispose();
 		});
 
+		it("resolves start after resuming a paused recording", async () => {
+			const rec = new Recorder();
+			const synth = new Synth().connect(rec);
+			synth.triggerAttack("C3");
+			await rec.start();
+			expect(rec.state).to.equal("started");
+			await wait(100);
+			rec.pause();
+			expect(rec.state).to.equal("paused");
+			await wait(100);
+
+			const resumed = await Promise.race([
+				rec.start().then(() => true),
+				wait(1000).then(() => false),
+			]);
+			expect(rec.state).to.equal("started");
+			expect(resumed, "start() should resolve on resume").to.equal(true);
+			rec.dispose();
+			synth.dispose();
+		});
+
 		it("can be stopped after starting", async () => {
 			const rec = new Recorder();
 			rec.start();

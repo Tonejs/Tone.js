@@ -32,6 +32,10 @@ export class ToneMicButton extends LitElement implements Bindable<UserMedia> {
 	 * Open and close the microphone with the button
 	 */
 	bind(mic: UserMedia) {
+		if ("audioSession" in navigator) {
+			(navigator.audioSession as { type: string }).type =
+				"play-and-record";
+		}
 		this._supported = UserMedia.supported;
 		this.addEventListener("open", () => mic.open());
 		this.addEventListener("close", () => mic.close());

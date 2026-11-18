@@ -14,6 +14,7 @@ describe("TickParam", () => {
 
 	it("retains lookAhead for a suspended tick parameter", async () => {
 		const context = new Context({ lookAhead: 0.2 });
+		await context.rawContext.suspend(0);
 		expect(context.state).to.equal("suspended");
 		const param = new TickParam({
 			context,

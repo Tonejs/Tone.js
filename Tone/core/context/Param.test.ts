@@ -25,6 +25,7 @@ describe("Param", () => {
 			const context = new Context({
 				lookAhead: 0.2,
 			});
+			await context.rawContext.suspend(0);
 			expect(context.state).to.equal("suspended");
 			const param = new Param({
 				context,
@@ -73,12 +74,44 @@ describe("Param", () => {
 				param: context.createGain().gain,
 			});
 			await context.resume();
+			const immediate = context.immediate();
 			param.value = 0;
-			expect(param.getValueAtTime(context.immediate())).to.equal(1);
+			expect(param.getValueAtTime(immediate)).to.equal(1);
 			expect(param.getValueAtTime(context.now() + 1)).to.equal(0);
 			param.dispose();
 			context.dispose();
 			await context.close();
+		});
+
+		it("applies scheduled offline value changes at the render clock time", async () => {
+			let param!: Param<"number">;
+			const buffer = await Offline((context) => {
+				const source = context.createConstantSource();
+				source.connect(context.rawContext.destination);
+				source.start(0);
+				param = new Param({
+					context,
+					param: source.offset,
+					value: 0,
+				});
+				param.setValueAtTime(1, 0.02);
+				return atTime(0.05, () => {
+					param.value = 0.5;
+				});
+			}, 0.1);
+			expect(param.getValueAtTime(0)).to.equal(0);
+			expect(param.getValueAtTime(0.03)).to.equal(1);
+			expect(param.getValueAtTime(0.06)).to.equal(0.5);
+			expect(buffer.getValueAtTime(0) as number).to.be.closeTo(0, 1e-4);
+			expect(buffer.getValueAtTime(0.03) as number).to.be.closeTo(
+				1,
+				1e-4
+			);
+			expect(buffer.getValueAtTime(0.06) as number).to.be.closeTo(
+				0.5,
+				1e-4
+			);
+			param.dispose();
 		});
 	});
 
