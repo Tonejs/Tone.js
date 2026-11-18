@@ -262,7 +262,8 @@ export abstract class AbstractParam<TypeName extends UnitName> {
 
 	/**
 	 * The current value of the parameter. Setting this value
-	 * is equivalent to setValueAtTime(value, context.currentTime)
+	 * cancels any scheduled automation from the current time onward
+	 * and sets the value at the current time.
 	 */
 	abstract value: UnitMap[TypeName];
 

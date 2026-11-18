@@ -3,9 +3,11 @@ import { expect } from "chai";
 import { BasicTests, testAudioContext } from "../../../test/helper/Basic.js";
 import { Plot } from "../../../test/helper/compare/index.js";
 import { atTime, Offline } from "../../../test/helper/Offline.js";
+import { wait } from "../../../test/helper/Wait.js";
 import { Signal } from "../../signal/Signal.js";
 import { getContext } from "../Global.js";
 import { UnitName } from "../type/Units.js";
+import { Context } from "./Context.js";
 import { Gain } from "./Gain.js";
 import { Param } from "./Param.js";
 import { connect } from "./ToneAudioNode.js";
@@ -16,6 +18,101 @@ describe("Param", () => {
 	BasicTests(Param, {
 		context: testAudioContext,
 		param: testAudioContext.createOscillator().frequency,
+	});
+
+	context("value", () => {
+		it("sets a parameter at the frozen time when suspended", async () => {
+			const context = new Context({
+				lookAhead: 0.2,
+			});
+			await context.rawContext.suspend(0);
+			expect(context.state).to.equal("suspended");
+			const param = new Param({
+				context,
+				param: context.createGain().gain,
+			});
+			const frozen = context.immediate();
+			param.setValueAtTime(0.5, frozen + 0.1);
+			param.value = 0;
+			expect(param.getValueAtTime(frozen)).to.equal(0);
+			expect(param.getValueAtTime(frozen + 0.1)).to.equal(0);
+			expect(param.getValueAtTime(frozen + 0.2)).to.equal(0);
+			expect(context.now()).to.equal(frozen + 0.2);
+			param.dispose();
+			context.dispose();
+			await context.close();
+		});
+
+		it("sets a parameter at the frozen time after playing", async () => {
+			const context = new Context({
+				lookAhead: 0.2,
+			});
+			const param = new Param({
+				context,
+				param: context.createGain().gain,
+			});
+			await context.resume();
+			await wait(50);
+			await context.rawContext.suspend(0);
+			const frozen = context.immediate();
+			expect(frozen).to.be.greaterThan(0);
+			param.setValueAtTime(0.5, frozen + 0.1);
+			param.value = 0;
+			expect(param.getValueAtTime(frozen)).to.equal(0);
+			expect(param.getValueAtTime(frozen + 0.1)).to.equal(0);
+			expect(param.getValueAtTime(frozen + 0.2)).to.equal(0);
+			expect(context.now()).to.equal(frozen + 0.2);
+			param.dispose();
+			context.dispose();
+			await context.close();
+		});
+
+		it("retains running lookAhead for a parameter", async () => {
+			const context = new Context({ lookAhead: 0.2 });
+			const param = new Param({
+				context,
+				param: context.createGain().gain,
+			});
+			await context.resume();
+			const immediate = context.immediate();
+			param.value = 0;
+			expect(param.getValueAtTime(immediate)).to.equal(1);
+			expect(param.getValueAtTime(context.now() + 1)).to.equal(0);
+			param.dispose();
+			context.dispose();
+			await context.close();
+		});
+
+		it("applies scheduled offline value changes at the render clock time", async () => {
+			let param!: Param<"number">;
+			const buffer = await Offline((context) => {
+				const source = context.createConstantSource();
+				source.connect(context.rawContext.destination);
+				source.start(0);
+				param = new Param({
+					context,
+					param: source.offset,
+					value: 0,
+				});
+				param.setValueAtTime(1, 0.02);
+				return atTime(0.05, () => {
+					param.value = 0.5;
+				});
+			}, 0.1);
+			expect(param.getValueAtTime(0)).to.equal(0);
+			expect(param.getValueAtTime(0.03)).to.equal(1);
+			expect(param.getValueAtTime(0.06)).to.equal(0.5);
+			expect(buffer.getValueAtTime(0) as number).to.be.closeTo(0, 1e-4);
+			expect(buffer.getValueAtTime(0.03) as number).to.be.closeTo(
+				1,
+				1e-4
+			);
+			expect(buffer.getValueAtTime(0.06) as number).to.be.closeTo(
+				0.5,
+				1e-4
+			);
+			param.dispose();
+		});
 	});
 
 	context("constructor", () => {

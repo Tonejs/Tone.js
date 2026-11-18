@@ -74,6 +74,18 @@ export class TickParam<
 		});
 	}
 
+	/** @inheritdoc */
+	get value(): UnitMap[TypeName] {
+		return super.value;
+	}
+	set value(value: UnitMap[TypeName]) {
+		// Unlike Param.value, always use now() (with lookAhead)
+		// even when the context is suspended
+		const now = this.now();
+		this.cancelScheduledValues(now);
+		this.setValueAtTime(value, now);
+	}
+
 	setTargetAtTime(
 		value: UnitMap[TypeName],
 		time: Time,

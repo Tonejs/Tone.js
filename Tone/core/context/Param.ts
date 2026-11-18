@@ -169,8 +169,12 @@ export class Param<TypeName extends UnitName = "number">
 		return this.getValueAtTime(now);
 	}
 	set value(value) {
-		this.cancelScheduledValues(this.now());
-		this.setValueAtTime(value, this.now());
+		// Direct changes replace automation from the frozen time onward,
+		// including the lookAhead window, while audio is suspended.
+		const now =
+			this.context.state === "suspended" ? this.immediate() : this.now();
+		this.cancelScheduledValues(now);
+		this.setValueAtTime(value, now);
 	}
 
 	get minValue(): number {
