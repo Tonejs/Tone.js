@@ -5,7 +5,7 @@ import {
 	ToneAudioNode,
 	ToneAudioNodeOptions,
 } from "../../core/context/ToneAudioNode.js";
-import { NormalRange, PowerOfTwo } from "../../core/type/Units.js";
+import { Decibels, NormalRange, PowerOfTwo } from "../../core/type/Units.js";
 import { assert, assertRange } from "../../core/util/Debug.js";
 import { optionsFromArguments } from "../../core/util/Defaults.js";
 import { Split } from "../channel/Split.js";
@@ -18,6 +18,8 @@ export interface AnalyserOptions<ChannelCount extends number>
 	type: AnalyserType;
 	smoothing: NormalRange;
 	channels: ChannelCount;
+	minDecibels: Decibels;
+	maxDecibels: Decibels;
 }
 
 /**
@@ -94,6 +96,11 @@ export class Analyser<ChannelCount extends number = 1> extends ToneAudioNode<
 		this.size = options.size;
 		this.type = options.type;
 		this.smoothing = options.smoothing;
+		// minDecibels has to stay below maxDecibels after each assignment,
+		// so raise maxDecibels first when the new range is above the current one
+		this.maxDecibels = Math.max(options.maxDecibels, this.maxDecibels);
+		this.minDecibels = options.minDecibels;
+		this.maxDecibels = options.maxDecibels;
 	}
 
 	static getDefaults(): AnalyserOptions<1> {
@@ -102,6 +109,8 @@ export class Analyser<ChannelCount extends number = 1> extends ToneAudioNode<
 			smoothing: 0.8,
 			type: "fft" as AnalyserType,
 			channels: 1 as const,
+			minDecibels: -100,
+			maxDecibels: -30,
 		});
 	}
 
@@ -174,6 +183,40 @@ export class Analyser<ChannelCount extends number = 1> extends ToneAudioNode<
 	}
 	set smoothing(val: NormalRange) {
 		this._analyzers.forEach((a) => (a.smoothingTimeConstant = val));
+	}
+
+	/**
+	 * The lowest value in decibels of the analyser's FFT range, -100 by default.
+	 * Sets [minDecibels](https://developer.mozilla.org/en-US/docs/Web/API/AnalyserNode/minDecibels)
+	 * on the AnalyserNode of each channel. Must be less than {@link maxDecibels}.
+	 * The native node uses this range when it scales the frequency data to bytes.
+	 * The decibel values returned by {@link getValue} are not clamped to it.
+	 */
+	get minDecibels(): Decibels {
+		return this._analyzers[0].minDecibels;
+	}
+	set minDecibels(min: Decibels) {
+		assert(
+			min < this.maxDecibels,
+			`Analyser: minDecibels (${min}) must be less than maxDecibels (${this.maxDecibels})`
+		);
+		this._analyzers.forEach((a) => (a.minDecibels = min));
+	}
+
+	/**
+	 * The highest value in decibels of the analyser's FFT range, -30 by default.
+	 * Sets [maxDecibels](https://developer.mozilla.org/en-US/docs/Web/API/AnalyserNode/maxDecibels)
+	 * on the AnalyserNode of each channel. Must be greater than {@link minDecibels}.
+	 */
+	get maxDecibels(): Decibels {
+		return this._analyzers[0].maxDecibels;
+	}
+	set maxDecibels(max: Decibels) {
+		assert(
+			max > this.minDecibels,
+			`Analyser: maxDecibels (${max}) must be greater than minDecibels (${this.minDecibels})`
+		);
+		this._analyzers.forEach((a) => (a.maxDecibels = max));
 	}
 
 	/**

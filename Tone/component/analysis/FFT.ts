@@ -1,6 +1,11 @@
 import { ToneAudioNode } from "../../core/context/ToneAudioNode.js";
 import { dbToGain } from "../../core/type/Conversions.js";
-import { Hertz, NormalRange, PowerOfTwo } from "../../core/type/Units.js";
+import {
+	Decibels,
+	Hertz,
+	NormalRange,
+	PowerOfTwo,
+} from "../../core/type/Units.js";
 import { assert } from "../../core/util/Debug.js";
 import { optionsFromArguments } from "../../core/util/Defaults.js";
 import { MeterBase, MeterBaseOptions } from "./MeterBase.js";
@@ -9,6 +14,8 @@ export interface FFTOptions extends MeterBaseOptions {
 	size: PowerOfTwo;
 	smoothing: NormalRange;
 	normalRange: boolean;
+	minDecibels: Decibels;
+	maxDecibels: Decibels;
 }
 
 /**
@@ -40,6 +47,10 @@ export class FFT extends MeterBase<FFTOptions, 1> {
 		this.normalRange = options.normalRange;
 		this._analyser.type = "fft";
 		this.size = options.size;
+		// raise maxDecibels first so minDecibels stays below it after each assignment
+		this.maxDecibels = Math.max(options.maxDecibels, this.maxDecibels);
+		this.minDecibels = options.minDecibels;
+		this.maxDecibels = options.maxDecibels;
 	}
 
 	static getDefaults(): FFTOptions {
@@ -47,6 +58,8 @@ export class FFT extends MeterBase<FFTOptions, 1> {
 			normalRange: false,
 			size: 1024,
 			smoothing: 0.8,
+			minDecibels: -100,
+			maxDecibels: -30,
 		});
 	}
 
@@ -79,6 +92,31 @@ export class FFT extends MeterBase<FFTOptions, 1> {
 	}
 	set smoothing(val) {
 		this._analyser.smoothing = val;
+	}
+
+	/**
+	 * The lowest value in decibels of the FFT range, -100 by default. Sets
+	 * [minDecibels](https://developer.mozilla.org/en-US/docs/Web/API/AnalyserNode/minDecibels)
+	 * on the underlying AnalyserNode. Must be less than {@link maxDecibels}.
+	 * The values returned by {@link getValue} are not clamped to it.
+	 */
+	get minDecibels(): Decibels {
+		return this._analyser.minDecibels;
+	}
+	set minDecibels(min) {
+		this._analyser.minDecibels = min;
+	}
+
+	/**
+	 * The highest value in decibels of the FFT range, -30 by default. Sets
+	 * [maxDecibels](https://developer.mozilla.org/en-US/docs/Web/API/AnalyserNode/maxDecibels)
+	 * on the underlying AnalyserNode. Must be greater than {@link minDecibels}.
+	 */
+	get maxDecibels(): Decibels {
+		return this._analyser.maxDecibels;
+	}
+	set maxDecibels(max) {
+		this._analyser.maxDecibels = max;
 	}
 
 	/**

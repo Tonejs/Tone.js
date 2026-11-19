@@ -1,6 +1,8 @@
 import { expect } from "chai";
+import sinon from "sinon";
 
 import { BasicTests } from "../../../test/helper/Basic.js";
+import { OfflineContext } from "../../core/context/OfflineContext.js";
 import { Noise } from "../../source/Noise.js";
 import { FFT } from "./FFT.js";
 
@@ -32,6 +34,38 @@ describe("FFT", () => {
 		fft.smoothing = 0.2;
 		expect(fft.smoothing).to.equal(0.2);
 		fft.dispose();
+	});
+
+	it("defaults to the AnalyserNode's decibel range", () => {
+		const fft = new FFT();
+		expect(fft.minDecibels).to.equal(-100);
+		expect(fft.maxDecibels).to.equal(-30);
+		fft.dispose();
+	});
+
+	it("can set the decibel range", () => {
+		const context = new OfflineContext(1, 0.1, 44100);
+		const createAnalyser = sinon.spy(context, "createAnalyser");
+		const fft = new FFT({
+			context,
+			minDecibels: -20,
+			maxDecibels: 0,
+		});
+		const [node] = createAnalyser.returnValues;
+		expect(fft.minDecibels).to.equal(-20);
+		expect(fft.maxDecibels).to.equal(0);
+		expect(node.minDecibels).to.equal(-20);
+		expect(node.maxDecibels).to.equal(0);
+		fft.set({
+			minDecibels: -120,
+			maxDecibels: -10,
+		});
+		expect(fft.get().minDecibels).to.equal(-120);
+		expect(fft.get().maxDecibels).to.equal(-10);
+		expect(node.minDecibels).to.equal(-120);
+		expect(node.maxDecibels).to.equal(-10);
+		fft.dispose();
+		context.dispose();
 	});
 
 	it("can get the frequency values of each index of the return array", () => {
