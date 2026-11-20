@@ -80,6 +80,12 @@ function* alternatingGenerator(
  * Starting from the bottom move up 2, down 1
  */
 function* jumpUp(numValues: number): IterableIterator<number> {
+	// with two values the first jump of two goes past the end before the
+	// second value is played, so step through them in order instead
+	if (numValues === 2) {
+		yield* upPatternGen(numValues);
+		return;
+	}
 	let index = 0;
 	let stepIndex = 0;
 	while (index < numValues) {
@@ -94,6 +100,11 @@ function* jumpUp(numValues: number): IterableIterator<number> {
  * Starting from the top move down 2, up 1
  */
 function* jumpDown(numValues: number): IterableIterator<number> {
+	// see jumpUp
+	if (numValues === 2) {
+		yield* downPatternGen(numValues);
+		return;
+	}
 	let index = numValues - 1;
 	let stepIndex = 0;
 	while (index >= 0) {
