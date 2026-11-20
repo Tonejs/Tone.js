@@ -32,6 +32,7 @@ import { optionsFromArguments } from "../util/Defaults.js";
 import { Emitter } from "../util/Emitter.js";
 import { readOnly, writable } from "../util/Interface.js";
 import { IntervalTimeline } from "../util/IntervalTimeline.js";
+import { GTE } from "../util/Math.js";
 import { Timeline } from "../util/Timeline.js";
 import { isArray, isDefined } from "../util/TypeCheck.js";
 import { Clock } from "./Clock.js";
@@ -239,7 +240,9 @@ export class TransportInstance
 	private _processTick(tickTime: Seconds, ticks: Ticks = 0): void {
 		// do the loop test
 		if (this._loop.get(tickTime)) {
-			if (ticks >= this._loopEnd) {
+			// loopEnd can convert to a hair over a whole tick (e.g. 1152.0000000000002),
+			// which a plain >= would only reach one tick late
+			if (GTE(ticks, this._loopEnd)) {
 				this.emit("loopEnd", tickTime);
 				this._clock.setTicksAtTime(this._loopStart, tickTime);
 				ticks = this._loopStart;
