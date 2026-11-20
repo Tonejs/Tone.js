@@ -1,5 +1,6 @@
 import { Seconds, Ticks } from "../type/Units.js";
 import { noOp } from "../util/Interface.js";
+import { floorEpsilon } from "../util/Math.js";
 import type { TransportInstance as Transport } from "./Transport.js";
 
 export interface TransportEventOptions {
@@ -57,7 +58,7 @@ export class TransportEvent {
 		this.transport = transport;
 		this.callback = options.callback;
 		this._once = options.once;
-		this.time = Math.floor(options.time);
+		this.time = floorEpsilon(options.time);
 		this._remainderTime = options.time - this.time;
 	}
 

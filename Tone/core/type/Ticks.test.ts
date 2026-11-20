@@ -172,6 +172,15 @@ describe("TicksClass", () => {
 	});
 
 	context("Conversions", () => {
+		it("converts seconds on a tick boundary to that tick", () => {
+			return Offline(({ transport }) => {
+				transport.bpm.value = 90;
+				const seconds = Time("8t").toSeconds() * 7;
+				expect(Ticks(seconds, "s").valueOf()).to.equal(448);
+				expect(Ticks(`${seconds}s`).valueOf()).to.equal(448);
+			});
+		});
+
 		it("converts time into notation", () => {
 			return Offline(({ transport }) => {
 				transport.bpm.value = 120;

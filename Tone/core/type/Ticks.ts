@@ -1,4 +1,5 @@
 import { getContext } from "../Global.js";
+import { floorEpsilon } from "../util/Math.js";
 import { TimeBaseUnit, TimeValue } from "./TimeBase.js";
 import { TransportTimeClass } from "./TransportTime.js";
 import { Seconds, Ticks } from "./Units.js";
@@ -34,7 +35,7 @@ export class TicksClass extends TransportTimeClass<Ticks> {
 	 * Returns the value of a second in the current units
 	 */
 	protected _secondsToUnits(seconds: Seconds): Ticks {
-		return Math.floor((seconds / (60 / this._getBpm())) * this._getPPQ());
+		return floorEpsilon((seconds / (60 / this._getBpm())) * this._getPPQ());
 	}
 
 	/**

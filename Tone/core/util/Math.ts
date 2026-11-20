@@ -38,3 +38,12 @@ export function EQ(a: number, b: number): boolean {
 export function clamp(value: number, min: number, max: number): number {
 	return Math.max(Math.min(value, max), min);
 }
+
+/**
+ * Like Math.floor, but a value within EPSILON below an integer floors to
+ * that integer. Converting seconds to ticks can land a hair under a whole
+ * tick (e.g. 447.99999999999994), which Math.floor would put a tick early.
+ */
+export function floorEpsilon(value: number): number {
+	return Math.floor(value + EPSILON);
+}

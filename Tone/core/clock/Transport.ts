@@ -32,6 +32,7 @@ import { optionsFromArguments } from "../util/Defaults.js";
 import { Emitter } from "../util/Emitter.js";
 import { readOnly, writable } from "../util/Interface.js";
 import { IntervalTimeline } from "../util/IntervalTimeline.js";
+import { floorEpsilon } from "../util/Math.js";
 import { Timeline } from "../util/Timeline.js";
 import { isArray, isDefined } from "../util/TypeCheck.js";
 import { Clock } from "./Clock.js";
@@ -632,7 +633,7 @@ export class TransportInstance
 		assertUsedScheduleTime();
 
 		// "floor" ensures that any events scheduled on this tick will be called.
-		t = Math.floor(t);
+		t = floorEpsilon(t);
 
 		if (this._clock.ticks === t) {
 			return;
