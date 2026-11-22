@@ -320,6 +320,22 @@ describe("Source", () => {
 			}, 0.1);
 		});
 
+		it("stops a source started by a seek that is followed by another seek (#1382)", async () => {
+			const output = await Offline(({ transport }) => {
+				const source = new Oscillator().toDestination();
+				source.sync().start(0.2);
+				transport.start(0).stop(0.4);
+				return atTime(0.1, () => {
+					// jump past the start time, then back before it before the next tick
+					transport.seconds = 0.3;
+					transport.seconds = 0.05;
+				});
+			}, 0.6);
+			// the position is 0.05 at 0.1, so the source starts at 0.25 and stops with the transport
+			expect(output.getTimeOfFirstSound()).to.be.closeTo(0.25, 0.01);
+			expect(output.getTimeOfLastSound()).to.be.closeTo(0.4, 0.01);
+		});
+
 		it("gives the correct offset on time on start/stop events", async () => {
 			const output = await Offline(({ transport }) => {
 				const source = new Player(rampBuffer).toDestination();
