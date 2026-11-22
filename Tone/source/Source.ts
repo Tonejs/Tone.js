@@ -364,10 +364,19 @@ export abstract class Source<
 				}
 			};
 			this._syncedStop = (time) => {
-				const seconds = this.context.transport.getSecondsAtTime(
+				const transport = this.context.transport;
+				const seconds = transport.getSecondsAtTime(
 					Math.max(time - this.sampleTime, 0)
 				);
-				if (this._state.getValueAtTime(seconds) === "started") {
+				// when the transport is seeked twice before the next tick, the second "stop" sees
+				// the position from before the first seek, so also check the position at the stop
+				// time, where the first seek may have started the source (#1382)
+				if (
+					this._state.getValueAtTime(seconds) === "started" ||
+					this._state.getValueAtTime(
+						transport.getSecondsAtTime(time)
+					) === "started"
+				) {
 					this._stop(time);
 				}
 			};
