@@ -1,7 +1,7 @@
+import { BasicTests } from "@tone/test/helper/Basic.js";
+import { atTime, Offline, whenBetween } from "@tone/test/helper/Offline.js";
 import { expect } from "chai";
 
-import { BasicTests } from "../../test/helper/Basic.js";
-import { atTime, Offline, whenBetween } from "../../test/helper/Offline.js";
 import { Time } from "../core/type/Time.js";
 import { noOp } from "../core/util/Interface.js";
 import { ToneEvent } from "./ToneEvent.js";

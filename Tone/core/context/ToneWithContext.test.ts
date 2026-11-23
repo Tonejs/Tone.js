@@ -1,6 +1,6 @@
+import { Offline } from "@tone/test/helper/Offline.js";
 import { expect } from "chai";
 
-import { Offline } from "../../../test/helper/Offline.js";
 import { getContext } from "../Global.js";
 import { Gain } from "./Gain.js";
 import { ToneWithContext } from "./ToneWithContext.js";

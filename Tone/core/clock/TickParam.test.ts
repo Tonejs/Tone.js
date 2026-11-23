@@ -1,5 +1,5 @@
-import { BasicTests, testAudioContext } from "../../../test/helper/Basic.js";
-// import { atTime, Offline } from "../../../test/helper/Offline";
+import { BasicTests, testAudioContext } from "@tone/test/helper/Basic.js";
+
 import { TickParam } from "./TickParam.js";
 
 describe("TickParam", () => {

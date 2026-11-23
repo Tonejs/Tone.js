@@ -1,10 +1,10 @@
 import "../core/clock/Transport.js";
 import "../core/context/Destination.js";
 
+import { BasicTests } from "@tone/test/helper/Basic.js";
+import { Offline } from "@tone/test/helper/Offline.js";
 import { expect } from "chai";
 
-import { BasicTests } from "../../test/helper/Basic.js";
-import { Offline } from "../../test/helper/Offline.js";
 import { dbToGain } from "../core/type/Conversions.js";
 import { SyncedSignal } from "./SyncedSignal.js";
 

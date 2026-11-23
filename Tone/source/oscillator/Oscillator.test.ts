@@ -3,12 +3,13 @@ import sinon from "sinon";
 import sinonChai from "sinon-chai";
 use(sinonChai);
 
-import { BasicTests } from "../../../test/helper/Basic.js";
-import { CompareToFile } from "../../../test/helper/CompareToFile.js";
-import { Offline } from "../../../test/helper/Offline.js";
-import { OscillatorTests } from "../../../test/helper/OscillatorTests.js";
-import { OutputAudio } from "../../../test/helper/OutputAudio.js";
-import { SourceTests } from "../../../test/helper/SourceTests.js";
+import { BasicTests } from "@tone/test/helper/Basic.js";
+import { CompareToFile } from "@tone/test/helper/CompareToFile.js";
+import { Offline } from "@tone/test/helper/Offline.js";
+import { OscillatorTests } from "@tone/test/helper/OscillatorTests.js";
+import { OutputAudio } from "@tone/test/helper/OutputAudio.js";
+import { SourceTests } from "@tone/test/helper/SourceTests.js";
+
 import { OfflineContext } from "../../core/context/OfflineContext.js";
 import { Signal } from "../../signal/Signal.js";
 import { Oscillator } from "./Oscillator.js";

@@ -1,7 +1,7 @@
+import { BasicTests } from "@tone/test/helper/Basic.js";
+import { PassAudio } from "@tone/test/helper/PassAudio.js";
 import { expect } from "chai";
 
-import { BasicTests } from "../../../test/helper/Basic.js";
-import { PassAudio } from "../../../test/helper/PassAudio.js";
 import { Panner3D } from "./Panner3D.js";
 
 describe("Panner3D", () => {

@@ -1,7 +1,8 @@
-import { BasicTests } from "../../../test/helper/Basic.js";
-import { CompareToFile } from "../../../test/helper/CompareToFile.js";
-import { connectTo } from "../../../test/helper/Connect.js";
-import { PassAudio } from "../../../test/helper/PassAudio.js";
+import { BasicTests } from "@tone/test/helper/Basic.js";
+import { CompareToFile } from "@tone/test/helper/CompareToFile.js";
+import { connectTo } from "@tone/test/helper/Connect.js";
+import { PassAudio } from "@tone/test/helper/PassAudio.js";
+
 import { connect } from "../../core/context/ToneAudioNode.js";
 import { Subtract } from "../../signal/Subtract.js";
 import { PhaseShiftAllpass } from "./PhaseShiftAllpass.js";

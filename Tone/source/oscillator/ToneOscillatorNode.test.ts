@@ -1,8 +1,8 @@
+import { BasicTests } from "@tone/test/helper/Basic.js";
+import { CompareToFile } from "@tone/test/helper/CompareToFile.js";
+import { Offline, whenBetween } from "@tone/test/helper/Offline.js";
 import { expect } from "chai";
 
-import { BasicTests } from "../../../test/helper/Basic.js";
-import { CompareToFile } from "../../../test/helper/CompareToFile.js";
-import { Offline, whenBetween } from "../../../test/helper/Offline.js";
 import { Frequency } from "../../core/type/Frequency.js";
 import { ToneOscillatorNode } from "./ToneOscillatorNode.js";
 

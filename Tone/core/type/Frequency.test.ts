@@ -1,8 +1,8 @@
+import { BasicTests } from "@tone/test/helper/Basic.js";
+import { Offline } from "@tone/test/helper/Offline.js";
 import { expect } from "chai";
 import { Midi as TonalMidi, Note } from "tonal";
 
-import { BasicTests } from "../../../test/helper/Basic.js";
-import { Offline } from "../../../test/helper/Offline.js";
 import { getContext } from "../Global.js";
 import { Frequency, FrequencyClass } from "./Frequency.js";
 import { Midi } from "./Midi.js";

@@ -1,12 +1,12 @@
-import { expect } from "chai";
-
-import { BasicTests } from "../../../test/helper/Basic.js";
+import { BasicTests } from "@tone/test/helper/Basic.js";
 import {
 	atTime,
 	holdClock,
 	Offline,
 	whenBetween,
-} from "../../../test/helper/Offline.js";
+} from "@tone/test/helper/Offline.js";
+import { expect } from "chai";
+
 import { noOp } from "../util/Interface.js";
 import { Clock } from "./Clock.js";
 

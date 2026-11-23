@@ -1,8 +1,8 @@
+import { warns } from "@tone/test/helper/Basic.js";
+import { Offline } from "@tone/test/helper/Offline.js";
+import { PassAudio } from "@tone/test/helper/PassAudio.js";
 import { expect } from "chai";
 
-import { warns } from "../../../test/helper/Basic.js";
-import { Offline } from "../../../test/helper/Offline.js";
-import { PassAudio } from "../../../test/helper/PassAudio.js";
 import { Oscillator } from "../../source/oscillator/Oscillator.js";
 import { getContext } from "../Global.js";
 import { DestinationInstance } from "./Destination.js";

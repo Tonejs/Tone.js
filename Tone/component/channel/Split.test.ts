@@ -1,9 +1,9 @@
+import { BasicTests } from "@tone/test/helper/Basic.js";
+import { connectTo } from "@tone/test/helper/Connect.js";
+import { ConstantOutput } from "@tone/test/helper/ConstantOutput.js";
+import { StereoSignal } from "@tone/test/helper/StereoSignal.js";
 import { expect } from "chai";
 
-import { BasicTests } from "../../../test/helper/Basic.js";
-import { connectTo } from "../../../test/helper/Connect.js";
-import { ConstantOutput } from "../../../test/helper/ConstantOutput.js";
-import { StereoSignal } from "../../../test/helper/StereoSignal.js";
 import { Split } from "./Split.js";
 
 describe("Split", () => {
