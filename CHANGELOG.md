@@ -1,6 +1,6 @@
 # Changelog
 
-## [15.5.72](https://github.com/Tonejs/Tone.js/compare/15.1.22...HEAD)
+## [15.5.73](https://github.com/Tonejs/Tone.js/compare/15.1.22...HEAD)
 
 ### Features
 
@@ -18,6 +18,7 @@
 
 ### Bug Fixes
 
+- **PatternGenerator:** play both values in alternateUp and alternateDown ([#1546](https://github.com/Tonejs/Tone.js/pull/1546)) (`8d6e28a`)
 - **recorder:** resolve start promise when resuming ([#1532](https://github.com/Tonejs/Tone.js/pull/1532)) (`6869419`)
 - **Time:** carry sixteenths that round up to 4 into the next beat ([#1540](https://github.com/Tonejs/Tone.js/pull/1540)) (`7e1389f`)
 - Setting Constant Source Nodes to 0 ([#1535](https://github.com/Tonejs/Tone.js/pull/1535)) (`72efcb5`)

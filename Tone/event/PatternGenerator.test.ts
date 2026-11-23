@@ -70,6 +70,30 @@ describe("PatternGenerator", () => {
 			]);
 		});
 
+		it("plays both values with alternateUp and alternateDown", () => {
+			expect(
+				getArrayValues(PatternGenerator(2, "alternateUp"), 6)
+			).to.deep.equal([0, 1, 0, 1, 0, 1]);
+			expect(
+				getArrayValues(PatternGenerator(2, "alternateDown"), 6)
+			).to.deep.equal([1, 0, 1, 0, 1, 0]);
+		});
+
+		it("does alternateUp and alternateDown with one or three values", () => {
+			expect(
+				getArrayValues(PatternGenerator(1, "alternateUp"), 3)
+			).to.deep.equal([0, 0, 0]);
+			expect(
+				getArrayValues(PatternGenerator(1, "alternateDown"), 3)
+			).to.deep.equal([0, 0, 0]);
+			expect(
+				getArrayValues(PatternGenerator(3, "alternateUp"), 6)
+			).to.deep.equal([0, 2, 1, 0, 2, 1]);
+			expect(
+				getArrayValues(PatternGenerator(3, "alternateDown"), 6)
+			).to.deep.equal([2, 0, 1, 2, 0, 1]);
+		});
+
 		it("outputs random elements from the values", () => {
 			const numValues = 5;
 			const pattern = PatternGenerator(numValues, "random");
